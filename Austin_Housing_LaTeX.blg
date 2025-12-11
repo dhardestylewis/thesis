@@ -1,0 +1,241 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Austin_Housing_LaTeX.aux
+Reallocating 'name_of_file' (item size: 1) to 8 items.
+The style file: chicago.bst
+Illegal, another \bibstyle command---line 284 of file Austin_Housing_LaTeX.aux
+ : \bibstyle
+ :          {chicago}
+I'm skipping whatever remains of this command
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Database file #1: references.bib
+Warning--I didn't find a database entry for "census2020demographics"
+Warning--I didn't find a database entry for "cityaustin2023"
+Warning--I didn't find a database entry for "austintech2023"
+Warning--I didn't find a database entry for "utproposal2023"
+Warning--I didn't find a database entry for "algorithmtest2023"
+Warning--I didn't find a database entry for "aclu2023"
+Warning--I didn't find a database entry for "vela2023tech"
+Warning--I didn't find a database entry for "housingdebate2023"
+Warning--I didn't find a database entry for "techdeployment2024"
+Warning--I didn't find a database entry for "comparativecities2024"
+Warning--I didn't find a database entry for "chen2024reflection"
+Warning--I didn't find a database entry for "torres2024counterfactual"
+Warning--I didn't find a database entry for "light2024smart"
+Warning--no journal in apartmentlist2024
+Warning--no number and no volume in apartmentlist2024
+Warning--page numbers missing in apartmentlist2024
+Warning--empty institution in agc2024
+Warning--no number and no volume in aura2022
+Warning--page numbers missing in aura2022
+Warning--no journal in aura2023survey
+Warning--no number and no volume in aura2023survey
+Warning--page numbers missing in aura2023survey
+Warning--empty institution in aura2024coalition
+Warning--empty institution in aura2024
+Warning--no journal in statesman2024politics
+Warning--no number and no volume in statesman2024politics
+Warning--page numbers missing in statesman2024politics
+Warning--no journal in statesman2024
+Warning--no number and no volume in statesman2024
+Warning--page numbers missing in statesman2024
+Warning--empty institution in aaa2024
+Warning--empty institution in abor2025
+Warning--empty institution in austin_chamber_2024
+Warning--empty institution in austinmetro2024
+Warning--no number and no volume in austinmonitor2023
+Warning--page numbers missing in austinmonitor2023
+Warning--no journal in austin_monitor_gaming_2024
+Warning--no number and no volume in austin_monitor_gaming_2024
+Warning--page numbers missing in austin_monitor_gaming_2024
+Warning--no journal in austin_monitor_2024
+Warning--no number and no volume in austin_monitor_2024
+Warning--page numbers missing in austin_monitor_2024
+Warning--empty institution in anc2023
+Warning--empty institution in austintech2024
+Warning--empty institution in atd2024
+Warning--empty institution in austinwater2024cap
+Warning--empty institution in austinwater2024
+Warning--empty institution in austin_water_2024
+Warning--empty institution in austinwater2024challenges
+Warning--no number and no volume in axios2023parking
+Warning--page numbers missing in axios2023parking
+Warning--no number and no volume in been2024
+Warning--page numbers missing in been2024
+Warning--empty institution in federal_role_2024
+Warning--empty institution in metro_governance_2024
+Warning--empty institution in brookings2024
+Warning--empty institution in bls2024
+Warning--empty institution in projectconnect2020
+Warning--empty institution in capmetro2024
+Warning--no number and no volume in chang2024
+Warning--page numbers missing in chang2024
+Warning--empty institution in cityaustin2024affordable
+Warning--empty institution in cityaustin2024equity
+Warning--empty institution in cityaustin2024simplify
+Warning--empty institution in cityaustin2024compat
+Warning--empty institution in cityaustin2024db90
+Warning--empty institution in cityaustin2024results
+Warning--empty institution in cityaustin2024programs
+Warning--empty institution in cityaustin2024coord
+Warning--empty institution in cityaustin2024patterns
+Warning--empty institution in cityaustin2024dsd
+Warning--empty institution in cityaustin2024enforcement
+Warning--empty institution in cityaustin2024etod
+Warning--empty institution in cityaustin2024geo
+Warning--empty institution in cityaustin2024ownership
+Warning--empty institution in austin_infrastructure_2024
+Warning--empty institution in cityaustin2024finance
+Warning--empty institution in cityaustin2024lessons
+Warning--empty institution in cityaustin2024parking
+Warning--empty institution in cityaustin2024permits
+Warning--empty institution in cityaustin2024values
+Warning--empty institution in cityaustin2024morale
+Warning--empty institution in outlook_2025
+Warning--empty institution in summary_stats_2025
+Warning--empty institution in cityaustin2025defensive
+Warning--empty institution in lessons_2025
+Warning--empty institution in cityaustin2025legal
+Warning--empty institution in metrics_2025
+Warning--empty institution in austin_assessment_2025
+Warning--empty institution in cityaustin2025strategy
+Warning--empty institution in cityaustin2024staffing
+Warning--empty institution in colonyparkna2024
+Warning--empty institution in costar2024
+Warning--empty institution in costar2025
+Warning--empty institution in dsd2024report
+Warning--no number and no volume in einstein2024
+Warning--page numbers missing in einstein2024
+Warning--empty institution in fed2024
+Warning--empty institution in freddie2024
+Warning--empty institution in furman_center_2024
+Warning--no number and no volume in glaeser2018
+Warning--page numbers missing in glaeser2018
+Warning--empty institution in diffusion_2024
+Warning--empty institution in implan2024
+Warning--empty institution in jchs2024
+Warning--no journal in kut2024
+Warning--no number and no volume in kut2024
+Warning--page numbers missing in kut2024
+Warning--no journal in kut2024messaging
+Warning--no number and no volume in kut2024messaging
+Warning--page numbers missing in kut2024messaging
+Warning--no number and no volume in lens2024
+Warning--page numbers missing in lens2024
+Warning--no number and no volume in mccabe2024
+Warning--page numbers missing in mccabe2024
+Warning--no number and no volume in metcalf2024
+Warning--page numbers missing in metcalf2024
+Warning--page numbers missing in mueller2015
+Warning--empty institution in nar2024
+Warning--empty institution in nar2025
+Warning--empty institution in nlc2024
+Warning--empty institution in nlihc2024
+Warning--no number and no volume in texastribune2024
+Warning--page numbers missing in texastribune2024
+Warning--empty institution in redfin2025
+Warning--no number and no volume in rentcafe2024
+Warning--page numbers missing in rentcafe2024
+Warning--empty institution in rentdata2024
+Warning--empty institution in rentdata2025
+Warning--no number and no volume in rothwell2024
+Warning--page numbers missing in rothwell2024
+Warning--no number and no volume in rothwell2024segregation
+Warning--page numbers missing in rothwell2024segregation
+Warning--no number and no volume in smith2024
+Warning--page numbers missing in smith2024
+Warning--no number and no volume in tang2016
+Warning--page numbers missing in tang2016
+Warning--no number and no volume in tang2024
+Warning--page numbers missing in tang2024
+Warning--empty institution in txcomptroller2024
+Warning--empty institution in txhouse2025
+Warning--empty institution in txlege2023
+Warning--empty institution in tml2025
+Warning--empty institution in tppf2023
+Warning--empty institution in ttara2024
+Warning--no journal in texastribune2025
+Warning--no number and no volume in texastribune2025
+Warning--page numbers missing in texastribune2025
+Warning--page numbers missing in thelen2004
+Warning--no number and no volume in thelen_update_2024
+Warning--page numbers missing in thelen_update_2024
+Warning--empty institution in txlege_analysis_2024
+Warning--empty institution in tppf2024
+Warning--empty institution in tcad2024protests
+Warning--empty institution in traviscad2024
+Warning--empty institution in tcad2024
+Warning--empty institution in uli2024innovation
+Warning--empty institution in uli_austin_2024
+Warning--empty institution in urban_institute_2024
+Warning--empty institution in urban_institute_equity_2024
+Warning--empty institution in urbaninstitute2024
+Warning--empty institution in urban_capacity_2024
+Warning--empty institution in uli2024
+Warning--empty institution in census2024
+Warning--empty institution in census2024demo
+Warning--empty institution in uttexas2024
+Warning--empty institution in ut2024graduate
+Warning--empty institution in uttexas2024survey
+Warning--empty institution in ut2024housing
+Warning--empty institution in future_research_2025
+Warning--no number and no volume in democracy_housing_2024
+Warning--page numbers missing in democracy_housing_2024
+Warning--no number and no volume in fischel_revisited_2024
+Warning--page numbers missing in fischel_revisited_2024
+Warning--no number and no volume in context_matters_2024
+Warning--page numbers missing in context_matters_2024
+Warning--no number and no volume in arnstein_update_2024
+Warning--page numbers missing in arnstein_update_2024
+Warning--no number and no volume in way2024
+Warning--page numbers missing in way2024
+Warning--empty institution in yimby_action_2024
+Warning--no number and no volume in zucker2024
+Warning--page numbers missing in zucker2024
+Warning--no number and no volume in zuk2024
+Warning--page numbers missing in zuk2024
+Warning--no journal in zumper2024
+Warning--no number and no volume in zumper2024
+Warning--page numbers missing in zumper2024
+You've used 181 entries,
+            2861 wiz_defined-function locations,
+            1155 strings with 15686 characters,
+and the built_in function-call counts, 83937 in all, are:
+= -- 7140
+> -- 4452
+< -- 1
++ -- 1102
+- -- 1708
+* -- 5416
+:= -- 16920
+add.period$ -- 512
+call.type$ -- 181
+change.case$ -- 1200
+chr.to.int$ -- 125
+cite$ -- 356
+duplicate$ -- 2763
+empty$ -- 5629
+format.name$ -- 1712
+if$ -- 14529
+int.to.chr$ -- 57
+int.to.str$ -- 0
+missing$ -- 45
+newline$ -- 877
+num.names$ -- 1698
+pop$ -- 824
+preamble$ -- 1
+purify$ -- 2061
+quote$ -- 0
+skip$ -- 2898
+stack$ -- 0
+substring$ -- 3458
+swap$ -- 724
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 3356
+warning$ -- 175
+while$ -- 1698
+width$ -- 0
+write$ -- 2318
+(There was 1 error message)

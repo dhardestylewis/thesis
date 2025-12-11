@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pdflatex:*)",
+      "Bash(bibtex:*)",
+      "Bash(biber:*)",
+      "Bash(timeout 30 biber:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
