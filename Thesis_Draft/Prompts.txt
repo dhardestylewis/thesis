@@ -7353,3 +7353,67 @@ technocratic city management."
 
 
 
+
+===========================================
+CONVERSATION SESSION: December 11, 2025
+===========================================
+
+did you actually search externally the factuality of each?
+
+fix it
+
+now delete critical corrections
+
+write up the approach we just took then apply it to cehck Completion Summary against both Background and Submitted Thesis
+
+push Thesis Proposal.txt into Deprecated
+
+confirm that you actually search externally thos now correct entries
+
+and for both the previous critical corrections and these are we citing those same references you just pulled? did you check the references we are now using? decide which between the two if they contain the same information is the better reference to keep citing in-line (though keeping both in the master references.bib)?
+
+they may be under different keywords than you used to search
+
+add the missing bib entries and ensure where they are cited inline these citations are used, notify me if doing so would potentially deprecate an existing citation for the same fact
+
+defer the full audit for later by putting in a master TODO file at the top level
+
+rename prompts.txt to Prompts.txt
+irb content to IRB-SUBMITTED.txt
+
+does the background LONG contain all the tables and figures?
+now delete completion summary
+
+is every Austin_Housing_Summary included in references.bib?
+no instead place in the TODOs a check tables and figures when drafting thesis in the spring, that these tables and figures are not included in the background long
+create a new folder named Thesis_Draft and rename Submitted_Thesis_Proposal to Thesis_Proposal-SUBMITTED
+
+check that every sources mentioned in Austin Housing Bibliography is already included in the references.bib
+
+fix this in references
+lines 2847-3004
+
+use greps to adopt a consistent formatting scheme throughout references.bib
+i prefer this one
+@article{zarsky2016,
+  author       = {Zarsky, Tal Z.},
+  year         = {2016},
+  title        = {The trouble with algorithmic decisions: An analytic road map to examine efficiency and fairness in automated and opaque decision making},
+  journaltitle = {Science, Technology, \& Human Values},
+  volume       = {41},
+  number       = {1},
+  pages        = {118--132},
+  doi          = {10.1177/0162243915605575}
+}
+
+TODO: organize references.bib to follow a similar commented organizational scheme as Austin Housing Bibliography
+
+move into thesis daft  Backgroun LONG IRB SUBMITTED Master Sources Prompts references.bib Tables and Figures and  a copy of Thesis Proposal Submitted tl dir itself
+Rename Tables and Figures Table_and_Figures-TO_INTEGRATE
+
+mkdir Assignments_and_Proposal-SUBMITTED and move Assignments into it renaming it Assignments-SUBMITTED and Thesis-Proposal
+
+Move Austin_Housing_Bibliography into Thesis_Draft
+put in TODO rename that file and decide what to do with it
+
+place a raw copy of all my prompts through this entire conversation appended to Prompts
