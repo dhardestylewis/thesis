@@ -16,6 +16,13 @@
    - Verify inline `\cite{key}` commands have matching bib entries
    - Search using multiple keywords (author name, title words, year)
 
+### Verification Approach (step-by-step)
+1. Search for claims in target document
+2. Check if cited reference exists in references.bib
+3. Externally verify factual accuracy via web search
+4. Compare authoritative sources found vs current citations
+5. Update bib entries or inline citations as needed
+
 ## Bibliography Management Rules
 
 4. **Use consistent BibTeX formatting**:
