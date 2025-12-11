@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.16)  10 DEC 2025 23:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.16)  10 DEC 2025 23:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -671,102 +671,126 @@ pData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
 LaTeX Warning: Citation 'cityaustin2010' on page 2 undefined on input line 55.
 
 
-LaTeX Warning: Citation 'tcclerk2022' on page 2 undefined on input line 57.
+
+[2]
+
+LaTeX Warning: Citation 'tcclerk2022' on page 3 undefined on input line 57.
 
 
-LaTeX Warning: Citation 'axios2023parking' on page 2 undefined on input line 57
+LaTeX Warning: Citation 'axios2023parking' on page 3 undefined on input line 57
 .
 
 
-LaTeX Warning: Citation 'pool2023' on page 2 undefined on input line 57.
+LaTeX Warning: Citation 'pool2023' on page 3 undefined on input line 57.
 
 
+Overfull \hbox (41.41653pt too wide) in paragraph at lines 57--58
+\OT1/ptm/m/n/12 neigh-bor-hood demographics---particularly home-own-er-ship rat
+es, prop-erty val-ues, and racial composition---
+ []
 
-[2]
 
 LaTeX Warning: Citation 'kvue2024vacancy' on page 3 undefined on input line 59.
 
 
 
-LaTeX Warning: Citation 'fischel2001' on page 3 undefined on input line 67.
+LaTeX Warning: Citation 'efa2025' on page 3 undefined on input line 59.
+
+
+LaTeX Warning: Citation 'idc2024' on page 3 undefined on input line 59.
 
 
 
 [3]
 
-LaTeX Warning: Citation 'mccabe2016' on page 4 undefined on input line 69.
+LaTeX Warning: Citation 'fischel2001' on page 4 undefined on input line 71.
+
+
+LaTeX Warning: Citation 'mccabe2016' on page 4 undefined on input line 71.
 
 
 LaTeX Warning: Citation 'hankinson2018' on page 4 undefined on input line 71.
 
 
+LaTeX Warning: Citation 'kleinberg2018' on page 4 undefined on input line 77.
+
+
+LaTeX Warning: Citation 'eubanks2018' on page 4 undefined on input line 77.
+
+
+LaTeX Warning: Citation 'barocas2016' on page 4 undefined on input line 77.
+
+
 
 [4]
 
-LaTeX Warning: Citation 'kleinberg2018' on page 5 undefined on input line 77.
+LaTeX Warning: Citation 'kitchin2014' on page 5 undefined on input line 83.
 
 
-LaTeX Warning: Citation 'eubanks2018' on page 5 undefined on input line 79.
+LaTeX Warning: Citation 'schuilenburg2018' on page 5 undefined on input line 83
+.
 
 
-Overfull \hbox (45.33995pt too wide) in paragraph at lines 79--80
-\OT1/ptm/m/n/12 home-less ser-vices pro-vides a crit-i-cal frame-work for eval-
-u-at-ing al-go-rith-mic gov-er-nance tools ([]).
- []
-
-
-LaTeX Warning: Citation 'barocas2016' on page 5 undefined on input line 81.
+LaTeX Warning: Citation 'zarsky2016' on page 5 undefined on input line 83.
 
 
 
 [5]
 
-LaTeX Warning: Citation 'kitchin2014' on page 6 undefined on input line 87.
+LaTeX Warning: Citation 'efa2025' on page 6 undefined on input line 98.
 
 
-LaTeX Warning: Citation 'schuilenburg2018' on page 6 undefined on input line 89
-.
+LaTeX Warning: Citation 'idc2024' on page 6 undefined on input line 98.
 
 
 
 [6]
 
-LaTeX Warning: Citation 'zarsky2016' on page 7 undefined on input line 91.
+LaTeX Warning: Citation 'tcad_public' on page 7 undefined on input line 110.
+
+
+LaTeX Warning: Citation 'austin_campaign_finance_transactions' on page 7 undefi
+ned on input line 113.
+
+
+LaTeX Warning: Citation 'austin_campaign_finance_reports' on page 7 undefined o
+n input line 113.
 
 
 
 [7]
 
-LaTeX Warning: Citation 'efa2025' on page 8 undefined on input line 107.
-
-
-LaTeX Warning: Citation 'idc2024' on page 8 undefined on input line 107.
-
-
-
 [8]
-
-LaTeX Warning: Citation 'tcad_public' on page 9 undefined on input line 119.
-
-
-LaTeX Warning: Citation 'austin_campaign_finance_transactions' on page 9 undefi
-ned on input line 122.
-
-
-LaTeX Warning: Citation 'austin_campaign_finance_reports' on page 9 undefined o
-n input line 122.
-
-
 
 [9]
 
 [10]
 
+LaTeX Warning: Empty bibliography on input line 207.
+
+
+
 [11]
 
 [12]
+Underfull \hbox (badness 10000) in paragraph at lines 269--274
 
-LaTeX Warning: Empty bibliography on input line 216.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--274
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--274
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--274
+
+ []
 
 
 
@@ -774,9 +798,7 @@ LaTeX Warning: Empty bibliography on input line 216.
 
 [14]
 
-[15]
-
-[16] (Lewis_Daniel_Thesis_Final_Proposal_December2025.aux)
+[15] (Lewis_Daniel_Thesis_Final_Proposal_December2025.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-09-02>
@@ -799,22 +821,22 @@ cember2025.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 17427 strings out of 468081
- 309925 string characters out of 5426756
- 1246295 words of memory out of 5000000
+ 17426 strings out of 468081
+ 309918 string characters out of 5426756
+ 1247295 words of memory out of 5000000
  45885 multiletter control sequences out of 15000+600000
  647103 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,6n,79p,1102b,5052s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,6n,79p,998b,5052s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbo
 ls/msam10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times
 /utmb8a.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/u
 tmr8a.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utm
 ri8a.pfb>
-Output written on Lewis_Daniel_Thesis_Final_Proposal_December2025.pdf (16 pages
-, 106491 bytes).
+Output written on Lewis_Daniel_Thesis_Final_Proposal_December2025.pdf (15 pages
+, 101583 bytes).
 PDF statistics:
- 182 PDF objects out of 1000 (max. 8388607)
- 48 named destinations out of 1000 (max. 500000)
+ 178 PDF objects out of 1000 (max. 8388607)
+ 47 named destinations out of 1000 (max. 500000)
  121 words of extra memory for PDF output out of 10000 (max. 10000000)
 
