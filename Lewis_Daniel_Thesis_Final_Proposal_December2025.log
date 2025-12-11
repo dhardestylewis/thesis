@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.16)  10 DEC 2025 23:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.16)  10 DEC 2025 23:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -253,291 +253,24 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.sty
-Package: biblatex 2025/07/10 v3.21 programmable bibliographies (PK/MW)
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.sty
-Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count309
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.def
-File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
-))
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
-Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip59
+\bibsep=\skip60
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count309
 )
-\c@tabx@nest=\count310
-\c@listtotal=\count311
-\c@listcount=\count312
-\c@liststart=\count313
-\c@liststop=\count314
-\c@citecount=\count315
-\c@citetotal=\count316
-\c@multicitecount=\count317
-\c@multicitetotal=\count318
-\c@instcount=\count319
-\c@maxnames=\count320
-\c@minnames=\count321
-\c@maxitems=\count322
-\c@minitems=\count323
-\c@citecounter=\count324
-\c@maxcitecounter=\count325
-\c@savedcitecounter=\count326
-\c@uniquelist=\count327
-\c@uniquename=\count328
-\c@refsection=\count329
-\c@refsegment=\count330
-\c@maxextratitle=\count331
-\c@maxextratitleyear=\count332
-\c@maxextraname=\count333
-\c@maxextradate=\count334
-\c@maxextraalpha=\count335
-\c@abbrvpenalty=\count336
-\c@highnamepenalty=\count337
-\c@lownamepenalty=\count338
-\c@maxparens=\count339
-\c@parenlevel=\count340
-\blx@tempcnta=\count341
-\blx@tempcntb=\count342
-\blx@tempcntc=\count343
-\c@blx@maxsection=\count344
-\blx@maxsegment@0=\count345
-\blx@notetype=\count346
-\blx@parenlevel@text=\count347
-\blx@parenlevel@foot=\count348
-\blx@sectionciteorder@0=\count349
-\blx@sectionciteorderinternal@0=\count350
-\blx@entrysetcounter=\count351
-\blx@biblioinstance=\count352
-\labelnumberwidth=\skip59
-\labelalphawidth=\skip60
-\biblabelsep=\skip61
-\bibitemsep=\skip62
-\bibnamesep=\skip63
-\bibinitsep=\skip64
-\bibparsep=\skip65
-\bibhang=\skip66
-\blx@bcfin=\read2
-\blx@bcfout=\write3
-\blx@langwohyphens=\language79
-\c@mincomprange=\count353
-\c@maxcomprange=\count354
-\c@mincompwidth=\count355
-Package biblatex Info: Trying to load biblatex default data model...
-Package biblatex Info: ... file 'blx-dm.def' found.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 3
+0.
 
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-dm.def
-File: blx-dm.def 2025/07/10 v3.21 biblatex datamodel (PK/MW)
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
-Package biblatex Info: Trying to load biblatex style data model...
-Package biblatex Info: ... file 'apa.dbx' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-apa\apa.dbx
-File: apa.dbx 2025/08/27 v9.20 APA biblatex style data model
-)
-Package biblatex Info: Trying to load biblatex custom data model...
-Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count356
-\c@savedafterword=\count357
-\c@annotator=\count358
-\c@savedannotator=\count359
-\c@author=\count360
-\c@savedauthor=\count361
-\c@bookauthor=\count362
-\c@savedbookauthor=\count363
-\c@commentator=\count364
-\c@savedcommentator=\count365
-\c@editor=\count366
-\c@savededitor=\count367
-\c@editora=\count368
-\c@savededitora=\count369
-\c@editorb=\count370
-\c@savededitorb=\count371
-\c@editorc=\count372
-\c@savededitorc=\count373
-\c@foreword=\count374
-\c@savedforeword=\count375
-\c@holder=\count376
-\c@savedholder=\count377
-\c@introduction=\count378
-\c@savedintroduction=\count379
-\c@namea=\count380
-\c@savednamea=\count381
-\c@nameb=\count382
-\c@savednameb=\count383
-\c@namec=\count384
-\c@savednamec=\count385
-\c@translator=\count386
-\c@savedtranslator=\count387
-\c@shortauthor=\count388
-\c@savedshortauthor=\count389
-\c@shorteditor=\count390
-\c@savedshorteditor=\count391
-\c@narrator=\count392
-\c@savednarrator=\count393
-\c@execproducer=\count394
-\c@savedexecproducer=\count395
-\c@execdirector=\count396
-\c@savedexecdirector=\count397
-\c@with=\count398
-\c@savedwith=\count399
-\c@labelname=\count400
-\c@savedlabelname=\count401
-\c@institution=\count402
-\c@savedinstitution=\count403
-\c@lista=\count404
-\c@savedlista=\count405
-\c@listb=\count406
-\c@savedlistb=\count407
-\c@listc=\count408
-\c@savedlistc=\count409
-\c@listd=\count410
-\c@savedlistd=\count411
-\c@liste=\count412
-\c@savedliste=\count413
-\c@listf=\count414
-\c@savedlistf=\count415
-\c@location=\count416
-\c@savedlocation=\count417
-\c@organization=\count418
-\c@savedorganization=\count419
-\c@origlocation=\count420
-\c@savedoriglocation=\count421
-\c@origpublisher=\count422
-\c@savedorigpublisher=\count423
-\c@publisher=\count424
-\c@savedpublisher=\count425
-\c@language=\count426
-\c@savedlanguage=\count427
-\c@origlanguage=\count428
-\c@savedoriglanguage=\count429
-\c@citation=\count430
-\c@savedcitation=\count431
-\c@pageref=\count432
-\c@savedpageref=\count433
-\shorthandwidth=\skip67
-\shortjournalwidth=\skip68
-\shortserieswidth=\skip69
-\shorttitlewidth=\skip70
-\shortauthorwidth=\skip71
-\shorteditorwidth=\skip72
-\locallabelnumberwidth=\skip73
-\locallabelalphawidth=\skip74
-\localshorthandwidth=\skip75
-\localshortjournalwidth=\skip76
-\localshortserieswidth=\skip77
-\localshorttitlewidth=\skip78
-\localshortauthorwidth=\skip79
-\localshorteditorwidth=\skip80
-Package biblatex Info: Trying to load compatibility code...
-Package biblatex Info: ... file 'blx-compat.def' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-compat.def
-File: blx-compat.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-)
-Package biblatex Info: Trying to load generic definitions...
-Package biblatex Info: ... file 'biblatex.def' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.def
-File: biblatex.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-\c@textcitecount=\count434
-\c@textcitetotal=\count435
-\c@textcitemaxnames=\count436
-\c@biburlbigbreakpenalty=\count437
-\c@biburlbreakpenalty=\count438
-\c@biburlnumpenalty=\count439
-\c@biburlucpenalty=\count440
-\c@biburllcpenalty=\count441
-\biburlbigskip=\muskip18
-\biburlnumskip=\muskip19
-\biburlucskip=\muskip20
-\biburllcskip=\muskip21
-\c@smartand=\count442
-)
-Package biblatex Info: Trying to load bibliography style 'apa'...
-Package biblatex Info: ... file 'apa.bbx' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-apa\apa.bbx
-File: apa.bbx 2025/08/27 v9.20 APA biblatex references style
-Package biblatex Info: Trying to load bibliography style 'standard'...
-Package biblatex Info: ... file 'standard.bbx' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/bbx\standard.bbx
-File: standard.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count443
-\c@bbx:relatedtotal=\count444
-)
-Package biblatex Info: Delimiter 'nameyeardelim' in context 'bib' already defin
-ed, overwriting.
-Package biblatex Info: Delimiter 'nameyeardelim' in context 'biblist' already d
-efined, overwriting.
-Package biblatex Info: Delimiter 'nonameyeardelim' in context 'bib' already def
-ined, overwriting.
-Package biblatex Info: Delimiter 'nonameyeardelim' in context 'biblist' already
- defined, overwriting.
-)
-Package biblatex Info: Trying to load citation style 'apa'...
-Package biblatex Info: ... file 'apa.cbx' found.
- (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-apa\apa.cbx
-File: apa.cbx 2025/08/27 v9.20 APA biblatex citation style
-Package biblatex Info: Delimiter 'nameyeardelim' in context '' already defined,
- overwriting.
-Package biblatex Info: Delimiter 'andothersdelim' in context '' already defined
-, overwriting.
-Package biblatex Info: Redefining '\fullcite'.
-Package biblatex Info: Redefining '\citeauthor'.
-Package biblatex Info: Redefining '\citeyear'.
-Package biblatex Info: Redefining '\cite'.
-Package biblatex Info: Redefining '\cites'.
-Package biblatex Info: Redefining '\parencite'.
-Package biblatex Info: Redefining '\parencites'.
-Package biblatex Info: Redefining '\footcite'.
-Package biblatex Info: Redefining '\footcites'.
-Package biblatex Info: Redefining '\footcitetext'.
-Package biblatex Info: Redefining '\footcitetexts'.
-Package biblatex Info: Redefining '\smartcite'.
-Package biblatex Info: Redefining '\smartcites'.
-Package biblatex Info: Redefining '\textcite'.
-Package biblatex Info: Redefining '\textcites'.
-)
-Package biblatex Info: Trying to load configuration file...
-Package biblatex Info: ... file 'biblatex.cfg' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.cfg
-File: biblatex.cfg 
-)
-Package biblatex Info: Input encoding 'utf8' detected.
-Package biblatex Info: Document encoding is UTF8 ....
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
-Package: expl3 2025-09-02 L3 programming layer (loader) 
-
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdfte
 x.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count445
-))
-Package biblatex Info: ... and expl3
-(biblatex)             2025-09-02 L3 programming layer (loader) 
-(biblatex)             is new enough (at least 2020/04/06),
-(biblatex)             setting 'casechanger=expl3'.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\blx-case-expl3.s
-ty
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xparse.
-sty
-Package: xparse 2024-08-16 L3 Experimental document command parser
-)
-Package: blx-case-expl3 2025/07/10 v3.21 expl3 case changing code for biblatex
-))
-\@quotelevel=\count446
-\@quotereset=\count447
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 3
-0.
- (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
-File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
-)
-(Lewis_Daniel_Thesis_Final_Proposal_December2025.aux)
+\l__color_backend_stack_int=\count310
+) (Lewis_Daniel_Thesis_Final_Proposal_December2025.aux)
 \openout1 = `Lewis_Daniel_Thesis_Final_Proposal_December2025.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
@@ -596,48 +329,9 @@ LaTeX Font Info:    ... okay on input line 30.
 Package hyperref Info: Link coloring OFF on input line 30.
 (Lewis_Daniel_Thesis_Final_Proposal_December2025.out)
 (Lewis_Daniel_Thesis_Final_Proposal_December2025.out)
-\@outlinefile=\write4
-\openout4 = `Lewis_Daniel_Thesis_Final_Proposal_December2025.out'.
+\@outlinefile=\write3
+\openout3 = `Lewis_Daniel_Thesis_Final_Proposal_December2025.out'.
 
-Package biblatex Info: Trying to load language 'english' -> 'english-apa'...
-Package biblatex Info: ... file 'english-apa.lbx' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-apa\english-apa.
-lbx
-File: english-apa.lbx 2025/08/27 v9.20 APA biblatex localisation
-Package biblatex Info: Trying to load language 'english'...
-Package biblatex Info: ... file 'english.lbx' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/lbx\english.lbx
-File: english.lbx 2025/07/10 v3.21 biblatex localization (PK/MW)
-)
-Package biblatex Info: Trying to load language 'american' -> 'american-apa'...
-Package biblatex Info: ... file 'american-apa.lbx' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex-apa\american-apa
-.lbx
-File: american-apa.lbx 2025/08/27 v9.20 APA biblatex localisation
-Package biblatex Info: Trying to load language 'american'...
-Package biblatex Info: ... file 'american.lbx' found.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/lbx\american.lbx
-File: american.lbx 2025/07/10 v3.21 biblatex localization (PK/MW)
-Package biblatex Info: Trying to load language 'english'...
-Package biblatex Info: ... file 'english.lbx' found.
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/lbx\english.lbx
-File: english.lbx 2025/07/10 v3.21 biblatex localization (PK/MW)
-))))
-Package biblatex Info: Input encoding 'utf8' detected.
-Package biblatex Info: Automatic encoding selection.
-(biblatex)             Assuming data encoding 'utf8'.
-\openout3 = `Lewis_Daniel_Thesis_Final_Proposal_December2025.bcf'.
-
-Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'Lewis_Daniel_Thesis_Final_Proposal_December202
-5.bbl' found.
- (Lewis_Daniel_Thesis_Final_Proposal_December2025.bbl)
-Package biblatex Info: Reference section=0 on input line 30.
-Package biblatex Info: Reference segment=0 on input line 30.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 33.
 
 
@@ -650,16 +344,28 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 33.
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-
-LaTeX Warning: Citation 'census2020' on page 1 undefined on input line 38.
+! Undefined control sequence.
+l.38 ... adding nearly 250,000 residents \autocite
+                                                  {census2020}. This growth,...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
 8.
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-
-LaTeX Warning: Citation 'unlockMLS2025' on page 1 undefined on input line 38.
+! Undefined control sequence.
+l.38 ... unaffordable for most residents \autocite
+                                                  {unlockMLS2025}. The conse...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
 
 
@@ -667,109 +373,92 @@ LaTeX Warning: Citation 'unlockMLS2025' on page 1 undefined on input line 38.
 
 {C:/Users/dhl/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/dhl/Ap
 pData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
-
-LaTeX Warning: Citation 'cityaustin2010' on page 2 undefined on input line 55.
+! Undefined control sequence.
+l.55 ...protests authorized by Texas law \autocite
+                                                  {cityaustin2010}. Under th...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
 
 
 [2]
+! Undefined control sequence.
+l.57 ...ered a pro-housing supermajority \autocite
+                                                  {tcclerk2022}. This shift ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-LaTeX Warning: Citation 'tcclerk2022' on page 3 undefined on input line 57.
+! Undefined control sequence.
+l.57 ...ements citywide in November 2023 \autocite
+                                                  {axios2023parking}, reduci...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
+! Undefined control sequence.
+l.57 ...lots through the HOME Initiative \autocite
+                                                  {pool2023}.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-LaTeX Warning: Citation 'axios2023parking' on page 3 undefined on input line 57
-.
+! Undefined control sequence.
+l.59 ...ates climbing to 10-15\% by 2025 \autocite
+                                                  {kvue2024vacancy}. However...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-
-LaTeX Warning: Citation 'pool2023' on page 3 undefined on input line 57.
-
-
-LaTeX Warning: Citation 'kvue2024vacancy' on page 3 undefined on input line 59.
-
-
-
-LaTeX Warning: Citation 'efa2025' on page 3 undefined on input line 59.
-
-
-LaTeX Warning: Citation 'idc2024' on page 3 undefined on input line 59.
+! Undefined control sequence.
+l.59 ...ut algorithmic tools in planning \autocite
+                                                  {efa2025,idc2024}.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
 
 
 [3]
 
-LaTeX Warning: Citation 'fischel2001' on page 4 undefined on input line 70.
-
-
-LaTeX Warning: Citation 'mccabe2016' on page 4 undefined on input line 72.
-
-
-LaTeX Warning: Citation 'hankinson2018' on page 4 undefined on input line 74.
-
-
-
 [4]
 
-LaTeX Warning: Citation 'kleinberg2018' on page 5 undefined on input line 80.
-
-
-LaTeX Warning: Citation 'eubanks2018' on page 5 undefined on input line 82.
-
-
-Overfull \hbox (21.3159pt too wide) in paragraph at lines 82--83
-\OT1/ptm/m/n/12 neu-tral risk-management tools of-ten in-ten-sify surveil-lance
- of marginal-ized pop-u-la-tions ([]).
- []
-
-
-LaTeX Warning: Citation 'barocas2016' on page 5 undefined on input line 84.
-
-
-
 [5]
-
-LaTeX Warning: Citation 'kitchin2014' on page 6 undefined on input line 90.
-
-
-LaTeX Warning: Citation 'schuilenburg2018' on page 6 undefined on input line 92
-.
-
-
-LaTeX Warning: Citation 'zarsky2016' on page 6 undefined on input line 94.
-
-
 
 [6]
 
 [7]
 
-LaTeX Warning: Citation 'efa2025' on page 8 undefined on input line 109.
-
-
-LaTeX Warning: Citation 'idc2024' on page 8 undefined on input line 109.
-
-
-LaTeX Warning: Citation 'tcad_public' on page 8 undefined on input line 121.
-
-
-
 [8]
-
-LaTeX Warning: Citation 'austin_campaign_finance_transactions' on page 9 undefi
-ned on input line 124.
-
-
-LaTeX Warning: Citation 'austin_campaign_finance_reports' on page 9 undefined o
-n input line 124.
-
-
 
 [9]
 
 [10]
+Overfull \hbox (8.97806pt too wide) in paragraph at lines 152--153
+\OT1/ptm/m/n/12 poth-e-sis test-ing. This al-lows us to di-rectly test the-o-re
+t-i-cal pre-dic-tions from Fis-chel's homevoter
+ []
+
+
 
 [11]
-
-LaTeX Warning: Empty bibliography on input line 220.
+Overfull \hbox (3.2712pt too wide) in paragraph at lines 156--157
+[]\OT1/ptm/m/n/12 Model per-for-mance will be eval-u-ated us-ing clas-si-fi-ca-
+tion met-rics ap-pro-pri-ate for rare events.
+ []
 
 
 
@@ -780,46 +469,49 @@ LaTeX Warning: Empty bibliography on input line 220.
 [14]
 
 [15]
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 2
+55.
+ (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
 
-[16] (Lewis_Daniel_Thesis_Final_Proposal_December2025.aux)
+[16]
+
+[17]
+
+[18]
+
+[19]
+
+[20]
+
+[21] (Lewis_Daniel_Thesis_Final_Proposal_December2025.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-09-02>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `Lewis_Daniel_Thesis_Final_Proposal_December2
 025.out' has not changed.
-(rerunfilecheck)             Checksum: FDFA22CA98E32D380DE5D103CAD68E22;3188.
-
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                Lewis_Daniel_Thesis_Final_Proposal_December2025
-(biblatex)                and rerun LaTeX afterwards.
-
-Package logreq Info: Writing requests to 'Lewis_Daniel_Thesis_Final_Proposal_De
-cember2025.run.xml'.
-\openout1 = `Lewis_Daniel_Thesis_Final_Proposal_December2025.run.xml'.
-
+(rerunfilecheck)             Checksum: 9A32A1A8DEB20ADD39308922B1052E03;3283.
  ) 
 Here is how much of TeX's memory you used:
- 17432 strings out of 468081
- 309988 string characters out of 5426756
- 1247295 words of memory out of 5000000
- 45888 multiletter control sequences out of 15000+600000
- 650628 words of font info for 90 fonts, out of 8000000 for 9000
+ 9843 strings out of 468081
+ 152279 string characters out of 5426756
+ 563876 words of memory out of 5000000
+ 38332 multiletter control sequences out of 15000+600000
+ 651143 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,6n,79p,995b,5052s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,6n,79p,1054b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbo
-ls/msam10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times
+ls/msam10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/couri
+er/ucrr8a.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times
 /utmb8a.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/u
 tmr8a.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utm
 ri8a.pfb>
-Output written on Lewis_Daniel_Thesis_Final_Proposal_December2025.pdf (16 pages
-, 104891 bytes).
+Output written on Lewis_Daniel_Thesis_Final_Proposal_December2025.pdf (21 pages
+, 142402 bytes).
 PDF statistics:
- 182 PDF objects out of 1000 (max. 8388607)
- 48 named destinations out of 1000 (max. 500000)
- 121 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 264 PDF objects out of 1000 (max. 8388607)
+ 75 named destinations out of 1000 (max. 500000)
+ 129 words of extra memory for PDF output out of 10000 (max. 10000000)
 
