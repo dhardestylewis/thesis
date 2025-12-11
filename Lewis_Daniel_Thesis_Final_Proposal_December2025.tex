@@ -63,106 +63,44 @@ This research contributes to literature on algorithmic governance and housing po
 
 \section{Literature Review}
 
-This section organizes the literature around three themes corresponding to the research questions. Theme A addresses the determinants of neighborhood opposition; Themes B and C examine the possibilities and limits of applying machine learning to predict political behavior in democratic urban governance.
+This section organizes the literature around three themes corresponding to the research questions.
 
-\subsection{Theme A: Homeownership, Local Interests, and Opposition to Housing}
+\subsection{Theme A: Homeownership and Opposition to Housing}
 
-William Fischel's ``Homevoter Hypothesis'' \autocite{fischel2001} provides the foundational theoretical framework. Fischel argues that homeowners, whose primary asset is typically their residence, rationally oppose development that might reduce property values or alter neighborhood character. This creates systematic political opposition to housing supply increases, even when broader social welfare would benefit. The hypothesis implies that homeownership status, property values, and length of residence should be positively associated with opposition intensity.
+William Fischel's ``Homevoter Hypothesis'' \autocite{fischel2001} argues that homeowners rationally oppose development that might reduce property values, creating systematic opposition to housing supply increases. McCabe shows that homeowner-dominated municipalities are more likely to restrict multifamily housing \autocite{mccabe2016}. Hankinson finds that even renters exhibit NIMBY attitudes when experiencing ``price anxiety'' about future housing costs \autocite{hankinson2018}. We will test whether these variables predict opposition behavior in Austin.
 
-McCabe's research on homeownership and local political participation extends Fischel's framework by showing that homeowner-dominated municipalities are more likely to restrict multifamily housing and adopt restrictive land use regulations \autocite{mccabe2016}. The concentration of homeownership within a jurisdiction shapes both policy outputs and the structure of political conflict. Our analysis will test whether variation in homeownership concentration across Austin neighborhoods predicts opposition patterns.
+\subsection{Theme B: Machine Learning and Democratic Legitimacy}
 
-Hankinson provides more granular evidence using survey experiments across multiple U.S.\ metropolitan areas \autocite{hankinson2018}. He finds that even renters in high-cost markets exhibit NIMBY attitudes when they experience ``price anxiety'' about future housing costs, particularly when development is sited near their own homes rather than elsewhere in the city. Our machine learning approach can test whether this price-anxiety mechanism operates in Austin by examining whether opposition patterns differ between homeowners and long-term renters in rapidly appreciating neighborhoods.
+Kleinberg et al.\ show that ML models can improve prediction of judicial decisions while raising concerns about delegating high-stakes judgments to algorithms \autocite{kleinberg2018}. Eubanks documents how predictive systems intensify surveillance of marginalized populations \autocite{eubanks2018}. Barocas and Selbst show how seemingly neutral variables can function as proxies for protected attributes \autocite{barocas2016}. Our study constructs a parcel-level predictive model of zoning opposition while pairing that work with qualitative interviews about legitimacy and fairness.
 
-\textbf{How our research tests these theories.} Drawing on Travis Central Appraisal District records, City Council testimony, and tract-level demographic data, we will test whether Fischel's key variables (homeownership status, property value, tenure) and McCabe's (homeownership concentration) predict opposition behavior in Austin. If these variables emerge as strong predictors with expected signs, our results substantiate these theories in a new empirical context. If other factors dominate, such as proximity to the proposed development, age structure, or past political participation, this would suggest the existing theories are incomplete.
+\subsection{Theme C: Limits of Algorithmic Governance}
 
-\subsection{Theme B: Machine Learning, Political Behavior, and Democratic Legitimacy}
-
-The application of machine learning to predict citizen political behavior raises fundamental questions about democratic governance. Kleinberg et al.\ show that ML models can substantially improve prediction of judicial decisions relative to human decision-makers, while raising concerns about feedback effects and the normative acceptability of delegating high-stakes judgments to algorithms \autocite{kleinberg2018}. This tension is directly relevant to predicting neighborhood opposition: if city officials used an opposition-forecasting model to pre-emptively manage hearings or outreach, the model could shape the very political behavior it measures.
-
-Eubanks' analysis of ``automating inequality'' documents how predictive systems framed as neutral risk-management tools often intensify surveillance of marginalized populations \autocite{eubanks2018}. She argues that such systems create ``digital poorhouses'' that embed existing inequalities in technical infrastructures. We must ask whether a NIMBY prediction algorithm would systematically identify opposition in particular neighborhoods and whether such identification would stigmatize residents who exercise their democratic right to oppose projects.
-
-Barocas and Selbst provide a legal-technical analysis of how machine learning can produce discriminatory outcomes even when protected characteristics are not directly used as inputs \autocite{barocas2016}. They show how seemingly neutral variables can function as proxies for race, class, or other protected attributes. In NIMBY prediction, variables such as property values or neighborhood characteristics could serve as proxies for race or income, generating predictions that disproportionately affect particular groups.
-
-\textbf{How our research advances this literature.} Our study contributes by constructing a parcel-level predictive model of zoning opposition while pairing that technical work with qualitative interviews that elicit stakeholders' evaluations of whether such a tool would be legitimate, fair, or democratically acceptable.
-
-\subsection{Theme C: The Limits of Algorithmic Governance in Democratic Contexts}
-
-Kitchin's critique of ``real-time cities'' argues that smart-city dashboards and data-driven management systems prioritize technocratic efficiency over democratic accountability \autocite{kitchin2014}. He identifies emerging problems including the politics of urban data, technocratic lock-in, and the risk that optimization logics displace contestation and deliberation. These concerns are salient for any tool that would allow city officials to anticipate and manage political opposition.
-
-Schuilenburg and Peeters analyze smart-city security systems as expressions of ``pastoral power,'' in which behavioral scripts embedded in urban technologies steer citizens toward desired conduct \autocite{schuilenburg2018}. Their case study of Eindhoven's ``De-escalate'' project shows how algorithmic interventions can normalize particular uses of space while discouraging others. The broader lesson is that algorithmic systems can subtly reshape who feels welcome to participate in public life.
-
-Zarsky develops an analytic roadmap for evaluating algorithmic decision systems in terms of efficiency, fairness, transparency, and due process \autocite{zarsky2016}. He argues that opaque, automated decisions undermine individuals' ability to understand, contest, and appeal outcomes. In housing opposition, a predictive model that profiles certain owners as likely opponents could influence how officials treat their testimony, raising questions about procedural fairness.
-
-\textbf{How our research contributes.} Our qualitative interviews will examine whether stakeholders view NIMBY prediction as a legitimate planning tool or as surveillance that chills democratic participation. These findings will identify the democratic limits of algorithmic governance in housing and highlight alternative technological approaches that may improve development processes without profiling opposition.
+Kitchin argues that data-driven systems prioritize technocratic efficiency over democratic accountability \autocite{kitchin2014}. Schuilenburg and Peeters show how algorithmic systems subtly reshape who participates in public life \autocite{schuilenburg2018}. Zarsky argues that opaque decisions undermine individuals' ability to contest outcomes \autocite{zarsky2016}. Our qualitative interviews will examine whether stakeholders view NIMBY prediction as legitimate or as surveillance that chills participation.
 
 
 \section{Research Design}
 
-This study combines quantitative analysis of existing administrative records with new qualitative interviews and public meeting observations. This design allows us to both identify empirical patterns in opposition behavior and understand how stakeholders evaluate the democratic implications of using predictive tools to anticipate that behavior.
+This study combines quantitative analysis of existing administrative records with qualitative interviews and public meeting observations.
 
 \subsection{Research Site Selection}
 
-Austin, Texas provides an ideal research site for several reasons. First and foremost, Austin is unique among major U.S.\ metropolitan areas in maintaining comprehensive public records of protest petitions and formal opposition to zoning changes. A public information request survey of the top 50 major metros operating under similar state laws revealed that Austin alone has systematically preserved these records in a form amenable to parcel-level analysis. This exceptional data availability makes possible an empirical analysis that would be infeasible in nearly any other U.S.\ city.
-
-Second, the study period spans both zoning stasis and dramatic reform. The concentrated reform period in late 2023, anchored by parking requirement elimination on November 2, 2023 and HOME Phase 1 passage on December 7, 2023, creates a natural experiment in how zoning liberalization affects opposition patterns. These reforms were followed by HOME Phase 2 in May 2024, which further expanded allowable density on corner lots and other properties. This variation allows us to examine whether factors predicting opposition remained stable or shifted as the policy regime changed.
-
-Third, Austin's position as a technology hub with approximately 180,000 tech workers creates both the technical capacity for algorithmic governance and an informed civic discourse about its implications \autocite{efa2025,idc2024}. This context means stakeholders interviewed will likely have more sophisticated understandings of algorithmic tools than in cities with less civic tech infrastructure.
-
-Finally, Austin's diverse stakeholder landscape, including active neighborhood associations, organized housing advocacy groups such as Austinites for Urban Rail Action (AURA), and a council-manager government structure requiring supermajorities for controversial reforms, provides rich variation in how different groups might perceive predictive tools.
+Austin, Texas is unique among major U.S.\ metropolitan areas in maintaining comprehensive public records of protest petitions and formal opposition to zoning changes. A public information request survey of the top 50 major metros revealed that Austin alone has preserved these records in a form amenable to parcel-level analysis. The study period (data from 2007 onward, validation on 2018-2025) spans both zoning stasis and dramatic reform, including HOME Phase 1 (December 2023) and HOME Phase 2 (May 2024). Austin's civic tech infrastructure \autocite{efa2025,idc2024} and diverse stakeholder landscape provide rich context.
 
 \subsection{Quantitative Component}
 
-\textbf{Data Sources, Linkage, and Management.}
-The quantitative analysis will construct a parcel-level and owner-level dataset linking multiple administrative and public record sources:
+\textbf{Data Sources.} The quantitative analysis will link: opposition records (2007-2025) from zoning case files; City of Austin development records from the Open Data Portal; Travis Central Appraisal District property records \autocite{tcad_public}; Census tract-level demographics; and public testimony from City Council meetings.
 
-\begin{enumerate}
-    \item \textbf{Opposition records (2007--2025)}: Protest petitions, valid petitions under Texas Local Government Code § 211.006(d) (pre-HB 24), and formal opposition filings extracted from zoning case files via public information requests.
-    \item \textbf{City of Austin development records (1966--2025, using 2007 onwards)}: Site plan cases and zoning review cases from the City of Austin Open Data Portal, including case outcomes, processing timelines, and parcel identifiers.
-    \item \textbf{Travis Central Appraisal District records (2021--2025, optionally earlier years via PIR)}: Parcel-level property characteristics including assessed value, land use, and approximate ownership tenure \autocite{tcad_public}.
-    \item \textbf{Demographic context (2000--2025)}: U.S.\ Census Bureau tract-level data including decennial census (2000, 2010, 2020) and American Community Survey annual estimates (2005-forward).
-    \item \textbf{Public testimony (2015--2025)}: City Council meeting transcripts and archived ATXN video recordings.
-    \item \textbf{Campaign finance data (2016--2025, optional)}: Campaign contribution and expenditure records from the City of Austin Open Data Portal \autocite{austin_campaign_finance_transactions,austin_campaign_finance_reports}.
-\end{enumerate}
+\textbf{Variables.} Predictors include property characteristics (assessed value, homeownership, tenure), spatial variables (proximity to developments, neighborhood demographics), and behavioral variables (prior testimony, policy regime indicators).
 
-To maintain confidentiality and follow IRB best practices, we will implement a two-table structure: a \textbf{linkage file} (Table A) containing study\_id, names, exact addresses, and other direct identifiers, stored in encrypted, access-controlled files with access limited to the Investigator; and an \textbf{analytic dataset} (Table B) containing study\_id and derived variables without direct identifiers, used for all analysis and publication.
-
-\textbf{Feature Construction and Variables.}
-The analytic dataset will include three categories of predictors: \textit{property and ownership characteristics} (assessed value, homeownership status, ownership tenure, property type, appraisal protest history); \textit{spatial variables} (proximity to proposed developments, neighborhood demographics, location relative to council districts and neighborhood association boundaries); and \textit{behavioral and temporal variables} (prior participation in zoning testimony, campaign contributions, policy regime indicators). An additional category will examine \textbf{demographic differences between property owners and nearby residents}.
-
-\textbf{Modeling Approach and Validation.}
-We will implement and compare logistic regression as an interpretable baseline and tree-based methods (Random Forests, Gradient Boosted Trees) that can capture nonlinear relationships. Model performance will emphasize metrics appropriate for rare events: precision-recall curves, F1 score for the positive class, calibration diagnostics, and ROC AUC.
-
-To ensure temporal validity and avoid data leakage, we will use an \textbf{annual expanding window validation strategy}:
-\begin{itemize}[noitemsep]
-    \item Year 1: Train on data through 2018, test on 2019, validate on 2020--2025
-    \item Year 2: Train through 2019, test on 2020, validate on 2021--2025
-    \item Year 3: Train through 2020, test on 2021, validate on 2022--2025
-    \item Year 4: Train through 2021, test on 2022, validate on 2023--2025
-    \item Year 5: Train through 2022, test on 2023, validate on 2024--2025
-    \item Year 6: Train through 2023, test on 2024, validate on 2025
-    \item Year 7: Train through 2024, test on 2025, predict 2026 (no validation)
-    \item Year 8: Train through 2025, predict 2026--2027 (no testing or validation)
-\end{itemize}
-
-This mimics real-world deployment with annual retraining on accumulating historical data.
+\textbf{Modeling.} We will compare logistic regression and tree-based methods (Random Forests, Gradient Boosted Trees). We use an annual expanding window validation strategy training on pre-2018 data and validating on 2018-2025 to avoid data leakage and mimic real-world deployment.
 
 \subsection{Qualitative Component}
 
-\textbf{Subject Selection and Sampling.}
-The qualitative component will involve approximately 10 semi-structured interviews with stakeholders who directly participate in or are affected by Austin's housing development processes. We will use purposive sampling to recruit a diverse set of participants: 2 city officials/planners from Development Services Department; 2 neighborhood association leaders; 2 housing advocates from organizations such as Austinites for Urban Rail Action (AURA); 2 civic technologists with expertise in civic data or algorithmic governance; and 2 developers (optional). We do not claim to reach thematic saturation; the qualitative component is designed to surface major tensions rather than exhaust the space of views. Snowball referrals may be used to identify additional participants up to this target if needed.
+Approximately 10 semi-structured interviews (15-30 minutes) with stakeholders: city officials, neighborhood leaders, housing advocates, and civic technologists. We will use purposive sampling and do not claim thematic saturation. Non-participant observation of public meetings will supplement interviews. Analysis will follow an iterative thematic coding approach using deductive codes adapted from legitimacy and procedural justice frameworks.
 
-\textbf{Interview Protocol.}
-Interviews will be semi-structured, following the IRB-approved interview guide (see Appendix A), covering: participant's role and experience; perceptions of current barriers in development approval; awareness of and attitudes toward algorithmic tools; reactions to predictive modeling of opposition; concerns about fairness, transparency, and democratic legitimacy; alternative technological approaches; and conditions for acceptability. Interviews will last 15--30 minutes, conducted in person, by phone, or via secure videoconference.
+\subsection{Integration}
 
-\textbf{Observational Data.}
-The study will include non-participant observation of public meetings over a six-month period, including live video attendance at City Council and Planning \& Zoning Commission meetings and review of archived ATXN recordings. Field notes will document how stakeholders discuss predictive tools, data-driven governance, and democratic participation concerns.
-
-\textbf{Qualitative Analysis Plan.}
-Analysis will follow an iterative thematic coding approach using NVivo or Atlas.ti. Deductive codes will be adapted from Grimmelikhuijsen and Meijer's (2022) legitimacy framework and procedural justice concepts. Inductive codes will emerge from close reading of transcripts. We will present representative quotations to ground key themes in participants' own words.
-
-\subsection{Integration of Quantitative and Qualitative Findings}
-
-The mixed-methods design allows us to triangulate findings. The quantitative component establishes what patterns exist in opposition behavior and which factors predict them. The qualitative component examines how stakeholders interpret the benefits, risks, and legitimacy of using those patterns predictively. Integration will occur at the interpretation stage, synthesizing empirical patterns with normative stakeholder evaluations to address the overarching research question.
+The mixed-methods design triangulates empirical patterns (quantitative) with normative stakeholder evaluations (qualitative) to address the research questions.
 
 
 

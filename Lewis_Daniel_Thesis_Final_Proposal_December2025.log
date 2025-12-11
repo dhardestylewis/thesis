@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.16)  10 DEC 2025 23:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.16)  10 DEC 2025 23:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -769,7 +769,7 @@ n input line 124.
 
 [11]
 
-LaTeX Warning: Empty bibliography on input line 218.
+LaTeX Warning: Empty bibliography on input line 220.
 
 
 
@@ -778,26 +778,6 @@ LaTeX Warning: Empty bibliography on input line 218.
 [13]
 
 [14]
-Underfull \hbox (badness 10000) in paragraph at lines 280--285
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 280--285
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 280--285
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 280--285
-
- []
-
-
 
 [15]
 
@@ -824,11 +804,11 @@ cember2025.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 17427 strings out of 468081
- 309925 string characters out of 5426756
+ 17432 strings out of 468081
+ 309988 string characters out of 5426756
  1247295 words of memory out of 5000000
- 45885 multiletter control sequences out of 15000+600000
- 647103 words of font info for 85 fonts, out of 8000000 for 9000
+ 45888 multiletter control sequences out of 15000+600000
+ 650628 words of font info for 90 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,6n,79p,995b,5052s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbo
@@ -837,7 +817,7 @@ ls/msam10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times
 tmr8a.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utm
 ri8a.pfb>
 Output written on Lewis_Daniel_Thesis_Final_Proposal_December2025.pdf (16 pages
-, 105116 bytes).
+, 104891 bytes).
 PDF statistics:
  182 PDF objects out of 1000 (max. 8388607)
  48 named destinations out of 1000 (max. 500000)
