@@ -41,13 +41,13 @@
   >
 ]>
 <requests version="1.0">
-  <internal package="biblatex" priority="9" active="0">
+  <internal package="biblatex" priority="9" active="1">
     <generic>latex</generic>
     <provides type="dynamic">
-      <file>Assignment3.bcf</file>
+      <file>Lewis_Daniel_Thesis_Final_Proposal_December2025.bcf</file>
     </provides>
     <requires type="dynamic">
-      <file>Assignment3.bbl</file>
+      <file>Lewis_Daniel_Thesis_Final_Proposal_December2025.bbl</file>
     </requires>
     <requires type="static">
       <file>blx-dm.def</file>
@@ -64,23 +64,23 @@
       <file>english-apa.lbx</file>
     </requires>
   </internal>
-  <external package="biblatex" priority="5" active="0">
+  <external package="biblatex" priority="5" active="1">
     <generic>biber</generic>
     <cmdline>
       <binary>biber</binary>
-      <infile>Assignment3</infile>
+      <infile>Lewis_Daniel_Thesis_Final_Proposal_December2025</infile>
     </cmdline>
     <input>
-      <file>Assignment3.bcf</file>
+      <file>Lewis_Daniel_Thesis_Final_Proposal_December2025.bcf</file>
     </input>
     <output>
-      <file>Assignment3.bbl</file>
+      <file>Lewis_Daniel_Thesis_Final_Proposal_December2025.bbl</file>
     </output>
     <provides type="dynamic">
-      <file>Assignment3.bbl</file>
+      <file>Lewis_Daniel_Thesis_Final_Proposal_December2025.bbl</file>
     </provides>
     <requires type="dynamic">
-      <file>Assignment3.bcf</file>
+      <file>Lewis_Daniel_Thesis_Final_Proposal_December2025.bcf</file>
     </requires>
     <requires type="editable">
       <file>references.bib</file>

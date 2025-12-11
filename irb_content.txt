@@ -1,0 +1,1003 @@
+                     Columbia University Human Subjects Protocol Data Sheet
+
+
+
+                                             General Information
+
+
+Protocol:                  ACYY0820(M00Y01)          Protocol Status:           Submitted
+Effective Date:                                      Expiration Date:
+Originating Department Code:                         OAD GSAPP (0704308)
+Principal Investigator:                              Bou Akar, Hiba (hb2541)
+From what Columbia campus does this research         Morningside or Lamont Doherty
+originate:
+Title:                     Predicting NIMBYism
+Protocol Version #:                                  Abbreviated Title:         Predicting NIMBYism
+Was this protocol previously assigned a number by an IRB:                       No
+
+
+
+Is the purpose of this submission to obtain a "Not Human Subjects Research" determination?
+No
+
+
+
+                                                   Attributes
+
+Special review type: Check all that apply or check "None of the Above" box.
+  [ ]Review for 45 CFR 46.118 Determination (involvement of human subjects is anticipated but is not yet defined)
+  [ ]Funding review for Administrative IRB approval (such as for Center or Training Grants)
+  [x]None of the above
+
+
+IRB of record information: Will a Columbia IRB be the IRB that is responsible for providing review, approval,
+and oversight for this study?
+Yes
+   Select the most appropriate response:
+   Columbia will be the IRB of record for the study procedures conducted by Columbia researchers (Note:
+   this response will apply to most submissions).
+
+
+Is this research part of a multicenter study?
+No
+
+
+Please indicate if any of the following University resources are utilized:
+   [ ] Cancer Center Clinical Protocol Data Management Compliance Core (CPDM)
+   [ ] CTSA-Irving Institute Clinical Research Resource (CRR)
+   [ ] CTSA- Irving Institute Columbia Community Partnership for Health (CCPH)
+   [ ] Columbia University Biobank (CUB)
+   [x] None of the above
+
+
+
+                                                  Background
+
+Abbreviated Submission:
+The IRB has an abbreviated submission process for multicenter studies supported by industry or NIH
+cooperative groups (e.g., ACTG, HVTN, NCI oncology group studies, etc.), and other studies that have a
+
+IRB-ACYY0820                                        Page 1 of 19
+complete stand-alone protocol. The process requires completion of all Rascal fields that provide information
+regarding local implementation of the study. However, entering study information into all of the relevant Rascal
+fields is not required, as the Columbia IRBs will rely on the attached stand-alone (e.g., sponsor's) protocol for
+review of the overall objectives.
+If you select the Abbreviated Submission checkbox and a section is not covered by the attached stand-alone
+protocol, you will need to go back and provide this information in your submission.
+
+
+Study Purpose and Rationale:
+Provide pertinent background description with references that are related to the need to conduct this study. If
+this is a clinical trial, the background should include both preclinical and clinical data. Be brief and to the point.
+    [ ] Abbreviated Submission - This information is included in an attached stand-alone protocol. Proceed to the next
+    question
+     This study examines patterns of neighborhood opposition to housing development in Austin,
+   Texas and evaluates how different stakeholder groups perceive the potential use of predictive or
+   algorithmic tools in housing policy implementation. Austin has experienced rapid population
+   growth, rising housing costs, and significant zoning reform, alongside organized opposition from
+   neighborhood groups and other stakeholders. Existing research on NIMBYism and
+   homeownership suggests that property ownership, neighborhood characteristics, and local political
+   context shape opposition to new housing, but there is limited empirical work using detailed
+   behavioral records (such as protest petitions and public testimony) to characterize these patterns
+   at the parcel or case level.At the same time, cities and agencies are increasingly interested in
+   using data and machine learning to anticipate political behavior and manage planning processes,
+   raising questions about fairness, transparency, and democratic legitimacy. This study will (1) use
+   existing administrative and public records to model which parcels or owners are most likely to
+   participate in formal opposition to zoning or development proposals, and (2) use qualitative
+   interviews to understand how city officials, neighborhood representatives, housing advocates,
+   developers, and civic technologists view the legitimacy and risks of such predictive tools. The goal
+   is to inform ethical and democratically accountable use of data-driven methods in housing and land
+   use governance.
+
+Study Design:
+Describe the methodology that will be used in this study, covering such factors as retrospective vs. prospective
+data collection, interventional vs. non-interventional, randomized vs. non-randomized, observational,
+experimental, ethnography, etc.
+   [ ] Abbreviated Submission - This information is included in an attached stand-alone protocol. Proceed to the next
+   question
+    This is a mixed-methods, non-interventional, observational study that combines retrospective
+  analysis of existing records with prospective qualitative data collection.First, the study will conduct
+  a retrospective record review and secondary analysis of existing administrative and public datasets
+  from approximately 2018–2025, including zoning and site plan case records, protest or opposition
+  records, parcel-level appraisal and property data, public meeting minutes and testimony, and
+  campaign finance records. These data will be linked at the parcel or case level and used to
+  construct a de-identified analytic dataset for statistical and machine learning analysis of opposition
+  patterns. No experimental interventions or randomization will be used.Second, the study will
+  prospectively collect qualitative data through approximately 10 semi-structured interviews with
+  adult stakeholders (city officials/planners, neighborhood association leaders, housing advocates,
+IRB-ACYY0820                                   Page 2 of 19
+   developers, and civic technologists). Interviews may be conducted in person, by phone, or via
+   secure videoconference and may be audio-recorded with consent. Third, the study will include
+   non-participant observation of public City Council, Planning and Zoning Commission, and
+   neighborhood association meetings related to housing and zoning, with field notes documenting
+   how stakeholders discuss and perceive predictive or algorithmic tools. The qualitative and
+   quantitative components will be analyzed separately and then integrated to provide a more
+   comprehensive understanding of opposition patterns and stakeholder perspectives.
+
+Statistical Procedures:
+Provide sufficient details so that the adequacy of the statistical procedures can be evaluated including power
+calculations to justify the number of participants to be enrolled into the study. Definitions of subject terms such
+as enrolled and accrued as used for Rascal submissions can be found in the Subjects section.
+   [ ] Abbreviated Submission - This information is included in an attached stand-alone protocol. Proceed to the next
+   question
+     For the quantitative component, the study will use descriptive statistics and predictive modeling
+   to identify factors associated with formal opposition to zoning or development proposals at the
+   parcel or owner level. Candidate predictors will include property characteristics (for example,
+   assessed value, land use, approximate tenure), spatial variables (for example, proximity to
+   proposed developments, neighborhood characteristics), and temporal variables (for example, year
+   of case). Models may include logistic regression and machine learning classifiers (for example,
+   tree-based methods). Model performance will be evaluated using standard metrics such as
+   classification accuracy and area under the ROC curve on held-out test sets or cross-validation
+   folds. The sample size for the quantitative analysis is determined by the number of existing records
+   available in the defined time period; traditional a priori power calculations are not applicable
+   because all eligible records in the dataset will be included.For the qualitative component,
+   approximately 10 interviews are planned, with the final number guided by pragmatic considerations
+   and thematic saturation (the point at which additional interviews are unlikely to yield substantially
+   new themes). Interview recordings will be transcribed and analyzed using qualitative thematic
+   analysis. Transcripts and field notes will be coded to identify recurring themes related to
+   perceptions of fairness, legitimacy, transparency, and acceptable uses of predictive tools in
+   housing policy. Quantitative and qualitative findings will then be compared and integrated in the
+   interpretation phase; formal statistical integration of these components (for example, mixed-
+   methods meta-inference) will not involve additional hypothesis testing beyond what is described
+   above.
+
+
+                                             Exempt and Expedited
+
+Is the purpose of this submission to obtain an exemption determination, in accordance with 45CFR46.101(b):
+No
+
+
+Is the purpose of this submission to seek expedited review , as per the federal categories referenced in
+45CFR46.110?
+Yes
+    Is the risk of harm to which subjects will be exposed as a result of this research no more than minimal?
+
+IRB-ACYY0820                                        Page 3 of 19
+  Yes
+     Select the category or categories of research into which study procedures fall.
+        [ ] Category 1 - Clinical studies of drugs and medical devices only when condition (a) or (b) is met. (a)
+        Research on drugs for which an investigational new drug application (21 CFR Part 312) is not required. (Note:
+        Research on marketed drugs that significantly increases the risks or decreases the acceptability of the risks
+        associated with the use of the product is not eligible for expedited review.) (b) Research on medical devices for
+        which (i) an investigational device exemption application (21 CFR Part 812) is not required; or (ii) the medical
+        device is cleared/approved for marketing and the medical device is being used in accordance with its
+        cleared/approved labeling.
+        [ ] Category 2 - Collection of blood samples by finger stick, heel stick, ear stick, or venipuncture as follows: (a)
+        from healthy, nonpregnant adults who weigh at least 110 pounds. For these subjects, the amounts drawn may
+        not exceed 550 ml in an 8 week period and collection may not occur more frequently than 2 times per week; or
+        (b) from other adults and children, considering the age, weight, and health of the subjects, the collection
+        procedure, the amount of blood to be collected, and the frequency with which it will be collected. For these
+        subjects, the amount drawn may not exceed the lesser of 50 ml or 3 ml per kg in an 8 week period and
+        collection may not occur more frequently than 2 times per week.
+
+
+         PLEASE NOTE: If blood is collected through an existing catheter, you do not qualify for expedited review under
+         this category.
+         [ ] Category 3 - Prospective collection of biological specimens for research purposes by noninvasive means.
+         Examples include: (a) hair and nail clippings in a nondisfiguring manner; (b) deciduous teeth at time of
+         exfoliation or if routine patient care indicates a need for extraction; (c) permanent teeth if routine patient care
+         indicates a need for extraction; (d) excreta and external secretions (including sweat); (e) uncannulated saliva
+         collected either in an unstimulated fashion or stimulated by chewing gumbase or wax or by applying a dilute
+         citric solution to the tongue; (f) placenta removed at delivery; (g) amniotic fluid obtained at the time of rupture of
+         the membrane prior to or during labor; (h) supra- and subgingival dental plaque and calculus, provided the
+         collection procedure is not more invasive than routine prophylactic scaling of the teeth and the process is
+         accomplished in accordance with accepted prophylactic techniques; (i) mucosal and skin cells collected by
+         buccal scraping or swab, skin swab, or mouth washings; (j) sputum collected after saline mist nebulization.
+         [ ] Category 4 - Collection of data through noninvasive procedures (not involving general anesthesia or
+         sedation) routinely employed in clinical practice, excluding procedures involving x-rays or microwaves. Where
+         medical devices are employed, they must be cleared/approved for marketing. (Studies intended to evaluate the
+         safety and effectiveness of the medical device are not generally eligible for expedited review, including studies
+         of cleared medical devices for new indications.) Examples include: (a) physical sensors that are applied either
+         to the surface of the body or at a distance and do not involve input of significant amounts of energy into the
+         subject or an invasion of the subject=s privacy; (b) weighing or testing sensory acuity; (c) magnetic resonance
+         imaging; (d) electrocardiography, electroencephalography, thermography, detection of naturally occurring
+         radioactivity, electroretinography, ultrasound, diagnostic infrared imaging, doppler blood flow, and
+         echocardiography; (e) moderate exercise, muscular strength testing, body composition assessment, and
+         flexibility testing where appropriate given the age, weight, and health of the individual.
+         [x] Category 5 - Research involving materials (data, documents, records, or specimens) that have been
+         collected, or will be collected solely for nonresearch purposes (such as medical treatment or diagnosis).
+         PLEASE NOTE: If extra tissue is being taken during a routine clinical procedure (i.e. additional tissue that is not
+         being taken for diagnostic purposes), you do not qualify for expedited review under this category.
+         [x] Category 6 - Collection of data from voice, video, digital, or image recordings made for research purposes.
+         [x] Category 7 - Research on individual or group characteristics or behavior (including, but not limited to,
+         research on perception, cognition, motivation, identity, language, communication, cultural beliefs or practices,
+         and social behavior) or research employing survey, interview, oral history, focus group, program evaluation,
+IRB-ACYY0820                                           Page 4 of 19
+          human factors evaluation, or quality assurance methodologies. (NOTE: Some research in this category may be
+          exempt from the HHS regulations for the protection of human subjects. 45 CFR 46.101(b)(2) and (b)(3). This
+          listing refers only to research that is not exempt.)
+          Do all procedures fall into one or more of the categories listed above?
+          Y
+          NOTE: This project appears to be eligible for expedited review.
+
+
+
+                                                        Funding
+
+Is there any external funding or support that is applied for or awarded, or are you the recipient of a gift, for this
+project?
+No
+
+
+
+                                                       Locations
+
+
+Location Type       Facility Name       Domestic or         Geographic          Local IRB Ethics    Local Site
+                                        International       Location            Approval            Approval
+Columbia/CUMC       Avery Hall
+
+
+
+
+                                                       Personnel
+
+
+UNI/Phone           Name                Role                Department          Edit/View           Obtaining
+                                                                                                    Informed Consent
+hb2541              Bou Akar, Hiba      Principal           ARH Instruction     Edit                N
+                                        Investigator        (501000X)
+212-854-3513
+dl3645              Lewis, Daniel       Investigator        ARH Urban           Edit                N
+                                                            Planning
+713-371-7875                                                (5010302)
+
+
+Training and COI
+The PI must ensure that each individual that is added as personnel has met the training requirements for this
+study (http://www.cumc.columbia.edu/dept/irb/education/index.html). For help identifying which research
+compliance trainings you may be required to take, visit the Research Compliance Training Finder.
+UNI      Name Annual HIPAA HSP             Resear FDA-       S-I     CRC      Good     GCP - GCP        Genetic
+                 COI              (CITI)   ch with Regulat                    Clinical Third- Refresh Resear
+                 disclos                   Minors ed                          Practic party     er      ch
+                 ure                       (CITI)   Resear                    e (GCP) trackin           Consen
+                 form                               ch                                 g                t
+                                                    (CITI)
+hb2541 Bou       04/10/2          08/24/2
+         Akar,   025              023
+         Hiba
+dl3645 Lewis, 11/25/2             11/25/2
+         Daniel 025               025
+
+
+
+
+IRB-ACYY0820                                           Page 5 of 19
+                                           Departmental Approvers
+
+
+Electronic Signature: Dory Thrasher (501000X) - Other       Date: 11/26/2025
+Electronic Signature: Hiba Bou Akar (501000X) - Principal Date: 11/27/2025
+Investigator
+Electronic Signature: Daniel Lewis (5010302) - Investigator Date: 12/01/2025
+
+
+
+
+                                           Privacy & Data Security
+
+Indicate the methods by which data/research records will be maintained or stored (select all that apply):
+   [ ]Hardcopy (i.e., paper)
+   [x]Electronic
+       Where will the data be stored?
+       Y
+       [x]On a System
+       [x]On an Endpoint
+            Identify what type of endpoint will be used (select all that apply):
+           [x]Desktop Computer
+           [x]Laptop Computer
+           [ ]Mobile Device
+           [ ]Other
+
+
+Does this study involve the receipt or collection of Sensitive Data?
+Yes
+   If any Sensitive Data is lost or stolen as part of your research protocol, you must inform both the IRB and the
+   appropriate IT Security Office (CUMC IT Security if at CUMC; CUIT if at any other University campus).
+
+
+   What type of Sensitive Data will be obtained or collected? Select all that apply:
+   [x]Personally Identifiable Information (PII), including Social Security Numbers (SSN)
+       Will Social Security Numbers (SSNs) be collected for any purpose?
+       No
+   [ ]Protected Health Information (PHI), including a Limited Data Set (LDS)
+   If any PHI is lost or stolen, you must inform both the IRB and the Office of HIPAA Compliance.
+
+
+
+   Indicate plans for secure storage of electronic sensitive data: check all that apply
+   [ ]Sensitive data will not be stored in electronic format
+   [ ]Sensitive data will be stored on a multi-user system
+   [x]Sensitive data will be stored on an encrypted endpoint
+
+
+
+   By Selecting an Endpoint Device and approving this protocol for submission to the IRB, the PI is attesting that
+   the device and any removable media that may be used have been or will be registered and/or will be
+   maintained in compliance with the University's Information Security Charter and all related policies. It is
+   important that this information is updated, during the course of the study, as new devices are added.
+
+IRB-ACYY0820                                       Page 6 of 19
+Provide a description of how the confidentiality of study data will be ensured, addressing concerns or
+protections that specifically relate to the data storage elements identified above (e.g. hard copy, electronic,
+system, and/or endpoint):
+All identifiable data and research records will be stored on password-protected computers and secure, access-controlled
+storage managed by Columbia University or other university-approved services. Electronic files will be kept in folders
+restricted to the PI and authorized study personnel only. Direct identifiers (such as names, email addresses, and parcel-
+level addresses) will be stored in a separate, encrypted linkage file, and the main analytic dataset will use coded study
+IDs. Audio recordings and transcripts will be stored in electronic form in the same secure locations and will be labeled by
+coded ID rather than names whenever feasible.
+
+
+Hardcopy materials (such as signed consent forms and any handwritten notes) will be stored in a locked cabinet in the
+PI’s or advisor’s office, with access limited to the research team. Identifiable data will not be sent by unencrypted email or
+stored on personal devices that are not password-protected. Only de-identified or aggregate results will be included in
+presentations, thesis documents, and publications, and any illustrative quotations from interviews will be edited to remove
+names or other details that could reasonably identify individuals.
+
+
+If your project is not NIH funded, has a Certificate of Confidentiality (CoC) been requested for this research?
+No
+
+
+Provide a description of the protections in place to safeguard participants' privacy while information is being
+collected:
+Interviews will be scheduled at times and locations that protect participants’ privacy, such as private offices or meeting
+rooms, or via secure videoconference or telephone. For remote interviews, a secure, password-protected platform will be
+used, and participants will be asked to join from a private space whenever possible. At the start of each interview, the PI
+will remind participants that they may decline to answer any question, request that the audio recorder be turned off, or
+stop the interview at any time without penalty. Interviews will be conducted one-on-one; no group interviews are planned.
+
+
+When audio recording is used, participants will be informed before recording begins and will have the option to participate
+without recording if they prefer (in which case only notes will be taken). Field notes from observations of public meetings
+will focus on publicly observable behavior and statements that are already part of the public record; covert recording of
+private conversations will not occur. Names and specific identifying details will be minimized in notes and transcripts, and
+any quotations used in reports will be edited to avoid inadvertently revealing a participant’s identity or employer.
+
+
+
+                                                       Procedures
+
+Is this project a clinical trial?
+No
+Is this project associated with, or an extension of, an existing Rascal protocol?
+No
+Do study procedures involve any of the following?
+    Analysis of existing data and/or prospective record review
+    Yes
+    Audio, video or photographic recording of research subjects
+    Yes
+    Behavioral Intervention?
+
+IRB-ACYY0820                                            Page 7 of 19
+    No
+    Biological specimens (collection or use of)
+    No
+    Cancer-related research
+    No
+    Drugs or Biologics
+    No
+    Future use of data and/or specimens
+    No
+    Genetic research
+    No
+    Home Visits
+    No
+    Human Embryonic and/or Human Pluripotent Stem Cells
+    No
+    Imaging procedures or radiation
+    No
+    Medical Devices
+    No
+    Surgical procedures that would not otherwise be conducted or are beyond standard of care
+    No
+Will any of the following qualitative research methods be used?
+    Survey/interview/questionnaire
+    Yes
+       NOTE: You must attach a PDF version of the survey(s)/interview(s)/questionnaire(s) to this protocol prior
+       to submission.
+    Systematic observation of public or group behavior
+    Yes
+    Program evaluation
+    No
+Will any of the following tests or evaluations be used?
+    Cognitive testing
+    No
+    Educational testing
+    No
+    Non-invasive physical measurements
+    No
+    Taste testing
+    No
+Is this study planning to return any study results to participants?
+Yes
+    Do plans for returned results include individual participant study results?
+    No
+    Do plans for returned results include aggregate study results?
+    Yes
+    Please include a plan for return of results in the protocol and, as applicable, information about return of results in the
+    consent document.
+Is there a stand-alone protocol that describes ALL procedures in this study?
+IRB-ACYY0820                                             Page 8 of 19
+No
+     Please describe ALL study procedures in detail.
+     NOTE: Be sure to detail all of the procedures above to which a "yes" response was selected. Also detail any
+     additional procedures that may or may not fall into the categories listed above.
+
+
+     This study uses two main sets of procedures: (1) secondary analysis of existing records and (2) qualitative interviews
+     and observations. First, the research team will obtain existing datasets about zoning cases, protest petitions or formal
+     opposition, parcel-level property characteristics, campaign contributions, and census demographics from public
+     records, open data portals, and public information requests. These datasets will be linked at the parcel or case level
+     and used to construct a de-identified analytic dataset for statistical and machine learning analysis of opposition
+     patterns.
+
+
+     Second, the study will conduct approximately 10 semi-structured interviews with stakeholders, including city
+     officials/planners, neighborhood association leaders, housing advocates, developers, and civic technologists.
+     Interviews may be conducted in person, by phone, or via secure videoconference, with audio-recording (with
+     participant permission) for transcription and analysis. The study will also involve systematic observation of public City
+     Council, Planning & Zoning Commission, and neighborhood association meetings related to housing and zoning over
+     a six-month period, with field notes documenting how different stakeholders discuss and perceive the use of predictive
+     or algorithmic tools in housing policy.
+
+
+
+                        Analysis of Existing Data and/or Prospective Record Review
+
+Indicate whether the data that will be collected or utilized for the proposed study are in existence as of the
+current IRB submission date.
+
+
+     Some of the data are in existence and some will be generated in the future.
+
+
+        Provide the date range of the existing data, documents, or records (e.g., medical charts, school records,
+        census data)
+
+
+           Beginning Date: 01/01/2018
+           End Date:       05/08/2026
+
+
+
+     As this research involves the collection of some data that will be generated after the IRB protocol is
+     submitted, informed consent and HIPAA Authorization may be required from subjects
+
+
+
+
+Data will be obtained from (select all that apply):
+
+
+     [ ] Columbia and/or NYP (e.g., departmental databases/systems, patient charts, Eclipsys, WebCIS,
+     administrative/billing records, etc.)
+
+
+     [x] Outside Columbia and/or NYP:
+
+
+
+IRB-ACYY0820                                             Page 9 of 19
+             Identify the source:
+             City of Austin open data portal and public records (zoning and site plan cases, council minutes/ATXN
+             videos), Travis Central Appraisal District parcel/appraisal records, Texas Ethics Commission campaign
+             finance data, and U.S. Census Bureau demographics
+
+
+             Based on the types of data to be obtained from outside source(s), additional
+             documentation/authorization, such as Data Use or Business Associate Agreements, may be
+             necessary.
+
+
+
+
+Will a member of the research team be abstracting data directly from source documents?
+       No
+
+
+
+
+If any existing data was obtained from a prior research study, was any member of the current research team
+involved (e.g., obtained consent, performed study procedures, conducted data analysis) in the project or
+procedures that collected and/or used identifiable information?
+
+
+      N/A
+
+
+
+
+Indicate the manner in which the existing data and/or the records to be reviewed prospectively will be collected
+or received:
+(Select all that apply. At least one must be selected.)
+
+
+      [x] Contains direct identifiers (e.g., name, MRN, date of birth)
+      [x] Coded and the research team has the key and can link the data to direct identifiers
+      [ ] Coded and the research team does not have access to the key to link data to direct identifiers
+      [ ] Prior to the receipt of the data by the research team submitting this protocol, the identifiers will be removed and
+      no link will remain.
+      [ ] The information was originally or will be collected without identifiers
+
+
+
+If data are collected or received at any point in time with direct identifiers or linked to identifiers, then the data are
+considered to be identifiable, and the requirements for Informed Consent (or a waiver, if applicable) and HIPAA
+Authorization (or a waiver, if applicable) apply. The necessary information will need to be included in the
+respective sections of the submission.
+
+
+
+                                             Recruitment And Consent
+
+Recruitment:
+
+
+Will you obtain information or biospecimens for purposes of screening or determining eligibility?
+
+IRB-ACYY0820                                         Page 10 of 19
+          No
+
+
+Describe how participants will be recruited:
+Participants will be recruited using purposive and snowball sampling from existing professional networks and publicly
+available contact information. The PI will identify potential participants in five stakeholder groups (city officials/planners,
+neighborhood association leaders, housing advocates, developers, and civic technologists) and contact them by email or
+person-to-person invitation. The recruitment message will briefly describe the study, what participation involves (a 45–60
+minute semi-structured interview), and emphasize that participation is voluntary and can be declined or withdrawn at any
+time without penalty. Additional participants may be identified through referrals from initial interviewees.
+
+
+Select all methods by which participants will be recruited:
+           [ ] Study does not involve recruitment procedures
+           [x] Person to Person
+           [ ] Radio
+           [ ] Newspapers
+           [ ] Direct Mail
+           [ ] Website
+           [x] Email
+           [ ] Television
+           [x] Telephone
+           [ ] Flyer/Handout
+           [ ] Newsletter/Magazine/Journal
+           [ ] ResearchMatch
+           [ ] CUMC RecruitMe
+           [ ] Epic Consent to Contact for Research (CCR) Registry
+
+
+Informed Consent Process:
+
+
+Informed Consent Process, Waiver or Exemption: Select all that apply
+
+
+       [x] Informed consent with written documentation will be obtained from the research participant or appropriate
+       representative.
+
+
+                 Documentation of informed consent is applicable to:
+                 A portion of the study or subject population
+
+
+                     Identify the portion of the study (e.g., prospective portion, focus groups, substudy 2) or
+                     subject population for which documentation of consent will be obtained::
+                     Semi-structured stakeholder interviews (n=10)
+
+
+                 Documentation of participation will be obtained from::
+                   [x] Adult participants
+                   [ ] Parent/Guardian providing permission for a child's involvement
+                   [ ] Legally Authorized Representatives (LARs)
+
+
+                 Describe how participants' written consent will be obtained:
+                 Potential interview participants will receive an email or person-to-person invitation describing the study,
+
+
+IRB-ACYY0820                                           Page 11 of 19
+              including its purpose, procedures, expected duration, risks, benefits, and voluntary nature. Prior to the
+              interview, participants will be provided with a written consent document (by email for remote interviews or
+              in person for in-person interviews) and given time to read it and ask questions. The PI will review the key
+              elements of the consent form verbally, confirm that the participant understands the study and has had an
+              opportunity to ask questions, and then obtain the participant’s signature (electronic or handwritten)
+              before beginning any interview questions. A copy of the signed consent document will be provided to the
+              participant for their records.
+
+
+    [ ] Informed consent will be obtained but a waiver of written documentation of consent (i.e., agreement to
+    participate in the research without a signature on a consent document) is requested.
+
+
+    [x] A waiver of some or all elements of informed consent (45 CFR 46.116) is requested.
+              Waiver of consent is applicable to:
+              A portion of the study or subject population
+
+
+                 Identify the portion of the study (e.g., retrospective chart review portion of the study) or
+                 subject population where a waiver of consent applies:
+                 Existing administrative and public records (zoning, appraisal, council, campaign finance data)
+
+
+              Select the applicable situation:
+
+
+              [x]This study qualifies for a waiver or alteration of consent as the following criteria are met in this study
+              (provide justification for EACH of these criteria):
+
+
+                 (1)The research involves no more than minimal risk to the subjects
+                    Provide justification:
+                    The research involves no more than minimal risk to subjects. The existing data consist of public or
+                    administrative records about zoning cases, parcel characteristics, meeting participation, and
+                    campaign contributions involving adult subjects. The primary risk is a potential breach of
+                    confidentiality. This risk will be minimized by storing identifiable data on secure, access-controlled
+                    servers; limiting access to the study team; using coded identifiers in the analytic dataset; and
+                    reporting only aggregate or de-identified results in presentations and publications.
+
+
+                 (2) The waiver or alteration will not adversely affect the rights and welfare of the subjects
+                     Provide justification:
+                     The waiver will not adversely affect the rights or welfare of subjects. The information being used is
+                     drawn from records that are already publicly available or maintained by public agencies (for
+                     example, property tax appraisal records, zoning case files, public meeting testimony, and
+                     campaign finance data). The research does not alter any services, benefits, or legal rights to
+                     which subjects are entitled and does not involve any experimental interventions. Results will be
+                     presented only at aggregate or de-identified levels, so no individual will be singled out in
+                     publications.
+
+
+                 (3) The research could not practicably be carried out without the waiver or alteration
+                     Provide justification:
+                     The research could not practicably be carried out without the waiver. The existing datasets include
+                     potentially thousands of individual property owners, meeting participants, and other stakeholders
+                     across multiple years. Many individuals may no longer reside at the recorded addresses or may
+IRB-ACYY0820                                        Page 12 of 19
+                       be difficult or impossible to contact. Attempting to obtain individual consent from all affected
+                       individuals would be prohibitively burdensome, would substantially delay or prevent the research,
+                       and would likely introduce significant selection bias by including only those who can be contacted
+                       and choose to respond. A waiver is therefore necessary to permit a complete and unbiased
+                       analysis of opposition patterns.
+
+
+                   (4) Whenever appropriate, the subjects will be provided with additional pertinent information
+                   after participation
+                       Provide justification:
+                       Providing additional information after participation is not appropriate or practicable for the records-
+                       based component of this study. The research uses existing records from a large number of
+                       individuals who are not directly contacted or actively enrolled as participants, and many may no
+                       longer be reachable at their recorded addresses. However, the overall findings of the study will be
+                       disseminated through academic and policy publications and presentations, which will be publicly
+                       available and may be accessed by interested individuals and communities.
+
+
+                   (5) If the research involves using identifiable private information or identifiable biospecimens,
+                   the research could not practicably be carried out without using such information or
+                   biospecimens in an identifiable format
+
+
+                       **This waiver criterion does not apply if your research was initially approved before
+                       January 21, 2019, which is the general compliance date for the revised regulations at
+                       45CFR46 subpart A.
+
+
+                       Provide justification:
+                       The research could not practicably be carried out without using identifiable information in an
+                       identifiable format at least during the data linkage and feature-construction stages. Names,
+                       addresses, and other identifiers are necessary to link protest or opposition records to parcel-level
+                       property data, to geocode locations, and to construct derived variables such as owner-occupancy
+                       indicators, approximate length of residence, and neighborhood context measures. Once linkage
+                       and variable construction are complete, these direct identifiers will be removed from the analytic
+                       dataset and replaced with coded study IDs, but some temporary use of identifiable information is
+                       essential to ensure accurate linkage and valid analyses.
+
+
+                [ ]This study qualifies for waiver or alteration of consent involving public benefit and service programs as
+                the following criteria are met for this study (provide justification for EACH of these criteria):
+
+
+      [ ] Planned Emergency Research with an exception from informed consent as per 21 CFR 50.24.
+
+
+      [ ] This is exempt research.
+
+
+Subject Language
+  Enrollment of non-English speaking subjects is not expected.
+
+
+             During the course of the study, if non-English speaking subjects are encountered, refer to the IRB's
+             policy on the Enrollment of Non-English Speaking Subjects in Research for further details
+             (http://www.cumc.columbia.edu/dept/irb/policies/documents/Nonenglishspeakingsubjects.Revised.F
+
+
+IRB-ACYY0820                                         Page 13 of 19
+             INALDRAFT.111909.website.doc
+
+
+Capacity to Provide Consent:
+
+
+         Do you anticipate using surrogate consent or is research being done in an adult population where
+         capacity to consent may be questionable?
+         No
+
+
+
+                                       Research Aims & Abstracts
+
+Research Question(s)/Hypothesis(es):
+    This study is guided by the following primary research question:
+       How can cities identify and understand patterns of neighborhood opposition to housing
+       development, and what are the democratic implications of using predictive analytics to
+       anticipate such opposition?
+   Sub-questions:
+       What demographic, geographic, and behavioral factors predict whether residents will oppose
+       specific development projects in Austin?
+       How do different stakeholder groups (homeowners, renters, housing advocates, city officials,
+       developers, and civic technologists) perceive the legitimacy and utility of algorithmic tools in
+       housing policy implementation?
+       What alternative technological approaches could improve housing development processes
+       without raising concerns about democratic participation?
+   The working expectation is that homeownership status, property value, length of residence, and
+   proximity to proposed developments will be positively associated with opposition, and that
+   stakeholders will raise concerns about fairness, transparency, and democratic legitimacy when
+   evaluating predictive tools.
+
+Scientific Abstract:
+    This mixed-methods study examines neighborhood opposition to housing development in Austin,
+   Texas, in the context of recent land use and zoning reforms, including the HOME Initiative and
+   related changes to parking requirements and minimum lot sizes. The quantitative component uses
+   parcel- and owner-level data from the Travis Central Appraisal District (2018–2025), City of Austin
+   site plan and zoning case records, City Council meeting testimony and ATXN recordings,
+   campaign contribution data from the Texas Ethics Commission, and tract-level census
+   demographics. These data will be linked and used to construct a set of demographic, geographic,
+   and behavioral predictors of opposition, such as homeownership status, property value, length of
+   residence, proximity to proposed developments, and prior participation in protests or testimony.
+   Supervised machine learning models and geospatial analysis will be used to identify factors
+   associated with observed opposition and to characterize spatial and temporal patterns from
+   2018–2025.The qualitative component consists of approximately 10 semi-structured interviews
+   with key stakeholder groups (city officials/planners, neighborhood association leaders, housing
+   advocates, developers, and civic technologists), supplemented by observations of public meetings
+   and document analysis of public comments. Interview transcripts will be analyzed thematically to
+   understand how different stakeholders interpret the legitimacy, fairness, and democratic
+
+IRB-ACYY0820                                   Page 14 of 19
+   implications of using predictive models to anticipate opposition, and to identify preferred alternative
+   uses of technology in the development process. By integrating quantitative modeling of opposition
+   patterns with qualitative assessments of stakeholder perceptions, the study seeks to (1) clarify the
+   determinants of NIMBY opposition in Austin, and (2) develop an empirically grounded framework
+   for evaluating the democratic acceptability and ethical limits of algorithmic tools in housing policy
+   implementation.
+
+Lay Abstract:
+          Austin, Texas is experiencing a severe housing affordability crisis. In response, the city has
+   recently changed its zoning rules to allow more housing in more places. At the same time, some
+   neighborhood groups and residents continue to oppose specific development projects through
+   petitions, public testimony, and other forms of political action. This study aims to understand who is
+   most likely to oppose new housing, why they do so, and how people feel about the idea of using
+   computer models to predict where opposition might occur.
+   The researcher will combine public records about properties, zoning cases, and public meeting
+   participation with a small number of in-depth interviews with city officials, neighborhood association
+   leaders, housing advocates, developers, and civic technologists. The data analysis will look for
+   patterns in where and when opposition happens, and the interviews will explore whether
+   stakeholders see predictive tools as helpful, fair, or potentially harmful to democratic participation.
+   The goal is not to design a tool for targeting or discouraging opponents, but to better understand
+   the risks and possibilities of data-driven approaches in housing policy. The findings are intended to
+   help Austin and other cities design more transparent, ethical, and inclusive ways to use data and
+   technology when making decisions about where and how to build new housing.
+
+
+
+                                        Risks, Benefits & Monitoring
+
+Abbreviated Submission:
+The IRB has an abbreviated submission process for multicenter studies supported by industry or NIH
+cooperative groups (e.g., ACTG, HVTN, NCI oncology group studies, etc.), and other studies that have a complete
+stand-alone protocol. The process requires completion of all Rascal fields that provide information regarding
+local implementation of the study. However, entering study information into all of the relevant Rascal fields is not
+required, as the Columbia IRBs will rely on the attached stand-alone (e.g., sponsor's) protocol for review of the
+overall objectives. .
+If you select the Abbreviated Submission checkbox and a section is not covered by the attached stand-alone
+protocol, you will need to go back and provide this information in your submission.
+
+
+Potential Risks:
+Provide information regarding all risks to participants that are directly related to participation in this protocol,
+including any potential for a breach of confidentiality. Risks associated with any of the items described in the
+Procedures section of this submission should be outlined here if they are not captured in a stand-alone protocol.
+Risks of procedures that individuals would be exposed to regardless of whether they choose to participate in this
+research need not be detailed in this section, unless evaluation of those risks is the focus of this research. When
+applicable, the likelihood of certain risks should be explained and data on risks that have been encountered in
+past studies should be provided.
+   [ ] Abbreviated Submission - This information is included in an attached stand-alone protocol. Proceed to the next
+   question
+
+IRB-ACYY0820                                      Page 15 of 19
+     This study involves no more than minimal risk to participants. The primary risk is a potential
+   breach of confidentiality, particularly because the quantitative component uses administrative and
+   public records (for example, parcel characteristics, zoning case files, public meeting participation,
+   and campaign contributions) that could be linked to individuals, and the qualitative component
+   involves interviews about potentially sensitive political views regarding housing development.For
+   interview participants, there is also a risk of mild psychological or social discomfort when
+   discussing politically contentious topics, such as neighborhood opposition, city policy, or
+   relationships with other stakeholders. There is a small risk that, if an interview quotation were
+   inadvertently identifiable, participants could experience reputational harm in their professional or
+   community roles.These risks will be minimized by: (1) storing identifiable information (names,
+   contact information, parcel-level addresses) separately from the analytic dataset in encrypted,
+   access-controlled files; (2) replacing direct identifiers with coded study IDs in all analytic files; (3)
+   limiting access to identifiable data to the PI and authorized research personnel; (4) storing signed
+   consent forms and any paper notes in a locked cabinet; and (5) presenting only aggregate or de-
+   identified results in the thesis and any publications. Interview quotations used in written products
+   will be edited to remove names, titles, or contextual details that could reasonably identify
+   individuals or their employers. Participation is voluntary, and interviewees may refuse to answer
+   any question or stop the interview at any time without penalty.
+
+Potential Benefits:
+Provide information regarding any anticipated benefits of participating in this research. There should be a
+rational description of why such benefits are expected based on current knowledge. If there is unlikely to be
+direct benefit to participants/subjects, describe benefits to society. Please note that elements of participation
+such as compensation, access to medical care, receiving study results, etc. are not considered benefits of
+research participation.
+    [ ] Abbreviated Submission - This information is included in an attached stand-alone protocol. Proceed to the next
+    question
+     There is no guaranteed direct benefit to participants. Some interview participants may experience
+   indirect benefits from having their perspectives heard and reflected in an academic analysis of
+   housing policy and democratic governance in Austin. They may also appreciate the opportunity to
+   reflect on the opportunities and risks of data-driven tools in their professional practice or civic
+   engagement.The primary anticipated benefits are to society and to the scholarly and policy
+   communities. The study will generate empirical evidence on (1) which factors are associated with
+   neighborhood opposition to housing development in Austin, and (2) how different stakeholder
+   groups evaluate the legitimacy and fairness of predictive tools in this context. These findings may
+   help cities design more transparent, ethical, and democratically accountable approaches to using
+   data and technology in housing policy implementation. However, these benefits are not guaranteed
+   and will not directly affect participants’ services, benefits, or legal rights.
+
+Alternatives:
+If this research involves an intervention that presents greater than minimal risk to participants, describe available
+alternative interventions and provide data to support their efficacy and/or availability. Note, participants always
+have the option not to participate in research.
+    [ ] Abbreviated Submission - This information is included in an attached stand-alone protocol. Proceed to the next
+    question
+
+
+IRB-ACYY0820                                        Page 16 of 19
+    Because this is an observational, minimal-risk social-behavioral study that involves records
+   analysis and voluntary interviews, the primary alternative is simply not to participate. Individuals
+   may decline interview invitations without any penalty or loss of benefits to which they are otherwise
+   entitled. Interview participants may also choose to answer only some questions, decline audio
+   recording, or withdraw from the study at any time before or during the interview.Outside the
+   research context, stakeholders remain free to express their views on housing policy and
+   development through existing public channels (for example, City Council hearings, neighborhood
+   meetings, or other civic processes) without participating in this study.
+
+Data and Safety Monitoring:
+Describe how data and safety will be monitored locally and, if this is a multi-center study, how data and safety
+will be monitored across sites as well.
+    [ ] Abbreviated Submission - This information is included in an attached stand-alone protocol. Proceed to the next
+    question
+          Given that this is a single-site, minimal-risk social-behavioral study with no clinical
+   interventions, a formal Data and Safety Monitoring Board is not required. Data and safety will be
+   monitored by the PI under the supervision of the faculty advisor (the Principal Investigator listed on
+   this protocol).
+   The PI will be responsible for: (1) ensuring that informed consent is obtained and documented
+   appropriately for all interview participants; (2) verifying that data are stored in accordance with the
+   privacy and security plan described in this submission (for example, encryption, access controls,
+   separation of identifiers from analytic data); (3) periodically reviewing datasets and documentation
+   for accuracy, completeness, and proper de-identification; and (4) monitoring for any unanticipated
+   problems involving risks to participants or others.
+   If any breach of confidentiality, complaint, or other unanticipated problem occurs, the PI will
+   promptly report it to the faculty advisor and to the IRB in accordance with Columbia policies and
+   will take corrective actions (such as revising procedures or enhancing security measures) as
+   needed. Because the study poses no more than minimal risk and does not involve ongoing
+   medical or psychological interventions, no stopping rules or interim safety analyses are planned
+   beyond this ongoing oversight by the PI and advisor.
+
+
+
+                                                       Subjects
+
+Unless otherwise noted, the information entered in this section should reflect the number of subjects enrolled or
+accrued under the purview of Columbia researchers, whether at Columbia or elsewhere.
+Target enrollment:
+10
+Number anticipated to be enrolled in the next approval period:
+10
+Does this study involve screening/assessment procedures to determine subject eligibility?
+No
+Is this a multi-center study?
+No
+Does this study have one or more components that apply to a subset of the overall study population (e.g. Phase
+1/2, sub-studies)?
+No
+
+IRB-ACYY0820                                        Page 17 of 19
+Target Enrollment Demographics:
+Population Gender
+
+Females                                  Males                                    Non Specific
+0%                                       0%                                       100%
+
+Population Age
+
+0-7                       8-17                   18-65                    >65                      Non Specific
+0%                        0%                     100%                     0%                       0%
+
+Population Race
+
+American          Asian            Native Hawaiian Black or African White               More than One     Non-Specific
+Indian/Alaskan                     or Other Pacific American                            Race
+Native                             Islander
+0%                0%               0%               0%              0%                  0%                100%
+
+Population Ethnicity
+
+Hispanic or Latino                       Not Hispanic or Latino                   Non-Specific
+0%                                       0%                                       100%
+
+Vulnerable Populations as per 45 CFR 46:
+Will children/minors be enrolled
+No
+Will pregnant women/fetuses/neonates be targeted for enrollment?
+No
+Will prisoners be targeted for enrollment?
+No
+Other Vulnerable Populations:
+[ ]Individuals lacking capacity to provide consent
+[ ]CU/NYPH Employees/Residents/Fellows/Interns/Students
+[ ]Economically disadvantaged
+[ ]Educationally disadvantaged
+[ ]Non-English speaking
+[ ]Other Vulnerable populations
+[x]None of the Populations listed above will be targeted for Enrollment
+Subject Population Justification:
+This study will enroll approximately 10 adult stakeholders who are directly involved in or affected by housing and zoning
+policy in Austin, including city officials and planners, neighborhood association leaders, housing advocates, developers,
+and civic technologists. These individuals are best positioned to describe how they perceive the legitimacy, risks, and
+benefits of predictive or algorithmic tools in housing policy implementation. No children, prisoners, or other vulnerable
+populations are targeted for enrollment.
+Does this study involve compensation or reimbursement to subjects?
+No
+
+
+
+                                             Attached Consent Forms
+
+
+
+IRB-ACYY0820                                         Page 18 of 19
+Number          Copied From           Form Type             Title                   Active/InActive         Initiator
+ACYY1682                              Consent               Stakeholder Interview   Active                  Daniel Lewis (dl3645)
+                                                            Consent – Predicting
+                                                            NIMBYism
+
+
+
+
+                                                    Documents
+
+
+Archived   Document        Document Type     File Name      Active            Stamped          Date Attached      Created By
+           Identifier
+No         Predicting_NIMB Information       Predicting_NIMB Y                No               11/25/2025         Daniel Lewis
+           Yism_Interview_ Sheet/Verbal      Yism_Interview_                                                      (dl3645)
+           Guide           Script            Guide.pdf
+No         Predicting_NIMB Recruitment       Predicting_NIMB Y                No               11/25/2025         Daniel Lewis
+           Yism_Recruitmen Material          Yism_Recruitmen                                                      (dl3645)
+           t_Email                           t_Email.pdf
+No         Predicting_NIMB Standalone/Spon   Predicting_NIMB Y                No               11/25/2025         Daniel Lewis
+           Yism_Protocol_S sor's Protocol    Yism_Protocol_S                                                      (dl3645)
+           ummary                            ummary.pdf
+
+
+
+
+                                                         Tasks
+
+
+
+
+IRB-ACYY0820                                       Page 19 of 19
+
