@@ -17,6 +17,7 @@
 ### Bibliography Consolidation
 - [ ] Check if `Austin_Housing_Bibliography.md` entries are all in `references.bib`
 - [ ] Remove `Austin_Housing_Bibliography.md` after consolidation confirmed
+- [ ] Rename `Austin_Housing_Bibliography.md` and decide what to do with it (deprecate or integrate)
 - [ ] Organize `references.bib` with commented section headers matching `Austin_Housing_Bibliography.md`:
   - Primary Sources - Government Documents (City, State, Federal, Court)
   - Secondary Sources - Academic Research (Books, UT Research, Other)
