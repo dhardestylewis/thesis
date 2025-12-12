@@ -124,3 +124,4 @@ Added deferred tasks:
 - **Correction**: Retroactively added `[Added: 2025-12-11 22:15]` to all pre-existing entries in `TODO.md` to ensure immediate compliance with new guidelines.
 - **Remote Sync**: Updated `GUIDELINES.md` to require `git push` during wrap-up. Pushed all changes to remote.
 - **Guideline Update**: Added strict "No Rebase" rule to Section 4.2.
+- **Protocol Escalation**: Promoted "No Rebase/Reset" to **P1 - Section 0 (Critical Git Safety)** in `GUIDELINES.md` as topmost priority.

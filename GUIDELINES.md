@@ -6,6 +6,10 @@
 
 ## P1 - Critical (Every Session)
 
+### 0. Critical Git Safety
+- **NEVER Rebase or Reset**: Do not perform `git rebase` or `git reset` without explicit user permission. These are destructive actions.
+- **Topmost Priority**: This rule supersedes all other version control preferences. Preserving history is paramount.
+
 ### 1. Requirement Compliance
 - **Verify against Guidelines**: Ensure content aligns with `UP Thesis Guidelines` and `UP Outline`.
 - **Check Constraints**: Monitor word counts, formatting requirements, and required sections (e.g., Abstract, Introduction types).
@@ -84,7 +88,6 @@ Use commented section headers:
 - Create a `TODO` item for reviewing UNREVIEWED logs
 
 #### 4.2 Version Control
-- **No Rebase**: Never rebase shared branches without explicit user approval. Merge is preferred for preserving history.
 - **Commit**: Commit frequently with descriptive messages.
 - **Push**: Push to remote after each logical unit of work.
 

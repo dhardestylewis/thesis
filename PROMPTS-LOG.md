@@ -7538,4 +7538,5 @@ directly into the prioritized ones below, isn't there a guideline for this?"
 19. "wrap up"
 20. "have we been syncing to remote? we should have been ensure that is guidelines"
 21. "GUIDELINE never rebase without asking"
+22. "never rebase or reset the git without my permission that is a guideline topmost priority"
 
