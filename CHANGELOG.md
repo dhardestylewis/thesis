@@ -54,7 +54,19 @@ Added deferred tasks:
 - Bibliography consolidation with `Austin_Housing_Bibliography.md`
 - Organize `references.bib` with commented section headers
 
+### Deprecated Writings Cleanup
+- **Renamed files to match guidelines**:
+  - `Austin_Housing_Complete_Narrative.md` → `Austin_Housing_Narrative-COMPREHENSIVE.md`
+  - `Austin_Housing_Comprehensive_Final.d` → `Austin_Housing-COMPREHENSIVE.d`
+  - `Austin_Housing_Revised_Final.d` → `Austin_Housing_Revised.d`
+  - `Austin_Housing_FactChecked.d` → `Austin_Housing-FACTCHECKED.d`
+  - `Thesis_Proposal.txt` → `Thesis_Proposal-OLD.txt`
+- **Standardization**:
+  - Replaced `Complete`/`LONG` with `COMPREHENSIVE`
+  - Removed misleading `Final`/`SUBMITTED` suffixes from deprecated work
+
 ### Documentation
 - Appended all Dec 11, 2025 conversation prompts to `Prompts-COMPREHENSIVE.txt`
 - Created `Prompts-Highest_Quality.txt` with Dec 11 prompts only
 - Created this `CHANGELOG.md`
+- Created `GUIDELINES.md` with project rules
