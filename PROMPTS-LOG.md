@@ -7539,4 +7539,5 @@ directly into the prioritized ones below, isn't there a guideline for this?"
 20. "have we been syncing to remote? we should have been ensure that is guidelines"
 21. "GUIDELINE never rebase without asking"
 22. "never rebase or reset the git without my permission that is a guideline topmost priority"
+23. "sync in [followed by:] # Project Guidelines (HW3 & Thesis) ... [full comprehensive guidelines document with Prime Directive PD.1-PD.5, Version Control Safety 0.1-0.5, P1/P2/P3 sections through Safe Deletion]"
 

@@ -125,3 +125,4 @@ Added deferred tasks:
 - **Remote Sync**: Updated `GUIDELINES.md` to require `git push` during wrap-up. Pushed all changes to remote.
 - **Guideline Update**: Added strict "No Rebase" rule to Section 4.2.
 - **Protocol Escalation**: Promoted "No Rebase/Reset" to **P1 - Section 0 (Critical Git Safety)** in `GUIDELINES.md` as topmost priority.
+- **Major Sync**: Overwrote `GUIDELINES.md` with comprehensive version including Prime Directive (PD.1-PD.5), expanded Version Control Safety (0.1-0.5), META rules, and all P1/P2/P3 sections.
