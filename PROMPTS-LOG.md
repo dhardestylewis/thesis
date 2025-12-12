@@ -7534,4 +7534,5 @@ directly into the prioritized ones below, isn't there a guideline for this?"
 15. "provide a more consistent structure to any logs inserted from here and never ellispis any logs (...) ensure reflected in the GUIDELINEs then wrap up again, wrap up should include not just Git Status: Check status. but final commit"
 16. "anything else to sync from these other GUIDELINES? ..."
 17. "perform wrapup"
+18. "provide insertion time for ... if unknown just now, ensure that is in a GUIDELINE"
 
