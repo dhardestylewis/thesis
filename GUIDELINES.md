@@ -1,5 +1,7 @@
 # Thesis Project Guidelines
 
+> **CRITICAL**: When appending to `CHANGELOG.md`, always include the current timestamp (date and time).
+
 ## P1 - Critical (Every Session)
 
 ### 1. Fact Verification
