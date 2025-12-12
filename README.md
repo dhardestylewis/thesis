@@ -1,4 +1,4 @@
-# Predicting NIMBYism Using Machine Learning
+# Predicting NIMBYism
 
 **Daniel Hardesty Lewis**  
 Master's Thesis, Urban Planning  
