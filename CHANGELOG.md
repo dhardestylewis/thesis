@@ -77,12 +77,12 @@ Added deferred tasks:
 ### Deprecated Writings Cleanup
 - **Moved file**: `Austin_Housing_Revised.md` → `Austin_Housing_Revised.d/` (verified as source draft)
 - **Verified status**: `Austin_Housing_Narrative-COMPREHENSIVE.md` kept distinct (74KB vs 34KB, distinct content)
-- **Applied Chronological Numbering** to `Deprecated_Writings`:
-  - `1-Thesis_Proposal-OLD.txt`
-  - `2-Austin_Housing_Narrative-COMPREHENSIVE.md`
-  - `3-Austin_Housing-COMPREHENSIVE.d`
-  - `4-Austin_Housing-FACTCHECKED.d`
-  - `5-Austin_Housing_Revised.d`
+- **Applied Chronological Numbering** to `Deprecated_Writings` based on content analysis:
+  - `1-Thesis_Proposal-OLD.txt` (earliest: 75% EMS error, "May 1, 2025" single-stair)
+  - `2.1-Austin_Housing_Narrative-COMPREHENSIVE.md` (source narrative, corrected July 10 date)
+  - `2.2-Austin_Housing-COMPREHENSIVE.d/` (TeX implementation of 2.1 narrative)
+  - `3-Austin_Housing-FACTCHECKED.d/` (verification document, explicit correction notes)
+  - `4-Austin_Housing_Revised.d/` (final: 6-story single-stair, most updated data)
 
 ### Thesis Draft Reorganization
 - **Created** `Thesis_Draft_Reference_Materials/` subdirectory
