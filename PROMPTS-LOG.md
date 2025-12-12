@@ -7543,4 +7543,5 @@ directly into the prioritized ones below, isn't there a guideline for this?"
 24. "wait dont completely overwrite only incorporate what you need for this project rewview against a prev commit to bring back anything overwritten"
 25. "thats a guideline going forward whwnever i provide a complete guidelines"
 26. "taht you are to apply this time too"
+27. "wrap up"
 
