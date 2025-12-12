@@ -93,7 +93,9 @@ Use commented section headers:
 - **Context-Aware Insertion**: Do not blindly append new items (TODOs, guideline sections, or list entries) to the top or bottom of files.
 - **Prioritize Immediately**: Assess the priority of the new item (P1, P2, P3, or High Priority) and insert it into the corresponding section or tier.
 - **Best Prioritized Place**: Insert the item in the most logical position within its priority group (e.g., grouping similar tasks, respecting dependencies, or ordering by importance).
+- **Unified Structure**: Do not create separate "Future" or "Deferred" sections outside the P1/P2/P3 hierarchy. Tag future items (e.g., `[Final Project]`) within their appropriate priority level.
 - **Renumbering**: If inserting into a numbered list or structured sequence (like guideline sections), update numbering to maintain consistency.
+- **Timestamp Insertion**: Append `[Added: YYYY-MM-DD HH:MM]` to every new item upon insertion.
 - **Maintain Structure**: Ensure the item is placed logically within its priority group relative to others.
 
 ---
@@ -104,10 +106,25 @@ Use commented section headers:
 - **Move to Archive**: When a task is done, move it from `TODO.md` to `TODO-COMPLETED.md`.
 - **Maintain Structure**: Place the completed item under its corresponding Priority Header (P1, P2, P3) in `TODO-COMPLETED.md`.
 - **Timestamping**: Append the completion timestamp to the item (e.g., `(Completed: YYYY-MM-DDTHH:MM)`).
+- **Clean Active List**: Keep `TODO.md` focused only on active or pending work.
 
-### 6. File Organization
+### 6. Style & Rigor (Thesis Standards)
+#### 6.1 Textual Rules
+- **Counts and Notation**: Avoid informal `n=X` notation in narrative text. Spell out counts (e.g., "The dataset consists of 122,712 properties").
+- **Hyphens & Dashes**: Use plain hyphens or colons/commas. Avoid em-dashes.
+- **Abbreviations**: Expand parenthical lists into plain English.
 
-#### 6.1 Naming Conventions
+#### 6.2 Data Description
+- **Date Ranges**: Explicitly state the temporal coverage of every data source.
+- **Source Specificity**: Distinguish between Open Data downloads and Public Information Requests (PIR).
+
+#### 6.3 Timeline Formatting
+- **Structure**: Use `I) YYYY Month-Month` structure for timeline sections.
+- **Inner Tasks**: Use `MM/DD-MM/DD` format for specific task ranges.
+
+### 7. File Organization
+
+#### 7.1 Naming Conventions
 | Suffix | Meaning |
 |--------|---------|
 | `-SUBMITTED` | Finalized/submitted work |
@@ -118,7 +135,7 @@ Use commented section headers:
 | `#-` prefix | Chronological order (e.g., `1-`, `2.1-`, `2.2-`) |
 | `*.1, *.2` | Parallel documents (same base number, `.1` = likely first) |
 
-#### 6.2 Directory Structure
+#### 7.2 Directory Structure
 ```
 thesis/
 ├── Thesis_Draft/
@@ -133,17 +150,17 @@ thesis/
 └── CHANGELOG.md
 ```
 
-#### 6.3 README Requirements
+#### 7.3 README Requirements
 - Add `README.md` to any directory with non-obvious organization
 - Explain numbering schemes, content relationships, or special conventions
 
-### 7. Safe Deletion
+### 8. Safe Deletion
 - Delete files only after verifying content is captured elsewhere
 - Track deferred work in `TODO.md` with clear, actionable items
 
 
 
-### 8. Session Wrap-Up
+### 9. Session Wrap-Up
 - **Log Prompts**: Ensure all recent prompts are appended to `PROMPTS-LOG.md` with a timestamp, following full-fidelity rules.
 - **Update Changelog**: Add a timestamped entry to `CHANGELOG.md` summarizing key changes, decisions, and completed tasks.
 - **Review TODOs**: Verify all completed work is checked off in `TODO.md` and moved to `TODO-COMPLETED.md`.

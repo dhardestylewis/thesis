@@ -119,3 +119,4 @@ Added deferred tasks:
 - **Documentation**: Created `PROMPTS-LOG.md` for session recording.
 - **Task Management**: Moved critical HW3 deliverables (PDF, Title) to P1; moved documentation maintenance to P2.
 - **Protocol Update**: Revised `GUIDELINES.md` to enforce "Full Fidelity" logging (no ellipses) and mandated a final git commit in the Session Wrap-Up.
+- **Synced Guidelines**: Imported "Style & Rigor" (Section 6) and refined "TODO Management" with unified structure and timestamp insertion rules from external guidelines.
