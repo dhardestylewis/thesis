@@ -68,6 +68,9 @@ Use commented section headers:
 #### 4.1 Session Tracking
 - Append conversation prompts to `Prompts-COMPREHENSIVE.txt`
 - Record session changes in `CHANGELOG.md` with date and time
+- **Append ONLY**: Do not revise existing logs; add new entries at the end
+- **Review Status**: Mark historical entries as `(REVIEWED)` and new entries as `(UNREVIEWED)`
+- Create a `TODO` item for reviewing UNREVIEWED logs
 
 #### 4.2 Version Control
 - Commit frequently with descriptive messages

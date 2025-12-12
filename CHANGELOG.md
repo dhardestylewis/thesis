@@ -1,6 +1,6 @@
 # Thesis Project Changelog
 
-## December 11, 2025 (18:53 CST)
+## December 11, 2025 (18:53 CST) - (REVIEWED)
 
 ### Fact Verification and Corrections
 - **Fixed single-stair building code date**: July 10, 2025 → September 1, 2025 (per Texas SB 2835)
@@ -64,9 +64,36 @@ Added deferred tasks:
 - **Standardization**:
   - Replaced `Complete`/`LONG` with `COMPREHENSIVE`
   - Removed misleading `Final`/`SUBMITTED` suffixes from deprecated work
+  - Moved `Austin_Housing_Revised.md` to `.d/` folder as it is the source draft for the `.tex` file
 
 ### Documentation
 - Appended all Dec 11, 2025 conversation prompts to `Prompts-COMPREHENSIVE.txt`
 - Created `Prompts-Highest_Quality.txt` with Dec 11 prompts only
 - Created this `CHANGELOG.md`
 - Created `GUIDELINES.md` with project rules
+
+## December 11, 2025 (19:05 CST) - (UNREVIEWED)
+
+### Deprecated Writings Cleanup
+- **Moved file**: `Austin_Housing_Revised.md` → `Austin_Housing_Revised.d/` (verified as source draft)
+- **Verified status**: `Austin_Housing_Narrative-COMPREHENSIVE.md` kept distinct (74KB vs 34KB, distinct content)
+- **Applied Chronological Numbering** to `Deprecated_Writings`:
+  - `1-Thesis_Proposal-OLD.txt`
+  - `2-Austin_Housing_Narrative-COMPREHENSIVE.md`
+  - `3-Austin_Housing-COMPREHENSIVE.d`
+  - `4-Austin_Housing-FACTCHECKED.d`
+  - `5-Austin_Housing_Revised.d`
+
+### Thesis Draft Reorganization
+- **Created** `Thesis_Draft_Reference_Materials/` subdirectory
+- **Moved** all contents of `Thesis_Draft/` into `Thesis_Draft_Reference_Materials/` to serve as reference corpus
+
+### Documentation & Process
+- **Updated Guidelines**:
+  - Reorganized by priority (P1/P2/P3) with subsections
+  - Added Verification Process step-by-step
+  - Added CHANGELOG rules (Append-only, REVIEWED/UNREVIEWED status)
+- **Updated TODO**:
+  - Prioritized tasks into P1/P2/P3 categories
+  - Added P1 task: Review UNREVIEWED changelog items
+- **Renamed** `GUIDELINES.md` rules and structure for clarity

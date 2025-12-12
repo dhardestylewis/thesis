@@ -3,6 +3,7 @@
 ## Priority Tasks
 
 ### P1 - Before Spring Draft
+- [ ] REVIEW `CHANGELOG.md` items marked as UNREVIEWED
 - [ ] Full audit of ALL `\cite{}` commands in Background-COMPREHENSIVE.tex against references.bib
 - [ ] Identify any remaining undefined citations
 - [ ] Organize `references.bib` with commented section headers:
