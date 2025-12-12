@@ -66,7 +66,8 @@ Use commented section headers:
 ### 4. Documentation
 
 #### 4.1 Session Tracking
-- Append conversation prompts to `Prompts-COMPREHENSIVE.txt`
+- Append conversation prompts to `Prompts.d/Prompts-COMPREHENSIVE.txt`
+- Categorize prompts by quality tier (Highest_Quality, Medium_Quality, etc.)
 - Record session changes in `CHANGELOG.md` with date and time
 - **Append ONLY**: Do not revise existing logs; add new entries at the end
 - **Review Status**: Mark historical entries as `(REVIEWED)` and new entries as `(UNREVIEWED)`
@@ -88,18 +89,29 @@ Use commented section headers:
 | `-SUBMITTED` | Finalized/submitted work |
 | `-TO_INTEGRATE` | Content pending integration |
 | `-COMPREHENSIVE` | Complete/long-form documents |
-| `.d/` | LaTeX projects with auxiliary files |
+| `-OLD` | Superseded/deprecated content |
+| `.d/` | LaTeX projects or grouped files |
+| `#-` prefix | Chronological order (e.g., `1-`, `2.1-`, `2.2-`) |
+| `*.1, *.2` | Parallel documents (same base number, `.1` = likely first) |
 
 #### 5.2 Directory Structure
 ```
 thesis/
-├── Thesis_Draft/           # Active working files
-├── Assignments_and_Proposal-SUBMITTED/  # Finalized coursework
-├── Deprecated_Writings/    # Archived content
-├── TODO.md                 # Prioritized task list
-├── GUIDELINES.md           # This file
-└── CHANGELOG.md            # Session history
+├── Thesis_Draft/
+│   └── Thesis_Draft_Reference_Materials/
+│       ├── Prompts.d/      # Session prompts by quality tier
+│       ├── Background-COMPREHENSIVE.d/
+│       └── references.bib
+├── Assignments_and_Proposal-SUBMITTED/
+├── Deprecated_Writings/    # Numbered chronologically with README
+├── TODO.md
+├── GUIDELINES.md
+└── CHANGELOG.md
 ```
+
+#### 5.3 README Requirements
+- Add `README.md` to any directory with non-obvious organization
+- Explain numbering schemes, content relationships, or special conventions
 
 ### 6. Safe Deletion
 - Delete files only after verifying content is captured elsewhere
