@@ -2,7 +2,7 @@
 
 > **CRITICAL**: When appending to `CHANGELOG.md`, always include the current timestamp (date and time).
 
-> **CRITICAL**: To find pending TODOs or session context, refer to `Prompts.d/` files (Highest_Quality, Medium_Quality) and the current conversation—do NOT search across the codebase.
+
 
 ## P1 - Critical (Every Session)
 
