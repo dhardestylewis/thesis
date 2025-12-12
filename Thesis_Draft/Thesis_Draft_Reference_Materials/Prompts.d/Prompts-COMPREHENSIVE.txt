@@ -7439,3 +7439,13 @@ place a raw copy of all my prompts through this entire conversation appended to 
 8. explain numbering scheme in brief readme specific to that folder
 
 9. append new prompts to prompts comprehensive and to own prompts file named medium quality
+
+10. are there any other TODOs we haven't yet placed into the TODO from what you have seen thus far? move all Prompts into own Prompts.d ensure recent prompts are reflected in GUIDELINES
+
+11. readme every directory and subdirectory
+
+12. top level readme Daniel Hardesty Lewis' Master's thesis for Urban Planning at Columbia University on Predicting NIMBYism using machine learning models, using Austin rezoning protest letters data from 2007-2025, validated from 2018-2025
+
+13. title is simply Predicting NIMBYism
+
+14. final set of prompts, changes, guidelines, etc if haven't already

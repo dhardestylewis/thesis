@@ -97,3 +97,16 @@ Added deferred tasks:
   - Prioritized tasks into P1/P2/P3 categories
   - Added P1 task: Review UNREVIEWED changelog items
 - **Renamed** `GUIDELINES.md` rules and structure for clarity
+
+### README Documentation
+- **Created 17 README.md files** across all directories and subdirectories
+- **Updated root README** with thesis details:
+  - Title: Predicting NIMBYism
+  - Author: Daniel Hardesty Lewis
+  - Program: Master's Thesis, Urban Planning, Columbia University GSAPP
+  - Data: Austin rezoning protest letters (2007-2025), validated (2018-2025)
+
+### Prompts Organization
+- **Created** `Prompts.d/` subdirectory
+- **Moved** all `Prompts-*.txt` files into `Prompts.d/`
+- **Updated** `GUIDELINES.md` with Prompts.d location and quality tier system

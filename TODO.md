@@ -23,6 +23,14 @@
 ### P3 - Cleanup
 - [ ] Rename `Austin_Housing_Bibliography.md` and decide what to do with it (deprecate or integrate)
 - [ ] Consider consolidating duplicate bib entries for same facts
+- [ ] Replace `[Author Name]` placeholder in all .tex files with "Daniel Hardesty Lewis"
+  - `Background-COMPREHENSIVE.tex` (line 26)
+  - `Deprecated_Writings/` files (not critical, but for consistency)
+- [ ] Update `Tables_and_Figures-TO_INTEGRATE.md` "Pending" items when legislation passes:
+  - Single-Stair Buildings (Table 1, line 13)
+  - SB 840 status (Table 4, line 116)
+  - HB 24 status (Table 4, line 117)
+  - Austin Single-Stair status (Table 5, line 135)
 
 ## Completed (Dec 11, 2025)
 - [x] Added missing bib entries: hb2127, thirdcourt2025, acuna2023, axios2023parking, shoup2024, kut2023parking, sanjose2022parking
