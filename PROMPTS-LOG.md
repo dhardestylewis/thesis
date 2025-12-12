@@ -7537,4 +7537,5 @@ directly into the prioritized ones below, isn't there a guideline for this?"
 18. "provide insertion time for ... if unknown just now, ensure that is in a GUIDELINE"
 19. "wrap up"
 20. "have we been syncing to remote? we should have been ensure that is guidelines"
+21. "GUIDELINE never rebase without asking"
 

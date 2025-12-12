@@ -84,8 +84,9 @@ Use commented section headers:
 - Create a `TODO` item for reviewing UNREVIEWED logs
 
 #### 4.2 Version Control
-- Commit frequently with descriptive messages
-- Push to remote after each logical unit of work
+- **No Rebase**: Never rebase shared branches without explicit user approval. Merge is preferred for preserving history.
+- **Commit**: Commit frequently with descriptive messages.
+- **Push**: Push to remote after each logical unit of work.
 
 ### 5. TODO Management
 
