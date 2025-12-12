@@ -164,5 +164,5 @@ thesis/
 - **Log Prompts**: Ensure all recent prompts are appended to `PROMPTS-LOG.md` with a timestamp, following full-fidelity rules.
 - **Update Changelog**: Add a timestamped entry to `CHANGELOG.md` summarizing key changes, decisions, and completed tasks.
 - **Review TODOs**: Verify all completed work is checked off in `TODO.md` and moved to `TODO-COMPLETED.md`.
-- **Final Commit**: Stage and commit all project changes with a descriptive message (e.g., `git commit -am "Session update: [Topic]"`).
+- **Final Commit & Push**: Stage and commit all project changes with a descriptive message, then push to remote (e.g., `git commit -am "..."; git push`).
 
