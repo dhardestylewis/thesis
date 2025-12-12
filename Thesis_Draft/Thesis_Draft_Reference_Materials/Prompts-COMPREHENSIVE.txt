@@ -7417,3 +7417,25 @@ Move Austin_Housing_Bibliography into Thesis_Draft
 put in TODO rename that file and decide what to do with it
 
 place a raw copy of all my prompts through this entire conversation appended to Prompts
+
+## Session: December 11, 2025 (19:04-19:18 CST)
+
+### Prompts
+
+1. ensure you are only appending to the changelog not revising in full, mark what we have in there thus far as reviewed and anything newly appended as UNREVIEWED and insert these rules into the guidelines
+
+2. as well as perennial TODO for me to make such reviews, in the appropriate place for prioritization, renumbering/orging the rest as necessary
+
+3. is there an obvious relationship between these deprecated writings? can they be marked with a number to indicate the order in which they were produced? if not let me know if so number them prepended to each one 1-, 2-, etc just the directories
+
+4. move all materials in Thesis_Draft into own subdir named Thesis_Draft_Reference_Materials
+
+5. did you come up with that numbering by examining the contents of the .tex files of each or just from the titles?
+
+6. is that evidenced from any discernible revisions to the contents themselves, rather than the titles?
+
+7. search deeper to see if there is an assignable order otherwise label the parallel ones with '*.1, *.2' formatting scheme, with 1 weighted towards whichever appears first
+
+8. explain numbering scheme in brief readme specific to that folder
+
+9. append new prompts to prompts comprehensive and to own prompts file named medium quality
