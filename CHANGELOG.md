@@ -126,3 +126,4 @@ Added deferred tasks:
 - **Guideline Update**: Added strict "No Rebase" rule to Section 4.2.
 - **Protocol Escalation**: Promoted "No Rebase/Reset" to **P1 - Section 0 (Critical Git Safety)** in `GUIDELINES.md` as topmost priority.
 - **Major Sync**: Overwrote `GUIDELINES.md` with comprehensive version including Prime Directive (PD.1-PD.5), expanded Version Control Safety (0.1-0.5), META rules, and all P1/P2/P3 sections.
+- **Correction**: Restored thesis-specific content (Austin/Texas sources, UP Guidelines, Style & Rigor, thesis directory structure) via `git checkout HEAD~1`, then merged new content. Added META rule requiring MERGE over OVERWRITE for future guideline syncs.

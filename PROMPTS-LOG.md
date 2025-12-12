@@ -7540,4 +7540,7 @@ directly into the prioritized ones below, isn't there a guideline for this?"
 21. "GUIDELINE never rebase without asking"
 22. "never rebase or reset the git without my permission that is a guideline topmost priority"
 23. "sync in [followed by:] # Project Guidelines (HW3 & Thesis) ... [full comprehensive guidelines document with Prime Directive PD.1-PD.5, Version Control Safety 0.1-0.5, P1/P2/P3 sections through Safe Deletion]"
+24. "wait dont completely overwrite only incorporate what you need for this project rewview against a prev commit to bring back anything overwritten"
+25. "thats a guideline going forward whwnever i provide a complete guidelines"
+26. "taht you are to apply this time too"
 
