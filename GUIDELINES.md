@@ -6,34 +6,38 @@
 
 ## P1 - Critical (Every Session)
 
-### 1. Fact Verification
+### 1. Requirement Compliance
+- **Verify against Guidelines**: Ensure content aligns with `UP Thesis Guidelines` and `UP Outline`.
+- **Check Constraints**: Monitor word counts, formatting requirements, and required sections (e.g., Abstract, Introduction types).
 
-#### 1.1 External Verification
+### 2. Fact Verification
+
+#### 2.1 External Verification
 - **Always externally verify factual claims** before marking as correct
 - Use web search to confirm dates, names, percentages, and events
 - Compare document claims against authoritative sources
 
-#### 1.2 Source Priority
+#### 2.2 Source Priority
 Prioritize sources in this order:
 1. Government sources (texas.gov, austintexas.gov, capitol.texas.gov)
 2. Academic sources (university research)
 3. Established news organizations (Texas Tribune, KUT)
 4. Official organizational sites
 
-#### 1.3 Verification Steps
+#### 2.3 Verification Steps
 1. Search for claims in target document
 2. Check if cited reference exists in references.bib
 3. Externally verify factual accuracy via web search
 4. Compare authoritative sources vs current citations
 5. Update bib entries or inline citations as needed
 
-### 2. Citation Integrity
+### 3. Citation Integrity
 
-#### 2.1 Citation Checking
+#### 3.1 Citation Checking
 - Verify inline `\cite{key}` commands have matching bib entries
 - Search using multiple keywords (author name, title words, year)
 
-#### 2.2 Adding New Entries
+#### 3.2 Adding New Entries
 - Use verified external sources
 - Note the verification date in comments
 
@@ -70,10 +74,12 @@ Use commented section headers:
 ### 4. Documentation
 
 #### 4.1 Session Tracking
-- Append conversation prompts to `Prompts.d/Prompts-COMPREHENSIVE.txt`
-- Categorize prompts by quality tier (Highest_Quality, Medium_Quality, etc.)
-- Record session changes in `CHANGELOG.md` with date and time
-- **Append ONLY**: Do not revise existing logs; add new entries at the end
+- **Prompt Logging**: Append conversation prompts (or a summary) to `PROMPTS-LOG.md` in the root directory.
+- **Timestamping**: Every new insertion in `PROMPTS-LOG.md` MUST be preceded by a header with the current timestamp (e.g., `## YYYY-MM-DDTHH:MM:SS - Session Description`).
+- **Full Fidelity**: Never truncate or use ellipses (...). Log the exact full text of the prompt to ensure complete context is preserved.
+- **Consistent Structure**: Use a numbered list for each prompt turn (e.g., `1. "Prompt text"`).
+- **Major Decisions**: Record major decisions in `CHANGELOG.md` with date and time.
+- **Append ONLY**: Do not revise existing logs; add new entries at the end.
 - **Review Status**: Mark historical entries as `(REVIEWED)` and new entries as `(UNREVIEWED)`
 - Create a `TODO` item for reviewing UNREVIEWED logs
 
@@ -81,13 +87,27 @@ Use commented section headers:
 - Commit frequently with descriptive messages
 - Push to remote after each logical unit of work
 
+### 5. TODO Management
+
+#### 5.1 Insertion Policy
+- **Context-Aware Insertion**: Do not blindly append new items (TODOs, guideline sections, or list entries) to the top or bottom of files.
+- **Prioritize Immediately**: Assess the priority of the new item (P1, P2, P3, or High Priority) and insert it into the corresponding section or tier.
+- **Best Prioritized Place**: Insert the item in the most logical position within its priority group (e.g., grouping similar tasks, respecting dependencies, or ordering by importance).
+- **Renumbering**: If inserting into a numbered list or structured sequence (like guideline sections), update numbering to maintain consistency.
+- **Maintain Structure**: Ensure the item is placed logically within its priority group relative to others.
+
 ---
 
 ## P3 - Housekeeping
 
-### 5. File Organization
+#### 5.2 Completion Policy
+- **Move to Archive**: When a task is done, move it from `TODO.md` to `TODO-COMPLETED.md`.
+- **Maintain Structure**: Place the completed item under its corresponding Priority Header (P1, P2, P3) in `TODO-COMPLETED.md`.
+- **Timestamping**: Append the completion timestamp to the item (e.g., `(Completed: YYYY-MM-DDTHH:MM)`).
 
-#### 5.1 Naming Conventions
+### 6. File Organization
+
+#### 6.1 Naming Conventions
 | Suffix | Meaning |
 |--------|---------|
 | `-SUBMITTED` | Finalized/submitted work |
@@ -98,7 +118,7 @@ Use commented section headers:
 | `#-` prefix | Chronological order (e.g., `1-`, `2.1-`, `2.2-`) |
 | `*.1, *.2` | Parallel documents (same base number, `.1` = likely first) |
 
-#### 5.2 Directory Structure
+#### 6.2 Directory Structure
 ```
 thesis/
 ├── Thesis_Draft/
@@ -113,10 +133,19 @@ thesis/
 └── CHANGELOG.md
 ```
 
-#### 5.3 README Requirements
+#### 6.3 README Requirements
 - Add `README.md` to any directory with non-obvious organization
 - Explain numbering schemes, content relationships, or special conventions
 
-### 6. Safe Deletion
+### 7. Safe Deletion
 - Delete files only after verifying content is captured elsewhere
 - Track deferred work in `TODO.md` with clear, actionable items
+
+
+
+### 8. Session Wrap-Up
+- **Log Prompts**: Ensure all recent prompts are appended to `PROMPTS-LOG.md` with a timestamp, following full-fidelity rules.
+- **Update Changelog**: Add a timestamped entry to `CHANGELOG.md` summarizing key changes, decisions, and completed tasks.
+- **Review TODOs**: Verify all completed work is checked off in `TODO.md` and moved to `TODO-COMPLETED.md`.
+- **Final Commit**: Stage and commit all project changes with a descriptive message (e.g., `git commit -am "Session update: [Topic]"`).
+

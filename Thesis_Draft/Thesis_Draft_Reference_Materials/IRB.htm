@@ -1,0 +1,169 @@
+<!DOCTYPE html><html>
+<head>
+    <meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/><title>Columbia University Authentication</title>
+
+    <link rel="stylesheet" href="webjars.fontawesomemin.css"/><link type="text/css" rel="stylesheet" href="webjars.latomin.css"/><link type="text/css" rel="stylesheet" href="/cas/css/columbia.css"/><link type="text/css" rel="stylesheet" href="/cas/css/cas.css"/><link type="text/css" href="/cas/css/cu-privacy-notice.css" rel="stylesheet"/><link rel="icon" href="/cas/favicon.ico" type="image/x-icon"/><script type="text/javascript" src="webjars.jquerymin.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /><link type="text/css" href="/cas/css/cas.css" rel="stylesheet" /><link type="text/css" href="/cas/css/columbia.css" rel="stylesheet" /></head>
+
+<body id="cas" class="fl-theme-iphone">
+<div class="fl-screenNavigator-view-container">
+<div class="fl-screenNavigator-view">
+
+<header>
+
+        <div> 
+            <br/><br/><br/><div id="header" class="flc-screenNavigator-navbar fl-navbar fl-table clear">
+            <!--<h1 id="app-name" class="fl-table-cell">Central Authentication Service (CAS)</h1>--></div>
+
+        </div>
+ 
+    </header>
+
+<main role="main" class="container mt-3 mb-3">
+    <div id="main-content" class="row">
+
+<div id="content" class="fl-screenNavigator-scroll-container">
+
+
+<div align="center" style="clear: both; background-color: #FFFFFF;">
+ <table border="0" cellspacing="0" cellpadding="0" >
+<tr>
+
+<td align="left" style="font-size:13px; color: #104E8B;" >
+
+<hr style="border: double; border-color: white;"><em>
+
+<div style="color:#FFA3A3; font-size:18px; text-align:center;">Alert: Hackers want your passcodes!</div>
+If you use Duo passcodes, make sure the browser <br/>
+address bar on the Duo view has a URL containing duosecurity.com. <br/>
+To confirm, click on the &quotview site information&quot icon at the <br/>
+left side of the address bar and check that "Connection is secure".
+
+</em>
+<hr style="border: double; border-color: white;"></td>
+
+</tr>
+</table>
+</div>
+<br/><br/><br/><div class="box fl-panel" id="login">
+
+  	<img src="login_files/logo-rascal.gif" alt="rascal-prod" /><form method="post" id="fm1" class="fm-v clearfix" action="login">
+		
+        <div class="row fl-controls-left text-field">
+            <label for="username" class="fl-label username-label"><span class="accesskey">U</span>sername:</label>
+			
+            <input id="username" name="username" class="required" size="25" tabindex="8" path="username" type="text"
+                   accesskey="u"
+                   autocomplete="off"/></div>
+
+
+        <section class="form-group">
+            <div class="row fl-controls-left text-field">
+            <label for="password" class="fl-label password-field"><span class="accesskey">P</span>assword:</label>
+            <input class="form-control required" type="password" id="password" size="25" tabindex="9" 
+                   accesskey="p"
+                   autocomplete="off" name="password" value=""/><p><span id="capslock-on" style="display:none;">
+                <i class="fa fa-exclamation-circle"></i><span>CAPSLOCK key is turned on!</span>
+            </span></p>
+
+            </div>
+          </section>
+
+          <div class="row btn-row"> 
+		  
+            <span style="padding-right:20px"> <a href="http://cuit.columbia.edu/cuit/manage-my-uni" target="_blank">I need help logging in</a> </span>
+
+           
+            <input type="hidden" name="execution" value="a5227eef-f03e-4481-9953-f8520130943e_ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0lzSW10cFpDSTZJbVkzT0dFM05qRmlMV1U0TWpNdE5HRmlOUzA0WXpKaExXWTRORGN6TWpFek5ESTBNeUo5Lk9JbG0xbUVJSUlJQ0Y3b3FBNmRSZU1LTlpqWEJHZDNIdzYxV0xjZFdWRmNCYnFOUFhkUWwzUWlkZEp3X0RvdGRWNHphQmE4UEdua2x2VkFpbkJyUDFQXy1iWlVkZzBlMTN4LTAtMlNFbUFuUnZGeG84b1VaMkN3WUpzaWc5NmZ3eEN5SVpVQ1JSRGpFWHM1dms5NDRHamFreUROZ2xhR1daQ2QwRF9UTmM2dFkzVXoxRGExUVpQZlVsTDUxNHVnRkQ4RDFkZ2RNM0VtUW1DenI2WGJMdklnMG5sb2FCN21VcHdUSTdjZGxrWDlGMUVLZmItb2RUT3hseGQ5OXhkcTNLVGxlenZ3TGlaVmw1TER3Y1ZGaENkNGtfSW5vZVg1QjhVT0tIczFrS2tnekx5aFh1V2JHaUMwODRWVlhrVFp4X0JhNmlJMjZELUlpd1hueFhkRGlwMXAxZ2dLajNReEVOc0NfRGZZQlBOLXAzV1NxOEIzU1pjN2l4d2ZONkpyZUZoRG9nLTBXTF9Kd1d6eTdBZjhRM3EtOGtMUm4tYUpwS1FRQ1ZBZ3pJZTU3WksxV2x0WVREaTVETE1tU0c3dkI0S0Y5RDF3RE54YmYtaG9idmRrSzNlWmsyZVBTYU40X3ZHeVVnQzJZSXhnSmhXT0FzYkswY0hCYzQtSWVtZ3F4NkRwWUF4NkxySmE3dTgzZllJSVJUNGhJUWpKQko1UjFhQ0NMdjdLbzZHTTlCTVJYbWJTekRqVGdEMHlkT2R2WmFWd0I0Rl8tM21ZVjkwbHBicWljb3pHNUJKZ3kxTE9WcXRJYWItTy1mREs2MFVLS3NFekFEcl9hUzBydnJNdEZHQUNtQXRfMXhzX3lyRUZ4YmltOG5XclMyTktGVDc3MG1QVlJrOVZUM2JVcE11dGZwS3hmNmpiVnFwaUZpOXNmbGtuWE5DWmJWUF84LVdRQ2steTkwNUxrMWNOX203VlRsWDFhaXFFYXBaM3Z0REpZSDBlcFZMWjJGeHAybjI1Vk9jNTh5a25UNmQwZ3h2NDYxUGxlWDhWTFRlSlV0aWVTVDhYY2hOdnRsRU1zUmpaNk1pN2ZjSU1VcEQ0alZkcGRwZG9lT2N1R2h4UXoweWw0dDFnRm84eWFLM0MzajYwdTNFdWMzV3p5cC1KSGZySFFZaWtRbG9oclprWnpvaDlPZjU4ZUdRd3hCNnY1M1J6Z1E0V0RZSGYtREJJaVA5UUNQQ0Q3SjhIaXJ5NXNRMk1ZMzVuXzE2dVhRdTFoRW83T2lGTVEtSVBhSjVIcU50eXRmT0dyb25vUElVQzNFUElvb1NkX3RIRUExeVVxMzlhMHRONjAzMDVEZUJVZUkyNVp6cURhTzRKcFJONVlxTkdWZ3d3ODFWVC1YTFBPX2V6ckQwUmFKU0Z3cmFmQnVpbkczcllyWXJKUjNwVnBLMnh1X0dia3ZoQlFiZ0tjVkdCX3otdjVfQUw3RUdPa3UtcXB6R0l4aTFKdWt1WEYxbjBja3Q1WFlsSXJUR3lZX2ZZX0tWRFQ3eExMWjdIVjRpN2dxNFE3SGNNajU0M0xLbTM5Ul9TS3VkdjZfZENVNGdtLW9PemF5Rm1ETFlqZzBoZGhZeDdOQzFsZnVXT0JmZTJWQmFvMUNnNDdpcFk3QmkzX0ZZZnJ3Ukt6eHpaYWluYjduajRNbWdHaXU0ZlFFd2Rfd1RTZkpTUDFiSnJaeTRyMEJ2S083WGJrM1VKMjJLdFY3NVJUS3d0MzEzNnZLUlRVM29Nclc3SFZlQ1E1UUEyVzlzQ2E1dVpUWEhqcGdWYnJ3UHBXOW1yRGkydXduT1htYTBGN1ZHWC1aSkV4S0dSekxaVkJ1ZlVONFZhZUVWNkdSTTBDa0NxX0JDSDVGSUpCSm9XTzBVM3NNa1Z6OFBraTl1azdNX3F6SENuaUR0amw3QWZFeFdMRkhYYno2d1dxSnRIOGFvbEtZblBnbVlwWUhyMm42dzlBSVd4V25QWm1nLU5WSmNNdEo4dnFwTHMtbFhILTNaZkZvc0txX2Q1QW1kOWw3ZXVtVnpMd2JlOEtlTUNNeDhtSVduOEduckwtcjlwUnIzZ0NKTXJQQlB1YVRsVXhEX1VNVndBdlNRamRVaVNVY3dVNUVCLVdELXpZU01wYmpMS2JKR1B3X1l1aXVjb2c0eXh5bVp5ZUlMWGUyRFl1X19xNlBVNy1PdXUzcUEzQVlQaVl0UHNrWjhPZjY4TkRqcVJ5ZXNza2dyckl5V1pBNWlOeTVfcWgzcVA3RGR4cGRGcDBnR2hZV1M0cTVqRTRJak04REI1Y2hjNmdVcXBGSENudFo0dDNaMHZqNnEtWEVCT3M0LW9aLVhYYmhfUWVqU1I2TXdZcmxLMzk1OFhBeUc5ZFNtcHZmaHN4eXRENkhCZGJWOFJ1UF92SFhTUEVqSDZMMFZiQTNkUHNMWEx3TVdnVTFMU3B6eGQ0al91ZUJuSHZ3cWZJN0VSbU1nS1Z3azBJc25IZDRKQ21xajA5RmpXdllsV1JUa2R2TXl4OEhIVktJdXlfQ0I0TXZjSkhwVi16b1RMdDVCX1M1dUgtMWNJWkpLbkV4dUktZ0xkaDUzQjFBdUY3eW9kMXd6bHA4YXBmM29jY004ZDFCWF83anBKbFN4a192WW1Cd09tQUc3UzJXNGU3cEJvTVVNX2xsSFU4VVVTTDJpWHY1dHUxc1BVZVlFZzJ3VjBPbFA0OXRCR19qRm5hRThFRi1DZWJqeXV1QlRiTWZHQ0FIRkxwbUMxRXNmbzNuMlZZQjlaNTJaSDR4cVdOeDZfcjQtQkhlcTl0R0lqTkRmczZvaFRUbzdVSlNXSUdNY2xkOE15X0hQdnpxYmEwSnVWdzhTOWdraVBqS1hrWm8wSnBCN0pnZDQyZkZBVzlIQjhGYTBCb2xqOFpUR01rSXlrNE45OWRSbV9FbGRYX3RoSWROQ2F6OHBTakZWVU1hUTBEdXNoRjBfU01lcVByS1YxR1N0VTl4VE5oQVJwdUxmVEdpTGk3U1ktTVNnV0gxajMySTBhTnYtYms1ei1HcnNBQ0ZCY3BremdWWkU5UmswTHk2aGdseFFCeXJDTWU2ejRqNVFpQnFKeEV4N0V6ZWVFYjNaSmR2aFliM1BMRGxKbHBBRmRmVHBUckd0T0hjSUt3TVdUOXdINWdTMFVyM2ZxbjdwTzNxZUFTTkpwczd0dFZ0enNBTzhwR0hhNUN1VFFqUmNQMkZfUU11bWpIUllwX0h1UWtZR1pILUpIMndPMk1UcFlSdXJ3SEtZTVJZVHlWbHBCb2lTV3JLLVM1SEhDQmlTM1RkV3pMS2dsRkZHbnc1OVczZzlUV1dLZFZoMUJ3SWludjk4SEdTOFlNRVlwYkkxaUZKVDhEeXh3dVJCcHNkYXZyRmVpcm9Vdi1oTEgyZFFYZkR5VVV5ZENDM2xWT3Z1SzYzLVNNZ1JGWHF5cUhRb0hyM2NBLXZ1N3FOeURXLXhCVnVjWU82Nk5fMGlXT3RadWpTVUZQY3kxckFsNjhTbHNETFhZX0dQd2RFYk5VbnplS0o1a3NEMEk1TEprWi1rSHdiZ2NpTVZKQ0lGTlkzR21PdmZGVDBvTksyVHlmX3JJeVkzUUJuWVBsaFZWeEl4Y1Nwd1FJdzBEcDd2YjRHZkNmNTFJLVhSY0ZJT2t6MnVSNkF1My02S1kycklpY1RvZXRfeUllc2w0RjlHaTRhM3hHSklJUnV1ZnBRQnF1NWdZcEIxaWw4UWVKV0VHMVF6Ti1XQmRQRDBRTjFpZmpnQUdSbE9oZHNHd2dmM0NzMUNOZXNwNzBKeXotVV9aQXBrZjJFcUJnV0ZIVHZqYzdfNjlYUGNQX1VEUndiRzk3NWcyeXFZN1ZoN0xJOG8wRXB3NEV5Q0w5SjBWOFMzTzNtOUNnb0hUU2hKV0ZCSzV2d1ZnQ2o5MjB3eU55Tmxyc2k5aU4wXzBFaDB0MS1ZdXMyZWJ5eDNjanExMC1DUjdTbVg4LV96OE9YZzlaSUFnd19HNG00b2tnZ1lrZVJzNkYwa1FLcFVQTElrdUVyS0duQTZiMldIdUR5b2lhb3Z0ZGJTTlRVYXl0THFEcWpFS1l1b2dXdlpZb0lGU2d4cGFxYWlrVjJxcm9NZm1OVUltdXV2Nkx4ZndNMF9mMDdBWU5UMmgwVTRFQmQ5WnRzVmp4d1NhVFZZR21raFpYR0F0RElidHBoT1BPdmNPdEwyWWh3M29MaHJWal9say04cW1FZmVTWmJlRFlNdkpMUDhaUmVOWlAtZDNoUW01a2hKZUpwNkZaNk9YNjZUNWRiMG4yWXZxTGVjOTVvZkNUSVU0NHZDZG44cTVCT0x5TU1LLUctd2JidVNmcVJ3M2xHQ2hVbHRuS0hCTC1TUXBfaU9jOF9vc3hWVFpKNlRIY0ROQ1REVzVqSGM4QnBlQ2I5anlXRTQ1RF9WR1lJMndKS0dJYkd5U2NrbTg0bEZwSWNwZ180ZVNwbHo4SE1fRkpwUWptb2s0UWV2VUdzcXVkcXB4N2pLVTlRT1o0NUYtQ3RKZERhcFZCR1dfb2JTeHc5VTNtQWpRb0JabTVzdlA5WkdRbTROZXhNejZ3eHU2T0FudGNPQWs3bUxYbFh2WmwzSTlOS3p4SEVHdEF0UzFSOTVHNUp0dFBVT1ZhcVhWNGlQejVhcVlfUnBGNWluWXMxVko2VUNGTEY5dm5ma1ViZS1JVWthc2J6bTFtUTlPOFhHTHkwZDZ6MjBPYnJxcUJTdlc5NG1xYXF3M05oYTdoZndLTzgzVnItTy1meVdTXzR1Q2NleE1oSFZaMGlndWhLOEt6Nkg3R1pIR2s0TUIyMFdfWWw2M3RfMFdpR21fX3o0SHlkM09CWTNEcjVGeEJ6bUpYVUdrUy14Z0lCYTBmYVFiRWFYekM4eW5PZGZPeGZwSzQxR090Tl9YSnlibEFSY29SU0FVTkhiYll0YUZTemZ5dFQwcmJCX1d4ZElDekRCVlVRRlRYU2ZTN1lsMHJta1RVXzhmRVNRTmlPeDJuV2VKVVFVak8zcUtWaVdqQzRSOV9IV2R5RU9DWXpuMGNkYWVVamdNNnp2ZVR3WnlaY0NucGdpOWR2dXd3RVNEWWxmdGp2YnNVWWtUWnJaZXkxb3IwOUJTZGJuTGRPTjVMTmY0M0ZJNm5sZ0s5cVBESzNPZzRFV28zVVdaN2txSFE5WWEtX1VNWkdjVEdUMDFMcDhJOU1FZnZvU2hURFVTMHd3eXh6ZFF6YzBnMUpwbG95Y3B1YVI4RTMtSlE5QVQ3Y29fMVJNc0FQV0tRNEtzWm1GWC1MQ0tuV3hSYW9HOWpSVGV2SHBzNW1sa3AtYllZTWN2R0dWMEFGQktsb2plZ0JNQnlXUHlTMVVpOFFFNGFpTDI4SUJtN0lmMG1YRk9WNGN4NWd1X2ZXNnBoRkhfZWxlbnoyOU1iSU9uS3M0d3dYVjBnSm9yNmV1WEJZUmFwOEFnVXdvYzNMS0dTdGg0SzdxRDJTUHVTYlNSSkVpdHlsY0I4NlVzV3VkNk5VdjJ0RXByaXJFeHhlbnNPdTBmN3lldkpyMmM3ZnYycjNxcFJ0TzB2WnhPMW1ObmFHSW8yQWZBcUR3SnUtLVAxWk1mdUY1UnFyS3I2RTdxckVOS0E3Y09LY0xSLXMzOWcySDlUcjlJWlJ2T3BZR0x5QXZJWFRsWWZ6NjhGWGY1OHFRckNtQTJQbHlNYTBCT296OGhrZVFPZlpOUkhnM2hfVzh2VEtxV2dBOExLc0RZbE9YTzlZOEEwdno4Q2QzcjJTclR3bzh4QlFHT2xqaFJYekVrdXdyNXNGYnVVZDY3QmZjSUpZOEsxQ3ZPaUZSbEVId1E1dFFWTVVZSUhtRTlhU2czd1BvQ1ZZTmVfcm05RFpxcFpHdE96YjVxMmkxaVJkOEZ5cHotc2VfLWVNMWN5ZkNhcGVwQ09xcUlOR1Ric3BDWXloYTVkVFQ0UXVzYVVtMGR3Qy1GWG1pMlJPRWg5cFB6cXBiLUIxa2gwTi1YR2c4blNNTTg1bWZweGtWVkRKT2NsVEpXT2ppQjBTdFlPQTRYR2xKS0ZQZXJhNHNYR19wWU9DLU1mb3pmQnZLSnIzNWdQX1Y5eXljU1BManU3NHV0X09aRThpWnFSdzdobnFrX2E2eF9HOXlFUHEtVnd3dTRpeFI0Q0FOdTliRVJJbG5PTEVWcHpvdDA4X0szV3Y2aDhacm9VbmFHSmtKYUNTVUs1ZTlTVUVJZG4zaktvdzhrQ1VkdHN2d2VQbFFoaGJyUXF0bUVjNzBsX0pHYkJFMlJ5b0RuYXZQVUdBZDdjWkdxTHdiX3FqaDN6aDRLTVFmcUVRSnB4TlVYNFk1UDV6eVBMMXpnd0NJMWFfY0pUVGJ6Y0U2UFJieGMyOFJrcWt3dzJWV1h5ZlFSRVY5NmhIUVNZNTFqM3hYeUpSSFBkQ013ZHNrdEMyNWNBMHl5NmkyYVJQSXh6NTVoQmZPNDcySGgwUDRqV1o3SnFMVzlQQzF2NnpmaF9jNG1lNUJjd28tRk1aS05VMDhzdS1ndlN6Z0lKNk5rTDRldDY0T0MxSDEwMnRsTzZ2aEc3RG51TDRnVDJPWjJMVGN2eFdyUGQ1MENSVVV1VndyeGxQYXpfTkx3RXlSekxlSzNyNHV5VjM2TzJyU2hNbDE1dDV1QWZSZU5KTC1LeXVLV3FJQTdVRGR6YmI3MlZCUElZa2NxaklkY2dJSEdpUTQ4Q1p5eFhyYURXM3A3eGxJUEU3M3pfck1uVU1VTE9NTFRaTkxpWkhMYzNyRV9XdzU5Q0lmdDFOTXhIbXRnMmtfYVZJbmxPX1ZBczdPZzBmbm5PY1RBbEpXM1BUQnkwbnUwOXoxYTdDa0tVLUVsODgydzNJTURfaktvYVpoWU9aTXRDaDNoQTRHenBxU3REZnFFTk1WbW1vMjBJRWdhMUJZNVRWQXpVRjB4c3hfb05rQmlBcnM0U1FzVWxTSVp3cDNGMHZmMUppQnBMX2d4Ui1LZFZrb3VMVjhfUVBuWXQ2SERPcklqQUU1Q3JRWWhCYjVkVm5NS0FPUklINkJ2UDZSQmRWOGdsbk9LMEl2SmxaWDA4VmltYlQ3WVNNczFucVZ0ODFubHUzX0hobVFlTzAtRnQzdVlUTUlLM1JQcFpVX1hKaXNlNHpxVVZtdm80U3FhbHZIY0ZzblY5YnNlbWp6N2Z6ZDMyN3NkeDhSMjNVS2dHSmtUa1NXVkhHbGhtTGZmaE1kWjBXQWFtMFR3M3FZb0R5UWxpVXhBOU45NUNhZG5NUHFKRjVpOFJOanVGNXc0MVlpVk1MZjZaMVZNOHZ6UmNJVHdGMEdsTUpOWnctT3FXM3EydmdBRTBOY0IydzFWcUxUakg2aENESms3TW5lcE1MVEdNMjRvZUVxbmhURXhUOGgwUFdhSzNmcV9aWXl5cUNCbm9haWlscHliWWxRS1hNcmhHcnFkWUpYN0lYaFllU0pTVkRFajdkdDV6cTdlc2Zwem5WNEx6NjF0bGFsV3I4WlotbER5YnNFVG14TDh3bS15bUVqZG52QXdtMHVzZkZZNmg4eTRJajJrc2JNeFBFN1ZtYjA2cXAyaGdFQ21GV3dHQmNCOHNJVWJqRTNzYU1mcDJsaDAwd2lCMUpRQzZ5NGNjdHR2U3pGdW1MUHBhNjY5b09CM1lCdTJHOWlFTlpPbnFfTGhqaHZwOWgyVGtPdGF6aGsxMkRTanB2SEo3c0tjUDc2M0RVR2IyRnJoOWxJYTN5UWNZbHdsX0pGOGZ5eVpBRzdVQ0Nnc0otLUdtNVpyXzEzMG5YYTFacENvbGdLNWlJajExX0FnbTNaNkFWcnI1ejVkRFpLSzQyc1pYQ3NOb0xVSjJhcWFKTGpocmJrUmE1SklodHRsSW42S1dLSGpYcTBieGRfcGRRRmFIV1I4REMzUjhCbFFBcDM1VWR5OC5pTGxMdHZKVGFRS0w3bzRPY1FXYjE5RFl4SzhnRXRUUTZTMzQwUUpzbUxDVkdNMG9KbmxSVXRrUkhTN00xSnhoZlNWd1o2SS1paHdPUzlNLVNjbmI2UQ==" /><input type="hidden" name="_eventId" value="submit" /><input type="hidden" name="geolocation"/><input class="btn-submit"
+                   name="submit" accesskey="l" value="LOGIN"
+                   tabindex="10" type="submit" /><input class="btn-reset" 
+                    name="reset" accesskey="c" value="CLEAR" 
+					tabindex="11" type="reset" /></div>
+        </form>
+    </div>
+
+
+</div>
+</div>
+</main>
+
+<footer class="footer" role="contentinfo">
+
+        <div id="footer" class="fl-panel fl-note fl-bevel-white fl-font-size-80">
+                
+            <div style="font-size:12px; color: #104E8B;"><p>By using these resources, you agree to abide by <br/>Columbia University's 
+                <a href="http://policylibrary.columbia.edu/acceptable-usage-information-resources-policy">Acceptable Usage of 
+                Information Resources Policy</a>.
+                </p>
+            </div>
+ 
+            <div id="footer">
+            <p style="width:100%; padding:15px; text-align:center">Managed by CUIT. Please contact the <a href="https://cuit.columbia.edu/service-desk">CUIT Service Desk</a>
+            for login assistance.</p>
+			</div>
+
+        </div>
+
+    </footer>
+
+</div>
+</div>
+
+<script type="text/javascript" src="webjars.jqueryui.js"></script>
+<script type="text/javascript" src="webjars.jquerycookie.js"></script>
+<script src="webjars.bootstrapmin.js"></script>
+
+<script src="webjars.headmin.js"></script>
+<script src="webjars.storemin.js"></script>
+<script type="text/javascript" src="/cas/js/cas.js"></script>
+<script type="text/javascript" src="/cas/js/cu-privacy-notice.js"></script>
+
+<script>
+head.ready(document, function () {
+    if (!window.jQuery) {
+    	var jqueryUrl = "webjars.jquerymin.js"; 
+        head.load(jqueryUrl, loadjQueryUI);
+    } else {
+        notifyResourcesAreLoaded(resourceLoadedSuccessfully);
+    }
+});
+
+function loadjQueryUI() {
+	var jqueryUrl = "webjars.jqueryui.js"; 
+	head.load(jqueryUrl, loadjQueryCookies);
+}
+
+function loadjQueryCookies() {
+	var jqueryUrl = "webjars.jquerycookie.js"; 
+	head.load(jqueryUrl, notifyResourcesAreLoaded(resourceLoadedSuccessfully));
+}
+
+function notifyResourcesAreLoaded(callback) {
+    if (typeof callback === "function") {
+        callback();
+    }
+}
+</script>
+
+<script>
+    /*<![CDATA[*/
+
+    var trackGeoLocation = false;
+
+    var googleAnalyticsTrackingId = null;
+
+    if (googleAnalyticsTrackingId != null && googleAnalyticsTrackingId != '') {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', googleAnalyticsTrackingId, 'auto');
+        ga('send', 'pageview');
+    }
+
+    /*]]>*/
+</script>
+
+</body>
+</html>

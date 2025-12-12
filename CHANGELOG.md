@@ -112,3 +112,10 @@ Added deferred tasks:
 - **Created** `Prompts.d/` subdirectory
 - **Moved** all `Prompts-*.txt` files into `Prompts.d/`
 - **Updated** `GUIDELINES.md` with Prompts.d location and quality tier system
+
+## 2025-12-11T21:59:00 - Guidelines and TODO Refinement
+- **Reorganization**: Restructured `TODO.md` and `TODO-COMPLETED.md` to strictly follow P1/P2/P3 priority levels. Eliminated unprioritized "High Priority" holding sections.
+- **Guidelines**: Added "Section 7. TODO Management" (Insertion Policy) and "Section 8. Session Wrap-Up" to `GUIDELINES.md`. Enforced timestamping for logs.
+- **Documentation**: Created `PROMPTS-LOG.md` for session recording.
+- **Task Management**: Moved critical HW3 deliverables (PDF, Title) to P1; moved documentation maintenance to P2.
+- **Protocol Update**: Revised `GUIDELINES.md` to enforce "Full Fidelity" logging (no ellipses) and mandated a final git commit in the Session Wrap-Up.
