@@ -7,7 +7,7 @@
 
 
 ### P1 - Before Spring Draft
-- [ ] (UNREVIEWED) Review and adhere to new guidelines in GUIDELINES.md [Added: 2025-12-12 19:28]
+
 - [ ] (UNREVIEWED) Download `UP Thesis Guidelines` from Dory's email [Added: 2025-12-11 22:15]
 - [ ] (UNREVIEWED) Download `UP Outline` from Dory's email [Added: 2025-12-11 22:15]
 - [ ] (UNREVIEWED) Download `IRB.pdf` from Rascal [Added: 2025-12-11 22:15]

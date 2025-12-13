@@ -10,3 +10,4 @@
 ### P2 - Important (Regular Maintenance)
 
 ### P3 - Housekeeping
+- [x] (UNREVIEWED) Review and adhere to new guidelines in GUIDELINES.md [Added: 2025-12-12 19:28] (Completed: 2025-12-12T19:32)
