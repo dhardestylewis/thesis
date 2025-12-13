@@ -1,14 +1,28 @@
 # Thesis Project Guidelines
 
-> **CRITICAL**: NEVER perform `git rebase` or `git reset` without explicit permission.
+> **CRITICAL**: At each prompt turn, evaluate whether the user's instruction should become a guideline. If yes, add immediately. Review this rule every turn. (UNREVIEWED) [Added: 2025-12-12 18:22]
 
-> **CRITICAL**: NEVER abbreviate user prompts in `PROMPTS-LOG.md`. Record verbatim. If multiple prompts, use `[followed by:]` notation—never `...`.
+> **CRITICAL**: NEVER perform `git rebase` or `git reset` without explicit permission. (UNREVIEWED) [Added: 2025-12-12 18:16]
 
-> **CRITICAL**: When appending to `CHANGELOG.md`, always include the current timestamp (date and time).
+> **CRITICAL**: NEVER abbreviate user prompts in `PROMPTS-LOG.md`. Record verbatim. If multiple prompts, use `[followed by:]` notation--never `...`. (UNREVIEWED) [Added: 2025-12-12 18:16]
 
-> **META**: All new guidelines must be marked `(UNREVIEWED)` until user confirms review.
-> **META**: All new guidelines must include insertion timestamp `[Added: YYYY-MM-DD HH:MM]`.
-> **META**: When syncing external guidelines, MERGE with existing project-specific content—do not overwrite. Review previous commit if needed. [Added: 2025-12-12 00:00]
+> **CRITICAL**: Commit at every turn. After each response that modifies files, run `git add -A; git commit -m "..."`. (UNREVIEWED) [Added: 2025-12-12 18:25]
+
+> **CRITICAL**: Push to remote periodically. Run `git push` after logical batches of commits. (UNREVIEWED) [Added: 2025-12-12 18:39]
+
+> **CRITICAL**: Periodically review full GUIDELINES.md every few turns to ensure compliance. (UNREVIEWED) [Added: 2025-12-12 18:26]
+
+> **CRITICAL**: Update PROMPTS-LOG.md at every turn with new user prompts. Never let prompts accumulate unlogged. (UNREVIEWED) [Added: 2025-12-12 18:36]
+
+> **CRITICAL**: Maintain TODO.md for incomplete work. When user sends prompts before prior work is done, add items to TODO. Check recent prompts and PROMPTS-LOG for undone items. Move completed TODOs to TODO-COMPLETED.md. (UNREVIEWED) [Added: 2025-12-12 18:36]
+
+> **CRITICAL**: Do not interrupt the user's view with walkthrough artifacts. When creating a walkthrough, do NOT use `notify_user` to request review of it. Maintain it silently. (UNREVIEWED) [Added: 2025-12-12 19:20]
+
+> **CRITICAL**: Timestamp each individual prompt entry in `PROMPTS-LOG.md` at insertion time `[YYYY-MM-DD HH:MM]`. (UNREVIEWED) [Added: 2025-12-12 18:54]
+
+> **META**: All new guidelines must be marked `(UNREVIEWED)` until user confirms review. [Added: 2025-12-12 18:16]
+> **META**: All new guidelines must include insertion timestamp `[Added: YYYY-MM-DD HH:MM]`. [Added: 2025-12-12 18:16]
+> **META**: When syncing external guidelines, MERGE with existing project-specific content--do not overwrite. [Added: 2025-12-12 18:16]
 
 ---
 
@@ -39,24 +53,28 @@ At the end of each substantive answer, include: Persona Used, Difficulty Tuning,
 
 ## P1 - Critical (Every Session)
 
-### 0. Version Control Safety (UNREVIEWED) [Added: 2025-12-11 23:56]
-#### 0.1 Strict Prohibitions
+### 1. Version Control Safety (UNREVIEWED) [Added: 2025-12-12 18:37]
+#### 1.1 Strict Prohibitions
 - **NO REBASE/RESET**: NEVER perform `git rebase` or `git reset` without explicit, written user permission.
 - **Data Loss Prevention**: These commands rewrite history and can cause irreversible data loss.
 
-#### 0.2 Branch Hygiene
+#### 1.2 Branch Hygiene
 - **NO SWITCH IF DETACHED**: If in detached HEAD state, do NOT switch branches without explicit user permission.
-- **Branch Naming**: Use descriptive names with timestamps: `feature_name_YYYYMMDD`.
 - **Verify Before Switch**: Run `git status` before switching branches.
 
-#### 0.3 Commit Hygiene
+#### 1.3 Commit Hygiene
 - **Verify Staging**: Run `git status` BEFORE every commit.
 - **Atomic Commits**: Commit logically grouped changes with descriptive messages.
 - **No Dangling Work**: Never leave uncommitted changes at end of session.
 
-#### 0.4 Push Protocol
-- **Verify Before Push**: Run `git log -1 --name-status` to confirm the commit.
-- **Confirm Branch**: Run `git branch` to verify you are on the intended branch.
+### 2. Citation Integrity (UNREVIEWED) [Added: 2025-12-12 17:31]
+- **Cite all references**: Every reference in References section must be cited inline.
+- **Consistent format**: Use IEEE `[1]` format for CS. Do not mix with Author-Year.
+- **Verify citations**: Inline `\cite{key}` must have matching bib entries.
+
+### 3. LaTeX Compilation (UNREVIEWED) [Added: 2025-12-12 17:31]
+- **Compile at every turn**: After editing `.tex` files, recompile PDF immediately.
+- **Clean rebuild**: If issues persist, delete `.aux`, `.log`, `.pdf` and recompile twice.
 
 ### 1. Requirement Compliance
 - **Verify against Guidelines**: Ensure content aligns with `UP Thesis Guidelines` and `UP Outline`.
@@ -123,48 +141,43 @@ Use commented section headers:
 - Organizational Sources
 - Data Sources
 
-### 4. Documentation
+### 4. Documentation (UNREVIEWED) [Added: 2025-12-12 18:16]
 
 #### 4.1 Session Tracking
-- **Prompt Logging**: Append conversation prompts (or a summary) to `PROMPTS-LOG.md` in the root directory.
-- **Timestamping**: Every new insertion in `PROMPTS-LOG.md` MUST be preceded by a header with the current timestamp (e.g., `## YYYY-MM-DDTHH:MM:SS - Session Description`).
-- **Full Fidelity**: Never truncate or use ellipses (...). Log the exact full text of the prompt to ensure complete context is preserved.
-- **Consistent Structure**: Use a numbered list for each prompt turn (e.g., `1. "Prompt text"`).
-- **Major Decisions**: Record major decisions in `CHANGELOG.md` with date and time.
-- **Append ONLY**: Do not revise existing logs; add new entries at the end.
-- **Review Status**: Mark historical entries as `(REVIEWED)` and new entries as `(UNREVIEWED)`
-- Create a `TODO` item for reviewing UNREVIEWED logs
+- **Prompt Logging**: Append prompts verbatim to `PROMPTS-LOG.md`.
+- **Timestamping**: New sessions use header `## YYYY-MM-DDTHH:MM - Session Description`.
+- **Full Fidelity**: Never truncate or use ellipses. Log exact full text.
+- **Append ONLY**: Do not revise existing logs.
 
-#### 4.2 Version Control
-- **Commit**: Commit frequently with descriptive messages.
-- **Push**: Push to remote after each logical unit of work.
+#### 4.2 Session Wrap-Up
+- **Log Prompts**: Ensure all prompts are appended with timestamp.
+- **Update TODO**: Verify completed work is checked off and moved to `TODO-COMPLETED.md`.
+- **Final Commit & Push**: Stage, commit, and push to remote.
 
-### 5. TODO Management
+### 5. TODO Management (UNREVIEWED) [Added: 2025-12-12 18:36]
 
 #### 5.1 Insertion Policy
-- **Context-Aware Insertion**: Do not blindly append new items (TODOs, guideline sections, or list entries) to the top or bottom of files.
-- **Prioritize Immediately**: Assess the priority of the new item (P1, P2, P3, or High Priority) and insert it into the corresponding section or tier.
-- **Best Prioritized Place**: Insert the item in the most logical position within its priority group (e.g., grouping similar tasks, respecting dependencies, or ordering by importance).
-- **Unified Structure**: Do not create separate "Future" or "Deferred" sections outside the P1/P2/P3 hierarchy. Tag future items (e.g., `[Final Project]`) within their appropriate priority level.
-- **Renumbering**: If inserting into a numbered list or structured sequence (like guideline sections), update numbering to maintain consistency.
-- **Timestamp Insertion**: Append `[Added: YYYY-MM-DD HH:MM]` to every new item upon insertion.
-- **Maintain Structure**: Ensure the item is placed logically within its priority group relative to others.
+- **Prioritize Immediately**: Assess priority (P1, P2, P3) and insert accordingly.
+- **Timestamp Insertion**: Append `[Added: YYYY-MM-DD HH:MM]` to every new item.
+
+#### 5.2 Completion Policy
+- **Move to Archive**: When done, move from `TODO.md` to `TODO-COMPLETED.md`.
+- **Timestamping**: Append completion timestamp `(Completed: YYYY-MM-DDTHH:MM)`.
+
+### 6. Style Guidelines (UNREVIEWED) [Added: 2025-12-12 17:31]
+- **Avoid parenthetical statements**: Use comma-delimited clauses instead.
+- **Avoid em dashes**: Use colons, commas, or en dashes `--`.
+- **Consistent faculty titles**: Full title on first mention, then "Prof."
+- **ASCII only**: Use `--` for en-dashes, not Unicode.
+- **Hyphenate compound adjectives**: Use `black-box` (hyphenated).
 
 ---
 
 ## P3 - Housekeeping
 
-#### 5.2 Completion Policy
-- **Move to Archive**: When a task is done, move it from `TODO.md` to `TODO-COMPLETED.md`.
-- **Maintain Structure**: Place the completed item under its corresponding Priority Header (P1, P2, P3) in `TODO-COMPLETED.md`.
-- **Timestamping**: Append the completion timestamp to the item (e.g., `(Completed: YYYY-MM-DDTHH:MM)`).
-- **Clean Active List**: Keep `TODO.md` focused only on active or pending work.
-
-### 6. Style & Rigor (Thesis Standards)
-#### 6.1 Textual Rules
-- **Counts and Notation**: Avoid informal `n=X` notation in narrative text. Spell out counts (e.g., "The dataset consists of 122,712 properties").
-- **Hyphens & Dashes**: Use plain hyphens or colons/commas. Avoid em-dashes.
-- **Abbreviations**: Expand parenthical lists into plain English.
+### 7. Reference Formatting (UNREVIEWED) [Added: 2025-12-12 17:31]
+- **Consistent spacing**: Use `enumerate` with `\itemsep` control.
+- **ASCII en-dashes**: Use `--` for page ranges.
 
 #### 6.2 Data Description
 - **Date Ranges**: Explicitly state the temporal coverage of every data source.
@@ -174,41 +187,18 @@ Use commented section headers:
 - **Structure**: Use `I) YYYY Month-Month` structure for timeline sections.
 - **Inner Tasks**: Use `MM/DD-MM/DD` format for specific task ranges.
 
-### 7. File Organization
+### 8. File Organization (UNREVIEWED) [Added: 2025-12-12 18:37]
 
-#### 7.1 Naming Conventions
 | Suffix | Meaning |
 |--------|---------|
 | `-SUBMITTED` | Finalized/submitted work |
 | `-TO_INTEGRATE` | Content pending integration |
 | `-COMPREHENSIVE` | Complete/long-form documents |
 | `-OLD` | Superseded/deprecated content |
-| `.d/` | LaTeX projects or grouped files |
-| `#-` prefix | Chronological order (e.g., `1-`, `2.1-`, `2.2-`) |
-| `*.1, *.2` | Parallel documents (same base number, `.1` = likely first) |
 
-#### 7.2 Directory Structure
-```
-thesis/
-├── Thesis_Draft/
-│   └── Thesis_Draft_Reference_Materials/
-│       ├── Prompts.d/      # Session prompts by quality tier
-│       ├── Background-COMPREHENSIVE.d/
-│       └── references.bib
-├── Assignments_and_Proposal-SUBMITTED/
-├── Deprecated_Writings/    # Numbered chronologically with README
-├── TODO.md
-├── GUIDELINES.md
-└── CHANGELOG.md
-```
-
-#### 7.3 README Requirements
-- Add `README.md` to any directory with non-obvious organization
-- Explain numbering schemes, content relationships, or special conventions
-
-### 8. Safe Deletion
-- Delete files only after verifying content is captured elsewhere
-- Track deferred work in `TODO.md` with clear, actionable items
+### 9. Safe Deletion (UNREVIEWED) [Added: 2025-12-12 18:37]
+- Delete files only after verifying content is captured elsewhere.
+- Track deferred work in `TODO.md`.
 
 
 
