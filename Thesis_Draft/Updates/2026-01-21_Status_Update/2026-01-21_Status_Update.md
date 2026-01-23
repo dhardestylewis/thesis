@@ -1,0 +1,41 @@
+Subject: Thesis Progress Update - Daniel Hardesty Lewis (Jan 21, 2026)
+
+Hi Dory,
+
+Here is my weekly status update.
+
+**Name**: Daniel Hardesty Lewis
+**Project Name**: Thesis - Predicting Zoning Opposition
+**Date**: Jan 21, 2026
+
+### Section A: What I accomplished in the past week
+*   Consolidated 2019-2022 [Travis County appraisal data](https://github.com/dhardestylewis/thesis/tree/main/Data/Appraisal_Rolls) into a unified, analysis-ready dataset **to enable longitudinal analysis of property trends**.
+*   Recovered and verified the core [predictive modeling logic](https://github.com/dhardestylewis/thesis/blob/main/Analysis/notebooks/03_Modeling_Zoning_Opposition.ipynb) for zoning opposition **to ensure reproducibility of initial findings**.
+*   Submitted full [IRB protocol](https://github.com/dhardestylewis/thesis/tree/main/Submitted/IRB-SUBMITTED) and compiled a committee-ready [Reader Shortlist](https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Strategy/Reader_Outreach_Strategy.md) spanning GSAPP, CBS, and Data Science **to finalize the advisory committee options**.
+
+### Section B: What I had planned to get done, but didn’t get to
+*   Full integration of 2018 data (delayed by legacy file format issues), **which currently limits the historical range of the analysis**.
+*   Download of most recent (2023-2025) appraisal rolls **to bring the dataset up to current market conditions**.
+
+### Section C: Tasks to complete in the next week
+*   Locate legacy documentation to parse 2018 data and extend dataset through 2025 **to complete the full 8-year longitudinal dataset**.
+*   Review comparable theses from peer institutions (MIT, Berkeley) for methodology **to validate the machine learning approach against established academic standards**.
+*   Initiate outreach to the identified Reader Shortlist candidates (Strategy: A/B testing recruitment emails) **to secure the final reader by early Feb**.
+*   Begin drafting the *Methodology* chapter, focusing on data acquisition and cleaning steps **to document the technical pipeline while fresh**.
+
+### Section C2: Outlook for two weeks ahead
+*   Run preliminary regression models on the complete 8-year longitudinal dataset **to generate initial insights into zoning opposition trends**.
+*   Synthesize findings from reference theses into the *Literature Review* draft **to contextualize the research within the fields of ML and Planning**.
+*   Draft the *Results (Preliminary)* section based on initial model outputs **to identify key variables for in-depth analysis**.
+
+### Section D: Challenges/issues/obstacles
+*   **Challenge**: 2018 data uses an undocumented legacy format, preventing immediate analysis.
+*   **Approach**: Searching for the official State/County data dictionary for that era.
+*   **Discuss?**: Do you have tips on where to find historic Texas appraisal attributes?
+
+### Progress Link
+You can view the full project structure, code, and changelogs interactively on GitHub:
+[https://github.com/dhardestylewis/thesis](https://github.com/dhardestylewis/thesis)
+
+Best,
+Daniel

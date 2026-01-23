@@ -6,8 +6,8 @@ Active working directory for the Spring 2025 thesis.
 
 | Item | Purpose |
 |------|---------|
-| `Thesis_Draft_Reference_Materials/` | Reference corpus and source materials |
+| `Outreach/` | Reader communication & interview materials |
+| `Updates/` | Bi-weekly status updates for advisor |
 
 ## Status
-
 This is the primary working area. The actual thesis document will be developed here.
