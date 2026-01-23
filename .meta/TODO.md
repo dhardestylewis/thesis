@@ -10,6 +10,8 @@
 - [ ] [Target: 2026-01-30] **Establish Data Backup**: Set up automated or manual backup for large excluded files (`.pkl`, `.csv`) to G: Drive or S3 to prevent data loss.
 - [x] **Standardize EARS Naming**: Renamed all 2018-2022 appraisal roll files to `EARS_YYYY_Type` format.
 - [x] **Bibliography Cleanup**: Renamed `References/Bibliography` folder and standardized file names.
+- [x] **Finalize Project One-Pager**: Completed single-page layout with AI forecasting hook.
+- [x] **Convert IRB Protocol to PDF**: Created `IRB_Submitted_Protocol.pdf` in `Protocol_and_Submission\IRB_Protocol_Document\` with professional formatting, shaded response boxes, and table handling.
 
 ## P2: Research & Analysis (Next 14 Days)
 - [ ] [Target: 2026-02-04] **Reference Thesis Review**: Collect/skim 3-5 theses from MIT/Berkeley/Columbia for structure/methods.

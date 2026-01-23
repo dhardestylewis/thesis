@@ -1,0 +1,83 @@
+\documentclass[10pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{top=0.75in, bottom=0.75in, left=1in, right=1in} % Standard professional margins
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{fancyhdr}
+
+% Official Columbia Primary Color (Dark Blue)
+\definecolor{columbiablue_official}{RGB}{0, 33, 71}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{columbiablue_official}\leaders\hrule height \headrulewidth\hfill}}
+
+% Header - Text Based (Logo unavailable)
+\lhead{\small \textbf{\color{columbiablue_official} COLUMBIA UNIVERSITY} \\ \href{https://www.arch.columbia.edu/}{Graduate School of Architecture, Planning and Preservation}}
+\rhead{\small \href{https://www.linkedin.com/in/dhardestylewis}{Daniel Hardesty Lewis} \\ Ph.D. Candidate, Urban Planning}
+
+% Section styling - Compact but clean
+% Reducing spacing *slightly* to fit while keeping standard margins
+\titleformat{\section}{\large\bfseries\color{columbiablue_official}}{}{0em}{}[\color{columbiablue_official}\titlerule]
+\titlespacing*{\section}{0pt}{8pt}{3pt}
+
+\begin{document}
+\pagestyle{fancy}
+
+\vspace*{0.2cm}
+
+\begin{center}
+    {\Large \textbf{\color{columbiablue_official} Research Project Overview}} \\[0.4em]
+    {\large \textit{\href{https://github.com/dhardestylewis/thesis/blob/main/Submitted/Thesis_Proposal_Submitted/Lewis_Daniel_Thesis_Final_Proposal_December2025.d/Lewis_Daniel_Thesis_Final_Proposal_December2025.pdf}{Predicting NIMBYism in Austin's Housing Reform Era}}}
+\end{center}
+
+\vspace{0.2cm}
+
+\section*{Project Abstract}
+This research forecasts opposition to development using AI and interprets the mechanics of that opposition in Austin, Texas. By analyzing petition protest letters, public hearing transcripts, and zoning application data, the study evaluates the democratic implications of using predictive analytics to anticipate political behavior. The project employs predictive modeling, natural language processing, and qualitative analysis to predict opposition behavior, identify recurring patterns in opposition rhetoric, and examine their association with planning outcomes.
+
+\section*{Study Objectives}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\blacksquare$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{Identify Patterns:} Characterize the opposition rhetoric and arguments used in protest petitions to oppose rezoning and identify demographic predictors of this opposition.
+    \item \textbf{Evaluate Predictive Tools:} Assess whether administrative data and predictive models can accurately forecast opposition to specific development projects.
+    \item \textbf{Democratic Implications:} Examine how stakeholders perceive the legitimacy of using algorithmic tools in housing policy and identifying the ethical limits of such technologies.
+\end{itemize}
+
+\section*{Participant Role}
+We are seeking perspectives from urban planners, developers, neighborhood association leaders, and community organizers.
+\begin{itemize}[leftmargin=1.5em, label={\color{columbiablue_official}\tiny$\blacksquare$}, parsep=0pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{Activity:} A 45-60 minute one-on-one interview conducted virtually or in person.
+    \item \textbf{Topics:} Your experience with rezoning, data-driven planning tools, and community engagement in Austin.
+\end{itemize}
+
+\section*{Data Privacy and Ethical Standards}
+This study has been approved by the \href{https://research.columbia.edu/institutional-review-board-morningside}{Columbia University Institutional Review Board} under \href{https://github.com/dhardestylewis/thesis/tree/main/Submitted/IRB_Submitted/Protocol_and_Submission}{Protocol Y01M00}.
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\blacksquare$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item Participation is entirely voluntary.
+    \item You may decline to answer any specific question or discontinue the interview at any time.
+    \item Identities will be kept strictly confidential in resulting publications unless you grant explicit permission to be named.
+\end{itemize}
+
+\vfill
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{Researcher Contact} \\
+Daniel Hardesty Lewis \\
+\textit{Graduate Researcher} \\
+Email: \href{mailto:dl3645@columbia.edu}{\color{columbiablue_official}dl3645@columbia.edu}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{IRB Contact} \\
+\href{https://research.columbia.edu/institutional-review-board-morningside}{Columbia University Morningside IRB} \\
+Phone: (212) 851-7040 \\
+Email: \href{mailto:AskIRB@columbia.edu}{\color{columbiablue_official}AskIRB@columbia.edu}
+\end{minipage}
+
+\end{document}
