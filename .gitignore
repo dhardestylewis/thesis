@@ -1,3 +1,32 @@
+# Data & Binary Files (Too large for GitHub)
+**/*.csv
+**/*.CSV
+**/*.txt
+**/*.TXT
+**/*.zip
+**/*.ZIP
+**/*.pdf
+**/*.PDF
+**/*.pkl
+**/*.PKL
+**/*.xlsx
+**/*.XLSX
+**/*.geojson
+**/*.GEOJSON
+**/*.json
+**/*.JSON
+**/*.pptx
+**/*.PPTX
+**/*.docx
+**/*.DOCX
+**/*.gz
+**/*.7z
+**/*.rar
+
+# Keep READMEs in Data folders
+!**/README.md
+!**/readme.md
+
 # LaTeX auxiliary files
 *.aux
 *.log
