@@ -127,7 +127,7 @@ def create_docx(source_txt, dest_docx):
             process_line_with_links(p, parts[1])
             
         # Bullet points
-        elif line.startswith("- "):
+        elif line.startswith("- ") or line.startswith("* "):
             table = None
             p = doc.add_paragraph(style='List Bullet')
             content = line[2:]
