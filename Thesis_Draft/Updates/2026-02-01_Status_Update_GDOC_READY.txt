@@ -7,31 +7,29 @@ Here is my weekly status update.
 ==================================================
 
 Name: Daniel Hardesty Lewis
-Project Name: Thesis - Predicting Zoning Opposition
+Project Name: Predicting Parcel-Level Zoning Opposition
 Date: Feb 1, 2026
 
-SECTION A: ACCOMPLISHMENTS (PAST WEEK)
+Section A: What I accomplished in the past week
 - **Data Acquisition (2019-2025)**: Downloaded and processed the [Longitudinal Appraisal Dataset](https://github.com/dhardestylewis/thesis/tree/main/Data/Appraisal_Rolls). This now covers 7 full years of owner/parcel data for the analysis.
 - **Committee Outreach**: Finished the [Reader Shortlist & Outreach Strategy](https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Strategy/Reader_Outreach_Strategy.md) and drafted personalized invitations for a slate of candidates spanning Real Estate Finance, Urban Planning, and Applied Data Science at Columbia and elsewhere.
 - **Interview Campaign (Phase 2 - Non-Responder Follow-up)**: Followed up on the initial outreach from Jan 23; 15 key stakeholders haven't responded. I am doing the following:
     - **Development**: Completed [Personalization Research](https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Reference/Ref_Outreach_Contact_Backgrounds-COMPREHENSIVE.pdf) to identify alternative email addresses or ways of getting in contact with them.
     - **Action**: Scripted and queued [Phase 2 Drafts](https://github.com/dhardestylewis/thesis/blob/main/scripts/email/create_alt_drafts_2026_02_01_1937.py) using such personalizations.
 
-SECTION B: PLANNED BUT INCOMPLETE
-- **Methodology Draft**: Pushed this back to focus on getting the data effectively secured first. Will draft this week.
+Section B: What I had planned to get done, but didn’t get to
+- **Methodology Draft**: Pushed this back to focus on getting the data effectively secured first.
 
-SECTION C: NEXT WEEK TASKS
+Section C: Tasks to complete in the next week
 - **Send Outreach Emails**: Send the invitations to secure a committee member by mid-Feb.
 - **Draft Methodology Chapter**: Write up the data pipeline and cleaning steps.
-
-SECTION C2: OUTLOOK (2 WEEKS AHEAD)
 - **Preliminary Models**: Train baseline models on the confirmed 2019-2025 dataset.
 - **Data Chapter**: Draft the Data Chapter.
-- **Literature Review**: Synthesize comparative zoning theses.
-- **Target Milestone**: Advisor check-in mid-February.
 
-SECTION D: CHALLENGES & OBSTACLES
-- None at this time.
+Section D: Challenges/issues/obstacles
+| Challenge | Approach | Do you want to discuss this? |
+| Non-response from 15 key stakeholders (Jan 23 outreach) | Executed targeted retrieval strategy: Researching alternative emails and drafting personalized follow-ups. | No |
+| Missing 2018 EARS Data Dictionary | Conducting deep search for layout files; will parse manually if unavailable. | No |
 
 PROGRESS LINK:
 [Interactive Project Repo (GitHub)](https://github.com/dhardestylewis/thesis)
