@@ -3,10 +3,8 @@
 
 ## P1: Critical Path (Next 7 Days)
 - [ ] [Added: 2026-02-01 20:30] **Send reader outreach drafts** after final review.
-- [ ] [Target: 2026-01-22] **Manually download missing EARS data** (2023, 2024, 2025) from TCAD website to `Data/Appraisal_Rolls/YYYY`.
 - [ ] [Target: 2026-01-22] **Find 2018 EARS Layout** (Data Dictionary) to parse the fixed-width text file.
 - [ ] [Target: 2026-01-23] **Copy Outreach Package** from G: Drive (`Thesis_Interview_Outreach_Package`) to `Thesis_Draft/Outreach/`.
-- [ ] [Target: 2026-01-26] **Send Reader Outreach Emails** using the A/B templates in `Thesis_Draft/Outreach/Strategy`.
 - [/] [Target: 2026-01-28] **Draft Methodology Chapter** (focus: data cleaning/acquisition pipeline).
 - [ ] [Target: 2026-01-30] **Establish Data Backup**: Set up automated or manual backup for large excluded files (`.pkl`, `.csv`) to G: Drive or S3 to prevent data loss.
 - [x] **Standardize EARS Naming**: Renamed all 2018-2022 appraisal roll files to `EARS_YYYY_Type` format.
