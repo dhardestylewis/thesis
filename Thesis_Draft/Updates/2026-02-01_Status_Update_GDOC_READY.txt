@@ -1,0 +1,41 @@
+Subject: Thesis Progress Update - Daniel Hardesty Lewis (Feb 1, 2026)
+
+Hi Dory,
+
+Here is my weekly status update.
+
+==================================================
+
+Name: Daniel Hardesty Lewis
+Project Name: Thesis - Predicting Zoning Opposition
+Date: Feb 1, 2026
+
+SECTION A: ACCOMPLISHMENTS (PAST WEEK)
+- **Data Acquisition (2019-2025)**: Downloaded and processed the Longitudinal Appraisal Dataset ( https://github.com/dhardestylewis/thesis/tree/main/Data/Appraisal_Rolls ). This now covers 7 full years of owner/parcel data for the analysis.
+- **Committee Outreach**: Finished the Reader Shortlist & Outreach Strategy ( https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Strategy/Reader_Outreach_Strategy.md ) and drafted personalized invitations for the candidates (Columbia GSAPP/PropTech).
+- **Interview Campaign**: Built a list of alternate contacts for 15 key non-responders (e.g., Planning Directors), so I can follow up this week through new channels.
+
+SECTION B: PLANNED BUT INCOMPLETE
+- **Methodology Draft**: Pushed this back to focus on getting the data effectively secured first. Will draft this week.
+
+SECTION C: NEXT WEEK TASKS
+- **Send Outreach Emails**: Send the invitations to secure a committee member by mid-Feb.
+- **Draft Methodology Chapter**: Write up the data pipeline and cleaning steps.
+
+SECTION C2: OUTLOOK (2 WEEKS AHEAD)
+- **Preliminary Models**: Train baseline models on the confirmed 2019-2025 dataset.
+- **Literature Review**: Synthesize comparative zoning theses.
+- **Target Milestone**: Advisor check-in mid-February.
+
+SECTION D: CHALLENGES & OBSTACLES
+- None at this time.
+
+PROGRESS LINK:
+Interactive Project Repo (GitHub): https://github.com/dhardestylewis/thesis
+Detailed Master TODO List: https://github.com/dhardestylewis/thesis/blob/main/.meta/TODO.md
+Full Update Document (G: Drive): [PLEASE RIGHT CLICK FILE IN G:\My Drive AND PASTE LINK HERE]
+
+==================================================
+
+Best,
+Daniel
