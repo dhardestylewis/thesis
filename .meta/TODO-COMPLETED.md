@@ -12,6 +12,13 @@
 ### P3 - Housekeeping
 - [x] (UNREVIEWED) Review and adhere to new guidelines in GUIDELINES.md [Added: 2025-12-12 19:28] (Completed: 2025-12-12T19:32)
 
+## 2026-02-01 - Reader Outreach & Data Acquisition
+
+### P1 - Critical
+- [x] **Reach out to potential readers** using Reader Outreach Strategy doc (Drafts Generated) [Added: 2026-02-01 20:30] (Completed: 2026-02-01T20:45)
+- [x] **Download EARS data** (2023, 2024, 2025) from TCAD [Added: 2026-02-01 20:30] (Completed: 2026-02-01T20:45)
+- [x] **Organize outreach intelligence** (Moved intelligence PDF and renamed with suffix) [Added: 2026-02-01 20:30] (Completed: 2026-02-01T20:45)
+
 ## 2026-01-21 - Data Restructuring & Cleanup
 
 ### P1 - Critical
