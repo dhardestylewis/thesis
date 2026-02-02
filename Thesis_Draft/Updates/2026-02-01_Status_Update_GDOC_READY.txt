@@ -1,11 +1,3 @@
-Subject: Thesis Progress Update - Daniel Hardesty Lewis (Feb 1, 2026)
-
-Hi Dory,
-
-Here is my weekly status update.
-
-==================================================
-
 Weekly Thesis Status Update
 Name: Daniel Hardesty Lewis
 Project Name: Predicting Parcel-Level Zoning Opposition
@@ -36,8 +28,3 @@ PROGRESS LINK:
 [Interactive Project Repo (GitHub)](https://github.com/dhardestylewis/thesis)
 [Detailed Master TODO List](https://github.com/dhardestylewis/thesis/blob/main/.meta/TODO.md)
 Full Update Document (G: Drive): [PLEASE RIGHT CLICK FILE IN G:\My Drive AND PASTE LINK HERE]
-
-==================================================
-
-Best,
-Daniel
