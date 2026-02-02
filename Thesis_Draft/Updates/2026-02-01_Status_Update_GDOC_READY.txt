@@ -11,8 +11,8 @@ Project Name: Thesis - Predicting Zoning Opposition
 Date: Feb 1, 2026
 
 SECTION A: ACCOMPLISHMENTS (PAST WEEK)
-- **Data Acquisition (2019-2025)**: Downloaded and processed the Longitudinal Appraisal Dataset ( https://github.com/dhardestylewis/thesis/tree/main/Data/Appraisal_Rolls ). This now covers 7 full years of owner/parcel data for the analysis.
-- **Committee Outreach**: Finished the Reader Shortlist & Outreach Strategy ( https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Strategy/Reader_Outreach_Strategy.md ) and drafted personalized invitations for the candidates (Columbia GSAPP/PropTech).
+- **Data Acquisition (2019-2025)**: Downloaded and processed the [Longitudinal Appraisal Dataset](https://github.com/dhardestylewis/thesis/tree/main/Data/Appraisal_Rolls). This now covers 7 full years of owner/parcel data for the analysis.
+- **Committee Outreach**: Finished the [Reader Shortlist & Outreach Strategy](https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Strategy/Reader_Outreach_Strategy.md) and drafted personalized invitations for the candidates (Columbia GSAPP/PropTech).
 - **Interview Campaign (Phase 2 - Non-Responder Follow-up)**: Following the initial outreach on Jan 23, 15 key stakeholders (including Planning Directors and Neighborhood Presidents) have not responded. To unlock these high-value targets, I executed a targeted retrieval strategy:
     - **Development**: Completed [Personalization Research](https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Reference/Ref_Outreach_Contact_Backgrounds-COMPREHENSIVE.pdf) to identify alternate routes (executive assistants, direct private emails).
     - **Action**: Scripted and queued [Phase 2 Drafts](https://github.com/dhardestylewis/thesis/blob/main/scripts/email/create_alt_drafts_2026_02_01_1937.py) with individualized research hooks to bypass general intake forms.
@@ -33,8 +33,8 @@ SECTION D: CHALLENGES & OBSTACLES
 - None at this time.
 
 PROGRESS LINK:
-Interactive Project Repo (GitHub): https://github.com/dhardestylewis/thesis
-Detailed Master TODO List: https://github.com/dhardestylewis/thesis/blob/main/.meta/TODO.md
+[Interactive Project Repo (GitHub)](https://github.com/dhardestylewis/thesis)
+[Detailed Master TODO List](https://github.com/dhardestylewis/thesis/blob/main/.meta/TODO.md)
 Full Update Document (G: Drive): [PLEASE RIGHT CLICK FILE IN G:\My Drive AND PASTE LINK HERE]
 
 ==================================================
