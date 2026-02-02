@@ -1,29 +1,28 @@
-
 # Thesis Master TODO List
 
-## P1: Critical Path (Next 7 Days)
-- [ ] [Added: 2026-02-01 20:50] **Incorporate personalization from Reference PDF** into interview follow-up drafts (Zach Faddis, Bill Bunch, etc.).
-- [ ] [Added: 2026-02-01 20:30] **Send reader outreach drafts** after final review.
-- [ ] [Target: 2026-02-02] **Find 2018 EARS Layout** (Data Dictionary) to parse the fixed-width text file.
-- [/] [Target: 2026-02-04] **Draft Methodology Chapter** (focus: data cleaning/acquisition pipeline).
-- [ ] [Target: 2026-02-04] **Establish Data Backup**: Set up automated or manual backup for large excluded files (`.pkl`, `.csv`) to G: Drive or S3 to prevent data loss.
-- [x] **Standardize EARS Naming**: Renamed all 2018-2022 appraisal roll files to `EARS_YYYY_Type` format.
-- [x] **Bibliography Cleanup**: Renamed `References/Bibliography` folder and standardized file names.
-- [x] **Finalize Project One-Pager**: Completed single-page layout with AI forecasting hook.
-- [x] **Convert IRB Protocol to PDF**: Created `IRB_Submitted_Protocol.pdf` in `Protocol_and_Submission\IRB_Protocol_Document\` with professional formatting, shaded response boxes, and table handling.
+## 🟢 Outreach & Committee (Priority: High)
+- [ ] [P1] **Interview Follow-up (Phase 2)**: Incorporate personalization from Reference PDF into drafts for the 15 non-responders (Zach Faddis, Bill Bunch, etc.) and execute via `fetch_self_outreach.py` monitoring.
+- [ ] [P1] **Reader Outreach**: Send finalized, personalized invitations to the Columbia shortlist (GSAPP/PropTech).
+- [ ] [P3] **Advisor Check-in**: Schedule mid-February status meeting with Dory Thrasher.
 
-## P2: Research & Analysis (Next 14 Days)
-- [ ] [Target: 2026-02-04] **Reference Thesis Review**: Collect/skim 3-5 theses from MIT/Berkeley/Columbia for structure/methods.
-- [ ] [Target: 2026-02-04] **Run Preliminary Models**: Train baseline XGBoost/Regression on 2019-2025 data.
-- [ ] [Target: 2026-02-04] **Draft Results (Preliminary)**: Visualize feature importance and initial accuracy.
+## 🔵 Data Pipeline & Modeling
+- [ ] [P1] **2018 EARS Layout**: Locate missing Data Dictionary to parse the 2018 fixed-width appraisal roll.
+- [ ] [P1] **Data Backup**: Establish automated backup for large excluded files (`.pkl`, `.csv`) to G: Drive/S3.
+- [ ] [P2] **Preliminary Models**: Train baseline XGBoost/Regression models on the confirmed 2019-2025 longitudinal dataset.
+- [ ] [P2] **Draft Results**: Visualize initial feature importance and accuracy metrics.
 
-## P3: Thesis Drafting (Spring Sequence)
-- [ ] **Weekly Status Update** (Recurring: Mondays).
-- [ ] [Target: 2026-02-15] **Advisor Check-in**: Schedule with Dory Thrasher.
-- [ ] [Target: 2026-02-28] **Literature Review**: Synthesize reference theses and zoning opposition papers.
-- [ ] [Target: 2026-03-02] **Complete Outline Draft**: Full skeleton of all chapters.
+## 🟠 Thesis Writing & Research
+- [ ] [P1] **Methodology Chapter**: Draft the chapter focusing on the now-complete data cleaning and acquisition pipeline.
+- [ ] [P2] **Reference Thesis Review**: Skim 3-5 theses (MIT/Berkeley/Columbia) for structure and methods inspiration.
+- [ ] [P3] **Literature Review**: Synthesize findings from reference theses and zoning opposition papers.
+- [ ] [P3] **Outline Draft**: Complete full skeleton of all chapters (Target: Mar 2).
 
-## P4: Documentation & Housekeeping
-- [x] **Archive Normalization**: Renamed all folders and files to `Thesis_Proposal_vX.X` schema.
-- [x] **Directory Casing**: Standardized all project folders to `Title_Case`.
-- [ ] Update `README.md` with new directory structure.
+## ⚪ Admin & Housekeeping
+- [ ] [P3] **Weekly Status Update**: Recurring task (Mondays).
+- [ ] [P4] **README Update**: Update `README.md` to reflect the new `Thesis_Draft` and `Data` directory structures.
+
+## ✅ Recently Completed
+- [x] **Project One-Pager**: Finalized layout with AI forecasting hook.
+- [x] **IRB Protocol**: Converted to PDF with professional formatting.
+- [x] **EARS Naming**: Standardized 2019-2025 files.
+- [x] **Directory Hygiene**: Standardized casing (`Title_Case`) and archived legacy proposal versions.
