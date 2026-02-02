@@ -18,6 +18,8 @@
 - [x] **Reach out to potential readers** using Reader Outreach Strategy doc (Drafts Generated) [Added: 2026-02-01 20:30] (Completed: 2026-02-01T20:45)
 - [x] **Download EARS data** (2023, 2024, 2025) from TCAD [Added: 2026-02-01 20:30] (Completed: 2026-02-01T20:45)
 - [x] **Organize outreach intelligence** (Moved intelligence PDF and renamed with suffix) [Added: 2026-02-01 20:30] (Completed: 2026-02-01T20:45)
+- [x] **Copy Outreach Package** from G: Drive to `Thesis_Draft/Outreach/` [Added: 2025-12-12 18:36] (Completed: 2026-02-01T20:53)
+- [x] **DELETE legacy files**: Removed deprecated ChatGPT strategy files [Added: 2026-01-21 12:44] (Completed: 2026-02-01T20:53)
 
 ## 2026-01-21 - Data Restructuring & Cleanup
 

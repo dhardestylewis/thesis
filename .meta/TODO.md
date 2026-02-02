@@ -4,10 +4,9 @@
 ## P1: Critical Path (Next 7 Days)
 - [ ] [Added: 2026-02-01 20:50] **Incorporate personalization from Reference PDF** into interview follow-up drafts (Zach Faddis, Bill Bunch, etc.).
 - [ ] [Added: 2026-02-01 20:30] **Send reader outreach drafts** after final review.
-- [ ] [Target: 2026-01-22] **Find 2018 EARS Layout** (Data Dictionary) to parse the fixed-width text file.
-- [ ] [Target: 2026-01-23] **Copy Outreach Package** from G: Drive (`Thesis_Interview_Outreach_Package`) to `Thesis_Draft/Outreach/`.
-- [/] [Target: 2026-01-28] **Draft Methodology Chapter** (focus: data cleaning/acquisition pipeline).
-- [ ] [Target: 2026-01-30] **Establish Data Backup**: Set up automated or manual backup for large excluded files (`.pkl`, `.csv`) to G: Drive or S3 to prevent data loss.
+- [ ] [Target: 2026-02-02] **Find 2018 EARS Layout** (Data Dictionary) to parse the fixed-width text file.
+- [/] [Target: 2026-02-04] **Draft Methodology Chapter** (focus: data cleaning/acquisition pipeline).
+- [ ] [Target: 2026-02-04] **Establish Data Backup**: Set up automated or manual backup for large excluded files (`.pkl`, `.csv`) to G: Drive or S3 to prevent data loss.
 - [x] **Standardize EARS Naming**: Renamed all 2018-2022 appraisal roll files to `EARS_YYYY_Type` format.
 - [x] **Bibliography Cleanup**: Renamed `References/Bibliography` folder and standardized file names.
 - [x] **Finalize Project One-Pager**: Completed single-page layout with AI forecasting hook.
@@ -25,7 +24,6 @@
 - [ ] [Target: 2026-03-02] **Complete Outline Draft**: Full skeleton of all chapters.
 
 ## P4: Documentation & Housekeeping
-- [ ] [Target: 2026-01-30] **DELETE legacy files**: `Thesis_Draft/Outreach/Strategy/ChatGPT_Reader_Strategy.md` and `*-DEPRECATED_DELETE_BOTH.md` (kept temporarily for sent email link validity).
 - [x] **Archive Normalization**: Renamed all folders and files to `Thesis_Proposal_vX.X` schema.
 - [x] **Directory Casing**: Standardized all project folders to `Title_Case`.
 - [ ] Update `README.md` with new directory structure.
