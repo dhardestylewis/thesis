@@ -58,11 +58,15 @@ At the end of each substantive answer, include: Persona Used, Difficulty Tuning,
 - **NO REBASE/RESET**: NEVER perform `git rebase` or `git reset` without explicit, written user permission.
 - **Data Loss Prevention**: These commands rewrite history and can cause irreversible data loss.
 
-#### 1.2 Branch Hygiene
+#### 1.2 General Guidelines
+1.  **Project Name**: Always refer to the project as **"Predicting NIMBYism"** (not "Predicting Parcel-Level Zoning Opposition" or other variations).
+2.  **Verify Before executing**: Always double-check critical paths and filenames before running commands.
+
+#### 1.3 Branch Hygiene
 - **NO SWITCH IF DETACHED**: If in detached HEAD state, do NOT switch branches without explicit user permission.
 - **Verify Before Switch**: Run `git status` before switching branches.
 
-#### 1.3 Commit Hygiene
+#### 1.4 Commit Hygiene
 - **Verify Staging**: Run `git status` BEFORE every commit.
 - **Atomic Commits**: Commit logically grouped changes with descriptive messages.
 - **No Dangling Work**: Never leave uncommitted changes at end of session.
