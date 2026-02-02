@@ -1,14 +1,14 @@
 Weekly Thesis Status Update
 Name: Daniel Hardesty Lewis
-Project Name: Predicting Parcel-Level Zoning Opposition
-Date: Feb 1, 2026
+Project Name: Predicting NIMBYism
+Date: Feb 2, 2026
 
 Section A: What I accomplished in the past week 
 * **Data Collection (2019-2025)**: Downloaded and processed the [Longitudinal Appraisal Dataset](https://github.com/dhardestylewis/thesis/tree/main/Data/Appraisal_Rolls). This now covers 7 full years of owner/parcel data.
 * **Finding Readers**: Finished the [Reader Shortlist](https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Strategy/Reader_Outreach_Strategy.md) and wrote personalized emails to candidates in Real Estate Finance, Urban Planning, and Data Science.
 * **Interview Follow-up**: 15 people from the Jan 23 outreach haven't responded. I am doing the following:
     * **Research**: Found alternative email addresses or direct contacts for them.
-    * **Drafts**: Prepared personalized emails to try again (Phase 2).
+    * **Drafts**: Prepared personalized emails to try again (sending Feb 4).
 
 Section B: What I had planned to get done, but didn’t get to 
 * **Methodology Draft**: Delayed this to finish downloading the data first.
@@ -22,7 +22,7 @@ Section C: Tasks to complete in the next week
 Section D: Challenges/issues/obstacles
 | Challenge | Approach | Do you want to discuss this? |
 | 15 non-responders from Jan 23 outreach | Found alternative emails and wrote new drafts. | Possibly, will follow up |
-| Can't find 2018 EARS Data Dictionary (Need to confirm all years) | Searching for layout files; might have to parse manually. | Nope, I have it under control |
+| Can't find EARS Data Dictionaries (Confirming all years) | Searching for layout files; might have to parse manually. | Nope, I have it under control |
 | Finding the time to manage all these emails | Prioritizing automation and batching drafts. | Yes, that would be helpful |
 
 PROGRESS LINK:

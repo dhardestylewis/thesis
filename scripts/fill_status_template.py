@@ -1,8 +1,102 @@
-from docx import Document
-from docx.shared import Pt
-import os
+from docx.oxml.shared import OxmlElement, qn
+import re
 
-def process_text_file(txt_path):
+def add_hyperlink(paragraph, text, url):
+    # This places a hyperlink within a paragraph object.
+    # Create the w:hyperlink tag
+    part = paragraph.part
+    r_id = part.relate_to(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", is_external=True)
+    hyperlink = OxmlElement("w:hyperlink")
+    hyperlink.set(qn("r:id"), r_id)
+
+    # Create the w:r element
+    new_run = OxmlElement("w:r")
+    rPr = OxmlElement("w:rPr")
+    
+    # Check if bold is needed (if it was passed in previous context, but here we assume standard link style)
+    # Usually links are blue/underlined.
+    
+    # Join with "Hyperlink" style if possible, or manual formatting
+    # Manual:
+    c = OxmlElement("w:color")
+    c.set(qn("w:val"), "0563C1") # Default blue
+    rPr.append(c)
+    
+    u = OxmlElement("w:u")
+    u.set(qn("w:val"), "single")
+    rPr.append(u)
+
+    new_run.append(rPr)
+    new_run.text = text
+    hyperlink.append(new_run)
+    paragraph._p.append(hyperlink)
+    return hyperlink
+
+def process_line_with_links(paragraph, line_text, bold_prefix=None):
+    """
+    Parses line_text for Markdown links [Text](URL) and adds runs/hyperlinks to paragraph.
+    If bold_prefix is provided (e.g. 'Key:'), it is added as a bold run first.
+    """
+    if bold_prefix:
+        paragraph.add_run(bold_prefix).bold = True
+    
+    # Split by links
+    # Pattern: [Text](URL)
+    # We use capturing groups to keep separators
+    parts = re.split(r'(\[.*?\]\(.*?\))', line_text)
+    
+    for part in parts:
+        link_match = re.match(r'\[(.*?)\]\((.*?)\)', part)
+        if link_match:
+            text = link_match.group(1)
+            url = link_match.group(2)
+            add_hyperlink(paragraph, text, url)
+        else:
+            if part: # process potential simple urls? "https://..."
+                 # Simple check for raw http links if no markdown
+                 if "http" in part and not link_match:
+                     # very basic split for separate urls? 
+                     # For now, just add text to avoid breaking simple text
+                     paragraph.add_run(part)
+                 else:
+                     paragraph.add_run(part)
+
+# ... inside fill_template ...
+
+            # Use manual bullet formatting since 'List Bullet' style is missing
+            current_p = target_p
+            for line in lines:
+                new_p = doc.add_paragraph(style='normal') # Fallback to normal
+                p_fmt = new_p.paragraph_format
+                p_fmt.left_indent = Pt(18) # Indent for bullet
+                p_fmt.first_line_indent = Pt(-18) # Hanging indent
+                
+                # Format text
+                runner = new_p.add_run("• ") # Manual bullet char
+                
+                if "**" in line:
+                    clean_line = line.replace("* ", "").replace("- ", "")
+                    # Split only on the first colon to separate Key from Value
+                    parts = clean_line.split(":", 1)
+                    if len(parts) > 1:
+                        # parts[0] is the key (e.g. "**Data Collection**")
+                        # We strip ** and bold it (and add colon back)
+                        key_text = parts[0].replace("**", "") + ":"
+                        
+                        # parts[1] is the rest. It might have markdown links.
+                        process_line_with_links(new_p, parts[1], bold_prefix=key_text)
+                    else:
+                        # No colon.
+                        process_line_with_links(new_p, clean_line.replace("**", ""), bold_prefix=None) # Maybe bold whole thing? Logic unclear, assume plain processing or passing bold flag.
+                        # Actually if it was **Text**, we might want it bold. 
+                        # simplicity: just process links, maybe bolding is lost for non-key items.
+                else:
+                    process_line_with_links(new_p, line.replace("* ", "").replace("- ", ""))
+                
+                # Move this new_p to right position
+                new_p._element.getparent().remove(new_p._element)
+                current_p._element.addnext(new_p._element)
+                current_p = new_p # Advance
     """Parses the text file into metadata, sections, and table data."""
     with open(txt_path, 'r', encoding='utf-8') as f:
         lines = [l.strip() for l in f.readlines()]
@@ -294,23 +388,7 @@ def fill_template(template_path, output_path, data):
     doc.add_paragraph("_" * 30)
     for line in data["footer"]:
         p = doc.add_paragraph()
-        if "[" in line and "](" in line: # Markdown link
-             # Simple regex to extract text and url?
-             # For now just dump text or simple parsing
-             # Format: [Text](URL)
-             import re
-             match = re.match(r"\[(.*?)\]\((.*?)\)", line)
-             if match:
-                 # Add hyperlink (OXML) - reused logical from previous script?
-                 # For simplicity in this "fill" script, just adding text
-                 # Or I can try to add the OXML hyperlink code back in.
-                 # Let's just output text for loop/speed, or minimal rich text.
-                 p.add_run(match.group(1)).bold = True
-                 p.add_run(" " + match.group(2))
-             else:
-                 p.add_run(line)
-        else:
-             p.add_run(line)
+        process_line_with_links(p, line)
 
     doc.save(output_path)
     print(f"Filled Template Saved: {output_path}")
