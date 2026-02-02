@@ -6,18 +6,16 @@ Date: Feb 2, 2026
 Section A: What I accomplished in the past week 
 * **Data Collection (2019-2025)**: Downloaded and processed the [Longitudinal Appraisal Dataset](https://github.com/dhardestylewis/thesis/tree/main/Data/Appraisal_Rolls). This now covers 7 full years of owner/parcel data.
 * **Finding Readers**: Finished the [Reader Shortlist](https://github.com/dhardestylewis/thesis/blob/main/Thesis_Draft/Outreach/Strategy/Reader_Outreach_Strategy.md) and wrote personalized emails to candidates in Real Estate Finance, Urban Planning, and Data Science.
-* **Interview Follow-up**: 15 people from the Jan 23 outreach haven't responded. I am doing the following:
-    * **Research**: Found alternative email addresses or direct contacts for them.
-    * **Drafts**: Prepared personalized emails to try again (sending Feb 4).
+* **Interview Follow-up**: Found alternative contacts for the 15 non-responders and prepared personalized follow-ups (sending Feb 4).
 
 Section B: What I had planned to get done, but didn’t get to 
 * **Methodology Draft**: Delayed this to finish downloading the data first.
 
 Section C: Tasks to complete in the next week
 * **Send Emails**: Send the invitations to potential readers.
-* **Draft Methodology Chapter**: Write up the data collection and cleaning steps.
+* **Draft Methodology**: Write up the data collection and cleaning steps.
 * **Preliminary Models**: Train baseline models on the 2019-2025 dataset.
-* **Data Chapter**: Draft the Data Chapter.
+* **Initial Data Analysis**: Begin drafting the Data Chapter findings.
 
 Section D: Challenges/issues/obstacles
 | Challenge | Approach | Do you want to discuss this? |
