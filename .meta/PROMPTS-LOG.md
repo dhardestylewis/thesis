@@ -7686,3 +7686,62 @@ At the end of each substantive answer, include: Persona Used, Difficulty Tuning,
 
 ## 2025-12-12T19:32 - Session Wrap-Up
 wrap up
+#   U s e r   I n t e r a c t i o n   L o g  
+  
+ # #   V e r b a t i m   U s e r   R e q u e s t s  
+ * T h i s   l o g   t r a c k s   e x a c t   m e s s a g e s   f r o m   t h e   u s e r   t o   e n s u r e   a l l   f e e d b a c k   i s   c a p t u r e d   a n d   a d d r e s s e d . *  
+  
+ -   * * [ C u r r e n t   R e q u e s t ] * * :   " s t i l l   d o n t   s e e   t h a t   p d f   o f   t h e   p r o t o c o l ?   h a v e   y o u   b e e n   k e e p i n g   t r a c k   o f   a l l   m y   m e s s a g e s   v e r b a t i m   s o m e w h e r e ? "  
+ -   " S h o u l d n ' t   P r o j e c t   O n e   P a g e r   a n d   a l l   i t s   a s s o c i a t e d   a u x   f i l e s   i n c l u d i n g   t h e   t e x   a n d   p d f   b e   i n   i t s   o w n   s u b d i r "  
+ -   " d o   w e   n e e d   s u c h   m a r g i n   w i d t h s ?   w h a t   w o u l d   s u c h   a n   a u d i e n c e   l i k e   t o   s e e ? "  
+ -   " h a v e   y o u   b e e n   t r a c k i n g   a l l   o f   m y   m e s s a g e s   v e r b a t i m   a n y w h e r e   s u c h   a s   i n   T O D O . m d ? "  
+ -   " s t i l l   l o n g e r   t h a n   a   s i n g l e   p a g e   f r o t   o n l y n "  
+ -   " i d e n t i f y   o r   p r e d i c t ?   i s   c o r r e l a t i o n   t h e   m a i n   m e t h o d ?   d o e s n t   c o r r e l a t i o n   i m p l y   l i n e a r i t y   a s   o p p o s e d   t o   a s s o c i a t i o n   w h i c h   i s   a   b r o a d e r   t e r m ?   i d e n t i f y r e c u r r i n g p a t t e r n s i n o p p   o s i t i o n r h e t o r i c a n d t h e i r c o r r e l a t i o n "  
+ -   " i s   t h i s   y e t   t h e   c o l u m b i a   b l u e ?   d i d   y o u   d o w n l o a d   t h e   l o g o ? "  
+ -   " a r e   t h e s e   t h e   m a i n   m e t h o d s ?   h e p r o   j e c t e m p l o y s n a t u r a l l a n g u a g e p r o   c e s s i n g a n d q u a l i t a - t i v e a n a l y s i s "  
+ -   " i s   t h i s   t h e   m a i n   g o a l ?   a c c o r d i n g   t o   t h e   p r o p o s a l ?   t h e s t u d y s e e k s t o u n d e r s t a n d h o w o p p   o s i t i o n g r o u p s l e v e r a g e d a t a a n d t e c h n o l o g y t o i n u e n c e p l a n n i n g o u t c o m e s "  
+ -   " f o r e c a s t s   o p p o s i t i o n   t o   d e v e l o p m e n t   u s i n g   A I   s h o u l d   b e   i n   t h e   v e r y   f i r s t   s e n t e n c e   i n v e s t i g a t e s t h e m e c h a n i c s   a n d   o p t i o n a l l y   a s   a   c l a u s e   i n   t h e   f i r s t   s e n t e n c e   i n v e s t i g a t e / e x p l a i n s / i n t e r p r e t s   t h e   m e c h a n i c s   o f   t h a t   o p o o s i t i o n "  
+ -   " y o u   m i s s e d   t h e   b i g g e s t   d a t a   s o u r c e   h e r e   ,   a n d   t h e   p r i m a r y   o n e   a t   t h a t   w h i c h   i s   p e t i t i o n   p r o t e s t   l e t t e r s   B y a n a l y z i n g p u b l i c h e a r i n g t r a n s c r i p t s , z o n i n g a p p l i c a t i o n d a t a , a n d n e i g h b   o r h o   o   d a s s o   c i a t i o n c o m m u n i c a t i o n s "  
+ -   " j u s t   o p p o s i t i o n   t o   d e v e l o p m e n t "  
+ -   " N o w   y o u   a r e   w e l l   i n t o   t w o   p a g e s "  
+ -   " D a t a , T e c h n o l o g y , a n d H o u s i n g O p p o s i t i o n i n A u s t i n , T X   j u s t   P r e d i c t i n g   N I M B Y i s m ,   A u s t i n   T X   c a s e   s t u d y   i s   f i n e "  
+ -   " s h o u l d   ( P r o t o   c o l # Y 0 1 M 0 0 ) .   l i n k   o u t   t o   t h e   c o p y   o f   t h e   p r o t o c o l   h o s t e d   p e r m a l i n k e d   o n   g i t h u b ? "  
+ -   " a v o i d   u s e   o f   p a r a n t h e s e s   o r   p a r a n t h e t i c a l   w a y   o f   s p e a k i n g   e n t i r e l y "  
+ -   " i s   t h e   c o l o r   o f   t h e   s e c t i o n   t i t l e s   t h e   c o l u m b i a   c o l o r ? "  
+ -   " w h e r e   i s   t h e   C o l u m b i a   l o g o ? "  
+ -   " N o w   i t ' s   s i g n f i c a n t l y   s h o r t e r   t h a n   o n e   p a g e   v i s u a l l y   -   a l s o   h o w   m a n y   w o r d s   d o   w e   e x p e c t   t h e m   t o   r e a d   r e a l i s t i c a l l y ?   h o w   m a n y   s e c t i o n s ?   h o w   m a n y   b u l l e t   p o i n t s   i f   a n y ?   D a t a P r i v a c y E t h i c a l S t a n d a r d s   i s   a l s o   a   b a d   t i t l e   j u s t   p i c k   o n e   o r   t h e   o t h e r "  
+ -   " C o n d e n t i a l i t y I R B   i s   a   w e a k   t i t l e "  
+ -   " Y o u   o n e   p a g e r   i s   s l i g h t l y   l o n g e r   t h a n   1   p a g e "  
+ -   " I   m e a n   s u r e   b u t   s e e m s   e s s e n t i a l   f o r   t h e m   t o   s e e   t h e   p o i n t .   Y o u   h a v e   t h e   a u d i e n c e   i d e n t i f i e d   g o   a h e a d   a n d   c r e a t e   t h i s   i n   t h e   a p p r o p r i a t e   l o c a t i o n   i n   t e x   c o m p i l i n g   t h a t   t e x .   E n s u r e   y o u   u s e   C o l u m b i a   l e t t e r h e a d   t e x   s t y   f i l e s   a v a i l a b l e   f r o m   o f f i c i a l   o r   g i t   c o l u m b i a   s o u r c e s ,   o r   t h e   s t y   o f   m y   p h d   a p p l i c a t i o n s   g i t h u b   r e p o   i f   y o u   h a v e   a c c e s s   t o   t h a t "  
+ -   " A c t u a l l y   s e n d   o n e   o f   t h e s e   e m a i l s   t o   m y s e l f   t o   s e e   i f   y o u   c a n   s e n d "  
+ -   " W h i c h   a t t a c h m e n t s   w o u l d   w e   a c t u a l l y   i n c l u d e   i n   t h i s   e m a i l ?   a   1   p a g e   o f   t h e   p r o j e c t ? "  
+ -   " F o u n d   i t   -   n v m "  
+ -   " D o n ' t   w e   n e e d   a   1 - p a g e   d o c u m e n t   o f   t h e   s t u d y   t h a t   w e   m i g h t   a l r e a d y   h a v e   s o m e w h e r e   o r   a l r e a d y   h a v e   t h e   b a s i s   o f ? "  
+ -   " W h e r e ?   I   d o n ' t   s e e   i t   i n   m y   i n b o x "  
+ -   " T h e   a u t h e n t i c a t i o n   f l o w   h a s   c o m p l e t e d .   Y o u   m a y   c l o s e   t h i s   w i n d o w .   H a v e   y o u   m a d e   a l l   t h e   d o c u m e n t a t i o n   i n   e m a i l   g u i d e l i n e s   s o   y o u   d o n t   f o r g e t   h o w   t o   d o   t h i s   i n   t h e   f u t u r e ?   T h e   a u t h e n t i c a t i o n   f l o w   h a s   c o m p l e t e d .   Y o u   m a y   c l o s e   t h i s   w i n d o w .   r e f e r e n c i n g   e v e r y t h i n g   y o u   n e e d   t o   d o ? "  
+ -   " i f   n o t   a d e q u a t e   i n s t r u c t i o n s   t h e r e   t h e r e   s h o u l d   b e "  
+ -   " a r e n t   i n s t r u c t i o n s   i n   t h e   e m a i l   g u i d e l i n e s ? "  
+ -   " t h o s e   s e c r e t s   a r e   i n   m y   d o w n l o a d s   b u t   s h o u l d   b e   c o p i e d   s o m e p l a c e   l o c a l   y o u   c a n   f i n d   a n d   h a v e   r e f e r e n c e   t o   i n   y o u r   g u i d e l i n e s   f o r   e m a i l s "  
+ -   " p y t h o n ?   i   t h o u g h t   t h i s   m c p   w a s   a   t o o l   y o u   h a v e   a c c e s s   t o   i n   c h a t ? "  
+ -   " s e n d   o n e   t o   m y s e l f   w i t h   a t t a c h m e n t "  
+ -   " r e a l l y   j u s t   n e e d   t o   k n o w   i f   t h e   v a r i a n t s   i n   p a c k a g e   a r e   c o m p l i a n t   w i t h   t e m p l a t e   w e   s u b m i t t e d   i n   i r b   a n d   i f   g 2 g   t o   p r o c e e d   w i t h   e m a i l i n g   -   d o   w e   h a v e   a n y   a t t a c h m e n t s   w e   w o u l d   n e e d   t o   a t t a c h   h e r e ?   h a v e   w e   s e n t   a   t e s t   e m a i l   w i t h   a t t a c h m e n t   t o   s e l f   o r   a   t e s t   e m a i l   w i t h   t e m p l a t e   a n d   a t t a c h m e n t   t o   s e l f ? "  
+ 
+## 2026-02-01
+
+[2026-02-01 19:37] Organizing Reference Files: Locating a new reference file in the Downloads folder, moving it to Thesis_Draft/Outreach/Strategy/, renaming per project's most rigid naming scheme, and adding priority TODO items.
+
+[2026-02-01 20:34] Don't send just yet
+
+[2026-02-01 20:38] +$300 compensation forecasting zoning opposition at the owner- and parcel-level using past letters in protest and machine learning (zoning cases, protest petitions, and spatial proximity features) -> you can just reference a 20-year database of letters in protest, they should know the rest exists this version is better we should use this for all. Refined template included.
+
+[2026-02-01 20:40] Does this require a hook? Excluded Dory Kornfeld Thrasher and Hiba Bou Akar (cant serve as readers).
+
+[2026-02-01 20:43] everything pushed up to GitHub?
+
+[2026-02-01 20:45] Is this all reflected in TODO? Has that been updated according to GUIDELINE
+
+[2026-02-01 20:46] Ensure you review your GUIDLINE here and in the GUIDLINE repo before modifying git history
+
+[2026-02-01 20:48] Continue under better model
+
+[2026-02-01 20:49] Where's my TODO on incorporating personalization from the doc i just provided into the drafts for interview batch followup

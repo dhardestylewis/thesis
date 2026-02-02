@@ -2,6 +2,7 @@
 # Thesis Master TODO List
 
 ## P1: Critical Path (Next 7 Days)
+- [ ] [Added: 2026-02-01 20:50] **Incorporate personalization from Reference PDF** into interview follow-up drafts (Zach Faddis, Bill Bunch, etc.).
 - [ ] [Added: 2026-02-01 20:30] **Send reader outreach drafts** after final review.
 - [ ] [Target: 2026-01-22] **Find 2018 EARS Layout** (Data Dictionary) to parse the fixed-width text file.
 - [ ] [Target: 2026-01-23] **Copy Outreach Package** from G: Drive (`Thesis_Interview_Outreach_Package`) to `Thesis_Draft/Outreach/`.
