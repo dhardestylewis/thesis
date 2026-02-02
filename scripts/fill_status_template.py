@@ -245,7 +245,7 @@ def fill_template(template_path, output_path, data):
 if __name__ == "__main__":
     txt_source = r"c:\Users\dhl\data\thesis\thesis\Thesis_Draft\Updates\2026-02-01_Status_Update_GDOC_READY.txt"
     tpl_source = r"c:\Users\dhl\data\thesis\thesis\Thesis_Draft\Updates\Templates\Weekly or Biweekly Status Update Tempate.docx"
-    output = r"c:\Users\dhl\data\thesis\thesis\Thesis_Draft\Updates\2026-02-01_Status_Update.docx"
+    output = r"c:\Users\dhl\data\thesis\thesis\Thesis_Draft\Updates\2026-02-01_Status_Update_Predicting_NIMBYism.docx"
     
     parsed = process_text_file(txt_source)
     fill_template(tpl_source, output, parsed)
