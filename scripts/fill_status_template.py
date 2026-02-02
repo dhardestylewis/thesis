@@ -125,6 +125,41 @@ def fill_template(template_path, output_path, data):
             p.runs[0].bold = True
 
     # 2. Update Sections A, B, C
+    def clear_section_content(doc, section_header, unique_next_headers):
+        """
+        Removes all paragraphs between section_header and any of the next_headers.
+        """
+        start_clearing = False
+        paras_to_delete = []
+        
+        for p in doc.paragraphs:
+            text = p.text.strip().lower()
+            
+            # Check if we hit the start header
+            if text.startswith(section_header.lower()):
+                start_clearing = True
+                continue # Don't delete the header itself
+            
+            # Check if we hit the next section
+            for nh in unique_next_headers:
+                if text.startswith(nh.lower()):
+                    start_clearing = False
+                    break
+            
+            if start_clearing:
+                # We are in the section. Delete this paragraph.
+                # However, maybe we want to keep empty lines? 
+                # Template usually has " * Item 1..." placeholders.
+                paras_to_delete.append(p)
+        
+        for p in paras_to_delete:
+            p._element.getparent().remove(p._element)
+
+    # Clear placeholders first
+    clear_section_content(doc, "Section A:", ["Section B:"])
+    clear_section_content(doc, "Section B:", ["Section C:"])
+    clear_section_content(doc, "Section C:", ["Section D:"])
+
     def insert_lines_after_header(header_prefix_list, lines):
         target_p = None
         for p in doc.paragraphs:
@@ -135,11 +170,6 @@ def fill_template(template_path, output_path, data):
             if target_p: break
         
         if target_p:
-            # Delete old bullets until next section? 
-            # For simplicity, we assume template has placeholders we want to keep OR we just inject.
-            # The previous script successfully injected, let's stick to that.
-            # Actually, to avoid duplicates if run multiple times on same doc (not the case here), just inject.
-            
             # Use manual bullet formatting since 'List Bullet' style is missing
             current_p = target_p
             for line in lines:
