@@ -208,3 +208,7 @@ Use commented section headers:
 - **Review TODOs**: Verify all completed work is checked off in `TODO.md` and moved to `TODO-COMPLETED.md`.
 - **Final Commit & Push**: Stage and commit all project changes with a descriptive message, then push to remote (e.g., `git commit -am "..."; git push`).
 
+
+## Domain-Specific Guidelines
+
+- **Email Automation**: [Local](file:///c:/Users/dhl/.gemini/antigravity/scratch/gmail-mcp-workspace/GUIDELINES.md) | [GitHub](https://github.com/dhardestylewis/gmail-mcp/blob/main/GUIDELINES.md) (UNREVIEWED) [Added: 2026-02-01 19:29]
