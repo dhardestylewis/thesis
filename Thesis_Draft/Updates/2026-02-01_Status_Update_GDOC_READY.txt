@@ -21,8 +21,9 @@ Section C: Tasks to complete in the next week
 
 Section D: Challenges/issues/obstacles
 | Challenge | Approach | Do you want to discuss this? |
-| 15 non-responders from Jan 23 outreach | Found alternative emails and wrote new drafts. | No |
-| Can't find 2018 EARS Data Dictionary | Searching for layout files; might have to parse manually. | No |
+| 15 non-responders from Jan 23 outreach | Found alternative emails and wrote new drafts. | Possibly, will follow up |
+| Can't find 2018 EARS Data Dictionary (Need to confirm all years) | Searching for layout files; might have to parse manually. | Nope, I have it under control |
+| Finding the time to manage all these emails | Prioritizing automation and batching drafts. | Yes, that would be helpful |
 
 PROGRESS LINK:
 [Interactive Project Repo (GitHub)](https://github.com/dhardestylewis/thesis)

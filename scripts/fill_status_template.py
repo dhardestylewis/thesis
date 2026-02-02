@@ -211,25 +211,41 @@ def fill_template(template_path, output_path, data):
                 pass
                 
             # Let's just use the OXML addnext 
+            # Use manual bullet formatting since 'List Bullet' style is missing
             current_p = target_p
             for line in lines:
-                new_p = doc.add_paragraph(style='List Bullet') # bullet style
+                new_p = doc.add_paragraph(style='normal') # Fallback to normal
+                p_fmt = new_p.paragraph_format
+                p_fmt.left_indent = Pt(18) # Indent for bullet
+                p_fmt.first_line_indent = Pt(-18) # Hanging indent
+                
                 # Format text
+                runner = new_p.add_run("• ") # Manual bullet char
+                
                 if "**" in line:
                     clean_line = line.replace("* ", "").replace("- ", "")
+                    # Split only on the first colon to separate Key from Value
                     parts = clean_line.split(":", 1)
                     if len(parts) > 1:
-                        new_p.add_run(parts[0] + ":").bold = True
+                        # parts[0] is the key (e.g. "**Data Collection**")
+                        # We strip ** and bold it
+                        key_text = parts[0].replace("**", "")
+                        new_p.add_run(key_text + ":").bold = True
+                        
+                        # parts[1] is the rest. It might have markdown links, but for now we just add it.
+                        # Using existing logic (strip ** just in case? Usually keys have it)
                         new_p.add_run(parts[1])
                     else:
-                        new_p.add_run(clean_line)
+                        # No colon, just bold the whole thing if it has **? 
+                        # Or just strip ** and add regular? 
+                        # The user example has **Key**: Value.
+                        # If just **Text**, let's bold it.
+                        new_p.add_run(clean_line.replace("**", ""))
                 else:
                     new_p.add_run(line.replace("* ", "").replace("- ", ""))
                 
                 # Move this new_p to right position
-                # Remove from end of doc
                 new_p._element.getparent().remove(new_p._element)
-                # Insert after current_p
                 current_p._element.addnext(new_p._element)
                 current_p = new_p # Advance
 
