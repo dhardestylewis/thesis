@@ -2,6 +2,8 @@
 # Thesis Master TODO List
 
 ## P1: Critical Path (Next 7 Days)
+- [ ] [Added: 2026-02-01 20:30] **Reach out to potential readers** using Reader Outreach Strategy doc.
+- [ ] [Added: 2026-02-01 20:30] **Download all remaining EARS** (2023, 2024, 2025). <i>(TCAD Public Information section: traviscad.org)</i>
 - [ ] [Target: 2026-01-22] **Manually download missing EARS data** (2023, 2024, 2025) from TCAD website to `Data/Appraisal_Rolls/YYYY`.
 - [ ] [Target: 2026-01-22] **Find 2018 EARS Layout** (Data Dictionary) to parse the fixed-width text file.
 - [ ] [Target: 2026-01-23] **Copy Outreach Package** from G: Drive (`Thesis_Interview_Outreach_Package`) to `Thesis_Draft/Outreach/`.
