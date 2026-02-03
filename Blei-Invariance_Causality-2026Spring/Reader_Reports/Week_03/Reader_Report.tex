@@ -1,25 +1,34 @@
-\documentclass{article}
+\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
-\usepackage{geometry}
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+% Ultra-compact spacing
+\titlespacing*{\section}{0pt}{6pt}{2pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
 \usepackage{fancyhdr}
 \usepackage{amsmath, amssymb}
 \usepackage{hyperref}
 
-\geometry{letterpaper, margin=1in}
-
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{David H. Lewis}
-\lhead{Blei Seminar: Invariance \& Causality}
-\rfoot{Page \thepage}
+\lhead{\footnotesize STAT8101}
+\chead{\footnotesize Invariance, Causality, and Applications}
+\rhead{\footnotesize David H. Lewis}
+\cfoot{\thepage}
 
-\title{Reader Report: Week 03}
+\title{\vspace{-2em}\textbf{Reader Report: Week 03}}
 \author{Pearl (2016) Ch 3--4: Interventions and Counterfactuals}
 \date{Spring 2026}
 
 \begin{document}
 
 \maketitle
+\thispagestyle{fancy}
+\vspace{-1em}
 
 \section*{Summary}
 Chapters 3 and 4 of Pearl's \textit{Primer} formalize the distinction between \textit{seeing} (observation) and \textit{doing} (intervention), providing the graphical and algebraic tools to move between them. 
