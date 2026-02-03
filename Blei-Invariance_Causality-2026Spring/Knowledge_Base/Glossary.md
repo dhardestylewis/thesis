@@ -56,6 +56,10 @@ The subset of environments observed during training. The objective is to find re
 Unseen environments used to validate **Out-of-Distribution (OOD)** generalization. In this project, 2019--2025 data.
 *   *Grounding:* [Arjovsky et al., 2019, p. 2]
 
+**Partitioning**
+The procedural act of dividing the dataset into discrete **Environments** based on metadata (e.g., time, location). While the literature often refers to data being "collected into distinct, separate environments," partitioning is the standard ML term for this methodological step.
+*   *Grounding:* [Procedural Term / Arjovsky et al., 2019, p. 1]
+
 **Environment-specific Confounder**
 A variable $Z$ that causes both predictors $X$ and target $Y$ but whose influence or distribution varies across environments. Standard models overfit to $Z$, creating **Spurious Associations**.
 *   *Grounding:* [Arjovsky et al., 2019, p. 1 "confounding factors" / Peters et al., 2016, p. 2]
@@ -77,7 +81,7 @@ The property of a model maintaining its **Predictive Performance** across all en
 
 **Spurious Association**
 An association between $X$ and $Y$ that arises from shared confounders or selection bias rather than direct causation. These associations shift when environments change.
-*   *Grounding:* [Arjovsky et al., 2019, p. 1 / Peters et al., 2018, p. 504 (referred to as "spurious correlation")]
+*   *Grounding:* [Arjovsky et al., 2019, p. 1 "spurious correlations" / Peters et al., 2018, p. 504]
 
 **Out-of-Distribution (OOD) Generalization**
 The ability of a model to maintain performance under **Distribution Shift**—specifically when the test data $P(X, Y | e_{te})$ follows a different distribution than the training data $\mathcal{E}_{tr}$.
