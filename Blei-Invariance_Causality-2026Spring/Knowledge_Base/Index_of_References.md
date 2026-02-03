@@ -33,9 +33,14 @@ This index maps the Project's key technical terms and methodologies to original 
 | **Robustness** | Bühlmann (2020) | p. 1 | Performance across environments. |
 | **Predictive Performance** | Arjovsky (2019) | p. 2 | Secondary metric (AUC). |
 | **Separate Predictor** | Peters (2016) | p. 1 | Model selection logic. |
-| **Distribution Shift** | Schölkopf (2021) | p. 29 | Change in $P(X, Y)$ across $e$. |
-| **Invariant Causal Mechanism** | Peters (2016) | p. 1-2 | Stable relationship $P(Y\|PA(Y))$. |
-| **Mechanism Change** | Peters (2016) | p. 2 | Violation of the invariance property. |
+| Distribution Shift | [Krueger et al., 2021, p. 1] | Generalization challenge across environments. |
+| Invariant Causal Mechanism | [Peters et al., 2018, p. 107] | Stable underlying process $P(Y|X_{pa(Y)})$. |
+| Mechanism Change | [Peters et al., 2018, p. 107] | Structural change in the causal process over time. |
+| Gradient Norm Penalty | [Arjovsky et al., 2019, p. 6] | Regularization for representation invariance. |
+| Fixed Dummy Classifier | [Arjovsky et al., 2019, p. 6] | Baseline for evaluating feature invariance. |
+| Feature Selection Vector | [Wu et al., 2025b, p. 2] | Latent indicator $z$ for the invariant set. |
+| Stable Predictive Relationship | [Wu et al., 2025b, p. 1] | Target of the BIP posterior inference. |
+| Future Horizons | Project Term | OOD evaluation windows (2019--2025). |
 | **Stable Properties** | Arjovsky (2019) | p. 1 | Invariant mechanisms. |
 | **Identification** | Peters (2016) | p. 1 | Discovery of causal drivers. |
 | **ERM** | Arjovsky (2019) | Sec. 2.1 | Standard ML baseline. |
