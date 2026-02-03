@@ -33,7 +33,7 @@ Investigating causal drivers of neighborhood opposition (NIMBYism) to housing [E
 Critical for urban planners. Current models overfit to specific eras, failing when market regimes shift [Arjovsky et al., 2019, p. 1]. Identifying \textit{invariant} causes enables policy design addressing fundamental concerns rather than symptoms of a moment, ensuring \textbf{robustness} [Bühlmann, 2020, p. 404].
 
 \section*{3. What is my strategy for solving it?}
-Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 5] and \textbf{Bayesian Invariant Prediction (BIP)} [Wu et al., 2025b, p. 2]:
+Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 5] and \textbf{Bayesian Invariant Prediction (BIP)} [Wu et al., 2025b, p. 2], both grounded in the seminal \textbf{Invariant Prediction} framework [Peters et al., 2016, p. 947]:
 \begin{enumerate}
     \setlength\itemsep{-0.3em}
     \item \textbf{Environments:} Partition data via \textbf{expanding window Cross-Validation} into \textbf{Training Environments} ($\mathcal{E}_{tr}$) and \textbf{Test Environments} ($\mathcal{E}_{te}$):
@@ -57,7 +57,7 @@ Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 5] a
 \end{enumerate}
 
 \section*{4. Why is this solution good? Where does it fall short?}
-\textbf{It falls short because} it assumes an \textbf{invariant causal mechanism}. The invariance assumption fails if the underlying reasons for NIMBYism undergo \textbf{mechanism change} over time. For instance, neighborhood opposition may shift from traffic congestion fears to displacement concerns as demographics evolve.
+\textbf{It falls short because} it assumes an \textbf{invariant causal mechanism} [Peters et al., 2018, p. 107]. The invariance assumption fails if the underlying reasons for NIMBYism undergo \textbf{mechanism change} over time [Peters et al., 2018, p. 107]. For instance, neighborhood opposition may shift from traffic congestion fears to displacement concerns as demographics evolve.
 
 \section*{5. How can I demonstrate that the solution works?}
 Train on expanding $\mathcal{E}_{tr}$, test on all \textbf{future horizons} (2019--2025) in $\mathcal{E}_{te}$. Successful Invariant Model demonstrates \textbf{predictive stability} through the \textbf{invariance of its AUC} score across all horizons, maintaining reliability where baselines fail under \textbf{distribution shift} [Krueger et al., 2021, p. 1].
