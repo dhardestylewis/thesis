@@ -97,7 +97,7 @@ The primary **graphical tool** that **governs** the **identification** of a caus
 *   *Grounding:* [Pearl, 2016, Def 3.3.1]
 
 **Front-Door Criterion (Graphical Tool)**
-An alternative **identification strategy** enabling causal inference by **exploiting** a mediator $M$ that intercepts the effect, even in the presence of an **unobserved confounder** between $X$ and $Y$.
+An alternative **identification strategy** enabling causal inference by **exploiting** a **mediator** $M$ that **intercepts the causal effect**, even in the presence of an **unobserved confounder** between $X$ and $Y$.
 *   *Grounding:* [Pearl, 2016, Def 3.4.1]
 
 **Adjustment Formula (Algebraic Tool)**
