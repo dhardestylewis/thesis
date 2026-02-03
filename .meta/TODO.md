@@ -6,7 +6,7 @@
 - [ ] [Target: 2026-02-15] [P3] **Advisor Check-in**: Schedule mid-February status meeting with Dory Thrasher.
 
 ## 🔵 Data Pipeline & Modeling
-- [ ] [Target: 2026-02-02] [P1] **2018 EARS Layout**: Locate missing Data Dictionary to parse the 2018 fixed-width appraisal roll.
+- [ ] [Target: 2026-02-02] [P1] **EARS Data Dictionaries**: Locate/confirm layout files for all years (especially 2018).
 - [ ] [Target: 2026-02-04] [P1] **Data Backup**: Establish automated or manual backup for large excluded files (`.pkl`, `.csv`) to G: Drive/S3.
 - [ ] [Target: 2026-02-04] [P2] **Preliminary Models**: Train baseline XGBoost/Regression models on the confirmed 2019-2025 longitudinal dataset.
 - [ ] [Target: 2026-02-04] [P2] **Draft Results (Preliminary)**: Visualize initial feature importance and accuracy metrics.

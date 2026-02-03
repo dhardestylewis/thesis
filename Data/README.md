@@ -6,63 +6,45 @@ Research datasets for the thesis on predicting NIMBYism in Austin, Texas.
 
 ```
 Data/
-├── Protest_Petitions/            # Rezoning protest petitions (2007-2025)
-│   ├── EARS/                     # Appraisal roll zips (2019-2022)
-│   ├── pickles/                  # Pickled dataframes by year
-│   ├── geojson/                  # Petition geometries (v2-v12)
-│   ├── models/                   # Model artifacts
-│   └── analysis_results/         # Analysis outputs
-├── Zoning_Cases/                 # Austin zoning cases with nearby parcels
-│   ├── geojson/                  # Spatial data (cases, parcels)
-│   └── csv/                      # Tabular data (land use, enriched cases)
-├── documents/                    # Original petition PDFs
-└── README.md (this file)
+├── Appraisal_Rolls/          # TCAD Appraisal Roll Exports (EARS) - [EXCLUDED]
+│   ├── 2018/--2025/          # Annual data dumps (Text/CSV + Layouts)
+│   └── README.md
+├── Protest_Petitions/        # Derived protest data & training sets
+│   ├── Pickles/              # Serialized pandas dataframes
+│   ├── GeoJSON/              # Spatial petition data
+│   └── Models/               # Trained models
+├── Zoning_Cases/             # City of Austin Zoning Cases
+│   ├── Source_Data/          # Raw downloads from Data Portal
+│   ├── Processed_Data/       # Enriched datasets
+│   └── QC_Logs/              # Merge/Match quality logs
+├── Documents/                # Raw PDF Petition Files
+└── README.md
 ```
 
-## Datasets
+## Data Reconstruction & Sources
 
-### Protest_Petitions/
-**Status**: Restructured and populated
+**Automated Setup**:
+Run the included python script to automatically create directories, download public zoning data, and rename raw EARS files:
+```bash
+python ../Analysis/Scripts/setup_project.py
+```
 
-Comprehensive dataset of Austin rezoning protest petitions from 2007-2025 with Travis County Appraisal District (TCAD) property data enrichment.
+Since large files (>100MB) are excluded from this repository, follow these steps to reconstruct the full dataset:
 
-**Subdirectories**:
-- **EARS/**: Electronic Appraisal Roll Snapshots (zip files) for 2018-2022
-- **pickles/**: Processed dataframes stored as pickle files
-- **geojson/**: Progressive versions of petition data mixed with spatial info
-- **models/**, **analysis_results/**: Placeholders for analysis outputs
+### 1. Appraisal Rolls (EARS)
+*   **Source**: Texas Comptroller of Public Accounts / Travis County Appraisal District (TCAD).
+*   **Access**: [Property Tax Data Portal](https://comptroller.texas.gov/taxes/property-tax/) or request from TCAD.
+*   **Action**: Download "Electronic Appraisal Roll Submission" (EARS) files for years 2018-2025.
+*   **Placement**: Unzip into `Data/Appraisal_Rolls/{YYYY}/`.
+*   **Naming**: Rename primary files to match `EARS_YYYY_Jurisdiction_Tax_Values.txt`.
 
-### Zoning_Cases/
-**Status**: Restructured
+### 2. Zoning Cases
+*   **Source**: [Austin Open Data Portal](https://data.austintexas.gov/).
+*   **Dataset**: "Zoning Cases" and "Land Use Inventory".
+*   **Action**: Download as CSV/GeoJSON.
+*   **Placement**: Place raw files in `Data/Zoning_Cases/Source_Data/`.
 
-Austin zoning cases matched with nearby parcels and land use inventory data.
-
-**Subdirectories**:
-- **geojson/**: Spatial files including `combined_cases_with_nearby.geojson`, `parcels_within_200ft.geojson`
-- **csv/**: Tabular data including `land_use_inventory_prefetched.csv`, `enriched_zoning_data.csv`
-
-Austin zoning cases matched with nearby parcels and land use inventory data.
-
-**Key files**:
-- `combined_cases_with_nearby.geojson` - Zoning cases with nearby parcel geometries
-- `land_use_inventory_prefetched.csv` - Austin land use inventory (183MB)
-- `enriched_zoning_data_updated.csv` - Enriched zoning case information
-
-### documents/
-Original petition PDFs for reference and validation.
-
-## Data Sources
-
-- **Travis County Appraisal District (TCAD)**: Property data via EARS exports
-- **City of Austin**: Zoning cases and land use inventory  
-- **Austin Planning Department**: Scanned protest petition records
-
-## Usage Notes
-
-- Large GeoJSON files optimized for GIS software (QGIS, ArcGIS)
-- Pickled dataframes require pandas to load
-- Data spans 2007-2025 for training (2007-2017) and validation (2018-2025)
-
-## Related
-
-See `Analysis/notebooks/` for data processing and modeling notebooks.
+### 3. Protest Petitions
+*   **Source**: Validated supermajority protest letters (City Clerk).
+*   **Recreation**: The derived datasets (`.pkl`, `.geojson`) in `Protest_Petitions/` are the result of OCR processing in `Analysis/Notebooks/`.
+*   **Backup**: Full processed datasets are available in the project's S3/G:Drive backup.

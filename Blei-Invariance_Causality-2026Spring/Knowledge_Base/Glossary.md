@@ -28,9 +28,9 @@ A set of assignments describing the causal mechanism generating data, typically 
 The direct causes of a target variable $Y$ in an SCM. Interventions on other variables leave the mechanism $P(Y|PA(Y))$ unchanged.
 *   *Grounding:* [Peters et al., 2016, p. 2 / Peters et al., 2018, p. 5115]
 
-**Target Variable ($Y$)**
-The outcome variable of interest in a prediction task. In this project, $Y$ denotes **Resistance**.
-*   *Grounding:* [Peters et al., 2018, p. 2555 / Peters et al., 2016, p. 1]
+**Target Variable / Outcome ($Y$)**
+The outcome variable of interest in a prediction task. In this project, $Y$ denotes **Resistance**. In causal terms, it is the node being targeted by the **directed causal paths**.
+*   *Grounding:* [Peters et al., 2018, p. 2555 / Pearl, 2016, Sec 1.2]
 
 **Resistance**
 The target variable ($Y$) in this project, representing the degree of neighborhood opposition to housing developments (NIMBYism). It is the outcome predicted by the model, where the objective is to isolate causal drivers that remain stable across shifting environments.
@@ -93,7 +93,7 @@ A bias where the data collection process itself depends on the variables $X$ or 
 ### Identification & Estimation
 
 **Backdoor Criterion (Graphical Tool)**
-The primary **graphical tool** that **governs** the **identification** of a causal effect. A condition on a set $Z$ such that it **blocks** all spurious paths between $X$ and $Y$.
+The primary **graphical tool** that **governs** the **identification** of a causal effect. A condition on a set $Z$ such that it **blocks** all **spurious paths** between the **treatment** $X$ and outcome $Y$.
 *   *Grounding:* [Pearl, 2016, Def 3.3.1]
 
 **Front-Door Criterion (Graphical Tool)**
@@ -110,6 +110,20 @@ The difference in expected outcomes between two interventions, typically $E[Y|do
 **Counterfactual ($Y_x(u)$)**
 The potential outcome of a variable $Y$ for a specific unit $u$ had $X$ been $x$. Computed via the Abduction-Action-Prediction algorithm.
 *   *Grounding:* [Pearl, 2016, Ch 4 / Thm 4.2.1]
+
+### Graph Theory Constraints
+
+**Directed Causal Path**
+A path from $X$ to $Y$ consisting entirely of directed edges ($X \rightarrow \dots \rightarrow Y$). These transmit the true causal effect.
+*   *Grounding:* [Pearl, 2016, Def 1.2.2]
+
+**Collider Path**
+A path containing a node $Z$ where two arrows collide ($X \rightarrow Z \leftarrow Y$). This path is naturally **blocked** unless $Z$ (or a descendant) is conditioned on.
+*   *Grounding:* [Pearl, 2016, Sec 2.3]
+
+**Spurious Path (Backdoor Path)**
+An undirected path between $X$ and $Y$ that begins with an arrow pointing *into* $X$ (e.g., $X \leftarrow Z \rightarrow Y$). These create non-causal associations.
+*   *Grounding:* [Pearl, 2016, Def 3.3.1]
 
 
 **Invariance**

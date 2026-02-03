@@ -10,9 +10,9 @@ This thesis develops machine learning models to predict neighborhood opposition 
 
 ## Data
 
-- **Training**: Austin rezoning protest petitions (2007-2017)
-- **Validation**: Austin rezoning cases (2018-2025)
-- **Context**: Austin's housing policy transformation from NIMBY stronghold to YIMBY laboratory
+- **Protest Petitions**: 2007–2025 (full history)
+- **Appraisal Rolls (EARS)**: 2018–2025 (detailed property features)
+- **Primary Study Period**: 2018–2025 (Intersection for full-feature modeling)
 
 ## Directory Structure
 
