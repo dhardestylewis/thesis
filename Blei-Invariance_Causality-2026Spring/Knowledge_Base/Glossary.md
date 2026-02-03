@@ -118,7 +118,7 @@ A path from $X$ to $Y$ consisting entirely of directed edges ($X \rightarrow \do
 *   *Grounding:* [Pearl, 2016, Def 1.2.2]
 
 **Collider Path**
-A path containing a node $Z$ where two arrows collide ($X \rightarrow Z \leftarrow Y$). This path is naturally **blocked** unless $Z$ (or a descendant) is conditioned on.
+A path containing a node $Z$ where two arrows collide ($X \rightarrow Z \leftarrow Y$). This path is naturally **blocked**. Conditioning on $Z$ opens **new paths** (spurious associations) between $X$ and $Y$.
 *   *Grounding:* [Pearl, 2016, Sec 2.3]
 
 **Spurious Path (Backdoor Path)**
