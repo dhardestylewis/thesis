@@ -12,11 +12,11 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{Invariance, Causality, and Applications}
-\rhead{Prof. David M. Blei}
+\lhead{STAT8101: Predicting NIMBYism}
+\rhead{Columbia University --- David M. Blei}
 \cfoot{\thepage}
 
-\title{\vspace{-2em}\textbf{Project Proposal}}
+\title{\vspace{-2em}\textbf{Predicting NIMBYism: An Invariant Perspective}}
 \author{Daniel Hardesty Lewis\vspace{-1ex}}
 \date{2026 Spring}
 
@@ -48,7 +48,7 @@ Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 5] a
     \end{tabular}
     \end{center}
     \item \textbf{Representation:} Extract features $\Phi(X)$ from property data and protest letters [Schölkopf et al., 2021, p. 15].
-    \item \textbf{Methods:} We implement the two core paradigms scheduled for \textbf{Weeks 6--7} of the seminar:
+    \item \textbf{Methods:} We implement the two core paradigms scheduled for \textbf{Weeks 6--7} of the seminar [Blei, 2026]:
     \begin{itemize}
         \item \textbf{Invariant Risk Minimization (IRM):} A \textit{regularized optimization} paradigm to learn $\Phi$ such that a \textbf{fixed dummy classifier} $w=1.0$ is simultaneously \textbf{optimal} across all $\mathcal{E}_{tr}$, \textbf{enforced} via a \textbf{gradient norm penalty} [Arjovsky et al., 2019, p. 5]:
         \[ \min_{\Phi} \sum_{e \in \mathcal{E}_{tr}} R^e(\Phi) + \lambda \|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2 \]
@@ -68,6 +68,7 @@ Train on expanding $\mathcal{E}_{tr}$, test on all \textbf{future horizons} (201
 \begin{itemize}
     \setlength\itemsep{0em}
     \item Arjovsky, M., Bottou, L., Gulrajani, I., and Lopez-Paz, D. (2019). Invariant Risk Minimization. \textit{arXiv:1907.02893}.
+    \item Blei, D. M. (2026). STAT8101: Invariance, Causality, and Applications. \textit{Course Syllabus and Website}, Columbia University.
     \item Bühlmann, P. (2020). Invariance, Causality and Robustness. \textit{Statistical Science}, 35(3):404--426.
     \item Einstein, K. L., Palmer, M., and Glick, D. M. (2019). Who Participates in Local Government? Evidence from Meeting Minutes. \textit{Perspectives on Politics}, 17(1):28--46.
     \item Krueger, D., Caballero, E., Jacobsen, J., Zhang, A., Binas, J., Zhang, D., Priol, R. L., and Courville, A. (2021). Out-of-Distribution Generalization via Risk Extrapolation. \textit{arXiv:2003.00688}.
