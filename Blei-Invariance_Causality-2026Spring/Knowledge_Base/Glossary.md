@@ -108,7 +108,7 @@ The difference in expected outcomes between two interventions, typically $E[Y|do
 *   *Grounding:* [Pearl, 2016, Eq 3.1]
 
 **Counterfactual ($Y_x(u)$)**
-The potential outcome of a variable $Y$ for a specific unit $u$ had $X$ been $x$. Computed via the Abduction-Action-Prediction algorithm.
+A concept that **extends this algebra** to the unit level. Defined as the **potential outcome** of $Y$ for a specific unit $u$ **had $X$ been different** (e.g., $X=x$). Computed via the Abduction-Action-Prediction algorithm.
 *   *Grounding:* [Pearl, 2016, Ch 4 / Thm 4.2.1]
 
 ### Graph Theory Constraints
