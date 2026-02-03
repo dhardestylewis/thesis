@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage{hyperref}
+
+\geometry{letterpaper, margin=1in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{David H. Lewis}
+\lhead{Blei Seminar: Invariance \& Causality}
+\rfoot{Page \thepage}
+
+\title{Reader Report: Week 03}
+\author{Pearl (2016) Ch 3--4: Interventions and Counterfactuals}
+\date{Spring 2026}
+
+\begin{document}
+
+\maketitle
+
+\section*{Summary}
+Chapters 3 and 4 of Pearl's \textit{Primer} formalize the distinction between \textit{seeing} (observation) and \textit{doing} (intervention), providing the graphical and algebraic tools to move between them. 
+
+The core contribution of Chapter 3 is the \textbf{Adjustment Formula} (Eq 3.5), which allows us to compute the effect of an intervention $P(Y \mid do(x))$ purely from observational probabilities $P(Y \mid x, z)$, provided we can identify a valid adjustment set $Z$. This identification is governed by the \textbf{Backdoor Criterion} (Def 3.3.1), which states that a set $Z$ allows for identification if it blocks all spurious paths between the treatment $X$ and outcome $Y$ without blocking directed causal paths or opening new collider paths. When the backdoor path is blocked by an unobserved confounder, the \textbf{Front-Door Criterion} (Def 3.4.1) offers an alternative identification strategy by exploiting a mediator $M$ that intercepts the causal effect.
+
+Chapter 4 extends this algebra to \textbf{Counterfactuals}, defined as the potential outcome $Y$ had $X$ been different, given specific evidence about a unit $u$. Unlike interventions, which apply to populations, counterfactuals are specific to the unit. They are computed via the three-step \textbf{Abduction-Action-Prediction} algorithm: (1) \textit{Abduct} the state of exogenous variables $U$ from evidence, (2) take \textit{Action} to modify the structural equations (graph surgery), and (3) \textit{Predict} the outcome in the modified model.
+
+\section*{Critique \& Project Connection}
+Pearl's "graph surgery" metaphor provides a rigorous definition for the "invariance" we seek in the seminar. An intervention is effectively an operation that creates a new environment $e'$ where the mechanism $P(X \mid PA(X))$ is destroyed, but the mechanism $P(Y \mid PA(Y))$ remains \textbf{invariant}. 
+
+For the \textbf{NIMBYism project}, this formalizes our identification strategy. We treat "Time" (market cycles) as an environment $E$. If the relationship between a feature (e.g., "School Quality") and "Opposition" ($Y$) changes between 2008 and 2024, it implies that the unconditional relationship is confounded (the path is not blocked). Investigating Invariant Risk Minimization (IRM) is essentially searching for a representation $\Phi(X)$ that satisfies the Backdoor Criterion implicitly across all observed environments. The Counterfactual algorithm is particularly relevant for the "validity" check: we want to ask, "Would this specific development have been opposed if it were presented in a different year?" tailored to the specific neighborhod's exogenous characteristics $U$ (e.g., historical wealth).
+
+\section*{Questions}
+1. Is the "Environment" $E$ in IRM simply a variable we condition on using the Adjustment Formula, or does it strictly serve as a proxy for unknown intervenions?
+2. Can the Front-Door criterion be applied to text data, where the "Mediator" is a latent topic (e.g., "Traffic Concern") discovered via representation learning?
+
+\end{document}
