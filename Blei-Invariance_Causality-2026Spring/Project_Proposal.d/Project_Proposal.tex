@@ -33,7 +33,7 @@ Investigating causal drivers of neighborhood opposition (NIMBYism) to housing [E
 Critical for urban planners. Current models overfit to specific eras, failing when market regimes shift [Arjovsky et al., 2019, p. 1]. Identifying \textit{invariant} causes enables policy design addressing fundamental concerns rather than symptoms of a moment, ensuring \textbf{robustness} [Bühlmann, 2020, p. 404].
 
 \section*{3. What is my strategy for solving it?}
-Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 2] and \textbf{Probabilistic Invariance Modeling} [Wu et al., 2025b, p. 1]:
+Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 5] and \textbf{Bayesian Invariant Prediction (BIP)} [Wu et al., 2025b, p. 2]:
 \begin{enumerate}
     \setlength\itemsep{-0.3em}
     \item \textbf{Environments:} Partition data via \textbf{expanding window Cross-Validation} into \textbf{Training Environments} ($\mathcal{E}_{tr}$) and \textbf{Test Environments} ($\mathcal{E}_{te}$):
@@ -48,11 +48,11 @@ Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 2] a
     \end{tabular}
     \end{center}
     \item \textbf{Representation:} Extract features $\Phi(X)$ from property data and protest letters [Schölkopf et al., 2021, p. 15].
-    \item \textbf{Identification Strategy:} Combine \textbf{regularized optimization} (IRM) with \textbf{posterior inference} (BIP):
+    \item \textbf{Methods:} We implement the two core paradigms discussed in the seminar:
     \begin{itemize}
-        \item \textbf{Regularized Optimization (IRM):} Learn a representation $\Phi$ such that a \textbf{fixed dummy classifier} $w=1.0$ is optimal across all $\mathcal{E}_{tr}$, achieved via a gradient norm penalty [Arjovsky et al., 2019, p. 5]:
+        \item \textbf{IRM (Regularized Optimization):} Learn a representation $\Phi$ such that a \textbf{fixed dummy classifier} $w=1.0$ is simultaneously optimal across all $\mathcal{E}_{tr}$, enforced via a gradient norm penalty [Arjovsky et al., 2019, p. 5]:
         \[ \min_{\Phi} \sum_{e \in \mathcal{E}_{tr}} R^e(\Phi) + \lambda \|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2 \]
-        \item \textbf{Posterior Inference (BIP):} Compute the posterior $p(z|D)$ for a latent \textbf{feature selection vector} $z \in \{0,1\}^p$, targeting the features with a stable predictive relationship [Wu et al., 2025b, p. 2].
+        \item \textbf{BIP (Posterior Inference):} Define a latent \textbf{feature selection vector} $z \in \{0,1\}^p$ and compute the \textbf{posterior} $p(z|D)$ to identify the subset of features with a \textbf{stable predictive relationship} to the outcome [Wu et al., 2025b, p. 2].
     \end{itemize}
 \end{enumerate}
 
