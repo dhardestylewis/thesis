@@ -158,8 +158,20 @@ A function measuring the discrepancy between a prediction and the true label. In
 *   *Grounding:* [Arjovsky et al., 2019, p. 4]
 
 **Gradient Penalty**
-The core regularization term in **IRM**: $\|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2$. It acts as a selection pressure by **penalizing** representations where the optimal classifier would vary across environments, thus "filtering" for invariance.
-*   *Grounding:* [Arjovsky et al., 2019, Eq. 5 / Wu et al. 2025b p. 3]
+The core regularization term in **regularized optimization** approaches like **IRM**: $\|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2$. It measures the optimality of a **fixed dummy classifier** at each environment, acting as a selection pressure for invariance.
+*   *Grounding:* [Arjovsky et al., 2019, p. 5 / Wu et al., 2025b, p. 3]
+
+**Fixed Dummy Classifier ($w=1.0$)**
+A scalar classifier used in the IRM objective to evaluate the invariance of a representation $\Phi$. The goal is to find $\Phi$ where the optimal classifier is shared across all environments.
+*   *Grounding:* [Arjovsky et al., 2019, p. 5]
+
+**Feature Selection Vector ($z$)**
+A latent binary vector $z \in \{0, 1\}^p$ where each entry $z(i)$ indicates whether the $i$-th feature is included in the invariant set.
+*   *Grounding:* [Wu et al., 2025b, p. 2]
+
+**Posterior Inference**
+The probabilistic process of calculating $p(z|D)$ to identify the most likely invariant feature set given multi-environment data.
+*   *Grounding:* [Wu et al., 2025b, p. 2]
 
 **Reliability**
 The property of a model generating stable and trustworthy predictions across varying environments. In causal learning, reliability is achieved when the model relies on the **Invariant Causal Mechanism**, making it robust to context shifts.
