@@ -52,7 +52,7 @@ Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 5] a
     \begin{itemize}
         \item \textbf{Invariant Risk Minimization (IRM):} A \textit{regularized optimization} paradigm to learn $\Phi$ such that a \textbf{fixed dummy classifier} $w=1.0$ is simultaneously \textbf{optimal} across all $\mathcal{E}_{tr}$, \textbf{enforced} via a \textbf{gradient norm penalty} [Arjovsky et al., 2019, p. 5]:
         \[ \min_{\Phi} \sum_{e \in \mathcal{E}_{tr}} R^e(\Phi) + \lambda \|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2 \]
-        \item \textbf{Bayesian Invariant Prediction (BIP):} A \textit{probabilistic inference} paradigm defining a latent \textbf{feature selection vector} $z \in \{0,1\}^p$; the \textbf{posterior} $p(z|D)$ \textbf{targets the true invariant features} [Wu et al., 2025b, p. 2].
+        \item \textbf{Bayesian Invariant Prediction (BIP):} A \textit{probabilistic inference} paradigm defining a latent \textbf{feature selection vector} $z \in \{0,1\}^p$; the \textbf{posterior $p(z|D)$ targets the true invariant features} [Wu et al., 2025b, p. 2].
     \end{itemize}
 \end{enumerate}
 
