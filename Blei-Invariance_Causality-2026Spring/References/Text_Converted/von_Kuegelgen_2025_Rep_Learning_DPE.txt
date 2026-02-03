@@ -1,0 +1,2184 @@
+Representation Learning for Extrapolation in Perturbation Modeling
+Julius von Kügelgen 1 Jakob Ketterer2 Xinwei Shen 3 Nicolai Meinshausen 1 Jonas Peters 1
+Abstract
+We consider the problem of modeling the effects
+of perturbations, such as gene knockdowns or
+drugs, on measurements, such as single-cell RNA
+or protein counts. Given data for some perturba-
+tions, we aim to predict the distribution of mea-
+surements for new combinations of perturbations.
+To address this challenging extrapolation task, we
+posit that perturbations act additively in a suitable,
+unknown embedding space. We formulate the
+data-generating process as a latent variable model,
+in which perturbations amount to mean shifts in
+latent space and can be combined additively. We
+then prove that, given sufficiently diverse training
+perturbations, the representation and perturbation
+effects are identifiable up to orthogonal transfor-
+mation and use this to characterize the class of
+unseen perturbations for which we obtain extrapo-
+lation guarantees. We establish a link between our
+model class and shift interventions in linear latent
+causal models. To estimate the model from data,
+we propose a new method, the perturbation distri-
+bution autoencoder (PDAE), which is trained by
+maximizing the distributional similarity between
+true and simulated perturbation distributions. The
+trained model can then be used to predict previ-
+ously unseen perturbation distributions. Through
+simulations, we demonstrate that PDAE can accu-
+rately predict the effects of unseen but identifiable
+perturbations, supporting our theoretical results.
+1 Introduction
+Due to technological progress, large-scale perturbation data
+is becoming increasingly abundant across several scientific
+fields. In single-cell biology, for example, advancements in
+gene editing, sequencing, and mass spectrometry have led to
+the collection of vast transcriptomic or proteomic databases
+for various drug and gene perturbations (Wang et al., 2009;
+1Seminar for Statistics, ETH Zürich, Zürich, Switzerland 2ETH
+Zürich, Zürich, Switzerland 3University of Washington, Seattle,
+USA. Correspondence to: <vjulius@ethz.ch>.
+Preprint. February 2, 2026.
+Jinek et al., 2012; Dixit et al., 2016; Norman et al., 2019;
+Zhang et al., 2025). However, the exponential number of
+possible combinations of perturbations renders exhaustive
+experimentation prohibitive. Observations are thus typically
+only available for a subset of perturbations of interest, e.g.,
+some single and double gene knockdowns or certain dosages
+of drugs. Having models capable of extrapolating to unseen
+combinations of perturbations, e.g., new multi-gene knock-
+downs or dosage combinations, would be highly desirable.
+Prior work.Several studies advocate for the use of ma-
+chine learning for biological perturbation modeling (Lopez
+et al., 2018; 2023; Hugi et al., 2025), often aiming to gener-
+alize to new cell types (Lotfollahi et al., 2019; Bunne et al.,
+2023; Adduri et al., 2025); unseen combinations of perturba-
+tions (Lotfollahi et al., 2023; Bereket & Karaletsos, 2023);
+entirely new perturbations by leveraging the molecular struc-
+ture of the involved compounds (Yu & Welch, 2022; Hetzel
+et al., 2022; Qi et al., 2024) or known gene-gene interac-
+tions (Roohani et al., 2024; Kamimoto et al., 2023); or com-
+binations thereof (He et al., 2025; Adduri et al., 2025). A
+common theme is the use of nonlinear representation learn-
+ing techniques such as autoencoders to embed observations
+in a latent space, in which the effects of perturbations are
+assumed to take on a simpler (e.g., additive) form. However,
+existing studies are purely empirical and lack theoretical
+underpinning. The capabilities and fundamental limitations
+of existing methods thus remain poorly understood.
+Overview and contributions.In this work, we present
+theoretically-grounded perspective on perturbation extrap-
+olation. Given the typically unpaired nature of the avail-
+able non-i.i.d. data—e.g., each cell can only be measured
+once since the measurement process is destructive—we con-
+sider the task of predicting population-level perturbation
+effects, which we formalize as a distributional regression
+problem (§ 2). We then postulate a generative model (§ 3)
+which, similar to prior works, assumes that perturbations
+act as mean shifts in a suitable latent space, see Fig. 1 for an
+overview. For the case of a deterministic decoder, we anal-
+yse this model class theoretically (§ 4), proving that, under
+mild assumptions, the latent representation and the relative
+training perturbation effects are identifiable up to orthogonal
+transformation if the available environments are sufficiently
+diverse (Thm. 4.1). This result implies extrapolation guaran-
+tees for certain unseen perturbations that can be expressed as
+1
+arXiv:2504.18522v2  [stat.ML]  30 Jan 2026
+Representation Learning for Extrapolation in Perturbation Modeling
+(a)Simulated multi-domain perturbation data
+Zbase
+e,i
+Zpert
+e,i
+ae
+εe,i
+Xe,i
+NeM+ 1
+(b)Graphical model representation
+Figure 1.Task description and example following the assumed data generating process.(a) During training, we are given M=5
+training data sets in observation space (right, contour plots in grey), each of which is generated under a known combination of K=3
+elementary perturbations. The corresponding (training) perturbation labels ae are shown below the plots. During testing, we are given a
+new perturbation label and the task is to predict the corresponding distribution in observation space (right, blue and orange). We tackle this
+task by assuming that the effect of perturbations is linear additive in a suitable latent space (left). Both plots show kernel density estimates
+of the distributions. (b) For each experiment or environmente∈[M] 0, the corresponding dataset comprises a perturbation labelae and Ne
+observations xe,i. Perturbations are assumed to act as mean-shifts on a latent basal state,zpert
+e,i =z base
+e,i +Wa e for an unknown perturbation
+matrix W. An (unknown) stochastic nonlinear decoder with noise εe,i then yields the observed xe,i =f(z pert
+e,i ,εe,i). In the example
+in (a),fis constant in its second argument. Shaded and white nodes indicate observed and unobserved/latent variables, respectively.
+linear combinations of training perturbations (Thm. 4.7). By
+considering shift interventions in linear structural equation
+models, we establish a connection between our model class
+and causal representation learning (Prop. 4.9). Based on our
+theoretical results, we then propose an autoencoder-based es-
+timation method (§ 5) which uses the energy score (Gneiting
+& Raftery, 2007) to assess distributional similarity between
+predicted and ground-truth perturbation data. In simula-
+tions (§ 7), this approach compares favourably to relevant
+baselines in terms of mean prediction and distributional fit.
+Notation.We write scalars as a, column-vectors as a, and
+matrices as A. We use uppercase for random variables and
+lowercase for their realizations. The pushforward of a distri-
+bution P by a measurable functionf is denoted by f#P. The
+Euclidean (ℓ2) norm is denoted by ∥·∥. For n∈N ≥1, we
+use the shorthands[n] :={1, ..., n}and[n]0 := [n]∪ {0}.
+2 Distributional perturbation extrapolation
+Observables.Let x∈R dX be anobservation(e.g., omics
+data) that is obtained under one of several possible experi-
+mental conditions, and let X be the corresponding random
+vector. We model these conditions as combinations of K
+elementary perturbations, each of which we assume can be
+encoded by a real number. Further, let a∈R K be a vector
+ofperturbation labelsthat indicates if, or how much of,
+each perturbation was applied before collectingx.
+Example2.1 (Gene perturbations).For data arising from
+gene knockouts, a perturbation can be represented by a bi-
+nary a∈ {0,1}K, where K denotes the number of potential
+targets and ak = 1 if and only if target k was subject to
+a knockout experiment. For example, a= (1,0,1,0,0)
+indicates a multi-gene knockout on targets one and three.
+Example2.2 (Drug perturbations).For data arising from
+applying varying amounts of K different drugs, perturba-
+tions can be represented by continuous, non-negative la-
+bels a∈R K
++ , where ak indicates the (relative or absolute)
+amount of drugkthat was administered.
+Data.We have access to M+ 1 experimental datasets
+D0,D1, ...,DM , each comprising a sample of Ne observa-
+tions x and a perturbation label a, i.e., for all experiments
+or environmentse∈[M] 0,
+De =
+ 
+(xe,i)Ne
+i=1,ae
+
+.(2.1)
+For all e∈[M] 0, we assume that xe,1, ...,xe,Ne are i.i.d.
+realizations from some underlying distributionP X|ae.
+Task.Given data in the form of (2.1), we aim to predict the
+effects of new perturbations atest ̸∈ {a0,a1, ...,aM } with-
+out observing any data from this condition (“zero-shot”). In
+particular, we are interested in the distribution over observa-
+tions resulting from atest. That is, we aim to leverage the
+training domains (2.1) to learn a map
+a7→P X|a,(2.2)
+which extrapolates beyond the training support of a, i.e.,
+the predictions should remain reliable for new inputsa test.
+Distributional vs mean prediction.Since (2.2) targets the
+full conditional distribution—rather than, say, the condi-
+2
+Representation Learning for Extrapolation in Perturbation Modeling
+tional mean E[X|a]—it constitutes a (multi-variate) distri-
+butional regression task (Koenker & Bassett Jr, 1978), a.k.a.
+probabilistic forecasting (Gneiting & Raftery, 2007) or con-
+ditional generative modeling (Sohn et al., 2015). Therefore,
+we refer to the problem setting addressed in this paper as
+distributionalperturbation extrapolation.
+On extrapolation.Formally, extrapolation means that the
+value of the function (2.2) at atest is determined by its val-
+ues on the training support {a0,a1, ...,aM }. Intuitively,
+for this to be feasible without imposing very restrictive as-
+sumptions on the form of the mapping in (2.2), atest should
+be somehow related to the training perturbations ae. For
+example, given data resulting from individual perturbations,
+predict the effects of combinations thereof. This type of
+extrapolation to new combinations of inputs is also called
+compositional generalization (Lake et al., 2017; Goyal &
+Bengio, 2022). It is known to be challenging (Schott et al.,
+2022; Montero et al., 2021; 2022) and requires assumptions
+that sufficiently constrain the model class (Wiedemer et al.,
+2024a;b; Lachapelle et al., 2023; Brady et al., 2023; 2025;
+Dong & Ma, 2022; Lippl & Stachenfeld, 2024).
+3 Perturbations as mean shifts in latent space
+We now specify a generative process for the observed data
+in (2.1). In so doing, we aim to strike a balance between
+imposing sufficient structure on (2.2) to facilitate extrapo-
+lation, while remaining flexible enough to model the com-
+plicated, nonlinear effects which perturbations may have
+on the distribution of observations. Similar to other ap-
+proaches (e.g., Lotfollahi et al., 2023; Bereket & Karaletsos,
+2023), we model the effect of perturbations as mean shifts
+in a latent space with perturbation-relevant latent variables
+z∈R dZ , which are related to the observations x via a non-
+linear (stochastic)mixing functionorgenerator f. The full
+generative process amounts to a hierarchical latent variable
+model, which additionally containsnoise variables ε that
+capture other variation underlying the observations x, and
+which is represented as a graphical model in Fig. 1b. Specif-
+ically, we posit for alle∈[M] 0 ∪ {test}and alli∈[N e]:
+Zbase
+e,i ∼P Z,Z pert
+e,i :=Z base
+e,i +W ae,(3.1)
+εe,i ∼Q ε,X e,i :=f
+ 
+Zpert
+e,i ,εe,i
+
+,(3.2)
+where (Zbase
+e,i )e∈[M]0,i∈[Ne] are i.i.d. according to PZ, and
+(εe,i)e∈[M]0,i∈[Ne] are i.i.d. according to Qε and jointly
+independent of(Z base
+e,i )e∈[M]0,i∈[Ne].
+Thebasal state Zbase in (3.1) describes the unperturbed
+state of latent variables, which can, in principle, be affected
+by perturbations, and is distributed according to a base distri-
+bution PZ. Theperturbation matrix W∈R dZ×K captures
+the effect of the K elementary perturbations encoded in a
+on the latents and turns Zbase intoperturbed latents Zpert.
+Since the same perturbation ae is applied for all i∈[N e],
+all within-dataset variability in Zpert is due to PZ. The
+noise variablesε∈R dϵ in (3.2) capture all other variation
+in the observed data that is unaffected by perturbations.
+W.l.o.g., we assume that it is distributed according to a fixed,
+uninformative distribution Qε such as a standard isotropic
+Gaussian. The noise serves as an additional input to the
+(stochastic) mixing function or generator f:R dZ ×Rdϵ →
+RdX , which produces observations for the perturbed latent.
+This implicit generative model can capture any conditional
+distribution PX|Z=z (e.g., Peters et al., 2017, Prop. 7.1)
+and is more flexible than relying on parametric assumptions,
+such as a Gaussian (Lotfollahi et al., 2023) or negative Bino-
+mial (Bereket & Karaletsos, 2023; Lopez et al., 2018; 2023)
+likelihood parametrised by a deterministic decoder.
+For a given e and ae, the generative process in (3.1) and
+(3.2) induces a distribution over observations x, which we
+denote by Pe or PX|ae, defined as the push-forward of PZ
+andQ ε through (3.1) and (3.2), such that for alle∈[M] 0:
+(Xe,i)i∈[Ne]
+i.i.d.
+∼P e .(3.3)
+4 Theoretical results
+We now present our theoretical analysis for the model class
+from § 3. Here, we assume that the decoder is deterministic,
+so that we can write f:R dZ →R dX , see Remark 4.6 for
+further discussion. All proofs are provided in § A.
+4.1 Identifiability
+We first study identifiability, i.e., under which assumptions
+and up to which ambiguities certain parts of the postulated
+generative process can be provably recovered given access
+to the full distributions. As established by the following
+results, our model class is identifiable up to orthogonal
+transformation, provided that the training perturbations are
+sufficiently diverse, the dimension of the latent space is
+known, and some additional technical assumptions hold.
+Theorem 4.1(Identifiability up to orthogonal transforma-
+tion).For M∈Z ≥0, let a0, ...,aM ∈R K be M+ 1
+perturbation labels. Let f, ef:R dZ →R dX , W, fW∈
+RdZ×K, and P, eP be distributions on RdZ such that the
+models (f,W,P) and ( ef, fW, eP) induce the same observed
+distributions, i.e., for alle∈[M] 0:
+f(Z+W a e)
+d
+= ef
+
+eZ+ fW ae
+
+,(4.1)
+withZ∼Pand eZ∼ ePindependent. Assume further that:
+(i) [invertibility] f and ef are C2-diffeomorphisms onto
+their respective images;
+(ii) [Gaussianity] Z and eZ are standard isotropic multivari-
+ate Gaussians with means chosen such that the latent
+3
+Representation Learning for Extrapolation in Perturbation Modeling
+distributions in domain e= 0 are centered at the origin,
+i.e.,P=N(−W a 0,I)and eP=N(− fW a0,I);
+(iii) [sufficient diversity]the matrix fW A∈RdZ×M , where
+A∈R K×M is the matrix with columns (a1 −a 0), ...,
+(aM −a 0), has full row rank, i.e., rank(fW A) =dZ,
+or the same holds forW A.
+Then the latent representation and the effects of the observed
+perturbation combinations relative to a0 (as captured by
+W A) are identifiable up to orthogonal transformation, i.e.,
+there is an orthogonal matrixO∈O(d Z)such that
+∀z∈R dZ : ef−1 ◦f(z) =Oz,(4.2)
+fW A=OW A.(4.3)
+Corollary 4.2.If, in addition to the assumptions of Thm. 4.1,
+A∈R K×M has full row rank (i.e., rank(A) =K≤M ),
+then the perturbation matrix W is identifiable up to
+orthogonal transformation, i.e., fW=OW , where
+O∈O(d Z)is an orthogonal matrix.
+Discussion.Thm. 4.1 can be interpreted as follows. Fix
+a set of perturbation labels (a0, ...,aM ) and a data gener-
+ating process parametrised by (f,W) . Then, for all fW
+such that (4.3) holds for some O∈O(d Z), there exists
+a unique ef, characterized by (4.2), such that the model
+parametrised by ( ef, fW) gives rise to the same observed dis-
+tributions of Xe. At the same time, any ( ef, fW) for which
+this holds for all e∈[M] 0 is of that form. In other words,
+the mixing function f and the relative shift matrix W Aare
+identifiable up to orthogonal transformation—provided that
+the observed training perturbation conditions are sufficiently
+diverse, as formalised by assumption(iii).
+Remark4.3 (Choice of base distribution).The choice of
+means and covariances in assumption(ii)of Thm. 4.1 serves
+to eliminate inherent ambiguities of the model class due to
+overparametrisation. As shown by Lemma A.1, this comes
+w.l.o.g., in the sense that any model with P=N(µ,Σ) can
+be reparametrised to take the form in assumption(ii).
+Remark4.4 (Sufficient diversity).The matrix product
+W A∈RdZ×M captures the relative effects of the observed
+perturbations since (W A)je corresponds to the shift in the
+jth latent Zj resulting from ae, relative to a reference con-
+ditiona 0. Moreover, assumption(iii)of Thm. 4.1 implies
+min
+
+rank
+ fW
+
+,rank(A)
+	
+≥rank( fW A) =dZ.(4.4)
+Hence, sufficient diversity requires at least dZ elementary
+perturbations whose associated shift vectors wk ∈R dZ are
+linearly independent, and we must observe at leastdZ pertur-
+bation conditions ae other than a0 such that the relative per-
+turbation vectors (ae −a 0)∈R K are linearly independent.
+Remark4.5 (Choice of reference).The choice of reference
+environment is arbitrary. Here, we choose e= 0 as refer-
+ence without loss of generality. Intuitively, if a perturbation
+is always present (e.g., ae,1 = 1 for all e), then its effects
+cannot be discerned from the basal state. Therefore, only the
+effects of the relative perturbations (ae −a 0) can be recov-
+ered. In practice, we often have access to an unperturbed,
+purely observational control condition witha 0 =0.
+Remark4.6 (Deterministic vs noisy mixing.).The mixing
+function f in Thm. 4.1 is assumed deterministic, i.e., does
+not take noise ε as input, cf. (3.2). In principle, this does
+not pose a restriction since noise can be appended to zpert
+as additional dimensions that are not influenced by pertur-
+bations. However, this increases dZ and makes it harder to
+satisfy sufficient diversity (see Remark 4.4). Alternatively,
+the additive noise setting, X=f(Z) +ε , can be reduced
+to the noiseless case (Khemakhem et al., 2020).
+4.2 From identifiability to extrapolation
+Since we aim to make distributional predictions for
+new perturbations atest, identifiability is only of in-
+termediary interest. The following result highlights
+the usefulness of identifiability up to orthogonal trans-
+formation established in Thm. 4.1 for extrapolation.
+. .𝒂!
+𝒂"
+𝒂!+span(𝒂"−𝒂!)
+It allows us to uniquely pre-
+dict the observable effects of
+certain unseen perturbations—
+those which can be expressed
+as linear combinations of the
+observed perturbations, as illustrated in the inset figure.
+Theorem 4.7(Extrapolation to span of relative pertur-
+bations).Under the same setting and assumptions as
+in Thm. 4.1, leta test ∈R K be an unseen perturbation s.t.
+(atest −a 0)∈span
+ 
+{ae −a 0}e∈[M]
+
+.(4.5)
+Then the effect ofa test is uniquely identifiable in that
+Xtest =f(Z+W a test)
+d
+= ef
+  eZ+ fW atest
+
+(4.6)
+Remark4.8 (Additive vs linear perturbations).For our iden-
+tifiability result it is not necessary that the mean shifts are
+of the form W ae. If we replace W ae and fW ae in (4.1)
+with arbitrary shift vectors ce, ece ∈R dZ , the same result
+as Thm. 4.1 can be shown to hold with W Aand fW Are-
+placed by C and eC, defined as the matrices with columns
+(ce −c 0) and (ece − ec0), respectively. That is, the relative
+shift vectors are identifiable (up to orthogonal transforma-
+tion), regardless of whether they are linear in a. This is
+relevant, for example, when including nonlinear interactions
+or learnable element-wise nonlinear dose-response func-
+tions hj(aj) as in CPA (Lotfollahi et al., 2023). However,
+linearity is leveraged in the proof of our extrapolation result,
+where it is used in (4.5) to establish a link between atest
+and the training perturbations. Since only atest is observed
+at test time, Thm. 4.7 cannot easily be extended to arbitrary
+shifts, as this would require establishing a link betweenctest
+and the training shifts, all of which are unobserved.
+4
+Representation Learning for Extrapolation in Perturbation Modeling
+𝒁"!→#𝒁"! 𝑿"!→#~ℙ"!→#
+𝒂#
+𝑿!~ℙ!
+𝒂!
+𝑿#~ℙ#
+Encoder𝒈( StochasticDecoder𝒇*Perturbation Module+𝑾#(𝒂!−𝒂")
+Perturbation loss(energy score)
+Noise𝜺~ℚ𝜺
+Figure 2.Overview of the perturbation distribution autoencoder (PDAE).A PDAE simulates the distribution of a target perturbation
+condition h (purple) by encoding, perturbing, and (stochastically) decoding data from a source condition e (blue). Dashed arrows indicate
+model inputs and green boxes model components with trainable parameters. The learning objective (orange, dotted arrows) amounts to a
+perturbation loss (bottom), measuring, for all pairs of training domains (e, h), the dissimilarity between the true distribution of Xh and its
+simulated version based on domaine; At test time, the target perturbation labelah can be replaced with an unseenatest to make predictions.
+4.3 Connection to causal representation learning
+In causal inference, experimental data resulting from per-
+turbations is modeled via interventions in an underlying
+causal model. In structural equation models (SEMs; Pearl,
+2009; Bongers et al., 2021), interventions modify a subset
+of assignments that determine each variable from its direct
+causes and unexplained noise. In general, our model for the
+effect of perturbations in latent space (§ 3) differs from how
+interventions are treated in SEMs. However, as summarized
+in the following result, the class of shift interventions in
+linear SEMs constitutes a special case of our model class.
+Proposition 4.9(Modeling shift interventions in SEMs).
+Consider a linear SEM,Z:=B ⊤Z+η , with noise η∼P η
+and B∈R dZ×dZ a weighted adjacency matrix with spec-
+tral radius (largest absolute eigenvalue) ρ(B)<1 . Then,
+the distribution induced by shift interventionsa e ∈R dZ ,
+Z:=B ⊤Z+η+a e,(4.7)
+is identical to that induced by (3.1) with W= (I−B ⊤)−1
+and basal state distributionP Z = (I−B ⊤)−1
+# Pη.
+Remark4.10 (Applicability to cyclic or confounded SEMs).
+Prop. 4.9 does not require the acyclicity or unconfounded-
+ness (i.e., independence of the noise components) of the
+SEM. The spectral radius condition (which holds for acyclic
+systems but is strictly weaker) ensures stability and invert-
+ibility ofI−B ⊤ (Zheng et al., 2018; Brown et al., 2025).
+Combined with a decoder from (3.2), Prop. 4.9 highlights in
+which sense our model can be interpreted as interventional
+causal representation learning (Schölkopf et al., 2021; von
+Kügelgen et al., 2023; Varici et al., 2025) with a linear latent
+causal model (Squires et al., 2023; Buchholz et al., 2024)
+and generalized shift interventions (Zhang et al., 2024). For
+K=d Z elementary perturbations, the adjacency matrix cor-
+responding to an inferred cW is given by bB= (I− cW−1)⊤.
+However, due to the rotation ambiguity, additional assump-
+tions such as sparse (e.g., single node) shifts would be
+needed to recover the causal graph induced by the trueB.
+5 Perturbation distribution autoencoder
+To leverage the extrapolation guarantees of Thm. 4.7, we
+seek to estimate the identifiable parts of the generative pro-
+cess by matching the distributions of the observed data
+in (2.1) across all perturbation conditions, as prescribed by
+condition (4.1) in Thm. 4.1. To this end, we take inspiration
+from prior distributional learning approaches (Bouchacourt
+et al., 2016; Shen & Meinshausen, 2024a) and adapt them
+for multi-domain perturbation modeling. Our method, the
+perturbation distribution autoencoder(PDAE), comprises
+an encoder, a perturbation matrix, and a (stochastic) decoder,
+which are trained to maximise the similarity between pairs
+of true and simulated perturbation distributions, see Fig. 2
+for an overview. Intuitively, instead of specifying a (Gaus-
+sian, as per Thm. 4.1) prior on the basal state from which to
+sample latents as in(3.1), we use encoded observations from
+a source domain as perturbed latents and transform them
+to perturbed latents from a target domain using the learnt
+perturbation matrix and the assumed additivity as in (3.1).
+Encoder.The encoder bg:R dX →R dZ maps observations
+x to the space of perturbation-relevant latents z. Ideally, it
+should invert the stochastic mixing function in (3.2) in the
+sense of recovering the perturbed latent state zpert
+e,i from ob-
+servation xe,i.1 We therefore denote the encoder outputs by
+bzpert
+e,i := bg(xe,i),(5.1)
+and refer to them asestimated perturbed latents.
+Perturbation module.If the encoder recovers the per-
+turbed latents up to orthogonal transformation, the addi-
+tivity of perturbation effects assumed in (3.1) allows us to
+map between the latent distributions underlying different
+perturbation conditions. Specifically, we use a perturbation
+model parametrised by a perturbation matrix cW∈R dZ×K
+1This is a key difference to CPA (Lotfollahi et al., 2023) and
+SAMS-V AE (Bereket & Karaletsos, 2023), which seek an encoder
+that maps to the latent basal state, regardless of the domaine.
+5
+Representation Learning for Extrapolation in Perturbation Modeling
+to createsynthetic perturbed latentsfrom domainhas:
+bzpert
+e→h,i := bzpert
+e,i + cW(ah −a e).(5.2)
+which can be interpreted as undoing the effect of ae (i.e.,
+mapping back to the basal state) and then simulatinga h.
+Decoder.The decoder bf:R dZ ×R dϵ →R dX maps es-
+timated perturbed latents bzpert and noise ε∼Q ε to ob-
+servations. When evaluated on synthetic perturbed latents
+from (5.2), we refer to the corresponding (random) outputs
+cXe→h,i = bf
+ bzpert
+e→h,i,ε
+
+whereε∼Q ε (5.3)
+assynthetic observationsfrom domain h based on domain e.
+Simulated perturbation distributions.Given a distri-
+bution Pe and the corresponding perturbation label ae,
+our model facilitates sampling synthetic observations for
+another perturbation condition with label ah via (5.2)
+and (5.3). We denote the corresponding distribution by
+bPe→h, formally defined as the distribution of
+bf
+ bg(Xe) + cW(ah −a e),ε
+
+,(5.4)
+where both Xe ∼P e and ε∼Q ε are random. Intuitively,
+when simulating Ph based on Pe via (5.4), the random vari-
+able bg(Xe)− cW ae in the first argument of bf plays the role
+of a random latent basal state from (3.1).
+Population-level learning objective.At the population
+level (i.e., assuming access to the true distributions Pe), we
+propose minimizing a sum of pairwise distribution losses,
+
+bg∗, bf∗, cW∗
+
+∈arg min
+bg, bf, cW
+X
+e,h∈[M]0
+d
+
+bPe→h,Ph
+
+(5.5)
+where bPe→h depends on (Pe,ae,ah) and the model param-
+eters via (5.4); and d measures dissimilarity between distri-
+butions. We use the negative expected energy score ford,
+d
+ bPe→h,Ph
+
+=−E Xh∼Ph
+
+ESβ
+ bPe→h,Xh
+
+,(5.6)
+withES β (Gneiting & Raftery, 2007) defined as
+ESβ(P,x) = 1
+2 EX,X′ i.i.d.
+∼P
+X−X ′β
+−EX∼P ∥X−x∥ β .
+For β∈(0,2) , ESβ is a strictly proper scoring rule,
+meaning that the expected energy score EX[ESβ(P,X)]
+is maximized if and only if X∼P , see § C.1 for details
+on probabilistic forecasting and scoring rules. Combined
+with its computational simplicity, this property makes the
+negative expected energy score a popular loss function for
+distributional regression (Bouchacourt et al., 2016; Shen &
+Meinshausen, 2024b;a; De Bortoli et al., 2025; Shen et al.,
+2025). It also directly implies the following corollary.
+Corollary 5.1.The objective in (5.5) is minimized if and
+only ifP h = bPe→h for alle, h∈[M] 0.
+Training.Since, in practice, we do not have access to the
+true distributions, we approximate expectations w.r.t. Pe
+and Ph in (5.6) with Monte Carlo estimates based on mini-
+batches of (2.1), and use a single draw ofεto approximate
+expectations w.r.t. Qε. We then optimise (5.5) w.r.t. cW
+and the parameters of bg and bf using stochastic gradient
+descent (Robbins & Monro, 1951; Kingma & Ba, 2015).
+Prediction.To sample from the predicted distribution for a
+new perturbation label atest, we use our model to compute
+the synthetic perturbed test latentsbzpert
+e→test,i for all e∈[M] 0
+and all i∈[N e] via (5.2), and then sample synthetic test
+observations cXe→test,i according to (5.3). Our estimate
+of Ptest is a convex combination of the domain-specific
+marginal perturbation distributions bPe→test induced by our
+model fora test, i.e., the empirical version of
+bPtest = P
+e∈[M]0 ωebPe→test.(5.7)
+with weights ωe ≥0 such that P
+e ωe = 1 to account for
+prior knowledge or differing sample sizes across domains;
+common approaches include uniform weighting (ωe = 1
+M+1 )
+or using only control observations (we = 0fore̸= 0).
+Full algorithm and extensions.Due to space constraints,
+we present only the core PDAE architecture here; for ad-
+ditional loss components which may help in practice but are
+not used in our simulations (a reconstruction objective, la-
+tent prior, and sparsity regularization), a complete algorithm,
+and a discussion of goodness of fit testing, see § B.
+6 Related work
+Biological perturbation models.Our model from § 3 is
+closely related to prior work on modeling combinations of
+genetic or chemical perturbations. CPA (Lotfollahi et al.,
+2023) employs an adversarial autoencoder for estimation,
+see § C.4 for details. SV AE+ (Lopez et al., 2023) and SAMS-
+V AE (Bereket & Karaletsos, 2023) instead fit a generative
+model by maximising the evidence lower bound (ELBO; a
+lower bound to the marginal likelihood) within the varia-
+tional autoencoder (V AE) framework (Kingma & Welling,
+2014; Rezende et al., 2014). This requires evaluating the
+likelihood p(x|z), and thus generally comes with paramet-
+ric assumptions. In contrast, PDAE is based on classical
+(non-variational) autoencoders and is trained using the en-
+ergy score, which only requires being able to sample from
+the stochastic decoder. Both SV AE+ and SAMS-V AE ad-
+ditionally assume that the effects of perturbations on the
+latents are sparse (cf. § B). SAMS-V AE and CPA adopt the
+same compositional perturbation model as (3.1), wherein
+the effect of perturbations can be decomposed into a sum of
+effects of elementary perturbations, captured by the linear
+form W a. In contrast, SV AE+ extends work on identifi-
+able V AEs with sparsely changing mechanisms (Lachapelle
+et al., 2022; 2024) and models each perturbation condition
+6
+Representation Learning for Extrapolation in Perturbation Modeling
+Table 1.Results on synthetic 2D data.We report average performances over 7 ID and 14 OOD test cases; shown are the mean ± one
+standard deviation over 5 random seeds. Best results are highlighted in bold. Theoretical guarantees for PDAE rely on distributional
+overlap in the latent space (ID); no method is expected to perform well on OOD test cases.
+Method In-Distribution (ID) Test Out-of-Distribution (OOD) Test
+ED(↓)MMD(↓)∥µ x − bµx∥2 (↓)ED(↓)MMD(↓)∥µ x − bµx∥2 (↓)
+Pool All 0.855±.0050.557±.0040.441±.0011.908±.0041.266±.0041.298±.002
+Pseudobulking 0.596±.0040.716±.0060.382±.0021.130±.0050.965±.0060.894±.004
+Linear Regression 0.069±.0010.181±.0030.131±.0030.536±.0100.808±.0120.524±.007
+CPA 0.600±.2391.152±.2870.516±.1651.538±.2611.885±.2411.132±.171
+PDAE(Ours) 0.001±.0000.003±.0010.012±.0030.018±.0060.029±.0070.090±.017
+separately. None of these prior perturbation models provide
+theoretical identifiability or extrapolation guarantees.
+Testing for and modeling interactions.Xu et al. (2024)
+propose tests for the hypthesis of no (nonlinear) interactions
+in latent space, based on the assumption that perturbations
+affect disjoint latents and given suitable data from both in-
+dividual and pairs of perturbations. Adduri et al. (2025) and
+He et al. (2025) propose modeling interactions via attention
+in transformer-based architectures (Vaswani et al., 2017).
+Causal approaches.Zhang et al. (2024) and Liu et al.
+(2025) consider perturbation extrapolation from a causal
+representation learning perspective. They model elementary
+perturbations as shift interventions and use a V AE-based
+approach, which, similar to PDAE, is trained primarily to
+maximise the similarity between real and simulated pertur-
+bation distributions. Schneider et al. (2025) instead model
+interventions directly at the level of measurements.
+Identifiable representation learning for extrapolation.
+Saengkyongam et al. (2024, §4) consider an identifiability
+problem similar to the one we study in § 4 and leverage
+affine identifiability to derive out-of-support extrapolation
+guarantees. However, their model and proof strategy differ
+from ours, e.g., by requiring the training support of pertur-
+bationsato contain a non-empty open subset ofR K.
+7 Simulation study
+In this section, we investigate the empirical performance of
+PDAE through a controlled simulation with synthetic data.
+Methods.We compare our approach with CPA (Lotfollahi
+et al., 2023) and the following baselines:
+• Pool all: output the distribution and mean obtained by
+pooling all training observations;
+• Pseudobulking: likePool Allbut pool only training data
+arising from individual perturbations involved in the com-
+bination to be predicted (e.g., pool data from (1,0,0) ⊤
+and(0,1,0) ⊤ to predicta test = (1,1,0) ⊤);
+• Linear regression: linearly regress the domain-specific
+means of observations µx
+e ∈R dX on ae and use the
+resulting model to predict the test meanµ x
+test froma test.
+The former two were also used by Lotfollahi et al. (2023);
+we propose the latter as an additional (stronger) baseline.
+Since CPA and linear regression only predict a mean, in
+these cases, we apply the test mean shift to all observations
+in the reference condition to simulate the test distribution
+and use this to compute distributional similarity metrics.
+Metrics.To assess the distributional fit between predicted
+and true (empirical) test distributions, we use the energy
+distance (ED; Székely & Rizzo, 2013), i.e., twice the nor-
+malized negative expected (marginal) energy score, and the
+maximum mean discrepancy (MMD; Gretton et al., 2012)
+with Gaussian kernel and bandwidth chosen by the median
+heuristic, see § C.2 for more on measures of distributional
+similarity. Since some methods are primarily designed for
+mean prediction, we also report the L2 norm of the differ-
+ence between the predicted and true mean,∥µ x − bµx∥.
+Data.For ease of visualization, we first consider the case
+of dZ =dX =2-dimensional latents and observations. The
+base distribution PZ is a zero-mean, isotropic Gaussian with
+standard deviation σ=0.25 . We consider K=3 elementary
+perturbations with associated shift vectors w1 = (1,0) ⊤,
+w2 =(0,1) ⊤, and w3 =(1,1) ⊤ and create M+1= 4 train-
+ing domains with perturbation labels a0 =(0,0,0) ⊤, a1 =
+(1,0,0) ⊤, a2 =(0,1,0) ⊤, and a3 =(0,0,1) ⊤. In this case,
+the sufficient diversity condition(iii)used to establish iden-
+tifiability in Thm. 4.1 is satisfied. For testing, we distinguish
+two scenarios: in-distribution (ID) and out-of-distribution
+(OOD) test cases, depending on whether the perturbed la-
+tents resulting from atest lie mostly within or outside the
+support of the empirical distributions of perturbed training
+latents, respectively. We consider 14 randomly generated
+ID and OOD test cases each, see Fig. 9 and § D for a visu-
+alization and further details. To generate observations, we
+use the complex exponential x=f(z)=e z1 (cosz 2,sinz 2)
+as a deterministic nonlinear mixing function.
+Experimental details.We generate Ne = 214 observations
+for each domain. Both CPA and PDAE use 4-hidden-layer
+MLPs with 64 hidden units as encoders and decoders, a
+cdZ = 2-dimensional latent space, and are trained for 2000
+epochs using a batch size of 212. For PDAE, we set the en-
+ergy score exponent β=1 and use a learning rate of 0.005.
+7
+Representation Learning for Extrapolation in Perturbation Modeling
+Figure 3.Qualitative results.Shown are kernel density estimates
+of the training data (black); an ID test case (blue) with aID
+test =
+(1,1,0) ⊤, which was not seen during training but induces the same
+perturbed latent distribution as a3; and an OOD test case (orange)
+with aOOD
+test =(1,0,1) ⊤. PDAE recovers an affine transformation—
+since condition(ii)of Thm. 4.1 is not enforced, cf. § A.1—of the
+true latents (top row) leading to accurate distributional predictions
+for the training and ID test domains (bottom row). In the OOD
+case, the test distribution in latent space is identified but supported
+in a space that was mostly not seen during training (orange, top
+right). As a result, the corresponding decoder output does not
+accurately match the true OOD distribution (orange, bottom row).
+For CPA, we choose a 1-hidden-layer MLP with 64 hidden
+units for the adversarial classifier. For the remaining hyper-
+parameters, we randomly sample 100 joint configurations
+and choose the one with the smallest MMD across 7 ID
+test cases, see § D for details. We report results for average
+performance across the remaining 7 ID and 14 OOD test
+cases over 5 repetitions of randomly generating data and
+initializing, training, and evaluating models.
+Results.The results are shown in Tab. 1. For the ID test
+setting, PDAE performs best, achieving a near-perfect distri-
+butional fit. CPA outperforms the pooling and pseudobulk-
+ing baselines (consistent with results reported by Lotfollahi
+et al. (2023) on gene perturbation data), but does substan-
+tially worse than linear regression and PDAE at both mean
+and distributional prediction. For the OOD test setting, all
+methods expectedly perform worse, with PDAE yielding the
+least bad performance, 2 see Fig. 3 and its caption for details.
+Noisy observations.We additionally consider a modified
+version of the aforementioned experiment with dX = 10
+(instead of dX = 2) observed dimensions by concatenating
+dϵ = 8 additional dimensions of mean-zero Gaussian noise
+and investigate the behavior for increasing noise variance
+(i.e., decreasing signal-to-noise ratio), see § D.2 for details.
+2We believe that PDAE benefits from implicit regularization in
+the network and that worse counterexamples can be constructed.
+Figure 4.Comparison for varying signal-to-noise ratio.
+As shown in Fig. 4, PDAE outperforms other methods for
+low to medium noise levels, whereas for high noise levels,
+all methods except CPA exhibit similar performance.
+8 Discussion, limitations, and future work
+Necessity of Gaussianity.Gaussianity of PZ is sufficient
+to prove identifiability, but may not be necessary. Indeed,
+PDAE does not explicitly enforce any particular latent distri-
+bution, but still yields good performance. To impose a spe-
+cific prior such as that from assumption(ii)of Thm. 4.1, one
+can penalize deviations of the encoded basal state distribu-
+tions from the prior, e.g., using the energy score as discussed
+in § B. Based on preliminary results with Laplacian basal
+states, we hypothesize that our results can be generalized to
+other distributions from the exponential family.
+Decoder extrapolation.The need for the decoder to gen-
+eralize to new inputs poses a challenge for distributional
+perturbation extrapolation. While this issue is absent from
+our theory, where PZ is Gaussian and thus has full sup-
+port, it arises in practice when learning from finite data. As
+discussed in Fig. 3, this issue is orthogonal to learning the
+correct representation and perturbation model. However,
+it should be possible to realize that the distribution of per-
+turbed test latents lies (partially) outside the training support.
+Thus, quantifying the uncertainty associated with different
+parts of the predicted distribution in observation space may
+become possible, e.g., by measuring the overlap in supports
+or relying on outlier and anomaly detection methods.
+Modeling gene expression.Our results from Fig. 4 that
+methods become indistinguishable for low signal-to-noise
+ratio are consistent with similar findings in the context of
+noisy high-dimensional gene perturbation data (Ahlmann-
+Eltze et al., 2025; Viñas Torné et al., 2025), highlighting
+the need for better calibrated and interpretable evaluation
+metrics (Miller et al., 2025; Mejia et al., 2025). Future work
+should seek to more explicitly incorporate cell-type varia-
+tion, the zero-inflated nature of gene expression data, and the
+limited effectiveness of CRISPR perturbations (Hugi et al.,
+2025) into PDAE and advance our theoretical understanding
+of extrapolation in the presence of nonlinear interactions.
+8
+Representation Learning for Extrapolation in Perturbation Modeling
+Impact Statement
+This paper presents work whose goal is to advance the field
+of Machine Learning. There are many potential societal
+consequences of our work, none which we feel must be
+specifically highlighted here.
+References
+Adduri, A. K., Gautam, D., Bevilacqua, B., Imran, A., Shah,
+R., Naghipourfar, M., Teyssier, N., Ilango, R., Nagaraj,
+S., Dong, M., et al. Predicting cellular responses to
+perturbation across diverse contexts with state.BioRxiv,
+pp. 2025–06, 2025. [Cited on p. 1 and 7.]
+Ahlmann-Eltze, C., Huber, W., and Anders, S. Deep-
+learning-based gene perturbation effect prediction does
+not yet outperform simple linear baselines.Nature Meth-
+ods, pp. 1–5, 2025. [Cited on p. 8.]
+Baringhaus, L. and Franz, C. On a new multivariate two-
+sample test.Journal of Multivariate Analysis, 88(1):
+190–206, 2004. [Cited on p. 20.]
+Belkin, M. and Niyogi, P. Laplacian eigenmaps and spectral
+techniques for embedding and clustering. InAdvances
+in Neural Information Processing Systems, volume 14,
+2001. [Cited on p. 21.]
+Bengio, Y ., Courville, A., and Vincent, P. Representation
+learning: A review and new perspectives.IEEE Transac-
+tions on Pattern Analysis and Machine Intelligence, 35
+(8):1798–1828, 2013. [Cited on p. 21.]
+Bereket, M. and Karaletsos, T. Modelling cellular perturba-
+tions with the sparse additive mechanism shift variational
+autoencoder. InAdvances in Neural Information Process-
+ing Systems, volume 36, pp. 1–12, 2023. [Cited on p. 1,
+3, 5, 6, and 18.]
+Bongers, S., Forre, P., Peters, J., and Mooij, J. M. Founda-
+tions of structural causal models with cycles and latent
+variables.Annals of Statistics, 49(5):2885–2915, 2021.
+[Cited on p. 5.]
+Bouchacourt, D., Mudigonda, P. K., and Nowozin, S. Disco
+nets: Dissimilarity coefficients networks. InAdvances
+in Neural Information Processing Systems, volume 29,
+2016. [Cited on p. 5 and 6.]
+Brady, J., Zimmermann, R. S., Sharma, Y ., Schölkopf, B.,
+von Kügelgen, J., and Brendel, W. Provably learning
+object-centric representations. InInternational Confer-
+ence on Machine Learning, pp. 3038–3062. PMLR, 2023.
+[Cited on p. 3.]
+Brady, J., von Kügelgen, J., Lachapelle, S., Buchholz, S.,
+Kipf, T., and Brendel, W. Interaction asymmetry: A
+general principle for learning composable abstractions.
+InInternational Conference on Learning Representations,
+2025. [Cited on p. 3.]
+Brown, B. C., Tokolyi, A., Morris, J. A., Lappalainen, T.,
+and Knowles, D. A. Large-scale causal discovery using
+interventional data sheds light on gene network structure
+in k562 cells.Nature Communications, 16(1):9628, 2025.
+[Cited on p. 5.]
+Buchholz, S., Rajendran, G., Rosenfeld, E., Aragam, B.,
+Schölkopf, B., and Ravikumar, P. Learning linear causal
+representations from interventions under general nonlin-
+ear mixing. InAdvances in Neural Information Process-
+ing Systems, volume 36, 2024. [Cited on p. 5.]
+Bunne, C., Stark, S. G., Gut, G., Del Castillo, J. S.,
+Levesque, M., Lehmann, K.-V ., Pelkmans, L., Krause,
+A., and Rätsch, G. Learning single-cell perturbation re-
+sponses using neural optimal transport.Nature methods,
+20(11), 2023. [Cited on p. 1.]
+Cayton, L. Algorithms for manifold learning, 2005. Techni-
+cal Report, University of California at San Diego. [Cited
+on p. 21.]
+De Bortoli, V ., Galashov, A., Guntupalli, J. S., Zhou, G.,
+Murphy, K., Gretton, A., and Doucet, A. Distributional
+diffusion models with scoring rules. InInternational
+Conference on Machine Learning, 2025. [Cited on p. 6.]
+Dixit, A., Parnas, O., Li, B., Chen, J., Fulco, C. P., Jerby-
+Arnon, L., Marjanovic, N. D., et al. Perturb-seq: dis-
+secting molecular circuits with scalable single-cell RNA
+profiling of pooled genetic screens.cell, 167(7):1853–
+1866, 2016. [Cited on p. 1.]
+Dong, K. and Ma, T. First steps toward understanding the
+extrapolation of nonlinear models to unseen domains. In
+International Conference on Learning Representations,
+2022. [Cited on p. 3.]
+Gneiting, T. and Raftery, A. E. Strictly proper scoring
+rules, prediction, and estimation.Journal of the American
+Statistical Association, 102(477):359–378, 2007. [Cited
+on p. 2, 3, 6, and 20.]
+Goyal, A. and Bengio, Y . Inductive biases for deep learn-
+ing of higher-level cognition.Proceedings of the Royal
+Society A, 478(2266):20210068, 2022. [Cited on p. 3.]
+Gretton, A., Borgwardt, K. M., Rasch, M. J., Schölkopf, B.,
+and Smola, A. A kernel two-sample test.The Journal
+of Machine Learning Research, 13(1):723–773, 2012.
+[Cited on p. 7 and 20.]
+He, C., Zhang, J., Dahleh, M., and Uhler, C. Morph predicts
+the single-cell outcome of genetic perturbations across
+9
+Representation Learning for Extrapolation in Perturbation Modeling
+conditions and data modalities.bioRxiv, 2025. [Cited on
+p. 1 and 7.]
+Hetzel, L., Boehm, S., Kilbertus, N., Günnemann, S., and
+Theis, F. Predicting cellular responses to novel drug
+perturbations at a single-cell resolution. InAdvances in
+Neural Information Processing Systems, volume 35, pp.
+26711–26722, 2022. [Cited on p. 1.]
+Hinton, G. E. and Salakhutdinov, R. R. Reducing the di-
+mensionality of data with neural networks.science, 313
+(5786):504–507, 2006. [Cited on p. 21.]
+Hugi, F., Tanna, T., Platt, R. J., and Rätsch, G. Perturbation-
+aware representation learning for in vivo genetic screens.
+bioRxiv, pp. 2025–10, 2025. [Cited on p. 1 and 8.]
+Jinek, M., Chylinski, K., Fonfara, I., Hauer, M., Doudna,
+J. A., and Charpentier, E. A programmable dual-RNA–
+guided DNA endonuclease in adaptive bacterial immunity.
+science, 337(6096):816–821, 2012. [Cited on p. 1.]
+Kamimoto, K., Stringa, B., Hoffmann, C. M., Jindal, K.,
+Solnica-Krezel, L., and Morris, S. A. Dissecting cell iden-
+tity via network inference and in silico gene perturbation.
+Nature, 614(7949):742–751, 2023. [Cited on p. 1.]
+Khemakhem, I., Kingma, D., Monti, R., and Hyvarinen, A.
+Variational autoencoders and nonlinear ica: A unifying
+framework. InInternational Conference on Artificial
+Intelligence and Statistics, pp. 2207–2217, 2020. [Cited
+on p. 4.]
+Kingma, D. P. and Ba, J. Adam: A method for stochastic
+optimization. InInternational Conference on Learning
+Representations, 2015. [Cited on p. 6.]
+Kingma, D. P. and Welling, M. Auto-encoding variational
+Bayes. InInternational Conference on Learning Repre-
+sentations, 2014. [Cited on p. 6.]
+Koenker, R. and Bassett Jr, G. Regression quantiles.Econo-
+metrica: Journal of the Econometric Society, pp. 33–50,
+1978. [Cited on p. 3.]
+Lachapelle, S., Rodriguez, P., Sharma, Y ., Everett, K. E.,
+Le Priol, R., Lacoste, A., and Lacoste-Julien, S. Dis-
+entanglement via mechanism sparsity regularization: A
+new principle for nonlinear ica. InConference on Causal
+Learning and Reasoning, pp. 428–484. PMLR, 2022.
+[Cited on p. 6.]
+Lachapelle, S., Mahajan, D., Mitliagkas, I., and Lacoste-
+Julien, S. Additive decoders for latent variables identifi-
+cation and cartesian-product extrapolation. InAdvances
+in Neural Information Processing Systems, volume 36,
+2023. [Cited on p. 3.]
+Lachapelle, S., López, P. R., Sharma, Y ., Everett, K., Priol,
+R. L., Lacoste, A., and Lacoste-Julien, S. Nonparametric
+partial disentanglement via mechanism sparsity: Sparse
+actions, interventions and sparse temporal dependencies.
+arXiv preprint arXiv:2401.04890, 2024. [Cited on p. 6.]
+Lake, B. M., Ullman, T. D., Tenenbaum, J. B., and Gersh-
+man, S. J. Building machines that learn and think like
+people.Behavioral and brain sciences, 40:e253, 2017.
+[Cited on p. 3.]
+Lample, G., Zeghidour, N., Usunier, N., Bordes, A., De-
+noyer, L., and Ranzato, M. Fader networks: Manipulating
+images by sliding attributes. InAdvances in Neural Infor-
+mation Processing Systems, volume 30, 2017. [Cited on
+p. 22.]
+Lippl, S. and Stachenfeld, K. When does compositional
+structure yield compositional generalization? a kernel
+theory.arXiv preprint arXiv:2405.16391, 2024. [Cited
+on p. 3.]
+Liu, E., Zhang, J., and Uhler, C. Learning genetic perturba-
+tion effects with variational causal inference.bioRxiv, pp.
+2025–06, 2025. [Cited on p. 7.]
+Lopez, R., Regier, J., Cole, M. B., Jordan, M. I., and Yosef,
+N. Deep generative modeling for single-cell transcrip-
+tomics.Nature methods, 15(12):1053–1058, 2018. [Cited
+on p. 1 and 3.]
+Lopez, R., Tagasovska, N., Ra, S., Cho, K., Pritchard, J.,
+and Regev, A. Learning causal representations of single
+cells via sparse mechanism shift modeling. InConference
+on Causal Learning and Reasoning, pp. 662–691. PMLR,
+2023. [Cited on p. 1, 3, and 6.]
+Lotfollahi, M., Wolf, F. A., and Theis, F. J. scgen predicts
+single-cell perturbation responses.Nature methods, 16
+(8):715–721, 2019. [Cited on p. 1.]
+Lotfollahi, M., Klimovskaia Susmelj, A., De Donno, C.,
+Hetzel, L., Ji, Y ., Ibarra, I. L., Srivatsan, S. R., Naghipour-
+far, M., Daza, R. M., Martin, B., Shendure, J., McFaline-
+Figueroa, J. L., Boyeau, P., Wolf, F. A., Yakubova, N.,
+Günnemann, S., Trapnell, C., Lopez-Paz, D., and Theis,
+F. J. Predicting cellular responses to complex pertur-
+bations in high-throughput screens.Molecular Systems
+Biology, 19(6):e11517, 2023. [Cited on p. 1, 3, 4, 5, 6, 7,
+8, 22, and 23.]
+Matheson, J. E. and Winkler, R. L. Scoring rules for contin-
+uous probability distributions.Management Science, 22
+(10):1087–1096, 1976. [Cited on p. 20.]
+Mejia, G. M., Miller, H. E., Leblanc, F. J., Wang, B., Swain,
+B., and Camillo, L. P. d. L. Diversity by design: Ad-
+dressing mode collapse improves scrna-seq perturbation
+10
+Representation Learning for Extrapolation in Perturbation Modeling
+modeling on well-calibrated metrics.arXiv preprint
+arXiv:2506.22641, 2025. [Cited on p. 8.]
+Miller, H. E., Mejia, G. M., Leblanc, F. J., Wang, B., Swain,
+B., and Camillo, L. P. d. L. Deep learning-based genetic
+perturbation models do outperform uninformative base-
+lines on well-calibrated metrics.bioRxiv, pp. 2025–10,
+2025. [Cited on p. 8.]
+Montero, M. L., Ludwig, C. J., Costa, R. P., Malhotra, G.,
+and Bowers, J. The role of disentanglement in generalisa-
+tion. InInternational Conference on Learning Represen-
+tations, 2021. [Cited on p. 3.]
+Montero, M. L., Bowers, J., Costa, R. P., Ludwig, C. J., and
+Malhotra, G. Lost in latent space: Examining failures
+of disentangled models at combinatorial generalisation.
+In Oh, A. H., Agarwal, A., Belgrave, D., and Cho, K.
+(eds.),Advances in Neural Information Processing Sys-
+tems, 2022. [Cited on p. 3.]
+Norman, T. M., Horlbeck, M. A., Replogle, J. M., Ge, A. Y .,
+Xu, A., Jost, M., Gilbert, L. A., and Weissman, J. S.
+Exploring genetic interaction manifolds constructed from
+rich single-cell phenotypes.science, 365(6455):786–793,
+2019. [Cited on p. 1.]
+Pearl, J.Causality: Models, Reasoning, and Inference.
+Cambridge University Press, 2nd edition, 2009. [Cited
+on p. 5.]
+Peters, J., Janzing, D., and Schölkopf, B.Elements of Causal
+Inference: Foundations and Learning Algorithms. MIT
+Press, 2017. [Cited on p. 3.]
+Qi, X., Zhao, L., Tian, C., Li, Y ., Chen, Z.-L., Huo, P.,
+Chen, R., Liu, X., Wan, B., Yang, S., et al. Predicting
+transcriptional responses to novel chemical perturbations
+using deep generative model for drug discovery.Nature
+Communications, 15(1):1–19, 2024. [Cited on p. 1.]
+Rezende, D. J., Mohamed, S., and Wierstra, D. Stochastic
+backpropagation and approximate inference in deep gen-
+erative models. InInternational Conference on Machine
+Learning, pp. 1278–1286, 2014. [Cited on p. 6.]
+Robbins, H. and Monro, S. A stochastic approximation
+method.The Annals of Mathematical Statistics, pp. 400–
+407, 1951. [Cited on p. 6.]
+Roohani, Y ., Huang, K., and Leskovec, J. Predicting tran-
+scriptional outcomes of novel multigene perturbations
+with gears.Nature Biotechnology, 42(6):927–935, 2024.
+[Cited on p. 1.]
+Rumelhart, D. E., Hinton, G. E., and Williams, R. J. Learn-
+ing representations by back-propagating errors.nature,
+323(6088):533–536, 1986. [Cited on p. 21.]
+Saengkyongam, S., Rosenfeld, E., Ravikumar, P. K., Pfister,
+N., and Peters, J. Identifying representations for inter-
+vention extrapolation. InInternational Conference on
+Learning Representations, 2024. [Cited on p. 7.]
+Saul, L. K. and Roweis, S. T. Think globally, fit locally: Un-
+supervised learning of low dimensional manifolds.Jour-
+nal of Machine Learning Research, 4:119–155, 2003.
+[Cited on p. 21.]
+Schneider, N., Lorch, L., Kilbertus, N., Schölkopf, B., and
+Krause, A. Generative intervention models for causal
+perturbation modeling. InInternational Conference on
+Machine Learning, 2025. [Cited on p. 7.]
+Schölkopf, B. and Smola, A. J.Learning with kernels:
+support vector machines, regularization, optimization,
+and beyond. MIT press, 2002. [Cited on p. 20.]
+Schölkopf, B., Locatello, F., Bauer, S., Ke, N. R., Kalch-
+brenner, N., Goyal, A., and Bengio, Y . Toward causal
+representation learning.Proceedings of the IEEE, 109(5):
+612–634, 2021. [Cited on p. 5.]
+Schott, L., von Kügelgen, J., Träuble, F., Gehler, P. V ., Rus-
+sell, C., Bethge, M., Schölkopf, B., Locatello, F., and
+Brendel, W. Visual representation learning does not gen-
+eralize strongly within the same domain. InInternational
+Conference on Learning Representations, 2022. [Cited
+on p. 3.]
+Sejdinovic, D., Sriperumbudur, B., Gretton, A., and Fuku-
+mizu, K. Equivalence of distance-based and rkhs-based
+statistics in hypothesis testing.The Annals of Statistics,
+pp. 2263–2291, 2013. [Cited on p. 21.]
+Shen, X. and Meinshausen, N. Distributional principal
+autoencoders.arXiv preprint arXiv:2404.13649, 2024a.
+[Cited on p. 5, 6, 18, 19, and 21.]
+Shen, X. and Meinshausen, N. Engression: extrapolation
+through the lens of distributional regression.Journal of
+the Royal Statistical Society Series B: Statistical Method-
+ology, 2024b. [Cited on p. 6.]
+Shen, X., Meinshausen, N., and Zhang, T. Reverse markov
+learning: Multi-step generative models for complex distri-
+butions.arXiv preprint arXiv:2502.13747, 2025. [Cited
+on p. 6.]
+Sohn, K., Lee, H., and Yan, X. Learning structured output
+representation using deep conditional generative models.
+InAdvances in Neural Information Processing Systems,
+volume 28, 2015. [Cited on p. 3.]
+Squires, C., Seigal, A., Bhate, S., and Uhler, C. Linear
+causal disentanglement via interventions. In40th Inter-
+national Conference on Machine Learning, 2023. [Cited
+on p. 5.]
+11
+Representation Learning for Extrapolation in Perturbation Modeling
+Székely, G. J. and Rizzo, M. L. Energy statistics: A class
+of statistics based on distances.Journal of Statistical
+Planning and Inference, 143(8):1249–1272, 2013. [Cited
+on p. 7 and 20.]
+Tenenbaum, J. B., Silva, V . d., and Langford, J. C. A
+global geometric framework for nonlinear dimensionality
+reduction.science, 290(5500):2319–2323, 2000. [Cited
+on p. 21.]
+Varici, B., Acartürk, E., Shanmugam, K., Kumar, A., and
+Tajer, A. Score-based causal representation learning:
+Linear and general transformations.Journal of Machine
+Learning Research, 26(112):1–90, 2025. [Cited on p. 5.]
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones,
+L., Gomez, A. N., Kaiser, Ł., and Polosukhin, I. Atten-
+tion is all you need. InAdvances in Neural Information
+Processing Systems, volume 30, 2017. [Cited on p. 7.]
+Viñas Torné, R., Wiatrak, M., Piran, Z., Fan, S., Jiang, L.,
+Teichmann, S. A., Nitzan, M., and Brbi´c, M. Systema: a
+framework for evaluating genetic perturbation response
+prediction beyond systematic variation.Nature Biotech-
+nology, pp. 1–10, 2025. [Cited on p. 8.]
+von Kügelgen, J., Besserve, M., Wendong, L., Gresele, L.,
+Keki´c, A., Bareinboim, E., Blei, D., and Schölkopf, B.
+Nonparametric identifiability of causal representations
+from unknown interventions. InAdvances in Neural
+Information Processing Systems, volume 36, pp. 48603–
+48638, 2023. [Cited on p. 5.]
+Wang, Z., Gerstein, M., and Snyder, M. RNA-seq: a revolu-
+tionary tool for transcriptomics.Nature reviews genetics,
+10(1):57–63, 2009. [Cited on p. 1.]
+Wiedemer, T., Brady, J., Panfilov, A., Juhos, A., Bethge, M.,
+and Brendel, W. Provable compositional generalization
+for object-centric learning. InInternational Conference
+on Learning Representations, 2024a. [Cited on p. 3.]
+Wiedemer, T., Mayilvahanan, P., Bethge, M., and Brendel,
+W. Compositional generalization from first principles.
+InAdvances in Neural Information Processing Systems,
+volume 36, 2024b. [Cited on p. 3.]
+Xu, Z., Jain, M., Denton, A., Whitfield, S., Didolkar, A.,
+Earnshaw, B., and Hartford, J. S. Automated discovery
+of pairwise interactions from unstructured data.arXiv
+preprint arXiv:2409.07594, 2024. [Cited on p. 7.]
+Yu, H. and Welch, J. D. Perturbnet predicts single-cell
+responses to unseen chemical and genetic perturbations.
+BioRxiv, pp. 2022–07, 2022. [Cited on p. 1.]
+Zhang, J., Greenewald, K., Squires, C., Srivastava, A.,
+Shanmugam, K., and Uhler, C. Identifiability guaran-
+tees for causal disentanglement from soft interventions.
+Advances in Neural Information Processing Systems, 36,
+2024. [Cited on p. 5 and 7.]
+Zhang, J., Ubas, A. A., de Borja, R., Svensson, V ., Thomas,
+N., Thakar, N., Lai, I., Winters, A., Khan, U., Jones,
+M. G., et al. Tahoe-100m: A giga-scale single-cell per-
+turbation atlas for context-dependent gene function and
+cellular modeling.BioRxiv, pp. 2025–02, 2025. [Cited
+on p. 1.]
+Zheng, X., Aragam, B., Ravikumar, P. K., and Xing, E. P.
+Dags with no tears: Continuous optimization for structure
+learning. InAdvances in Neural Information Processing
+Systems, volume 31, 2018. [Cited on p. 5.]
+12
+Representation Learning for Extrapolation in Perturbation Modeling
+Appendices
+Table of Contents
+A Proofs 13
+A.1 Proof of reparametrizability without loss of generality . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+A.2 Proof of Thm. 4.1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+A.3 Proof of Cor. 4.2 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+A.4 Proof of Thm. 4.7 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+A.5 Proof of Prop. 4.9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+B PDAE training: Additional losses and complete algorithm 17
+C Additional background material and related work 20
+C.1 Probabilistic forecasting and scoring rules . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+C.2 Assessing distributional similarity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+C.3 Representation learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+C.4 Perturbation modeling . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+D Additional experimental details and results 23
+D.1 Hyperparameter selection for CPA . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+D.2 Robustness experiment with varying signal-to-noise ratio . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+D.3 Details on validation and test cases . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+A Proofs
+A.1 Proof of reparametrizability without loss of generality
+We first state and prove the following lemma, which shows that the choices of means and covariances of the base distribution
+in assumption(ii)of Thm. 4.1 come without loss of generality (w.l.o.g.).
+Lemma A.1.Let f and W be such that assumptions (i)–(iii) of Thm. 4.1 are satisfied, and let P=N(µ,Σ) with positive
+definite covariance matrix Σ. Then there exist ef and fW such that ef, fW, and eP=N(− fW a0,I) generates the same
+distributions, i.e.,
+∀e∈[M] 0 :f(Z+W a e)
+d
+= ef( eZ+ fW ae),whereZ∼ N(µ,Σ)and eZ∼ N(−fW a0,I),(A.1)
+with efand fWalso satisfying assumptions (i) and (iii) of Thm. 4.1.
+Proof. Define ef:z7→f(µ+W a 0 +Σ
+1
+2 z) and let fW:=Σ −1
+2 W. The equality in distribution in (A.1) then follows
+directly by substitution from the properties of linear transformations of Gaussians. Since f is a C2 diffeomorphism by
+assumption, so is ef, since it is the composition of f with an affine function. Moreover, since Σ (and thus also any inverse
+square rootΣ −1
+2 ) is invertible, we haverank( fW A) = rank(W A)and thus asssumption(iii)also holds.
+13
+Representation Learning for Extrapolation in Perturbation Modeling
+A.2 Proof of Thm. 4.1
+Theorem 4.1(Identifiability up to orthogonal transformation).For M∈Z ≥0, let a0, ...,aM ∈R K be M+ 1 perturbation
+labels. Let f, ef:R dZ →R dX , W, fW∈R dZ×K, and P, eP be distributions on RdZ such that the models (f,W,P) and
+( ef, fW, eP)induce the same observed distributions, i.e., for alle∈[M] 0:
+f(Z+W a e)
+d
+= ef
+
+eZ+ fW ae
+
+,(4.1)
+withZ∼Pand eZ∼ ePindependent. Assume further that:
+(i)[invertibility]fand efareC 2-diffeomorphisms onto their respective images;
+(ii) [Gaussianity] Z and eZ are standard isotropic multivariate Gaussians with means chosen such that the latent
+distributions in domaine= 0are centered at the origin, i.e.,P=N(−W a 0,I)and eP=N(− fW a0,I);
+(iii) [sufficient diversity]the matrix fW A∈R dZ×M , where A∈R K×M is the matrix with columns (a1 −a 0), ...,
+(aM −a 0), has full row rank, i.e.,rank( fW A) =dZ, or the same holds forW A.
+Then the latent representation and the effects of the observed perturbation combinations relative to a0 (as captured by
+W A) are identifiable up to orthogonal transformation, i.e., there is an orthogonal matrixO∈O(dZ)such that
+∀z∈R dZ : ef−1 ◦f(z) =Oz,(4.2)
+fW A=OW A.(4.3)
+Proof.Letp e andepe denote the densities of
+Ze :=Z+W a e (A.2)
+and
+eZe := eZ+ fW ae,(A.3)
+respectively. Due to (4.1), f and ef have the same image. Thus, by the invertibility assumption(i), the function h:=
+ef−1 ◦f:R dZ →R dZ is a well-definedC 2-diffeomorphism. The change of variable formula applied to
+eZe
+d
+=h(Z e)(A.4)
+then yields for alleand allz:
+pe(z) =epe
+ 
+h(z)
+detJh(z)
+,(A.5)
+where Jh(z) denotes the Jacobian of h. By taking logarithms of (A.5) and contrasting domain e with a reference domain
+withe= 0, the determinant terms cancel and we obtain for alleand allz:
+logp e(z)−logp 0(z) = logepe
+ 
+h(z)
+
+−logep0
+ 
+h(z)
+
+.(A.6)
+Next, denote the densities of Z and eZ by p and ep, respectively. From (A.2) and (A.3) it then follows that, for all e and all z,
+pe andepe can respectively be expressed in terms ofpandepas follows:
+pe(z) =p(z−W a e),(A.7)
+epe(z) =ep
+
+z− fW ae
+
+.(A.8)
+By substituting these expressions in (A.6), we obtain for alleand allz:
+logp(z−W ae)−logp(z−Wa 0) = logep
+
+h(z)− fW ae
+
+−logep
+
+h(z)− fW a0
+
+.(A.9)
+14
+Representation Learning for Extrapolation in Perturbation Modeling
+By the Gaussianity assumption(ii), the contrast of log-densities in (A.9) takes the following form for alleand allz:
+(ae −a 0)⊤W⊤(z+Wa 0)− 1
+2(ae −a 0)⊤W⊤W(ae +a 0)(A.10)
+= (ae −a 0)⊤ fW⊤
+
+h(z) + fW a0
+
+−1
+2(ae −a 0)⊤ fW⊤ fW(ae +a 0)(A.11)
+We aim to show that the two representations are related by an affine transformation, i.e., that all second-order derivatives of
+hare zero everywhere. Taking gradients w.r.t.zyields for alleand allz:
+(ae −a 0)⊤W⊤ = (ae −a 0)⊤ fW⊤Jh(z).(A.12)
+LetA∈R K×M be the matrix with columnsa e −a 0 fore∈[M]. Then, for allz:
+A⊤W⊤ =A ⊤ fW⊤Jh(z).(A.13)
+Differentiating once more w.r.t.zyields for allz:
+0=A ⊤ fW⊤Hh(z),(A.14)
+where the 3-tensorH h(z)∈R dZ×dZ×dZ denotes the Hessian ofh, i.e., for alli, j∈[d Z]and allz
+0=A ⊤ fW⊤ ∂2
+∂zi∂zj
+h(z).(A.15)
+By assumption(iii), the matrix A⊤ fW⊤ has full column rank and thus a left inverse, i.e., there exists V∈R dZ×M such that
+V A⊤ fW⊤ =I dZ . Multiplying (A.15) on the left byVthen yields for alli, j∈[d Z]and allz:
+∂2
+∂zi∂zj
+h(z) =0.(A.16)
+This implies thathmust be affine, i.e., there existM∈R dZ×dZ andb∈R dZ such that for allz:
+h(z) =Mz+b.(A.17)
+Further, sincehis invertible,Mmust be invertible.
+Recall that eZe
+d
+=h(Z e) =MZ e +b. It follows from (A.2), (A.3) and assumption(ii)that for alle∈[M] 0:
+N
+
+fW(ae −a 0),I
+
+=N
+
+MW(a e −a 0) +b,MM ⊤
+
+.(A.18)
+By equating the covariances, we find
+MM ⊤ =I,(A.19)
+i.e.,M=Ofor some orthogonal matrixO∈O(d Z).
+Similarly, by equating the means, we obtain for alle:
+fW(ae −a 0) =OW(a e −a 0) +b(A.20)
+Fore= 0, (A.20) yields
+b=0.(A.21)
+15
+Representation Learning for Extrapolation in Perturbation Modeling
+Stacking (A.20) for all othere∈[M], we obtain
+fW A=OW A.(A.22)
+This completes the proof.
+A.3 Proof of Cor. 4.2
+Corollary 4.2.If, in addition to the assumptions of Thm. 4.1, A∈R K×M has full row rank (i.e., rank(A) =K≤M ),
+then the perturbation matrixWis identifiable up to orthogonal transformation, i.e., fW=OW, whereO∈O(d Z)is an
+orthogonal matrix.
+Proof. If rank(A) =K , then A has a right inverse, i.e., there existsK∈R M×K such that AK=I K. Right multiplication
+of (A.22) byKthen yields
+fW=OW.(A.23)
+A.4 Proof of Thm. 4.7
+Theorem 4.7(Extrapolation to span of relative perturbations).Under the same setting and assumptions as in Thm. 4.1, let
+atest ∈R K be an unseen perturbation s.t.
+(atest −a 0)∈span
+ 
+{ae −a 0}e∈[M]
+
+.(4.5)
+Then the effect ofa test is uniquely identifiable in that
+Xtest =f(Z+W a test)
+d
+= ef
+  eZ+ fW atest
+
+(4.6)
+Proof.Withh= ef−1 ◦f, the condition in (4.6) is equivalent to
+h(Z+W atest)
+d
+= eZ+ fW atest.(A.24)
+By Thm. 4.1, we haveh(z) =Ozfor some orthogonal matrixO∈O(d Z).
+Together withZ∼ N(−Wa0,I), this lets us compute the distribution of the LHS of (A.24) as:
+h(Z+W atest) =O(Z+Wa test)∼ N(−OW a0 +OW atest,I).(A.25)
+Similarly, since eZ∼ N
+
+−fW a0,I
+
+, the distribution of the RHS of (A.24) is given by
+eZ+ fW atest ∼ N
+
+−fW a0 + fW atest,I
+
+.(A.26)
+To complete the proof, it thus remains to show that the means of (A.25) and (A.26) are equal, i.e.,
+OW(a test −a 0) = fW(a test −a 0)(A.27)
+Next, by (4.5), i.e., the assumption that(a test −a 0)lies in the span of{a e −a 0}e∈[M] , there existsα∈R M such that
+atest −a 0 = P
+e∈[M] αe(ae −a 0) =Aα(A.28)
+where, as before,A∈R K×M is the matrix with columns(a e −a 0). Substituting (A.28) into (A.27) yields
+OW Aα=fW Aα(A.29)
+16
+Representation Learning for Extrapolation in Perturbation Modeling
+Finally, it follows from Thm. 4.1 that
+OW A=fW A.(A.30)
+which upon substitution into (A.29) completes the proof.
+A.5 Proof of Prop. 4.9
+Proposition 4.9(Modeling shift interventions in SEMs).Consider a linear SEM, Z:=B ⊤Z+η , with noise η∼P η
+and B∈R dZ×dZ a weighted adjacency matrix with spectral radius (largest absolute eigenvalue) ρ(B)<1 . Then, the
+distribution induced by shift interventionsa e ∈R dZ ,
+Z:=B ⊤Z+η+a e,(4.7)
+is identical to that induced by(3.1)withW= (I−B ⊤)−1 and basal state distributionP Z = (I−B ⊤)−1
+# Pη.
+Proof.The distribution ofZinduced by the SEM is most easily understood via thereduced formexpression
+Z= (I−B ⊤)−1η(A.31)
+where the inverse (I−B ⊤)−1 exists since, by assumption, ρ(B)<1 . The observational (unintervened) distribution is thus
+given by PZ = (I−B ⊤)−1
+# Pη. Now consider the shift interventions from (4.7). Analogous to (A.31), the reduced form
+of (4.7) is given by
+Z= (I−B ⊤)−1η+ (I−B ⊤)−1ae.(A.32)
+which is equal in distribution to
+Zpert =Z base +W ae (A.33)
+withZ base ∼P Z = (I−B ⊤)−1
+# Pη andW= (I−B ⊤)−1.
+RemarkA.2.The correspondence between mean shift perturbations and shift interventions appears to only hold forlinear
+SCMs (at least in this simple form). Consider, for example, a nonlinear additive noise model,
+Z:=f(Z) +η,(A.34)
+with reduced form given by Z=g(η) , where g is the inverse of the mapping z7→z−f(z) . For shift interventions
+in (A.34) to match our perturbation model, we then must have
+Ze =g(η+a e) =g
+
+g−1(Z) +a e
+
+=ϕ(Z,a e)(A.35)
+for suitable ϕ and ae. Thus, if f is nonlinear, so is g and this implies under weak assumptions that ϕ is nonlinear, too. In
+this case, shift interventions in a nonlinear SCM do not, in general, amount to mean shift perturbations (i.e., linearϕ).
+B PDAE training: Additional losses and complete algorithm
+In this appendix, we discuss additional loss compoments (other than the perturbation loss from the main text), which are not
+required based on our theoretical results, but which may still benefit empirical performance, see Fig. 5 for an illustration.
+Reconstructions.When considering the synthetic observations from (5.3) for h=e , i.e., when evaluated on the estimated
+perturbed latents from (5.1), we refer to the corresponding (random) decoder outputs asreconstructions,
+cXe,i = bf
+ bzpert
+e,i ,ε
+
+whereε∼Q ε.(B.1)
+Conditional distribution over reconstructions.For any given observation x, we can sample reconstructions from the
+stochastic decoder by fixing its first argument to the encoding bg(x)and sampling noise fromQ ε as in (B.1). Together, the
+encoder, decoder, and noise distribution thus induce a distribution over reconstructions, formally given by the push-forward
+bf
+ bg(x),·
+
+# Qε.(B.2)
+17
+Representation Learning for Extrapolation in Perturbation Modeling
+𝒁"!→#𝒁"! 𝑿"!,𝑿"!$~ℙ"𝑿|𝒈((𝑿)+𝒁-!
+𝑿"!→#~ℙ"!→#𝒍#
+𝑿!~ℙ!
+𝒍!
+𝑿#~ℙ#
+Encoder𝒈) StochasticDecoder𝒇+Perturbation Module+𝑾#(𝒍!−𝒍")
+Perturbation Loss(marginalenergy score)
+Reconstruction Loss (conditionalenergy score)Noise𝜺-,𝜺-′~ℚ𝜺
+Noise𝜺~ℚ𝜺
+Figure 5.Extended illustration of the PDAE architecture including the reconstruction loss.
+Since this distribution should ideally match that of X|bg(X) = bg(x) (i.e., the true distribution of observations that share
+the same encoding),3 we denote it by bPX|bg(X)=bg(x). Note that the first argument of bf in (B.2) is considered fixed, and all
+stochasticity stems from the noise ε. This contrasts with the simulated perturbed distributions Pe→h in (5.4), where both
+Xe andεare random.
+Conditional reconstruction loss.The conditional reconstruction loss Lcond-rec is given by the sum of domain-specific DPA
+losses (Shen & Meinshausen, 2024a),
+Lcond-rec
+
+bg, bf;{P e}e∈[M]0
+
+:=
+X
+e∈[M]0
+−EXe∼Pe
+
+ESβ
+
+bPX|bg(X)=bg(Xe),Xe
+
+, (B.3)
+where each summand on the RHS of (B.3) involves aconditionalenergy score (i.e., one whose first argument also depends
+on Xe), see § C.3 for further discussion. It should be noted that the pairwise sum in the perturbation loss of (5.5) also
+includes the case h=e . Enforcing Pe = bPe→e can be viewed as a marginal reconstruction objective and thus as a weaker
+constraint than that enforced byL cond-rec.
+Prior loss.To turn PDAE into a full generative model and remove unnecessary ambiguities from the learned representation,
+we propose an additional loss which quantifies deviations of the encoded latent basal state distributions from a fixed Gaussian
+prior. Since, by Lemma A.1, the prior mean and covariance are arbitrary, we choose Pbase =N(0,I) for convenience.
+Denote by bPbg(Xe)−Wae the distribution of
+bg(Xe)− cW ae,whereX e ∼P e.(B.4)
+We then define the prior loss as the sum over domains of the negative expected energy score between the true fixed prior and
+the encoded basal state distribution from domaine,
+Lprior
+
+bg, cW;
+
+(Pe,ae)
+	M
+e=0
+
+:=
+X
+e∈[M]0
+−EZbase∼Pbase
+
+ESβ
+
+bPbg(Xe)−cWae
+,Z base
+
+.(B.5)
+In practice, the prior loss can be approximated using the estimated latent basal states,
+bzbase
+e,i := bzpert
+e,i − cW ae = bg(xe,i)− cW ae (B.6)
+Sparsity.Similar to Bereket & Karaletsos (2023), we also consider a sparsity penalty
+cW
+
+2,1
+on the inferred cW.
+3For example, if bg is injective, the true reconstruction distribution is a point mass on x, whereas if bg is constant, it is the full
+(unconditional) distribution of X. In this sense, the distribution of reconstructions captures the information aboutx that is left unexplained
+given only its encoding (Shen & Meinshausen, 2024a).
+18
+Representation Learning for Extrapolation in Perturbation Modeling
+Combined loss.Given loss weight hyperparameters (λR, λprior, λS) and denoting the perturbation loss from (5.5) by
+Lpert
+
+bg, bf, cW;
+
+(Pe,ae)
+	M
+e=0
+
+we can then combine the different losses into one objective as follows:
+
+bg∗, bf∗, cW∗
+
+∈arg min
+bg, bf, cW
+Lpert
+
+bg, bf, cW;
+
+(Pe,ae)
+	M
+e=0
+
++λ RLcond-rec
+
+bg, bf;{P e}M
+e=0
+
++λ priorLprior
+
+bg, cW;
+
+(Pe,ae)
+	M
+e=0
+
++λ S
+cW
+
+2,1
+.
+(B.7)
+To avoid that the encoder captures latent dimensions of maximal variation as in DPA (Shen & Meinshausen, 2024a) rather
+than focus on the perturbation-relevant latentsZ, we do not update the encoder parameters using the reconstruction loss.
+Algorithm.The complete algorithm for one training iteration for PDAE is provided in Alg. 1.
+Algorithm 1PDAE training step
+Require:mini-batch{(x i,ai)}B
+i=1, model
+
+bgϕ, bfθ, cW
+
+, learning rates(η θ, ηϕ, ηW), loss weights(λ R, λprior, λS)
+1:L cond-rec(ϕ,θ),L pert
+
+ϕ,θ, cW
+
+←0,0 # initialize losses
+2:fori= 1, . . . , Bdo
+3: bzpert
+i ← bgϕ(xi) # encode
+4:ε i,ε′
+i ∼ N(0,I) # noise for reconstructions
+5: bxi, bx′
+i ← bfθ
+
+bzpert
+i ,εi
+
+, bfθ
+
+bzpert
+i ,ε′
+i
+
+# noisy reconstructions
+6:L cond-rec(ϕ,θ) += 1
+2B
+
+∥xi − bxi∥+
+xi − bx′
+i
+ −
+bxi − bx′
+i
+
+
+# conditional energy score
+7: bzbase
+i ← bzpert
+i − cW ai # estimated basal states
+8:forj∈[B]\ {i}do
+9: bzpert
+j→i ←z base
+j + cW ai # synthetic perturbed latents
+10:ε ji ∼ N(0,I) # noise for synthetic observations
+11: bxj→i ← bfθ
+
+bzpert
+j→i ,εji
+
+# synthetic observations
+12:end for
+13:L pert
+
+ϕ,θ, cW
+
++= 1
+B(B−1)
+P
+j∈[B]\{i}
+hxi − bxj→i
+ − 1
+B−2
+P
+i̸=j′<j
+bxj→i − bxj′→i
+
+i
+14:ξ i ∼ N(0,I) # noise for prior loss
+15:end for
+16:L prior
+
+ϕ, cW
+
+← 1
+B2
+P
+i,j∈[B]
+ξi − bzbase
+j
+− 1
+B(B−1)
+P
+j′<j∈[B]
+bzbase
+j − bzbase
+j′
+ # marginal energy score
+17:θ←θ−η θ∇θ
+
+Lpert
+
+ϕ,θ, cW
+
++λ RLcond-rec(ϕ,θ)
+
+# update decoder
+18:ϕ←ϕ−η ϕ∇ϕ
+
+Lpert
+
+ϕ,θ, cW
+
++λ priorLprior
+
+ϕ, cW
+
+# update encoder
+19: cW← cW−η W∇cW
+
+Lpert
+
+ϕ,θ, cW
+
++λ priorLprior
+
+ϕ, cW
+
++λ S
+cW
+
+2,1
+
+# update perturbation matrix
+MMD-based goodness of fit assessment.To assess goodness of fit (e.g., for early stopping or to assess training convergence),
+we propose to assess the pairwise distributional fits between simulated and true perturbation distributions using MMD. That
+is, to considerMMD(P e→h,Pe)for alle, h∈[M] 0.
+Code.We will publicly release PDAE code upon publication.
+19
+Representation Learning for Extrapolation in Perturbation Modeling
+C Additional background material and related work
+Since the problem of interest (§ 2) involves making distributional predictions for new perturbation conditions, we review
+some basics of probabilistic forecasting (§ C.1) and measuring the similarity between two distributions (§ C.2), in our
+case typically between an empirical distribution and its predicted counterpart. We then turn to representation learning with
+encoder-decoder architectures (§ C.3), in particular a recent approach that also targets distributional reconstruction. Finally,
+we cover some prior efforts on perturbation modeling and extrapolation (§ C.4), which we draw inspiration from.
+C.1 Probabilistic forecasting and scoring rules
+Let Ω be a sample space, A a σ-algebra of subsets of Ω, and P a convex class of probability measures on (Ω,A) . A
+probabilistic predictionorprobabilistic forecastis a mapping into P, which outputs predictive distributions P over over
+outcomes x∈Ω . Probabilistic forecasting can thus be viewed as a distributional generalization point prediction (i.e.,
+deterministic forecasting), which maps directly intoΩ.
+To evaluate, compare, or rank different forecasts, it is useful to assign them a numerical score reflecting their quality. A
+scoring ruleis a function S:P ×Ω→R that assigns a score S(P, x)to forecast P if event x materializes, with higher scores
+corresponding to better forecasts—akin to (negative) loss or cost functions for point predictions. If x is distributed according
+to Q, we denote theexpected scoreby S(P,Q) =E x∼Q[S(P, x)]. The scoring rule is calledproperif S(Q,Q)≥S(P,Q)
+for allP, andstrictly properif equality holds if and only ifP=Q.
+CRPS.For continuous scalar random variables (i.e., Ω =R ), a popular scoring rule is thecontinuous ranked probability
+score(CRPS; Matheson & Winkler, 1976). When P is the space of Borel probability measures on R with finite first moment,
+it is strictly proper and given by:4
+CRPS(P, x) =1
+2EX,X′ i.i.d.
+∼P
+X−X ′ −E X∼P |X−x|.(C.1)
+If P is a point mass, the negative CRPS reduces to the absolute error loss function; it can thus be viewed as a generalization
+thereof to probabilistic forecasts.
+Energy score.Gneiting & Raftery (2007) propose theenergy scoreas a multi-variate generalization of the CRPS for
+vector-valuedx∈Ω =R dX . Forβ∈(0,2), it is defined by
+ESβ(P,x) = 1
+2EX,X′ i.i.d.
+∼P
+X−X ′β
+2 −E X∼P ∥X−x∥ β
+2 ,(C.2)
+where ∥·∥ 2 denotes the Euclidean (L2) norm. ESβ is strictly proper w.r.t.Pβ, the set of Borel probability measures P for
+whichE X∼P ∥X∥β
+2 is finite (Gneiting & Raftery, 2007).
+C.2 Assessing distributional similarity
+Energy distance.The expected energy score ESβ(P,Q) =E Y∼Q [ESβ(P,Y)] consitutes a measure of similarity between
+PandQand is closely linked to theenergy distance(Székely & Rizzo, 2013):
+EDβ(P,Q) = 2EX∼P,Y∼Q ∥X−Y∥ β
+2 −E X,X′iid
+∼P
+X−X ′β
+2 −E Y,Y ′iid
+∼Q
+Y−Y ′β
+2 (C.3)
+= 2
+ 
+ESβ(Q,Q)−ES β(P,Q)
+
+≥0(C.4)
+with equality if and only ifP=Q, sinceES β is a strictly proper scoring rule.
+Maximum mean discrepancy (MMD).Another well-known distance between probability measures that is rooted in kernel
+methods (Schölkopf & Smola, 2002) is themaximum mean discrepancy(MMD; Gretton et al., 2012), which for a positive
+definite kernelk: Ω×Ω→Ris given by
+MMD2
+k(P,Q) =E X,X′iid
+∼P [k(X, X′)]−2E X∼P,Y∼Q [k(X, Y)] +EY,Y ′iid
+∼Q [k(Y, Y′)].(C.5)
+4The original definition by Matheson & Winkler (1976) is CRPS(F, x) =−
+R∞
+−∞(F(y)−1{y≥x}) 2dy where F is the CDF of P,
+but the simpler form in (C.1) has been shown to be equivalent (Baringhaus & Franz, 2004, Lemma 2.2).
+20
+Representation Learning for Extrapolation in Perturbation Modeling
+Energy distance as a special case of MMD.As shown by Sejdinovic et al. (2013), if k in (C.5) is chosen to be the
+positive-definitedistance kernel 5
+kβ(X,Y) = 1
+2
+
+∥X∥β
+2 +∥Y∥ β
+2 − ∥X−Y∥β
+2
+
+(C.6)
+then the energy distance is recovered as a special case of MMD,
+EDβ(P,Q) = 2 MMD2
+kβ (P,Q).(C.7)
+C.3 Representation learning
+Many modern data sources of interest contain high-dimensional and unstructured observations x, such as audio, video,
+images, or text. Representation learning aims to transform such data into a more compact, lower-dimensional set of
+features z (the representation) which preserves most of the relevant information while making it more easily accessible, e.g.,
+for use in downstream tasks (Bengio et al., 2013).6 For example, a representation of images of multi-object scenes could be
+a list of the contained objects, along with their size, position, colour, etc. A key assumption underlying this endeavour is the
+so-calledmanifold hypothesiswhich posits that high-dimensional natural data tends to lie near a low-dimensional manifold
+embedded in the high-dimensional ambient space; this idea is also at the heart of several (nonlinear) dimension reduction
+techniques (Cayton, 2005; Tenenbaum et al., 2000; Saul & Roweis, 2003; Belkin & Niyogi, 2001).
+Autoencoder (AE).An autoencoder (AE; Hinton & Salakhutdinov, 2006; Rumelhart et al., 1986) is a pair of functions
+(g,f) , consisting of anencoder g:R dX →R dZ mapping observations X∼P to their representation Z:=g(X) , and a
+decoder f:R dZ →R dX mapping representations Z to their reconstructions in observation space,cX:=f(Z) =f(g(X)) .
+Typically, dZ < dX, such that there is a bottleneck and perfect reconstruction is not feasible. Autoencoders are usually
+trained with a (point-wise, mean) reconstruction objective, i.e., the aim is to minimise the mean squared error
+LAE (g,f;P) :=E X∼P
+X− cX
+
+2
+2
+=E X∼P
+X−f(g(X))
+2
+2 ,(C.8)
+w.r.t. bothgandf. As a result, the optimal decoderf ∗
+AE for any fixed encoder choicegis given by the conditional mean
+f∗
+AE (z;g,P) =E X∼P[X|g(X) =z].(C.9)
+Distributional principal autoencoder (DPA).Since the objective of a standard AE is mean reconstruction, the distribution
+of reconstructions cX is typically not the same as the distribution of X (unless the encoder is invertible, i.e, the compression
+is lossless and perfect reconstruction is feasible, which is usually not the case in practice). To address this, Shen &
+Meinshausen (2024a) proposed the distributional principal autoencoder (DPA) which targets distributional (rather than
+mean) reconstruction. A DPA also consists of an encoder-decoder pair(g,f). However, unlike in a standard AE, the DPA
+decoder f:R dZ ×R dϵ →R dX is stochastic in that it receives an additional noise term ε as input, which is distributed
+according to a fixed distribution Qε such as a standard isotropic Gaussian. The DPA loss function is constructed such
+that for a fixed encoder g, the optimal DPA decoder f∗
+DPA maps a given latent embedding z to the distribution of X, given
+g(X) =z, i.e.,
+f∗
+DPA (z,ε;g)
+d
+=
+ 
+X|g(X) =z
+
+,(C.10)
+where
+d
+= denotes equality in distribution. This means that the decoder evaluated at z should match the distribution of all
+realizations of X that are mapped by the encoder to z. At the same time, the DPA encoder aims to minimise the variability
+in the distributions in (C.10) by encoding the first dZ “principal” components. As shown by Shen & Meinshausen (2024a),
+5induced by the negative-definite semi-metricρ(X,Y) =∥X−Y∥ β
+2 onΩ =R dX (centered at the origin),
+6Representation learning is thus closely related to the classical task of dimension reduction. The former usually refers to nonlinear
+settings, involves some form of machine learning, and tends to be more focused on usefulness in terms of downstream tasks, rather than,
+say, explained variance.
+21
+Representation Learning for Extrapolation in Perturbation Modeling
+both of these goals are achieved by the following DPA objective,
+LDPA (g,f;P) =E X∼P,ε∼Qε
+X−f(g(X),ε)
+β
+2 − 1
+2EX∼P,ε,ε′iid
+∼Qε
+f(g(X),ε)−f(g(X),ε ′)
+β
+2
+=−E X∼P
+
+ESβ
+
+f
+ 
+g(X),·
+
+# Qε,X
+
+,
+(C.11)
+where f(z,·) # Qε denotes the pushforward distribution ofQε through the function f(z,·) , i.e., the distribution of f(z,ε)
+for a fixed z when ε∼Q ε. In other words, a DPA minimizes the negative expected energy score between X and the
+corresponding (stochastic) decoder output, conditional on the encoding of X. Due to this conditioning, the DPA objective
+differs from an energy distance by a “normalization constant” which depends on the encoder and encourages capturing
+principal (i.e., variation-minimizing) components, rather than random latent dimensions.
+C.4 Perturbation modeling
+Compositional perturbation autoencoder (CPA).Lotfollahi et al. (2023) propose the compositional perturbation au-
+toencoder (CPA) as a model for compositional extrapolation of perturbation data. Specifically, they assume the following
+model:
+zpert =z base +W pert
+
+
+h1(a1)
+. . .
+hK(aK)
+
+ +
+JX
+j=1
+Wcov
+j cj ,(C.12)
+where zbase ∼P Z denotes an unperturbed basal state; the matrix Wpert ∈R dZ×K encodes the additive effect of each
+elementary perturbation; {hk :R→R} k∈[K] are unknown, possibly nonlinear dose-response curves; {cj ∈R Kj }j∈[J]
+are observed one-hot vectors capturing J additional discrete covariates, such as cell-types or species; and the matrices
+{Wcov
+j ∈R dZ×Kj }j∈[J] encode additive covariate-specific effects. Further, the basal state zbase is assumed to be
+independent of the perturbation labels a and covariates C= (c 1, . . . ,cJ). Observations x are then drawn from a Gaussian
+whose mean and variance are determined by the perturbed latent statez pert,
+x∼ N
+
+µ
+ 
+zpert
+, σ2  
+zpert
+I
+
+.(C.13)
+To fit this model, Lotfollahi et al. (2023) employ an adversarial autoencoder (Lample et al., 2017). First, an encoder g
+estimates the basal state
+bzbase =g(x).(C.14)
+The estimated perturbed latent state bzpert is then computed according to (C.12) using (C.14) and learnt estimates cWpert,
+{bhk}, and {cWcov
+l }. Finally, a (deterministic) decoder f uses bzpert to compute estimates of the mean and variance in (C.13),
+i.e., (bµ,bσ2) =f( bzpert). All learnable components of the model are trained by minimizing the (Gaussian) negative
+log-likelihood of the observed data D={(x i,ai,Ci)}i∈[N] . To encourage the postulated independence of bzbase and
+(a,C), an additional adversarial loss is used, which minimizes the predictability of the latter from the former.
+22
+Representation Learning for Extrapolation in Perturbation Modeling
+1
+ 0 1 2 3
+Z1
+1.0
+0.5
+0.0
+0.5
+1.0
+1.5
+2.0
+Z2
+Ground Truth
+2
+ 1
+ 0 1 2 3
+Z1
+2
+0
+2
+4
+6
+Z2
+PDAE (Ours)
+1
+ 0 1 2 3
+Z1
+3.0
+2.5
+2.0
+1.5
+1.0
+0.5
+0.0
+Z2
+CPA
+1
+ 0 1 2 3 4
+X1
+2
+1
+0
+1
+2
+3
+4
+X2
+1
+ 0 1 2 3 4
+X1
+2
+1
+0
+1
+2
+3
+4
+X2
+1
+ 0 1 2 3 4
+X1
+2
+1
+0
+1
+2
+3
+4
+X2
+Figure 6.Qualitative comparison of PDAE and CPA on synthetic 2D data.Rows correspond to latent space (top) and observation
+space (bottom). Columns show the ground truth data (left), PDAE predictions (center), and CPA predictions (right). Training domains are
+shown in grey, an in-distribution (ID) test case withaID
+test =(1,1,0) ⊤ (which overlaps with one of the training domains) in blue, and an
+out-of-distribution (OOD) test case with aOOD
+test =(1,0,1) ⊤ in orange. All plots show kernel density estimates of the distributions; crosses
+(x) indicate the corresponding means. As can be seen, PDAE recovers an affine transformation of the true latents (top, center) leading
+to accurate distributional predictions for the training and ID test domain (bottom, center). However, the OOD test domain is mapped
+to a part of the latent space not seen during training (top, center). As a result, the corresponding decoder output does not accurately
+match the true OOD distribution (bottom left vs center). CPA accurately predicts the means of the training distribution (bottom right,
+black crosses) but does not recover the true latents up to an affine transformation (top right). Moreover, the predicted distributions for CPA
+do not match the ground truth particularly well, particularly for the test conditions (bottom left vs right). However, recall that—unlike
+PDAE—CPA is not trained for distributional reconstruction, see § C.4 for details.
+D Additional experimental details and results
+D.1 Hyperparameter selection for CPA
+For CPA, hyperparameters are chosen by randomly searching over a predefined parameter space for 100 trials for every
+dataset, see Tab. 1 of Lotfollahi et al. (2023) for details. To improve the CPA fit on our simulation data and render the compari-
+son with PDAE fairer, we mimic this procedure and run a random search for 100 trials over a subset of these hyperparameters,
+which we show in Tab. 2. We tune all parameters that are neither linked to the architecture nor related to the non-linear dose-
+response functions. (In the setting of gene perturbation experiments that we emulate here, the dose responses are set to the
+identity, and thus no doser MLP hyperparameters are needed.) After randomly choosing 100 configurations of the parameter
+space and training a CPA model for 2000 epochs on each, we compute the MMD between predictions and ground truth of 7 ID
+evaluation environments and select the configuration that minimizes the MMD. The optimal configuration is shown in Tab. 2.
+D.2 Robustness experiment with varying signal-to-noise ratio
+In this experiment, each observation xe,i is generated from two signal dimensions zpert
+e,i ∈R 2 and eight noise dimensions
+εpert
+e,i ∈R 8 as input for the nonlinear mixing function, as described at the end of § 7. We evaluate model robustness under
+increasing levels of noise by varying the standard deviationσ ε of the noise variableε∼Q ϵ in the data-generating process.
+The list of values of σϵ considered is [0,0.1,0.25,0.5,1,2,10] . We choose the same hyperparameters as described in § 7,
+with the exception of increasing CPA’s bottleneck dimension to 10 and PDAE’s decoder model noise dimension to 8. Like
+23
+Representation Learning for Extrapolation in Perturbation Modeling
+Table 2.Tuned Hyperparameters of CPA with their search space and optimal value.We sample 100 random configurations from the
+joint search space and train a CPA model for 2000 epochs for each. The optimal configuration minimizes the MMD on ID validation data.
+Hyperparameter Search Space Selected Optimal Value
+step_size_lr{15,25,45}15
+autoencoder_lr10 U[−5,−2] 3.63×10 −4
+autoencoder_wd10 U[−8,−4] 5.97×10 −6
+reg_adversary10 U[−2,2] 2.31×10 −2
+penalty_adversary10 U[−2,2] 8.15×10 −2
+adversary_lr10 U[−5,−2] 1.7×10 −4
+adversary_wd10 U[−8,−4] 3.11×10 −6
+adversary_steps{1,2,3,4,5}5
+10 1
+ 100 101
+10 3
+10 2
+10 1
+100
+101
+Energy Distance
+10 1
+ 100 101
+10 3
+10 2
+10 1
+100
+MMD
+10 1
+ 100 101
+10 2
+10 1
+100
+101
+Mean Difference
+CPA Linear Regression PDAE Pool All Pseudobulking
+Figure 7.Evaluation of Robustness Under Increasing Levels of Noise.We compare the ID test performance of the baseline methods,
+CPA, and PDAE for higher dimensional observations with additional noise dimensions appended while increasing the level of noiseσε.
+24
+Representation Learning for Extrapolation in Perturbation Modeling
+1 2
+1
+2
+OOD
+ID
+(a)
+0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+Z1
+0.00
+0.25
+0.50
+0.75
+1.00
+1.25
+1.50
+1.75
+2.00Z2
+Single Perturbations
+ID
+OOD
+0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+Z1
+0.00
+0.25
+0.50
+0.75
+1.00
+1.25
+1.50
+1.75
+2.00Z2
+Double Perturbations (b)
+Figure 8.(a) Sampling space for ID and OOD test cases.Representation of the ID region (in blue) as defined by the elementary
+mean shifts in the perturbation matrix and a possible OOD region (in orange) for mean shifts in the Euclidean plane.(b) Mean shifts
+of generated ID and OOD perturbation labels.Mean shifts from single perturbations (left) are generated from 3 different sampling
+schemes as detailed above. Mean shifts from double perturbations (right) are generated from 4 different sampling schemes. Overall,
+(3 + 4)∗10shifts are visualized for ID and OOD.
+this, both models are equipped with a decoder input dimension that fits the dimensionality of observations. On each noise
+level, we run 8 trials of random search for both methods. For CPA, we tune the set of parameters described in § 7. For PDAE,
+we tune the reconstruction loss weight λ, the level of decoder noise and the learning rate. For both methods, the model with
+the lowest MMD on 7 ID validation environments is selected. Both PDAE and CPA models are then trained for 2000 epochs
+and evaluated on 7 ID test environments. One random seed is used and shared across data generation, model initialization,
+training, and evaluation. The results are summarised in Fig. 7. As can be seen, PDAE outperforms the other methods across
+low and moderate levels of σϵ and converges to the performance of Linear Regression at higher levels of noise. As σϵ grows
+large, most signal is lost, and the performance of all methods tends to that of the pooling baseline, as expected.
+D.3 Details on validation and test cases
+For every random seed, we randomly generate 14 ID and OOD perturbation labels. From the fixed training perturbations
+and the random ID and OOD perturbations, we then generate the two-dimensional latents and corresponding observations.
+The 14 ID perturbation labels are then split into 7 validation labels used for model selection (hyperparameter tuning) and
+7 test labels to evaluate performance. An example of the resulting ground truth distributions for all synthetic train and
+test cases is visualized in Fig. 9.
+Random sampling of test cases.To make the choice of perturbation labels for validation and testing purposes less arbitrary,
+we set up a random sampling scheme. We propose two separate schemes for generating ID and OOD perturbation labels
+since their corresponding mean shifts lie within disjoint regions of the Euclidean plane, as shown in Fig. 8a. The ID
+region of mean shifts is constrained by our training perturbation labels a0, ...,a3. Together with the elementary mean shifts
+w1,w2,w3, i.e., the columns of the perturbation matrix W, the columns of W Aconstitute the vertices of the unit square
+as depicted in Fig. 8a. For ease of visualization, we choose the square in the first quadrant with origin at [0,0] and edge
+length of 2 to constrain the region of OOD mean shifts. We now explain how the ID and OOD perturbation labels are
+sampled such that the corresponding mean shifts adhere to the ID and OOD region, respectively.
+Single perturbation labels like our training labels only contain one non-zero entry. We therefore sample uniformly from
+RID
+single =
+n
+(a,0,0) :a∈[0,1]
+o
+∪
+n
+(0, b,0) :b∈[0,1]
+o
+∪
+n
+(0,0, c) :c∈[0,1]
+o
+(D.1)
+For the OOD single perturbation labels, the the non-zero entries lie in[1,2]
+ROOD
+single =
+n
+(a,0,0) :a∈[1,2]
+o
+∪
+n
+(0, b,0) :b∈[1,2]
+o
+∪
+n
+(0,0, c) :c∈[1,2]
+o
+(D.2)
+25
+Representation Learning for Extrapolation in Perturbation Modeling
+Similarly, to generate double perturbations from the ID region, we draw uniformly from
+RID
+double =
+n
+[a, b,0] :a, b∈[0,1]
+o
+∪
+n
+[a,0, c] :c∈[0,1], a∈[0,1−c]
+o
+∪
+n
+[0, b, c] :c∈[0,1], b∈[0,1−c]
+o
+(D.3)
+where the restriction to[1−c]ensures that shifts remain within the ID region.
+To create OOD double perturbation labels that imply admissible mean shifts, we define
+R1 =
+n
+[a, b,0] :a∈[0,2], b 0 ∈[0,1], b=1 {a≥1}2b0 +1 {a<1}(b0 + 1)
+o
+(D.4)
+R2 =
+n
+[a, b,0] :b∈[0,2], a 0 ∈[0,1], a=1 {b≥1}2a0 +1 {b<1}(a0 + 1)
+o
+(D.5)
+R3 =
+n
+[a,0, c] :c∈[0,2], a 0 ∈[0,1], a=a 0(2−max(1, c)) + max(1−c,0)
+o
+(D.6)
+R4 =
+n
+[0, b, c] :c∈[0,2], b0 ∈[0,1], b=b 0(2−max(1, c)) + max(1−c,0)
+o
+(D.7)
+and then draw uniformly from
+ROOD
+double =R 1 ∪ R2 ∪ R3 ∪ R4.(D.8)
+We visualize the effects of 70 generated ID and 70 OOD perturbation labels as mean shifts of base state latents in Fig. 8b,
+i.e., we visualizeµ z
+e =Wa e fore∈ {1, ...,140}.
+The number of perturbation labels is chosen as a multiple of 7 since we construct 3 single and 4 double perturbation settings
+for ID and OOD.
+The implied mean shifts for the 4 training, 7 generated ID validation, 7 generated ID test and 14 generated OOD test
+environments is visualized in Fig. 9.
+1.0
+ 0.5
+ 0.0 0.5 1.0 1.5 2.0 2.5 3.0
+Z1
+1.0
+0.5
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+Z2
+Latent space
+3
+ 2
+ 1
+ 0 1 2 3 4
+X1
+2
+1
+0
+1
+2
+3
+4
+X2
+Observation space
+Train ID Validation ID T est OOD T est
+Figure 9.Fixed train environments and randomly sampled validation and test environments with continous perturbation labels
+We visualize the Kernel Density Estimates of the ground truth distribution of the 4 fixed training environments as well as the randomly
+sampled 14 ID and 14 OOD environments. The ID environments are split into 7 for validation and 7 for testing. The means of the
+distributions are visualized with crosses.
+26

@@ -1,0 +1,1314 @@
+Information-Corrected Estimation: A
+Generalization Error Reducing Parameter
+Estimation Method
+Matthew F. Dixon∗
+and
+Tyler Ward†
+November 4, 2021
+Abstract
+Modern computational models in supervised machine learning are often
+highly parameterized universal approximators. As such, the value of the
+parameters is unimportant, and only the out of sample performance is
+considered. On the other hand, much of the literature on model estimation
+assumes that the parameters themselves have intrinsic value, and thus
+is concerned with bias and variance of parameter estimates, which may
+not have any simple relationship to out of sample model performance.
+Therefore, within supervised machine learning, heavy use is made of
+ridge regression (i.e., L2 regularization), which requires the the estimation
+of hyperparameters and can be rendered ineﬀective by certain model
+parameterizations. We introduce an objective function which we refer to as
+Information-Corrected Estimation (ICE) that reduces KL divergence based
+generalization error for supervised machine learning. ICE attempts to
+directly maximize a corrected likelihood function as an estimator of the KL
+divergence. Such an approach is proven, theoretically, to be eﬀective for a
+wide class of models, with only mild regularity restrictions. Under ﬁnite
+samplesizes, thiscorrectedestimationprocedureisshownexperimentallyto
+lead to signiﬁcant reduction in generalization error compared to maximum
+likelihood estimation and L2 regularization.
+∗Department of Applied Mathematics, Illinois Institute of Technology, Chicago, IL 60616-
+3793, USA; matthew.dixon@iit.edu.
+†Department of Financial Engineering, NYU Tandon School of Engineering, New York, NY
+11201, USA. E-mail: tw623@nyu.edu.
+1
+arXiv:1803.04947v3  [stat.CO]  3 Nov 2021
+1 Introduction
+Kullback and Leibler [1] showed that minimizing a divergenceρKL(f,gθ) between
+the truth,f, and a parametric model density,gθ, is necessary and suﬃcient for
+making accurate predictions about data using the model deﬁned byθ. Recent
+work [2] on Berk–Nash equilibria has shown the central role that KL divergence
+plays in game theoretic choice models such as multi-armed bandits and stochastic
+multi-party games. KL divergence thus plays a leading role in machine learning
+andneuroscience, with several inferential approachesdevelopedintheinformation
+theory literature. Such approaches for minimizing KL divergence employ a range
+of methods, including data partitioning, Bayesian indirect inference and M-
+estimation [3, 4, 5]. These approaches are quite distinct from the standard
+penalized loss minimization framework and, as such, are non-trivial to combine
+with supervised learning methods such as neural networks.
+It is well known that maximum likelihood estimation (MLE) introduces an
+asymptotic bias in the KL divergence minimizer which is problematic for both
+model estimation and model selection. For many models, where the parameters
+θ are themselves important, this may be investigated as parameter bias and
+parameter variance. However, for models common in modern machine learning,
+the parameters themselves do not have any easily interpreted meaning. For these
+models, the parameters themselves are irrelevant and only the accuracy (in terms
+of KL divergence) of the model predictions matter. Within the information theory
+literature, this has often been referred to simply as bias (e.g.,b(G) from [6]).
+To distinguish it from parameter bias, one might refer to it as “prediction bias”
+or “generalization error”. Generalization error is the more common terminology
+(see, for example, Equation 1.1.6 [7]) and will be used here.
+Before the widespread use of machine learning, most models had interpretable
+parameters, and thus there is a large literature focused on reducing parameter
+bias. For instance, the jackknife [8] (leave-one-out cross-validation) estimator is
+an early example. More relevant to this paper is the approach of Firth [9] and
+later Kosmidis [10, 11]. More recently, Pagui, Salvan, and Sartori [12] proposed
+a parameter bias reducing estimation methodology. An extensive review of the
+literature around this point can be found in [13]. Unfortunately, these approaches
+do not consider the impact on KL divergence-based generalization error and
+thus are not applicable to the ﬁeld of machine learning where the parameters
+themselves are devoid of meaning. Heskes [14] shows that classiﬁers do have
+a notion of bias-variance decomposition for generalization error, but it is not
+computable from parameter bias and parameter variance. Therefore, parameter
+bias reducing formulations are not useful within machine learning unless it can
+be shown that they also reduce generalization error.
+In fact, to seat the approach taken in this paper to generalization error,
+we recall much earlier and seminal work at the intersection of statistics and
+information theory. Akaike [15], and later Takeuchi [16], proposed information
+criteria (AIC and TIC, respectively) for model selection designed explicitly to
+reduce generalization error. Konishi and Kitagawa [6] extended the approach of
+Takeuchi to cases where MLE was not used to ﬁt the underlying model, but still
+2
+restricted themselves to the question of model selection. Stone [17] proved that
+Akaike’s Information Criterion (AIC) is asymptotically equivalent to jackkniﬁng
+when the estimator is ﬁnite. Takeuchi himself showed that TIC is an extension of
+AIC with fewer restrictions, and thus it too is equivalent to jackkniﬁng whenever
+AIC would be valid.
+For highly parameterized models, as are common in machine learning, model
+selection such as this is of limited utility. The parameter count may necessarily be
+very large, and thus none of the models ﬁt using MLE may be acceptable. Then,
+merely choosing among them is unlikely to produce acceptable results. Within
+this ﬁeld, typicallyL2 or similar regularization is used to reduce generalization
+error. See Section 11.5.2 [18], for a typical example. For a more recent innovation,
+refer to [19]. Note that regularization schemes such as this often increase
+parameter bias while decreasing generalization error. Golub, Heath, and Wahba
+[20] showed thatL2 regularization is asymptotically equivalent to cross-validation
+for linear models, subject to certain assumptions. For nonlinear models, it has
+long been known thatL2 regularization is not always valid, and it is trivial to
+construct example models1 where this approach is always harmful in expectation.
+Therefore, it is important to develop a method to reduce generalization
+error in model estimation analogous to the way thatL2 regularization would
+commonly be used for a highly parameterized model, but having applicability
+for a wider family of models, especially those for whichL2 regularization is
+not applicable. It is not the goal of this paper to perform a wide survey of
+generalization error reducing approaches, but we will rather propose an additional
+approach, investigate its properties, and show that it has superior performance
+when compared against L2 regularization, which is currently the dominant
+generalization error reducing estimation procedure within the ﬁeld of machine
+learning.
+To this end, this paper introduces a generalization error reducing estimation
+approach referred to as Information Corrected Estimation (ICE). This estimator
+is proven to have a generalization error of onlyO(n−3
+2 ) instead ofO(n−1) as is
+the case for MLE, and is shown to be valid within a neighborhood around the
+MLE parameter estimate. Optimizing over this ICE objective function instead
+of the negative log likelihood thus produces parameters with superior out of
+sample performance.
+Takeuchi’s TIC and Firth’s approach have never seen widespread use due
+to the computational and numerical issues that arise from the computation
+of this adjustment [21], and the ICE estimator in its raw form would have
+similar problems. Therefore, this paper also proposes an eﬃcient approximation
+of this correction term, and shows through numerical experiments that the
+approximation is eﬀective at improving model performance across a range of
+models.
+1See Section 4.1 for one such example.
+3
+2 Preliminaries
+Let us assume that we have dataxn := {x1,...,x n}generated from an unknown
+joint density functionf(x) of Xn := {X1,...,X n}. Where necessary, we deﬁne
+X′
+n to denote a second sample drawn fromf(x), independent of Xn, and
+x′
+n is the observed realization ofX′
+n. We consider a model Mp given by a
+parametric family of densitiesMp := {g(·|θ) |θ∈Θ ⊆Rp}, for some compact
+Euclidean parameter spaceΘ, which is misspeciﬁed and hence excludes the
+truth f. Henceforth, the distribution overx identiﬁed byθmay be referred to
+as gθ(x) := g(x|θ) where it is notationally convenient to do so.
+Suppose thatθ0 is the quasi-true parameter of modelM, andˆθ(Xn) is the
+random variable representing the MLE ofθ0 ﬁt on a dataset,xn. The negative
+log-likelihood ofXn under the distributiongθ is
+−ℓ(θ,Xn) := −1
+n
+n∑
+i=1
+log gθ(xi), (1)
+where −ℓ(θ,Xn) is written including a 1
+n to make the expectation of this
+quantity O(1) and asymptotically independent ofn. Similarly, the minus sign is
+incorporated because−ℓ(θ,Xn) is a strictly non-negative quantity ifgθ(xi) is a
+probability. The MLE,ˆθ(Xn), minimizes the negative log likelihood of the data
+set with respect to the model:
+ˆθ(xn) := argmin
+θ
+[−ℓ(θ,xn)]. (2)
+The expectation of−ℓ(θ,Xn) is the cross entropy betweenf and gθ:
+−L(θ) := EXn[−ℓ(θ,Xn)]. (3)
+Here, the expectation is a function only ofθand of the distributionf that
+generated the dataXn. As a function of the distributionf, this value isO(1),
+but could be large for poorly conditionedf. The quasi-true parameterθ0 is
+θ0 := argmin
+θ
+[−L(θ)]. (4)
+Generalization Error in KL Divergence Based Loss Func-
+tions
+Kullback and Leibler [1] viewed “information” as discriminating the sample data
+drawn from one distribution against another, and deﬁned the KL-divergence
+ρKL between distributions in terms of the ability to make predictions about one
+by knowing the other. Here,
+ρKL(f,gθ) =
+∫
+log[ f(x)
+gθ(x)]f(x)dx. (5)
+4
+This value is in general unknowable, but given a sampleXn from f, −ℓ(θ,Xn)
+will converge asymptotically toρKL(f,gθ) plus an additive constant that depends
+only onf. The convergence relies on White’s regularity conditions [22].
+A well known result by Stone [17] shows that the MLE is a biased estimator
+of the minimum KL-divergence:
+EXn[−ℓ(ˆθ(Xn),Xn)] <EXn[−ℓ(θ0,Xn)], (6)
+because it is evaluated on the dataXn which was used to ﬁtˆθ. Cross-validation
+was developed as a model selection technique to select a model from a group that
+actually minimizesEXn[ρKL(gθ0 ,gˆθ(Xn))] and not merelyEXn[−ℓ(ˆθ(Xn),Xn)]
+in the limit of largen. Takeuchi [16] and Akaike [15] explicitly modeled this bias
+(generalization error) of an estimation procedureθ(Xn) as
+b:= EXn
+[
+ℓ(θ(Xn),Xn) −EX′
+n[ℓ(θ(Xn),X′
+n)]
+]
+. (7)
+Our goal is to obtain an estimate,b∗, of the generalization errorb without
+using the MLE. We will then add this term to the objective function to develop
+the estimatorθ∗(Xn) so as to cancel the lower order terms of the generalization
+error. This estimator will then minimizeEXn[ρKL(gθ0 ,gθ∗(Xn))] more eﬀectively
+than MLE, and potentially would in turn produce improved predictions from
+the model ﬁtted over ﬁnite training sets.
+Remark We note that under MLE,b = O( 1
+n) [16]. Equivalently, one could
+say that a particular realization of the generalization errorℓ(θ(Xn),Xn) −
+EX′
+n[ℓ(θ(Xn),X′
+n)] is itselfOp( 1
+n). Here, Op( 1
+n) is used to indicate that the
+quantity is a random variable with ﬁnite variance, whose mean isO( 1
+n).
+3 Information Corrected Estimation (ICE)
+We propose the following penalized likelihood function:
+Deﬁnition 3.1 (ICE Objective)
+−ℓ∗(θ) = −ℓ(θ) + 1
+ntr(IθJ−1
+θ ), (8)
+where Jθ is the negative expected Hessian
+Jθ := −EX[∂2
+θlog g(X|θ)] = −
+∫
+f(x)∂2
+θlog g(x|θ)dx, (9)
+and Iθ is the Fisher Information matrix
+Iθ := EX[∂θlog g(X|θ)∂θT log g(X|θ)]. (10)
+with ˆIθ, ˆJθ being their estimates over the data.
+Let θ∗ denote the minimizer of(8).
+5
+The trace term in Equation (8) will be familiar from Takeuchi [16]. However,
+Takeuchi showed only that this was the leading order of the bias for the MLE
+estimate ˆθ, and therefore the proof found there is not suﬃcient to justify a new
+estimator that will itself be the target of optimization, and is required to be
+valid away fromˆθ. As in Takeuchi, becauseI and J are unknowable, we will
+substitute their approximations computed from the training data,ˆIθ and ˆJθ
+during the actual computation of this objective. The numerical impact of this
+approximation will be examined in Section 4.2.1.
+Remark Though AIC was developed before TIC, it is easily reproduced as a
+special case of TIC. Subject to certain conditions (guaranteed by the requirements
+of [15]), at least in expectation,Iˆθ = Jˆθ. Thus, the quantity within the TIC
+trace term,IˆθJ−1
+ˆθ , is the identity matrix. Therefore, its trace is equal top, the
+parameter count of the model, recovering AIC. TIC itself can be derived using a
+proof that is similar to, though somewhat simpler than, the one we include in
+(A.4), of which Takeuchi’s proof is a special case that is valid only at the MLE
+estimate ˆθ.
+We also deﬁneˆJ∗to be the negative hessian of−ℓ∗(θ) rather than−ℓ(θ), and
+similarly for ˆI∗, with expectations written asJ∗and I∗. Analogously,−L∗(θ)
+is the expectation of−ℓ∗(θ) and θ∗is the minimizer of−ℓ∗(θ), whileθ∗
+0 is the
+minimizer of−L∗(θ).
+We refer to the estimation ofθ∗, by minimization of this corrected likelihood
+function as Information-Corrected Estimation (ICE). As the terminology sug-
+gests, we depart from the corrective approach used in Information Criterion, by
+directly minimizing the bias corrected likelihood function. Note that unlikeL2
+regularization, the correction term is parameter-free and thus would not require
+cross validation to estimate a hyperparameter such as theλ used byL2.
+General properties of this estimator are proved, and a set of regularity
+conditions are provided such that the estimator is asymptotically normal, and
+produces a bias that isOp(n−3/2) instead of the usualOp(n−1). Though this
+adds only a half-order to the bias correction, for most problems with reasonably
+large n, any increase in order is likely to greatly reduce bias. Experimental
+results demonstrate superior properties of ICE for linear models compared to
+MLE with and withoutL2 regularization.
+Remark For models satisfying White’s regularity conditions (See [22]), it is
+known thatJθ0 is positive deﬁnite (thus non-singular) and continuous, and also
+that Iθ0 is continuous with respect toθ. Therefore, 1
+ntr(Iθ0 J−1
+θ0
+) would always
+be well deﬁned in an open region aroundθ0. Similarly, the solutionθ∗would
+be expected to have the same properties, and hence (for large enoughn) the
+estimate 1
+ntr(ˆIθ∗ ˆJ−1
+θ∗) would be well deﬁned when computed using the estimates
+ˆIθ∗ and ˆJθ∗.
+Remark N.B: Though −ℓ∗(θ) is an estimator of L(θ) accurate to within
+O(n−3
+2 ), that does not mean thatL(θ∗) is reduced by any particular amount
+6
+relative toL(ˆθ). We expect that using this corrected objective will always (if
+it can be calculated accurately) generate some improvement by virtue of more
+accurately representing the true performance of the model out of sample, but
+there is no proof that this level of improvement has any particular form or
+asymptotic behavior.
+Our approach preserves the linear complexity of training with respect to
+n. However, the computation ofˆJ−1
+θ∗ at each iteration of the numerical solver
+requires the inversion of a symmetric positive deﬁnite matrix with a complexity
+of O(p3). Hence the approach is not suitable for high dimensional datasets
+without adjustment. See Section 5 for optimized approximations that are viable
+for larger parameter counts. Further exploration of large models based on this
+approach are beyond the scope of the present work.
+Remark It is clear from inspection that if−ℓ(θ) is strictly convex, then so too
+is −ℓ∗(θ) for large enoughn.
+We ﬁrst provide a proof of asymptotic convergence ofθ∗ under certain
+regularity conditions. With this convergence result in place, we then show that
+minimizing (8) leads to anO(n−3/2) bias term, an improvement over theO( 1
+n)
+term produced by MLE.
+Local Behavior of the ICE Objective
+Suppose the following conditions hold:
+1. Msatisﬁes White’s regularity conditions A1–A6 (see Section A.1 or [22]).
+2. θ0 is a global minimum of−L(θ) in the compact spaceΘ deﬁned in A2.
+3. There exists aε >0 such that−L(θ0) < −L(θ1) −ε for all other local
+minima θ1.
+4. For k = 0,1,2,3,4,5 the derivative ∂k
+θL(θ) exists, is continuous, and
+bounded on an open set aroundθ0.
+5. For k = 0,1,2,3,4,5, the varianceV[∂k
+θℓ(θ,Xn)] →0 as n →∞ on an
+open set aroundθ0.
+Then for suﬃciently largen there exists a compact subsetU ⊂Θ containing
+θ0,ˆθ, such that:
+1. For k = 0,1,2,3 the derivative ∂k
+θℓ∗(θ,xn) exists, is continuous, and
+bounded onU, almost surely.
+2. For k= 0,1,2,3, V[∂k
+θℓ∗(θ,Xn)] →0 as n→∞ on U, almost surely.
+3. θ∗∈U as n→∞ almost surely.
+4. √n(θ∗−θ∗
+0) →N(0,( ˆJ∗
+θ∗
+0
+)−1 ˆI∗
+θ∗
+0
+( ˆJ∗
+θ∗
+0
+)−1) almost surely.
+7
+5. −L( ˆθ∗) = −ℓ∗(θ∗(Xn),Xn) + Op(n−3/2) almost surely.
+Items (1–3) follow from Lemma A.2 (see Section A.2). These are additional
+regularity conditions that are prerequisites for later theorems.
+Item (4) follows from Theorem A.3 in Section A.3. This states that the
+estimate θ∗ is asymtotically normal in a way that is analogous to classical
+asymptotic normality results for MLE. It is only true almost surely because
+results (1–3) upon which it relies are only true almost surely.
+Item (5) follows from Theorem A.4 in Section A.4. This item establishes the
+superior accuracy of the ICE objective compared to the MLE objective function
+in predicting out of sample errors. Like item (4) this is only true almost surely
+because intermediate results on which it relies are only true almost surely.
+The reduction in generalization error seen arises from the optimization over
+the superior ICE objective function, analogous to the way thatL2 regularization
+is used for this purpose.
+Remark The regularity conditions described here are only slightly more strict
+than the conditions described by White [22]. In particular, models having three
+continuous derivatives as required by White, but not 5 as needed here are thought
+to be very rare. Requirement (2) is just the deﬁnition ofθ0, which White labels
+diﬀerently, and requirement (3) excludes a pathological corner case, the further
+study of which is beyond the scope of this paper.
+Remark Note that as−ℓ(θ,xn) is convex in the neighborhood ofθ0, so too is
+−ℓ∗(θ) for large enoughn because −ℓ∗(θ) →−ℓ(θ). Thus it can be concluded
+that the local behavior of−ℓ∗in the neighborhood ofθ0 is not appreciably worse
+than the behavior of−ℓ if the problem is not too ill conditioned.
+4 Direct Computation Results
+The following experiments have been designed to compare MLE, MLE withL2
+regularization, and ICE for regression. Each experiment involves simulation of
+training and test sets and is implemented in R. See the attached code to run
+each experiment.
+Each of these experiments has been performed using the raw formula for
+ICE provided in Equation (8) with minimal adjustments. All gradients are
+computed using R’s default ﬁnite diﬀerence approach. This means that for a
+model withpparameters, the objective function is dominated by the inversion of
+J, which costsO(p3) time andO(p2) space. The use of ﬁnite diﬀerence gradients
+further increases the time complexity toO(p4), compounding the problem. This
+approach is therefore viable for small models with few parameters, but not
+realistic for larger models. Optimizations to overcome this limitation will be
+considered in upcoming Section 5. The use of ﬁnite diﬀerence derivatives was
+not found to produce appreciable numerical diﬀerences in the ﬁnal output, so
+analytic derivatives were not used for this analysis.
+8
+The code and results for this section is provided in [23]. Throughout this
+section, the following estimators will be compared.
+MLE ˆθ(X′
+n) := argmin θ[−ℓ(θ)]
+L2 regularization θ∗
+L2 (X′
+n) := argmin θ,λ[−ℓ(θ) + λ∥θ∥2
+2]
+ICE θ∗
+ICE(X′
+n) := argminθ[−ℓ(θ) + 1
+ntr(ˆIθ ˆJ−1
+θ )]
+4.1 Gaussian Error Model
+We begin by considering the simplest case of univariate linear regression with
+Gaussian residuals. The advantage of this simple model is that the exact form
+of the correction term can be derived analytically and aids therefore in building
+intuition on its behavior. For such a toy model,y∼N(µ,σ2) and, for simplicity,
+the following example will considerµto be a constant, but it is equally applicable
+if µ= µ(x). Consider the parameters of the model to therefore beθ:= (µ,σ)
+with their optimal values beingθ0 := ( µ0,σ0). The the probability density
+function is
+g(y,θ) = 1√
+2πσe−(y−µ)2
+2σ2 . (11)
+It is known a priori thatL2 regularization cannot improve this model, as
+if µ0 ̸= 0, any decrease in the magnitude ofµ is likely to be systematically
+harmful. Similarly, a decrease in σ below ˆσ results in a decrease in model
+distribution entropy, and hence would be generally making overﬁtting worse, and
+would generate a correspondingly higher KL-divergence than the MLE estimate.
+Consequently, we would expect anyλ computed through cross-validation to be
+statistically indistinguishable from zero, andL2 regularization to be generally
+harmful wheneverλ̸= 0.
+Generalization Error Analysis
+The Gaussian model described was generated withµ0 = 0.2, σ0 = 0.2, and
+dy = 0.001. For each ofn ∈{16,32,64,128,256,512,1024}, 500 independent
+simulations of the datay1,...,y n were performed, and then the parameters were
+ﬁt from that data. In each simulation,θwas computed using MLE, MLE with
+L2 regularization, and ICE. Theλparameter forL2 regularization was computed
+using 2-way cross-validation on the available data, and as expected, none of the
+computed values ofλ were statistically diﬀerent from zero.
+For each estimate ofθ, the KL-divergenceρKL(f,gθ) was computed (using
+the known value ofθ0), and the results were compared. The ICE parameter
+estimation method showed statistically signiﬁcant improvement over MLE at
+the 5-sigma level out ton = 64, and was improved by just under 1-sigma at
+n= 1024.
+The KL-divergence results graphed againstn on a log-log scale are shown in
+Figure 1. Every value ofn is normalized by the average KL divergence of the
+9
+MLE methodology to improve legibility. TheL2 series is statistically indiﬀerent
+from the MLE series at2 standard deviations beyondn = 32 , and the two
+are not materially diﬀerent for anyn. The ICE series is at least4.5 standard
+deviations below the MLE series untiln= 1024.
+0 200 400 600 800 1000
+0.80
+0.85
+0.90
+0.95
+1.00
+N
+ρKL (f, gICE )
+ρKL (f, gMLE )
+ρKL (f, gL2 )
+ρKL (f, gMLE )
+1.0
+Figure 1: A comparison of the KL-divergence (y-axis) of various estimation
+methods against the number of training samplesn. Each KL divergence value
+was divided by the average KL divergence of the MLE estimate for that value of
+n. The ICE andL2 series are shown with 2 standard deviation error bars.
+Remark In addition to the series shown in Figure 1, a series was computed
+using the true value ofJ, estimated from a much larger samplen= 1024 from
+the underlying distribution, and this series was indistinguishable from the series
+computed using ˆJ for everyn, thus it was not graphed. This validates Takeuchi’s
+approach of approximatingJ with ˆJ in this instance.
+As expected, the diﬀerence inµ between ICE and MLE is not statistically
+signiﬁcant (at three standard deviations) for anyn, but the ICE computed value
+of σ (shown in Figure 2) is considerably larger than the MLE estimate, especially
+for small values ofn. This explains the greatly reduced KL-divergence noted in
+Figure 1.
+10
+20 50 100 200 500 1000
+N
+σICE −σ MLE
+5 x 10 −4
+10 −3
+2 x 10 −3
+5 x 10 −3
+10 −2
+0 100 200 300 400 500 600
+Z−Score
+σICE −σ MLE
+Z−Score
+Figure 2: The error in the estimatedˆσICE and the Z-score of the estimate
+against the number of training samplesn.
+Note that the diﬀerence in estimatedσ is always statistically signiﬁcant when
+compared to the MLE value. This is because both MLE and ICE are ﬁt on
+the same data, so ICE would always have a largerσ than MLE regardless of
+the actual data chosen from the distributionf. This is the cause of the large
+z-scores shown, always exceeding 200. We know from elementary statistics that
+correlation between the mean and std. deviation causes the MLE estimate of
+ˆσ to be systematically low by a factor ofn−1
+n . Indeed, the ICE estimate ofσ∗
+is closely trackingσ0 whereas ˆσ is closely trackingσ0(n−1)
+n as expected. This is
+one example where reducing generalization error also reduces parameter bias as
+a side eﬀect.
+4.2 Friedman’s Test Case
+We now extend the example from Section 4.1 to the case whereµ is no longer
+constants. For this example, we chose a standard regression test set, which is
+11
+nonlinear in the features, based on Section 4.3 of [24]:
+yi = µθ(xi) + εi, ε∼N(0,σ2), (12)
+where the Friedman model is
+µθ(xi) = θ0sin(πx(i,0)x(i,1)) + θ1(x(i,2) −θ2)2 + θ3x(i,3) + θ4x(i,4). (13)
+The random features,Xj, are i.i.d. uniform random and the parameter values
+are ﬁxed. The true parameter set,θ0 = (10.0,20.0,0.5,10.0,5.0,1.0), reserves
+the last parameter (1.0) for the value ofσ.
+Note that hereσ must be treated as an unknown parameter. To do otherwise
+implies that the modeler knows the amount of noise expected in the data. In the
+case of a known noise term, overﬁtting is impossible since overﬁtting arises when
+a model reduces the projected noise below its actual value, which can never arise
+when the noise level is known.
+The model probability densityg(x,y|θ) of y is given by
+g(xi,yi|θ) = 1√
+2πσ2 e−(µi−yi)2
+2σ2 . (14)
+Recall that in Section 4.1, the value ofµ was considered to be a constant.
+This example is a natural extension of Section 4.1, and was chosen due to the
+well-explored diﬃculty of Friedman’s problem.
+Wesimulate 500 batchesofequallysizedtrainingsetsoflength n∈{16,32,64,128,256,
+512,1024}. The test set is always of length1024 to ensure accuracy for the
+smaller values ofn. The starting point of the optimization is generated by
+adding a random perturbation,δθ∼N(0,0.1), to each parameter. As before,
+the KL-divergence is computed between the distribution represented by the
+parameters and the true distribution, and these values are compared between
+estimation methods.
+For each test sample, the KL divergence is computed using numerical inte-
+gration with ady increment of0.01 over the interval containingµ±10σ for both
+the true and model distributions. The computed probabilities are veriﬁed to
+numerically sum to unity within an error of±10−3.
+In each simulation,θis computed using MLE, MLE withL2 regularization,
+and ICE. Theλ parameter forL2 regularization is computed using 4-way cross
+validation on each batch of the training data.
+As shown in Figure 3 and Table 1,L2 is not eﬀective for any value ofn, and
+is is completely inactivated forn> 32. Where regularization is used (i.e.,λ̸= 0),
+it generally underperforms MLE. ICE is eﬀective across the entire data range,
+outperforming MLE for everyn, and always by a statistically signiﬁcant margin
+of at least 5 sigma.
+12
+20 50 100 200 500 1000
+0.4
+0.6
+0.8
+1.0
+1.2
+1.4
+N
+ρKL (f, gICE )
+ρKL (f, gMLE )
+ρKL (f, gL2 )
+ρKL (f, gMLE )
+1.0
+Figure 3: Comparison of the KL-divergence, averaged across500 replications,
+of estimation methods against the number of training samplesn. Each KL
+divergence value was divided by the average KL divergence of the MLE estimate
+for that value ofn. The ICE andL2 series are shown with 2 standard deviation
+error bars.
+n ρKL(f,gˆθ) ρKL(f,gθL2) ρKL(f,gθ∗)
+16 6 .19 ×10−1 8.442 ×10−1 (8.40) 3.02 ×10−1 (−13.54)
+32 1 .74 ×10−1 1.74 ×10−1 (0.16) 1.37 ×10−1 (−11.11)
+64 6 .85 ×10−2 6.85 ×10−2 (0.0) 5.81 ×10−2 (−12.65)
+128 3 .82 ×10−2 3.82 ×10−2 (0.0) 3.53 ×10−2 (−11.13)
+256 2 .19 ×10−2 2.19 ×10−2 (0.0) 2.12 ×10−2 (−7.84)
+512 1 .53 ×10−2 1.53 ×10−2 (0.0) 1.51 ×10−2 (−5.66)
+1024 1 .25 ×10−2 1.25 ×10−2 (0.0) 1.24 ×10−2 (−5.03)
+Table 1: Comparison of the average KL divergence across500 replications for
+several model estimators given a ﬁtting set size ofn. For estimators other than
+ˆθ, the values in parentheses denotes the t-statistic of the diﬀerence between this
+estimator andˆθ, with negative values indicating that the listed estimator has a
+lower KL divergence.
+4.2.1 Impact of ˆJ Approximation
+It was noted previously that Takeuchi usedˆJ (and likewise,ˆI) in place of the
+true value ofJ, and we do so here as well. Though there is no realistic way to
+13
+avoid this approximation in the real world, and the optimized approach discussed
+in Section 5 has an entirely diﬀerent set of approximations, the impact of this
+approximation will be brieﬂy characterized here.
+In Table 2, we revisit Table 1, but now drop theL2 regualarization column,
+and add a new column where the ICE objective is allowed to use a much better
+approximated value ofJ, in this case approximated from1024 independently
+drawn samples regardless ofn.
+n MLE ICE ( ˆJ ) ICE ( J )
+16 6 .19 ×10−1 3.02 ×10−1 (−13.54) 6.21 ×10−1 (0.05)
+32 1 .74 ×10−1 1.37 ×10−1 (−11.11) 1.51 ×10−1 (−3.74)
+64 6 .85 ×10−2 5.81 ×10−2 (−12.65) 4.21 ×10−2 (−17.29)
+128 3 .82 ×10−2 3.53 ×10−2 (−11.13) 2.99 ×10−2 (−11.82)
+256 2 .19 ×10−2 2.12 ×10−2 (−7.84) 1.99 ×10−2 (−4.19)
+512 1 .53 ×10−2 1.51 ×10−2 (−5.66) 1.48 ×10−2 (−1.62)
+1024 1 .25 ×10−2 1.24 ×10−2 (−5.03) 1.24 ×10−2 (−0.72)
+Table 2: Comparison of the average KL divergence across500 replications for
+ICE estimators with and without approximation ofJ given a ﬁtting set size of
+n. For estimators other thanˆθ, the values in parentheses denotes the t-statistic
+of the diﬀerence between this estimator andˆθ, with negative values indicating
+that the listed estimator has a lower KL divergence.
+As can be seen from Table 2, using the true value ofJ is at most marginally
+helpful. In fact, for most values ofn it displays slightly better average results,
+but slightly higher std. deviation of those results, and thus reduced T-statistics.
+Thus, we conclude that the Takeuchi’s approximation, replacingJ with ˆJ is
+reasonable. The same conclusion was reached in Section 4.1, see the remark
+there. We note also that the ICE estimator using ˆJ exhibits substantially
+better performance for very low sample sizes, but further investigation of this
+phenomenon is beyond the scope of the current paper.
+In Table 3, we show the average matrix norms ofJ, ˆJ, and also of the
+diagonal of ˆJ, referred to as the matrixD. The matrix D will be examined
+further in Section 5, and is included here for completeness. We also show the
+norms of several matrix diﬀerences.
+We note that the ICE objective values themselves exhibit much lower variation
+than the matrix norms show in Table 3. In particular though the matrixD is
+not actually converging toJ as n increases, we see from the correction term
+it generates that this diﬀerence does not appear to have a material impact for
+larger n. We thus conclude that the major eigenvectors of( ˆJ−J) and (D−J)
+are very nearly orthogonal to the gradient vectors used to constructˆI for large
+n.
+14
+n ∥J∥ ∥ ˆJ∥ ∥ D∥ ∥ ˆJ−J∥ ∥ D−J∥ 1
+ntr(IJ−1) 1
+ntr(ˆIˆJ−1) 1
+ntr(ˆID−1)
+16 1423.29 925,489.26 1738.30 926,165.93 2905.64 0.1452 0.0027 6.9484
+32 875.03 89,414.11 96.49 89,786.19 793.43 0.0521 0.0256 0.0291
+64 214.05 4820.55 89.55 4646.51 125.02 0.0202 0.0160 0.0162
+128 200.86 200.68 85.00 27.65 115.86 0.0097 0.0086 0.0086
+256 194.36 191.81 82.70 19.12 111.67 0.0048 0.0045 0.0045
+512 191.20 190.10 82.76 14.18 108.44 0.0023 0.0023 0.0023
+1024 188.91 187.39 81.89 11.58 107.02 0.0012 0.0012 0.0012
+Table 3: Mean matrix norms ofJ, its approximations, and diﬀerences from these
+approximations across 500 replications.
+It is not clear from examining the trace terms in Table 3 thatD is a worse
+approximation ofJ than ˆJ is, even for smalln where the impact of the ICE
+approach is most signiﬁcant. A more complete investigation of the spectrum of
+these matrices is beyond the scope of the present work.
+4.3 Multivariate Logistic Regression
+The previous experiment is based on a well-known test case. In this second
+experiment, we assess the general performance of ICE under (i) varying dimen-
+sionality of the true data distribution, (ii) increasing misspeciﬁcation, and (iii)
+increasing training set sizes. To achieve this goal, we generate a more exhaustive
+set of data from a more complex data generation process.
+4.3.1 Data Generation Process
+The synthetic data are designed to exhibit a number of characteristics needed to
+broadly evaluate the eﬃcacy of ICE. First, the regressors should be suﬃciently
+correlated so as to ensure that model selection is representative of typical datasets.
+However, weavoidmulti-collinearitybyensuringthesmallesteigenvalueisabovea
+certain threshold. We additionally control the condition number of the covariance
+matrix Σ by randomly generating a symmetric positive deﬁnite covariance matrix
+Σ ∈Rp using the eigen-decomposition
+Σ = UDUT, (15)
+where U is an orthogonal random matrix with elementsUij ∼N(0,1) and
+D is diagonal matrix of positive eigenvalues. The eigenvalues are uniformly
+distributed over the interval[a,b] so that the condition number ofΣ is b/a and
+the eigenvalues are kept distinct. Here,ais chosen to be1 ×10−4 and bis chosen
+to be 0.1.
+Using a Cholesky decompositionΣ = ΓΓ T and the random mean vector
+µ∼N(0,1), we generate correlated gaussian vectors of dimensionp with the
+properties
+Xi = µ+ ΓijZj, Zj ∼N(0,1),∀j ∈1,...,p. (16)
+The data(xn,yn) are generated under a logistic regression
+p(y= 1|x,θ0) = f(x|θ0) = 1
+1 + e−xθ0
+. (17)
+15
+A key challenge in assessing the eﬃcacy of bias reduction is to avoid generating
+excessively low entropy distributions. In such cases, bias reduction will have
+marginal eﬀect as the parameters are all nearly zero. To avoid such scenarios, the
+intercept parameter of the true model is adjusted a-posterior until the following
+conditions are met:
+1. c< EX′[p(Y = 1|X,θ0)] <d
+2. −L(θ0) >ϵ
+where c= 0.35, d= 0.65, andϵ= 0.2. If these conditions can not be met, then
+the replication is discarded.
+4.3.2 Model Performance Comparison
+As in prior sections, KL divergence is computed between the estimated model
+and the true model for each of the estimation methods. The T-statistics of
+the diﬀerence with the corresponding MLE KL divergence are computed, with
+negative T-statistics showing that an approach is performing better than the
+MLE approach. ForL2 regularization in this section, the value ofλis computed
+via cross-validation, using two folds, on the provided ﬁtting set.
+Table 4 compares the KL divergencesρKL from the true distribution to
+the model distributions produced using various estimation approaches applied
+to misspeciﬁed data. Here m denotes the number of regressors that are not
+predictive, i.e., θ0 contains m zeros. The experiment is replicated300 times
+using the data generation process described above and the test set is ﬁxed at
+100,000 observations.
+p n ρKL(f,gˆθ) ρKL(f,gθL2 ) ρKL(f,gθ∗)
+5 500 4.79 ×10−3 3.01 ×10−3 (−13.43) 4.56 ×10−3 (−13.53)
+5 1000 2.64 ×10−3 1.76 ×10−3 (−10.94) 2.57 ×10−3 (−12.80)
+5 2000 1.29 ×10−3 1.09 ×10−3 (−6.15) 1.27 ×10−3 (−7.69)
+5 5000 5.09 ×10−4 4.60 ×10−4 (−4.69) 5.07 ×10−4 (−6.19)
+10 500 9.79 ×10−3 9.85 ×10−3 (0.16) 9.18 ×10−3 (−6.27)
+10 1000 5.05 ×10−3 5.13 ×10−3 (0.51) 4.83 ×10−3 (−4.90)
+10 2000 2.50 ×10−3 3.05 ×10−3 (5.99) 2.56 ×10−3 (1.70)
+10 5000 1.06 ×10−3 1.49 ×10−3 (7.72) 1.04 ×10−3 (−0.86)
+20 500 2.18 ×10−2 2.16 ×10−2(−0.29) 1.95 ×10−2 (−8.71)
+20 1000 1.13 ×10−2 1.24 ×10−2 (3.79) 1.10 ×10−2 (−1.95)
+20 2000 6.86 ×10−3 7.52 ×10−3 (4.47) 6.72 ×10−3 (−1.67)
+20 5000 3.57 ×10−3 4.24 ×10−3 (6.56) 3.59 ×10−3 (0.45)
+Table 4: Comparison of the KL divergence for the diﬀerent estimation approaches
+applied to mis-speciﬁed data. The values in parentheses denote the t-statistic
+relative to MLE. Forp = {5,10,20}there are m = {2,4,8}non-explanatory
+variables added.
+16
+We observe that the t-statistic forθ∗is most signiﬁcant for relatively small
+sample sizes, particularly n = 500 . For these small sizes, the improvement
+over MLE is greater, though noisier. There is uniform decay in improvement
+over ˆθ as n grows, until forp= 10 and p= 20 the largest sizes are no longer
+statistically signiﬁcant. This is expected, as both the MLE and ICE estimates
+are converging towards the true value ofθ0, and for large enough sample sizes
+the ICE correction would be dominated by numerical error, particularly the ill
+conditioning ofJ.
+TheL2 estimate improves for small values ofp, but then becomes progressively
+worse for large values ofp. We observe that for dimensionality abovep= 5, theL2
+regularization described here is no longer eﬀective in reducing the KL-divergence.
+For low values ofp the value ofθx has comparatively low variance, and thus
+the logistic function is reasonably locally approximated as linear. For higher
+p this approximation is less realistic and the performance ofL2 regularization
+degrades.
+For the ICE estimates, larger values ofpshow ﬂuctuations that are often not
+statistically signiﬁcant. It is apparent that largerp is increasing the variance
+of the ICE divergences, probably due to numerical errors and ill conditioning.
+Larger values ofnreduce the absolute size of the divergence improvement whereas
+larger values ofp seem to increase it.
+Note that though the t-statistics are degrading for largen, the absolute
+magnitude of the diﬀerences is asymptotically small. For these sizes, the results
+are insigniﬁcant, but more importantly, immaterial.
+4.3.3 Convergence Analysis for Large n
+For 10 randomly chosen example problems, under which the model coeﬃcients
+are now ﬁxed, the convergence behavior for largen, the training set size, is
+explored. Note that the test set remains ﬁxed at 100,000 observations for each
+problem. Table 5 compares the KL divergence (averaged over all10 problems)
+under MLE (ˆθ), L2 regularization, and ICE for progressively larger sample sizes.
+The divergencesρKL(f,gˆθ) and ρKL(f,gθ∗
+ICE) converge to zero asn→∞, as
+does ρKL(f,gθ∗
+L2
+).
+17
+n L(θ0) ρKL(f,gˆθ) ρKL(f,gθL2 ) ρKL(f,gθ∗)
+500 0.5439 9 .28 ×10−3 7.92 ×10−3 7.74 ×10−3
+1000 0.5439 5 .50 ×10−3 5.86 ×10−3 4.81 ×10−3
+2000 0.5439 2 .65 ×10−3 3.67 ×10−3 2.65 ×10−3
+5000 0.5439 1 .85 ×10−3 2.72 ×10−3 1.35 ×10−3
+10,000 0.5439 5 .75 ×10−4 1.57 ×10−3 9.32 ×10−4
+20,000 0.5439 5 .84 ×10−4 8.10 ×10−4 6.11 ×10−4
+50,000 0.5439 3 .83 ×10−4 4.09 ×10−4 3.64 ×10−4
+100,000 0.5439 1 .67 ×10−4 1.15 ×10−3 1.86 ×10−4
+Table 5: Comparison of the KL divergence under the MLEˆθ, L2 regularization
+and ICE regularizationθ∗
+ICE against a large sample size for the case whenp= 10
+and m= 4.
+Generally theθ∗
+ICE estimates are seen to converge slightly faster than theˆθ
+estimates. The regularization inθ∗
+L2 is observed to be beneﬁcial for very small
+sample sizes, but then becomes marginally detrimental for largen.
+5 Optimized Computation Results
+For any model satisfying White’s Regularity Criteria, it is known that the matrix
+J is positive deﬁnite near the MLE optimumˆθ. This implies thatJ is diagonally
+dominated, and indeed considering just its diagonal elementsD, it is known that
+tr(ID−1) > 0. Indeed tr(ID−1) diﬀers strongly fromtr(IJ−1) most strongly
+for models with strong regressor interactions. Therefore, using ﬁnite diﬀerence
+gradients, consider the following approximations for the ICE objective function:
+1. θ∗: J is computed directly, ICE is implemented as written.
+2. θ∗
+2: J is taken to be constant w.r.t.θ: (Jθ = Jˆθ).
+3. θ∗
+3: J is taken to be diagonal: (J = D).
+4. θ∗
+4: J is taken to be the identity: (J = I).
+Clearly, we expect thatθ∗
+4 above is the least accurate approximation, and
+items θ∗
+2 and θ∗
+3 have varying levels of accuracy depending on the problem at
+hand. The cost comparison of these approaches is shown in Table 6.
+Approximation Objective Cost (Space) Objective Cost (Time) Gradient Cost (Space) Gradient Cost (Time)
+Direct Computation O(p2) O(p3) O(p2) O(p4)
+Jθ = Jˆθ O(p2) O(p2) O(p2) O(p3)
+J = D O (p) O(p) O(p) O(p2)
+J = I O(p) O(p) O(p) O(p2)
+Table 6: The asymptotic computational cost (per iteration) of various proposed
+approximations as a function of parameter countp. Cost is amortized when
+Jθ = Jˆθ assuming thatn≈p. Note that a typical model will costO(p) in time
+and space for both the objective function and its gradients.
+18
+Remark When computing gradients for use in a solver, often approximation
+error will have only a marginal impact on the ﬁnal result, though it may increase
+the number of iterations needed for convergence. Broyden’s method [25] is a
+typical example of this approach in action. Eﬃcient approximations of[∂θ ˆJ]
+might similarly have only a minor eﬀect on accuracy and iteration count. The
+construction of approximate analytical derivatives is beyond the scope of the
+present work.
+These approximations were computed and compared for the Friedman (see
+Section 4.2) problem, and the results are shown in Table 7 below.
+n ρKL(f,gˆθ) ρKL(f,gθ∗) ρKL(f,gθ∗
+2
+) ρKL(f,gθ∗
+3
+) ρKL(f,gθ∗
+4
+)
+8 1 .22 ×10+1 4.55 ×10+0(-4.89) 5 .70 ×10+0(−5.26) 3 .83 ×10+0(−5.22) 1 .28 ×10+0(−4.67)
+16 6 .68 ×10−1 2.99 ×10−1(−8.13) 3 .53 ×10−1(−10.56) 3 .36 ×10−1(−8.30) 5 .47 ×10−1(−2.11)
+32 1 .45 ×10−1 1.14 ×10−1(−6.90) 1 .04 ×10−1(−8.18) 1 .08 ×10−1(−10.16) 3 .63 ×10−1(19.60)
+64 5 .93 ×10−2 4.80 ×10−2(−10.42) 4 .70 ×10−2(−6.95) 4 .81 ×10−2(−9.81) 2 .38 ×10−1(39.08)
+128 2 .48 ×10−2 2.24 ×10−2(−6.38) 2 .33 ×10−2(−2.26) 2 .26 ×10−2(−6.00) 1 .62 ×10−1(61.85)
+256 1 .21 ×10−2 1.16 ×10−2(−4.28) 1 .20 ×10−2(−0.68) 1 .16 ×10−2(−4.11) 1 .01 ×10−1(68.82)
+512 6 .26 ×10−3 6.10 ×10−3(−2.41) 6 .16 ×10−3(−0.84) 6 .10 ×10−3(−2.39) 5 .42 ×10−2(63.84)
+1024 3 .05 ×10−3 3.00 ×10−3(−2.66) 3 .04 ×10−3(−0.37) 2 .99 ×10−3(−2.73) 2 .61 ×10−2(59.78)
+Table 7: Comparison of the average KL divergence across200 replications for
+MLE and several variants of ICE given a ﬁtting set size ofn. For estimators
+other thanˆθ, the values in parentheses denotes the t-statistic of the diﬀerence
+between this estimator andˆθ, with negative values indicating that the listed
+estimator has a lower KL divergence.
+From Table 7, it is apparent that approachθ∗
+4, takingJ = Iis not eﬀective.
+This is not surprising as the actualJ matrix has dramatic diﬀerences in scale
+between regressors. Approximationθ∗
+3, takingJ = D is accurate enough that it
+cannot be statistically distinguished from the direct computation of ICE by the
+test above. Approximationθ∗
+2 tends to underperform approximation (3).
+Therefore, we propose takingJ = D as a more numerically stable approxi-
+mation of the ICE objective.
+6 Conclusions
+Takeuchi [16] is believed to be the ﬁrst to have proposed using an objective
+function similar to ICE in order to reduce generalization error, though it was
+applied via model selection. Firth [9] introduced a similar term to reduce
+parameter bias in model ﬁtting, as opposed to model selection, though he
+derived it only for exponential model families and did not consider its eﬀect on
+generalization error. It is not known why this approach did not ﬁnd widespread
+use, but one may infer that theO(p4) computational cost and instability was
+enough to keep it from wider adoption.
+In this paper, we reintroduce the objective function of [16] and provide a
+more general proof of its widespread applicability. We then show that eﬃcient
+implementations costing only O(p) are possible. Under ﬁnite sample sizes,
+19
+this bias correction term is shown experimentally in several models to lead to
+signiﬁcant reduction in bias compared to maximum likelihood estimation with
+and withoutL2 regularization. ICE oﬀers many advantages overL2 penalized
+maximum likelihood estimation: (i) it’s suitable for most nonlinear models, (ii)
+it’s provably asymptotically convergent; and (iii) does not rely on any parameters
+which would need to be provided by the operator or deduced through cross-
+validation.
+Acknowledgements
+The authors would like to thank Bertrand Nortier for his suggestions, feedback,
+and assistance. We would also like to thank Kevin Atteson for providing early
+feedback that steered us away from error.
+A Proofs
+A.1 White’s Regularity Conditions
+Deﬁnition A.1 (White’s regularity conditions)White [22] provides the fol-
+lowing regularity conditions:
+A1: The independent random vectors,Xi,i = 1 ,...,n , have common joint
+distribution functionF on Ω, a measurable Euclidean space, with measurable
+Radon–Nikodym densityf = dF/dx.
+A2: The family of distribution functionsG(x|θ) has Radon–Nikodym densities
+g(x|θ) = dG(x|θ)/dxwhich are measurable in x for everyθ∈Θ, a compact
+subset of p-dimensional Euclidean space, and continuous inθ for every
+x∈Ω.
+A3: (a) E[log f(X)] exists and |log g(x|θ)| ≤m(x), ∀θ ∈Θ, where m is
+integrable with respect to F; (b)ρKL(f,gθ) has a unique minimum at
+θ0 ∈Θ.
+A4: ∂θ(log g(x|θ)) are measurable functions ofx for eachθ∈Θ and continu-
+ously diﬀerentiable functions ofθ for eachx∈Ω.
+A5: |∂2
+θ(log g(x|θ))|and |∂θ(log g(x|θ)) ·∂θ(log g(x|θ)|) are dominated by
+functions integrable inx with respect to F for allx∈Ω and θ∈Θ.
+A6: (a) θ0 is an interior point of the parameter space; (b)E[∂θ(log g(x|θ)) ·
+∂θ(logg (x|θ))] is non-singular; (c)θ0 is a regular point ofE[∂2
+θ(logg (x|θ))].
+A.2 Proof of Finite Variance
+Lemma A.2 (Finite variance)Suppose the following conditions hold:
+20
+1. Msatisﬁes White’s regularity conditions A1–A6 (see Section A.1 or [22]).
+2. θ0 is a global minimum of−L(θ) in the compact spaceΘ deﬁned in A2.
+3. There exists aε >0 such that −L(θ0) < −L(θ1) −ε for all other local
+minima θ1.
+4. For k = 0,1,2,3,4,5 the derivative ∂k
+θL(θ) exists, is continuous, and
+bounded on an open set aroundθ0.
+5. For k = 0,1,2,3,4,5, the varianceV[∂k
+θℓ(θ,Xn)] →0 as n →∞ on an
+open set aroundθ0.
+Then, for suﬃciently largen there exists a compact subsetU ⊂Θ containing
+θ0,ˆθ, such that
+1. For k = 0,1,2,3 the derivative ∂k
+θℓ∗(θ,xn) exists, is continuous, and
+bounded onU, almost surely.
+2. For k= 0,1,2,3, V[∂k
+θℓ∗(θ,Xn)] →0 as n→∞ on U, almost surely.
+3. θ∗∈U as n→∞ almost surely.
+Proof Assumptions (4) and (5) establish existence of some set,S, containingθ0
+such thatL(θ) is bounded onS, and its estimate,ℓ(θ,Xn) has ﬁnite variance.
+Therefore, −ℓ(θ,xn) is also bounded onS almost surely. Similarly for the ﬁrst
+5 derivatives. White’s criteria imply thatJθ0 is positive deﬁnite on an open set
+around θ0, and thus one can form a compact setU ⊂S containing an open set
+around θ0 on which the minimum eigenvalue ofJθ is bounded away from 0.
+Note thatJθ is three times diﬀerentiable onU by Assumption 4, as isˆJθ, as
+established above. Then ˆJ−1
+θ is also positive deﬁnite and bounded onU. It can
+be shown to also have three derivatives by using the well-known matrix relation
+∂θA−1 = −A−1(∂θA)A−1. (18)
+It follows thatˆJ−1
+θ is also positive deﬁnite, nonsingular, and bounded onU.
+Similarly for ˆIθ, and thustr(ˆIθ ˆJ−1
+θ ) is bounded with ﬁnite variance onU. It
+also has three bounded derivatives with ﬁnite variance.
+Therefore, −ℓ∗(θ,Xn) →−ℓ(θ,Xn), and θ∗ →θ0 as n →∞, with the
+convergence being in probability. This means thatU contains θ0, ˆθ, and θ∗
+almost surely for large enoughn. Similarly, on U we have three continuous,
+bounded derivatives of∂k
+θℓ∗(θ,xn) almost surely.
+A.3 Proof of Asymptotic Normality
+Theorem A.3 (Asymptotic Normality)Provided the conditions hold in Lemma
+A.2, namely, that
+21
+1. For k = 0,1,2,3 the derivative ∂k
+θℓ∗(θ,xn) exists, is continuous, and
+bounded onU.
+2. For k= 0,1,2,3, V[∂k
+θℓ∗(θ,xn)] →0 as n→∞ on U.
+Then
+√n(θ∗−θ∗
+0) →N(0,( ˆJ∗
+θ∗
+0
+)−1 ˆI∗
+θ∗
+0
+( ˆJ∗
+θ∗
+0
+)−1).
+Proof As the ﬁrst derivatives ofℓ are continuous, the mean value theorem may
+be applied:
+∂θℓ∗(θ∗
+0) = ∂θℓ∗(θ∗) + (θ∗−θ∗
+0) ˆJ∗
+¯θ = (θ∗−θ∗
+0) ˆJ∗
+¯θ. (19)
+¯θis betweenθ∗and θ∗
+0. Under the assumptions of Lemma A.2, and given
+its ﬁnite variance,ˆJ¯θ is almost surely (in the largenlimit) positive deﬁnite, and
+thus invertible as bothθ∗and θ∗
+0 are inU, and¯θis between them. Therefore,
+(θ∗−θ∗
+0) = ( ˆJ∗
+¯θ)−1∂θℓ∗(θ∗
+0). (20)
+Applying the mean value theorem a second time gives
+ˆJ¯θ = ˆJ∗
+θ∗
+0
++ (¯θ−θ∗
+0) ˆJ∗
+θ1 , (21)
+with θ1 between ¯θand θ∗
+0. If the order of(θ∗−θ∗
+0) = Op(δ), whereδ:= n−1/2,
+then
+ˆJ∗
+¯θ = ˆJ∗
+θ∗
+0
++ Op(δ). (22)
+As all of theˆJ∗are bounded away from zero in probability, we have
+( ˆJ∗
+¯θ)−1 = ( ˆJ∗
+θ∗
+0
+)−1 + Op(δ), (23)
+with the equality holding in probability. In the largen limit, δ→0, and thus
+(θ∗−θ∗
+0) = ( ˆJ∗
+θ∗
+0
+)−1∂θℓ∗(θ∗
+0). (24)
+As ∂θℓ∗(θ∗
+0) is the sum ofnindependent vectors, it is asymptotically normally
+distributed by the central limit theorem, and its mean is0 by the deﬁnition of
+θ∗
+0. Its variance is thereforeV[∂θ∗ℓ∗(θ∗
+0)] = E[∂θℓ∗(θ∗
+0)(∂θℓ∗(θ∗
+0))T] = 1
+n
+ˆIθ∗
+0
+Substituting this into Equation (24) yields
+√n(θ∗−θ∗
+0) = N(0,( ˆJ∗
+θ∗
+0
+)−1 ˆI∗
+θ∗
+0
+( ˆJ∗
+θ∗
+0
+)−1), (25)
+establishing the result.
+22
+A.4 Proof of Prediction Bias Order under ICE
+Theorem A.4 (Prediction Bias Estimation under ICE)By minimizing−ℓ∗
+instead of−ℓ, the ﬁrst order terms of the prediction bias are cancelled leaving a
+Op(n−3/2) residual term
+−L( ˆθ∗) = −ℓ(θ∗(Xn),Xn) + Op(n−3/2). (26)
+Proof Note that in Takeuchi’s proof [16], the use ofˆθwas prescribed. Therefore,
+this approach could be used only for model selection, and not for model ﬁtting.
+Now consider the bias under the ICE estimatorθ∗.
+b(θ∗(Xn),Xn) = EXn [log g(Xn|θ∗(Xn)) −log g(Xn|θ0)]
++ EXn
+[
+log g(Xn|θ0) −nEX′
+n[log g(X′
+n|θ0)]
+]
++ nEXn
+[
+EX′
+n[log g(X′
+n|θ0)] −EX′
+n[log g(X′
+n|θ∗(Xn))]
+]
+.
+As the second term is zero, this can be simpliﬁed to
+b(θ∗(Xn),Xn) = −nEXn [ℓ(θ∗(Xn),Xn) −ℓ(θ0,Xn)]
+− nEXn [L(θ0) −L(θ∗(Xn))] .
+Deﬁne δ = 1√n, and then recall from White [22] that (ˆθ−θ0) is Op(δ).
+Similarly, recall from Theorem A.3 that(θ∗−θ∗
+0) is alsoOp(δ). As constructed,
+the error termb(θ∗(Xn),Xn) is Op(1) (actually O(1) as it is an expectation),
+and terms of orderOp(δ) and higher will be dropped. Therefore, as in Takeuchi’s
+derivation [16], the Taylor expansions below will be truncated at second order in
+δ, dropping terms of orderOp(δ3) or higher. Additionally, we will occasionally
+drop indications ofXn where the meaning is clear and it greatly simpliﬁes the
+notation.
+With that truncation, recalling thatθ0 is a minimum ofL(θ) and thus has
+zero gradient:
+nEXn [L(θ0) −L(θ∗(Xn))] = n
+2 EXn[(θ∗−θ0)TJθ0 (θ∗−θ0)] + O(δ). (27)
+Recall Theorem A.3, and recall the that for the quadratic form:
+E[εTAε] = tr(AΣ) + µTAµ, E[ε] = µ,V[ε] = Σ. (28)
+Therefore,
+n
+2 EXn[(θ∗−θ0)TJθ0 (θ∗−θ0)] = 1
+2tr(Jθ0 [(J∗
+θ∗
+0
+)−1I∗
+θ∗
+0
+(J∗
+θ∗
+0
+)−1)])
++ n
+2 (θ∗
+0 −θ0)TJθ0 (θ∗
+0 −θ0)
++ O(δ).
+23
+Now note that the second term on the right is a constant, and therefore
+would take no part in any optimization. Therefore, it can be safely ignored and
+nEXn [L(θ0) −L(θ∗(Xn))] = 1
+2tr(Jθ0 [(J∗
+θ∗
+0
+)−1I∗
+θ∗
+0
+(J∗
+θ∗
+0
+)−1)]) + O(δ). (29)
+Addressing the ﬁrst term, again taking a Taylor expansion, we ﬁnd that
+ℓ(θ0) = ℓ(θ∗)+(θ0 −θ∗)T∂θℓ(θ∗)+ 1
+2(θ0 −θ∗)T∂2
+θℓ(θ∗)(θ0 −θ∗)+Op(δ3). (30)
+Therefore, recalling thatnOp(δ3) = Op(δ) gives
+nEXn [ℓ(θ∗(Xn),Xn) −ℓ(θ0,Xn)] = 1
+2tr(Jθ∗[(J∗
+θ∗
+0
+)−1I∗
+θ∗
+0
+(J∗
+θ∗
+0
+)−1)])
++ n
+2 (θ∗
+0 −θ0)TJθ∗(θ∗
+0 −θ0)
++ nEXn[(θ∗−θ0)T∂θℓ(θ∗)]
++ Op(δ).
+Now examine the last term:
+nEXn[(θ∗−θ0)T∂θℓ(θ∗)] = nEXn[(θ∗−θ∗
+0)T∂θℓ(θ∗)]
++ nEXn[(θ∗
+0 −θ0)T∂θℓ(θ∗)].
+However,(θ∗
+0 −θ0) does not depend onXn, so it can be pulled out of the
+expectation, then substitute in a ﬁrst order Taylor expansion
+EXn[(θ∗
+0 −θ0)T∂θℓ(θ∗)] = ( θ∗
+0 −θ0)TEXn[∂θℓ(θ∗)]
+= ( θ∗
+0 −θ0)TEXn[∂θℓ(θ∗
+0) + (θ∗−θ∗
+0)∂2
+θℓ(θ∗
+0) + Op(δ2)]
+= ( θ∗
+0 −θ0)T∂θL(θ∗
+0)
++ ( θ∗
+0 −θ0)TEXn[(θ∗−θ∗
+0)]∂2
+θL(θ∗
+0) + O(δ3)
+= ( θ∗
+0 −θ0)T∂θL(θ∗
+0) + O(δ3),
+with the last equality following from the fact thatEXn[(θ∗−θ∗
+0)] = 0 and
+the substitution of(θ∗
+0 −θ0)TO(δ2) = O(δ3). This term is therefore a constant,
+up toO(δ3), and takes no part in optimization ofθ, thus it can be dropped from
+further consideration. ThereforenEXn[(θ∗
+0 −θ0)T∂θℓ(θ∗)] = O(δ), and
+nEXn[(θ∗−θ0)T∂θℓ(θ∗)] = nEXn[(θ∗−θ∗
+0)T∂θℓ(θ∗)]
++ O(δ).
+Recombining these terms yields
+nEXn [ℓ(θ∗(Xn),Xn) −ℓ(θ0,Xn)] = 1
+2tr(Jθ∗[(J∗
+θ∗)−1I∗
+θ∗(J∗
+θ∗)−1)])
++ n
+2 (θ∗
+0 −θ0)TJθ∗(θ∗
+0 −θ0)
++ nEXn[(θ∗−θ∗
+0)T∂θℓ(θ∗)]
++ O(δ).
+24
+Thus the bias (neglecting the constant terms) is then
+b(θ∗(Xn),Xn) = −1
+2tr(Jθ∗[(J∗
+θ∗)−1I∗
+θ∗(J∗
+θ∗)−1)])
+− 1
+2tr(Jθ0 [(J∗
+θ∗
+0
+)−1I∗
+θ∗
+0
+(J∗
+θ∗
+0
+)−1)])
+− n
+2 (θ∗
+0 −θ0)TJθ∗(θ∗
+0 −θ0)
+− nEXn[(θ∗−θ∗
+0)T∂θℓ(θ∗)]
++ O(δ).
+Because ℓ∗(θ) = ℓ(θ) + Op(δ2), it follows thatJ∗
+θ = Jθ + Op(δ2) and thus
+Jθ∗(J∗
+θ∗)−1 = I+ O(δ2). Similarly forJθ0 . In additionIθ∗ = Iθ∗
+0 + O(δ), thus
+the two trace terms can be simpliﬁed and combined:
+b(θ∗(Xn),Xn) = −tr(Iθ∗J−1
+θ∗)
+− n
+2 (θ∗
+0 −θ0)TJθ∗(θ∗
+0 −θ0)
+− nEXn[(θ∗−θ∗
+0)T∂θℓ(θ∗)]
++ O(δ).
+As θ∗
+0 is a minimum ofL∗, begin by Taylor expanding the derivatives
+∂θL(θ∗
+0) = ∂θL(θ0) −(θ∗
+0 −θ0)Jθ0 = −(θ∗
+0 −θ0)Jθ0 . (31)
+Moreover, show from the deﬁnition ofL∗that
+∂θL∗(θ∗
+0) = 0 = ∂θL(θ∗
+0) + 1
+n∂θtr(IJ−1) (32)
+Then, after Taylor expandingL(θ∗
+0) around θ0, it is seen that
+(θ∗
+0 −θ0) = 1
+nJ−1
+θ0
+∂θtr(IJ−1). (33)
+Noting that J−1
+θ = O(1) and tr(IJ−1) = O(1), it holds that(θ∗
+0 −θ0) =
+O(δ2).
+Therefore, n
+2 (θ∗
+0 −θ0)TJθ∗(θ∗
+0 −θ0) = O(δ2), and can be neglected.
+Then, the bias becomes
+b(θ∗(Xn),Xn) = −tr(Iθ∗J−1
+θ∗)
+− nEXn[(θ∗−θ∗
+0)T∂θℓ(θ∗)]
++ O(δ).
+However, for the same reason,∂θℓ(θ∗) = O(δ2), so the last termnEXn[(θ∗−
+θ∗
+0)T ∂θℓ(θ∗)] = O(δ), and it too can be absorbed into the residual.
+25
+Therefore,
+b(θ∗(Xn),Xn) = −tr(Iθ∗J−1
+θ∗)
++ O(δ),
+and
+−L(ˆθ) = −ℓ(θ∗(X′
+n),X′
+n) + 1
+ntr(IˆθJ−1
+ˆθ ) + Op(δ3) + C, (34)
+where the constantC is composed of the neglected constant terms from earlier
+stages
+C = −1
+2(θ∗
+0 −θ0)TJθ0 (θ∗
+0 −θ0)
++ −(θ∗
+0 −θ0)T∂θL(θ∗
+0).
+However, the last term isO(δ3), and the ﬁrst is O(δ2), so this may be
+approximated as
+C = −1
+2(θ∗
+0 −θ0)TJθ0 (θ∗
+0 −θ0). (35)
+Recalling again that(θ∗
+0 −θ0) = O(δ2), it is clear thatC = O(δ4), and may
+thus be absorbed into theO(δ3) residual term. Therefore,
+−L(ˆθ) = −ℓ(θ∗(X′
+n),X′
+n) + 1
+ntr(IˆθJ−1
+ˆθ ) + O(δ3). (36)
+Comparing this to the form ofℓ∗(θ):
+−L(ˆθ) = −ℓ∗(θ∗(X′
+n),X′
+n) + Op(δ3). (37)
+Thus, by minimizing−ℓ∗instead of−ℓ, the ﬁrst order terms of the prediction
+bias are canceled and, in expectation, a more accurate model is produced.
+References
+[1] Kullback, S.; Leibler, R.A. On Information and Suﬃciency.Ann. Math.
+Statist. 1951, 22, 79–86.
+[2] Esponda, I.; Pouzo, D. Berk–Nash Equilibrium: A Framework for Modeling
+Agents With Misspeciﬁed Models. Econometrica 2016, 84, 1093–1130.
+https://doi.org/10.3982/ECTA12609.
+[3] Jiang, B. Approximate Bayesian Computation with Kullback-Leibler
+Divergence as Data Discrepancy. InProceedings of the Twenty-First Inter-
+national Conference on Artiﬁcial Intelligence and Statistics, Playa Blanca,
+Lanzarote, 9–11 April 2018; Proceedings of Machine Learning Research;
+Storkey, A., Perez-Cruz, F., Eds.; PMLR: Playa Blanca, Lanzarote, 2018;
+Volume 84, pp. 1711–1721.
+26
+[4] Nguyen, X.; Wainwright, M.J.; Jordan, M.I. Estimating Di-
+vergence Functionals and the Likelihood Ratio by Convex Risk
+Minimization. IEEE Trans. Inf. Theor. 2010, 56, 5847–5861.
+https://doi.org/10.1109/TIT.2010.2068870.
+[5] Pérez-Cruz, F. Kullback-Leibler divergence estimation of continuous dis-
+tributions. In Proceedings of the 2008 IEEE International Symposium on
+Information Theory, Toronto, ON, Canada, 6–11 July 2008; pp. 1666–1670.
+[6] Konishi, S.; Kitagawa, G. Generalised Information Criteria in Model
+Selection. Biometrika 1996, 83, 875–890.
+[7] Roelofs, R. Measuring Generalization and Overﬁtting in Machine Learning.
+Ph.D. Thesis, University of California, Berkeley, CA, USA, 2019.
+[8] Miller, R.G. The Jackknife—A Review. Biometrika 1974, 61, 1–15.
+[9] Firth, D. Bias Reduction of Maximum Likelihood Estimates.Biometrika
+1993, 80, 27–38.
+[10] Kosmidis, I. Bias Reduction in Exponential Family Nonlinear Models.
+Ph.D. Thesis, University of Warwick, Coventry, UK, 2007.
+[11] Kosmidis, I.; Firth, D. A generic algorithm for reducing bias in
+parametric estimation. Electron. J. Statist. 2010, 4, 1097–1112.
+https://doi.org/10.1214/10-EJS579.
+[12] Kenne Pagui, E.C.; Salvan, A.; Sartori, N. Median bias reduction
+of maximum likelihood estimates. Biometrika 2017, 104, 923–938.
+https://doi.org/10.1093/biomet/asx046.
+[13] Kosmidis, I. Bias in parametric estimation: Reduction and useful
+side-eﬀects. Wiley Interdiscip. Rev. Comput. Stat. 2014, 6, 185–196.
+https://doi.org/10.1002/wics.1296.
+[14] Heskes, T. Bias/Variance Decompositions for Likelihood-Based Estimators.
+Neural Comput.1998, 10, 1425–1433.
+[15] Akaike, H. Information Theory and an Extension of the Maximum Like-
+lihood Principle. InProceedings of the 2nd International Symposium on
+Information Theory; Petrov, B.N., Csaki, F., Eds.; Akademiai Kiado:
+Budapest, Hungary, 1973; pp. 267–281.
+[16] Takeuchi, K. Distribution of information statistics and validity criteria of
+models. Math. Sci.1976, 153, 12–18.
+[17] Stone, M. An Asymptotic Equivalence of Choice of Model by Cross-
+Validation and Akaike’s Criterion.J. R. Stat. Soc. Ser. B (Methodological)
+1977, 39, 44–47.
+27
+[18] Hastie, T.; Tibshirani R.; Friedman J.The Elements of Statistical Learning;
+Springer: New York, NY, USA, 2009.
+[19] Ross, A.; Doshi-Velez, F. Improving the Adversarial Robustness and
+Interpretability of Deep Neural Networks by Regularizing Their Input
+Gradients. InProceedingsofthe AAAIConferenceonArtiﬁcialIntelligence,
+New Orleans, LA, USA, 2–7 February 2018; Volume 32.
+[20] Golub, G.H.; Heath, M.; Wahba, G. Generalized Cross-Validation as a
+Method for Choosing a Good Ridge Parameter. Technometrics 1979,
+21, 215–223.
+[21] Yanagihara, H.; Tonda, T.; Matsumoto, C. Bias correction of
+cross-validation criterion based on Kullback–Leibler information un-
+der a general condition. J. Multivar. Anal. 2006, 97, 1965–1975.
+https://doi.org/10.1016/j.jmva.2005.10.009.
+[22] White, H. Maximum Likelihood Estimation of Misspeciﬁed Models.Econo-
+metrica 1982, 50, 1–25.
+[23] Ward, T. Information Corrected Estimation: A Bias Correcting Param-
+eter Estimation Method, Supplementary Materials, 2021. Available on
+https://doi.org/10.6084/m9.ﬁgshare.14312852.v1 (accessed on 2 October
+2021).
+[24] Friedman, J.H. Multivariate adaptive regression splines. Ann. Statist
+1991, 19, 1–67.
+[25] Broyden, C.G. A Class of Methods for Solving Nonlinear Simultaneous
+Equations. Math. Comput.1965, 19, 577–593.
+28

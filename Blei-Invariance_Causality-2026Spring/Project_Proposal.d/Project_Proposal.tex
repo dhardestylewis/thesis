@@ -1,0 +1,76 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+% Ultra-compact spacing
+\titlespacing*{\section}{0pt}{6pt}{2pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Invariance, Causality, and Applications}
+\rhead{Prof. David M. Blei}
+\cfoot{\thepage}
+
+\title{\vspace{-2em}\textbf{Project Proposal}}
+\author{Daniel Hardesty Lewis\vspace{-1ex}}
+\date{2026 Spring}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\vspace{-1em}
+
+\section*{1. What problem am I solving? State it clearly.}
+Investigating causal drivers of neighborhood opposition (NIMBYism) to housing [Einstein et al., 2019, p. 28]. \textbf{Goal:} separate stable, \textbf{invariant} predictors of resistance from \textbf{spurious associations} driven by \textbf{environment-specific confounders} [Peters et al., 2018, p. 84]. \textbf{Aim:} find features predicting opposition consistently across the distinct \textbf{market regimes} of the 2018--2025 period.
+
+\section*{2. Why is this problem important? To whom?}
+Critical for urban planners. Current models overfit to specific eras, failing when market regimes shift [Arjovsky et al., 2019, p. 1]. Identifying \textit{invariant} causes enables policy design addressing fundamental concerns rather than symptoms of a moment, ensuring \textbf{robustness} [Bühlmann, 2020, p. 404].
+
+\section*{3. What is my strategy for solving it?}
+Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 2] and \textbf{Probabilistic Invariance Modeling} [Wu et al., 2025b, p. 1]:
+\begin{enumerate}
+    \setlength\itemsep{-0.3em}
+    \item \textbf{Environments:} Partition data via \textbf{expanding window Cross-Validation} into \textbf{Training Environments} ($\mathcal{E}_{tr}$) and \textbf{Test Environments} ($\mathcal{E}_{te}$):
+    \begin{center}
+    \scriptsize
+    \begin{tabular}{l|l|l}
+    \textbf{Window} & \textbf{Training ($\mathcal{E}_{tr}$)} & \textbf{Test ($\mathcal{E}_{te}$)} \\ \hline
+    1 & 2018 & 2019--2025 \\
+    2 & 2018--2019 & 2020--2025 \\
+    ... & ... & ... \\
+    $N$ & 2018--2024 & 2025
+    \end{tabular}
+    \end{center}
+    \item \textbf{Representation:} Extract features $\Phi(X)$ from property data and protest letters [Schölkopf et al., 2021, p. 15].
+    \item \textbf{Criterion:} Train $f(\Phi(X))$ to minimize loss across \textbf{Training Environments} only: 
+    \[ \min_{f, \Phi} \sum_{e \in \mathcal{E}_{tr}} R^e(f \circ \Phi) + \lambda \|\nabla_{w|w=1.0} R^e(w \cdot f \circ \Phi)\|^2 \]
+\end{enumerate}
+
+\section*{4. Why is this solution good? Where does it fall short?}
+\textbf{It falls short because} it assumes an \textbf{invariant causal mechanism}. The invariance assumption fails if the underlying reasons for NIMBYism undergo \textbf{mechanism change} over time. For instance, neighborhood opposition may shift from traffic congestion fears to displacement concerns as demographics evolve.
+
+\section*{5. How can I demonstrate that the solution works?}
+Train on expanding $\mathcal{E}_{tr}$, test on all \textbf{future horizons} (2019--2025) in $\mathcal{E}_{te}$. Successful Invariant Model demonstrates \textbf{predictive stability} through the \textbf{invariance of its AUC} score across all horizons, maintaining reliability where baselines fail under \textbf{distribution shift} [Krueger et al., 2021, p. 1].
+
+\section*{References}
+\scriptsize
+\setlength{\parskip}{0pt}
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item Arjovsky, M., Bottou, L., Gulrajani, I., and Lopez-Paz, D. (2019). Invariant Risk Minimization. \textit{arXiv:1907.02893}.
+    \item Bühlmann, P. (2020). Invariance, Causality and Robustness. \textit{Statistical Science}, 35(3):404--426.
+    \item Einstein, K. L., Palmer, M., and Glick, D. M. (2019). Who Participates in Local Government? Evidence from Meeting Minutes. \textit{Perspectives on Politics}, 17(1):28--46.
+    \item Krueger, D., Caballero, E., Jacobsen, J., Zhang, A., Binas, J., Zhang, D., Priol, R. L., and Courville, A. (2021). Out-of-Distribution Generalization via Risk Extrapolation. \textit{arXiv:2003.00688}.
+    \item Peters, J., Bühlmann, P., and Meinshausen, N. (2016). Causal inference by using invariant prediction. \textit{JRSS-B}, 78(5):947--1012.
+    \item Peters, J., Janzing, D., and Schölkopf, B. (2018). \textit{Elements of Causal Inference}. MIT Press.
+    \item Schölkopf, B., et al. (2021). Towards Causal Representation Learning. \textit{Proc. IEEE}, 109(5).
+    \item Wu, L., Yin, M., Wang, Y., Cunningham, J. P., and Blei, D. M. (2025b). Bayesian invariance modeling of multi-environment data. \textit{arXiv:2506.22675}.
+\end{itemize}
+
+\end{document}

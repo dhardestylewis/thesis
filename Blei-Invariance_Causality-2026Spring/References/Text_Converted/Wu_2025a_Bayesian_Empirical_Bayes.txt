@@ -1,0 +1,3165 @@
+Bayesian Empirical Bayes: Simultaneous Inference
+from Probabilistic Symmetries
+Bohan Wu1 Eli N. Weinstein2 David M. Blei1,3
+December 23, 2025
+Abstract
+EmpiricalBayes(EB)improvestheaccuracyofsimultaneousinference“bylearning
+from the experience of others” (Efron, 2012). Classical EB theory focuses on latent
+variables that are iid draws from a fitted prior (Efron, 2019). Modern applications,
+however, feature complex structure, like arrays, spatial processes, or covariates. How
+canweapplyEBideastothesesettings? Weproposeageneralizedapproachtoempirical
+Bayes based on the notion ofprobabilistic symmetry. Our method pairs a simultaneous
+inference problem–with an unknown prior–to a symmetry assumption on the joint
+distribution of the latent variables. Each symmetry implies an ergodic decomposition,
+which we use to derive a corresponding empirical Bayes method. We call this method
+Bayesian empirical Bayes(BEB). We show how BEB recovers the classical methods of
+empirical Bayes, which implicitly assume exchangeability. We then use it to extend
+EB to other probabilistic symmetries: (i) EB matrix recovery for arrays and graphs;
+(ii) covariate–assisted EB for conditional data; (iii) EB spatial regression under shift
+invariance. We develop scalable algorithms based on variational inference and neural
+networks. Insimulations,BEBoutperformsexistingapproachestodenoisingarraysand
+spatial data. On real data, we demonstrate BEB by denoising a cancer gene–expression
+matrix and analyzing spatial air-quality data from New York City.
+1 Introduction
+Empirical Bayes (EB) is aboutsimultaneous posterior inference. We observe related data
+x1,...,x n, where each data point is associated with a latent variablezi, and assumed drawn
+fromxi ∼ p(x|z i). Theformoftheconditionallikelihoodisknown. ThegoalofEBistouse
+Bayesian inference to estimate all thezi together (Robbins, 1956; Efron, 2015b, 2019).
+In a traditional Bayesian analysis, we specify a priorzi ∼g(z)and compute the posteriors
+p(zi |xi). But in EB, we treat the priorg(z)asunknownand we estimate it from the data. EB
+1Department of Statistics, Columbia University, New York, NY
+2Department of Chemistry, Technical University of Denmark, Denmark
+3Department of Computer Science, Columbia University, New York, NY
+Contact: bw2766@columbia.edu, enawe@dtu.dk, david.blei@columbia.edu
+1
+arXiv:2512.16239v2  [stat.ME]  22 Dec 2025
+thus blends Bayesian and frequentist thinking: we reason in a frequentist way about the prior
+in order to form a collection of Bayesian estimates.
+The classical approach to EB assumesz1,...,z n
+iid∼g and estimatesˆg so that the marginal
+distributionof x maximizesthelikelihoodofthedata. IntheEBnomenclature,thisisknown
+as “g-modeling” (Efron, 2014). Once the prior is fit, we calculate the posteriorsp(zi |xi, ˆg)
+to estimate the latent variables. Through the fitted prior, EB connects alln inferences:
+information from each observation improves all the others.
+Theassumption z1,...,z n
+iid∼g iscentraltoEBthinking. Itsaysthatthelatentvariablesshare
+a common prior, which justifies the EB procedure. But many modern datasets violate this
+iid assumption. Latent variables may come in rows and columns, they may lie on a spatial or
+temporal grid, or they may depend on known covariates. While these settings clearly violate
+the iid assumption, they still exhibit symmetries that tie the latent variables together. In
+this paper, we develop a general way to use such probabilistic symmetries to extend EB to
+non-iid settings.
+Stepping back, the assumption thatz1,...,z n are iid fromg is a special case of a broader
+principle:exchangeability. If the joint distribution of the latent variables is invariant to
+permutations, then—under mild conditions—it can be viewed as part of an infinitely ex-
+changeablesequence. TheiidstructurethenarisesthroughdeFinetti’sfamousrepresentation
+theorem (Finetti, 1929). It states that any exchangeable sequence can be written as a mixture
+of iid laws,
+p(z1,...,z n) =
+Z h n
+∏
+i=1
+p(zi |g)
+i
+dµ(g),(1)
+where g is a probability distribution onZ and µ is a distribution over such distributions.
+De Finetti’s result is important because it connects a symmetry assumption—namely,
+exchangeability—to classical Bayesian reasoning (Savage, 1954; Robert, 2007). If the
+zi’s are exchangeable, then the priorg appears as the latent variable that renders thezi
+conditionally independent.
+Our insight is that empirical Bayes uses the same hierarchical structure as in Eq. 1, where
+zi are conditionally iid giveng. However, in place of integration with respect toµ, EB
+substitutes a fitted valueˆg obtained from data. Seen through de Finetti’s theorem, we can
+view EB as a Bayesian inference under exchangeability, but with the mixing distribution
+collapsed to a point estimate.
+Using this perspective, we extend classical EB by relaxing its exchangeability assumption
+to other probabilistic symmetries. Latent variables often have structure, such as being
+organized in an array or indexed by space or time. Such settings are not fully exchangeable,
+but they may satisfy weaker invariances. An array may be invariant to permutations of its
+rowsandcolumns; aspatialprocessmaybeinvarianttoshiftsinlocation(Kallenberg,2005).
+Each symmetry has an analogue of de Finetti’s representation theorem. We will use these
+representation theorems to extend EB to non-iid settings.
+2
+We call our approachBayesian empirical Bayes(BEB). We begin with a datasetxand
+an assumed probabilistic symmetry. We posit that each observation arises from a known
+likelihood conditioned on a local latent variablep(xi |zi), and our goal is to infer allzi
+simultaneously. Thekeyideaisthatourassumedsymmetryimpliesanergodicdecomposition
+oftheprior,i.e.,ageneralizationofdeFinetti’stheorem(OrbanzandRoy,2015). Specifically,
+if the latent variables are invariant under a groupΦacting on its index set, then their joint
+distribution admits the form
+p(zzz) =
+Z
+p(zzz|g)dµ(g),(2)
+where g indexes theΦ-ergodic family. The chosen symmetry determines the form ofg and
+the conditional distributionp(zzz|g).
+Following the EB recipe, we fitg by maximum marginal likelihood under the expanded
+modelp(zzz,xxx),
+ˆg∈argmax
+g
+log
+Z
+p(xxx|zzz)p(zzz|g)dzzz.(3)
+Finally, we useˆgto compute the empirical Bayes posteriorsp(zi |xi, ˆg). In practice, we can
+use approximate posterior inference both to fitˆg and estimatep(zi |xi, ˆg).
+We illustrate BEB in several data analysis settings. For array data, the relevant symmetry
+is separate or joint exchangeability, and the ergodic decomposition is given by the Aldous-
+Hoover theorem (Aldous, 2006). The invariant variablegis a measurable function on[0,1]3,
+which we parameterize with a neural network. For spatial data, the relevant symmetry is
+shift invariance, and we can flexibly modelgwith stationary ergodic Gaussian processes. In
+both settings, we can additionally condition on covariates and derive covariate-dependent
+EB procedures.
+Thus,BayesianempiricalBayesproducesageneralizationofEBtoanyprobabilisticsymmetry.
+The invariant variablegreplaces the classical prior, and the ergodic decomposition supplies
+the structure needed for inference.
+The rest of the paper is organized as follows. § 2 introduces the modeling assumptions
+and the general methodology of Bayesian empirical Bayes. § 3 develops new inference
+methods from Bayesian EB principles in three settings: the classical normal sequence
+model, empirical Bayes matrix recovery, and empirical Bayes spatial regression. For normal
+means, we show that Bayesian EB with an exchangeable sequence model recovers the
+nonparametric maximum-likelihood method of Efron (2015a). For the latter two, we derive
+new EB procedures based on alternative invariances-joint/separate/relative exchangeability
+for matrices and stationarity for spatio-temporal data. § 4 evaluates these methods in
+simulation studies. § 5 applies them to real datasets. § 6 concludes with discussion and
+future directions. Detailed algorithms for our inference procedures and all technical proofs
+appear in the Appendix.
+3
+1.1 Related Work
+Empirical Bayes (EB) dates back to the seminal works of Robbins (1951, 1956) and has
+been developed in both parametric and nonparametric forms (Efron and Morris, 1971, 1976;
+Efron et al., 2001; Brown and Greenshtein, 2009; Jiang and Zhang, 2009; Efron, 2011,
+2012, 2014, 2015a, 2024; Soloff et al., 2025; Ignatiadis and Wager, 2022; Yang et al., 2024).
+Much of the nonparametric theory centers on normal and Poisson sequence models. For
+normal means, Efron (2015b) surveys frequentist assessments of EB estimators and Efron
+(2019) surveys oracle–Bayes viewpoints. Beyondg-modeling (modeling the prior), Efron
+(2014) described an alternative EB approach viaf -modeling, which models the marginal
+datadistribution;akeytoolisTweedie’sformula,linkingtheposteriormeantothederivative
+of the log marginal density. For thef -modeling methods, Saremi and Hyvärinen (2019) and
+Ghosh et al. (2025) obtain nonparametric EB estimators using flexible score functions, by
+minimizing the score-matching loss. EB also underpins large–scale multiple testing (Efron,
+2012; Stephens, 2017; Ignatiadis and Huber, 2021). While it is impossible to exhaust the
+works on empirical Bayes for the normal sequence model, we refer to Ignatiadis and Sen
+(2025a) for a recent textbook overview. In this work we focus ong-modeling and extend it
+beyond the iid prior setting to accommodate general invariant latent structures.
+Nonparametric EB methods for non-sequence models have only appeared more recently. In
+high–dimensional linear models and variable selection, variational EB methods—such as
+SuSiE and related procedures—learn a nonparametric prior over coefficients (Carbonetto
+and Stephens, 2012; Wang et al., 2020; Kim et al., 2024). The prior is exchangeable with
+respect to covariates (Trippe et al., 2021). The theoretical properties of these methods are
+beginningtobeunderstood(Mukherjeeetal.,2023;Fanetal.,2023). Forlow–rankmatrices,
+empirical Bayes matrix factorization and EB–PCA fit learned shrinkage priors for loadings
+andscoresviaapproximateinference(WangandStephens,2021;Zhongetal.,2022;Denault
+et al., 2025). These new developments share the theme of fitting shared priors for latent
+variablestostructuretheborrowingofinformation. Inspiredbythislineofwork, weprovide
+a unified framework for inferring many latent variables by learning a shared latent structure
+defined by probabilistic symmetries. This invariance-based perspective enables systematic
+extensions of EB methods.
+From a Bayesian perspective, EB concerns approximating a full Bayesian posterior by a
+point estimate of the hyperparameter (Ch. 5.6.4 of (Bernardo and Smith, 1994)) and is
+closely connected to hierarchical Bayes (Lindley and Smith, 1972; Good, 1992). Deely
+and Lindley (1981) compare the statistical performance of parametric empirical Bayes
+and hierarchical Bayes on simultaneous inference problems. One can place additional
+layers of priors on EB hyperparameters; for example, Kass and Steffey (1989) introduce
+a hyperprior to capture uncertainty in EB estimation of prior hyperparameters in general
+hierarchical models. Rousseau and Szabo (2017) provide sufficient conditions for general
+consistency and posterior contraction rates of the EB posterior under parametric maximum
+marginal likelihood; in their setting, the results show that hierarchical and empirical Bayes
+posteriors obtain comparable posterior contraction rates. Rizzelli et al. (2024) analyze the
+asymptotic behavior of posteriors obtained after fitting such hyperparameters. Buta and
+Doss (2011) and Doss and Linero (2024) discussed the connection between empirical Bayes
+4
+and Bayesian sensitivity analysis. While the Bayesian literature on EB has focused almost
+exclusively on parametric models, Bayesian empirical Bayes provides a principled approach
+to nonparametric empirical Bayes, motivated from Bayesian reasoning.
+Many objects in classical statistics obey probabilistic symmetries (see Diaconis (1988); see
+also Chapter 3 of Lehmann and Casella, 2006). The notion ofexchangeability, for example,
+serves as the foundation for Bayesian theory (Finetti, 1929; Savage, 1954; Bernardo and
+Smith,1994)andunderliesmuchofpracticalBayesianmodeling(Gelmanetal.,1995). Other
+applications of group symmetries include invariant testing—e.g., permutation-based testing
+methods (Eden and Yates, 1933; Fisher, 1935; Pitman, 1937; Pesarin, 2001; Ernst, 2004;
+Pesarin and Salmaso, 2010, 2012; Good, 2006; Anderson and Robinson, 2001; Kennedy,
+1995; Hemerik and Goeman, 2018; Ramdas et al., 2023). Early advances for estimation
+and testing under general groups include Lehmann and Stein (1949) and Hoeffding (1952);
+the celebrated Hunt-Stein theorem states conditions under which a minimax invariant test
+exists in hypothesis testing (Lehmann, 1959). Broader treatments appear in Eaton (1989);
+Wijsman (1990); Giri (1996). In modern probabilistic modeling, the ergodic decomposition
+theorem provides a foundation for building invariant representations and modeling (Orbanz
+and Roy, 2015). For example, Lloyd et al. (2012) study exchangeable arrays by placing a
+Gaussian process prior on the underlying random function. We build on the general theory
+of probabilistic symmetries as developed in Kallenberg (2005) and Orbanz and Roy (2015).
+Thetheorycharacterizesgeneralinvariantdistributionsundergroupactionsusingideasfrom
+ergodic theory. It allows us to extend empirical Bayes to many different kinds of structured
+data settings, creating a foundation for new applications of EB.
+2 Bayesian Empirical Bayes
+Consider astructured datasetxxx = (xω )ω∈Ω, where eachxω is indexed by an element in an
+index setΩ. For example, ifΩ=N, thenxxx is an infinite sequence; ifΩ=N2, thenxxx is an
+infinite array. (After describing a model of infinite data, we will reduce it to one of finite
+data.)
+We posit that the dataxxx are noisy measurements of a matching set ofstructured latent
+variables zzz = (zω )ω∈Ω. In the likelihood, eachxω is conditionally independent given its
+local latentzω ,
+p(xxx|zzz) =∏
+ω∈Ω
+p(xω |zω ).(4)
+We assume the form of the noise distributionp(xω |zω )is known.
+We place a prior distribution on the latent variableszzz∼ p(zzz). The joint distribution ofzzz and
+xxxis now
+p(zzz,xxx) =p(zzz) ∏
+ω∈Ω
+p(xω |zω ).(5)
+Note, we do not assume independence in the prior.
+5
+Our goal issimultaneous probabilistic inferenceof all local latent variables acrossΩ. That
+is, we want to calculate the posteriorp(zzz|xxx). From this posterior, we can calculate summary
+statistics, such as the posterior meansE[zzz|xxx], or other quantities of interest, such as credible
+intervals, quantiles, posterior predictive distributions, or event probabilities. In short, we
+can denoise the data.
+We now make theempirical Bayes assumption: there exists a priorp⋆(zzz)such that the true
+data-generating distribution ofxxxis expressed by marginalizing overzzz.
+Assumption 1(Empirical Bayes).There exists a priorp ⋆(zzz)such that the true data-
+generating distribution can be written as
+p⋆(xxx) =
+Z
+X Ω
+p⋆(zzz) ∏
+ω∈Ω
+p(xω |zω )dzzz.
+Of course, we do not know this true prior ahead of time - we just assume it exists. We
+call this the empirical Bayes assumption because it links the Bayesian model to the true
+data-generating process.
+2.1 Priors with Probabilistic Symmetries
+Howdowesetthepriorp( zzz)? Wewillusetheideaofaprobabilisticsymmetry. Asymmetry
+describeshowwecanrelabelortransformtheindicesofstructuredrandomvariableswithout
+changing their joint distribution.
+Formally, letΦdenote a group of transformations acting bijectively on the index setΩ,
+where each elementφ∈ Φreindexes the coordinates ofΩ. The action ofφ on zzz is theindex
+transformation
+(φ(zzz))ω =z φ−1(ω),ω∈Ω.(6)
+As examples, ifΩ= N, thenφ(zzz)reorders the elements of a sequence. IfΩ=N2, then
+φ(zzz)could permute rows and columns of a matrix. IfΩ=R2, thenφ(zzz)could implement a
+spatial shift.
+A distributionp(zzz)isΦ-invariantif it does not change under these transformations. For
+example, an exchangeable sequence is invariant under permutations; a stationary process is
+invariant under spatial shifts.
+Definition 1(Φ-invariance).A joint distributionp( zzz)of structured variableszzz∈Z Ω is
+Φ-invariantif
+φ(zzz) d=zzzfor allφ∈Φ,(7)
+where equality is in distribution for all finite-dimensional marginals.
+A formal consequence ofΦ-invariance is theergodic decomposition theorem, which states
+thatanyΦ-invariantdistributioncanbeexpressedasamixtureofergodicdistributions.
+6
+Theorem 1(Ergodic decomposition; Varadarajan (1963)).LetΦbe a nice group acting on
+Z Ω. There exists a family of distributions
+E:= {p(zzz|g):g∈G } ⊆P(Z Ω)(8)
+such that anyΦ-invariant distributionp(zzz)admits the unique decomposition
+p(zzz) =
+Z
+G
+p(zzz|g)dµ(g),(9)
+for some distributionµ on G. The setE is called theΦ-ergodic familyand its indexg is
+called the invariant variable.1
+A “nice” group is a technical condition; see § A for a formal definition. TheΦ-ergodic
+family is determined by the groupΦand forms the set of extreme points of the convex set of
+Φ-invariant distributions onZ Ω (Kallenberg, 1997, Theorem 25.24). OnceΦis fixed, so
+too is the form ofp(zzz|g).
+The ergodic decomposition theorem generalizes de Finetti’s representation (Finetti, 1929)
+from exchangeable sequences to arbitrary group symmetries. Under exchangeability, the
+ergodic measures are precisely the i.i.d. product distributions.
+The ergodic decomposition describes the structure of anyΦ-invariant distribution. We now
+apply this idea to the true prior.
+Assumption 2(TrueΦ-invariant prior).The true priorp⋆(zzz)isΦ-invariant.
+By Theorem 1, there exists an invariant variableg∈G with distributiong∼µ ⋆ such that
+p⋆(zzz)is aµ ⋆-mixture of theΦ-ergodic family,
+p⋆(zzz) =
+Z
+G
+p(zzz|g)dµ ⋆(g).(10)
+Together, Assumptions 1 and 2 state that among all models of the form in Eq. 5, there exists
+a correctly specified version whose prior isΦ-invariant. In the Bayesian empirical Bayes
+model, the latent variableszzz capture the structured, invariant part of the world, and the
+observationsxxxare noisy realizations through the shared likelihoodp(xω |zω ).
+An important consequence of Assumption 2 is that the data-generating distributionp⋆(xxx)
+inherits the same symmetry as the prior. To see this, we first note that applying any
+transformationφ∈Φto bothx xxandz zzleaves the joint distribution unchanged,
+p⋆(φ(xxx),φ(zzz)) =p⋆(zzz) ∏
+ω∈Ω
+p(xφ−1(ω) |zφ−1(ω))(11)
+=p ⋆(zzz) ∏
+ω∈Ω
+p(xω |zω ) =p⋆(xxx,zzz).(12)
+1It is also known as the directing random measure (Kallenberg, 2005).
+7
+Then we marginalize outzzzto givep ⋆(φ(xxx)) =p⋆(xxx).
+Alternatively, instead of assuming the true prior is invariant, we could assume that the
+marginal distribution of the data is invariant. Then, under mild regularity assumptions
+on the likelihood, theΦ-invariance of the population distributionp⋆(xxx)also implies the
+Φ-invariance ofp⋆(zzz).
+2.2 Examples ofΦ-invariant priors
+We present three examples ofΦ-invariant priors, which we will use throughout this paper.
+In each, we specify the index setΩ, the symmetry groupΦ, the form of the ergodic
+decomposition, and the corresponding invariant variable g.
+Exchangeable sequences.LetΩ= N, so thatzzz = (z1,z2,... )is a sequence of random
+variables. The symmetry group isΦ=S, the group of permutations ofN. TheΦ-invariant
+distributions onZ N are theexchangeable sequences.
+In this case, the ergodic decomposition recovers de Finetti’s representation theorem (Finetti,
+1929),
+p(z) =
+Z
+Gperm
+∏
+ω∈Ω
+gperm(zω )dµ(gperm).(13)
+The invariant variable gperm is a random probability measure onZ, andµis a distribution
+over such random measures.
+Exchangeable arrays.LetΩ= N2, so thatzzz = (zi j)i,j∈N is an array of random variables.
+The array isseparately exchangeableif its distribution is invariant under the independent
+permutations of rows and columns. That is, the symmetry group isΦ=S2, and
+(zi j) d= (zπ(i),π ′(j) )for all(π,π ′)∈Φ.(14)
+Under separate exchangeability, the Aldous–Hoover theorem provides the ergodic decompo-
+sition (Aldous, 1981, 2006).
+Theorem 2(Aldous–Hoover representation for separate exchangeability).A random array
+zzz= (zi j)i,j∈N is separately exchangeable if and only if its distribution can be written as
+p(zzz) =
+Z
+Gsep
+p(zzz|gsep)dµ(gsep).(15)
+The invariant variable is a random function
+gsep :[0,1] 3 →Z(16)
+and the ergodic distributionp(zzz|g)is defined through uniform random variables
+ui,v j,ui j
+iid∼unif(0,1)z i j=gsep(ui,v j,ui j)for alli,j∈N.(17)
+8
+Through the shared row and column variables(ui)i∈N and( vj)j∈N, the entrieszi jexhibit
+dependence within rows and within columns.
+Variants of this representation capture other symmetry assumptions. If the array isjointly
+exchangeable—invariant when rows and columns are permuted together—then the same
+decomposition holds with
+ui,ui j
+iid∼Unif(0,1)z i j=gjoint(ui,u j,ui j)for alli,j∈N.
+In a binary array with joint exchangeability, i.e., a random graph, the Aldous–Hoover
+representation yields
+zi j=1{u i j≤ggraph(ui,u j)},
+for a random symmetric graphonggraph :[0 ,1]2 → [0,1]. In § D.3, we discuss array
+exchangeability conditional on row- and column-specific covariates. Orbanz and Roy (2015)
+extends all these representations tok-arrays, whereΩ=Nk.
+Stationaryprocesses.Wenowconsidervariablesintimeorspace. LetΩ= Rd (continuous
+space) orZd (lattice), andZ = R. A distributionp(zzz)on Z Ω isstationaryif it is invariant
+under spatial shiftsΦshift ={φ h :ω7→ω+h}withh∈Ω:
+p(φ−1
+h (A)) =p(A)for all measurableA⊆Z Ω,h∈Ω.
+Each suchp( zzz)is astationary probability measure. Among these, a measure gerg is
+calledergodicif it cannot be written as a nontrivial mixture of other stationary measures.
+Equivalently, it is ergodic if gerg(A)∈ {0,1}for every shift-invariant eventA.
+By the ergodic decomposition theorem (Shields, 1996, Theorem I.4.10), any stationary
+measure can be written uniquely as a mixture of ergodic stationary measures,
+p(zzz) =
+Z
+G
+gerg(zzz)dµ(gerg),(18)
+whereG isthespaceofallergodicstationarymeasureson Z Ω. Comparedwithexchangeable
+models, stationary processes impose a weaker symmetry: the discrete shift group grows
+only polynomially with system size, while the permutation group grows super-exponentially
+(Lubotzky and Segal, 2003). As a result, representation theorems for stationarity are less
+restrictive, but also less tractable.
+2.3 The finite population model
+We have defined our model in terms of the entire setΩ. But in practice we only observe
+finite data. We now specialize our population model to a finite domain.
+Let Sn ⊆ Ωbe a finite subset, withS1 ⊆S 2 ⊆ ···forming a nested sequence that exhaustsΩ.
+We observe finite dataxxxn = (xω )ω∈Sn , each associated with a local latent variablezω . We
+write zzzn = (zω )ω∈Sn . Intuitively, this means we observe a finite subset of the full population
+9
+xxx at selected index locations, i.e. certain entries of an array or certain locations in time or
+space).
+We first state the finite-data analog of the empirical Bayes assumption, that there exists a
+true prior that captures the population distribution.
+Proposition1(FiniteempiricalBayesmodel).UnderAssumption1,themarginaldistribution
+of the finite dataxxxn can be written as
+p⋆(xxxn) =
+Z
+Z Sn
+p⋆(zzzn) ∏
+ω∈Sn
+p(xω |zω )dzzzn,
+for some priorp⋆(zzzn)on the latent variables indexed bySn.
+We next connect this finite prior to the group symmetry, and write its ergodic decomposi-
+tion.
+Proposition 2(FiniteΦ-invariant prior).Suppose the population priorp⋆(zzz)isΦ-invariant
+as in Assumption 2. Then its marginalp⋆(zzzn)also admits an ergodic representation,
+p⋆(zzzn) =
+Z
+G
+p(zzzn |g)dµ ⋆(g),
+where
+p(zzzn |g) =
+Z
+Z Ω\Sn
+p(zzz|g)dzzzΩ\Sn
+is the marginal of the ergodic distributionp(zzz|g)onS n.
+Consider a datasetxxxn and assume it was drawn fromzzzn with aΦ-symmetric prior. As a
+consequence of Propositions 1 and 2, its generative process is a hierarchical model:
+g∼µ ⋆
+zzzn ∼p(zzzn |g)
+xω ∼p(x|z ω )ω∈S n.
+(19)
+The latent variables arezzzn andg, and the observations arexxxn. The only unknown factor is
+the priorµ⋆, because the likelihoodp(x|z )is fixed and the form ofp(zzzn |g)is known and
+determined by the probabilistic symmetry.
+2.4 Bayesian empirical Bayes
+We are given a datasetxxxn and assume a probabilistic symmetry on its priorp(zzzn). Conse-
+quently, our data comes from the model in Eq. 19, with the form of the invariant variable
+g and ergodic distributionp(zzzn |g)determined by the assumed symmetry. Our goal is to
+compute the posteriorp⋆(zzzn |xxxn).
+We first write the posterior as an integral
+p⋆(zzzn |xxxn) =
+Z
+G
+p(zzzn |g,xxxn)p⋆(g|xxxn)dg.(20)
+10
+Note the conditional distributionp(zzzn |g,xxxn)is proportional to the product of the likelihood
+p(xxxn |zzzn)and the ergodic distributionp(zzzn |g):
+p(zzzn |g,xxxn)∝p(xxxn |zzzn)p(zzzn |g),(21)
+where both these terms are known. The only unknown component in Eq. 20 isp⋆(g|xxxn),
+which depends on the unknownµ⋆.
+Wenextapproximatep ⋆(g|xxxn)byapointestimate δˆg atitsvaluethatmaximizesthemarginal
+likelihood of the data,
+ˆg∈argmax
+g∈G
+log
+Z
+Z Sn
+p(zzzn |g) ∏
+ω∈Sn
+p(xω |zω )dzzzn.(22)
+The form ofg∈G depends on the chosen symmetry. For example, in exchangeable data,g
+is a prior onz and G is the space of such priors. In separately-exchangeable array data,g
+are the functions described in Eq. 16; we will parameterize them with neural networks to
+capture a large spaceG.
+This approximation is motivated by both asymptotic and computational considerations. The
+observed datasetxxxn is generated from a single drawg⋆. So asymptotically, we expect the
+ideal posteriorp⋆(g|xxxn)to concentrate atg⋆ as n→∞ . In particular, by Theorem 1, the
+lawp( zzz|g)isΦ-ergodic and hence identifiable (see, e.g., (Kallenberg, 1997, Lemma 27.1)
+and (Lindenstrauss, 2001, Theorem 1.2)). Under a characteristic likelihood, such as the
+normal model with known variance, distinct priorsp(zzz|g)induce distinct marginalsp(xxx|g),
+so g is identifiable fromp(xxx|g). Posterior concentration then follows from Doob’s theorem
+(Ghosal and van der Vaart, 2017, Ch. 6). Computationally, although the marginal likelihood
+in Eq. 22 may be intractable, we can use variational inference to approximate it (Blei et al.,
+2017).
+Finally, we substitute the point-estimate approximation of the prior into the posterior of
+Eq. 20. This gives the approximation
+ˆp(zzzn |xxxn):=p(zzzn | ˆg,xxxn).(23)
+We estimatep(zzzn |xxxn,ˆg), given in Eq. 21, by exact or approximate methods. For example,
+we can use variational inference or MCMC.
+OurprocedureiscalledBayesianempiricalBayes(BEB).Wearegivendata xxxn andassumea
+symmetry groupΦfor the latent variableszzzn. We use the ergodic representation theorem to
+form the expanded hierarchical model (Eq. 19), which includes the invariant variablegand
+the corresponding ergodic familyp(zzz|g). We parameterizegand estimate it from data via
+maximum marginal likelihood (Eq. 22) or a suitable surrogate. Finally, we plug the estimate
+ˆg into the conditional posterior (Eq. 23). Algorithm 1 presents this recipe.
+3 New Models for Empirical Bayes
+We now use BEB to design new methods for empirical Bayes inference. In our first example,
+we use BEB to recover the classical empirical Bayesg-modeling for the normal means
+11
+Algorithm 1:Bayesian Empirical Bayes
+Input:Datax xxn, likelihood modelp(xxxn |zzzn), groupΦ.
+Steps:
+1. Derive the ergodic decompositionp(zzzn |g)fromΦ.
+2. Estimate ˆg by maximizing the marginal likelihood or a surrogate:
+ˆg∈argmax
+g∈G
+logp(xxxn;g).
+3. Approximate the posterior of the latentzzzn:
+ˆp(zzzn |xxxn)∝p(xxxn |zzzn)p(zzzn | ˆg).
+Output:Approximate posterior ˆp(zzzn |xxxn)
+model (§ 3.1). This recovers classical EB methods (Efron, 2015a; Soloff et al., 2025). We
+then extend EB to additional probabilistic symmetries: separate/joint exchangeability in
+arrays (§ 3.2), stationarity in spatial data (§ 3.3), and relative exchangeability conditional on
+covariates(§D.3). Ineachcase,wefollowtherecipeofAlgorithm1. Westartwithadataset,
+a symmetry group, and a likelihood. We then design an empirical Bayes model–tailored to
+the symmetry–and approximate the posterior of the latent structured variables.
+3.1 Classical Example Revisited: Normal Means Model
+LetΩ= N and X = Rd. The observed variables xxx∈X Ω are generated from the
+heteroskedastic normal means model
+zzz∼p ⋆(zzz),x i ∼N(z i,Σi),(24)
+whereΣ i ∈R d×d is known.
+We assume the true priorp⋆(zzz)is exchangeable. By de Finetti’s theorem, we can write
+Eq. 24 as the following generative process:
+gperm ∼µ ⋆,z i
+iid∼gperm,x i ∼N(z i,Σi).(25)
+Heregperm isarandompriorover z. Inshort,deFinetti’srepresentationspecializesTheorem1
+to sequences, with∏∞
+i=1 gperm(zi)the ergodic distribution.
+Under the expanded model, the posteriorp⋆(zzzn |xxxn)has the form
+p⋆(zzzn |xxxn) =
+Z
+G
+n
+∏
+i=1
+p(zi |gperm,xi)p⋆(gperm |xxxn)dgperm.(26)
+In Bayesian EB, we approximatep⋆(gperm |xxxn)with its maximum marginal likelihood
+12
+estimator (MMLE),
+ˆgperm ∈argmax
+gperm∈P(Rd)
+log
+Z
+X n
+n
+∏
+i=1
+
+p(xi |z i)gperm(zi)
+
+dzzzn.(27)
+If we restrictgperm to a parametric family, then this recovers parametric empirical Bayes
+estimation,ortype-IImaximumlikelihood. Ifweconsiderallpossiblepriors,thenitrecovers
+the nonparametric maximum likelihood estimation (NPMLE) approach.
+Withˆgperm in hand, we approximate the target posterior from Eq. 26,
+p⋆(zzzn |xxxn)≈
+n
+∏
+i=1
+p(zi |x i, ˆgperm),
+where each posterior is
+p(zi |xi, ˆgperm)∝p(x i |z i)ˆgperm(zi).
+NPMLE and the normal means model have been thoroughly studied in numerous works
+(Kiefer and Wolfowitz, 1956; James and Stein, 1960; Jiang and Zhang, 2009; Brown and
+Greenshtein, 2009; Jiang and Zhang, 2010; Xie et al., 2012; Efron, 2012, 2015a; Tan, 2016;
+Brown et al., 2018; Jiang, 2020; Chen, 2022; Soloff et al., 2025).
+If the likelihood is non-Gaussian, the same reasoning yields other nonparametric EBg-
+modeling procedures. For example, with exponential dataxi |z i ∼Exp (zi), this approach
+recovers g-modeling for the exponential sequence model (Robbins, 1980). As another
+example, whenxi is a sample variance andzi the true variance, we obtain theχ2 sequence
+modelxi |z i ∼ (zi/k)χ2
+k (forknown k). Theexchangeabilityassumptionon z1,···,z n recovers
+the g-modeling setting studied in Ignatiadis and Sen (2025b).
+Denoising an MNIST digit.We now introduce a running example to illustrate the
+performance of Bayesian EB methods. The dataset is an image of "5" from the MNIST
+dataset of handwritten digits (LeCun et al., 2002). The28×28image is corrupted by i.i.d.
+Gaussian noise with variance equal to the empirical pixel variance of the clean image
+xω ∼N(z ⋆
+ω ,σ 2
+0 ),ω∈[28] 2.
+The goal is to recover the clean imagezzz⋆
+n,n from the observed noisy imagexxxn,n. The
+maximum likelihood estimator is the simply the noisy image which has a MSE of10.291.
+The exchangeable sequence approach treats the problem as a simple normal means problem
+with known varianceσ2
+0 and applies the NPMLE procedure. The resulting MSE is3.61–a
+substantial reduction from the error of the observed image. The first three panels in Figure 1
+display the results.
+13
+3.2 Bayesian empirical Bayes for matrix recovery
+LetΩ= N2 andX = R. We observe a noisy arrayxxxn,p = (xi j)i∈[n],j∈[p] with latent signal
+zzzn,p = (zi j)i∈[n],j∈[p] generated by
+xi j∼N(z i j,τ −1
+i j ),τ i j>0.
+Our goal is to estimatezzzn,p fromxxxn,p. We will use BEB to fit a structured prior that captures
+dependencies among entries.
+We assume zzz isseparately exchangeable: its distribution is invariant to independent
+permutations of rows and columns. Recall by the Aldous–Hoover theorem (Theorem 2), we
+can write the conditional distributionp(zzzn |gsep)as
+ui,v j,ui j
+iid∼unif[0,1],z i j=gsep(ui,v j,ui j),(28)
+where the invariant variable is a functiongsep :[0 ,1]3 →R . This conditional representation
+fully characterizes the finite-dimensional marginals of the ergodic distributionp(zzz|g sep), in
+the context of Theorem 1.
+The corresponding Bayesian empirical Bayes model is
+gsep ∼µ ⋆,
+ui,v j,ui j
+iid∼unif[0,1],i∈[n],j∈[n]
+zi j=gsep(ui,v j,ui j),
+xi j∼N(z i j,τ −1
+i j ).
+(29)
+We parameterizegsep by a neural networkgsep,θ ∈G NN, a two–layer ReLU feed-forward
+network mapping[0,1]3 toR. We estimateθ by marginal maximum likelihood, now writing
+the conditional distribution ofxi jdirectly in terms ofuuun,vvvp,uuun,p,
+ˆθ∈argmax
+θ∈Θ
+log
+Z Z Z n
+∏
+i=1
+p
+∏
+j=1
+p
+
+xi j|gsep,θ (ui,v j,ui j)
+
+duuundvvvpduuun,p.(30)
+Exact evaluation of Eq. 30 is intractable because the integral is high–dimensional. We
+approximateitbymaximizinganevidencelowerbound(ELBO)underastructuredvariational
+family. The estimateˆgsep,θ is the variational MMLE. See § D for details.
+Given ˆgsep,θ , we approximate the empirical Bayes posterior forzzzn,p with samples, through
+the posterior ofuuun,vvvp,uuun,p. For each samples,
+uuu(s)
+n ,vvv(s)
+p ,uuu(s)
+n,p ∼p(uuun,vvvp,uuun,p |xxxn,p, ˆgsep)
+z(s)
+i j = ˆgsep(u(s)
+i ,v(s)
+j ,u(s)
+i j ).
+14
+The conditional posterior of the auxiliary latent variables is
+p(uuun,vvvp,uuun,p |xxxn,p, ˆgsep)∝
+n
+∏
+i=1
+p
+∏
+j=1
+N
+
+xi j; ˆgsep(ui,v j,ui j),τ −1
+i j
+
+,(31)
+which we sample from using the No–U–Turn Sampler (NUTS; Hoffman and Gelman, 2014)
+or a variational approximation.
+Related symmetries.If the array isjointly exchangeablethen it is invariant when rows
+and columns are permuted together. In this case, Eq. 28 simplifies to
+ui,ui j
+iid∼unif[0,1],z i j=gjoint(ui,u j,ui j),
+with gjoint :[0,1] 3 →R. We follow nearly the same procedure.
+Ifthearrayisrelativelyexchangeableconditionedonrowcovariates yyyn = (yi)n
+i=1 withyi ∈Y
+and column covariatesaaap = (aj)p
+j=1 witha j ∈A, then Eq. 28 expands to
+ui,v j,ui j
+iid∼unif[0,1],z i j=grel
+ 
+yi,a j,ui,v j,ui j
+
+,
+withgrel : Y×A× [0,1]3 →R . Thisyieldsthecovariate-assistedBayesianempiricalBayes
+procedure developed in § D.3.
+If the array isfully exchangeablethen it is invariant to shuffling all of its cells. This case
+reduces to the algorithms of § 3.1, wherezi j
+iid∼gperm for a random measure gperm.
+Denoising an MNIST digit (continued).We revisit the example of denoising an MNIST
+"5" from Figure 1. The image is treated as a noisy matrix and we apply the proposed
+empirical Bayes matrix recovery (EBMR) methods under separate and joint exchangeability.
+We report100×MSE between the posterior meansˆzzzn,n and the true pixel valuezzz⋆
+n,n. The
+fourth and fifth panels in Figure 1 show the results. EBMR with a jointly exchangeable prior
+(EBMR–Joint) achieves the lowest error, followed by EBMR with a separately exchangeable
+prior (EBMR–Sep), then EBMR with a fully exchangeable prior (NPMLE). This ordering
+aligns with the symmetry hierarchy full⇒ separate ⇒ joint: weaker (less restrictive)
+symmetry assumptions enlarge the class of admissible priors and increase flexibility. On
+the other hand, weaker symmetry assumptions also increase the sample and computational
+complexity for estimatingg. This creates a trade-off. In our setting, joint exchangeability
+offers a sweet spot between expressiveness and efficiency.
+3.3 Bayesian empirical Bayes for spatial regression
+LetΩ= Rd and X = R. We observexxxn = {xω : ω∈S n} at sitesSn ⊂ Ω. Each site has
+covariatesa ω = (aω,1 ,...,a ω,p )∈R p. Thespatial regression modelis
+xω =β ⊤aω +z ω +ε ω ,ε ω ∼N(0,τ −1
+ω ),τ ω >0,(32)
+15
+whereβ∈R p are regression coefficients andzzz = (zω )ω∈Ω is a latent process that captures
+spatial dependence. We place a flat priorπ(β) ∝ 1, so the estimator ofβ coincides with
+weighted least squares. The resulting model along with Eq. 32 coincide with the standard
+model in Bayesian spatial regression (Handcock and Stein, 1993; Stein, 1999; Oliveira et al.,
+1997; Berger et al., 2001; Banerjee et al., 2008, 2015; Li et al., 2024).
+We assumezzz isstationary: its distribution is invariant under translationsφh : ω7→ω +h.
+Following the ergodic decomposition in Eq. 18, any stationary process can be written as a
+mixture ofergodic stationary measures,
+g∼µ ⋆,z zz|g∼g,(33)
+where g is a stationary probability measure onRΩ. Following the BEB method, our goal is
+to estimate the invariant variable g from data.
+DefiningstationarymeasureswithGaussianprocesses.Thespaceofstationarymeasures
+iscomplexandso,inpractice,werestricttheergodicfamily G tostationaryergodicGaussian
+processes. A Gaussian processGP(0,k)is stationary if its covariance function depends only
+on the displacementk(ω,ω ′) =f (ω−ω ′):= k(∆). Each stationary covariance functionk
+withanatomlessspectraldensity(asdescribedbelow)definesanergodicstationaryGaussian
+measure onRΩ (Maruyama, 1949). So we can write
+k∼µ(k),z zz|k∼GP(0,k),(34)
+whereµ(k)is a distribution over stationary kernels.
+How can we characterize the stationary covariance functions?Bochner’s theorem(Bochner,
+2005) states thatk is stationary and positive definite if and only if it can be written as
+k(∆) =
+Z
+Rd
+e2πis ⊤∆ ψ(s)ds,(35)
+for some nonnegative integrable functionψ. The function ψ : Rd → [0,∞)is called
+thespectral density. It describes how the variance of the process is distributed across
+spatial frequencies. The associated spectral measure isatomlessif it assigns zero mass
+to every singleton, i.e.,Ψ(s) =0for all s∈R d (in particular, ifΨhas density ψ, it is
+atomless). Bochner’s theorem gives a one–to–one correspondence between stationary
+Gaussianmeasuresandtheirspectraldensities. Wethereforeidentifyeachergodicstationary
+measure g with its spectral densityψ:
+ψ∼µ ⋆,z zz|ψ∼GP(0,k ψ ),(36)
+wherekψ is the kernel defined by(35). The empirical Bayes task is to estimateψ from the
+marginal distribution of the observed data.
+16
+Bayesian empirical Bayes for spatial regression.We have defined the invariant variable
+gas the spectral density of a stationary kernel for a Gaussian process. With this definition,
+the BEB model is
+zzz∼GP(0,k ψ ),β∼π(β)∝1,x ω ∼N(β ⊤aω +z ω ,τ −1
+ω ).(37)
+We estimate the invariant variableψby maximizing the marginal likelihood,
+ˆψ∈argmax
+ψ∈G
+log
+Z h
+∏
+ω∈Sn
+p(xω |z ω ,β)
+i
+p(zzzn |ψ)π(β)dβdz zzn.(38)
+This is the empirical Bayes estimate of the stationary measure. Givenˆψ, we compute the
+posteriorp( β,zzzn |xxxn, ˆψ), which is Gaussian with known mean and covariance. The BEB
+method thus fits the spectral densityψ, or equivalently the kernelkψ , that best explains the
+marginal distribution of the observed data.
+Inpractice,wemodel ψ asamixtureofGaussians,andfititbymaximummarginallikelihood.
+The details of this procedure, as well as how we perform simultaneous posterior inference,
+are given in § E.
+Inthespatialregressionexample,wemodelthespectraldensityoftheGaussian-processkernel
+as a mixture of Gaussian distributions. Under this model, the empirical Bayes procedure
+reduces to selecting the GP kernel parameters by maximum likelihood (Rasmussen and
+Williams, 2006). This approach is a common practice in the GP literature. It comes with
+strong theoretical guarantees and retains the conjugacy of the GP posterior (Loh and Lam,
+2000; Bachoc, 2014; Szabó et al., 2015; Xu and Stein, 2017). What we see here is that this
+approach can be interpreted as an instance of Bayesian empirical Bayes.
+Denoising an MNIST digit (continued).The image of a handwritten digit does not
+change its meaning if we shift the image, so stationarity is a reasonable assumption. We fit
+EB spatial regression with a constant covariate (aω ≡ 1) and aK =10Gaussian–mixture
+spectral density, using the inference and sampling steps outlined in § E. The rightmost panel
+of Figure 1 shows that EB spatial regression denoises better than NPMLE but not as well
+as EBMR–sep or EBMR–joint. Nonetheless, all EB methods substantially improve over
+the MLE. Moreover, all BEB methods that use symmetries beyond exchangeability improve
+over the NPMLE.
+4 Simulation Studies
+We evaluate the new Bayesian empirical Bayes methods using synthetic data.
+• In § 4.1, we assess empirical Bayes matrix recovery (EBMR; § 3.2) across 60
+settings by varying sample size, noise level, and the data-generating mechanism; we
+implement EBMR with a separately exchangeable prior (EBMR–Sep) and compare
+againstNPMLEandempiricalBayesmatrixfactorization(EBMF;WangandStephens
+(2021)).
+17
+Original
+Observed
+MSE=10.291
+NPMLE
+MSE=3.610
+EBMR Sep
+MSE=2.999
+EBMR Joint
+MSE=2.872
+SpatialEB
+MSE=3.143
+MNIST 5: Denoising Comparison
+Figure 1:Denoising a noisy MNIST “5” with Bayesian empirical Bayes methods.Top:
+original(left), noisy(middle), andNPMLE(right). Bottom: EBMR–sep(left), EBMR–joint
+(middle), and EB spatial regression (right). Errors are100×MSE of posterior means;
+EBMRwithajointlyexchangeablepriorperformsbest,followedbyEBMRwithaseparately
+exchangeable prior and EB spatial regression, then NPMLE.
+• In § 4.2, we evaluate the covariate-assisted empirical Bayes (CAEB; § D.3) method
+for denoising matrices with row- and column-specific covariates and compare it to
+EBMR–Sep, EBMF, and NPMLE.
+• In § 4.3, we apply empirical Bayes spatial regression (spatial EB; § 3.3) to synthetic
+time-series data. We show that the MSE of EB spatial regression vanishes with
+increasing sample size, whereas the NPMLE plateaus at a constant risk.
+In each study, we generate observationsxxxSn on a finite domainSn (e.g. Sn = [n]) from a
+known data-generating process with latent truthzzz⋆
+Sn . We report the relative MSE to assess
+how well the BEB posterior meanˆzzzSn recovers the true latent valueszzz⋆
+Sn . The relative
+MSE measures the MSE of the estimator as a percentage of the MSE of the MLE (out of
+100):
+R-MSE= 1
+|Sn| ∑
+ω∈Sn
+(ˆzω −z ⋆
+ω )2 ×100×τ,
+whereτis the precision of the noise distribution.
+A better method achieves lower R-MSE.
+4.1 Empirical Bayes Matrix Recovery
+Inourfirststudy,wesimulateobservationsfromthenormalmeansmodel xi j∼N
+
+z⋆
+i j,τ −1
+
+with known precisionτ> 0. The true matrixzzz⋆
+n,p is a single draw from the Aldous–Hoover
+representation with a pre-specified functionT0, that is
+ui,v j,ui j
+iid∼unif[0,1],z ⋆
+i j=T 0
+ 
+ui,v j,ui j
+
+.
+We consider five choices ofT0, and vary the precisionsτ∈ {0.25,1,2,4} and the sample
+sizes(n,p)∈ {(20,20),(20,50),(50,50)}. The differentT 0 are as follows:
+•Linear:T 0(U,V,W) =U+V+W;
+•Sine–log:T 0(U,V,W) =sin(πUV)+log(1+W);
+18
+•Sine–cos:T 0(U,V,W) = sin(πU)cos(πV)
+1+W 2 ;
+•Tanh:T 0(U,V,W) =tanh(U+V+W);
+•Reciprocal:T 0(U,V,W) = 1
+1+|U+V+W| .
+We examine all combinations of(τ,n,p,T 0)for a total of60settings. For each setting, we
+run the experiment 10 times to calculate the R-MSE. We compare EBMR with a separately
+exchangeable prior (EBMR–Sep, Algorithm 2) against three benchmarks:
+•Benchmark 1: MLE.The MLE isˆzω =x ω ; by construction its R-MSE equals100.
+• Benchmark 2: NPMLE.NPMLE-based methods are state of the art for normal-
+meansdenoisingproblems(JiangandZhang,2009;KoenkerandMizera,2014; Soloff
+et al., 2025). In the context of matrix recovery, it is equivalent to EBMR with a
+fully exchangeable prior,zω
+iid∼g . We estimateg via the nonparametric MLE using
+sequential quadratic programming (Kim et al., 2020), implemented withebnminR.
+• Benchmark 3: Empirical Bayes Matrix Factorization (EBMF).EBMF (Wang and
+Stephens, 2021) models the latent matrix as low rank with exchangeable loadings and
+factors,
+zzzn,p =
+C
+∑
+k=1
+ℓk f ⊤
+k , ℓ k ∈R n,f k ∈R p,
+with {ℓk}C
+k=1
+iid∼ from an unknown priorgℓ and {f k}C
+k=1
+iid∼ from an unknown prior
+gf . The priors(gℓ,gf )are fit by variational empirical Bayes under the normal-means
+likelihoodfor xxxn,p,andweusetheposteriormeanof zzzn,p astheestimator. Unlessnoted
+otherwise, wesetC =10andimplement themethod usingtheflashierpackage inR.
+To implement Algorithm 2, we setK =10and parameterize gsep :[0 ,1]3 7→R as a fully
+connectedfeed-forwardMLPwithtwohiddenlayers,ReLUactivations,and5unitsperlayer.
+We choose a simple network configuration because the sample sizes are small.
+Table 1 shows the results that EBMR–Sep outperforms NPMLE and EBMF in55out of
+the60settings. When T0 introduces nonlinear dependencies across rows and columns (e.g.,
+the sine–log function), the error reduction of EBMR–Sep relative to NPMLE and EBMF is
+substantial. The few cases where EBMF outperforms EBMR–Sep appear for small sample
+sizes—e.g.,( n,p ) = (20,20)—in settings where the latent factors(ui,v j)interact via an
+approximate low-rank structure (as with the sine–cos function).
+4.2 Covariate-Assisted Empirical Bayes
+We evaluate the posterior-mean estimator of covariate-assisted empirical Bayes (CAEB;
+§ D.3) for matrix recovery with side information. Data are generated according to
+z⋆
+i j=T 0(yi,a j,ui,v j,wi j),x i j∼N(z ⋆
+i j,1),
+19
+Table 1:EBMR-Sep attains the lowest R-MSE in 55 of 60 settings.Matrix-recovery
+performance for NPMLE, EBMR with a separately exchangeable prior (Sep), and EBMF
+across simulated settings. Reported values are the median relative MSE (R-MSE), defined
+as each method’s MSE as a percentage of the MSE of the MLE. The lowest R-MSE in each
+setting is shown inbold.
+n pτ ττLinear Sine–log Sine–cos Tanh Reciprocal
+NPMLE Sep EBMF NPMLE Sep EBMF NPMLE Sep EBMF NPMLE Sep EBMF NPMLE Sep EBMF
+20 20 0.13.233.31 9.16 2.091.909.24 2.85 2.332.141.080.607.57 0.880.531.84
+20 20 0.25 7.286.4510.15 3.833.509.95 5.644.835.36 0.960.588.63 0.750.434.61
+20 20 1 23.3515.9918.56 13.4711.9314.83 18.74 10.019.242.872.229.92 1.831.569.91
+20 20 4 53.2434.8043.95 36.0126.6231.50 48.74 14.5713.198.937.1613.07 4.654.2710.72
+20 50 0.1 2.882.768.26 2.001.7310.38 2.49 2.272.060.650.397.75 0.610.491.75
+20 50 0.25 6.385.119.79 4.173.558.27 5.313.545.14 0.870.475.68 0.700.304.38
+20 50 1 20.1312.4722.78 14.119.0418.03 17.946.2220.55 2.291.428.05 1.730.927.35
+20 50 4 49.9729.5669.45 38.8222.0149.92 44.958.6737.59 5.554.7710.64 3.153.009.00
+50 50 0.1 2.692.244.73 1.691.454.00 1.881.221.84 0.370.273.65 0.250.201.95
+50 50 0.25 6.214.306.00 3.863.065.13 4.492.124.61 0.650.614.05 0.380.324.83
+50 50 1 20.6510.7612.23 13.547.498.63 15.732.764.48 2.271.984.84 1.241.014.32
+50 50 4 50.9928.4537.36 38.3219.6623.11 42.344.856.28 8.075.777.77 4.033.325.09
+where yi ∈R 3 and aj ∈R 4 are global row- and column-specific covariates,ui and vj are
+latent factors, andwi jis an additional stochastic input.
+We simulateyi as iid draws from a standardt-distribution with5degrees of freedom andaj
+from a beta distribution witha=2andb=5. We consider three choices ofT0:
+•Linear:T 0(y,a,u,v,w) = ∑3
+k=1 y[k]+ ∑4
+k=1 a[k]+uv+w
+•Nonlinear:T 0(y,a,u,v,w) = ∑3
+k=1 y[k]+ ∑4
+k=1 a[k]+sin(πu)cos(πv)+0.5w 2
+•Logistic:T 0(y,a,u,v,w) = ∑3
+k=1 y[k]+ ∑4
+k=1 a[k]+sigmoid(u+v)+w
+wherey[k]anda[k]denote thekth coordinates ofy∈R 3 anda∈R 4.
+Implementation of covariate-assisted EB.We compare CAEB, EBMR–Sep, NPMLE,
+EBMF,andMLE.ToimplementCAEB,weparameterize grel : R7 ×[0,1]3 7→R asatwo-layer
+ReLU neural network with 10 hidden units per layer. We perform the stochastic gradient
+step using Adam and use NUTS with a target acceptance probability of0.8to sample from
+the posterior.
+Table2reportsthemedianR-MSEofthecompetingmethods. CAEBconsistentlyoutperforms
+the NPMLE. In some cases, covariate-assisted EB achieves10%–20%of the R-MSE of the
+NPMLE method. Thus, for simulated matrix data with covariates, covariate-assisted EB
+provides a markedly better denoising procedure than NPMLE.
+Table 2 also shows that Bayesian EB methods achieve lower R-MSE than NPMLE. For
+smaller matrices(n,p ) ∈ {(20,20),(20,50)}, EBMR–Sep beats CAEB. The reason is that
+estimatingthe10-dimensionalmap grel requiresmoredatathanthe3-dimensional gsep. Once
+n,p≥ 50, CAEB overtakes EBMR–Sep. Atn = p =100, the sample size suffices to fit the
+10-dimensional network forgrel, and the benefit of covariates becomes evident. Figure 2
+20
+n pLinear Logistic Nonlinear
+CAEB SEP NPMLE EBMF CAEB SEP NPMLE EBMF CAEB SEP NPMLE EBMF
+20 20 50.6318.7977.19 24.66 44.4518.6382.69 20.83 42.7617.5581.10 20.88
+20 50 29.2515.6975.59 28.82 27.2313.9375.71 27.20 28.3714.7479.83 43.26
+20 100 20.2112.9276.71 23.27 17.9512.7976.27 22.40 14.7112.1578.65 31.35
+50 50 19.1913.0280.47 16.50 17.6512.6280.19 15.30 13.86 11.34 81.2410.82
+50 100 14.6613.0282.64 17.87 12.9011.3277.83 15.699.9410.42 79.03 11.71
+100 10010.1811.26 81.93 12.269.0410.52 80.97 11.845.8110.24 83.67 7.52
+Table 2:Covariate–assisted EB attains the lowest R-MSE for large samples, reaching
+73–90%improvementoverR-MLEand3–7 × lowerMSEthanNPMLEinallsettings.CAEB
+(Covariate-assisted EB), SEP (EBMR with a separately exchangeable prior), NPMLE, and
+EBMF across linear, logistic, and nonlinear generative models. Each cell reports the median
+R-MSE (lower is better).
+102
+103
+5
+10
+50
+100R-MSE
+linear
+102
+103
+logistic
+102
+103
+nonlinear
+Dimension (p)
+CAEB EBMF EBMR-SEP NPMLE
+Figure 2:Covariate-assisted EB achieves the lowest risk in large-sample settings.When
+p is large, all methods achieve constant MSE that reflects the oracle risk as determined by
+the symmetry group. Covariate-assisted EB achieves the lowest risk compared to other
+benchmarks.
+furthershows thatwith n =100and p increasingfrom100to1000, CAEBdominatesacross
+all three generative settings.
+We also assess the robustness of BEB methods to misspecification of the noise process.
+Specifically, we rerun the simulations with noise drawn from at-distribution with degrees
+of freedom5and scale parameter1instead of theN(0,1)distribution. While the absolute
+MSEs of the methods are slightly higher, the qualitative comparison among the methods is
+unchanged. See Figure 8 in the Appendix for details.
+4.3 Empirical Bayes Spatial Regression
+Finally, we evaluate empirical Bayes spatial regression with simulated data. We generate
+spatial data on an evenly spaced grid−10= ω1 <ω 2 <···<ω n =10. The observed
+variables follow the model
+xωi =a ⊤
+ωi β⋆ +z ⋆
+ωi +ε ωi ,i=1,...,n,
+withdesignvectors aωi = (1,ξωi ) ∈R p whereξωi ∼N (0,I p−1),andnoise εωi
+iid∼N (0,τ −1).
+21
+Wefix p =3andset β⋆ = (0.5,−1.2,0.3)⊤. Thelatentfield z⋆ = (z⋆
+ω1 ,...,z ⋆
+ωn )isastationary
+Gaussian process with covariance kernel
+Σ⋆
+i j=k w,σ,µ
+ 
+ωi −ω j
+
+,w= (0.5,0.3,0.2),σ= (1.0,0.2,0.35),µ= (0,0.15,−0.25),
+where the formula forkw,σ,µ is in Eq. 64. Equivalently, it is a stationary kernel with a
+three-componentGaussianmixture0 .5N (0,12)+0 .3N (0.15,0.22)+0 .2N (−0.25,0.352)
+as the spectral density. We draw a singlezzz⋆
+n ∼N(0,Σ ⋆)as the ground truth.
+To simulatexxxn, we vary the precisionτ∈ {0.25,1,4} and the sample sizen from100to
+3000. We fit spatial EB regression (§ 3.3) withK∈ {3,4,5}, draw posterior samples ofβ
+andzzzn, and report the posterior mean ofzzzn and its R-MSE.
+As a baseline, we apply the NPMLE to residuals under the true coefficientβ⋆:
+rω =x ω −a ⊤
+ω β⋆,r ω ∼N
+ 
+z⋆
+ω ,τ −1
+ω
+
+,
+and estimatezzz⋆
+n using the normal-means model with a fully exchangeable prior (§ 3.1). The
+MLE forzω in this case isrω .
+Figure 3 shows the results. EB spatial regression uniformly dominates the regression-
+adjusted NPMLE, which indicates that stationarity is a more informative symmetry than full
+exchangeabilityfor thisexample. Ateachnoise level, the MSEofthe EBspatialestimatorof
+zzz⋆
+n decreasessharplywiththesamplesize,whiletheMSEoftheregression-adjustedNPMLE
+remains essentially flat asn increases. The performance of the two methods is comparable
+only for small samples (e.g.,n =100); for larger n, the spatial EB estimator achieves
+substantially lower error. In Figure 9 of § G, we show that the MSE of the posterior-mean
+estimator forβ also decreases withn under the EB spatial regression model, which suggests
+that the posterior ofβsatisfies posterior consistency.
+In high-precision regimes, the NPMLE yields little improvement, with its R-MSE hovering
+around80. By contrast, the R-MSE of EB spatial regression drops below20oncen≥ 2000,
+albeit with higher cross-replicate variability than in lower-precision regimes.
+5 Real Data Examples
+For applications, we consider (i) a semisynthetic study where we add Gaussian noise to a
+cancergene–expressionmatrixwithvaryingnoiselevels,and(ii)denoisingandinterpolating
+NYC air–quality data using EB spatial regression. In the first example, we evaluate our
+methodsusingR–MSEoftherecoveredmatrixversusthegroundtruth. Inthesecondexample,
+we provide the full inference results to reason about the learned prior and posterior.
+5.1 Cancer
+We apply empirical Bayes matrix recovery methods to a gene–expression dataset under
+varying levels of noise corruption. The dataset is a251×226gene–expression matrix
+analyzed by Carvalho et al. (2008) and Knowles and Ghahramani (2011), containing
+22
+100 500 1000 2500 5000
+10
+20
+50
+100R-MSE
+ = 0.25
+100 500 1000 2500 5000
+ = 1.0
+100 500 1000 2500 5000
+ = 4.0
+Sample Size (n)
+Spatial EB (K=3) Spatial EB (K=4) Spatial EB (K=5) NPMLE w/ Reg Adj
+Figure 3:EB spatial regression dominates NPMLE.Relative MSE for recovering the latent
+series zzz⋆
+n across sample sizen and noise precisionτ. EB spatial regression is fit with
+K∈ {3,4,5} mixtures and is stable to modest over-specification ofK. The NPMLE baseline
+usesresiduals rω = xω −a⊤
+ω β⋆ withrω ∼N (zω ,τ −1
+ω )andafullyexchangeableprior. Points
+show medians over 10 replicates; bands show the interquartile range (25–75%). EB error
+decreases withn, whereas NPMLE error remains roughly flat.
+measurements of 226 genes across 251 breast–cancer patients. The statistical goal is to
+recover the latent gene–expression matrix from a noisy observation. It is reasonable to
+assumea priorithat genes are exchangeable and patients are exchangeable, so we apply
+the empirical Bayes matrix recovery method with a separately exchangeable prior to pool
+information across related gene-specific and patient-specific effects.
+In the semisynthetic design, we add independent Gaussian noise with precisionτ∈
+{0.01,0.03,0.1,0.3,1,3,10} to each entry and compare three empirical Bayes procedures:
+(i) EBMR with a separately exchangeable prior (EBMR–sep), (ii) nonparametric maximum
+likelihood estimation (NPMLE; Jiang and Zhang, 2009), and (iii) empirical Bayes matrix
+factorization (EBMF; Wang and Stephens, 2021). We measure the performance by the
+relativemean–squarederror(R–MSE)betweentherecoveredandoriginalmatrices,averaged
+over 20 replicates and summarized by the median R–MSE.
+For EBMF, we follow Wang and Stephens (2021) by settingK =40. For EBMR–sep, we
+discretize[0 ,1]on a K =10grid and parameterize gsep as a two–layer ReLU network with
+20 hidden units per layer. We traingsep with Adam (learning rate0.01) on the variational
+objective in Algorithm 2 over 500 iterations with 50 gradient steps per iteration. The
+posterior sampling step uses NUTS with 300 warm–up and 300 retained samples (target
+acceptance probability0.8). Each EBMR–sep run requires approximately 5 minutes on a
+GPU; a full noise–level sweep takes two hours on two GPUs.
+Figure 4 shows the results. EBMR–sep attains uniformly lower R–MSE than both NPMLE
+and EBMF, with the performance gap increasing under higher noise. The intuitive reason
+is that the separately exchangeable prior captures gene-level and patient-level sharing of
+informationinanonlinearway,whereastheothertwomethodseitherignoretherow/column-
+23
+10 1
+100
+101
+102
+Noise Level ( 1)
+100
+101
+102
+R-MSE
+Cancer Data
+Method
+EBMR-SEP
+NPMLE
+EBMF
+MLE
+Figure 4:Breast cancer data
+denoising: EBMR with a
+separately exchangeable prior
+achieves the lowest relative
+MSE across varying noise lev-
+els.Scatterplots represent me-
+dian relative MSE over 10
+replicates; bands show the
+interquartile range (25–75%).
+There is a “blessing of noise”
+phenomenon: as the noise
+level increases, all empirical
+Bayes methods achieve lower
+relative MSE.
+exchangeable structure (NPMLE) or assume a low-rank structure (EBMF).
+5.2 Denoising and Interpolating Air Quality Data in NYC
+We apply empirical Bayes spatial regression (SpatialEB) to a dataset on fine particulate
+matter PM2.5 (in µg/m3) in New York City. The data comprise hourly readings from 16
+monitoring stations obtained from the NYC Department of Health and Mental Hygiene’s
+Real-Time Air Quality portal.2 We focus on four sites—Herald Square, Chinatown, the
+Lower East Side, and Queens North—using records from January 2019 to May 2025.3 To
+capture medium-term dynamics, we aggregate to weekly averagesxs,t at sites and weekt
+and assign sampling precisionconsisτs,t as the inverse within-week variances.
+Theweeklyseriescontaingaps(outages/maintenance),occasionalspikes,andheterogeneous
+noise. Our goals are to (i) denoise and interpolate the weekly average data for all four
+sites, (ii) estimate the latent weeklyPM2.5 levels with uncertainty quantification, and (iii)
+characterize the spatio–temporal dependence structure via the fitted spectral density.
+We model the data using the spatial regression model
+xs,t |z s,t,β∼N
+ 
+zs,t +β ⊤as,τ −1
+s,t
+
+,
+where zs,t denotes the latent weekly mean andas is a site-specific covariate vector including
+an intercept and site indicators. The regression componentβ⊤as accounts for persistent
+location effects across monitoring sites. We fit the spatial regression model withK =10
+Gaussian–mixture components for the spectral density, then apply the procedure in § E to
+2https://a816-dohbesp.nyc.gov/IndicatorPublic/data-features/realtime-air-quality/
+3We select these four sites because they have the most complete records; for most other sites (including
+those in Brooklyn, Staten Island, and the Bronx), more than60%of weekly observations are missing.
+24
+obtain posterior meansˆzs,t, regression coefficientsˆβ,95%credible bands for {zs,t}, and
+kriged imputations for missing weeks. We also report site-adjusted meansˆms,t = ˆzs,t + ˆβ⊤as
+with credible bands.
+When we parameterize the spectral density,ω = (ωtime,ωspace)denotes temporal and spatial
+frequencies. The model learns a spectral densityψ(ω); by Bochner’s theorem this induces a
+stationary covariancek(∆)in the( t,space)domain. Peaks inψ(ω)correspond to dominant
+temporal cycles and spatial scales of variation inzs,t.
+We assess the imputation accuracy of EB spatial regression against three Gaussian–process
+regressors on the same site–week features as our EB model, standardizing inputs and using
+per–observationnoisevariances αi = τ−1
+i fromwithin-weekprecision. Themodelsdifferonly
+by kernel—RBF (squared–exponential, smooth), Matérn(ν =3 /2)(rougher trajectories),
+and Rational Quadratic (a scale–mixture kernel capturing multi–scale variability)—each
+with a small white-noise nugget (10−3). Kernel hyperparameters are learned by maximizing
+the marginal likelihood. On held–out data, we report the MSE of the imputed series against
+the true weekly averages. Figure 6 shows that EB spatial regression achieves substantially
+lower MSE than all GP baselines because the fitted spectral density adaptively captures
+the bimodal spatio–temporal variation. By comparing the four methods, we see that fitting
+a more flexible prior family that respects the shift invariance yields performance gain in
+imputation.
+Figure 5 shows empirical Bayes posterior means with95%credible bands. The posterior
+means shows the shrinkage and pooling effects of EB spatial regression: extreme weekly
+averages (e.g., mid-2023) are pulled toward the mean. Where observations are dense,
+the posterior uncertainty around the denoised weekly averages is narrow; where data are
+missing, it is wider. Within Manhattan (Herald Square, Chinatown, Lower East Side), the
+model borrows heavily across sites—for example, when Chinatown is entirely missing from
+mid-2021 to early-2022, the model interpolates from Herald Square and the Lower East Side
+to produce tight bands; similarly, during mid-2023 to early-2024, the model imputes the
+Lower East Side using the other two Manhattan sites, which recovers a decreasing, cyclical
+trend. By contrast, Queens North contributes less to interpolating Manhattan gaps (e.g.,
+mid-2022 to early-2023). The reason for this different shrinking behavior is that the EB
+model finds two spatio–temporal regimes–one for Manhattan and one for northern Queens;
+see Figure 10 in § G.4.
+6 Discussion
+We have presentedBayesian empirical Bayes, a general empirical Bayes procedure to obtain
+accurate simultaneous posterior inference of latent variables when the prior respects a
+general probabilistic symmetry. Our approach enables the full power of empirical Bayes
+to be applied to problems with structured data, beyond exchangeable sequences. In this
+way, it expands the scope of application for EB substantially. Using Bayesian EB, we
+derived new EB models and inference algorithms for three settings: array data with separate
+and joint exchangeability, spatial data with shift invariance, and covariate-augmented data.
+25
+2020 2021 2022 2023 2024 2025
+10
+20
+30PM2.5
+Chinatown
+2020 2021 2022 2023 2024 2025
+HeraldSquare
+2020 2021 2022 2023 2024 2025
+Time
+10
+20
+30
+LowerEastSide
+2020 2021 2022 2023 2024 2025
+Time
+QueensNorth
+NYC Weekly Air Quality
+Observed PM2.5 Denoised PM2.5 95% Credible Band
+Figure 5:Denoised and interpolated weeklyPM2.5 in New York City using EB spatial
+regression.Posterior means with 95% credible bands for three monitoring sites; gray points
+areobservedweeklyaverages. Themodelsmoothsnoisymeasurementsandimputesmissing
+weeks.
+SpatialEB RBF Matern(1.5) RQ
+4
+6
+8
+10Imputation MSE
+Imputation for NYC Weekly Air Quality
+Figure 6:Empirical Bayes
+spatial regression achieves
+substantially lower MSE than
+Gaussian–process baselines.
+Boxplots show test MSE (me-
+dian and quantiles) across 50
+random masks that hide 20%
+ofobservedentriesintheNYC
+air–quality panel. Methods:
+EBspatialregressionwith K =
+10Gaussian–mixture compo-
+nents for the spectral den-
+sity, and GPR with RBF,
+Matérn (ν =3 /2), and Ratio-
+nal–Quadratic kernels.
+We demonstrated the competitive performance of Bayesian EB over classical empirical
+Bayes.
+26
+There are several avenues for further research.
+First,wehavefocusedhereonthederivationandmethodsbehindBayesianEB.Itstheoretical
+analysis remains an open area. Natural theoretical questions include the identifiability,
+consistency, and sample complexity of learning the invariant variableg via maximum
+marginal likelihood and more broadly, estimation under symmetry constraints.
+Second, in this paper, we studied symmetry groups based on arrays and spatio-temporal
+constraints. In many scientific domains, however, the relevant symmetry groups are more
+complex, such as those arising from physical constraints (e.g., molecular or spacetime
+symmetries). Anotherinterestingdirectionistoleveragegeometricdeeplearning(Bronstein
+et al., 2021) to design new BEB methods tailored to such applications.
+Finally, while our initial evidence suggests that Bayesian EB remains competitive under
+heavy-tailednoise(seeFigure8in§G.2),itwouldbevaluabletodevelopsensitivityanalysis
+for these new methods under other types of model misspecification. Sensitivity analysis for
+empiricalBayeshasbeenstudiedinBergerandBerliner(1986);ButaandDoss(2011);Doss
+and Linero (2024).
+References
+Aldous, D. J. (1981). Representations for partially exchangeable arrays of random variables.
+Journal of Multivariate Analysis, 11.
+Aldous, D. J. (2006). Exchangeability and related topics. InÉcole d’Été de Probabilités de
+Saint-Flour XIII—1983, pages 1–198. Springer.
+Anderson, M. J. and Robinson, J. (2001). Permutation tests for linear models.Australian &
+New Zealand Journal of Statistics, 43(1):75–88.
+Austern, M. and Orbanz, P. (2022). Limit theorems for distributions invariant under groups
+of transformations.Annals of Statistics, 50:1960–1991.
+Bachoc, F. (2014). Asymptotic analysis of the role of spatial sampling for covariance
+parameter estimation of Gaussian processes.Journal of Multivariate Analysis, 125.
+Banerjee, S., Carlin, B. P., and Gelfand, A. E. (2015).Hierarchical Modeling and Analysis
+for Spatial Data, volume 135 ofMonographs on Statistics and Applied Probability. CRC
+Press, Boca Raton, FL, second edition.
+Banerjee, S., Gelfand, A. E., Finley, A. O., and Sang, H. (2008). Gaussian predictive
+process models for large spatial data sets.Journal of the Royal Statistical Society. Series
+B: Statistical Methodology, 70.
+Berger, J. and Berliner, L. M. (1986). Robust Bayes and empirical Bayes analysis with
+ε-contaminated priors.The Annals of Statistics, 14.
+27
+Berger, J. O., Oliveira, V. D., and Sansó, B. (2001). Objective Bayesian analysis of spatially
+correlated data.Journal of the American Statistical Association, 96.
+Bernardo, J.-M. and Smith, A. F. M. (1994).Bayesian Theory. Wiley Series in Probability
+and Mathematical Statistics: Probability and Mathematical Statistics. John Wiley & Sons,
+Ltd., Chichester.
+Bingham, E., Chen, J. P., Jankowiak, M., Obermeyer, F., Pradhan, N., Karaletsos, T., Singh,
+R.,Szerlip,P.,Horsfall,P.,andGoodman,N.D.(2019). Pyro: Deepuniversalprobabilistic
+programming.Journal of Machine Learning Research, 20.
+Blei, D. M., Kucukelbir, A., and McAuliffe, J. D. (2017). Variational inference: A review
+for statisticians.Journal of the American Statistical Association, 112:859–877.
+Bochner, S. (2005).Harmonic Analysis and the Theory of Probability. Courier Corporation.
+Bronstein, M. M., Bruna, J., Cohen, T., and Veličković, P. (2021). Geometric deep learning:
+Grids, groups, graphs, geodesics, and gauges.arXiv preprint arXiv:2104.13478.
+Brown, L. and Greenshtein, E. (2009). Nonparametric empirical Bayes and compound
+decision approaches to estimation of a high-dimensional vector of normal means.Annals
+of Statistics, 37:1685–1704.
+Brown, L. D., Mukherjee, G., and Weinstein, A. (2018). Empirical Bayes estimates for a
+two-way cross-classified model.Annals of Statistics, 46.
+Buta, E. and Doss, H. (2011). Computational approaches for empirical Bayes methods and
+bayesian sensitivity analysis.Annals of Statistics, 39.
+Carbonetto, P. and Stephens, M. (2012). Scalable variational inference for Bayesian variable
+selection in regression, and its accuracy in genetic association studies.Bayesian Analysis,
+7:73–108.
+Carvalho, C. M., Chang, J., Lucas, J. E., Nevins, J. R., Wang, Q., and West, M. (2008).
+High-dimensional sparse factor modeling: Applications in gene expression genomics.
+Journal of the American Statistical Association, 103.
+Chen, J. (2022). Empirical Bayes when estimation precision predicts parameters.arXiv
+preprint arXiv:2212.14444.
+Chen, T., Kornblith, S., Norouzi, M., and Hinton, G. (2020). A simple framework for
+contrastive learning of visual representations. InProceedings of the 37th International
+Conference on Machine Learning, pages 1597–1607.
+Crane, H. and Towsner, H. (2018). Relatively exchangeable structures.Journal of Symbolic
+Logic, 83.
+Deely, J. J. and Lindley, D. V. (1981). Bayes empirical Bayes.Journal of the American
+Statistical Association, 76.
+28
+Denault, W. R., Tayeb, K., Carbonetto, P., Willwerscheid, J., and Stephens, M.
+(2025). Covariate-moderated empirical Bayes matrix factorization.arXiv preprint
+arXiv:2505.11639.
+Diaconis, P. (1988).Group Representations in Probability and Statistics, volume 11
+ofInstitute of Mathematical Statistics Lecture Notes—Monograph Series. Institute of
+Mathematical Statistics, Hayward, CA.
+Doss, H. and Linero, A. (2024). Scalable empirical Bayes inference and bayesian sensitivity
+analysis.Statistical Science, 39.
+Eaton, M. L. (1989).Group Invariance Applications in Statistics, volume 1 ofRegional
+Conference Series in Probability and Statistics. Institute of Mathematical Statistics.
+Eden, T. and Yates, F. (1933). On the validity of Fisher’s z test when applied to an actual
+example of non-normal data.Journal of Agricultural Science, 23(1):6–17.
+Efron, B. (2011). Tweedie’s formula and selection bias.Journal of the American Statistical
+Association, 106.
+Efron, B. (2012).Large-scale Inference: Empirical Bayes Methods for Estimation, Testing,
+and Prediction, volume 1. Cambridge University Press.
+Efron,B.(2014). TwomodelingstrategiesforempiricalBayesestimation.StatisticalScience,
+29.
+Efron, B. (2015a). Empirical Bayes deconvolution estimates.Biometrika, 103.
+Efron, B. (2015b). Frequentist accuracy of Bayesian estimates.Journal of the Royal
+Statistical Society Series B: Statistical Methodology, 77(3):617–646.
+Efron, B. (2019). Bayes, oracle Bayes and empirical Bayes.Statistical Science, 34:177–201.
+Efron, B. (2024). Empirical Bayes: Concepts and methods. InHandbook of Bayesian,
+Fiducial, and Frequentist Inference, pages 8–34. Chapman and Hall/CRC.
+Efron, B. and Morris, C. (1971). Limiting the risk of Bayes and empirical Bayes estimators–
+part i: The Bayes case.Journal of the American Statistical Association, 66.
+Efron, B. and Morris, C. (1976). Multivariate empirical Bayes and estimation of covariance
+matrices.The Annals of Statistics, 4.
+Efron, B., Tibshirani, R., Storey, J. D., and Tusher, V. (2001). Empirical Bayes analysis of a
+microarray experiment.Journal of the American Statistical Association, 96:1151–1160.
+Ernst, M. D. (2004). Permutation methods: A basis for exact inference.Statistical Science,
+19(4):676–685.
+Fan, Z., Guan, L., Shen, Y., and Wu, Y. (2023). Gradient flows for empirical bayes in
+high-dimensional linear models.arXiv preprint arXiv:2312.12708.
+29
+Finetti,B.D.(1929). Funzionecaratteristicadiunfenomenoaleatorio. InAttidelCongresso
+Internazionale dei Matematici: Bologna del 3 al 10 de settembre di 1928, pages 179–190.
+Fisher, R. A. (1935).The Design of Experiments. Oliver and Boyd.
+Folland, G. B. (2016).A Course in Abstract Harmonic Analysis. CRC press.
+Gelman, A., Carlin, J. B., Stern, H. S., and Rubin, D. B. (1995).Bayesian Data Analysis.
+Chapman and Hall/CRC.
+Ghosal,S.andvanderVaart,A.(2017).FundamentalsofNonparametricBayesianInference,
+volume 44. Cambridge University Press.
+Ghosh, S., Ignatiadis, N., Koehler, F., and Lee, A. (2025). Stein’s unbiased risk estimate and
+Hyvärinen’s score matching.arXiv preprint arXiv:2502.20123.
+Giri, N. C. (1996).Group Invariance in Statistical Inference. World Scientific.
+González, R. E., Munoz, R. P., and Hernández, C. A. (2018). Galaxy detection and
+identification using deep learning and data augmentation.Astronomy and computing,
+25:103–109.
+Good, I. (1992). Introduction to Robbins (1955) an empirical Bayes approach to statistics.
+InBreakthroughs in Statistics: Foundations and basic theory, pages 379–387. Springer.
+Good, P. I. (2006).Permutation, Parametric, and Bootstrap Tests of Hypotheses. Springer
+Science & Business Media.
+Handcock, M. S. and Stein, M. L. (1993). A Bayesian analysis of kriging.Technometrics,
+35(4):403–410.
+Hemerik, J. and Goeman, J. J. (2018). Exact testing with random permutations.Test,
+27(4):811–825.
+Hensman, J., Fusi, N., and Lawrence, N. D. (2013). Gaussian processes for big data.arXiv
+preprint arXiv:1309.6835.
+Hoeffding,W.(1952). Thelarge-samplepoweroftestsbasedonpermutationsofobservations.
+The Annals of Mathematical Statistics, 23(2):169–192.
+Hoffman, M. D. and Gelman, A. (2014). The no-U-turn sampler.Journal of Machine
+Learning Research, 15:1593–1623.
+Ignatiadis, N. and Huber, W. (2021). Covariate powered cross-weighted multiple testing.
+Journal of the Royal Statistical Society. Series B: Statistical Methodology, 83.
+Ignatiadis, N. and Sen, B. (2025a).Empirical Bayes: From Herbert Robbins to Modern
+Theory and Applications. book draft.
+30
+Ignatiadis,N.andSen,B.(2025b). EmpiricalpartiallyBayesmultipletestingandcompound
+χ2 decisions.The Annals of Statistics, 53(1):1–36.
+Ignatiadis,N.andWager,S.(2019).Covariate-poweredempiricalBayesestimation.Advances
+in Neural Information Processing Systems, 32.
+Ignatiadis, N.andWager, S. (2022). Confidenceintervals fornonparametric empirical Bayes
+analysis.Journal of the American Statistical Association, 117.
+James, W. and Stein, C. (1960). Estimation with quadratic loss. volume 1, page 361. Univ
+of California Press.
+Jiang, W. (2020). On general maximum likelihood empirical Bayes estimation of het-
+eroscedastic iid normal means.Electronic Journal of Statistics, 14.
+Jiang,W.andZhang,C.-H.(2009). GeneralmaximumlikelihoodempiricalBayesestimation
+of normal means.Annals of Statistics, 37:1647–1684.
+Jiang, W. and Zhang, C.-H. (2010). Empirical Bayes in-season prediction of baseball
+batting averages. InBorrowing Strength: Theory Powering Applications–A Festschrift for
+Lawrence D. Brown, volume 6, pages 263–274. Institute of Mathematical Statistics.
+Kallenberg, O. (1997).Foundations of Modern Probability, volume 2. Springer.
+Kallenberg, O. (2005).Probabilistic Symmetries and Invariance Principles, volume 9.
+Springer.
+Kass, R. E. and Steffey, D. (1989). Approximate Bayesian inference in conditionally
+independent hierarchical models (parametric empirical Bayes models).Journal of the
+American Statistical Association, 84(407):717–726.
+Kennedy, F. E. (1995). Randomization tests in econometrics.Journal of Business &
+Economic Statistics, 13(1):85–94.
+Kiefer, J. and Wolfowitz, J. (1956). Consistency of the maximum likelihood estimator in the
+presence of infinitely many incidental parameters.The Annals of Mathematical Statistics,
+27:887–906.
+Kim,Y.,Carbonetto,P.,Stephens,M.,andAnitescu,M.(2020).Afastalgorithmformaximum
+likelihood estimation of mixture proportions using sequential quadratic programming.
+Journal of Computational and Graphical Statistics, 29.
+Kim, Y., Wang, W., Carbonetto, P., and Stephens, M. (2024). A flexible empirical Bayes
+approachtomultiplelinearregression,andconnectionswithpenalizedregression.Journal
+of Machine Learning Research, 25:Paper No. [185], 59.
+Kingma,D.P.andWelling,M.(2014). Auto-encodingvariationalBayes. In2ndInternational
+Conference on Learning Representations.
+31
+Knowles, D.andGhahramani, Z.(2011). NonparametricBayesiansparsefactormodelswith
+application to gene expression modeling.Annals of Applied Statistics, 5.
+Koenker, R. and Mizera, I. (2014). Convex optimization, shape constraints, compound
+decisions, and empirical Bayes rules.Journal of the American Statistical Association,
+109:674–685.
+LeCun, Y., Bottou, L., Bengio, Y., and Haffner, P. (2002). Gradient-based learning applied
+to document recognition.Proceedings of the IEEE, 86(11):2278–2324.
+Lehmann, E. L. (1959). Optimum invariant tests.The Annals of Mathematical Statistics, 30.
+Lehmann, E. L. and Casella, G. (2006).Theory of Point Estimation. Springer Science &
+Business Media.
+Lehmann, E. L. and Stein, C. (1949). On the theory of some non-parametric hypotheses.
+The Annals of Mathematical Statistics, 20(1):28–45.
+Li, C., Sun, S., and Zhu, Y. (2024). Fixed-domain posterior contraction rates for spatial
+Gaussian process model with nugget.Journal of the American Statistical Association,
+119.
+Lindenstrauss, E. (2001). Pointwise theorems for amenable groups.Inventiones Mathemati-
+cae, 146.
+Lindley, D. V. and Smith, A. F. M. (1972). Bayes estimates for the linear model.Journal of
+the Royal Statistical Society: Series B (Methodological), 34:1–18.
+Lloyd, J. R., Orbanz, P., Ghahramani, Z., and Roy, D. M. (2012). Random function priors
+for exchangeable arrays with applications to graphs and relational data. InAdvances in
+Neural Information Processing Systems, volume 2.
+Loh, W. L. and Lam, T. K. (2000). Estimating structured correlation matrices in smooth
+Gaussian random field models.Annals of Statistics, 28.
+Lubotzky,A.andSegal,D.(2003).Subgroupgrowth,volume212ofProgressinMathematics.
+Birkhäuser Verlag, Basel.
+Lyle, C., Kwiatkowska, M., and Gal, Y. (2019). An analysis of the effect of invariance on
+generalization in neural networks. InICML Workshop on Understanding and Improving
+Generalization in Deep Learning.
+Maruyama, G. (1949). The harmonic analysis of stationary stochastic processes.Memoirs
+of the Faculty of Science, Kyushu University. Series A, Mathematics, 4(1):45–106.
+Mukherjee, S., Sen, B., and Sen, S. (2023). A mean field approach to empirical Bayes
+estimation in high-dimensional linear regression.arXiv preprint arXiv:2309.16843.
+32
+Neal, R. M. (2010). Mcmc using hamiltonian dynamics.Handbook of Markov Chain Monte
+Carlo, 54:113–162.
+Oliveira, V. D., Kedem, B., and Short, D. A. (1997). Bayesian prediction of transformed
+gaussian random fields.Journal of the American Statistical Association, 92:1422–1433.
+Orbanz,P.andRoy,D.M.(2015). Bayesianmodelsofgraphs,arraysandotherexchangeable
+random structures.IEEE Transactions on Pattern Analysis and Machine Intelligence, 37.
+Pesarin,F.(2001).MultivariatePermutationTests: WithApplicationsinBiostatistics. Wiley.
+Pesarin, F. and Salmaso, L. (2010).Permutation Tests for Complex Data: Theory, Applica-
+tions and Software. John Wiley & Sons.
+Pesarin, F. and Salmaso, L. (2012). A review and some new results on permutation testing
+for multivariate problems.Statistics and Computing, 22(2):639–646.
+Pitman, E. J. G. (1937). Significance tests which may be applied to samples from any
+populations.Supplement to the Journal of the Royal Statistical Society, 4(1):119–130.
+Ramdas, A., Barber, R. F., Candès, E. J., and Tibshirani, R. J. (2023). Permutation tests
+using arbitrary permutation distributions.Sankhy¯a A, 85(2):1156–1177.
+Rasmussen, C. E. and Williams, C. K. I. (2006). Gaussian processes for machine learning.
+The MIT Press.
+Rizzelli, S., Rousseau, J., and Petrone, S. (2024). Empirical Bayes in Bayesian learning:
+understanding a common practice.arXiv preprint arXiv:2402.19036.
+Robbins, H. (1951). Asymptotically subminimax solutions of compound statistical decision
+problems. InProceedings of the Second Berkeley Symposium on Mathematical Statistics
+and Probability, 1950, pages 131–148. Univ. California Press, Berkeley-Los Angeles,
+Calif.
+Robbins, H. (1956). An empirical Bayes approach to statistics. InProceedings of the Third
+Berkeley Symposium on Mathematical Statistics and Probability, 1954–1955, vol. I, pages
+157–163. Univ. California Press, Berkeley-Los Angeles, Calif.
+Robbins, H. (1980). Estimation and prediction for mixtures of the exponential distribution.
+Proceedings of the National Academy of Sciences of the United States of America, 77.
+Robbins, H. and Monro, S. (1951). A stochastic approximation method.The Annals of
+Mathematical Statistics, 22:400–407.
+Robert, C. P. (2007).The Bayesian Choice: from Decision-theoretic Foundations to
+Computational Implementation, volume 2. Springer.
+Rousseau, J. and Szabo, B. (2017). Asymptotic behaviour of the empirical Bayes posteriors
+associated to maximum marginal likelihood estimator.Annals of Statistics, 45.
+33
+Saremi,S.andHyvärinen,A.(2019). NeuralempiricalBayes.JournalofMachineLearning
+Research, 20.
+Savage, L. J. (1954).The Foundations of Statistics. John Wiley & Sons, Inc., New York;
+Chapman & Hall, Ltd., London.
+Shields, P. C. (1996).The Ergodic Theory of Discrete Sample Paths, volume 13. American
+Mathematical Soc.
+Soloff, J. A., Guntuboyina, A., and Sen, B. (2025). Multivariate, heteroscedastic empirical
+Bayes via nonparametric maximum likelihood.Journal of the Royal Statistical Society
+Series B: Statistical Methodology, 87(1):1–32.
+Stein, M. L. (1999).Interpolation of Spatial Data. Springer Series in Statistics. Springer-
+Verlag, New York.
+Stephens, M. (2017). False discovery rates: A new deal.Biostatistics, 18.
+Szabó, B., Vaart, A. V. D., and Zanten, J. V. (2015). Frequentist coverage of adaptive
+nonparametric Bayesian credible sets.Annals of Statistics, 43:1391–1428.
+Tan, Z. (2016). Steinized empirical Bayes estimation for heteroscedastic data.Statistica
+Sinica, 26.
+Trippe, B., Finucane, H., and Broderick, T. (2021). For high-dimensional hierarchical
+models, consider exchangeability of effects across covariates instead of across datasets.
+Advances in Neural Information Processing Systems, 34:13471–13484.
+Van Handel, R. (2014). Probability in high dimension.Lecture Notes (Princeton University).
+Varadarajan, V. S. (1963). Groups of automorphisms of Borel spaces.Transactions of the
+American Mathematical Society, 109.
+Wang, G., Sarkar, A., Carbonetto, P., and Stephens, M. (2020). A simple new approach to
+variable selection in regression, with application to genetic fine mapping.Journal of the
+Royal Statistical Society Series B: Statistical Methodology, 82(5):1273–1300.
+Wang, W. and Stephens, M. (2021). Empirical Bayes matrix factorization.Journal of
+Machine Learning Research, 22.
+Wijsman,R.A.(1990).InvariantMeasuresonGroupsandTheirUseinStatistics,volume14
+ofInstitute of Mathematical Statistics Lecture Notes—Monograph Series. Institute of
+Mathematical Statistics, Hayward, CA.
+Wilson, A. G. and Adams, R. P. (2013). Gaussian process kernels for pattern discovery and
+extrapolation. In30th International Conference on Machine Learning, ICML 2013.
+Xie, X., Kou, S., and Brown, L. (2012). SURE estimates for a heteroscedastic hierarchical
+model.Journal of the American Statistical Association, 107:1465–1479.
+34
+Xu, W. and Stein, M. L. (2017). Maximum likelihood estimation for a smooth Gaussian
+random field model.SIAM/ASA Journal on Uncertainty Quantification, 5.
+Yang, C. H., Doss, H., and Vemuri, B. C. (2024). An empirical Bayes approach to shrinkage
+estimation on the manifold of symmetric positive-definite matrices.Journal of the
+American Statistical Association, 119.
+Zhong, X., Su, C., and Fan, Z. (2022). Empirical Bayes PCA in high dimensions.Journal of
+the Royal Statistical Society. Series B: Statistical Methodology, 84.
+A Conditions on Groups
+We provide the regularity conditions on the group of transformationsΦacting on the space
+Z Ω. Forφ1,φ2 ∈ Φ, we write the compositionφ1φ2(·):= φ1
+ 
+φ2(·)
+
+. Ifφ∈ Φand A⊆ Φ,
+we writeφA:={φψ|ψ∈A}. IfK,A⊆Φ, we writeKA:={φψ|φ∈K,ψ∈A}.
+We equipΦwith the Borelσ-algebraB(Φ). For every locally compact, second countable,
+and Hausdorff (lcscH) group, there exists aσ-finite measure|·|such that
+φ−1A
+ =|A|,for allφ∈Φ,A∈B(Φ),
+called aHaar measure(Folland, 2016). The Haar measure is unique up to a positive scaling
+factor. IfA⊂Φis compact, then|A|is finite.
+AFølnersequenceinΦisasequenceofcompactsets AAA1,AAA2,... suchthat,foreverycompact
+subsetK⊂Φ,
+|KAAAn ∩AAAn|
+|AAAn| − − − →n→∞ 1.
+IfΦis discrete, its compact sets are finite, and hence the condition specializes to the
+familiar finite Følner property. An lcscH group is calledamenableif it admits a Følner
+sequence.
+A Følner sequence{AAAn} istemperedif there is some constant c> 0such that, for all
+n∈N, [
+k<n
+AAA−1
+k AAAn
+ ≤c
+AAAn
+.
+Not every Følner sequence is tempered, but every lcscH group that has a Følner sequence
+also has a tempered one (Lindenstrauss, 2001, Proposition 1.4).
+Finally, we give the definition of a "nice" group, which matches the standard definition in
+the literature of probabilistic symmetry (Austern and Orbanz, 2022).
+Definition 2(Nice group).We callΦanice groupif
+(i) Φis a locally compact, second countable, Hausdorff (lcscH) topological group, and
+the group operations are continuous.
+(ii)Φis amenable, i.e., it admits a Følner sequence(AAAn)n∈N.
+35
+B Empirical Bayes Beyond Index Transformations
+In § 2, we assumedΦto be a group of transformations acting on the index spaceΩ. There
+are many interesting groups beyond index transformations, for example the rotation group or
+the Heisenberg group. We can develop Bayesian empirical Bayes methods for these groups
+under an equivariant assumption on the likelihood.
+Letxxx∈X Ω be observed variables andzzz∈X Ω local latent variables. A general EB setup
+is as follows:
+zzz∼p(zzz),x xx∼p(xxx|zzz).
+The likelihoodp(xxx| ·)is assumed to beΦ-equivariant in the sense of Definition 4. Specifi-
+cally,
+p(xxx|φ(z zz)) =p
+ 
+φ−1(xxx)|zzz
+
+,∀φ∈Φ.
+As a special case, the product likelihoodp(xxx|z zz) =∏ω∈Ω p(xω |z ω )is equivariant with
+respect to any group of index transformations. The Gaussian likelihood is equivariant to
+rotations.
+By Assumption 1 and Assumption 2, there exists a true priorp⋆(zzz)that isΦ-invariant. IfΦ
+is a nice group in the sense of Definition 2, the ergodic representation theorem holds forΦ.
+Thus, there exists an invariant variable g such that the population distribution is
+g∼µ ⋆,z zz∼p(zzz|g),x xx∼p(xxx|zzz).(39)
+The goal is to compute the posteriorp⋆(zzz|xxx), given by
+p⋆(zzz|xxx)∝
+Z
+G
+p(xxx|zzz)p(zzz|g)dµ ⋆(g).
+Thenextresultshowsthatboththepopulationposteriorp ⋆(zzz|xxx)andthepopulationempirical
+Bayes posteriorp(zzz|xxx, ˆg)satisfy the equivariance property.
+Proposition3.Thepopulationposteriorp ⋆(zzz|xxx)isaΦ–equivariantconditionaldistribution,
+in the sense that for anyφ∈Φ,
+p⋆ 
+φ−1(zzz)|xxx
+
+=p ⋆(zzz|φ(x xx)).
+For anyg∈G , the conditional posteriorp(zzz|xxx,g)is alsoΦ–equivariant, including the
+population EB posteriorp(zzz|xxx, ˆg).
+This result shows that transforming the structured variablezzz by φ under the posterior is
+equivalenttocomputingtheposteriorof zzz afterapplyingthetransformation φ totheobserved
+variablesxxx.
+36
+Proof.We first consider the population posteriorp⋆(zzz|xxx). For anyφ∈Φ,
+p⋆(φ(zzz)|xxx) =
+Z
+G
+p(xxx|φ(z zz))p(φ(zzz)|g)dµ ⋆(g)
+=
+Z
+G
+p(xxx|φ(z zz))p(zzz|g)dµ ⋆(g)
+=
+Z
+G
+p
+ 
+φ−1(xxx)|zzz
+
+p(zzz|g)dµ ⋆(g) =p⋆ 
+zzz|φ −1(xxx)
+
+.
+The second equality follows from theΦ–invariance ofp(zzz|g ), and the third from the
+Φ–equivarianceofthelikelihoodp( xxx|zzz). Anidenticalargumentappliestop( zzz|xxx,g)forany
+fixedg∈G , and therefore also to the EB posteriorp(zzz|xxx, ˆg), whereˆgdenotes the maximum
+marginal likelihood estimator.
+Theresultsuggeststhat“transformthencondition”and“conditionthentransform”commute
+for the posterior. The population posterior meanE[zzz|xxx] :=
+R
+X Ω zzzp⋆(zzz|xxx)dzzz therefore
+satisfies E[φ(zzz)|xxx] = E[zzz|φ(x xx)] for anyφ∈ ΦwhenΦis a group of isometries. This
+suggests that, to learn the population Bayes estimator of transformed latent variables, it
+suffices to compute the posterior on transformed datasets. This observation connects
+empirical Bayes point estimation (Jiang and Zhang, 2009) to the common machine learning
+practice of enforcing symmetry via data augmentation (González et al., 2018; Lyle et al.,
+2019; Chen et al., 2020).
+C Support Results
+Definition 3.A spaceΩisexhaustible by compact setsif, for every open setU⊆ Ω, there
+exists an increasing sequence of compact subsetsS1 ⊆S 2 ⊆ ···such that
+U=
+∞[
+n=1
+Sn,
+and, for everyn,Sn is contained in the interior ofSn+1.
+Definition 4(Φ-equivariance).A functiont:X Ω →X Ω isΦ-equivariantif
+φ(t(xxx)) =t(φ(xxx)),for allφ∈Φ.(40)
+Intuitively, a functiont isΦ-equivariant if every action ofΦ“commutes” with t. An
+equivariant functiontpreservesΦ-invariance, asφ(x xx) d=xxximplies
+φ(t(xxx)) =t(φ(xxx)) d=t(xxx).
+D Algorithms for Empirical Bayes Matrix Recovery
+This appendix details the inference algorithms for the empirical Bayes matrix–recovery
+methods introduced in § 3. § D.1 presents avariationalprocedure for matrix recovery under
+37
+ui
+ui j vj
+dense clique among(ui)and(v j)
+n
+p
+ui
+ui j vj
+n
+p
+Figure 7:Variational approximation.Left: exact posterior with a dense clique among(ui)
+and( vj)and local connections toui j.Right: variational familyq∈Q sep factorizes across
+(ui)and(v j)while preserving the local chainui—ui j—vj.
+a separately exchangeable prior (EBMR–sep; Algorithm 2). § D.2 develops the inference
+algorithm for EBMR with a jointly exchangeable prior (EBMR–joint; Algorithm 3), and
+§ D.3.1 provides the algorithm for covariate-assisted EB (CAEB) which is analogous to the
+separately exchangeable case.
+For all three algorithms, we use variational inference (Blei et al., 2017) to approximate the
+nonparametric maximum marginal likelihood.
+Variational MMLE.Let Q⊆P (X Sn )be a family of distributions. By the Gibbs
+variational principle (Van Handel, 2014, Lemma 4.10), one can lower bound the marginal
+likelihood by
+logp
+ 
+xxxn |g
+
+≥ −ℓ(xxxn;g):=sup
+q∈Q
+Eq(zzzn) [logp(xxxn |zzzn)+logp(zzzn |g)−logq(z zzn)],(41)
+where−ℓ(xxxn;g)is the maximum evidence lower bound (ELBO) over the familyQ.
+D.1 EBMR with a Separately Exchangeable Prior
+ToapproximatetheintractablemarginallikelihoodinEq.30,wepositthefollowingstructured
+variational family
+Qsep =
+(
+q∈P
+ 
+[0,1]n+p+np 
+:q(uuun,p) =
+n
+∏
+i=1
+quuu,i(ui)
+p
+∏
+j=1
+qvvv,j (vj) ∏
+i,j
+qi,j (ui j|u i,v j)
+)
+.
+(42)
+Figure 7 motivatesQsep. In the exact posteriorp(uuun,p | ˆgsep,xxxn,p), the variables(ui)i∈[n] and
+(vj)j∈[p] form a dense clique, while eachui jconnects only to(ui,v j). Our variational family
+replaces the dense clique with a product measure over(ui)and( vj)while preserving the
+localu i—ui j—vj chains.
+Maximizing the ELBO overQsep yields a lower bound of the marginal likelihood,
+logp
+ 
+xxxn,p |gsep
+
+≥sup
+q∈Qsep
+ELBO
+
+q,gsep
+
+:=sup
+q∈Qsep
+Eq(uuun,p )
+h
+logp
+ 
+xxxn,p |gsep,uuun,p
+
+−logq(uuun,p)
+i
+.
+38
+Let quuu = Nn
+i=1 quuu,i and qvvv = Np
+j=1 qvvv,j . We estimategsep by minimizing the variational
+loss
+ˆgsep ∈arg min
+gsep∈G
+ℓ(xxxn,p;gsep) :=−sup
+q∈Qsep
+ELBO(q,gsep).(43)
+A direct calculation (see § F.2) shows that
+ℓ
+
+xxxn,p;gsep
+
+=inf
+quuu∈P([0,1])⊗n,qvvv∈P([0,1])⊗p
+(
+−
+n
+∑
+i=1
+p
+∑
+j=1
+Equuu,i(ui)qvvv,j (vj)
+h
+LSE
+
+xi j,τi j,ui,v j,gsep
+i
++
+n
+∑
+i=1
+Equuu,i(ui)
+
+logquuu,i(ui)
+
++
+p
+∑
+j=1
+Eqvvv,j (vj)
+
+logqvvv,j (vj)
+
+)
+,
+(44)
+whereLSE
+
+X,τ,U,V,g sep
+
+:=log
+R1
+0 exp
+
+−τ
+2
+
+X−g sep(U,V,u)
+2
+du.
+Alternating optimization.To fit the variational distributions, we discretizequuu,i andqvvv,j
+on the(K+1)–point gridu k :=k/Kfork=0,...,Kover[0,1]:
+quuu,i =
+K
+∑
+k=0
+wuuu,ik δuk ,q vvv,j =
+K
+∑
+k=0
+wvvv,jk δuk ,whereu k =k/K,
+K
+∑
+k=0
+w•,·k =1.(45)
+Following Eq. 44, the empirical Bayes estimate minimizes the negative ELBO over the
+network and grid weights:
+
+ˆgsep, ˆwwwuuu, ˆwwwvvv
+
+∈arg min
+gsep∈GNN,wwwuuu,wwwvvv∈∆K+1
+(
+−
+n
+∑
+i=1
+p
+∑
+j=1
+K
+∑
+k=0
+K
+∑
+k′=0
+wuuu,ik wvvv,jk ′ dLSE
+ 
+xi j,τi j,uk,uk′,gsep
+
++
+n
+∑
+i=1
+K
+∑
+k=0
+wuuu,ik logwuuu,ik +
+p
+∑
+j=1
+K
+∑
+k=0
+wvvv,jk logwvvv,jk
+)
+,
+(46)
+where dLSE
+ 
+x,τ,u,v,g sep
+ :=log ∑K
+k=0 exp
+n
+−τ
+2
+ 
+x−g sep(u,v,k/K)
+2o
+−log(K+1).
+We minimize(46) by applying a block–coordinate descent algorithm: (i) update the row
+weights{wwwuuu,i}, (ii) update the column weights{wwwvvv,j }, (iii) update the network parameters
+of gsep by stochastic gradient descent (Adam; Kingma and Welling, 2014). Algorithm 2
+provides the explicit updates. The weight updates can be parallelized overi and j. Each
+iteration costsO(npK2)time andO((n+p)K)memory.
+39
+Algorithm 2:EBMR with a Separately Exchangeable Prior (EBMR–sep)
+Input:Data matrixxxxn,p, precision matrixτττn,p, neural network classGNN, grid sizeK,
+tuning parameters (epochs, learning rate)
+Initialize:neural network parameters; probability weights
+wwwuuu,1,...,wwwuuu,n,wwwvvv,1,...,wwwvvv,p ∈∆ K+1.
+repeat
+fori=1ton(parallelizable)do
+ρuuu,ik ←
+p
+∑
+j=1
+K
+∑
+k2=0
+wvvv,jk 2
+dLSE(xi j,τi j,uk,uk2 ,gsep),k=0,...,K,
+wwwuuu,i ←softmax(ρ uuu,i0,...,ρ uuu,iK).
+end
+forj=1top(parallelizable)do
+ρvvv,jk ←
+n
+∑
+i=1
+K
+∑
+k1=0
+wuuu,ik1
+dLSE(xi j,τi j,uk1 ,uk,gsep),k=0,...,K,
+wwwvvv,j ←softmax(ρ vvv,j0 ,...,ρ vvv,jK ).
+end
+Update the neural network parameters by stochastic gradient descent:
+gsep ←arg max
+gsep∈GNN
+n
+∑
+i=1
+p
+∑
+j=1
+K
+∑
+k1=0
+K
+∑
+k2=0
+wuuu,ik1 wvvv,jk 2
+dLSE
+ 
+xi j,τi j,uk1 ,uk2 ,gsep
+
+.
+untilconvergence;
+Output:Fitted weightswwwuuu,1,...,wwwuuu,n,wwwvvv,1,...,wwwvvv,p and network gsep.
+Proposition 4.Algorithm 2 performs block–coordinate ascent on the variational inference
+problem(46).
+Approximate posterior computation.The last step of Algorithm 1 is to sample from the
+empirical Bayes posterior
+ˆp(zzzn |xxxn)∝p(xxxn |zzzn)p(zzzn | ˆg).(47)
+We take the default sampler to be the No-U-Turn Sampler (NUTS) (Hoffman and Gelman,
+2014), an adaptive variant of Hamiltonian Monte Carlo (Neal, 2010) implemented in the
+Pyroprobabilistic programming package (Bingham et al., 2019). NUTS automatically tunes
+thestepsizeandtrajectorylengthparameters. WerunNUTSforafixednumberofiterations
+that includes an initial warmup phase and thinning. When the full MCMC fails to converge,
+an alternative is to draw surrogate samples from variational approximationˆq(zzzn)obtained
+in Algorithm 2. This requires using the fitted variational distributions from Algorithm 2
+to approximately sample from the posteriorp
+
+zzzn,p | ˆgsep,xxxn,p
+
+. Suppose that Algorithm 2
+returns ˆquuu,i = ∑K
+k=0 ˆwuuu,ik δuk and ˆqvvv,j = ∑K
+k=0 ˆwvvv,jk δuk . To samplezi j, we first drawui ∼ ˆquuu,i
+40
+and vj ∼ ˆqvvv,j . Conditional on(ui,v j), we drawui j∈ {0,1/K,..., 1} with probability
+ˆqi j
+ 
+ui j=k/K|u i,v j,xxxn,p
+
+=
+exp
+n
+−τi j
+2
+ 
+xi j− ˆgsep(ui,v j,k/K)
+2o
+∑K
+ℓ=0 exp
+n
+−τi j
+2
+ 
+xi j− ˆgsep(ui,v j,ℓ/K)
+2o,k=0,...,K.
+This yields a samplezi j= ˆgsep(ui,v j,ui j)from the variational posterior.
+D.2 EBMR with a Jointly Exchangeable Prior
+WenowdevelopempiricalBayesmatrixrecoveryunderajointlyexchangeableprior. Assume
+that Assumption 1 and Assumption 2 hold with the true prior being jointly exchangeable.
+By the Aldous–Hoover theorem, the population distribution forxxxhas the form
+gjoint ∼µ ⋆,(48)
+ui,u i j
+iid∼unif[0,1],(49)
+zi j=gjoint(ui,u j,ui j),(50)
+xi j∼N
+
+zi j,τ −1
+i j
+
+,(i,j)∈N 2.(51)
+For finite population, we require the observed matrix to have the same number of rows and
+columns to apply joint exchangeability. Forn≥ 1, letxxxn = (xω )ω∈[n]2 denote an observed
+n×n matrix. By Proposition 1,xxxn follows the marginal distribution of(49)–(51) on the
+index setSn = [n]2.
+Letzzzn = (zω )ω∈Sn denote the corresponding local latent variables. For the invariant variable
+gjoint, the conditional distributionp
+
+zzzn |gjoint
+
+is given by(49)–(50). By Proposition 1,
+the finite-sample generative process is described by the same equations(48)–(51) with
+(i,j)∈[n] 2.
+D.2.1 Fitting procedure
+Let uuun = (ui,ui j)(i,j)∈[n] 2 denote the set of row-specific and entry-specific latent variables.
+Algorithm 1 estimatesˆgjoint by maximizing the marginal likelihood
+logp
+
+xxxn |gjoint
+
+:=log
+Z
+[0,1]n+n2
+n
+∏
+i=1
+n
+∏
+j=1
+p
+
+xi j|gjoint
+ 
+ui,u j,ui j
+
+duuun.(52)
+Directlymaximizingthemarginallikelihoodoverallfunctions gjoint :[0 ,1]3 7→R isintractable,
+due to the(n +n2)-dimensional integral. So we approximate the integral using variational
+inference.
+D.2.2 Variational approximation
+Consider the posteriorp
+ 
+uuun |xxxn,gjoint
+
+under model (49)–(51).
+41
+Intheexactposteriorp
+ 
+uuun |xxxn,gjoint
+
+,thevariables( ui j)i,j∈[n] areconditionallyindependent
+given( ui)i∈[n]. Tocapturethegraphicalstructurelocally,wepositthevariationalfamily
+Qjoint =
+n
+q:q(u uun) =
+n
+∏
+i=1
+quuu,i(ui) ∏
+i,j
+qi,j (ui j|u i,u j)
+o
+.(53)
+Letquuu = Nn
+i=1 quuu,i. The variational method maximizes the evidence lower bound (ELBO)
+subject to q∈Qjoint.
+Proposition 5.LetQbe the variational family in(53). The variational loss for gjoint is
+ℓ
+ 
+xxxn;gjoint
+
+:=inf
+quuu∈P([0,1])⊗n
+(
+−
+n
+∑
+i=1
+n
+∑
+j=1
+Equuu,i(ui)quuu,j (uj)
+
+LSE
+ 
+xi j,τi j,ui,u j,gjoint
+
++
+n
+∑
+i=1
+Equuu,i(ui)
+
+logquuu,i(ui)
+
+)
+,
+(54)
+where
+LSE
+ 
+xi j,τi j,ui,u j,gjoint
+
+:=log
+Z 1
+0
+exp
+
+−τi j
+2
+
+xi j−gjoint(ui,u j,u)
+2
+du.
+Weparametrize gjoint withaneuralnetworkclass GNN andfititbyminimizingthevariational
+loss:
+ˆgjoint ∈arg min
+gjoint∈GNN
+ℓ
+ 
+xxxn;gjoint
+
+.(55)
+Since quuu,i ∈P([0,1]), we discretize it as
+quuu,i =
+K
+∑
+k=0
+wik δuk ,u k = k
+K ,
+K
+∑
+k=0
+wik =1.
+Algorithm 3 implements EBMR with a jointly exchangeable prior.
+Withtheestimatedfunction ˆgjoint fromAlgorithm3,weusetheNo–U–Turnsampler(NUTS)
+to sample from the posteriorp
+
+zi j| ˆgjoint,xxxn
+
+of the EBMR model, given by
+(ui,u j,ui j)∼p
+
+ui,u j,ui j|xxxn, ˆgjoint
+
+,z i j= ˆgjoint(ui,u j,ui j).(56)
+42
+Algorithm 3:EBMR with a Jointly Exchangeable Prior (EBMR–Joint)
+Input: Data matrixxxxn, precision matrixτn = (τi j)i,j∈[n] , network classGNN, grid sizeK,
+optimization hyperparameters (epochs, learning rate)
+Initialize:network gjoint ∈G NN; weightswww1,...,wwwn ∈∆ K+1.
+repeat
+fori=1ton(parallelizable)do
+ρik ← dLSE
+
+xii,τii,uk,uk,gjoint
+
++ ∑
+j̸=i
+K
+∑
+k2=0
+wjk2
+dLSE
+
+xi j,τi j,uk,uk2 ,gjoint
+
+,k=0,...,K,
+wwwi ←softmax
+ 
+ρi0,...,ρ iK
+
+.
+end
+Update the neural network parameters with stochastic gradient ascent:
+gjoint ←arg max
+g∈GNN
+n
+∑
+i=1
+K
+∑
+k=0
+wik
+"
+dLSE(xii,τii,uk,uk,g)+ ∑
+j̸=i
+K
+∑
+k2=0
+wjk2
+dLSE
+ 
+xi j,τi j,uk,uk2 ,g
+
+#
+.
+untilconvergence;
+Output:Fitted weightswww1,...,wwwn and network gjoint.
+Corollary 1.Algorithm 2 performs block–coordinate ascent on the variational inference
+problem(46).
+D.3 Covariate-Assisted Empirical Bayes
+We extend empirical Bayes matrix recovery with a separately exchangeable prior to incor-
+porate covariates on rows and columns. LetΩ=N2 and X = R. We observe a matrix
+xxxn,p = (xi j)(i,j)∈[n]×[p] with row covariatesyyyn = (yi)n
+i=1 with yi ∈Y and column covariates
+aaap = (aj)p
+j=1 witha j ∈A, generated via
+xi j∼N(z i j,τ −1
+i j ),τ i j>0.
+The statistical goal is to recover the latent arrayzzzn,p. On the population level, we impose
+relative exchangeabilitywith respect to the observed covariates: the infinite arrayzzz is said
+to beyyy–aaa exchangeable if its law is invariant under relabelings that preserve covariate
+values,
+Φyyy,aaa :=
+
+σ∈S:y σ(i) =y i ∀i
+	
+×
+
+π∈S:a π(j) =a j ∀j
+	
+.
+Underyyy–aaa exchangeability, an extension of Aldous–Hoover theorem yields a measurable
+representation (Crane and Towsner, 2018): there exists a random functiongrel : Y×A×
+[0,1]3 →Rsuch that, for iidui,v j,ui j∼unif[0,1],
+ui,v j,ui j
+iid∼unif[0,1],z i j=grel
+ 
+yi,a j,ui,v j,ui j
+
+.
+43
+The covariate-assisted array model is
+ui,v j,ui j
+iid∼unif[0,1],z i j=grel
+ 
+yi,a j,ui,v j,ui j
+
+,x i j∼N
+
+zi j,τ −1
+i j
+
+.(57)
+We call the Bayesian empirical Bayes method for this modelcovariate-assisted empirical
+Bayes(CAEB). The estimation procedure mirrors EBMR with a separately exchangeable
+prior: we maximize a variational lower bound to the marginal likelihood over a structured
+family for(ui,v j,ui j). We parameterize the invariant variablegrel as a neural network that
+takes( yi,a j,ui,v j,ui j)as inputs. With ˆgrel in hand, we draw from the plug-in posterior
+p(zzzn,p | ˆgrel,xxxn,p). In the next section, we derive the variational lower bound to learn the
+invariant variable grel.
+Relatedapproachesincludethecovariate-assistedEBmethodofIgnatiadisandWager(2019),
+which fits a normal-means sequence model with the prior’s mean and variance modeled
+as functions of covariates, and Denault et al. (2025), which develops covariate-assisted
+empirical Bayes matrix factorization. In the latter model, the loading and factor components
+each follow i.i.d. priors parameterized by row/column covariates.
+D.3.1 Fitting procedure
+Letuuun,p :=
+ 
+ui,v j,ui j
+
+(i,j)∈[n]×[p] . To follow Algorithm 1, the inference steps of covariate-
+assisted EB involve
+1. Compute ˆgrel by maximizing the marginal likelihood
+logp
+ 
+xxxn,p |grel
+:=log
+Z
+[0,1]n+p+np
+exp
+(
+−
+n
+∑
+i=1
+p
+∑
+j=1
+τi j
+2
+
+xi j−grel(yi,a j,ui,v j,ui j)
+2
+)
+duuun,p.
+(58)
+2. Samplez i jfrom the posteriorp
+ 
+zi j| ˆgrel,xxxn,p
+
+fori∈[n]andj∈[p].
+As in EBMR–sep, the MMLE in(58) is intractable for largen,p . We therefore adopt the
+same structured variational familyQsep from (42)for the latent variablesuuun,p and discretize
+each variational marginal on aK-point grid over[0,1]. We parameterizegrel with a neural
+network classGNN and minimize the variational loss
+ˆgrel ∈arg min
+grel∈GNN
+ℓ(xxxn,p;grel),
+where, with discretized weights,
+ℓ(xxxn,p;grel) =inf
+wwwuuu,wwwvvv∈∆K+1
+(
+−
+n
+∑
+i=1
+p
+∑
+j=1
+K
+∑
+k=0
+K
+∑
+k′=0
+wwwuuu,ik wwwvvv,jk ′ LSE
+
+xi j,τi j,yi,a j, k
+K , k′
+K ,grel
+
++
+n
+∑
+i=1
+K
+∑
+k=0
+wwwuuu,ik logwwwuuu,ik +
+p
+∑
+j=1
+K
+∑
+k=0
+wwwvvv,jk logwwwvvv,jk
+)
+,
+44
+with
+LSE(X,τ,Y,A,U,V,g rel) :=log
+Z 1
+0
+exp
+n
+−τ
+2
+ 
+X−g rel(Y,A,U,V,u)
+2o
+du.
+Weight updates are similar to those in EBMR–sep:
+wwwuuu,ik ∝exp
+ p
+∑
+j=1
+K
+∑
+k′=0
+wwwvvv,jk ′ log
+K
+∑
+k′′=0
+exp
+
+−τi j
+2
+h
+xi j−grel
+ 
+yi,a j, k
+K , k′
+K , k′′
+K
+i2!
+,(59)
+wwwvvv,jk ∝exp
+ 
+n
+∑
+i=1
+K
+∑
+k′=0
+wwwuuu,ik′ log
+K
+∑
+k′′=0
+exp
+
+−τi j
+2
+h
+xi j−grel
+ 
+yi,a j, k′
+K , k
+K , k′′
+K
+i2!
+,(60)
+normalized to lie in∆K+1. With fixed weights, update grel by
+ˆgrel ∈arg max
+grel∈GNN
+n
+∑
+i=1
+p
+∑
+j=1
+K
+∑
+k=0
+K
+∑
+k′=0
+wwwuuu,ik wwwvvv,jk ′ log
+K
+∑
+k′′=0
+exp
+
+−τi j
+2
+h
+xi j−grel
+ 
+yi,a j, k
+K , k′
+K , k′′
+K
+i2
+.
+(61)
+The algorithm fitsˆgrel by iterating steps(59)–(61) until convergence. With the estimateˆgrel,
+we sample from the posteriorp
+ 
+zi j| ˆgrel,xxxn,p
+
+of model (57), given by
+(ui,u j,ui j)∼p
+ 
+ui,u j,ui j| ˆgrel,xxxn,p
+
+,z i j= ˆgrel(ui,u j,ui j).(62)
+E Algorithms for Empirical Bayes Spatial Regression
+Recall that the invariant variable is the spectral densityψ∈P ac(Rd). Following Wilson
+and Adams (2013), we further parametrizeψas a Gaussian mixture,
+ψθ (s) =
+K
+∑
+k=1
+wk φ(s;µ k,Σk),w k ≥0,
+K
+∑
+k=1
+wk =1,(63)
+where eachΣk = diag(σ2
+k,1,...,σ 2
+k,d)is diagonal. By Bochner’s theorem, Eq. 63 induces the
+kernel
+kθ (∆) =
+K
+∑
+k=1
+wk
+d
+∏
+j=1
+cos
+ 
+2π µk,j ∆j
+
+exp
+ 
+−2π2 σ2
+k,j ∆2
+j
+
+,(64)
+for lags∆ ∈R d. The invariant variable is thusθ = (w1:K,µ1:K,Σ1:K), which governs the
+stationary priorGP(0,k θ )for the latent process.
+With this parametrization, the empirical Bayes spatial regression model is
+zzz∼GP(0,k θ ),β∼π(β)∝1,x ω ∼N
+ 
+β⊤aω +z ω ,τ −1
+ω
+
+.(65)
+45
+Posterior Inference.We estimate the kernel parametersθ by maximizing the marginal
+likelihood,
+ˆθ∈argmax
+θ∈Θ
+log
+Z h
+∏
+ω∈Sn
+p(xω |z ω ,β)
+i
+p(zzzn |θ)π(β)dβdz zzn.(66)
+This fits the spectral density (equivalently, the kernel) that best explains the marginal
+distribution of the observed spatial data. Givenˆθ, the posteriorp(β,zzzn |xxxn, ˆθ)is Gaussian
+with known mean and covariance.
+Let Sn = (ω1,...,ω n), AAAn = [aω1 ,...,a ωn ]⊤ ∈R n×p, andDτ = diag(τω1 ,...,τ ωn ). With
+Σθ = [kθ (ωi −ω j)](i,j)∈[n] 2 , defineSθ =Σ θ + D−1
+τ andWθ = S−1
+θ . Assuming AAAn has full
+column rank andπ(β)≡1, the MMLE objective is
+ℓ(xxxn;θ) =logdetS θ +log
+AAA⊤
+n Wθ AAAn
++xxx⊤
+n Wθ xxxn −xxx⊤
+n Wθ AAAn ˆβθ ,(67)
+where ˆβθ = (AAA⊤
+n Wθ AAAn)−1AAA⊤
+n Wθ xxxn is the weighted least-squares estimator.
+We minimize(67) using stochastic gradient descent (Robbins and Monro, 1951). The
+computational bottleneck is to solve linear systems inSθ ; we avoid formingWθ explicitly
+by using a Cholesky factorizationSθ = LL⊤. The resulting costs areO(n3)time and O(n2)
+space,whicharetractableifthenumberofsites n isinthethousands. Scalablealternativesare
+available, including Nyström approximations and variational low-rank Gaussian processes
+(Hensman et al., 2013).
+WithS ˆθ =Σ ˆθ +D −1
+τ ,W ˆθ =S −1
+ˆθ , andˆβ ˆθ = (AAA⊤
+n Wˆθ AAAn)−1AAA⊤
+n Wˆθ xxxn,
+β|x xxn ∼N
+
+ˆβ ˆθ ,(AAA⊤
+n Wˆθ AAAn)−1
+
+,(68)
+and, conditional onβ,
+zzzn |β,xxxn ∼N
+
+(Σ−1
+ˆθ +D τ )−1Dτ (xxxn −AAAnβ),(Σ −1
+ˆθ +D τ )−1
+
+.(69)
+Posterior samples are obtained by Monte Carlo: sampleβ(s) from(68), thenzzz(s)
+n from (69)
+withβ=β (s).
+Kriging.To predict at new sitesS′
+n ⊃S n, defineQθ ∈R |S′n|×|S′n| byQθ,ii = [Σ−1
+θ ]ii +τi and
+Qθ,i j= [Σ−1
+θ ]i jfori̸ = j, whereτi denotes the noise precision at siteωi. LetL∈R |S′n| have
+entriesL Sn =D τ
+ 
+xxxSn −AAASn β
+
+and zeros elsewhere. Then
+zzzS′n |β,xxxn ∼N
+
+Q−1
+ˆθ L,Q −1
+ˆθ
+
+.(70)
+F Proofs
+F.1 Proofs of § 2
+Proof of Proposition 1 and Proposition 2.Let Sc
+n :=Ω \S n. The true distributionp⋆(xxxn)is
+theS n–marginal ofp⋆(xxx):
+p⋆(xxxn) =
+Z
+p⋆(xxx)dxxxScn .
+46
+By Assumption 1,
+p⋆(xxx) =
+Z
+Z Ω
+p⋆(zzz) ∏
+ω∈Ω
+p(xω |z ω )dzzz.
+Applying Fubini’s theorem to interchange the integrals overzzzandxxxScn gives
+p⋆(xxxn) =
+Z
+X Scn
+Z
+Z Ω
+p⋆(zzz) ∏
+ω∈Ω
+p(xω |z ω )dzzzdxxxScn
+=
+Z
+Z Ω
+p⋆(zzz) ∏
+ω∈Sn
+p(xω |z ω )
+ Z
+X Scn
+∏
+ω∈Scn
+p(xω |z ω )dxxxScn
+!
+dzzz
+=
+Z
+Z Ω
+p⋆(zzz) ∏
+ω∈Sn
+p(xω |z ω )dzzz,
+which establishes Proposition 1.
+For Proposition 2, we integrate the representation (10) overxxxSn :
+p⋆(xxxn) =
+Z
+Z Sn
+Z
+G
+Z
+Z Scn
+p(zzz|g)dz zzScn
+
+dµ⋆(g) ∏
+ω∈Sn
+p(xω |z ω )dzzzSn
+=
+Z
+Z Sn
+Z
+G
+p(zzzn |g)dµ ⋆(g)
+
+∏
+ω∈Sn
+p(xω |z ω )dzzzSn .
+F.2 Proofs of the Algorithms
+Proof of Eq. 44.For q∈Qsep we can decompose the ELBO as
+ELBO
+
+q,gsep
+
+=
+n
+∑
+i=1
+p
+∑
+j=1
+Equuu,i(ui)qvvv,j (vj)
+h
+Eqi j(ui j|ui,vj)
+h
+logp
+
+xi j|gsep(ui,v j,ui j)
+ii
+−
+n
+∑
+i=1
+Equuu,i(ui)
+
+logquuu,i(ui)
+
+−
+p
+∑
+j=1
+Eqvvv,j (vj)
+
+logqvvv,j (vj)
+
+−
+n
+∑
+i=1
+p
+∑
+j=1
+Equuu,i(ui)qvvv,j (vj)
+h
+Eqi j(ui j|ui,vj)
+
+logqi j(ui j|u i,v j)
+i
+.
+Introduce the reference distribution
+qref(ui j|u i,v j)∝exp
+n
+−τi j
+2
+ 
+xi j−gsep(ui,v j,ui j)
+2o
+.
+Then
+ELBO
+
+q,gsep
+
+=
+n
+∑
+i=1
+p
+∑
+j=1
+Equuu,i(ui)qvvv,j (vj)
+h
+LSE(xi j,τi j,ui,v j,gsep)
+i
+−
+n
+∑
+i=1
+Equuu,i(ui)
+
+logquuu,i(ui)
+
+−
+p
+∑
+j=1
+Eqvvv,j (vj)
+
+logqvvv,j (vj)
+
+−
+n
+∑
+i=1
+p
+∑
+j=1
+Equuu,i(ui)qvvv,j (vj)
+
+DKL
+ 
+qi j(· |ui,v j)∥q ref(· |ui,v j)
+
+,
+(71)
+47
+where
+LSE(X,τ,U,V,g sep) :=log
+Z 1
+0
+exp
+n
+−τ
+2
+
+X−g sep(U,V,u)
+2o
+du.
+Maximizing over qi jfor fixed quuu,qvvv gives
+q⋆
+i j(ui j|u i,v j) =qref(ui j|u i,v j),
+and evaluating at q⋆ yields
+ELBO
+
+q⋆,gsep
+
+=
+n
+∑
+i=1
+p
+∑
+j=1
+Eq⋆
+uuu,i(ui)q⋆
+vvv,j (vj)
+h
+LSE(xi j,τi j,ui,v j,gsep)
+i
+−
+n
+∑
+i=1
+Eq⋆
+uuu,i(ui)
+
+logq⋆
+uuu,i(ui)
+
+−
+p
+∑
+j=1
+Eq⋆
+vvv,j (vj)
+
+logq⋆
+vvv,j (vj)
+
+.
+Proof of Proposition 4.Recall thatuk = k/K fork =0 ,...,K . The discretized form of(44)
+is
+ˆgsep ∈arg max
+gsep∈GNN
+sup
+www∈∆n+p
+K+1
+(
+n
+∑
+i=1
+p
+∑
+j=1
+K
+∑
+k1=0
+K
+∑
+k2=0
+wuuu,ik1 wvvv,jk 2
+dLSE
+
+xi j,τi j,uk1 ,uk2 ,gsep
+
+−
+n
+∑
+i=1
+K
+∑
+k=0
+wuuu,ik logwuuu,ik −
+p
+∑
+j=1
+K
+∑
+k=0
+wvvv,jk logwvvv,jk
+)
+,
+(72)
+wherewwwcollects all weight vectorswwwuuu,1,...,wwwuuu,n,wwwvvv,1,...,wwwvvv,p and dLSEis the discretized
+form ofLSE.
+We fitwwwuuu,wwwvvv and gsep by alternating updates. Forj∈[p]andk=0,...,K,
+wvvv,jk =
+exp
+
+∑n
+i=1 ∑K
+k1=0 wuuu,ik1
+dLSE
+
+xi j,τi j,uk1 ,uk,gsep
+
+∑K
+k′=0 exp
+
+∑n
+i=1 ∑K
+k1=0 wuuu,ik1
+dLSE
+
+xi j,τi j,uk1 ,uk′,gsep
+.(73)
+Similarly, fori∈[n]andk=0,...,K,
+wuuu,ik =
+exp
+
+∑p
+j=1 ∑K
+k2=0 wvvv,jk 2
+dLSE
+
+xi j,τi j,uk,uk2 ,gsep
+
+∑K
+k′=0 exp
+
+∑p
+j=1 ∑K
+k2=0 wvvv,jk 2
+dLSE
+
+xi j,τi j,uk′,uk2 ,gsep
+.(74)
+Finally, we train the neural network gsep by maximizing the weighted objective
+gsep ∈arg max
+gsep∈GNN
+n
+∑
+i=1
+p
+∑
+j=1
+K
+∑
+k1=0
+K
+∑
+k2=0
+wuuu,ik1 wvvv,jk 2
+dLSE
+
+xi j,τi j,uk1 ,uk2 ,gsep
+
+.(75)
+48
+Proof of Proposition 5.By the Gibbs variational principle,
+logp
+
+xxxn |gjoint
+
+=sup
+q∈P([0,1] n+n2 )
+(
+n
+∑
+i=1
+n
+∑
+j=1
+Eq(ui,uj,ui j)
+h
+logp
+
+xi j|gjoint(ui,u j,ui j)
+i
+−Eq(uuun) [logq(uuun)]
+)
+.
+(76)
+Leveraging the structure of q∈Qand rearranging yields
+ELBO=sup
+q∈Q
+(
+−
+n
+∑
+i=1
+n
+∑
+j=1
+Equuu,i(ui)quuu,j (uj)
+
+DKL
+ 
+qi j(· |ui,u j)∥q ref(· |ui,u j)
+
+−
+n
+∑
+i=1
+Equuu,i(ui)
+
+logquuu,i(ui)
+
+)
+,
+whereqref(ui j|u i,u j) ∝exp
+
+−τi j
+2
+
+xi j−gjoint(ui,u j,ui j)
+2
+. Then, maximizing the ELBO
+over qi jfor fixed quuu yields the stated objective.
+Proof of Eq. 67.Integrating overzzzn ∼N(0,Σ θ )gives
+xxxn |β,θ∼N
+ 
+AAAnβ,S θ
+
+.
+Withπ(β)≡1, integrating overβyields
+logp(xxxn |θ) =− 1
+2
+n
+logdetS θ +log
+AAA⊤
+n Wθ AAAn
++(xxxn −AAAn ˆβθ )⊤Wθ (xxxn −AAAn ˆβθ )
+o
++C,
+whereC is constant inθ. The objectiveℓ(xxxn;θ)equals −log p(xxxn |θ )up to an additive
+constant.
+Proof of Corollary 1.The discretized version of (54) is
+sup
+www∈∆n
+K+1
+sup
+gjoint∈GNN
+n
+∑
+i=1
+K
+∑
+k=0
+wik
+"
+dLSE
+
+xii,τii,uk,uk,gjoint
+
++ ∑
+j̸=i
+K
+∑
+k2=0
+wjk2
+dLSE
+
+xi j,τi j,uk,uk2 ,gjoint
+
+−logw ik
+#
+,
+where
+dLSE
+
+xi j,τi j,ui,u j,gjoint
+
+:=log
+K
+∑
+k=0
+exp
+
+−τi j
+2
+h
+xi j−gjoint(ui,u j,uk)
+i2
+−log(K+1).
+Alternating maximization overwww (softmax updates) and overgjoint (stochastic gradient step)
+yields the stated algorithm.
+Proof of Eq. 70.Conditional onβ, the joint model forzzzS′n andxxxSn is
+zzzS′n ∼N
+ 
+0,Σ ˆθ
+
+,x xxSn ∼N
+ 
+AAASn β+zzzSn ,D−1
+τ
+
+.
+By Bayes’ rule,
+p
+ 
+zzzS′n |xxxSn ,β
+
+∝exp
+
+−1
+2 zzz⊤
+S′n
+Σ−1
+ˆθ zzzS′n − 1
+2
+ 
+xxxSn −AAASn β−zzzSn
+⊤Dτ
+ 
+xxxSn −AAASn β−zzzSn
+
+∝exp
+
+−1
+2 zzz⊤
+S′n
+Q ˆθ zzzS′n +zzz⊤
+S′n
+L
+
+,
+where Q ˆθ and L are defined in the main text. Hence the posterior is Gaussian with mean
+Q−1
+ˆθ Land covarianceQ −1
+ˆθ .
+49
+Table 3:Comparison of matrix-recovery performance for NPMLE, EBMR–Sep, and EBMF
+across generating functions. We report the mean and standard error of R-MSE. The lowest
+R-MSE in each scenario is shown inbold.
+n pτ ττLinear Sine–log Sine–cos
+NPMLE EBMR-Sep EBMF NPMLE EBMR-Sep EBMF NPMLE EBMR-Sep EBMF
+20 20 0.1 3.81(0.48)3.54(0.38)12.27(2.23) 2.55(0.47)2.13(0.29)9.24(0.00) 3.30(0.43) 2.69(0.41)2.14(0.00)
+20 20 0.25 7.30(0.22)6.35(0.35)10.61(0.40) 4.18(0.23)3.73(0.21)11.18(1.38) 5.94(0.27)4.71(0.30)5.36(0.00)
+20 20 1 23.13(0.57)15.87(0.72)18.33(0.50) 13.35(0.39)12.19(0.66)14.84(0.48) 18.80(0.34) 10.98(1.41)10.69(1.29)
+20 20 4 53.01(1.28)34.17(0.65)44.63(0.78) 36.87(0.96)26.75(0.80)32.18(0.75) 48.46(0.91) 22.58(7.24)13.35(0.71)
+20 50 0.1 2.88(0.08)2.74(0.17)8.44(0.30) 1.94(0.07)1.91(0.16)9.56(0.55) 2.42(0.09) 2.45(0.22)2.06(0.00)
+20 50 0.25 6.36(0.08)5.18(0.18)9.94(0.31) 4.17(0.08)3.73(0.25)8.39(0.23) 5.43(0.11)3.61(0.29)5.14(0.00)
+20 50 1 20.38(0.21)13.47(1.29)22.77(0.38) 14.07(0.16)9.76(0.65)18.05(0.42) 17.86(0.21)6.39(0.42)20.55(0.00)
+20 50 4 50.17(0.67)36.63(6.97)69.41(0.23) 38.73(0.51)22.32(0.47)49.97(0.22) 44.45(0.51)8.97(0.55)37.90(1.30)
+50 50 0.1 2.73(0.06)2.23(0.04)4.63(0.14) 1.73(0.06)1.49(0.05)3.93(0.15) 1.94(0.05)1.30(0.10)1.84(0.00)
+50 50 0.25 6.33(0.09)4.36(0.12)5.89(0.15) 3.98(0.08)3.02(0.07)4.95(0.14) 4.60(0.09)2.46(0.37)4.63(0.22)
+50 50 1 20.83(0.14)10.66(0.16)12.24(0.18) 13.67(0.11)7.54(0.16)8.57(0.18) 15.73(0.09)4.26(1.56)4.59(0.17)
+50 50 4 51.34(0.50)28.38(0.30)37.47(0.30) 38.42(0.31)19.70(0.18)23.19(0.28) 42.61(0.37)4.88(0.27)6.39(0.24)
+n pτ ττTanh Reciprocal
+NPMLE EBMR-Sep EBMF NPMLE EBMR-Sep EBMF
+20 20 0.1 1.45(0.40)1.06(0.33)7.57(0.00) 1.36(0.38)1.02(0.36)1.84(0.00)
+20 20 0.25 1.25(0.26)0.79(0.14)11.35(1.68)1.14(0.26)1.36(0.72) 4.61(0.00)
+20 20 1 2.81(0.21)2.64(0.33)10.16(0.50)1.84(0.16)1.92(0.34) 12.46(1.66)
+20 20 4 8.99(0.65)7.14(0.51)14.49(0.95) 5.26(0.49)4.54(0.33)12.04(0.71)
+20 50 0.1 0.59(0.07)0.56(0.13)7.47(0.28)0.57(0.07)0.58(0.13) 1.75(0.00)
+20 50 0.25 0.94(0.09)0.54(0.07)5.75(0.19) 0.78(0.12)0.41(0.09)4.38(0.00)
+20 50 1 2.13(0.20)1.75(0.18)8.07(0.41) 1.62(0.19)1.11(0.16)8.16(1.10)
+20 50 4 5.60(0.11)4.88(0.13)10.65(0.21) 3.18(0.06)3.14(0.14)9.01(0.18)
+50 50 0.1 0.41(0.05)0.32(0.04)3.91(0.41) 0.29(0.06)0.25(0.05)2.14(0.19)
+50 50 0.25 0.77(0.08)0.60(0.02)3.91(0.14) 0.50(0.09)0.34(0.03)4.21(0.28)
+50 50 1 2.31(0.06)2.01(0.04)4.85(0.18) 1.23(0.03)1.01(0.02)4.13(0.15)
+50 50 4 8.07(0.06)5.78(0.13)7.87(0.30) 4.07(0.06)3.43(0.12)5.23(0.31)
+G Additional Empirical Results
+G.1 Matrix Recovery Results
+Table 3 reports the empirical Bayes matrix recovery results across all simulation settings
+described in § 4.1.
+G.2 Covariate-Assisted Empirical Bayes with Model Misspecification
+To assess the robustness of Bayesian EB methods, we compare covariate-assisted empirical
+Bayes to competing methods under a heavy-tailed noise. For each(n,p,T 0)design, we
+generate independent noiseεi jfrom a scaled Student–t distribution withν =5degrees of
+freedom:
+εi j∼c ν tν ,c ν = σp
+ν/(ν−2)
+,
+where cν is chosen to ensureVar(εi j) =σ2. Thus, the noise variance matches the target
+variance but the tail probabilities are heavier than Gaussian.
+Figure 8 plots RMSE ofˆzzzn,p versus p; points show medians across replicates and bands
+indicate interquartile ranges for each method.
+50
+102
+103
+5
+10
+50
+100R-MSE
+linear
+102
+103
+logistic
+102
+103
+nonlinear
+Dimension (p)
+CAEB EBMF EBMR-SEP NPMLE
+Figure 8:CAEB under heavy-tailed noise.R-MSE of latent recovery versus dimension
+p for three choices ofg: linear, logistic, and nonlinear. Curves compare CAEB, EBMF,
+EBMR–sep, and NPMLE; points are medians and bands are IQR (25–75%). With noise
+following at5 distribution, CAEB attains the lowest error and continues to improve as the
+number of columnspincreases.
+G.3 Empirical Bayes Spatial Regression Results
+Figure9 shows thatthe MSEof theposterior meanestimator ofβ relative toβ⋆ decreasesas
+the sample sizen grows, for different choices of the number of spectral mixture components
+K.
+100 500 1000 2500 5000
+0.001
+0.010
+0.100MSE( )
+ = 0.25
+100 500 1000 2500 5000
+ = 1.0
+100 500 1000 2500 5000
+ = 4.0
+Sample Size (n)
+Spatial EB (K=3) Spatial EB (K=4) Spatial EB (K=5)
+Figure 9:Posterior mean estimation ofβ⋆ improves with increasingn.Mean squared
+error (MSE) for estimatingβ⋆ using the posterior mean under the EB spatial regression,
+across varying sample sizen and precisionτ. We fit the spectral density usingK∈ {3,4,5}
+Gaussian components; results are robust to moderate over-specification ofK. Both axes
+use logarithmic scales. The points denote medians over 10 replicates, while bands show
+interquartile ranges (25–75%).
+G.4 Additional Results for NYC Air Quality
+51
+20
+ 10
+ 0 10 20
+time
+1.5
+1.0
+0.5
+0.0
+0.5
+1.0
+1.5
+space
+Fitted Spectral Density
+0.02
+0.04
+0.06
+density
+Figure10:Fittedspectraldensityfor
+weeklyPM2.5 in New York City, with
+K =10.The spectrum shows two
+dominant modes–one on the upper
+leftcornerandoneonthelowerright
+corner, which indicates two distinct
+spatio–temporal regimes. Based on
+the denoised series and site geogra-
+phy, one mode might correspond to
+the Manhattan sites (Herald Square,
+Chinatown,LowerEastSide)andthe
+other might correspond to northern
+Queens.
+7.00 7.25 7.50 7.75 8.00 8.25
+0
+1
+2Density
+Intercept
+mean=7.643, sd=0.170
+0.0 0.5 1.0
+0.0
+0.5
+1.0
+1.5
+2.0Density
+HeraldSquare
+mean=0.604, sd=0.199
+0.4 0.6 0.8 1.0
+0
+1
+2
+3
+4Density
+LowerEastSide
+mean=0.723, sd=0.102
+2.0
+ 1.5
+ 1.0
+ 0.5
+0.0
+0.5
+1.0
+1.5Density
+QueensNorth
+mean=-1.357, sd=0.224
+Posterior Marginals of 
+Figure 11:Posterior distributions of location effects in EB spatial regression for NYC
+PM2.5.Baseline is Herald Square (the mean is7.654 µg/m3). The effect of measuring at
+Lower East Side is statistically indistinguishable from the baseline. Queens North is lower
+by1.357µg/m 3 (posterior s.d.0.224), which provides strong evidence of better air quality
+there relative to Herald Square.
+52

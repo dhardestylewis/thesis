@@ -1,0 +1,1022 @@
+Causal Structure and Representation Learning
+with Biomedical Applications∗
+Caroline Uhler1,* and Jiaqi Zhang1,*
+1Department of Electrical Engineering and Computer Science, Massachusetts Institute of
+Technology
+*Emails: culer@mit.edu, viczhang@mit.edu
+Abstract
+Massive data collection holds the promise of a better understanding of complex phenomena and, ulti-
+mately, better decisions. Representation learning has become a key driver of deep learning applications,
+as it allows learning latent spaces that capture important properties of the data without requiring any
+supervised annotations. Although representation learning has been hugely successful in predictive tasks, it
+can fail miserably in causal tasks including predicting the effect of a perturbation/intervention. This calls
+for a marriage between representation learning and causal inference. An exciting opportunity in this regard
+stems from the growing availability of multi-modal data (observational and perturbational, imaging-based
+and sequencing-based, at the single-cell level, tissue-level, and organism-level). We outline a statistical
+and computational framework for causal structure and representation learning motivated by fundamental
+biomedical questions: how to effectively use observational and perturbational data to perform causal dis-
+covery on observed causal variables; how to use multi-modal views of the system to learn causal variables;
+and how to design optimal perturbations.
+1 Introduction.
+Causality is concerned with understanding the underlying mechanisms that govern a system. It often centers
+on fundamental questions such as: What is the underlying data-generating process that can explain observed
+phenomena? What are the cause-effect relationships among the observed variables? How do the observed
+variables change under specific interventions/perturbations? Andwhat are optimalinterventions/perturbations
+in order to move the system to a desired state? Addressing such questions requires moving beyond correlations
+and understanding causal mechanisms.
+Examples:For illustration, consider the example of ice cream sales and sunburn incidences (fig. 1a). Al-
+though there is a strong positive correlation between the two, one does not cause the other. Instead, a third
+variable, sunny weather, is a common cause of both variables. This simple example illustrates the importance
+of understanding causality, as misinterpretation could lead to ineffective interventions, such as banning ice
+cream to prevent sunburns. Another example is fibrosis, which is responsible for up to 45% of deaths in the
+industrialized world [75]. Fibrosis is associated with changes in many genes/proteins. However, only a subset
+of genes/proteins are causal factors of fibrosis, while various other genes/proteins may be affected by tissue
+stiffening and thus downstream of fibrosis (fig. 1b). Effective therapies require disentanglingupstream causal
+genes/proteins, which represent potentialtherapeutic targets, fromdownstream biomarkersof the disease.
+Causal DAG:A causal system is commonly represented by a directed acyclic graph (DAG), where each node
+is associated with a random variable and each directed edge represents a direct causal relationship [32, 61, 43].
+While extensions to cyclic models have been developed [52, 40, 30, 46], acyclicity has traditionally been assumed
+since causality acts forward in time, and we here concentrate on DAGs. LetG= ([p], E)be a DAG with nodes
+∗Forthcoming in the Proceedings of theInternational Congress of Mathematicians 2026, EMS Press. Both authors contributed
+equally to this work.
+1
+arXiv:2511.04790v1  [cs.LG]  6 Nov 2025
+ice cream 
+sales
+sunburn 
+incidences 
+weather
+X2 X3
+X1
+(a) Ice cream sales and sunburn incidences.
+causal
+genes
+tissue 
+stiffening
+fibrosis other
+genes (b) Fibrosis and causal genes/proteins.
+Figure 1: Illustrative examples and their respective causal graphs.
+[p] :={1, . . . , p}and directed edgesE. Each nodeiinGis associated with a random variableXi and an edge
+i→jinGindicates thatX i is a direct cause ofXj. TheMarkov propertyrelates the joint distribution of
+X= (X 1, ..., Xp)⊤ toG, defined as follows.
+Definition 1.A joint distributionPisMarkovwith respect to a DAGGif it factorizes according to
+P(X1, . . . , Xp) =
+pY
+i=1
+P(Xi |X PaG(i)),(1)
+wherePa G(i) :={j∈[p] :i←j∈E}denotes the parents ofiinG.
+This factorization implies a set of conditional independence (CI) relations. As a simple example, consider the
+empty DAG on two nodes. A distribution is Markov to this DAG if it satisfiesP(X1, X2) =P(X 1)P(X2), which
+implies thatX 1 is independent ofX 2, which we denote byX1 ⊥ ⊥X2. More generally, the Markov property
+implies for every missing edge a collection of conditional independence relations associated to it which can be
+read off from the DAG (viad-separationcriteria [44]); see Section 2.
+Causal discovery:In many cases, the causal graphGis unknown, and only samples ofXfrom the joint
+distribution on the nodes are available. The problem of inferring the underlying causal graph from data is
+known ascausal discovery. By the Markov property, missing edges in the graph correspond to CI relations.
+If the reverse also holds—an assumption known asfaithfulness[32, 61], which we will discuss in detail in
+Section 2—then theadjacencies, i.e., presence or absence of edges in the DAG, can be inferred from data. In
+the example in fig. 1a, we may observe in the data that ice cream sales (X2) is independent of the number of
+sunburn incidences (X3) conditional on the weather (X1), and therefore infer that there is no edge betweenX2
+andX 3 in the underlying causal graphG. However, note that while some edge directions can be inferred from
+CI relations under the faithfulness condition (we will for example see in Section 2 that in the 3-node setting
+X1 ⊥ ⊥X2 andX 1 ̸⊥ ⊥X2 |X 3 imply1→3←2), not all edge directions can be inferred. For example, in the
+2-node setting with no CI relations, we cannot distinguish1→2from1←2. Thus, with observational data
+alone, the underlying DAGGis only identifiable up to an equivalence class known as theMarkov equivalence
+class(MEC) [69], denoted as[G]. It is possible to represent[G]with a partially directed graph, known as the
+essential graphE(G)[3], which has the same adjacencies asGand a directed edgei→jinE(G)if and only if
+it is directed in the same way in allG′ ∈[G]. We will discuss algorithms for causal discovery, i.e., for learning
+the Markov equivalence class ofG, in Section 2.
+Interventional data:In some settings, we may have access tointerventionaldata (also calledperturbational
+data in biomedical applications), which can help in directing causal edges. An intervention is defined by a set
+of target variablesI⊆[p]and a set of associatedmodified mechanismsP I(Xi |X PaG(i))fori∈Iresulting in
+theinterventional distribution:
+PI(X) =
+Y
+i̸∈I
+P(Xi |X PaG(i))
+Y
+i∈I
+PI(Xi |X PaG(i)).(2)
+In general, an intervention can result in any modified mechanismPI(Xi |X PaG(i)). For example, adointerven-
+tion sets its targeted variable to a specific value, i.e.,PI(Xi |X PaG(i)) =δ xi, whereδxi is the Dirac distribution
+centered atx i [38]. Comparing the interventional distributionPI with the observational distributionPmay
+enable identification of the underlying causal model beyond what is possible from observational data alone.
+Returning to the example in fig. 1a, when we intervene on ice cream sales (X2), e.g., through promotions,
+we observe that the weather (X1) remains unchanged (PI(X1) =P(X 1)); from this we can infer thatX2 is
+2
+not upstream ofX 1. Similarly, by intervening on sunburn incidences (X3), e.g., by applying sun screen, we
+observe that the weather (X1) remains unchanged and thus thatX 3 is not upstream ofX 1, which allows
+us to fully orient the causal graph. Unlike many other fields, biology benefits from modern techniques that
+allow interventions to be applied at scale. Such interventions can take the form of genetic perturbations, e.g.,
+using CRISPR-based methods [29], or chemical treatments, e.g., in small-molecule chemical screens [16]. A
+genome-wide CRISPR screen can involve thousands of perturbations [18, 51, 26], providing the opportunity to
+address a wide range of causal questions. In Sections 2 and 3, we will discuss how to use interventional data
+for causal tasks.
+Causal representation learning:In some settings, the causal variables may not be known, and we collect
+data that do not directly measure the variables of primary interest. For example, we may take microscopy
+images of cells; each pixel in the image is certainly not a causal variable, but the shape of the cell or the
+amount and localization of a particular protein in the cell could be a causal variable (fig. 2b). From indirect
+measurements we may still be able to identify the underlying causal variables and the rules governing their
+interactions. Consider the setting in fig. 2a, where the observed variables, denoted asO, are generated by the
+underlying causal variables, denoted asX. The goal ofcausal representation learning(CRL) is to recoverX
+as well the causal relations between the variablesXand the mapping (also known as themixing function)
+fromXtoO[56, 63]. A closely related problem, which can be formulated as a subproblem of CRL, is that of
+causal feature learning(CFL), where the goal is to coarsen the observed variablesO, to obtain macrovariables
+Xby partitioning the space of their realizations according to a downstream task [8]. It is worth noting that
+recoveringXfromOis not always achievable, as some applications require finer grained measurements thanO,
+making it impossible to invertOto obtainX. For example, relying solely on total cholesterol as measurement
+inOcan obscure the causal relation with cardiovascular disease (fig. 2c). A more fine-grained distinction
+between high-density lipoprotein (HDL) and low-density lipoprotein (LDL) is necessary, as reducing LDL has
+been shown to causally lower disease risk, whereas decreasing HDL does not confer the same effect [62]. In
+Section 3, we will discuss theory and methods for CRL. We note that the problem of CRL considered here
+differs from the problem of causal discovery in the presence of latent variables, where the data directly measure
+the causal variables (though not all of them) and the main focus is on recovering the causal relationships
+between the observed causal variables, while in CRL the main focus is on discovering the causal variables from
+related data. Extensive literature exists on causal discovery with latent variables [61, 60, 11, 42, 28, 64] which
+we will not discuss in detail here.
+𝑋1 𝑋2 𝑋𝑝…
+𝑂1 𝑂2 𝑂𝑑…
+(a) Graphical model representing
+causal representation learning.
+(b) Image of cells (from Human Pro-
+tein Atlas).
+cardiovascular 
+disease
+HDL
+total 
+cholesterol
+LDL
+lower
+(c) Total cholesterol and cardiovas-
+cular disease.
+Figure 2: Illustrative examples of causal representation learning.
+Making use of multi-modal data:In addition to interventional data, which are a form of multi-modal data,
+we may also have multiple views or measurements of the system available, with each view providing information
+on a subset of the causal variables. Figure 3 shows an example of a graphical model representing this scenario,
+where three complementary viewsO1,O2,O3 generated by the underlying causal variablesX, are available.
+The goal in this case is to learn the shared causal variables (e.g.,X1, X2, Xp), modality-specific causal variables
+(e.g.,X 3, X4, X5, X6), and the causal relations between them. For example, clinicians leverage measurements
+across complementary diagnostic modalities to develop an integrated understanding of the physiological state
+of a patient. Figure 3b shows an example of two modalities, electrocardiograms (ECGs) containing myoelectric
+information and cardiac magnetic resonance images (MRIs) containing structural information on the state of
+the heart of an individual. Similarly, to obtain a more comprehensive understanding of the state of a cell,
+biologists use sequencing-based assays to measure gene expression and high-resolution imaging to capture the
+spatial localization of specific proteins (fig. 3c). In Section 3, we will discuss how such multi-modal data can
+enhance the identification of causal variables and the causal relations among them.
+3
+𝑂2
+𝑂1
+𝑂2
+𝑂1
+𝑋1 𝑋2
+𝑋𝑝
+…
+𝑋3
+𝑋4 𝑋5
+𝑋6
+𝑂2
+𝑂3𝑂1
+(a) Graphical model representing
+multi-modal causal representation
+learning.
+𝑂2
+𝑂1
+𝑂2
+𝑂1
+𝑋1 𝑋2
+𝑋𝑝
+…
+𝑋3
+𝑋4 𝑋5
+𝑋6
+𝑂2
+𝑂3𝑂1
+(b) Heart ECGs
+and MRIs.
+𝑂2
+𝑂1
+𝑂2
+𝑂1
+𝑋1 𝑋2
+𝑋𝑝
+…
+𝑋3
+𝑋4 𝑋5
+𝑋6
+𝑂2
+𝑂3𝑂1
+(c) Single-cell gene expression and
+imaging data.
+Figure 3: Illustrative examples of multi-modal causal representation learning.
+Optimal design of interventions:Learning the underlying causal model and data-generating process not
+only provides a fundamental understanding of the system, but also enables generalization and prediction of
+a system’s behavior under novel conditions. This, in turn, offers a path for manipulating the system toward
+a desired outcome. In the fibrosis example in fig. 1b, identifying disease-causal genes/proteins is critical for
+the development of a therapy. More generally, although high-throughput perturbational experiments are now
+feasible in the biomedical sciences [15, 18], the main challenge lies in the vast space of possible perturbations.
+It is practically impossible to experimentally test the vast space of drug-like molecules (which is estimated
+to be of size10 24 [6]) or to exhaustively perturb the combination of all 20,000 human genes. These huge
+search spaces create a unique opportunity for computational approaches that can predict the effect of unseen
+perturbations, allowing virtual screening of perturbations and identification of promising candidates without
+the need for exhaustive experimental exploration. Such methods have the potential to accelerate therapeutic
+discovery and inform strategies to modulate cellular states in a targeted manner. In Section 4, we will discuss
+strategies for identifying optimal interventions/perturbations.
+2 Causal discovery.
+Consider a random vectorXwhose joint distributionPis Markov with respect to a DAGG(see Definition 1).
+Causal discovery is concerned with the problem of inferringGgiven samples ofX. The Markov property implies
+a collection of CI relations that can be fully characterized usingd-separation[44]; namely, two nodesi, jare
+d-separatedinGby a setS⊆[p]\ {i, j}, denoted byi⊥ ⊥j|S, if all paths1 connectingiandjareblockedby
+S. A path isblockedbySif it contains a nodeksatisfying one of the following conditions:
+1.k /∈Sis acollideron the path, i.e., the adjacent nodesl, hon the path satisfyl→k←h, and all its
+descendantsDes G(k) :={ℓ∈[p]| ∃a directed path fromktoℓinG}are not inS;
+2.k∈Sis not a collider on the path.
+Lemma 2.If a distributionPis Markov with respect to a DAGG, then d-separation implies conditional
+independence, i.e.,i⊥ ⊥j|SinG=⇒X i ⊥ ⊥Xj |X S inP.
+The proof of this lemma can be found in [69, 22]. Essentially, one can apply an inductive argument by first
+considering three nodes and then extending it to additional nodes via the graphoid axioms [45]. While d-
+separation implies conditional independence, the converse does not necessarily hold. The faithfulness condition
+assumes this reverse implication, thereby allowing one to infer information aboutGfromP.
+Definition 3.A joint distributionPisfaithfulto a DAGGif conditional independence implies d-separation,
+i.e.,X i ⊥ ⊥Xj |X S inP=⇒i⊥ ⊥j|SinG.
+1A path in a DAGGis a sequence of nodes such that any two consecutive nodes are adjacent inG.
+4
+In other words, the faithfulness assumption guarantees that two nodes that ared-connected(i.e., not d-
+separated) inGcannot appear to be conditionally independent inP. Thus intuitively, the faithfulness assump-
+tion precludes causal effects along different paths to cancel each other out. The Markov condition together with
+the faithfulness assumption allow us to learn about the underlying DAGGas long as the correct CI relations
+Xi ⊥ ⊥Xj |X S were inferred. In the finite-sample regime, the CI relations need to be estimated from the data
+and thus a stronger form of faithfulness is needed. For example, in the multivariate Gaussian setting, Fisher’s
+z-transform [19], i.e., a cutoff on the partial correlations depending on sample size, is used to obtain the CI
+relations.
+Definition 4.For fixedλ∈[0,1], a multivariate Gaussian distributionPisλ-strong faithfulto a DAGGif
+for any nodesi, jinGand setS⊆[p]\ {i, j}with|corr(X i, Xj |X S)| ≤λit holds thati⊥ ⊥j|SinG.
+Note that in the infinite-sample setting we can chooseλ= 0, which results in the standard faithfulness
+assumption in Definition 3. Note also that the set of distributions violating faithfulness has Lebesgue measure
+0[61], suggesting that faithfulness is a mild assumption. However, in the finite-sample regime whereλ >0the
+set of distributions violatingλ-strong faithfulness no longer has measure0. In particular, [68] showed that the
+measure ofλ-strong-unfaithful distributions can converge to1exponentially in the number of nodesp. This is
+due to the curvature of the varieties corresponding to faithfulness violations and that thickening these varieties
+can quickly become “space-filling”; we illustrate this via the following example on3variables.
+Example 5.Consider a Gaussian distribution that satisfies the Markov property with respect to the fully-
+connected DAGGwith edges1→2,1→3,2→3given by the following linear structural equations:
+X1 =ϵ 1,
+X2 =a 12X1 +ϵ 2,
+X3 =a 13X1 +a 23X2 +ϵ 3,
+whereϵ 1, ϵ2, ϵ3 are independent standard Gaussians. SinceGis fully connected, faithfulness requires all 6 partial
+correlations,corr(X 1, X2),corr(X 1, X3),corr(X 2, X3),corr(X 1, X2 |X 3),corr(X 1, X3 |X 2),corr(X 2, X3 |X 1),
+to be non-zero. Figure 4 shows the hypersurfaces of(a 12, a13, a23)⊤ inR 3 that correspond to faithfulness
+violations. Sinceλ-strong faithfulness violations correspond to the by a factor ofλ“thickened” hypersurfaces,
+it is apparent from the figure that even for small values ofλ, i.e., large sample sizes, the corresponding volume
+is considerable.
+(a)corr(X 1, X3) = 0.
+ (b)corr(X 1, X2 |X 3) = 0.
+ (c)corr(X 2, X3) = 0.
+ (d) All 6 surfaces
+Figure 4: Surfaces inR3 that correspond to unfaithful distributions for fully connected 3-node linear Gaussian
+causal models.
+This implies fundamental limitations for causal discovery algorithms that are based on testing many condi-
+tional independence relations, since the true distribution needs to be bounded away from all hypersurfaces
+corresponding to negative CI tests. This motivates the study of algorithms that either (1) rely less on CI
+testing or (2) perform as few CI tests as possible. In the following, we review various causal discovery algo-
+rithms. These are typically grouped into three categories:constraint-based,score-based, andhybridmethods.
+Constraint-based methods infer the underlying graphGby performing CI tests and iteratively pruning DAGs
+that violate these constraints. In contrast, score-based methods assign a score to each possible DAG, quan-
+tifying its fit to the data, and then search for the DAG that maximizes this score. Hybrid methods combine
+these ideas, for example by restricting the search space using CI relations and then optimizing a score within
+this reduced space. For simplicity of the discussion below, we assume that the joint distributionPsatisfies the
+Markov property and faithfulness assumption with respect toG, meaning that d-separation inGis equivalent
+5
+to CI relation inP, and that we have enough samples to fully determine all CI statements inP. It is worth
+noting that many of the algorithms below do not require these assumptions to hold to be correct; see e.g. [66]
+for a characterization of the correctness conditions of constraint-based methods.
+2.1 The PC algorithm.
+This pioneering causal discovery algorithm consists of two steps [61]: (1) starting from a fully connected
+undirected graph, it iteratively removes edges between variables that are conditionally independent given some
+conditioning set; and (2) it orients edges given the CI relations used in step (1). Step (1) fully identifies the
+adjacencies inG. To see this, note that two nodesi, jare not adjacent inGif and only if they are d-separated by
+some setS⊆[p]\{i, j}; for example,Scan be chosen to be the parents of nodei, i.e.,PaG(i) ={k∈[p]|k→i},
+assuming without loss of generality that there is no directed edge fromitoj. Step (2) of the algorithm orients
+some edges, first by identifying allv-structuresin the DAG, i.e., triplets of nodes(i, j, k)wherei, jare not
+adjacent withi→kandj→k(fig. 5a), and then applying additional orientation rules known as Meek
+rules [37]. Note that given the node adjacencies inferred in step (1) of the algorithm, the v-structures inGare
+identifiable as triplets of nodes(i, j, k)wherei, jare not adjacent and for which there exists a setS⊆[p]\{i, j}
+such thati⊥ ⊥j|Sandi̸⊥ ⊥j|S∪ {k}. The Meek rules, shown in fig. 5b, orient additional edges ensuring
+the graph remains acyclic and no new v-structures are introduced. Importantly, the Meek rules are complete,
+meaning that step (2) of the PC algorithm orients all edges that are identifiable, i.e., it outputs the essential
+graph ofG[3].
+𝑖
+𝑘
+𝑗
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙
+(a) V-structure.
+𝑖
+𝑘
+𝑗 𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙 (b) Meek rules (1-4 from left to right and top to bottom).
+Figure 5: V-structure and Meek rules.
+2.2 The GAS algorithm.
+Letddenote the maximum in-degree of the underlying causal DAGG. The PC algorithm at most requires
+pΩ(d) number of CI tests [10], where the main bottleneck lies in the adjacency search, i.e., step (1). A large
+number of CI tests not only exacerbates the computational burden but also, as reviewed at the beginning of
+Section 2, requires strong faithfulness assumptions on the data generating distribution to be bounded away
+from the hypersurfaces corresponding to negative CI tests. In recent work [39], we provided the following lower
+bound on the number of CI tests required by any constraint-based causal discovery algorithm.
+Theorem 6.Given observational data from a distribution that is Markov and faithful to a DAGG, any
+algorithm requires at leastexp(Ω(s))CI tests to verifyG ∈[G], wheresis the size of the maximal undirected
+clique2 in the essential graphE(G).
+To show this, we proved that for any collection of fewer than2s −s−1CI tests, one can construct a very
+similar but different MEC[G′]̸= [G]such that both classes are indistinguishable based on these CI relations [78].
+Complementing Theorem 6, we also provided a causal discovery algorithm,greedy ancestral search(GAS), that
+matches this lower bound [39].
+2A clique is an induced subgraph in which all nodes are adjacent.
+6
+Theorem 7.Given observational data from a distribution that is Markov and faithful to a DAGGwithp
+nodes, the GAS algorithm outputsE(G)using at mostp O(s) CI tests, wheresis the size of the maximum
+undirected clique inE(G).
+Note that since the most downstream node in the maximum undirected clique has an in-degree of at least
+d−1, it holds thats≤d−1; thus the PC algorithm in general performs more CI tests than required. In the
+following, we will discuss the key ideas of GAS, which build on our previous work [58], where we characterized
+what can be learned about the Markov equivalence class[G]given only a polynomial number of CI tests. To
+reduce the number of CI tests compared to the PC algorithm, GAS integrates steps (1) and (2); namely, the
+algorithm focuses on using CI tests to learn ancestral relationships, which can then be used to perform CI
+tests to uncover adjacencies in a more targeted way. To provide some intuition, note that if we were given all
+ancestral relationships, i.e., a permutationπππ= (π 1, . . . , πp)of the nodes[p]that isconsistentwith the DAG
+G= ([p], E)(i.e., if fori, j∈[p]there is a directed edgeπ i →π j ∈E, then it has to hold thati < j), then a
+single CI test would be sufficient to determine the presence/absence of an edge:
+(πi, πj)∈E⇐⇒X πi ̸⊥ ⊥Xπj |X S,whereS={π 1, π2, . . . , πj−1} \ {πi}.(3)
+Thus, if we were given the correct ordering of the nodes, then a single CI test per edge would suffice. As a
+consequence, the main difficulty of causal structure discovery is to learn the correct ordering/permutation of
+the nodes and to identify CI tests that provide ancestral information. Towards this, we analyze the orientation
+rules, i.e., step (2), in the PC algorithm and note that the ancestral relationships of a DAG are fully identified
+by its v-structures and Meek rule 1. To see this, consider the four Meek rules in fig. 5b. In fig. 6 we indicate
+the ancestral relationships in the graph before applying each Meek rule by partitioning the nodes into different
+sets if they are connected by directed edges and grouping nodes that are only connected via undirected edges
+into the most upstream partition they are connected to. It is apparent in fig. 6 that only Meek rule 1 provides
+additional ancestral information beyond transitivity. Based on this insight, we developed two sets of CI tests
+that allow us to identify the ancestral relationships given by v-structures and Meek rule 1 [39]. To describe
+these, we use the notion ofdescendantsof a node defined above.
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙 𝑖
+𝑗 𝑘
+𝑙
+Figure 6: Meek rules (1-4 from left to right and top to bottom) with ancestral partitions indicated in blue.
+Lemma 8(CI test for v-structure).Consider a DAGGwith nodes[p]. For any three nodesi, j, k∈[p]and
+setS⊆[p]\ {i, j, k}, ifXi ⊥ ⊥Xj |X S andX i ̸⊥ ⊥Xj |X S∪{k}, theni, j /∈DesG(k).
+Lemma 9(CI test for Meek Rule 1).Consider a DAGGwith nodes[p]. LetS⊆[p]be a prefix set, i.e.,i∈S
+then all its ancestors (i.e., all nodes with a directed path pointing toi) belong toS. For any three nodesi, j, k
+such thati∈Sandj, k̸∈S, ifX i ̸⊥ ⊥Xk |X S\{i} andX i ⊥ ⊥Xk |X S∪{j}\{i}, thenj /∈DesG(k).
+GAS iteratively expands the conditioning setSin these two lemmas to learn all ancestral relations. In partic-
+ular, it maintains a sequence of prefix sets(Sℓ)ℓ=1,...,L, where starting inS0 =∅at each stepℓit obtainsS ℓ
+fromS ℓ−1 by greedily adding elements according to these two lemmas. A detailed description of the algorithm
+and the full proof of Theorem 7 can be found in [39].
+2.3 The GSP algorithm.
+Beyond constraint-based methods, score-based and hybrid methods assign a score to each possible DAG (or
+MEC) based on its fit to the data, and might thus rely less heavily on CI tests. In the following, we describe
+7
+thegreedy sparsest permutation(GSP) algorithm [59], as a representative example of such causal discovery
+methods. GSP is conceptually related to the GAS algorithm and preceded it.
+A joint distributionPmay factorize with respect to multiple DAGs, not just the underlying DAGG; for
+example, a distribution where all nodes are independent factorizes with respect to any DAG. Any such DAG
+is called anindependence map(I-MAP) ofP. In fact, in Section 2.2 we have already seen how to obtain all
+minimal I-MAPs, i.e., I-MAPs ofPwhere the removal of any edge would result in a new DAG that is no
+longer an I-MAP ofP[69]. Namely, for any permutationπππof the nodes, define the DAGG πππ = ([p], Eπππ)by
+property (3). Note that minimal I-MAPs of a DAGGmay have different number of edges. For a simple
+example, consider the 3-node DAGGwith edges1→3,2→3. Then the minimal I-MAPs with respect to the
+permutations1<2<3and2<1<3are equal toGand thus have two edges, while the minimial I-MAPs
+with respect to all other permutations are fully connected. We proved that under the Markov and faithfulness
+assumptions the sparsest I-MAP must be Markov equivalent toG[49]:
+Theorem 10.Given a joint distributionPthat is Markov and faithful with respect to a DAGG, any I-MAP
+G′ ofPsuch thatG ′ ̸∈[G](if it exists) must contain strictly more adjacencies thanG.
+This result directly suggests thesparsest permutation(SP) algorithm [49]: enumerate all permutationsπ ππ,
+obtain the corresponding minimal I-MAPGπππ using CI tests inP, then use the number of edges as a score
+function to return the sparsest DAG. However, this procedure is clearly computationally prohibitive, as the
+number of possible permutations isp!.
+The greedy sparsest permutation (GSP) algorithm mitigates this by greedily searching over the space of per-
+mutations [59]: At each stepi, GSP maintains a permutationπππi and its corresponding minimal I-MAPGπππi.
+It then searches over all DAGs in the Markov equivalence class[Gπππi]for some DAGG ′ that is not a minimal
+I-MAP ofP. This search can be executed by repeatedly flippingcovered3 edges, as guaranteed by the con-
+struction of a Chickering sequence [9] based on Meek’s conjecture [37]. SinceG′ is not a minimal I-MAP ofP
+(it is an I-MAP sinceG′ ∈[G πππi]), there must exist edges that can be removed to obtainG′′ which is a minimal
+I-MAP ofP. GSP then takes the permutation consistent withG′′ as the new permutationπππi+1, withG ′′ as its
+corresponding minimal I-MAP. We showed that GSP is guaranteed to return the correct MEC; a more detailed
+description of the algorithm and the proof of Theorem 11 can be found in [59].
+Theorem 11.Given observational data from a distribution that is Markov and faithful to a DAGG, the GSP
+algorithm outputs the essential graphE(G).
+Building on GSP, [31] introduced a family of causal discovery algorithms called GRaSP, which employ a novel
+traversal strategy in the space of DAGs, referred to as “tuck”. They showed that the lowest tier of GRaSP
+is equivalent to GSP, while higher tiers require weaker faithfulness assumptions for correctness. In fact, [66]
+showed that the correctness condition required by SP is among the weakest of all causal discovery algorithms.
+However, since SP requires enumerating all permutations, it incurs substantial computational cost. This
+suggests an important trade-off between correctness condition and computational efficiency that remains to be
+better understood.
+2.4 Interventional data.
+Without additional assumptions [46], from observational data alone it is only possible to identify the MEC of
+the underlying causal graph. As motivated in Section 1, interventional data may improve the identifiability
+of the underlying causal DAG. However, similar to the observational setting, a faithfulness assumption is
+required to ensure that the effects of interventions do not de-generate and can be used for causal discovery.
+[67] introduced the following interventional faithfulness assumption based on the marginal distribution of the
+targeted variables.
+Definition 12.Given a joint distributionPthat is Markov and faithful with respect to a DAGG. An
+interventionIdefined by the modified mechanismsP I(Xi |X PaG(i))fori∈Isatisfies theinterventional
+faithfulness conditionif the interventional distributionPI(X)defined in Equation (2) satisfiesPI(Xj)̸=P(X j)
+for all nodesj∈ ∪i∈IDesG(i).
+3An edgei→jin a DAGGiscoveredif the parents ofjare exactly the parents ofiplusiitself, i.e.,Pa G(j) =Pa G(i)∪ {i}.
+8
+It follows directly from the definition of the interventional distribution in Equation (2) thatPI(Xj) =P(X j)
+for all nodesj̸∈ ∪ i∈IDesG(i). Therefore, interventional faithfulness guarantees that we can identify nodes
+that are downstream of an intervention. Algorithms building upon this intuition can identify additional edge
+orientations in[G][24]. In particular, we used this idea to extend GSP to the interventional setting [70, 72]
+and we also considered the problem of learning from interventional data without performing any CI tests [36].
+2.5 Application to learning gene regulatory networks.
+A concrete application of these algorithms arises in the inference of gene regulatory networks. Here, the
+variablesXcorrespond to the expression levels of individual genes, and the causal graphGspecifies the
+regulatory relationships between them. For example, a transcription factorX i regulates another geneX j
+(denotedi→jinG) by binding to the cis-regulatory element of that gene on the DNA. With current single-
+cell RNA-seq technologies, each data point corresponds to the gene expression measurement of a single cell
+across all genes [4]. Such single-cell measurements can be coupled with CRISPR-based techniques [29] to
+perturb individual genes through knock-out, repression, or activation. This technology, known as Perturb-
+seq [15], allows simultaneous measurement of the expression of all genes as well as the perturbation that was
+performed on the cell, providing large-scale perturbational datasets.
+In [59], we analyzed the first Perturb-seq dataset on bone-marrow–derived dendritic cells [15]; in particular, we
+applied PC and GSP to the992observational samples, and we used the13,534interventional samples across8
+gene deletions for evaluating the output of these algorithms. In the analysis, we restricted the dimensionality to
+p= 24, focusing on transcription factors known to regulate a variety of genes, including one another [20]. More
+recently, in [39] we applied GAS, which is significantly faster due to the small number of CI tests performed,
+to single-cell gene expression data generated by the SERGIO simulator [14]. This allowed us to compare the
+inferred structures directly against the ground-truth DAG. The experiments involved2,700cells with expression
+profiles onp= 100genes. In [70, 72], we extended GSP to the interventional setting, and applied it to [15].
+Beyond gene expression data, in [70, 72], we also applied the interventional versions of GSP to study a protein
+signaling network based on a mass spectrometry dataset consisting of5,846measurements of phosphoprotein
+and phospholipid levels in primary human immune cells [54]; interventions in this setting correspond to chemical
+reagents that inhibit or activate specific signaling proteins. Furthermore, in [5], we proposed a method to
+directly learn differences in gene regulatory mechanisms across conditions, and we applied this approach to two
+single-cell gene expression datasets containing perturbational data for validation [13, 15].
+3 Going beyond observed causal variables through causal represen-
+tation learning.
+In Section 2, we considered the setting where the causal variablesX= (X1, . . . , Xp)⊤ of interest are directly
+observed. In many cases, however, we only have data on variablesO= (O1, . . . , Od)⊤ that do not directly
+measureX, as discussed in Section 1. In this section, we describe approaches to learnXfromO. In particular,
+we will consider three different settings. In Section 3.1, we consider the single-modality setting, where we
+have access to samples fromO=f(X), with latent causal variablesXdrawn from a distributionPthat is
+Markov with respect to a causal DAGG, andfan unknown mixing function. In Section 3.2, we consider
+the interventional setting, where we have access to samples fromOI =f(X I)forKdifferent interventions
+I∈ {I1, . . . , IK}(note thatI=∅reduces to the previous setting), whereX I is drawn from the interventional
+distributionP I, which is obtained from a distributionPthat is Markov with respect to a causal DAGG, andf
+is an unknown mixing function that remains fixed across interventions. Finally, in Section 3.3, we consider the
+setting withMpartially overlapping modalities,O 1 =f 1(X), . . . ,OM =f M (X), where the causal variablesX
+are drawn from a distributionPthat is Markov with respect to a causal DAGG, andf1, . . . ,fM are unknown
+modality-specific mixing functions. Note that this includes the case whereOi is a function of just a subset of
+the latent variablesX.
+In each subsection below, we will consider the problem ofidentifiability, namely whether it is possible to recover
+the underlying causal variablesXand their relationshipsG, as well as algorithms to do so. For simplicity, we
+will assume throughout access to sufficient samples fromO,O I,I∈ {I 1, . . . , IK}andO 1, . . . ,OM to fully
+determine their distributions. Note that in general, we cannot achieve full identifiability. For example, there
+9
+is a trivial non-identifiability corresponding to renaming variables: if we simultaneously permute the entries
+ofXand the functionfaccording to the same permutationπ ππ= (π 1, . . . , πp), we obtain the same observed
+variables:f(X) =f πππ(Xπππ),X πππ = (X π1 , . . . , Xπp)⊤ are the permuted variables and the permuted mixing
+functionf πππ corresponds to permuting the input–output mapping off. Similarly, one can apply element-wise
+affine transformations to bothXandfwithout changingO. Thus, at most we can identify the underlying
+causal model up to anequivalence class.
+3.1 Causal representation learning from single-modality data.
+The identifiability problem is difficult as it encompasses both disentanglement (to identifyX) and causal
+discovery (to identifyG). Traditionally, in the disentanglement literature, the latent factors are assumed to be
+independent, and it is known that identifying them is not possible without additional assumptions on the data-
+generatingprocess[27]. WeareinterestedinthemoregeneralsettingwherethelatentcausalvariablesXmaybe
+related and we aim to discover not onlyXbut also their relationshipsG. Since the traditional disentanglement
+problem is a special case,Xis unidentifiable without additional assumptions. In the following, we describe
+an approach that utilizes asymmetries inPto learnX[71]. Towards this, we consider the following three
+assumptions:
+Assumption 13.The mixing functionfis linear and invertible, i.e., there is a full-column rank matrix
+F∈R d×p such thatO=FX.
+Assumption 14.The factors of the joint distributionPofXare specified by
+Xi =h i(XPaG(i)) +ϵ i,∀i∈[p],
+where eachhi is a twice continuously differentiable, non-linear function that captures the dependence ofXi on
+its parents, and eachϵi ∼ N(0, σ2
+i )corresponds to an exogenous noise variable that is mutually independent
+and mean-zero Gaussian.
+Assumption 15.For anyi∈[p]and any non-zero vectorβ∈R |PaG(i)|, the random variable∂2
+β,β hi(XPaG(i))
+is not always zero.
+Assumption 13 constrains the space of possible mixing functionsf. We note that we do not assume prior
+knowledge of the dimensionpof the latent causal variables. Sincefis linear and invertible,pcan be identified
+from the intrinsic dimension of the joint distribution ofO. Note also that we can assume without loss of
+generality that the linear mapping is zero-centered, since as discussed at the beginning of Section 3 that we
+will at best be able to identifyXup to element-wise affine transformations. The nonlinear causal model with
+additive Gaussian noise in Assumption 14 has been a popular choice in the causal discovery literature due to
+its flexibility, identifiability properties (in the fully observed setting), and benign statistical sample complexity
+requirements [47, 55, 53, 82]. Assumption 15 functions similarly to the faithfulness assumption, ensuring that
+the causal effect of a parent on a child is non-degenerated. The class of nonlinear causal models with additive
+Gaussian noise implies an asymmetric relationship between causes and effects, which can be utilized to infer
+causal relations and fully identify the underlying causal model in the setting where all causal variables are
+observed [53]. The following lemma summarizes the key property. Its proof can be found in [53].
+Lemma 16.LetJ(x)denote the Jacobian matrix ofXatxwithij-th entry given byJ(x) ij =∇ xi∇xj logP(x).
+Thei-th diagonal element of the Jacobian matrix has zero variance, i.e.,var(J(X)ii) = 0, if and only if node
+iis aleaf nodeinG, i.e.,Des G(i) =∅.
+Although we are unable to obtainJ(X)sinceXis not directly measured, a similar result holds despite the
+unknown mixing functionF: LetJ O(o)denote the Jacobian matrix ofOato, defined analogously toJ(x).
+LetF † = (F⊤F)−1F⊤ denote the Moore-Penrose inverse. SinceJ(F†o) =F ⊤JO(o)F, then by Lemma 16 it is
+possible to infer leaf-node information fromF⊤JO(o)F. We showed in [71] that if we solve forFby maximizing
+the number of zero diagonal entries invar(F⊤JO(O)F), we obtain exactly the number of leaf nodes inG. More
+precisely, we showed the following result.
+Lemma 17.Let the matrix ˆFbe obtained by solving
+min
+F∈Rd×p
+var
+
+diag
+ 
+F⊤JO(O)F
+
+0
+,
+such that rank(F) =p.
+(4)
+10
+Denoting byJ ˆX the Jacobian matrix ofˆX, then it follows thatˆX= ˆF†Osatisfies
+ˆXi =
+(
+linear(Xnon−leaf )ifvar(J ˆX( ˆX)ii)̸= 0,
+linear(X)ifvar(J ˆX( ˆX)ii) = 0,
+where the number of nodesi∈[p]such thatvar(J ˆX( ˆX)ii) = 0equals to the number of leaf nodes inG.
+We note that all Jacobians in Lemma 17 can be computed based on the observed samples fromO. In addition,
+we do not need to knowpapriori, since the constrained optimization problem in eq. (4) can be interpreted
+as solving for a full-column rank matrix such that thel0 norm is maximized. We showed in [71] that this
+optimization problem can be equivalently formulated as a quadratically constrained quadratic program and
+efficiently solved by off-the-shelf numerical solvers [35]. In summary, Lemma 17 provides an approach for
+iteratively identifying leaf nodes as a linear combination of all variables in its own and upstream layers. This
+leads to the following identifiability “up to upstream layers”, wherelayer(k)is defined as the set of all nodes
+whose longest path to a leaf node is of lengthk.
+Theorem 18.Under Assumptions 13, 14, and 15, given sufficient samples ofOthe latent causal variablesX
+are identifiable up to their upstream layers, i.e., we can learnˆXfromOsuch that:
+ˆX=P πππCX,
+whereP πππ ∈R p×p is a permutation matrix, andC∈R p×p is a constant matrix with non-zero diagonal entries
+andC ij = 0for alli, jsuch thati∈layer(k)andj∈ ∪ l≤klayer(l).
+The full proof of Theorem 18 and a detailed description of the algorithm can be found in [71].
+3.2 Causal representation learning from interventional data.
+We next consider the setting where we have access to interventional data. Like for causal discovery, this will
+result in stronger identifiability results. We here consider the setting where each intervention{I1, . . . , IK}has
+a unique targetiamong the causal variablesX, but the target variable is unknown sinceXis unknown. In
+addition, we assume that for every causal variable, there is at least one intervention that targets it. Moreover,
+we make the following two assumptions.
+Assumption 19.The interior of the support ofPis a non-empty subset ofR p. The mixing functionfis a
+full-column rank polynomial, i.e., there exists some integers, a full-column rank matrixF∈Rd×(p+···+ps) such
+thatO=F( ¯⊗X, ¯⊗X2, . . . ,¯⊗Xs)⊤, where ¯⊗Xr denotes the size-pr row-vector with degree-rpolynomials ofX
+as its entries.
+Assumption 20.Linear interventional faithfulnessholds for all interventionsI∈ {I 1, . . . , IK}; i.e., leti
+denote the target ofIand letCh G(i) ={j∈[p]|i∈Pa G(j)}denote the children ofiinG. Then for every
+j∈ {i} ∪ChG(i)such thatPa G(j)∩Des G(i) =∅, it holds thatP(X j +C ⊤XS)̸=P I(Xj +C ⊤XS)for any
+constant vectorC∈R |S|, whereS= [p]\({j} ∪Des G(i)).
+Assumption 19 allows us to extend linear mixing in Assumption 13 to polynomial mixing: the support with non-
+empty interior guarantees that we can identify the dimensionpofX, and the full-rank polynomial assumption
+ensures that we can search forf(and consequentlyX) in a constrained subspace [2]. We do not need to
+impose any parametric constraints as in Assumption 14, since interventions allow us to exploit the principle
+of invariance rather than asymmetries in the observational distribution to identify the causal relations [7].
+However, to apply the principle of invariance, we must assume that interventions induce changes in the system.
+Assumption 20 extends the interventional faithfulness assumption in Definition 12 from the causal discovery
+setting with observed causal variables to the setting where we only observe a linear mixing of the causal
+variables. In this setting, a stronger condition is needed to ensure that the effect of intervening on a causal
+variableX i not only affects its children, but that the effect will not be canceled out through linear combinations
+with other causal variables that are not downstream ofXi. Note that this condition only needs to hold fori
+itself and the most upstream child ofi, which may be much smaller than the set of all children ofi.
+11
+Under these assumptions, we can show that we can identify the causal variables and their relationships by
+detecting marginal changes made by interventions. To provide some intuition, consider the easier setting
+whereK=p, i.e., we have exactly one intervention per latent causal variable. Based on the intuition provided
+in the previous paragraph, we can reduce the polynomial mixing to a linear mixing fromRp toR p. Thus we
+consider the case where we have access toO∈R p, which is a linear transformation ofX. Note that for a
+source nodeiofG,P(X i)̸=P I(Xi)if and only if the target ofIisi. By enforcing that the learned ˆXis of
+the form ˆXi =C ⊤Oand that it satisfiesP( ˆXi)̸=P I( ˆXi)for exactly oneI∈ {I1, . . . , Ip}, then Assumption 20
+guarantees that ˆXi can only be an affine transformation of a source node and that the particular intervention
+Icorresponds to intervening on this source node. The argument is as follows: (1) IfCj ̸= 0for a non-source
+nodej, then letjbe the most downstream node withC j ̸= 0, in which caseP( ˆXi)̸=P I( ˆXi)for at least two
+interventions targetingjand its most downstream parents inPaG(j), which is a contradiction; (2) IfCi1 ̸= 0
+andC i2 ̸= 0for two source nodesi 1, i2, thenP( ˆXi)̸=P I( ˆXi)for two interventions targetingi1 andi 2, which
+is a contradiction. In general, we can apply this argument to identify all interventions inI1, ..., IK that target
+source nodes ofG. Then using an iterative argument, we can identify all interventions that target source
+nodes of the subgraph ofGafter removing its source nodes. This procedure results in the ancestral relations
+between the targets ofI1, ..., IK. This argument holds more generally even when causal variables are targeted
+by multiple interventions. Denoting byAncG(j) :={i∈[p]|j∈Des G(i)}the set ofancestorsof a nodejin
+Gand byT S(G)itstransitive closure, i.e.,i→j∈ T S(G)if and only ifi∈Anc G(j), we showed the following
+result [77].
+Theorem 21.Under Assumptions 19 and 20, given sufficient samples fromO,O I1 , . . . ,OIK the transitive
+closureT S(G)and the targets of the interventionsI 1, . . . , IK are identifiable up to a permutationπππof the
+variables[p]. If in addition for every edgei→j∈ G, for any constantsc,(d)k∈S ∈Rthere is
+Xi ̸⊥ ⊥Xj +cX i |(X PaG(j)\(S∪{i}) ,{X k +d kXi}k∈S),
+whereS=Pa G(j)∩Des G(i), then the full causal graphGis identifiable up to a permutationπππof the variables
+[p].
+In general, we cannot identify beyond the transitive closure ofG, since the effect of a direct edge may be
+explained by the transitive effects of multiple edges. DAGs with the same transitive closure can span a
+spectrum of sparsities; for example, a complete graph and a line graph with the same topological ordering
+have the same transitive closure. The additional assumption in the theorem can be seen as an additional
+interventional faithfulness condition and guarantees identifiability ofG(up to a permutation of the nodes).
+While in this case we can associate each latent causal variable with the interventions that target it (i.e., we
+can interpret the causal latent variables) and we can fully identify the causal structure among the latent causal
+variables, identification up to a permutation means that we cannot identifyXin an element-wise fashion.
+Application to learning gene regulatory networks.We next discuss the implications of our identifia-
+bility results in the context of large-scale Perturb-seq screens [41]. Given infinite high-dimensional single-cell
+transcriptomic readouts from a whole-genome Perturb-seq screenO,O I1 , . . . ,OIK , Theorem 21 guarantees
+that we can identify the interventions that act on the same latent node, the ancestral relationships among the
+intervention targets, and—under the additional assumption in the theorem—the exact causal structure. This
+means that we can identify the number of latent causal variables (which we can interpret as the gene programs
+of a cell), which genes belong to the same program, as well as the full regulatory relationships between the
+programs.
+In[77], weturnedthesetheoreticalresultsintoapracticalautoencodingvariationalBayesframeworktoestimate
+the latent causal representation from interventional data using maximum mean discrepancy. By applying our
+computational framework to a Perturb-seq study [41], we tested its ability to identify gene programs and
+regulatory networks between programs, as well as on the task of predicting the effect of unseen combinatorial
+interventions. The Perturb-seq dataset [41] contains 8,907 unperturbed cells (i.e., samples fromO) and 99,590
+perturbed cells that underwent CRISPR activation [23] targeting one or two out of 105 genes (samples from
+OI1 ,...,O IK withK= 217). In [33], we extended this framework to be able to incorporate prior knowledge
+on the gene regulatory network and applied it to a subset of a Perturb-seq experiment on K562 cells with279
+perturbations and more than200cells per perturbation [51].
+12
+3.3 Causal representation learning from partially overlapping multi-modal data.
+While the interventional setting considered in Section 3.2 can be seen as multi-modal, with each intervention be-
+ing a modality that provides a distinct view on the full causal system, we now consider the general multi-modal
+setting where each modality inO1, . . . ,OM , withOm ∈R dm form∈[M], is not necessarily interventional and
+may provide information only on a subset of the causal variables. In this case, we haveMdifferent mixing
+functionsf 1, . . . ,fM , one for each modality. LetX L withL ⊆[p]denote the set of latent causal variables
+that are shared across theMmodalities, and we denote byXLm,m∈[M]the modality-specific latent causal
+variables, i.e.,L1 ∪···∪L M = [p]\L. We assume that the modality-specific latent causal variables are disjoint,
+i.e.,L i ∩ Lj =∅ifi̸=j. Moreover, we make the following three assumptions.
+Assumption 22.The mixing functionsf 1, . . . ,fM are linear and invertible, i.e., for each modalitym∈[M]
+there is a full-column rank matrixFm ∈R dm×(|L|+|Lm|) such thatO m =F m(X⊤
+L,X⊤
+Lm)⊤.
+Assumption 23.The factors of the joint distributionPofXare specified by
+Xi =A ⊤
+i XPaG(i) +ϵ i,
+whereA i ∈R |PaG(i)| and the exogenous noise variablesϵi,i∈[p]are mutually independent, zero-mean, unit
+variance, non-degenrate, non-symmetric and pairwise different to each other and to the flipped versions, i.e.,
+they satisfyϵ i
+d
+=ϵ j orϵ i
+d
+=−ϵ j if and only ifi=j.
+Assumption 24.The underlying causal DAGGsatisfies the following conditions: there is no edge betweenL
+andL m for anym∈[M]and there is no edge betweenL i andL j for anyi̸=j.
+Similarly to the assumptions in Section 3.1 and 3.2, Assumption 22 ensures that we can identify the dimension
+pofXand search for the mixing functions (and consequentlyX) in a constrained subspace. Assumption 23
+allows us to extend the identifiability results of linear ICA [12, 17] to our multi-modal setup to identify the joint
+distribution. In particular, the assumption of pairwise different error distributions allows for “matching” the
+distributions across modalities to identify the ones corresponding to the shared latent space. Non-symmetry
+accounts for the sign-indeterminacy of linear ICA when matching the distributions. Assumption 24 implies that
+the shared causal variables do not depend on modality-specific ones, and that modality-specific causal variables
+from one modality do not depend on modality-specific causal variables from other modalities, although causal
+relations between modality-specific variables of the same modality are allowed. Under these assumptions, we
+showed the following result, namely that one can recover the distribution of the exogenous noise variables and
+the mapping from these variables to the observed variables up to a permutation, as well as identify the set of
+exogenous noise variables corresponding to the shared causal variablesXL.
+Theorem 25.LetI p denote the identity matrix of dimensionp. LetO∈R d1+···+dM denote the random
+vector obtained by stackingO1, . . . ,OM , and similarly, letF∈R (d1+···+dM)×p denote the matrix obtained by
+stackingF 1, . . . ,FM such thatO=FX, where the variables inXare ordered as(L,L 1, . . . ,LM ). Under
+Assumptions 22, 23, and 24, given sufficient samples fromO1, . . . ,OM we can identify the number of shared
+latent causal variables|L|and we can writeO= ˆBˆϵϵϵ, where we can identify the matrixˆBand joint distribution
+ˆϵϵϵ∼ ˆPas follows:
+ˆB=F(I p −A) −1Pπππ, ˆP=P πππ,
+whereP πππ ∈R p×p is a permutation matrix andPπππ is the joint distribution ofϵπ1 , . . . , ϵπP .
+With the following additional assumptions we can obtain identifiability results on the structure of the shared
+causal graph (among the latent causal variables that are shared across modalities).
+Assumption 26.For each shared latent nodeℓ∈ L, there exist two distinct observed variablesO∗
+i ,O∗
+j (can
+belong to any of theMmodalities) that depend only onXℓ.
+Assumption 27.For any two subsetsD⊆[d 1 +···+d M ]andL⊆ Land any matrices ˜A∈R p×p and
+˜F∈R (d1+···+dM)×p that have the same sparsity pattern asAandF, it holds that rank((F(Ip −A) −1)D,L)≥
+rank((˜F(Ip − ˜A)−1)D,L).
+Assumption 26 is a sparsity condition on the concatenated mixing matrixF; Assumption 27 guarantees that
+no configuration of edge parameters coincidentally yields low rank. Under these additional assumptions, we
+showed the following identifiability result in [65].
+13
+Theorem 28.Under Assumptions 22, 23, 24, 26, and 27, from sufficient samplesO 1, . . . ,OM the shared
+causal variablesX L and the shared causal graphG L (defined by the submatrixA L) are identifiable up to
+permutation and scaling, i.e., we can identify
+ˆXL =P πππCXL, ˆAL =P πππCALC−1P−1
+πππ ,
+whereP πππ ∈R |L|×|L| is a permutation matrix, andC∈R |L|×|L| is an invertible diagonal matrix.
+Application to multi-modal integration, translation, and disentanglement of biomedical data.
+We next discuss the implications of our identifiability results in the context of biomedical data together with
+practical algorithms for learningXfromO. We first consider the setting where all latent causal variablesXL
+are shared across modalities, i.e.,L= [p]. We developed various practical approaches based on autoencoders,
+where modality-specific encoders and decoders are used to map between observed data from each modality
+Om, m∈[M], and the shared latent spaceXL [73, 74, 48, 80]. When paired data is avaialble across modalities,
+i.e., wehaveaccesstodatafromthejointdistribution(O 1, . . . ,OM ), aconstrastivelosscanbeusedinthelatent
+space to align the different modalities. In [48], we applied this approach to construct a holistic representation
+of cardiovascular state based on two modalities,O1 being heart ECG data andO2 being heart MRI data.
+However, in many biomedical applications obtaining a measurement is destructive to the system and thus
+paired measurements are not available. For example, it is only possible to measure a cell via sequencing or
+imaging modality, but not both. In [73], when different (unpaired) modalities are generated from a shared
+latent representation, we proved that the problem of computing a probabilistic couplingXL between marginals
+of different modalitiesO1, . . . ,OM is equivalent to learning multiple uncoupled autoencoders that embed to
+a given shared latent distribution. In [74], we applied this framework to integrate single-cell RNA-seq and
+chromatin imaging data, which cannot be measured in the same cell, to identify distinct subpopulations of
+human naïve CD4+ T cells poised for activation [81].The advantage of using autoencoder architectures is their
+generative nature, which allows analyzing a related task, namely whether and how well one modality could
+be translated to another, in particular if one modality is cheaper and/or easier to obtain. Our work also
+suggested for the first time that cheap chromatin imaging may contain sufficient information to translate to
+more expensive and laborious RNA-seq measurements at single-cell resolution.
+In order to obtain the most complete picture of a causal system, it is critical to be able to integrate data
+of different modalities and understand what information is not shared between modalities. Our identifiability
+results for partially overlapping multi-modal data suggested that we could go beyond a fully shared latent space
+and identify information that is modality-specific. In [80], we proposed a computational framework that auto-
+matically learns partial information sharing across modalities via an autoencoder with a partially overlapping
+latent space (for two modalities this latent space corresponds to(XL,XL1 ,XL2 )). We applied this method to
+paired scRNA-seq and scATAC-seq data (SHARE-seq) [34], paired scRNA-seq and surface protein data (CITE-
+seq) [21], and large-scale multiplexed single-cell imaging datasets, such as the Human Protein Atlas [50]. In
+addition to multi-modal data integration and translation, this work provides the first computational framework
+in the biomedical domain for disentangling information that is shared between different data modalities from
+information that can only be obtained from a specific modality, a task that is critical for experimental design
+and the selection of modalities.
+4 Causal experimental design.
+We next consider the problem of experimental design in causal systems, where data is collected in an active
+fashion over multiple rounds either from the observational distribution, from different interventions, or other
+modalities. This is a relatively nascent area, and we consider two settings: the problem of optimal design of
+interventions, where in each round we can decide which interventions to perform, and the more general problem
+of optimal design of modalities, where in each round we can decide from which modality to collect data. By
+adaptively designing experiments taking the current dataset into account, it should be possible to achieve a
+desired goal more efficiently, with less amount of data, as compared to a passive design.
+Optimal design of interventions.Figure 7 illustrates the process of experimental design of interventions:
+The learned perturbation prediction model is iteratively updated overTrounds with the newly collected
+data. In round 1, a random subset of interventions is selected for which experiments are performed. These
+14
+Figure 7: Illustration of iterative intervention design.
+experiments, together with data from the observational distribution, are used as warm-up to obtain a predictive
+model of intervention effectsg1 :I→P I. In roundt+ 1, letI t denote the interventions performed so far and
+letg t denote the current model. The interventionsIt+1 \ It for the next batch of experiments are chosen so
+as to maximize anacquisition functiona t :I→R, which ranks all possible interventions. The problem of
+optimal design of interventions is relevant for the setting where all causal variables are observed considered in
+Section 2 as well as the causal representation learning setting considered in Section 3.
+The predictive modelgt is chosen depending on the application of interest. For example, in [1] we adopted a
+Bayesian approach, in which a structural causal modelGis learned to model the effect of an intervention, with
+Gsampled from the Bayesian posterior over all possible DAGs given the current data; in [76], we used a linear
+additive Gaussian causal model on the observed causal models together with shift interventions; and in [25]
+we used discrepancy-based variational autoencoders instead. Similarly, the acquisition functionat is tailored
+to the goal of the experiments. For example, in [1], we considered the problem of learning a function of the
+underlying causal graph (e.g., the set of descendants of a target node) subject to design constraints such as
+limits on the number of samples and rounds of experimentation, and we used mutual information between this
+function and the collected samples as the acquisition function. In [76], we considered the problem of achieving a
+desired target mean for the interventional distribution, and we used output-weighted variance as the acquisition
+function. We applied this framework to a semi-synthetic experiment to learn genetic interventions that achieve
+a target mean. In [79], we considered the same goal but assumed that one can gather infinite data per
+intervention and used a structure-based acquisition function. We extended this work in [57] to consider several
+goals including learning the orientation of edges of a specific set. Finally, in [25], we considered the goal of
+learning a generalizable functiong:I→P I for all possible interventionsIand experimented with multiple
+types of uncertainty-based acquistion functions. We applied this framework to the genome-wide Perturb-seq
+data on K562 cells [51] and estimated the number of interventions needed to learn a generalizable intervention
+effect model.
+Optimal design of modalities.Technological developments in the past decades have led to an explosion
+of data of different modalities in the biomedical sciences. Different modalities come with different cost and
+information. For example, heart ECG data is much more prevalent and cost-effective than heart MRI data,
+but in unlike MRI data, ECG data is believed to contain only limited structural information. In future
+work, it will be critical to build on the methods for learning and disentangling shared and modality-specific
+information discussed in Section 3.3 to develop principled approaches to decide which modality to prioritize
+given a particular downstream task.
+There is an extensive literature on experimental design, spanning areas such as Bayesian optimization, bandits,
+reinforcement learning, and uncertainty quantification. However, it is not well understood how to incorporate
+causal information so that experimental design guides data collection in a way that both benefits and con-
+tributes to accelerating the discovery of the underlying causal mechanisms. This is a nascent area with many
+open problems that are of great relevance for the biomedical sciences, where experiments are often performed
+iteratively and an important end goal is to obtain causal/mechanistic understanding.
+Acknowledgments.
+This review forms the basis for an Invited Section Lecture at the International Congress of Mathematicians
+2026. We thank all former and current members of the Uhler Lab as well as our collaborators for the many
+fruitful discussions that have collectively shaped our outlook and made this work possible.
+15
+References
+[1] Raj Agrawal, Chandler Squires, Karren Yang, Karthikeyan Shanmugam, and Caroline Uhler. ABCD-
+strategy: Budgeted experimental design for targeted causal structure discovery. InThe 22nd International
+Conference on Artificial Intelligence and Statistics, pages 3400–3409. PMLR, 2019.
+[2] Kartik Ahuja, Divyat Mahajan, Yixin Wang, and Yoshua Bengio. Interventional causal representation
+learning. InInternational Conference on Machine Learning, pages 372–407. PMLR, 2023.
+[3] Steen A Andersson, David Madigan, and Michael D Perlman. A characterization of markov equivalence
+classes for acyclic digraphs.The Annals of Statistics, 25(2):505–541, 1997.
+[4] Alev Baysoy, Zhiliang Bai, Rahul Satija, and Rong Fan. The technological landscape and applications of
+single-cell multi-omics.Nature Reviews Molecular Cell Biology, 24(10):695–713, 2023.
+[5] Anastasiya Belyaeva, Chandler Squires, and Caroline Uhler. DCI: learning causal differences between gene
+regulatory networks.Bioinformatics, 37(18):3067–3069, 2021.
+[6] Regine S Bohacek, Colin McMartin, and Wayne C Guida. The art and practice of structure-based drug
+design: a molecular modeling perspective.Medicinal Research Reviews, 16(1):3–50, 1996.
+[7] Peter Bühlmann. Invariance, causality and robustness.Statistical Science, 35(3):404–426, 2020.
+[8] Krzysztof Chalupka, Frederick Eberhardt, and Pietro Perona. Causal feature learning: an overview.
+Behaviormetrika, 44(1):137–164, 2017.
+[9] David Maxwell Chickering. Optimal structure identification with greedy search.Journal of Machine
+Learning Research, 3(Nov):507–554, 2002.
+[10] Tom Claassen, Joris Mooij, and Tom Heskes. Learning sparse causal models is not np-hard.arXiv preprint
+arXiv:1309.6824, 2013.
+[11] Diego Colombo, Marloes H Maathuis, et al. Order-independent constraint-based causal structure learning.
+Journal Machine Learning Research, 15(1):3741–3782, 2014.
+[12] Pierre Comon. Independent component analysis, a new concept?Signal Processing, 36(3):287–314, 1994.
+[13] Paul Datlinger, André F Rendeiro, Christian Schmidl, Thomas Krausgruber, Peter Traxler, Johanna
+Klughammer, Linda C Schuster, Amelie Kuchler, Donat Alpar, and Christoph Bock. Pooled CRISPR
+screening with single-cell transcriptome readout.Nature Methods, 14(3):297–301, 2017.
+[14] PayamDibaeiniaandSaurabhSinha. SERGIO:asingle-cellexpressionsimulatorguidedbygeneregulatory
+networks.Cell Systems, 11(3):252–271, 2020.
+[15] Atray Dixit, Oren Parnas, Biyu Li, Jenny Chen, Charles P Fulco, Livnat Jerby-Arnon, Nemanja D Mar-
+janovic, Danielle Dionne, Tyler Burks, Raktima Raychowdhury, et al. Perturb-seq: dissecting molecular
+circuits with scalable single-cell rna profiling of pooled genetic screens.Cell, 167(7):1853–1866, 2016.
+[16] Ulrike S Eggert and Timothy J Mitchison. Small molecule screening by imaging.Current Opinion in
+Chemical Biology, 10(3):232–237, 2006.
+[17] Jan Eriksson and Visa Koivunen. Identifiability, separability, and uniqueness of linear ica models.IEEE
+Signal Processing Letters, 11(7):601–604, 2004.
+[18] David Feldman, Avtar Singh, Jonathan L Schmid-Burgk, Rebecca J Carlson, Anja Mezger, Anthony J
+Garrity, Feng Zhang, and Paul C Blainey. Optical pooled screens in human cells.Cell, 179(3):787–799,
+2019.
+[19] Ronald Aylmer Fisher. The distribution of the partial correlation coefficient.Metron, 3:329–332, 1924.
+[20] Manuel Garber, Nir Yosef, Alon Goren, Raktima Raychowdhury, Anne Thielke, Mitchell Guttman, James
+Robinson, Brian Minie, Nicolas Chevrier, Zohar Itzhaki, et al. A high-throughput chromatin immunopre-
+cipitation approach reveals principles of dynamic gene regulation in mammals.Molecular Cell, 47(5):810–
+822, 2012.
+16
+[21] Adam Gayoso, Zoë Steier, Romain Lopez, Jeffrey Regier, Kristopher L Nazor, Aaron Streets, and Nir
+Yosef. Joint probabilistic modeling of single-cell multi-omic data with totalvi.Nature methods, 18(3):272–
+282, 2021.
+[22] Dan Geiger, Thomas Verma, and Judea Pearl. Identifying independence in Bayesian networks.Networks,
+20(5):507–534, 1990.
+[23] Luke A Gilbert, Max A Horlbeck, Britt Adamson, Jacqueline E Villalta, Yuwen Chen, Evan H Whitehead,
+Carla Guimaraes, Barbara Panning, Hidde L Ploegh, Michael C Bassik, et al. Genome-scale CRISPR-
+mediated control of gene repression and activation.Cell, 159(3):647–661, 2014.
+[24] Alain Hauser and Peter Bühlmann. Characterization and greedy learning of interventional markov equiv-
+alence classes of directed acyclic graphs.Journal of Machine Learning Research, 13(1):2409–2464, 2012.
+[25] Chujun He, Jiaqi Zhang, Munther Dahleh, and Caroline Uhler. Morph predicts the single-cell outcome of
+genetic perturbations across conditions and data modalities.bioRxiv, pages 2025–06, 2025.
+[26] Ann C Huang, Tsung-Han S Hsieh, Jiang Zhu, Jackson Michuda, Ashton Teng, Soohong Kim, Elizabeth M
+Rumsey, Sharon K Lam, Ikenna Anigbogu, Philip Wright, et al. X-Atlas/Orion: genome-wide perturb-seq
+datasets via a scalable fix-cryopreserve platform for training dose-dependent biological foundation models.
+bioRxiv, pages 2025–06, 2025.
+[27] Aapo Hyvärinen and Petteri Pajunen. Nonlinear independent component analysis: Existence and unique-
+ness results.Neural Networks, 12(3):429–439, 1999.
+[28] Fattaneh Jabbari, Joseph Ramsey, Peter Spirtes, and Gregory Cooper. Discovery of causal models that
+contain latent variables through Bayesian scoring of independence constraints. InJoint European confer-
+ence on machine learning and knowledge discovery in databases, pages 142–157. Springer, 2017.
+[29] Gavin J Knott and Jennifer A Doudna. CRISPR-Cas guides the future of genetic engineering.Science,
+361(6405):866–869, 2018.
+[30] Gustavo Lacerda, Peter L Spirtes, Joseph Ramsey, and Patrik O Hoyer. Discovering cyclic causal models
+by independent components analysis.arXiv preprint arXiv:1206.3273, 2012.
+[31] Wai-Yin Lam, Bryan Andrews, and Joseph Ramsey. Greedy relaxations of the sparsest permutation
+algorithm. InUncertainty in Artificial Intelligence, pages 1052–1062. PMLR, 2022.
+[32] Steffen L Lauritzen.Graphical models, volume 17. Clarendon Press, 1996.
+[33] Emily Liu, Jiaqi Zhang, and Caroline Uhler. Learning genetic perturbation effects with variational causal
+inference.bioRxiv, pages 2025–06, 2025.
+[34] Sai Ma, Bing Zhang, Lindsay M LaFave, Andrew S Earl, Zachary Chiang, Yan Hu, Jiarui Ding, Alison
+Brack, Vinay K Kartha, Tristan Tay, et al. Chromatin potential identified by shared single-cell profiling
+of rna and chromatin.Cell, 183(4):1103–1116, 2020.
+[35] Hugues Marchand, Alexander Martin, Robert Weismantel, and Laurence Wolsey. Cutting planes in integer
+and mixed integer programming.Discrete Applied Mathematics, 123(1-3):397–446, 2002.
+[36] Bijan Mazaheri, Jiaqi Zhang, and Caroline Uhler. Faithfulness and intervention-only causal discovery. In
+ICML 2025 Workshop on Scaling Up Intervention Models, 2025.
+[37] Christopher Meek. Causal inference and causal explanation with background knowledge.arXiv preprint
+arXiv:1302.4972, 2013.
+[38] Nicolai Meinshausen, Alain Hauser, Joris M Mooij, Jonas Peters, Philip Versteeg, and Peter Bühlmann.
+Methods for causal inference from gene perturbation experiments and validation.Proceedings of the
+National Academy of Sciences, 113(27):7361–7368, 2016.
+[39] Marc Franquesa Monés, Jiaqi Zhang, and Caroline Uhler. On the number of conditional indepdence tests
+in constraint-based causal discovery.arXiv preprint arXiv:2406.01823, 2024.
+17
+[40] Joris M Mooij, Dominik Janzing, Tom Heskes, and Bernhard Schölkopf. On causal discovery with cyclic
+additive noise models.Advances in Neural Information Processing Systems, 24, 2011.
+[41] Thomas M Norman, Max A Horlbeck, Joseph M Replogle, Alex Y Ge, Albert Xu, Marco Jost, Luke A
+Gilbert, and Jonathan S Weissman. Exploring genetic interaction manifolds constructed from rich single-
+cell phenotypes.Science, 365(6455):786–793, 2019.
+[42] Juan Miguel Ogarrio, Peter Spirtes, and Joe Ramsey. A hybrid causal search algorithm for latent variable
+models. InConference on Probabilistic Graphical Models, pages 368–379. PMLR, 2016.
+[43] Judea Pearl.Causality. Cambridge University Press, 2009.
+[44] Judea Pearl.Probabilistic reasoning in intelligent systems: networks of plausible inference. Elsevier, 2014.
+[45] Judea Pearl and Azaria Paz. Graphoids: Graph-based logic for reasoning about relevance relations or
+when would x tell you more about y if you already know z? InProbabilistic and Causal Inference: The
+Works of Judea Pearl, pages 189–200. 2022.
+[46] Jonas Peters, Dominik Janzing, and Bernhard Schölkopf.Elements of causal inference: foundations and
+learning algorithms. The MIT press, 2017.
+[47] Jonas Peters, Joris Mooij, Dominik Janzing, and Bernhard Schölkopf. Identifiability of causal graphs using
+functional models.arXiv preprint arXiv:1202.3757, 2012.
+[48] Adityanarayanan Radhakrishnan, Sam F Friedman, Shaan Khurshid, Kenney Ng, Puneet Batra, Steven A
+Lubitz, Anthony A Philippakis, and Caroline Uhler. Cross-modal autoencoder framework learns holistic
+representations of cardiovascular state.Nature Communications, 14(1):2436, 2023.
+[49] Garvesh Raskutti and Caroline Uhler. Learning directed acyclic graph models based on sparsest permu-
+tations.Stat, 7(1):e183, 2018.
+[50] Aviv Regev, Sarah A Teichmann, Eric S Lander, Ido Amit, Christophe Benoist, Ewan Birney, Bernd
+Bodenmiller, Peter Campbell, Piero Carninci, Menna Clatworthy, et al. The human cell atlas.elife,
+6:e27041, 2017.
+[51] Joseph M Replogle, Reuben A Saunders, Angela N Pogson, Jeffrey A Hussmann, Alexander Lenail,
+Alina Guna, Lauren Mascibroda, Eric J Wagner, Karen Adelman, Gila Lithwick-Yanai, et al. Mapping
+information-rich genotype-phenotype landscapes with genome-scale perturb-seq.Cell, 185(14):2559–2575,
+2022.
+[52] Thomas S Richardson. A discovery algorithm for directed cyclic graphs.arXiv preprint arXiv:1302.3599,
+2013.
+[53] Paul Rolland, Volkan Cevher, Matthäus Kleindessner, Chris Russell, Dominik Janzing, Bernhard
+Schölkopf, and Francesco Locatello. Score matching enables causal discovery of nonlinear additive noise
+models. InInternational Conference on Machine Learning, pages 18741–18753. PMLR, 2022.
+[54] Karen Sachs, Omar Perez, Dana Pe’er, Douglas A Lauffenburger, and Garry P Nolan. Causal protein-
+signaling networks derived from multiparameter single-cell data.Science, 308(5721):523–529, 2005.
+[55] Bernhard Schölkopf, Dominik Janzing, Jonas Peters, Eleni Sgouritsa, Kun Zhang, and Joris Mooij. On
+causal and anticausal learning.arXiv preprint arXiv:1206.6471, 2012.
+[56] Bernhard Schölkopf, Francesco Locatello, Stefan Bauer, Nan Rosemary Ke, Nal Kalchbrenner, Anirudh
+Goyal, and Yoshua Bengio. Toward causal representation learning.Proceedings of the IEEE, 109(5):612–
+634, 2021.
+[57] Kirankumar Shiragur, Jiaqi Zhang, and Caroline Uhler. Meek separators and their applications in targeted
+causal discovery.Advances in Neural Information Processing Systems, 36:48744–48767, 2023.
+[58] Kirankumar Shiragur, Jiaqi Zhang, and Caroline Uhler. Causal discovery with fewer conditional indepen-
+dence tests.arXiv preprint arXiv:2406.01823, 2024.
+18
+[59] Liam Solus, Yuhao Wang, and Caroline Uhler. Consistency guarantees for greedy permutation-based
+causal inference algorithms.Biometrika, 108(4):795–814, 2021.
+[60] Peter Spirtes. An anytime algorithm for causal inference. InInternational Workshop on Artificial Intelli-
+gence and Statistics, pages 278–285. PMLR, 2001.
+[61] Peter Spirtes, Clark N Glymour, and Richard Scheines.Causation, Prediction, and Search. MIT press,
+2000.
+[62] Peter Spirtes and Richard Scheines. Causal inference of ambiguous manipulations.Philosophy of Science,
+71(5):833–845, 2004.
+[63] Chandler Squires, Anna Seigal, Salil S Bhate, and Caroline Uhler. Linear causal disentanglement via
+interventions. InInternational Conference on Machine Learning, pages 32540–32560. PMLR, 2023.
+[64] Chandler Squires, Yuhao Wang, and Caroline Uhler. Permutation-based causal structure learning with
+unknown intervention targets. InConference on Uncertainty in Artificial Intelligence, pages 1039–1048.
+PMLR, 2020.
+[65] Nils Sturma, Chandler Squires, Mathias Drton, and Caroline Uhler. Unpaired multi-domain causal repre-
+sentation learning.Advances in Neural Information Processing Systems, 36:34465–34492, 2023.
+[66] Kai Z Teh, Kayvan Sadeghi, and Terry Soo. A general framework for constraint-based causal learning.
+arXiv preprint arXiv:2408.07575, 2024.
+[67] Jin Tian and Judea Pearl. Causal discovery from changes.arXiv preprint arXiv:1301.2312, 2013.
+[68] Caroline Uhler, Garvesh Raskutti, Peter Bühlmann, and Bin Yu. Geometry of the faithfulness assumption
+in causal inference.The Annals of Statistics, pages 436–463, 2013.
+[69] Thomas Verma and Judea Pearl. Causal networks: Semantics and expressiveness. InMachine Intelligence
+and Pattern Recognition, volume 9, pages 69–76. Elsevier, 1990.
+[70] Yuhao Wang, Liam Solus, Karren Yang, and Caroline Uhler. Permutation-based causal inference algo-
+rithms with interventions.Advances in Neural Information Processing Systems, 30, 2017.
+[71] Ryan Welch, Jiaqi Zhang, and Caroline Uhler. Identifiability guarantees for causal disentanglement from
+purely observational data.Advances in Neural Information Processing Systems, 37:102796–102821, 2024.
+[72] Karren Yang, Abigail Katcoff, and Caroline Uhler. Characterizing and learning equivalence classes of
+causal dags under interventions. InInternational Conference on Machine Learning, pages 5541–5550.
+PMLR, 2018.
+[73] Karren D Yang and Caroline Uhler. Multi-domain translation by learning uncoupled autoencoders. 2019.
+[74] Karren Dai Yang, Anastasiya Belyaeva, Saradha Venkatachalapathy, Karthik Damodaran, Abigail Kat-
+coff, Adityanarayanan Radhakrishnan, GV Shivashankar, and Caroline Uhler. Multi-domain translation
+between single-cell imaging and sequencing data using autoencoders.Nature Communications, 12(1):31,
+2021.
+[75] Fereshteh Sadat Younesi, Andrew E Miller, Thomas H Barker, Fabio MV Rossi, and Boris Hinz. Fibroblast
+and myofibroblast activation in normal tissue repair and fibrosis.Nature Reviews Molecular Cell Biology,
+25(8):617–638, 2024.
+[76] Jiaqi Zhang, Louis Cammarata, Chandler Squires, Themistoklis P Sapsis, and Caroline Uhler. Active
+learning for optimal intervention design in causal models.Nature Machine Intelligence, 5(10):1066–1075,
+2023.
+[77] Jiaqi Zhang, Kristjan Greenewald, Chandler Squires, Akash Srivastava, Karthikeyan Shanmugam, and
+Caroline Uhler. Identifiability guarantees for causal disentanglement from soft interventions.Advances in
+Neural Information Processing Systems, 36:50254–50292, 2023.
+19
+[78] Jiaqi Zhang, Kirankumar Shiragur, and Caroline Uhler. Membership testing in markov equivalence classes
+via independence queries. InInternational Conference on Artificial Intelligence and Statistics, pages 3925–
+3933. PMLR, 2024.
+[79] Jiaqi Zhang, Chandler Squires, and Caroline Uhler. Matching a desired causal state via shift interventions.
+Advances in Neural Information Processing Systems, 34:19923–19934, 2021.
+[80] Xinyi Zhang, GV Shivashankar, and Caroline Uhler. Partially shared multi-modal embedding learns
+holistic representation of cell state.bioRxiv, pages 2024–10, 2024.
+[81] Grace XY Zheng, Jessica M Terry, Phillip Belgrader, Paul Ryvkin, Zachary W Bent, Ryan Wilson,
+Solongo B Ziraldo, Tobias D Wheeler, Geoff P McDermott, Junjie Zhu, et al. Massively parallel digital
+transcriptional profiling of single cells.Nature Communications, 8(1):14049, 2017.
+[82] Zhenyu Zhu, Francesco Locatello, and Volkan Cevher. Sample complexity bounds for score-matching:
+Causal discovery and generative modeling.Advances in Neural Information Processing Systems, 36:3325–
+3337, 2023.
+20
