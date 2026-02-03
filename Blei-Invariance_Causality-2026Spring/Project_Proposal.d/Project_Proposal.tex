@@ -50,9 +50,9 @@ Using \textbf{Invariant Risk Minimization (IRM)} [Arjovsky et al., 2019, p. 5] a
     \item \textbf{Representation:} Extract features $\Phi(X)$ from property data and protest letters [Schölkopf et al., 2021, p. 15].
     \item \textbf{Methods:} We implement the two core paradigms discussed in the seminar:
     \begin{itemize}
-        \item \textbf{IRM (Regularized Optimization):} Learn a representation $\Phi$ such that a \textbf{fixed dummy classifier} $w=1.0$ is simultaneously optimal across all $\mathcal{E}_{tr}$, enforced via a gradient norm penalty [Arjovsky et al., 2019, p. 5]:
+        \item \textbf{IRM (Regularized Optimization):} Learn a representation $\Phi$ such that a \textbf{fixed dummy classifier} $w=1.0$ is simultaneously optimal across all $\mathcal{E}_{tr}$, enforced via a \textbf{gradient norm penalty} [Arjovsky et al., 2019, p. 5]:
         \[ \min_{\Phi} \sum_{e \in \mathcal{E}_{tr}} R^e(\Phi) + \lambda \|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2 \]
-        \item \textbf{BIP (Posterior Inference):} Define a latent \textbf{feature selection vector} $z \in \{0,1\}^p$ and compute the \textbf{posterior} $p(z|D)$ to identify the subset of features with a \textbf{stable predictive relationship} to the outcome [Wu et al., 2025b, p. 2].
+        \item \textbf{BIP (Posterior Inference):} Define a latent \textbf{feature selection vector} $z \in \{0,1\}^p$ and compute the \textbf{posterior} $p(z|D)$ which \textbf{targets the true invariant features} [Wu et al., 2025b, p. 2].
     \end{itemize}
 \end{enumerate}
 

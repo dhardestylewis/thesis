@@ -157,7 +157,7 @@ The measurable estimate of **Risk** calculated as the average loss over a finite
 A function measuring the discrepancy between a prediction and the true label. In this project, the logistic loss (for binary outcome **Resistance**) serves as the basis for the **Empirical Risk**.
 *   *Grounding:* [Arjovsky et al., 2019, p. 4]
 
-**Gradient Penalty**
+**Gradient Norm Penalty**
 The core regularization term in **regularized optimization** approaches like **IRM**: $\|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2$. It measures the optimality of a **fixed dummy classifier** at each environment, acting as a selection pressure for invariance.
 *   *Grounding:* [Arjovsky et al., 2019, p. 5 / Wu et al., 2025b, p. 3]
 
@@ -170,7 +170,7 @@ A latent binary vector $z \in \{0, 1\}^p$ where each entry $z(i)$ indicates whet
 *   *Grounding:* [Wu et al., 2025b, p. 2]
 
 **Posterior Inference**
-The probabilistic process of calculating $p(z|D)$ to identify the most likely invariant feature set given multi-environment data.
+The probabilistic process of calculating $p(z|D)$ which **targets the true invariant features** given multi-environment data.
 *   *Grounding:* [Wu et al., 2025b, p. 2]
 
 **Reliability**
