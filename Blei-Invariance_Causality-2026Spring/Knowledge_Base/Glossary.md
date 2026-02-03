@@ -145,6 +145,22 @@ The analytical workflow of **identifying** and discriminating between invariant 
 The standard machine learning baseline which minimizes the average loss over the training data. ERM assumes that training and test distributions are identical ($P_{tr} = P_{te}$) and often fails under **Distribution Shift** by absorbing **Spurious Associations**.
 *   *Grounding:* [Arjovsky et al., 2019, Sec. 2.1 / Vapnik, 1992]
 
+**Risk ($R^e(f)$)**
+The expected value of the **Loss Function** for a predictor $f$ on environment $e$. In IRM, we seek to minimize risk simultaneously across all training environments.
+*   *Grounding:* [Arjovsky et al., 2019, p. 4]
+
+**Empirical Risk**
+The measurable estimate of **Risk** calculated as the average loss over a finite dataset $\mathcal{D}_e$.
+*   *Grounding:* [Arjovsky et al., 2019, Sec. 2.1]
+
+**Loss Function ($\ell$)**
+A function measuring the discrepancy between a prediction and the true label. In this project, the logistic loss (for binary outcome **Resistance**) serves as the basis for the **Empirical Risk**.
+*   *Grounding:* [Arjovsky et al., 2019, p. 4]
+
+**Gradient Penalty**
+The core regularization term in **IRM**: $\|\nabla_{w|w=1.0} R^e(w \cdot \Phi)\|^2$. It acts as a selection pressure by **penalizing** representations where the optimal classifier would vary across environments, thus "filtering" for invariance.
+*   *Grounding:* [Arjovsky et al., 2019, Eq. 5 / Wu et al. 2025b p. 3]
+
 **Reliability**
 The property of a model generating stable and trustworthy predictions across varying environments. In causal learning, reliability is achieved when the model relies on the **Invariant Causal Mechanism**, making it robust to context shifts.
 *   *Grounding:* [Schölkopf et al., 2021, p. 29]
