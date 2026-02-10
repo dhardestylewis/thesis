@@ -32,53 +32,48 @@
 \section*{Summary}
 This week's readings bridge statistical prediction and causal inference via \textbf{invariance}.
 \begin{itemize}
-    \item \textbf{Peters, Janzing, and Schölkopf (2018)} (Book, Ch 1, 2, 7) establish the \textbf{Principle of Independent Mechanisms}: causal mechanisms, represented by conditional distributions $P(E|C)$ of the effect $E$ given the cause $C$, are autonomous and invariant (Peters et al., 2018, p. 17; Principle 2.1, p. 19).
-    While the joint distribution $P(C, E)$ may shift (Peters et al., 2018, p. 112)
-    across environments (Peters et al., 2016, p. 949),
-    the conditional distribution $P(E|C)$ remains stable (Peters et al., 2018, Principle 2.1, p. 19; Bühlmann, 2020, p. 404).
+    \item \textbf{Peters, Janzing, and Schölkopf (2018)} (Book, Ch 1, 2, 7) establish \textbf{Principle 2.1} (The Principle of Independent Mechanisms): causal mechanisms, represented by conditional distributions $P(E|C)$, are autonomous and invariant.
+    While the joint distribution $P(C, E)$ may shift across environments (Peters et al., 2016),
+    the conditional method $P(E|C)$ remains stable (Peters et al., 2018).
     This establishes the \textbf{theoretical foundation} for causal discovery without graph learning.
-    \item \textbf{Peters, Bühlmann, and Meinshausen (2016)} (JRSS-B) \textbf{operationalize} the \textbf{Principle of Independent Mechanisms} for strict causal discovery with \textbf{Invariant Causal Prediction (ICP)} (Peters et al., 2016, p. 953).
-    They define plausible causal predictors as subsets $S$ yielding an invariant $P(Y \mid X_S)$ across environments $\mathcal{E}$ (Peters et al., 2016, p. 949; Definition 1, Assumption 1, p. 953).
-    The intersection $\hat{S}(\mathcal{E})$ identifies causal ancestors (Theorem 1) (Peters et al., 2016, Eq. 3, Theorem 1, p. 954), transforming discovery into a search for stability (Bühlmann, 2020, p. 404).
-    \item While ICP assumes strict invariance, \textbf{Bühlmann (2020)} \textbf{generalizes} this framework to handle hidden confounding, reframing causality as a \textbf{risk minimization problem} via \textbf{Anchor Regression}. This approach prioritizes \textbf{robustness} (Bühlmann, 2020, p. 404) % "Robustness"
-    over strict identification, allowing for diluted causality (Bühlmann, 2020, p. 413) % Sec 4.3.2 p413
+    \item \textbf{Peters, Bühlmann, and Meinshausen (2016)} (JRSS-B) \textbf{operationalize} this principle for strict causal discovery with \textbf{Invariant Causal Prediction (ICP)}.
+    They define plausible causal predictors (Definition 1) as those yielding an invariant $P(Y \mid X_S)$ across environments $\mathcal{E}$ (Assumption 1).
+    \textbf{Theorem 1} shows that the intersection $\hat{S}(\mathcal{E})$ identifies causal ancestors (Peters et al., 2016), transforming discovery into a search for stability (Bühlmann, 2020).
+    \item While ICP assumes strict invariance, \textbf{Bühlmann (2020)} \textbf{generalizes} this framework to handle hidden confounding, reframing causality as a \textbf{risk minimization problem} via \textbf{Anchor Regression}. This approach prioritizes \textbf{robustness} (Bühlmann, 2020) % "Robustness"
+    over strict identification, allowing for diluted causality (Bühlmann, 2020) % Sec 4.3.2 p413
     where exact discovery is impossible.
 \end{itemize}
 
 \section*{Critique \& Project Connection}
 This shift from \textbf{traditional structure learning} (Peters et al., 2018, Ch 7) % "Learning Multivariate Causal Models"
-to \textbf{invariant prediction} (Peters et al., 2016, p. 960) % "Method I: invariant prediction"
-is crucial when the causal graph (Pearl, 2009, p. 22; Peters et al., 2018, p. 101) % "Causal Graph"
+to \textbf{invariant prediction} (Peters et al., 2016) % "Method I: invariant prediction"
+is crucial when the causal graph (Pearl, 2009; Peters et al., 2018) % "Causal Graph"
 is unknowable.
-    For my \href{https://github.com/dhardestylewis/thesis/blob/main/Blei-Invariance_Causality-2026Spring/Project_Proposal.d/2026-02-02/Project_Proposal_Final_V21.pdf}{\textit{Predicting NIMBYism Causally}} project, this justifies pooling data from distinct regimes to find invariant predictors of opposition (Peters et al., 2016, pp. 949, 953, 968).
+    For my \href{https://github.com/dhardestylewis/thesis/blob/main/Blei-Invariance_Causality-2026Spring/Project_Proposal.d/2026-02-02/Project_Proposal_Final_V21.pdf}{\textit{Predicting NIMBYism Causally}} project, this justifies pooling data from distinct regimes to find invariant predictors of opposition (Peters et al., 2016).
 \begin{enumerate}
-    \item Following Peters et al. (2016), I can treat years as environments $\mathcal{E}$ (Peters et al., 2016, p. 949).
-    If a feature (e.g., gentrification score) predicts opposition $Y$ invariantly across 2007 and 2024, it is a stable causal candidate (Peters et al., 2016, p. 953; Bühlmann, 2020, p. 404).
-    \item Bühlmann's \textbf{Anchor Regression} (Bühlmann, 2020, p. 411) % "Anchor Regression"
-    offers a tool if strict invariance (Peters et al., 2016, p. 953) % "strict invariance"
-    is too strong for \textbf{digitized} protest letters subject to \textbf{measurement error} (Peters et al., 2018, p. 158). % "systematic noise"
-    It helps identify diluted causal factors (Bühlmann, 2020, p. 413) % Sec 4.3.2 "Diluted form of causality"
-    predictive even under distribution shifts (Peters et al., 2018, p. 112) % "Covariate Shift"
-    , aligning with the goal of robust (Bühlmann, 2020, p. 404) % "Robustness"
+    \item Following Peters et al. (2016), I can treat years as environments $\mathcal{E}$.
+    If a feature (e.g., gentrification score) predicts opposition $Y$ invariantly across 2007 and 2024, it is a stable causal candidate (Bühlmann, 2020, Proposition 4.1).
+    \item Bühlmann's \textbf{Anchor Regression} (Eq. 4.3)
+    offers a tool if strict invariance is too strong for \textbf{digitized} protest letters subject to \textbf{measurement error} (Peters et al., 2018).
+    It helps identify diluted causal factors
+    predictive even under distribution shifts, aligning with the goal of robust (Bühlmann, 2020)
     identification.
 \end{enumerate}
 
 \section*{Questions}
 \begin{enumerate}
-    \item Bühlmann (2020) suggests diluted causality (Bühlmann, 2020, p. 413) % Sec 4.3.2 "Diluted form of causality"
-    when strict discovery fails. Should we prefer \textbf{Anchor Regression} (Bühlmann, 2020, p. 411) % "Anchor regression"
-    over \textbf{ICP} (Peters et al., 2016, p. 953) % "Invariant Causal Prediction"
-    for high-dimensional \textbf{digitized} protest letters where unconfoundedness (Peters et al., 2018, p. 142) % "hidden confounding"
+    \item Bühlmann (2020) suggests diluted causality (Bühlmann, 2020) % Sec 4.3.2 "Diluted form of causality"
+    when strict discovery fails. Should we prefer \textbf{Anchor Regression} (Bühlmann, 2020) % "Anchor regression"
+    over \textbf{ICP} (Peters et al., 2016) % "Invariant Causal Prediction"
+    for high-dimensional \textbf{digitized} protest letters where unconfoundedness (Peters et al., 2018) % "hidden confounding"
     is unlikely?
-    \item Peters et al. (2016) assume identical error distributions (Peters et al., 2016, Assumption 1, p. 953) % Assump 1 "errors have the same distribution"
-    $F_\epsilon$ across environments. How sensitive is ICP to slight distributional drifts (Peters et al., 2018, p. 112) % "Covariate Shift"
-    (e.g., language drift) that do not strictly qualify as interventions (Peters et al., 2018, p. 55) % "Interventions"
+    \item Peters et al. (2016) assume identical error distributions (Peters et al., 2016, Assumption 1) % Assump 1 "errors have the same distribution"
+    $F_\epsilon$ across environments. How sensitive is ICP to slight distributional drifts (Peters et al., 2018) % "Covariate Shift"
+    (e.g., language drift) that do not strictly qualify as interventions (Peters et al., 2018) % "Interventions"
     ?
-    \item \textbf{Methodological Mismatch:} ICP and Anchor Regression typically assume continuous outcomes. Peters et al. (2016) suggest an extension to \textbf{logistic regression} (Peters et al., 2016, Sec 6.3, p. 969), % "extension to logistic regression"
+    \item \textbf{Methodological Mismatch:} ICP and Anchor Regression typically assume continuous outcomes. Peters et al. (2016) suggest an extension to \textbf{logistic regression} (Peters et al., 2016, Sec 6.3), % "extension to logistic regression"
     using Peters' fast approximate Method II (Peters et al., 2016, Sec 3.1.2) to test residuals $R = Y - \hat{f}(X)$ for equal mean across environments. Is this heuristic sufficient for our sparse data, or should we substitute a Linear Probability Model?
-    \item \textbf{Future Direction:} Peters et al. (2016) rely on buckets of hypothesis tests (Hypothesis Testing, p. 953). Would a \textbf{Bayesian} approach, treating the invariant set as a latent variable (Wu et al., 2025b, p. 2) % "latent variable"
-    , better quantify uncertainty (Wu et al., 2025b, p. 1) % "quantification of uncertainty"
-    given our limited market regime environments?
+    \item \textbf{Future Direction:} Peters et al. (2016) rely on buckets of hypothesis tests. Would \textbf{VI-BIP} (Wu et al., 2025b, Algorithm 2), which treats the invariant set as a latent variable, be more appropriate for high-dimensional text data? Wu et al. (2025b, Theorem 1) prove posterior consistency, potentially offering better uncertainty quantification than frequency-based rejection.
 \end{enumerate}
 
 \newpage
@@ -88,18 +83,21 @@ is unknowable.
 \vspace{1em}
 
 \section*{1. What problem am I solving?}
-I am investigating the drivers of neighborhood housing opposition, often called NIMBYism (Einstein et al., 2019, p. 28). My goal is to move beyond correlation to find predictors that minimize \textbf{worst-case risk} (Bühlmann, 2020, p. 412) % "worst case risk"
-across distribution shifts (Arjovsky et al., 2019; Peters et al., 2018, p. 112) % "Covariate Shift"
-. My aim is to identify \textbf{invariant} (Peters et al., 2016, p. 953) % Def 1 "invariant"
-features that predict resistance consistently across the distinct \textbf{market regimes} (Peters et al., 2016, p. 949) % "environments"
-from 2018 to 2025, which are robust (Bühlmann, 2020, p. 404) % "Robustness"
-to unobserved confounding (Peters et al., 2016, p. 963) % "hidden variables"
-.
+I am investigating the drivers of neighborhood housing opposition, often called NIMBYism (Einstein et al., 2019). My goal is to move beyond correlation to find predictors that minimize \textbf{worst-case risk} (Bühlmann, 2020) % "worst case risk"
+across distribution shifts (Arjovsky et al., 2019; Peters et al., 2018) % "Covariate Shift"
+. My aim is to identify \textbf{invariant} (Peters et al., 2016) % Def 1 "invariant"
+features that predict resistance consistently across the distinct \textbf{market regimes} (Peters et al., 2016) % "environments"
+from 2018 to 2025, which are robust (Bühlmann, 2020) % "Robustness"
+to unobserved confounding (Peters et al., 2016) % "hidden variables"
+. Since standard ERM minimizes average risk (Arjovsky et al., 2019, Eq. 1), it absorbs spurious background correlations (e.g., "traffic" as a proxy for race); I need a method that enforces the \textbf{IRM principle}: optimal classifiers must match across environments (Arjovsky et al., 2019, Definition 3).
+
+    In domain terms, this means ensuring predictions of NIMBYism remain reliable even when the economic context shifts drastically—for instance, from the low-interest-rate boom of 2021 to the high-rate environment of 2024. By targeting \textit{invariance} rather than mere correlation (e.g., ``luxury projects = opposition''), we isolate stable, structural drivers (e.g., ``loss of sunlight'') that persist regardless of the market, allowing for robust policy design.
 
 \section*{2. Why is this problem important? To whom?}
-This problem is critical for urban planners. Standard models (e.g., OLS, topic models) fail when \textbf{market regimes} (Peters et al., 2016, p. 949) % "environments"
-shift, such as during interest rate hikes. By identifying \textbf{causally robust} (Bühlmann, 2020, p. 404) % "Causality and Robustness"
-predictors, we can design policies that address fundamental drivers rather than fleeting correlations. This ensures reliability across future, unseen environments (Bühlmann, 2020, p. 409) % "unseen environments"
+This problem is critical for urban planners. Standard models (e.g., OLS, topic models) fail when \textbf{market regimes} (Peters et al., 2016) % "environments"
+shift, such as during interest rate hikes. By identifying \textbf{causally robust} (Bühlmann, 2020) % "Causality and Robustness"
+drivers of opposition, planners can design interventions (e.g., "guaranteed parking") that remain effective even when the economic wind changes.
+    For a planner asking ``Will this concession work in 2025?'', standard OLS models only reveal what worked \textit{on average} in the past. Causally robust models, by contrast, identify interventions that work \textit{consistently} across varying past conditions, making them a safer bet for future, unseen environments (Bühlmann, 2020).
 .
 
 \section*{3. What is my strategy for solving it?}
@@ -108,8 +106,7 @@ and \textbf{Anchor Regression} (Bühlmann, 2020, p. 411) % "Anchor Regression"
 to handle unobserved confounding.
 \begin{enumerate}
     \setlength\itemsep{-0.3em}
-    \item \textbf{Environments:} I will partition the data via expanding windows into Training sets $\mathcal{E}_{tr}$ and Test sets $\mathcal{E}_{te}$ by treating \textbf{market regimes} as distinct environments (Peters et al., 2016, p. 949) % "environments"
-    .
+    \item \textbf{Environments:} I will partition the data via expanding windows into Training sets $\mathcal{E}_{tr}$ and Test sets $\mathcal{E}_{te}$ by treating \textbf{market regimes} as distinct environments (Peters et al., 2016).
     \begin{center}
     \scriptsize
     \begin{tabular}{l|l|l}
@@ -120,27 +117,31 @@ to handle unobserved confounding.
     $N$ & 2018--2024 & 2025
     \end{tabular}
     \end{center}
-    \item \textbf{Representation:} I will extract features $\Phi(X)$ from property data and protest letters (Schölkopf et al., 2021, p. 15).
-    \item \textbf{Methods (Approximation):} Since standard ICP/Anchor methods assume continuous outcomes, I will use the \textbf{logistic regression extension} of Peters' fast approximate Method II (Peters et al., 2016, Sec 3.1.2, Sec 6.3). % "Method II"
+    \item \textbf{Representation:} I will extract features $\Phi(X)$ from property data and protest letters (Schölkopf et al., 2021). My assumption is that under the \textbf{Sparse Mechanism Shift (SMS)} hypothesis (Schölkopf et al., 2021, Sec. IV), the causal mechanism of opposition remains stable even as market distributions shift.
+    \item \textbf{Methods (Approximation):} I will use the \textbf{logistic regression extension} of Peters' fast approximate Method II.
     \begin{itemize}
-        \item \textbf{Strict Invariance:} Using \textbf{ICP Method II}, I will search for subsets $S$ where the residuals $R = Y - \hat{f}(\Phi(S))$ of a logistic model have equal mean across the training environments $\mathcal{E}_{tr}$ (Peters et al., 2016, Definition 1, p. 953; Sec 3.1.2).
-        \item \textbf{Diluted Causality:} Since unobserved confounding (Peters et al., 2016, p. 963)
-        is likely in \textbf{digitized} protest letters due to \textbf{participation bias} (Einstein et al., 2019), strict invariance may be too strong. I will use \textbf{Anchor Regression} (Bühlmann, 2020, Eq. 4.2, p. 412)
-        to find predictors that minimize the worst-case squared risk over shift perturbations (Bühlmann, 2020, Eq. 2.3, p. 406).
+        \item \textbf{Strict Invariance:} Using \textbf{ICP Method II}, I will search for subsets $S$ where the residuals $R = Y - \hat{f}(\Phi(S))$ of a logistic model have equal mean across the training environments $\mathcal{E}_{tr}$ (Definition 1).
+        \item \textbf{Diluted Causality:} Since unobserved confounding is likely in \textbf{digitized} protest letters due to \textbf{participation bias}, strict invariance may be too strong. I will use \textbf{Anchor Regression} (Bühlmann, 2020, Eq. 4.3)
+        to find predictors that minimize the worst-case squared risk over shift perturbations (Proposition 4.1).
     \end{itemize}
 \end{enumerate}
 
 \section*{4. Why is this solution good? Where does it fall short?}
-This solution is good because it directly addresses the fragility of current models to distribution shift (Arjovsky et al., 2019; Peters et al., 2018, p. 112) % "Covariate Shift"
-. \textbf{Anchor Regression} provides a principled way to trade off predictiveness and robustness (Bühlmann, 2020, p. 404) % "Invariance, Causality and Robustness"
+This solution is good because it directly addresses the fragility of current models to distribution shift (Arjovsky et al., 2019; Peters et al., 2018) % "Covariate Shift"
+. \textbf{Anchor Regression} provides a principled way to trade off predictiveness and robustness (Bühlmann, 2020) % "Invariance, Causality and Robustness"
 when strict causal discovery is impossible.
-The solution falls short because it assumes the \textbf{structural mechanism} $P(Y|PA(Y))$ (where $PA(Y)$ denotes the causal parents of $Y$) is invariant (Peters et al., 2018, pp. 17, 19).
-If the \textit{reasons} for NIMBYism fundamentally change, such as due to a cultural shift, even robust methods will fail.
+    Crucially, this acknowledges that we can never perfectly de-confound observational text data (e.g., we cannot see "backroom deals"). Anchor Regression allows us to explicitly choose how much "insurance" we want against this missing information, preventing the model from being overconfident.
+
+The solution falls short because IRM and ICP require environments to lie in \textbf{linear general position} (Arjovsky et al., 2019, Theorem 9) or satisfying \textbf{diversity assumptions} (Peters et al., 2016).
+With fewer than $d$ environments (here, only a few market regimes), identifying the unique invariant representation may be impossible without strong priors. However, these methods have proven effective in analogous high-dimensional settings, such as \textbf{gene perturbation analysis} (Wu et al., 2025b; Kemmeren et al., 2014), where they successfully identified stable mechanisms amidst noisy data—a challenge parallel to our text-as-data context.
 
 \section*{5. How can I demonstrate that the solution works?}
-To empirically validate this approach, I will train the model on the training environments $\mathcal{E}_{tr}$ and test it on the future horizons $\mathcal{E}_{te}$. A successful model will demonstrate \textbf{predictive stability} (Bühlmann, 2020, p. 404) % "stability"
-, or invariant performance, across regimes. It will outperform standard ERM baselines on \textbf{worst-case} unseen environments (Krueger et al., 2021; Bühlmann, 2020, p. 409) % "unseen environments"
-.
+To empirically validate this approach, I will train the model on the training environments $\mathcal{E}_{tr}$ and test it on the future horizons $\mathcal{E}_{te}$. A successful model will demonstrate \textbf{predictive stability} (Bühlmann, 2020) % "stability"
+, or invariant performance, across regimes.
+    Empirically, if a model trained on 2018-2022 data accurately predicts opposition levels in the radically different 2023-2024 market, it proves we have captured the "invariant mechanism" of NIMBYism rather than just the era's noise.
+
+It will outperform standard ERM baselines on \textbf{worst-case} unseen environments (Krueger et al., 2021; Bühlmann, 2020).
+I will also compare IRM against \textbf{Risk Extrapolation (V-REx)}, which penalizes the \textit{variance} of training risks (Krueger et al., 2021, Eq. 8) rather than the gradient norm, to see which regularization better captures the stability of NIMBYism.
 
 \section*{References}
 \scriptsize
@@ -150,6 +151,7 @@ To empirically validate this approach, I will train the model on the training en
     \item Arjovsky, M., Bottou, L., Gulrajani, I., and Lopez-Paz, D. (2019). Invariant Risk Minimization. \textit{arXiv:1907.02893}.
     \item Bühlmann, P. (2020). Invariance, Causality and Robustness. \textit{Statistical Science}, 35(3):404--426.
     \item Einstein, K. L., Palmer, M., and Glick, D. M. (2019). Who Participates in Local Government? Evidence from Meeting Minutes. \textit{Perspectives on Politics}, 17(1):28--46.
+    \item Kemmeren, P., et al. (2014). Large-scale genetic perturbations reveal regulatory networks. \textit{Cell}, 157(3):740--752.
     \item Krueger, D., Caballero, E., Jacobsen, J., Zhang, A., Binas, J., Zhang, D., Priol, R. L., and Courville, A. (2021). Out-of-Distribution Generalization via Risk Extrapolation. \textit{arXiv:2003.00688}.
     \item Pearl, J. (2009). \textit{Causality}. Cambridge University Press.
     \item Peters, J., Bühlmann, P., and Meinshausen, N. (2016). Causal inference by using invariant prediction. \textit{JRSS-B}, 78(5):947--1012.
