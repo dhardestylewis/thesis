@@ -1,0 +1,190 @@
+2026-02-19 12:57:20,276 [INFO] ======================================================================
+2026-02-19 12:57:20,277 [INFO] MULTI-HORIZON GENERATIVE BACKTEST — run_id=20260219_125720
+2026-02-19 12:57:20,278 [INFO] ======================================================================
+2026-02-19 12:57:20,279 [INFO] Loading panel from Data/Panel/Property_Year_Panel.csv
+2026-02-19 13:00:03,287 [INFO] Loaded 1611468 rows (years 2019+, EARS year-matched)
+2026-02-19 13:00:06,577 [INFO]   Year 2019: 262950 rows, 186 pos (0.071%)
+2026-02-19 13:00:06,578 [INFO]   Year 2020: 265813 rows, 183 pos (0.069%)
+2026-02-19 13:00:06,582 [INFO]   Year 2021: 269012 rows, 315 pos (0.117%)
+2026-02-19 13:00:06,583 [INFO]   Year 2022: 271462 rows, 250 pos (0.092%)
+2026-02-19 13:00:06,586 [INFO]   Year 2023: 271524 rows, 113 pos (0.042%)
+2026-02-19 13:00:06,586 [INFO]   Year 2024: 270707 rows, 400 pos (0.148%)
+2026-02-19 13:00:57,801 [INFO] Features: 3 numeric + 56 cat = 59 total
+2026-02-19 13:00:57,802 [INFO] ==================================================
+2026-02-19 13:00:57,803 [INFO] HORIZON: 1 year(s) ahead
+2026-02-19 13:00:57,804 [INFO] ==================================================
+2026-02-19 13:00:57,804 [INFO] --------------------------------------------------
+2026-02-19 13:00:57,805 [INFO] FOLD: train=[2019-2019], test=2020 (h=1)
+2026-02-19 13:00:58,040 [INFO]   Train: 262950 rows, 186 pos (0.071%)
+2026-02-19 13:00:58,044 [INFO]   Test:  265813 rows, 183 pos (0.069%)
+2026-02-19 13:00:58,216 [INFO]   Training LogReg...
+2026-02-19 13:01:15,588 [INFO]     LogReg: ROC-AUC=0.7634 PR-AUC=0.0982 Brier=0.0040 (16.9s)
+2026-02-19 13:01:15,593 [INFO]   Training CVAE...
+2026-02-19 13:01:52,794 [INFO]     CVAE: ROC-AUC=0.5896 PR-AUC=0.0082 Brier=0.2571 (36.7s)
+2026-02-19 13:01:52,797 [INFO]   Training Diffusion...
+2026-02-19 13:02:08,504 [INFO]     Diffusion: ROC-AUC=0.7490 PR-AUC=0.0425 Brier=0.0776 (12.6s)
+2026-02-19 13:02:08,532 [INFO] --------------------------------------------------
+2026-02-19 13:02:08,562 [INFO] FOLD: train=[2019-2020], test=2021 (h=1)
+2026-02-19 13:02:10,275 [INFO]   Train: 528763 rows, 369 pos (0.070%)
+2026-02-19 13:02:10,276 [INFO]   Test:  269012 rows, 315 pos (0.117%)
+2026-02-19 13:02:10,389 [INFO]   Training LogReg...
+2026-02-19 13:02:15,136 [INFO]     LogReg: ROC-AUC=0.5136 PR-AUC=0.0513 Brier=0.0169 (4.6s)
+2026-02-19 13:02:15,137 [INFO]   Training CVAE...
+2026-02-19 13:02:26,573 [INFO]     CVAE: ROC-AUC=0.6226 PR-AUC=0.0238 Brier=0.2593 (11.2s)
+2026-02-19 13:02:26,574 [INFO]   Training Diffusion...
+2026-02-19 13:02:30,107 [INFO]     Diffusion: ROC-AUC=0.5781 PR-AUC=0.0364 Brier=0.0851 (3.4s)
+2026-02-19 13:02:30,109 [INFO] --------------------------------------------------
+2026-02-19 13:02:30,110 [INFO] FOLD: train=[2019-2021], test=2022 (h=1)
+2026-02-19 13:02:30,306 [INFO]   Train: 797775 rows, 684 pos (0.086%)
+2026-02-19 13:02:30,308 [INFO]   Test:  271462 rows, 250 pos (0.092%)
+2026-02-19 13:02:30,421 [INFO]   Training LogReg...
+2026-02-19 13:02:37,424 [INFO]     LogReg: ROC-AUC=0.9957 PR-AUC=0.1162 Brier=0.0115 (6.8s)
+2026-02-19 13:02:37,425 [INFO]   Training CVAE...
+2026-02-19 13:02:53,315 [INFO]     CVAE: ROC-AUC=0.5453 PR-AUC=0.0105 Brier=0.2538 (15.6s)
+2026-02-19 13:02:53,316 [INFO]   Training Diffusion...
+2026-02-19 13:02:57,761 [INFO]     Diffusion: ROC-AUC=0.9957 PR-AUC=0.0975 Brier=0.1011 (4.3s)
+2026-02-19 13:02:57,762 [INFO] --------------------------------------------------
+2026-02-19 13:02:57,762 [INFO] FOLD: train=[2019-2022], test=2023 (h=1)
+2026-02-19 13:02:57,976 [INFO]   Train: 1069237 rows, 934 pos (0.087%)
+2026-02-19 13:02:57,978 [INFO]   Test:  271524 rows, 113 pos (0.042%)
+2026-02-19 13:02:58,087 [INFO]   Training LogReg...
+2026-02-19 13:03:07,060 [INFO]     LogReg: ROC-AUC=0.9947 PR-AUC=0.0446 Brier=0.0110 (8.8s)
+2026-02-19 13:03:07,061 [INFO]   Training CVAE...
+2026-02-19 13:03:28,995 [INFO]     CVAE: ROC-AUC=0.5285 PR-AUC=0.0033 Brier=0.2584 (21.7s)
+2026-02-19 13:03:28,996 [INFO]   Training Diffusion...
+2026-02-19 13:03:34,819 [INFO]     Diffusion: ROC-AUC=0.9935 PR-AUC=0.0331 Brier=0.1043 (5.7s)
+2026-02-19 13:03:34,819 [INFO] --------------------------------------------------
+2026-02-19 13:03:34,820 [INFO] FOLD: train=[2019-2023], test=2024 (h=1)
+2026-02-19 13:03:35,040 [INFO]   Train: 1340761 rows, 1047 pos (0.078%)
+2026-02-19 13:03:35,040 [INFO]   Test:  270707 rows, 400 pos (0.148%)
+2026-02-19 13:03:35,155 [INFO]   Training LogReg...
+2026-02-19 13:03:45,247 [INFO]     LogReg: ROC-AUC=0.9734 PR-AUC=0.1475 Brier=0.0098 (9.9s)
+2026-02-19 13:03:45,247 [INFO]   Training CVAE...
+2026-02-19 13:04:09,747 [INFO]     CVAE: ROC-AUC=0.5546 PR-AUC=0.0228 Brier=0.2505 (24.2s)
+2026-02-19 13:04:09,748 [INFO]   Training Diffusion...
+2026-02-19 13:04:15,830 [INFO]     Diffusion: ROC-AUC=0.9725 PR-AUC=0.1195 Brier=0.1098 (5.9s)
+2026-02-19 13:04:15,830 [INFO] ==================================================
+2026-02-19 13:04:15,830 [INFO] HORIZON: 2 year(s) ahead
+2026-02-19 13:04:15,831 [INFO] ==================================================
+2026-02-19 13:04:15,832 [INFO] --------------------------------------------------
+2026-02-19 13:04:15,832 [INFO] FOLD: train=[2019-2019], test=2021 (h=2)
+2026-02-19 13:04:15,967 [INFO]   Train: 262950 rows, 186 pos (0.071%)
+2026-02-19 13:04:15,968 [INFO]   Test:  269012 rows, 315 pos (0.117%)
+2026-02-19 13:04:16,022 [INFO]   Scenario chaining: adding h=1 predictions as feature
+2026-02-19 13:04:16,076 [INFO]   Training LogReg...
+2026-02-19 13:04:19,162 [INFO]     LogReg: ROC-AUC=0.5420 PR-AUC=0.0635 Brier=0.0044 (2.9s)
+2026-02-19 13:04:19,164 [INFO]   Training CVAE...
+2026-02-19 13:04:24,930 [INFO]     CVAE: ROC-AUC=0.4192 PR-AUC=0.0122 Brier=0.2533 (5.5s)
+2026-02-19 13:04:24,931 [INFO]   Training Diffusion...
+2026-02-19 13:04:27,053 [INFO]     Diffusion: ROC-AUC=0.5206 PR-AUC=0.0364 Brier=0.0598 (1.9s)
+2026-02-19 13:04:27,054 [INFO] --------------------------------------------------
+2026-02-19 13:04:27,054 [INFO] FOLD: train=[2019-2020], test=2022 (h=2)
+2026-02-19 13:04:27,171 [INFO]   Train: 528763 rows, 369 pos (0.070%)
+2026-02-19 13:04:27,173 [INFO]   Test:  271462 rows, 250 pos (0.092%)
+2026-02-19 13:04:27,231 [INFO]   Scenario chaining: adding h=1 predictions as feature
+2026-02-19 13:04:27,304 [INFO]   Training LogReg...
+2026-02-19 13:04:31,394 [INFO]     LogReg: ROC-AUC=0.7547 PR-AUC=0.0883 Brier=0.0161 (3.9s)
+2026-02-19 13:04:31,395 [INFO]   Training CVAE...
+2026-02-19 13:04:41,377 [INFO]     CVAE: ROC-AUC=0.4824 PR-AUC=0.0114 Brier=0.2545 (9.7s)
+2026-02-19 13:04:41,378 [INFO]   Training Diffusion...
+2026-02-19 13:04:44,407 [INFO]     Diffusion: ROC-AUC=0.8523 PR-AUC=0.0584 Brier=0.0921 (2.9s)
+2026-02-19 13:04:44,408 [INFO] --------------------------------------------------
+2026-02-19 13:04:44,408 [INFO] FOLD: train=[2019-2021], test=2023 (h=2)
+2026-02-19 13:04:44,537 [INFO]   Train: 797775 rows, 684 pos (0.086%)
+2026-02-19 13:04:44,538 [INFO]   Test:  271524 rows, 113 pos (0.042%)
+2026-02-19 13:04:44,617 [INFO]   Scenario chaining: adding h=1 predictions as feature
+2026-02-19 13:04:44,712 [INFO]   Training LogReg...
+2026-02-19 13:04:50,459 [INFO]     LogReg: ROC-AUC=0.9949 PR-AUC=0.0449 Brier=0.0119 (5.6s)
+2026-02-19 13:04:50,459 [INFO]   Training CVAE...
+2026-02-19 13:05:05,550 [INFO]     CVAE: ROC-AUC=0.5340 PR-AUC=0.0028 Brier=0.2526 (14.8s)
+2026-02-19 13:05:05,550 [INFO]   Training Diffusion...
+2026-02-19 13:05:09,265 [INFO]     Diffusion: ROC-AUC=0.9924 PR-AUC=0.0299 Brier=0.1060 (3.6s)
+2026-02-19 13:05:09,266 [INFO] --------------------------------------------------
+2026-02-19 13:05:09,266 [INFO] FOLD: train=[2019-2022], test=2024 (h=2)
+2026-02-19 13:05:09,429 [INFO]   Train: 1069237 rows, 934 pos (0.087%)
+2026-02-19 13:05:09,429 [INFO]   Test:  270707 rows, 400 pos (0.148%)
+2026-02-19 13:05:09,525 [INFO]   Scenario chaining: adding h=1 predictions as feature
+2026-02-19 13:05:09,652 [INFO]   Training LogReg...
+2026-02-19 13:05:17,494 [INFO]     LogReg: ROC-AUC=0.9739 PR-AUC=0.1660 Brier=0.0101 (7.7s)
+2026-02-19 13:05:17,496 [INFO]   Training CVAE...
+2026-02-19 13:05:37,728 [INFO]     CVAE: ROC-AUC=0.5877 PR-AUC=0.0231 Brier=0.2499 (20.0s)
+2026-02-19 13:05:37,729 [INFO]   Training Diffusion...
+2026-02-19 13:05:43,185 [INFO]     Diffusion: ROC-AUC=0.9953 PR-AUC=0.1316 Brier=0.1014 (5.3s)
+2026-02-19 13:05:43,186 [INFO] ==================================================
+2026-02-19 13:05:43,187 [INFO] HORIZON: 3 year(s) ahead
+2026-02-19 13:05:43,187 [INFO] ==================================================
+2026-02-19 13:05:43,187 [INFO] --------------------------------------------------
+2026-02-19 13:05:43,188 [INFO] FOLD: train=[2019-2019], test=2022 (h=3)
+2026-02-19 13:05:43,286 [INFO]   Train: 262950 rows, 186 pos (0.071%)
+2026-02-19 13:05:43,287 [INFO]   Test:  271462 rows, 250 pos (0.092%)
+2026-02-19 13:05:43,335 [INFO]   Scenario chaining: adding h=2 predictions as feature
+2026-02-19 13:05:43,388 [INFO]   Training LogReg...
+2026-02-19 13:05:46,406 [INFO]     LogReg: ROC-AUC=0.7185 PR-AUC=0.1230 Brier=0.0039 (2.9s)
+2026-02-19 13:05:46,407 [INFO]   Training CVAE...
+2026-02-19 13:05:52,487 [INFO]     CVAE: ROC-AUC=0.6142 PR-AUC=0.0116 Brier=0.2516 (5.8s)
+2026-02-19 13:05:52,488 [INFO]   Training Diffusion...
+2026-02-19 13:05:54,303 [INFO]     Diffusion: ROC-AUC=0.8983 PR-AUC=0.0309 Brier=0.0594 (1.7s)
+2026-02-19 13:05:54,304 [INFO] --------------------------------------------------
+2026-02-19 13:05:54,305 [INFO] FOLD: train=[2019-2020], test=2023 (h=3)
+2026-02-19 13:05:54,430 [INFO]   Train: 528763 rows, 369 pos (0.070%)
+2026-02-19 13:05:54,431 [INFO]   Test:  271524 rows, 113 pos (0.042%)
+2026-02-19 13:05:54,488 [INFO]   Scenario chaining: adding h=2 predictions as feature
+2026-02-19 13:05:54,560 [INFO]   Training LogReg...
+2026-02-19 13:05:58,592 [INFO]     LogReg: ROC-AUC=0.9776 PR-AUC=0.0454 Brier=0.0161 (3.9s)
+2026-02-19 13:05:58,593 [INFO]   Training CVAE...
+2026-02-19 13:06:08,867 [INFO]     CVAE: ROC-AUC=0.5971 PR-AUC=0.0039 Brier=0.2523 (10.0s)
+2026-02-19 13:06:08,868 [INFO]   Training Diffusion...
+2026-02-19 13:06:11,613 [INFO]     Diffusion: ROC-AUC=0.9921 PR-AUC=0.0278 Brier=0.0932 (2.6s)
+2026-02-19 13:06:11,614 [INFO] --------------------------------------------------
+2026-02-19 13:06:11,615 [INFO] FOLD: train=[2019-2021], test=2024 (h=3)
+2026-02-19 13:06:11,755 [INFO]   Train: 797775 rows, 684 pos (0.086%)
+2026-02-19 13:06:11,757 [INFO]   Test:  270707 rows, 400 pos (0.148%)
+2026-02-19 13:06:11,827 [INFO]   Scenario chaining: adding h=2 predictions as feature
+2026-02-19 13:06:11,920 [INFO]   Training LogReg...
+2026-02-19 13:06:17,524 [INFO]     LogReg: ROC-AUC=0.9726 PR-AUC=0.1557 Brier=0.0113 (5.4s)
+2026-02-19 13:06:17,525 [INFO]   Training CVAE...
+2026-02-19 13:06:32,523 [INFO]     CVAE: ROC-AUC=0.4236 PR-AUC=0.0075 Brier=0.2539 (14.7s)
+2026-02-19 13:06:32,524 [INFO]   Training Diffusion...
+2026-02-19 13:06:36,329 [INFO]     Diffusion: ROC-AUC=0.9585 PR-AUC=0.1344 Brier=0.0914 (3.6s)
+2026-02-19 13:06:36,331 [INFO] ======================================================================
+2026-02-19 13:06:36,331 [INFO] SUMMARY ACROSS ALL FOLDS
+2026-02-19 13:06:36,331 [INFO] ======================================================================
+2026-02-19 13:06:36,331 [INFO]   h=1 LogReg roc_auc: mean=0.8481 std=0.1887
+2026-02-19 13:06:36,332 [INFO]   h=1 LogReg pr_auc: mean=0.0916 std=0.0390
+2026-02-19 13:06:36,332 [INFO]   h=1 LogReg brier_score: mean=0.0106 std=0.0041
+2026-02-19 13:06:36,333 [INFO]   h=1 LogReg ece: mean=0.0259 std=0.0129
+2026-02-19 13:06:36,333 [INFO]   h=1 CVAE roc_auc: mean=0.5681 std=0.0338
+2026-02-19 13:06:36,333 [INFO]   h=1 CVAE pr_auc: mean=0.0137 std=0.0082
+2026-02-19 13:06:36,334 [INFO]   h=1 CVAE brier_score: mean=0.2558 std=0.0033
+2026-02-19 13:06:36,335 [INFO]   h=1 CVAE ece: mean=0.4952 std=0.0027
+2026-02-19 13:06:36,335 [INFO]   h=1 Diffusion roc_auc: mean=0.8577 std=0.1677
+2026-02-19 13:06:36,335 [INFO]   h=1 Diffusion pr_auc: mean=0.0658 std=0.0357
+2026-02-19 13:06:36,336 [INFO]   h=1 Diffusion brier_score: mean=0.0956 std=0.0122
+2026-02-19 13:06:36,337 [INFO]   h=1 Diffusion ece: mean=0.2939 std=0.0251
+2026-02-19 13:06:36,337 [INFO]   h=2 LogReg roc_auc: mean=0.8164 std=0.1842
+2026-02-19 13:06:36,337 [INFO]   h=2 LogReg pr_auc: mean=0.0907 std=0.0461
+2026-02-19 13:06:36,338 [INFO]   h=2 LogReg brier_score: mean=0.0106 std=0.0042
+2026-02-19 13:06:36,338 [INFO]   h=2 LogReg ece: mean=0.0264 std=0.0143
+2026-02-19 13:06:36,338 [INFO]   h=2 CVAE roc_auc: mean=0.5058 std=0.0624
+2026-02-19 13:06:36,339 [INFO]   h=2 CVAE pr_auc: mean=0.0124 std=0.0072
+2026-02-19 13:06:36,339 [INFO]   h=2 CVAE brier_score: mean=0.2526 std=0.0017
+2026-02-19 13:06:36,339 [INFO]   h=2 CVAE ece: mean=0.4945 std=0.0006
+2026-02-19 13:06:36,340 [INFO]   h=2 Diffusion roc_auc: mean=0.8402 std=0.1933
+2026-02-19 13:06:36,341 [INFO]   h=2 Diffusion pr_auc: mean=0.0641 std=0.0404
+2026-02-19 13:06:36,341 [INFO]   h=2 Diffusion brier_score: mean=0.0898 std=0.0180
+2026-02-19 13:06:36,341 [INFO]   h=2 Diffusion ece: mean=0.2834 std=0.0373
+2026-02-19 13:06:36,342 [INFO]   h=3 LogReg roc_auc: mean=0.8896 std=0.1210
+2026-02-19 13:06:36,342 [INFO]   h=3 LogReg pr_auc: mean=0.1080 std=0.0462
+2026-02-19 13:06:36,343 [INFO]   h=3 LogReg brier_score: mean=0.0104 std=0.0050
+2026-02-19 13:06:36,343 [INFO]   h=3 LogReg ece: mean=0.0262 std=0.0167
+2026-02-19 13:06:36,344 [INFO]   h=3 CVAE roc_auc: mean=0.5450 std=0.0861
+2026-02-19 13:06:36,344 [INFO]   h=3 CVAE pr_auc: mean=0.0076 std=0.0031
+2026-02-19 13:06:36,344 [INFO]   h=3 CVAE brier_score: mean=0.2526 std=0.0010
+2026-02-19 13:06:36,344 [INFO]   h=3 CVAE ece: mean=0.4976 std=0.0010
+2026-02-19 13:06:36,345 [INFO]   h=3 Diffusion roc_auc: mean=0.9496 std=0.0388
+2026-02-19 13:06:36,346 [INFO]   h=3 Diffusion pr_auc: mean=0.0644 std=0.0495
+2026-02-19 13:06:36,346 [INFO]   h=3 Diffusion brier_score: mean=0.0813 std=0.0155
+2026-02-19 13:06:36,347 [INFO]   h=3 Diffusion ece: mean=0.2631 std=0.0354
+2026-02-19 13:06:36,350 [INFO] Results CSV: Analysis/Results\generative_backtest_results.csv
+2026-02-19 13:06:36,350 [INFO] Done. Elapsed: 0:09:16.071175
+2026-02-19 13:06:36,351 [INFO] JSONL log: Analysis/Results\generative_backtest_log.jsonl

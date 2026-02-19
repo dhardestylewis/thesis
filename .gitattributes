@@ -1,1 +1,2 @@
 /Analysis/Notebooks/03_Modeling_Zoning_Opposition.ipynb filter=lfs diff=lfs merge=lfs -text
+/Data/Zoning_Cases/Source_Data/land_use_inventory_prefetched.csv filter=lfs diff=lfs merge=lfs -text

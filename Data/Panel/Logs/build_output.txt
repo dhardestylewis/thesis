@@ -1,0 +1,108 @@
+﻿2026-02-16 17:40:03,750 [INFO] Panel construction started at 2026-02-16T17:40:03.750513
+2026-02-16 17:40:03,750 [INFO] Project dir: C:\Users\dhl\data\thesis\thesis
+2026-02-16 17:40:03,751 [INFO] Data dir: C:\Users\dhl\data\thesis\thesis\Data
+2026-02-16 17:40:03,751 [INFO] Panel dir: C:\Users\dhl\data\thesis\thesis\Data\Panel
+2026-02-16 17:40:03,751 [INFO] ============================================================
+2026-02-16 17:40:03,751 [INFO] STEP 1: Extracting Property Universe from GeoJSON
+2026-02-16 17:40:03,751 [INFO] ============================================================
+2026-02-16 17:40:07,097 [INFO] Total GeoJSON features: 27363
+2026-02-16 17:40:07,122 [INFO] Unique properties: 2902
+2026-02-16 17:40:07,123 [INFO] Properties with protest history: 2902
+2026-02-16 17:40:07,159 [INFO] Wrote 2902 properties to C:\Users\dhl\data\thesis\thesis\Data\Panel\property_universe.csv
+2026-02-16 17:40:07,309 [INFO] ============================================================
+2026-02-16 17:40:07,309 [INFO] STEP 2: Creating Property ╫ Year Skeleton
+2026-02-16 17:40:07,309 [INFO] ============================================================
+2026-02-16 17:40:07,309 [INFO] Year range: 2007û2024 (18 years)
+2026-02-16 17:40:07,309 [INFO] Expected rows: 2902 ╫ 18 = 52236
+2026-02-16 17:40:07,477 [INFO] Wrote 52236 rows to C:\Users\dhl\data\thesis\thesis\Data\Panel\property_year_skeleton.csv
+2026-02-16 17:40:07,477 [INFO] Total protest=1: 3004 (5.75%)
+2026-02-16 17:40:07,477 [INFO] Total protest=0: 49232
+2026-02-16 17:40:07,478 [INFO]   Year 2008: 95 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2009: 56 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2010: 25 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2011: 282 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2012: 34 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2013: 76 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2014: 186 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2015: 318 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2016: 126 protests
+2026-02-16 17:40:07,478 [INFO]   Year 2017: 170 protests
+2026-02-16 17:40:07,479 [INFO]   Year 2018: 139 protests
+2026-02-16 17:40:07,479 [INFO]   Year 2019: 189 protests
+2026-02-16 17:40:07,479 [INFO]   Year 2020: 194 protests
+2026-02-16 17:40:07,479 [INFO]   Year 2021: 331 protests
+2026-02-16 17:40:07,479 [INFO]   Year 2022: 255 protests
+2026-02-16 17:40:07,479 [INFO]   Year 2023: 116 protests
+2026-02-16 17:40:07,479 [INFO]   Year 2024: 412 protests
+2026-02-16 17:40:07,479 [INFO] ============================================================
+2026-02-16 17:40:07,479 [INFO] STEP 3: Parsing EARS Appraisal Rolls
+2026-02-16 17:40:07,479 [INFO] ============================================================
+2026-02-16 17:40:07,480 [INFO] EARS layout: 84 columns
+2026-02-16 17:40:07,480 [INFO] Keeping 82 columns, excluding 2
+2026-02-16 17:40:07,481 [INFO] Excluded columns: {'arb_protest_flag', 'arb_protest_result'}
+2026-02-16 17:40:07,481 [INFO] Parsing EARS 2019: C:\Users\dhl\data\thesis\thesis\Data\Appraisal_Rolls\2019\EARS_2019_Master.csv
+2026-02-16 17:41:18,689 [INFO]   Total rows: 2,818,376
+2026-02-16 17:41:18,689 [INFO]   AJR rows: 2,786,747
+2026-02-16 17:41:18,689 [INFO]   Unique accounts: 448,685
+2026-02-16 17:41:18,689 [INFO]   Duplicates skipped: 2,338,062
+2026-02-16 17:41:33,266 [INFO]   Wrote 448,685 records to C:\Users\dhl\data\thesis\thesis\Data\Panel\ears_2019_clean.csv
+2026-02-16 17:41:33,266 [INFO] Parsing EARS 2020: C:\Users\dhl\data\thesis\thesis\Data\Appraisal_Rolls\2020\EARS_2020_Master.csv
+2026-02-16 17:42:11,456 [INFO]   Total rows: 2,871,650
+2026-02-16 17:42:11,456 [INFO]   AJR rows: 2,841,049
+2026-02-16 17:42:11,456 [INFO]   Unique accounts: 456,524
+2026-02-16 17:42:11,456 [INFO]   Duplicates skipped: 2,384,525
+2026-02-16 17:42:23,249 [INFO]   Wrote 456,524 records to C:\Users\dhl\data\thesis\thesis\Data\Panel\ears_2020_clean.csv
+2026-02-16 17:42:23,249 [INFO] Parsing EARS 2021: C:\Users\dhl\data\thesis\thesis\Data\Appraisal_Rolls\2021\EARS_2021_Master.csv
+2026-02-16 17:42:58,517 [INFO]   Total rows: 2,458,038
+2026-02-16 17:42:58,517 [INFO]   AJR rows: 2,433,026
+2026-02-16 17:42:58,517 [INFO]   Unique accounts: 462,964
+2026-02-16 17:42:58,518 [INFO]   Duplicates skipped: 1,970,062
+2026-02-16 17:43:14,176 [INFO]   Wrote 462,964 records to C:\Users\dhl\data\thesis\thesis\Data\Panel\ears_2021_clean.csv
+2026-02-16 17:43:14,176 [INFO] Parsing EARS 2022: C:\Users\dhl\data\thesis\thesis\Data\Appraisal_Rolls\2022\EARS_2022_Master.csv
+2026-02-16 17:43:58,326 [INFO]   Total rows: 2,511,456
+2026-02-16 17:43:58,326 [INFO]   AJR rows: 2,486,311
+2026-02-16 17:43:58,326 [INFO]   Unique accounts: 449,840
+2026-02-16 17:43:58,326 [INFO]   Duplicates skipped: 2,036,471
+2026-02-16 17:44:11,782 [INFO]   Wrote 449,840 records to C:\Users\dhl\data\thesis\thesis\Data\Panel\ears_2022_clean.csv
+2026-02-16 17:44:11,794 [INFO] ============================================================
+2026-02-16 17:44:11,794 [INFO] STEP 4: Building ID Crosswalk
+2026-02-16 17:44:11,794 [INFO] ============================================================
+2026-02-16 17:44:11,794 [INFO] Loading Land Use Inventory: C:\Users\dhl\data\thesis\thesis\Data\Zoning_Cases\Source_Data\land_use_inventory_prefetched.csv
+python : Traceback (most recent call 
+last):
+At line:1 char:1
++ python 
+Analysis\Scripts\build_panel.py 2>&1 | 
+Out-File -Encoding utf8 ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (Traceback (most recent call l  
+  ast)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+  File "C:\Users\dhl\data\thesis\thesis\
+Analysis\Scripts\build_panel.py", line 
+607, in <module>
+    main()
+  File "C:\Users\dhl\data\thesis\thesis\
+Analysis\Scripts\build_panel.py", line 
+588, in main
+    crosswalk = 
+step4_id_crosswalk(ears_data)
+                
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dhl\data\thesis\thesis\
+Analysis\Scripts\build_panel.py", line 
+320, in step4_id_crosswalk
+    for row in reader:
+               ^^^^^^
+  File "C:\Program Files\WindowsApps\Pyt
+honSoftwareFoundation.Python.3.12_3.12.2
+800.0_x64__qbz5n2kfra8p0\Lib\csv.py", 
+line 116, in __next__
+    row = next(self.reader)
+          ^^^^^^^^^^^^^^^^^
+_csv.Error: field larger than field 
+limit (131072)

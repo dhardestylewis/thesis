@@ -1,0 +1,152 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage{hyperref}
+\usepackage[style=apa,backend=biber]{biblatex}
+
+% Bibliography configuration
+\addbibresource{references.bib}
+
+% Ultra-compact spacing
+\titlespacing*{\section}{0pt}{5pt}{1pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize STAT8101}
+\chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (\texttt{db2128})}
+\cfoot{\thepage}
+
+\title{\vspace{-2.5em}\textbf{Reader Report: Week 04} \\ \vspace{0.1em} \large Causality Foundations III \\ \footnotesize \textcite{peters2018}, \textcite{peters2016}, \textcite{buhlmann2020}}
+\author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (\texttt{dl3645})}
+\date{2026 Spring}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\vspace{-1em}
+
+\section*{Summary}
+This week's readings bridge statistical prediction and causal inference via \textbf{invariance}.
+\begin{itemize}
+    \item \textbf{\textcite{peters2018}} (Book, Ch 1, 2, 7) establish \textbf{Principle 2.1} (The Principle of Independent Mechanisms): causal mechanisms, represented by conditional distributions $P(E|C)$, are autonomous and invariant.
+    While the joint distribution $P(C, E)$ may shift across environments \autocite{peters2016},
+    the conditional method $P(E|C)$ remains stable \autocite{peters2018}.
+    This establishes the \textbf{theoretical foundation} for causal discovery without graph learning.
+    \item \textbf{\textcite{peters2016}} (JRSS-B) \textbf{operationalize} this principle for strict causal discovery with \textbf{Invariant Causal Prediction (ICP)}.
+    They define plausible causal predictors (Definition 1) as those yielding an invariant $P(Y \mid X_S)$ across environments $\mathcal{E}$ (Assumption 1).
+    \textbf{Theorem 1} shows that the intersection $\hat{S}(\mathcal{E})$ identifies causal ancestors \autocite{peters2016}, transforming discovery into a search for stability \autocite{buhlmann2020}.
+    \item While ICP assumes strict invariance, \textbf{\textcite{buhlmann2020}} \textbf{generalizes} this framework to handle hidden confounding, reframing causality as a \textbf{risk minimization problem} via \textbf{Anchor Regression}. This approach prioritizes \textbf{robustness} \autocite{buhlmann2020}
+    over strict identification, allowing for diluted causality \autocite[Sec.~4.3.2]{buhlmann2020}
+    where exact discovery is impossible.
+\end{itemize}
+
+\section*{Critique \& Project Connection}
+This shift from \textbf{traditional structure learning} \autocite[Ch.~7]{peters2018}
+to \textbf{invariant prediction} \autocite{peters2016}
+is crucial when the causal graph \autocites{pearl2009}{peters2018}
+is unknowable.
+    For my \href{https://github.com/dhardestylewis/thesis/blob/main/Blei-Invariance_Causality-2026Spring/Project_Proposal.d/2026-02-02/Project_Proposal_Final_V21.pdf}{\textit{Predicting NIMBYism Causally}} project, this justifies pooling data from distinct regimes to find invariant predictors of opposition \autocite{peters2016}.
+\begin{enumerate}
+    \item Following \textcite{peters2016}, I can treat years as environments $\mathcal{E}$.
+    If a feature (e.g., gentrification score) predicts opposition $Y$ invariantly across 2007 and 2024, it is a stable causal candidate \autocite[Proposition~4.1]{buhlmann2020}.
+    \item B\"uhlmann's \textbf{Anchor Regression} \autocite[Eq.~4.3]{buhlmann2020}
+    offers a tool if strict invariance is too strong for \textbf{digitized} protest letters subject to \textbf{measurement error} \autocite{peters2018}.
+    It helps identify diluted causal factors
+    predictive even under distribution shifts, aligning with the goal of robust \autocite{buhlmann2020}
+    identification.
+\end{enumerate}
+
+\section*{Questions}
+\begin{enumerate}
+    \item \textcite{buhlmann2020} suggests diluted causality \autocite[Sec.~4.3.2]{buhlmann2020}
+    when strict discovery fails. Should we prefer \textbf{Anchor Regression} \autocite{buhlmann2020}
+    over \textbf{ICP} \autocite{peters2016}
+    for high-dimensional \textbf{digitized} protest letters where unconfoundedness \autocite{peters2018}
+    is unlikely?
+    \item \textcite{peters2016} assume identical error distributions \autocite[Assumption~1]{peters2016}
+    $F_\epsilon$ across environments. How sensitive is ICP to slight distributional drifts \autocite{peters2018}
+    (e.g., language drift) that do not strictly qualify as interventions \autocite{peters2018}
+    ?
+    \item \textbf{Methodological Mismatch:} ICP and Anchor Regression typically assume continuous outcomes. \textcite{peters2016} suggest an extension to \textbf{logistic regression} \autocite[Sec.~6.3]{peters2016},
+    using Peters' fast approximate Method II \autocite[Sec.~3.1.2]{peters2016} to test residuals $R = Y - \hat{f}(X)$ for equal mean across environments. Is this heuristic sufficient for our sparse data, or should we substitute a Linear Probability Model?
+    \item \textbf{Future Direction:} \textcite{peters2016} rely on buckets of hypothesis tests. Would \textbf{VI-BIP} \autocite[Algorithm~2]{wu2025b}, which treats the invariant set as a latent variable, be more appropriate for high-dimensional text data? \textcite{wu2025b} prove posterior consistency (Theorem 1), potentially offering better uncertainty quantification than frequency-based rejection.
+\end{enumerate}
+
+\newpage
+\title{\vspace{-2em}\textbf{Project Proposal Update: Predicting NIMBYism Causally}}
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\section*{1. What problem am I solving?}
+I am investigating the drivers of neighborhood housing opposition, often called NIMBYism \autocite{einstein2019}. My goal is to move beyond correlation to find predictors that minimize \textbf{worst-case risk} \autocite{buhlmann2020}
+across distribution shifts \autocites{arjovsky2019}{peters2018}
+. My aim is to identify \textbf{invariant} \autocite[Def.~1]{peters2016}
+features that predict resistance consistently across the distinct \textbf{market regimes} \autocite{peters2016}
+from 2018 to 2025, which are robust \autocite{buhlmann2020}
+to unobserved confounding \autocite{peters2016}
+. Since standard ERM minimizes average risk \autocite[Eq.~1]{arjovsky2019}, it absorbs spurious background correlations (e.g., traffic as a proxy for race); I need a method that enforces the \textbf{IRM principle}: optimal classifiers must match across environments \autocite[Definition~3]{arjovsky2019}.
+
+    In domain terms, this means ensuring predictions of NIMBYism remain reliable even when the economic context shifts drastically---for instance, from the low-interest-rate boom of 2021 to the high-rate environment of 2024. By targeting \textit{invariance} rather than mere correlation (e.g., associating luxury projects with opposition), we isolate stable, structural drivers (e.g., loss of sunlight) that persist regardless of the market, allowing for robust policy design.
+
+\section*{2. Why is this problem important? To whom?}
+This problem is critical for urban planners. Standard models (e.g., OLS, topic models) fail when \textbf{market regimes} \autocite{peters2016}
+shift, such as during interest rate hikes. By identifying \textbf{causally robust} \autocite{buhlmann2020}
+drivers of opposition, planners can design interventions (e.g., guaranteed parking) that remain effective even when the economic wind changes.
+    For a planner asking whether a concession will work in 2025, standard OLS models only reveal what worked \textit{on average} in the past. Causally robust models, by contrast, identify interventions that work \textit{consistently} across varying past conditions, making them a safer bet for future, unseen environments \autocite{buhlmann2020}.
+
+\section*{3. What is my strategy for solving it?}
+To achieve this reliability, I will leverage \textbf{Invariant Causal Prediction}, or ICP \autocite[p.~953]{peters2016},
+and \textbf{Anchor Regression} \autocite[p.~411]{buhlmann2020}
+to handle unobserved confounding.
+\begin{enumerate}
+    \setlength\itemsep{-0.3em}
+    \item \textbf{Environments:} I will partition the data via expanding windows into Training sets $\mathcal{E}_{tr}$ and Test sets $\mathcal{E}_{te}$ by treating \textbf{market regimes} as distinct environments \autocite{peters2016}.
+    \begin{center}
+    \scriptsize
+    \begin{tabular}{l|l|l}
+    \textbf{Window} & \textbf{Training ($\mathcal{E}_{tr}$)} & \textbf{Test ($\mathcal{E}_{te}$)} \\ \hline
+    1 & 2018 & 2019--2025 \\
+    2 & 2018--2019 & 2020--2025 \\
+    ... & ... & ... \\
+    $N$ & 2018--2024 & 2025
+    \end{tabular}
+    \end{center}
+    \item \textbf{Representation:} I will extract features $\Phi(X)$ from property data and protest letters \autocite{scholkopf2021}. My assumption is that under the \textbf{Sparse Mechanism Shift (SMS)} hypothesis \autocite[Sec.~IV]{scholkopf2021}, the causal mechanism of opposition remains stable even as market distributions shift.
+    \item \textbf{Methods (Approximation):} I will use the \textbf{logistic regression extension} of Peters' fast approximate Method II.
+    \begin{itemize}
+        \item \textbf{Strict Invariance:} Using \textbf{ICP Method II}, I will search for subsets $S$ where the residuals $R = Y - \hat{f}(\Phi(S))$ of a logistic model have equal mean across the training environments $\mathcal{E}_{tr}$ (Definition 1).
+        \item \textbf{Diluted Causality:} Since unobserved confounding is likely in \textbf{digitized} protest letters due to \textbf{participation bias}, strict invariance may be too strong. I will use \textbf{Anchor Regression} \autocite[Eq.~4.3]{buhlmann2020}
+        to find predictors that minimize the worst-case squared risk over shift perturbations (Proposition 4.1).
+    \end{itemize}
+\end{enumerate}
+
+\section*{4. Why is this solution good? Where does it fall short?}
+This solution is good because it directly addresses the fragility of current models to distribution shift \autocites{arjovsky2019}{peters2018}
+. \textbf{Anchor Regression} provides a principled way to trade off predictiveness and robustness \autocite{buhlmann2020}
+when strict causal discovery is impossible.
+    Crucially, this acknowledges that we can never perfectly de-confound observational text data (e.g., we cannot see backroom deals). Anchor Regression allows us to explicitly choose how much insurance we want against this missing information, preventing the model from being overconfident.
+
+The solution falls short because IRM and ICP require environments to lie in \textbf{linear general position} \autocite[Theorem~9]{arjovsky2019} or satisfying \textbf{diversity assumptions} \autocite{peters2016}.
+With fewer than $d$ environments (here, only a few market regimes), identifying the unique invariant representation may be impossible without strong priors. However, these methods have proven effective in analogous high-dimensional settings, such as \textbf{gene perturbation analysis} \autocites{wu2025b}{kemmeren2014}, where they successfully identified stable mechanisms amidst noisy data---a challenge parallel to our text-as-data context.
+
+\section*{5. How can I demonstrate that the solution works?}
+To empirically validate this approach, I will train the model on the training environments $\mathcal{E}_{tr}$ and test it on the future horizons $\mathcal{E}_{te}$. A successful model will demonstrate \textbf{predictive stability} \autocite{buhlmann2020}
+, or invariant performance, across regimes.
+    Empirically, if a model trained on 2018-2022 data accurately predicts opposition levels in the radically different 2023-2024 market, it proves we have captured the invariant mechanism of NIMBYism rather than just the era's noise.
+
+It will outperform standard ERM baselines on \textbf{worst-case} unseen environments \autocites{krueger2021}{buhlmann2020}.
+I will also compare IRM against \textbf{Risk Extrapolation (V-REx)}, which penalizes the \textit{variance} of training risks \autocite[Eq.~8]{krueger2021} rather than the gradient norm, to see which regularization better captures the stability of NIMBYism.
+
+% Print bibliography
+\printbibliography[title=References]
+
+\end{document}

@@ -1,0 +1,57 @@
+--- Verification Results ---
+[PASSED] 'causal mechanism' found in 2 source(s):
+  -> jrsssb_78_5_947.txt (...6.2. Interventions on the target variable and its causal mechanism So far, we have assumed that the error distribution of the target variable is uncha...)
+  -> PetersJanzingSchoelkopf2018.txt (...e functions in an SCM as representing independent causal mechanisms that persist after manipulating the distribution of inputs or other mechanisms. Mo...)
+[PASSED] 'conditional distribution' found in 6 source(s):
+  -> Bühlmann2020.txt (... and structural equation models. 3. INVARIANCE OF CONDITIONAL DISTRIBUTIONS  A key assumption for inferring causality from heterogeneous data as in (2...)
+  -> Bühlmann2020_Annotation.md (...certain (worst-case) risk."  ### 3. INVARIANCE OF CONDITIONAL DISTRIBUTIONS "A key assumption for inferring causality from heterogeneous data as in (2...)
+[PASSED] 'autonomous' found in 3 source(s):
+  -> jrsssb_78_5_947.txt (...o, 1944; Aldrich, 1989); structural equations are autonomous if, whenever we replace one of them because of an intervention, no other structural equat...)
+  -> PetersJanzingSchoelkopf2018.txt (...that the causal generative process is composed of autonomous modules that do not inform or influence each other. As we shall describe below, this mean...)
+[PASSED] 'invariant' found in 6 source(s):
+  -> Bühlmann2020.txt (...noted by XSe ∗ ), the conditional distribution is invariant across all environments from E .  This content downloaded from 128.59.222.107 on Tue, 10 J...)
+  -> Bühlmann2020_Annotation.md (...iates from S* ... the conditional distribution is invariant across all environments from E."  ## Page 407  "(A(F)): Analogous but now for the much lar...)
+[PASSED] 'shift' found in 5 source(s):
+  -> Bühlmann2020.txt (... anchor regression model for a class of so-called shift perturbations. Similar to the idea in (4.2), we define the anchor regression estimator by usin...)
+  -> Bühlmann2020_Annotation.md (...the anchor variables in A."  ## Page 412  ### 4.3 Shift Perturbations and Robustness of the Anchor Regression Estimator "The anchor regression estimat...)
+[PASSED] 'environments' found in 6 source(s):
+  -> Bühlmann2020.txt (...15). 2.2 The Heterogeneous Setting with Different Environments  We consider data from different observed (known) environments, and we sometimes refer ...)
+  -> Bühlmann2020_Annotation.md (... ### 2.2 The Heterogeneous Setting with Different Environments "We consider data from different observed (known) environments, and we sometimes refer ...)
+[FAILED] 'conditional mechanism' NOT found in any local source text.
+[PASSED] 'stable' found in 4 source(s):
+  -> Bühlmann2020.txt (...ublished by: Institute of Mathematical Statistics Stable URL: https://www.jstor.org/stable/10.2307/26997912 REFERENCES Linked references are available...)
+  -> Bühlmann2020_Annotation.md (...se Y (the variables which are relevant for Y in a stable way across many strong shift perturbations)."  ## Page 414  ### 4.5 Distributional Robustness...)
+[PASSED] 'ICP' found in 4 source(s):
+  -> Bühlmann2020.txt (...e in (3.4) is called Invariant Causal Prediction (ICP). The method is implemented in the R-package InvariantCausalPrediction for linear models (Meinsh...)
+  -> Bühlmann2020_Annotation.md (...e in (3.4) is called Invariant Causal Prediction (ICP)."  **Theorem 3.1 (Peters, Bühlmann and Meinshausen, 2016).** "Assume a structural equation mode...)
+[PASSED] 'plausible causal predictors' found in 2 source(s):
+  -> jrsssb_78_5_947.txt (...ionship to the potential outcome framework.  2.1. Plausible causal predictors and identifiable causal predictors In general, .γ Å , S Å / is not the o...)
+  -> jrsssb_78_5_947_Annotation.md (...ons on Y are not allowed."  ## Page 953  ### 2.1. Plausible causal predictors and identifiable causal predictors "We therefore define for γ ∈ R^p and ...)
+[PASSED] 'subsets' found in 4 source(s):
+  -> Bühlmann2020.txt (...dress the identifiability issue, we intersect all subsets of covariates S which lead to invariance, that is, Ŝ (E ) =  (3.4)    S; H0,S (E ) not re...)
+  -> Bühlmann2020_Annotation.md (...dress the identifiability issue, we intersect all subsets of covariates S which lead to invariance, that is, S_hat(E) = intersection of S such that H_...)
+[PASSED] 'yielding' found in 2 source(s):
+  -> jrsssb_78_5_947.txt (...ggest that one set S was particularly inﬂuential, yielding coefﬁcient estimates close to 0 which render the corresponding variables not signiﬁcant (e....)
+  -> PetersJanzingSchoelkopf2018.txt (... and X2 . In this example, {1, 2} is the only set yielding an invariant model, that is, Ŝ = {{1, 2}}. 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19...)
+[PASSED] 'intersection' found in 6 source(s):
+  -> Bühlmann2020.txt (...variables. Furthermore, the construction with the intersection in (3.4) might be often conservative. In  This content downloaded from 128.59.222.107 o...)
+  -> Bühlmann2020_Annotation.md (...s S which lead to invariance, that is, S_hat(E) = intersection of S such that H_0,S(E) not rejected by test at significance level α. (3.4)" "The proce...)
+[PASSED] 'identify' found in 3 source(s):
+  -> Bühlmann2020.txt (...ty issue in causal inference. We typically cannot identify the causal variables Scausal , unless we have very many environments (or perturbations) or ...)
+  -> jrsssb_78_5_947.txt (...choice among the set of solutions. We can at most identify the subset of S Å that is common among all possible solutions of condition (3); see Section...)
+[PASSED] 'causal ancestors' found in 1 source(s):
+  -> jrsssb_78_5_947_Annotation.md (...Identification:** "The intersection... identifies causal ancestors." (Theorem 1, Page 954)  ...)
+[PASSED] 'anchor regression' found in 2 source(s):
+  -> Bühlmann2020.txt (...classification frameworks. Key words and phrases: Anchor regression, causal regularization, distributional robustness, heterogeneous data, instrumenta...)
+  -> Bühlmann2020_Annotation.md (...rollable probability 1 − α."  ## Page 410  ### 4. ANCHOR REGRESSION: RELAXING CONDITIONS "The main concern with ICP in (3.4) and the underlying invari...)
+[PASSED] 'diluted causality' found in 2 source(s):
+  -> Bühlmann2020.txt (...ard (nonlinear) regression. See also the term of “diluted causality” in Section 4.3.2. We suggest a variable importance measure based on permutation, ...)
+  -> Bühlmann2020_Annotation.md (...als with the anchor variables A." (Page 411)  ### Diluted Causality *   **Diluted Causality:** "The variables which are relevant for Y in a stable way...)
+[PASSED] 'robust' found in 4 source(s):
+  -> Bühlmann2020.txt (...Invariance, Causality and Robustness Author(s): Peter Bühlmann Source: Statistical Science , August 2020, Vol. 35, No. 3, Spec...)
+  -> Bühlmann2020_Annotation.md (...tion for Bühlmann 2020: Invariance, Causality and Robustness  ## Page 404  ### Abstract "We discuss recent work for causal inference and predictive ro...)
+[PASSED] 'worst-case risk' found in 2 source(s):
+  -> Bühlmann2020.txt (... PREDICTING POTENTIAL OUTCOMES, HETEROGENEITY AND WORST-CASE RISK OPTIMIZATION  Predicting potential outcomes is a relevant problem in many applicatio...)
+  -> Bühlmann2020_Annotation.md (... PREDICTING POTENTIAL OUTCOMES, HETEROGENEITY AND WORST-CASE RISK OPTIMIZATION "Causality deals with a quantitative answer (a prediction) to a “What i...)
+
+Summary: 18/19 terms verified against local knowledge base.

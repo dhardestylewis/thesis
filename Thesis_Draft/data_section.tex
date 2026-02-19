@@ -1,0 +1,144 @@
+% data_section.tex
+% Thesis Data Section — Predicting NIMBYism
+% Daniel Hardesty Lewis, Columbia GSAPP
+%
+% This file is \input'd into the main thesis document.
+% It describes the panel dataset construction, sources, and temporal leakage audit.
+
+\section{Data}
+\label{sec:data}
+
+\subsection{Overview}
+
+We construct a balanced property-year panel of 2,902 properties $\times$ 18 years
+(2007--2024) = 52,236 observations for Travis County (Austin), Texas.
+The panel links individual parcels to zoning protest petition outcomes and
+time-varying covariates from five independent data sources.
+Following Peters et al.\ (2016), we treat calendar years as distinct environments
+$\mathcal{E}$ for Invariant Causal Prediction.
+
+\subsection{Data Sources}
+
+\begin{enumerate}
+    \item \textbf{Zoning Protest Petitions} (2007--2024). Supermajority protest letters filed
+    with the Austin City Clerk opposing zoning changes.
+    Extracted via OCR from scanned petition documents, geocoded to TCAD parcels.
+    The dataset contains 27,363 property-petition records. Our binary outcome variable
+    $Y_{it} = 1$ when a protest petition was filed for property $i$ in year $t$; the
+    base rate is 5.75\% across all property-years, with 3,004 positive observations.
+
+    \item \textbf{TCAD Electronic Appraisal Roll Submissions (EARS)} (2019--2022).
+    Annual property appraisal data from the Travis Central Appraisal District,
+    following the Texas Comptroller's standardized 84-field EARS format.
+    Appraisals are assessed as of January~1 of each tax year, prior to the zoning protest period.
+    We achieve a 72.7\% match rate on eligible property-years via an ID crosswalk
+    using the City of Austin Land Use Inventory's \texttt{property\_id} field
+    (257,764 overlapping accounts).
+
+    \item \textbf{City of Austin Land Database} (2016 and 2021 snapshots).
+    Rich parcel-level data including base zoning, effective zoning, floor area ratio (FAR),
+    lot size, residential units, year built, appraised and market values, and improvement type.
+    Source: Austin Open Data Portal (Dataset IDs: 4nsn-uea6, kk8y-6cmt).
+    Match rate: 98.3\% of panel rows via forward-fill (see Section~\ref{sec:forwardfill}).
+
+    \item \textbf{City of Austin Land Use Inventory} (2012, 2022, and 2024 snapshots).
+    Parcel-level land use classifications compiled by the City Planning Department.
+    Source: Austin Open Data Portal (Dataset IDs: 3k7r-w54d, 6qkk-xgys, 7vsm-dvxg).
+    Match rate: 99.8\% via forward-fill.
+
+    \item \textbf{American Community Survey (ACS) 5-Year Estimates} (2009--2023).
+    Census tract-level demographic and socioeconomic variables
+    including median household income, median home value, racial/ethnic composition,
+    homeownership rates, poverty rates, and gross rent.
+    Pulled from the Census Bureau API for all 15 available vintage years.
+    Match rate: 75.3\% (limited by properties without geocoded tract identifiers).
+\end{enumerate}
+
+\subsection{Panel Construction}
+
+The unit of observation is a (property, year) pair.
+We identify the property universe from the 2,902 unique TCAD identifiers appearing in the
+protest petitions dataset, then expand each property across all 18 years in scope
+(2007--2024), creating a balanced panel.
+
+\subsubsection{ID Crosswalk}
+\label{sec:crosswalk}
+
+A key challenge is linking TCAD parcel identifiers to EARS appraisal roll accounts.
+The protest petitions use 10-digit \texttt{standardized\_tcad\_id} values
+(e.g., 0211220425), while EARS uses 6-digit \texttt{account\_number} values
+(e.g., 237076) with zero direct overlap. We resolve this through the
+City of Austin Land Use Inventory, whose \texttt{property\_id} field matches
+EARS \texttt{account\_number}, yielding a crosswalk of 269,108 parcel-to-account mappings.
+
+\subsubsection{Forward-Fill Strategy}
+\label{sec:forwardfill}
+
+Several data sources provide periodic snapshots rather than annual observations.
+We apply a forward-fill strategy: for each property-year, we use the most recent
+snapshot value observed at or before the panel year. For panel years preceding the
+earliest snapshot, we backward-fill from the first available observation.
+Each forward-filled variable is accompanied by a \texttt{\_source\_year} column
+indicating which snapshot the value originates from, enabling transparency and
+sensitivity analysis.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lll}
+\hline
+\textbf{Source} & \textbf{Snapshot Years} & \textbf{Fill Rule} \\
+\hline
+Land Database & 2016, 2021 & Nearest $\leq$ panel year; backward from 2016 \\
+Land Use Inventory & 2012, 2022, 2024 & Nearest $\leq$ panel year; backward from 2012 \\
+ACS Census & 2009--2023 (annual) & Exact vintage $\leq$ panel year; backward from 2009 \\
+\hline
+\end{tabular}
+\caption{Forward-fill strategy for periodic data sources. Each variable carries
+a source-year indicator for provenance tracking.}
+\label{tab:forwardfill}
+\end{table}
+
+\subsection{Temporal Leakage Audit}
+\label{sec:leakage}
+
+A rigorous temporal leakage audit ensures that predictors do not encode
+information about the outcome at time $t$ or later.
+We classify every candidate variable into three risk categories:
+
+\begin{description}
+    \item[SAFE (67 variables):] Determined strictly before the protest filing window.
+    Texas appraisals are assessed as of January~1 of each tax year,
+    and property characteristics (year built, acreage, category code) are physical
+    attributes that do not change in response to protests.
+
+    \item[CAUTION (7 variables):] Potential indirect leakage requiring mitigation.
+    For example, \texttt{most\_recent\_sale\_date} may reflect post-protest transactions;
+    we use only lagged ($t-1$) values or derive time-since-sale features.
+    Similarly, \texttt{zoning\_code} may change as a \textit{result} of the zoning case
+    under protest, so we use prior-year values only.
+
+    \item[EXCLUDE (2 variables):] Direct outcome leakage.
+    The EARS fields \texttt{arb\_protest\_flag} (AJR078) and \texttt{arb\_protest\_result} (AJR079)
+    are excluded entirely, as are zoning case outcome dates.
+\end{description}
+
+\noindent
+The complete audit trail is documented in the project's Variable Codebook
+(\texttt{Data/Panel/Variable\_Codebook.md}) and EARS Column Layout
+(\texttt{Data/Panel/EARS\_Column\_Layout.csv}).
+
+\subsection{Environments for Invariant Prediction}
+
+Following Peters et al.\ (2016) and Bühlmann (2020), we treat calendar years as
+distinct environments $\mathcal{E} = \{e_1, e_2, \ldots, e_T\}$.
+This is justified by the significant variation in Austin's real estate market regimes
+across the study period --- including pre-2008 growth, the 2008--2010 recession,
+the 2012--2019 boom, the COVID-era surge (2020--2021),
+and the high-interest-rate contraction (2022--2024).
+
+These regime shifts satisfy the requirement that environments represent
+distinct conditions under which the data-generating process operates
+(Peters et al., 2016, Assumption~1),
+enabling the search for predictors whose relationship to opposition
+is \textit{invariant} across economic conditions.

@@ -1,0 +1,2527 @@
+Invariance, Causality and Robustness
+Author(s): Peter Bühlmann
+Source: Statistical Science , August 2020, Vol. 35, No. 3, Special Issue on Causal Inference
+(August 2020), pp. 404-426
+Published by: Institute of Mathematical Statistics
+Stable URL: https://www.jstor.org/stable/10.2307/26997912
+REFERENCES
+Linked references are available on JSTOR for this article:
+https://www.jstor.org/stable/10.2307/26997912?seq=1&cid=pdfreference#references_tab_contents
+You may need to log in to JSTOR to access the linked references.
+JSTOR is a not-for-profit service that helps scholars, researchers, and students discover, use, and build upon a wide
+range of content in a trusted digital archive. We use information technology and tools to increase productivity and
+facilitate new forms of scholarship. For more information about JSTOR, please contact support@jstor.org.
+Your use of the JSTOR archive indicates your acceptance of the Terms & Conditions of Use, available at
+https://about.jstor.org/terms
+
+Institute of Mathematical Statistics is collaborating with JSTOR to digitize, preserve and extend
+access to Statistical Science
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+Statistical Science
+2020, Vol. 35, No. 3, 404–426
+https://doi.org/10.1214/19-STS721
+© Institute of Mathematical Statistics, 2020
+
+Invariance, Causality and Robustness1
+2018 Neyman Lecture2
+Peter Bühlmann
+
+Abstract. We discuss recent work for causal inference and predictive robustness in a unifying way. The key idea relies on a notion of probabilistic
+invariance or stability: it opens up new insights for formulating causality as
+a certain risk minimization problem with a corresponding notion of robustness. The invariance itself can be estimated from general heterogeneous or
+perturbation data which frequently occur with nowadays data collection. The
+novel methodology is potentially useful in many applications, offering more
+robustness and better “causal-oriented” interpretation than machine learning
+or estimation in standard regression or classification frameworks.
+Key words and phrases: Anchor regression, causal regularization, distributional robustness, heterogeneous data, instrumental variables regression,
+interventional data, Random Forests, variable importance.
+1. INTRODUCTION
+
+Understanding the causal relationships in a system or
+application of interest is perhaps the most desirable goal
+in terms of understanding and interpretability. There is
+a rich history of developments from various disciplines,
+dating back to ancient times: “Felix, qui potuit rerum
+cognoscere causas”—Fortunate who was able to know the
+causes of things (Georgics, Virgil, 29 BC). One might
+think that for pure prediction tasks, without any ambition of interpretability, knowing the causes or the causal
+structure is not important. We will explain here how these
+problems are related and as a consequence: (i) one can
+obtain “better” predictions when incorporating causal aspects and (ii) one can infer causal structure from a certain
+predictive perspective.
+Inferring causal structure and effects from data is a
+rapidly growing area. When having access to data from
+fully randomized studies, Jerzy Neyman (see Figure 1)
+made a pioneering contribution using a potential outcome
+model (Splawa-Neyman, 1990).
+Randomized studies serve as the gold standard and the
+corresponding inference of causal effects can be viewed
+as “confirmatory” due to the fact that the underlying
+model assumptions are not substantially more restrictive than for, say, a standard regression type problem;
+Peter Bühlmann is Professor, Seminar for Statistics, ETH
+Zürich, Rämistrasse 101, CH-8092 Zürich, Switzerland
+(e-mail: buhlmann@stat.math.ethz.ch).
+1 Discussed in 10.1214/20-STS768, 10.1214/20-STS772; rejoinder
+
+at 10.1214/20-STS797.
+2 This article is covering material of the 2018 Neyman Lecture but
+also describes new developments in Section 5.
+
+see, for example, Holland (1986), Dawid (2000), Pearl
+(2009), Hernán and Robins (2010), Imbens and Rubin
+(2015), VanderWeele (2015). Often though, the data at
+hand does not come from a (fully) randomized study:
+the question is now whether one can still infer causal
+effects and under what kind of assumptions this is possible. A range of different approaches have been suggested, see for example Greenland, Pearl and Robins
+(1999), Robins, Hernán and Brumback (2000), Spirtes,
+Glymour and Scheines (2000), Richardson and Spirtes
+(2002), Hernán and Robins (2006), Tchetgen Tchetgen
+and VanderWeele (2012), Chickering (2003), Kalisch
+and Bühlmann (2007), Maathuis, Kalisch and Bühlmann
+(2009), Hauser and Bühlmann (2015), exhibiting different degrees of “confirmatory” nature for inferring causal
+effects. Since causal inference is very ambitious, these
+techniques should be thought as “geared towards causality” but not necessarily able to infer the underlying true
+causal effects. Also recent work on semi- or nonparametric causal inference when taking adjustment variables into
+the methods or algorithms belong to this category (Ernest
+and Bühlmann, 2015, Kennedy et al., 2017, Wager and
+Athey, 2018, Künzel et al., 2019, Ni and Wager, 2017,
+Chernozhukov et al., 2018). The point is that all these approaches do something “more intelligent towards causality” than an analysis based on a standard potentially nonlinear regression or classification framework. We believe
+that this is an important area in statistics and machine
+learning: in particular, these techniques often have a more
+“causal-type” and thus more interesting interpretation
+than standard machine learning methods and therefore,
+this topic is important in the advent of “interpretable machine learning”.
+
+This content404
+downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+405
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+2.1 Two Examples for Prediction of Potential
+Outcomes
+
+F IG . 1. Jerzy Neyman (1894–1981). Besides other pioneering work, he has also made fundamental early contributions to
+causality in 1923, in terms of mathematical formulation with the
+potential outcome model (Splawa-Neyman, 1990). Left: taken from
+http://www.learn-math.info/history/photos/Neyman_3.jpeg.
+Right:
+taken from https://errorstatistics.com/2017/04/16/a-spanos-jerzyneyman-and-his-enduring-legacy-3/ by A. Spanos. The photograph is
+hanging on the wall in the coffee room of the Department of Statistics
+at UC Berkeley.
+
+1.1 A Framework Based on Invariance Properties
+
+We will focus here on a particular framework with corresponding methods which are “geared towards” causal
+solutions: with stronger assumptions (but less strong than
+for some competitor methods) they infer causal effects
+while under more relaxed and perhaps more realistic assumptions, they are still providing solutions for a “diluted form of causality”2 which are often more meaningful than what is provided by regression or classification
+techniques. This can be made mathematically more rigorous, in terms of a novel form of robustness.
+The construction of methods relies on exploiting invariance from heterogeneous data. The heterogeneity can
+be unspecific perturbations and in this sense, the current
+work adds to the still yet quite small literature on statistics
+for perturbation data.
+1.2 Our Contribution
+
+The first part of the manuscript is a review of our
+own work in Peters, Bühlmann and Meinshausen (2016)
+and Rothenhäusler, Meinshausen, Bühlmann and Peters
+(2018) but putting the contributions into a broader perspective. We also add some novel methodology on nonlinear anchor regression and present some corresponding
+illustrations in Section 5.
+2. PREDICTING POTENTIAL OUTCOMES,
+HETEROGENEITY AND WORST-CASE RISK
+OPTIMIZATION
+
+Predicting potential outcomes is a relevant problem in
+many application areas. Causality deals with a quantitative answer (a prediction) to a “What if I do question” or
+a “What if I perturb question”.
+2 I am grateful to Ed George who suggested this term.
+
+The first example is from genomics (Stekhoven et al.,
+2012). The response variable of interest is the flowering
+time of the Arabidopsis thaliana plant (the time it takes
+until the plant is flowering) and the covariates are gene
+expressions from 21’326 genes, that is from a large part
+of the genome. The problem is to predict the flowering
+time of the plant when making single gene interventions,
+that is, when single genes are “knocked out”. The data is
+from the observational state of the system only without
+any interventions. Therefore, this is a problem of predicting a potential outcome which has never been observed
+in the data. Even if one fails to infer the true underlying
+causal effects when making interventions, our viewpoint
+is that a prediction being better than from a state-to-the art
+regression method is still very useful for see, for example,
+prioritizing experiments which can be done subsequently
+in a biology lab; see, for example, Maathuis et al. (2010)
+and the Editorial (2010).
+The second example is about predicting behavior of
+individuals when being treated by advertisement campaigns. Such an advertisement could happen on social media for political campaigns or various commercial products. Consider the latter, namely an advertisement for
+commercial products on social media. The response of interest is how deep an individual user clicks on the advertisement and the subsequent web-pages, the covariates are
+attributes of the user. The task is to predict the response
+if one would intervene and show to a certain user “X” a
+certain advertisement “A”: but there is no data for user
+“X” or similar users as “X” being exposed (or treated)
+with advertisement “A”. Thus, it is a problem of predicting a potential outcome which has never been observed
+in the data. As mentioned in the genomic example above,
+even if we cannot infer the underlying true causal effect
+of treatment with an advertisement, it is still informative
+and valuable to come up with a good prediction for the
+response under an intervention which we have never seen
+in the data. See, for example, Bottou et al. (2013) or also
+Brodersen et al. (2015).
+2.2 The Heterogeneous Setting with Different
+Environments
+
+We consider data from different observed (known) environments, and we sometimes refer to them also as experimental settings or subpopulations or perturbations:
+(2.1)
+
+ e e
+Y ,X ,
+
+e∈E
+
+with ne × 1 response vectors Ye , ne × p covariate design
+matrices Xe and e denotes an environment from the space
+E of observed environments. Here, ne denotes the sample
+size in environment e. We assume that the ne samples in
+environment e are i.i.d. realizations of a univariate random
+variable Y e and a p-dimensional random vector X e .
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+406
+
+P. BÜHLMANN
+
+E XAMPLES . As a first example, consider data from
+10 different countries where we know the correspondence
+of each data point to one of the 10 countries. Then the
+space of observed (known) environments can be encoded
+by the labels from E = {1, 2, . . . , 10}. As a second example, consider economical data which is collected over
+time. Different environments or subpopulations then correspond to different blocks of consecutive time points. Assuming that these blocks are known and given, the space E
+then contains the labels for these different blocks of subpopulations.
+Heterogeneity can also occur outside the observed data.
+Thus, we consider a space of unobserved environments
+F ⊃E
+
+(2.2)
+
+which is typically much larger than the space of observed
+environments E .
+E XAMPLES ( CONT.). In the examples from above,
+the space F could be: the 10 countries which are observed
+in the data and all other countries in the world; or the subpopulations of economical scenarios which we have observed in the data until today and all subpopulations of
+future scenarios which we have not seen in the data.
+A main task is to make predictions for new unseen environments e ∈ F as discussed next.
+2.3 A Prediction Problem and Worst-Case Risk
+Optimization
+
+We consider the following prediction problem.
+Predict Y e given Xe such that the prediction “works
+well” or is “robust” for all e ∈ F based on data from
+much fewer environments e ∈ E .
+Note that F \ E is nonobserved. The meaning of the aim
+above is that one is given in the future new covariates Xe
+from e ∈ F \ E and the goal is to predict the corresponding
+Y e . The terminology “works well” or is “robust” is understood here in the sense of performing well in worst-case
+scenarios. We note that the problem above is also related
+to transfer learning (Pratt, 1993, Pan and Yang, 2010,
+Rojas-Carulla et al., 2018).
+In a linear model setting, this prediction task exhibits a
+relation to the following worst-case L2 -risk optimization:
+(2.3)
+
+
+
+ 
+
+argmin max E Y e − X e b2 .
+b
+
+e∈F
+
+This problem has an interesting connection to causality.
+Before giving a more rigorous formulation, we describe
+the connection in a more loose sense, for the purpose of
+easier understanding. We consider the class F which includes all heterogeneities or perturbations e fulfilling two
+main assumptions:
+ad-hoc condition 1: e does not act directly on Y e .
+
+F IG . 2. Graphical illustration of the ad-hoc conditions 1, 2 and the
+ad-hoc aim. There could be also hidden confounding variables; see
+Section 4.
+
+ad-hoc condition 2: e does not change the mechanism
+between X e and Y e .
+ad-hoc aim: ideally, e should change the distribution
+of X e .
+The ad-hoc conditions 1 and 2 are formulated precisely in
+assumption (B(F )) in Section 3.1. Regarding the ad-hoc
+aim: if there are many e which change the distribution
+of Xe , this introduces more observed heterogeneities in
+E which in term is favorable for better identification of
+causal effects.
+Figure 2 is a graphical illustration of the ad-hoc conditions and aim above. For this purpose, we may think that
+the environments e are generated from a random variable
+E. We remark that there could be also hidden confounding variables between X and Y : more details are given in
+Section 4.
+An interesting connection to causality is then as follows:
+
+
+ 
+
+argmin max E Y e − X e b2
+e∈F
+
+b
+
+(2.4)
+
+= causal parameter,
+where F = {e; e satisfies the ad-hoc conditions 1 and 2}.
+The definition of the causal parameter and the precise description of the result is given later in Section 3.1. The
+point here is to emphasize that the causal parameter or
+the causal solution is optimizing a certain worst-case risk.
+This opens the door to think about causality in terms of
+optimizing a certain (worst-case) risk. We believe that this
+is a very useful way which might ease some of the more
+complicated issues on structure search for causal graphs
+and structural equation models.
+3. INVARIANCE OF CONDITIONAL DISTRIBUTIONS
+
+A key assumption for inferring causality from heterogeneous data as in (2.1) is an invariance assumption. It
+reads as follows:
+(A(E )): There exists a subset S ∗ ⊆ {1, . . . , p} of the
+covariate indices (including the empty set) such that
+
+
+
+
+L Y e |XSe ∗ is the same for all e ∈ E .
+
+That is, when conditioning on the covariates from S ∗ (denoted by XSe ∗ ), the conditional distribution is invariant
+across all environments from E .
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+407
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+(A(F )): Analogous but now for the much larger set of
+environments F .
+In a linear model setting, the invariance assumption
+translates as follows. There exists a subset S ∗ and a regression coefficient vector β ∗ with supp(β ∗ ) = {j ; βj∗ =
+0} = S ∗ such that
+for all e ∈ E :
+
+e ∗
+
+Y =X β +ε ,
+e
+
+where Fε denotes the same distribution for all εe . That
+is, when conditioning (regressing) on XSe ∗ , the resulting
+regression parameter and error term distribution are the
+same for all environments e ∈ E . From a practical point
+of view, this is an interesting invariance or stability property and the set of covariates S ∗ plays a key component in
+“stabilizing across the environments”; see also Figure 12
+in Section 6.
+If the invariance assumption holds, we are sometimes
+interested in describing the sets S ∗ which fulfill invariance. We then denote by
+(AS (E )): The subset S fulfills invariance saying that
+
+
+L Y e |XSe is the same for all e ∈ E .
+
+(AS (F )): analogous but now for the set of environments F .
+When considering the invariance assumption for the
+set of unknown (future) environments F , the sets S ∗ for
+which (AS ∗ (F )) holds are particularly interesting as they
+lead to invariance and stability for new, future environments which are not observed in the data. This is a key
+for solving worst-case risk optimization with respect to a
+class of perturbations which can be arbitrarily strong as in
+(2.4).
+3.1 Invariance and Causality
+
+A main question is whether there are sets S for which
+(AS (F )) holds and if so, whether there are many such sets
+and how one can describe them. Obviously, this depends
+on F and the problem then becomes as follows: under
+what model F can we have an interesting description of
+sets S which satisfy the invariance assumption (AS (F )).
+To address this at least in part, we consider structural
+equation models (SEMs):
+Y ← fY (Xpa(Y ) , εY ),
+(3.1)
+
+Y ← fY (Xpa(Y ) , εY ),
+
+(3.2)
+
+Xj ← fj (Xpa(Xj ) , εj ),
+
+e
+
+εe independent of XSe ∗ , εe ∼ Fε ,
+
+
+
+the distribution FX of X can be arbitrary but assuming finite second moments and positive definite covariance matrix. Often in the literature, a SEM is considered for all
+the variables:
+
+εY independent of Xpa(Y ) ,
+X ∼ FX ,
+
+where pa(Y ) denotes the parental set of the response variable Y in the corresponding causal influence diagram, and
+
+with εY , ε1 , . . . , εp mutually independent. The model in
+(3.2) is a special case of the SEM in (3.1), the former now
+assuming a structural equation part for the X-variables.
+Furthermore, the formulation in (3.1) also allows other
+hidden variables which may act on X but do not have a
+confounding effect on Y . The case of hidden confounders
+will be discussed later in Section 4.
+The (direct) causal variables for Y are defined to be
+Scausal = pa(Y ).
+The environments or perturbations e change the distributions of Y and X in model (3.1) and we denote the corresponding random variables by X e and Y e . The ad-hoc
+conditions 1 and 2 from Sections 2.3 are now formulated
+as follows:
+(B(E )) The structural equation in (3.1) remains the
+same, that is, for all e ∈ E
+
+
+
+
+e
+e
+Y e ← fY Xpa(Y
+) , εY ,
+
+e
+εYe independent of Xpa(Y
+),
+
+εYe has the same distribution as εY .
+(B(F )) analogous but now for the set of environments F .
+We note that the distributions of Xe are allowed to change.
+The following simple result describes the special role
+of causality with respect to invariance.
+P ROPOSITION 3.1. Assume a partial structural equation model as in (3.1). Consider the set of environments F
+such that (B(F )) holds. Then, the set of causal variables
+Scausal = pa(Y ) satisfies the invariance assumption with
+respect to F , that is (AScausal (F )) holds.
+The proof is trivial. The conditional distribution of Y e
+e
+given Xpa(Y
+) is given by fY and the distribution Fε of εY ,
+and these quantities do not depend on e.
+In presence of hidden confounder variables, invariance
+and causal structures can still be linked under certain assumptions: this will be discussed in Section 4. Proposition 3.1 says that causal variables lead to invariance:
+this has been known since a long time, dating back to
+Haavelmo (1943); see Figure 3. The result in Proposition 3.1 does not say anything about other sets of variables
+which satisfy the invariance assumption.
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+408
+
+P. BÜHLMANN
+
+F IG . 3. Trygve Haavelmo, Norwegian economist who received
+the Nobel Prize in Economic Sciences in 1989. Photo from
+https:// en.wikipedia.org/ wiki/ Trygve_Haavelmo.
+
+3.2 Invariant Causal Prediction
+
+Roughly speaking, Haavelmo (1943) already realized
+that
+causal variables =⇒ Invariance.
+The reverse relation
+(3.3)
+
+causal structures ⇐= Invariance
+
+has not been considered until recently (Peters, Bühlmann
+and Meinshausen, 2016). This might be due to the fact
+that with nowadays large-scale data, it is much easier to
+infer invariance from data and thus, the implication from
+invariance to causal structures becomes much more interesting and useful.
+The problem with the reverse implication (3.3) is the
+well-known identifiability issue in causal inference. We
+typically cannot identify the causal variables Scausal , unless we have very many environments (or perturbations)
+or making specific assumptions on nonlinearities (Hoyer
+et al., 2009, Bühlmann, Peters and Ernest, 2014), nonGaussian distributions (Shimizu et al., 2006) or error variances (Peters and Bühlmann, 2014). We will address the
+identifiability issue, which is often complicated in practice, in a fully “automatic” way as discussed next.
+The starting point is to perform a statistical test whether
+a subset of covariates S satisfies the invariance assumption for the observed environments in E . The nullhypothesis for testing is
+
+
+H0,S (E ) :
+
+
+
+assumption AS (E ) holds
+
+and the alternative is the logical complement, namely that
+assumption (AS (E )) does not hold. It is worthwhile to
+point out that we only test with respect to the environments E which are observed in the data. To address the
+identifiability issue, we intersect all subsets of covariates
+S which lead to invariance, that is,
+Ŝ (E ) =
+
+(3.4)
+
+
+
+S; H0,S (E ) not rejected by test
+
+S
+
+at significance level α .
+
+The specification of a particular test is discussed below in Section 3.2.2. The procedure in (3.4) is called
+Invariant Causal Prediction (ICP). The method is implemented in the R-package InvariantCausalPrediction for linear models (Meinshausen, 2018b) and
+nonlinearICP for nonlinear models (Heinze-Deml
+and Peters, 2017); see also Section 3.2.2 below.
+The computation of ICP in (3.4) can be expensive.
+There is an algorithm which provably computes ICP
+without necessarily going through all subsets (Peters,
+Bühlmann and Meinshausen, 2016): in the worst-case
+though, this cannot be avoided. If the dimension p is
+large, we advocate some preliminary variable screening procedure based on regression for the data pooled
+over all environments; see also Section 3.2.2 for the case
+with linear models below. Such regression-type variable
+screening procedures are valid when assuming a faithfulness condition: it ensures that the causal variables
+must be a subset of the relevant regression variables
+{j ; Xj conditionally dependent of Y given {XK ; k = j }};
+see, for example, Spirtes, Glymour and Scheines (2000).
+We first highlight the property of controlling against
+false positive causal selections.
+T HEOREM 3.1 (Peters, Bühlmann and Meinshausen,
+2016). Assume a structural equation model for the response Y as in (3.1) and that the environments or perturbations in E satisfy the assumption (B(E )). Furthermore,
+assume that the tests used in (3.4) are valid, controlling
+the type I error. Then, for α ∈ (0, 1) we have that
+
+
+
+
+P Ŝ (E ) ⊆ pa(Y ) ≥ 1 − α.
+The interesting fact is that one does not need to care
+about identifiability: it is addressed automatically in the
+sense that if a variable is in Ŝ (E ), it must be identifiable as
+causal variable for Y , at least with controllable probability
+1 − α (see, e.g., being equal to 0.95). For example, even
+if the environments in E correspond to ineffective heterogeneities (see, e.g., no actual perturbations), the statement
+is still valid.
+Theorem 3.1 does not say anything about power. The
+power depends on the observed environments E , besides
+sample size and the choice of a test. Roughly speaking,
+the power increases as E becomes larger: the more heterogeneities or perturbations, the better we can identify
+causal effects and this is also true for the procedure in
+(3.4). In fact, Peters, Bühlmann and Meinshausen (2016),
+Theorem 2, discuss cases where the ICP method in (3.4) is
+able to identify the all the causal variables, that is, where
+Ŝ (E ) = pa(Y ) asymptotically as sample size tends to infinity. These special cases, where essentially all the variables are perturbed, are far from a complete understanding
+of necessary and sufficient conditions for identifiability of
+the causal variables. Furthermore, the construction with
+the intersection in (3.4) might be often conservative. In
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+terms of power, one wants to reject as many sets of covariates which are violating invariance. This seems awkward
+at first sight but the fact that the tests are highly dependent
+helps to increase the probability that all sets S which do
+not fulfill the invariance hypothesis are rejected. A more
+quantitative statement of the latter and of power properties
+for ICP in general is difficult.
+3.2.1 Some robustness properties. The ICP procedure
+exhibits two robustness properties (and a third one is mentioned in Section 3.2.2 below).
+Hidden confounding variables. Even in presence of
+hidden confounding variables (as in the scenario of Figure 5), we have the following: assuming a faithfulness
+condition (cf. Spirtes, Glymour and Scheines, 2000),
+
+
+
+
+P Ŝ(E ) ⊆ an(Y ) ≥ 1 − α,
+where an(Y ) denotes the ancestor variables of Y . The
+details are given in Peters, Bühlmann and Meinshausen
+(2016), Prop. 5. In practice, this is interesting as we would
+still pick up some variables which indirectly have a total
+causal effect on Y .
+Direct effects of environments on Y . The ad-hoc conditions 1 and 2 in Section 2.3 or the condition (B(E ))
+are violated if the environments directly affect Y . With a
+faithfulness condition (cf. Spirtes, Glymour and Scheines,
+2000), we would then always infer that no set S would
+fulfill the invariance assumption and therefore, as sample
+size gets sufficiently large, rejecting H0,S (E ) for all S, we
+would obtain that Ŝ (E ) = ∅. Therefore, even under violation of the assumption that the environments or perturbations should not act directly on Y , the ICP procedure
+gives a conservative answer and claims no variable to be
+causal. In the literature, this scenario is also known under
+the name of so-called invalid instrumental variables (cf.
+Guo et al., 2018).
+3.2.2 Concrete tests. We first assume that the structural equation for Y in (3.1) is linear with Gaussian error:
+Y=
+
+βj Xj + εY ,
+
+
+
+εY ∼ N 0, σY2
+
+
+
+j ∈pa(Y )
+
+and εY is independent of Xpa(Y ) . The invariance hypotheses in H0,S (E ) then becomes
+H0,S (E )lin-Gauss : for all e ∈ E its holds that,
+Y e = XSe βS + εSe ,
+εSe independent of XSe
+(the same βS for all e ∈ E ),
+εSe ∼ FεS
+
+(the same for all e ∈ E ).
+
+Thanks to the Gaussian assumption, exact tests for this
+null-hypothesis exist, for example, with the Chow test
+(Chow, 1960). This is implemented in the R-package
+
+409
+
+InvariantCausalPrediction
+(Meinshausen,
+(Meinshausen, 2018b)).
+The variable pre-screening methods, mentioned above
+after the introduction of the ICP estimator (3.4), become
+also much simpler in linear models. One can use, for example, the Lasso (Tibshirani, 1996) on the data pooled
+over all observed environments and then employ the ICP
+estimator for all subsets of ŜLasso = {j ; β̂Lasso,j = 0}. To
+lin-Gauss ,
+justify this, one needs to establish that, under H0,S
+P[S ⊆ ŜLasso ] → 1 asymptotically: sufficient conditions
+for this are given in, for example, Bühlmann and van de
+Geer (2011).
+When the true underlying model for the response in
+(3.1) is sufficiently nonlinear but if one uses ICP in (3.4)
+with invariance tests based on a misspecified Gaussian
+linear model, it typically happens that no set S satisfies the
+invariance assumption resulting in Ŝ(E ) = ∅. One could
+use instead a testing methodology for nonlinear and nonGaussian models to infer whether a subset of variables
+fulfills the invariance assumption. A corresponding proposal is given in Heinze-Deml, Peters and Meinshausen
+(2018) with the accompanying R-package nonlinICP
+(Heinze-Deml and Peters, 2017).
+3.2.3 Application: Single gene knock-out experiments.
+We briefly summarize here the results from an application to predict single gene interventions in yeast (Saccharomyces cerevisiae); for details, we refer to Meinshausen
+et al. (2016). The data consists of mRNA expression measurements of 6170 genes in yeast. We have 160 observational measurements from wild-type yeast and 1479
+interventional data arising from single gene perturbation, where a single gene has been deleted from a strain
+(Kemmeren et al., 2014). The goal is to predict the expression level of a new unseen gene perturbation, that is,
+the potential outcome of a new unseen perturbation.
+More specifically, and using the terminology of the
+framework outlined before, we aim to infer some of the
+(direct) causal variables of a target gene. Denote the gene
+expression measurements by G1 , . . . , G6170 . We consider
+as a response variable Y the expression of the j th gene
+and the corresponding covariates X the expressions of all
+other genes:
+Y = Gj ,
+X = (G1 , . . . , Gj −1 , Gj +1 , . . . , Gp ).
+The index j ∈ {1, . . . , 6170} and the covariate dimension
+is p = 6169. The aim is now to infer pa(Y ), assuming a
+linear structural equation model as in (3.2) but now with
+functions fY and fX being linear.
+We construct the environments in a crude way: E =
+{1, 2} where the labels “1” and “2” denote the 160 observational and the 1479 interventional sample points, respectively. Thus, we pool all the interventional samples
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+410
+
+P. BÜHLMANN
+
+The type I error control against false positive causal selections holds as long as the estimated partition Ê does
+not involve descendant variables of the response Y : for
+example, one could use some clustering algorithm based
+on nondescendants of Y .
+In practice, it is sometimes reasonable to assume that
+certain variables are nondescendants of Y . A canonical
+case is with time-sequential data: then, the environments
+can be estimated as different blocks of data at consecutive
+time points: this is some kind of a change point problem
+but now aimed for most powerful discovery with ICP. The
+methodology with time-sequential data is developed and
+analyzed in Pfister, Bühlmann and Peters (2018) and implemented in the R-package seqICP (Pfister and Peters,
+2017).
+4. ANCHOR REGRESSION: RELAXING CONDITIONS
+F IG . 4. Prediction of strong intervention effects in single gene deletion experiments in Saccharomyces cerevisiae (yeast). x-axis: number
+of predictions made by a method; y-axis: number of predictions being
+true strong intervention effects.. Invariant causal prediction (ICP) in
+red: the first 5 predictions are all true (and 7 among the first 9 predictions are true). Orange: the Causal Dantzig Selector (Rothenhäusler,
+Bühlmann and Meinshausen, 2019), an algorithm based on an invariance property which includes hidden variables. All other methods are
+not distinguishable from random guessing (gray bars). Figure is taken
+from Meinshausen et al. (2016).
+
+into one environment since we have no replicates of single gene perturbations. Other pooling schemes could be
+used as well: it is typically only an issue of power how
+to create good environments while the type I error control
+against false positive causal selections (Theorem 3.1) is
+still guaranteed; see also Section 3.2.4 below.
+For validation, we do a training-test data splitting with
+a K-fold validation scheme of the interventional data: that
+is, we use all observational and (K − 1)/K of the interventional data with K = 3 or 5. We only consider true
+strong intervention effects (SIEs) where an expression Xk
+has a strong effect on Y (the perturbed value Xk are outside of the observed data range).
+The predictions are based on ICP (with Bonferroni correction due to using the ICP procedure many times, once
+for each gene being the response variable). One then finds
+that 8 significant genes at corrected significance level
+α = 0.05 and 6 of them are true positive strong intervention effects (Peters, Bühlmann and Meinshausen, 2016).
+What sticks out is that only very few causal genes have
+been found. When prioritizing the most promising causal
+genes, Figure 4 describes ROC-type curves: here ICP is
+supplemented with stability selection (Meinshausen and
+Bühlmann, 2010) on top of it for creating a “stabilized”
+ranking.
+3.2.4 Unknown environments. If the environments e ∈
+E are not known, one can try to estimate them from data.
+
+The main concern with ICP in (3.4) and the underlying
+invariance principle is the violation of the assumption in
+(B(E )), and thus also of the ad-conditions 1 and 2 from
+Section 2.3. Such a violation can happen under various
+scenarios and we mention a few in the following.
+It could happen that only approximate instead of exact invariance holds. This would imply that we should
+only search for approximate invariance, something which
+we will incorporate in the anchor regression methodology described below in Section 4.2. Another scenario, say
+in a linear model, is that invariance occurs in the nullhypothesis H0,S (E )lin-Gauss for the parameter βSe ≡ βS but
+with residual distributions εSe which change for varying e;
+or vice-versa with invariant residual distribution but different regression parameters for varying e. This could be
+addressed in ICP by testing only either the parameter- or
+residual-part, where invariance is assumed to hold for the
+causal variables.
+Perhaps the most prominent violation is in terms of
+hidden confounding variables H . The influence diagram
+from Figure 2 can then be extended to the situation of
+an instrumental variables (IV) regression model (Bowden
+and Turkington, 1990, Angrist, Imbens and Rubin, 1996,
+Imbens and Rubin, 2015), illustrated in Figure 5. We refer also to Imbens (2014) for a survey on IV regression.
+Now, it is more convenient to think of the environments
+(or instruments) as random variables and we also model
+
+F IG . 5. Graphical illustration with hidden confounding variables H .
+It corresponds to the instrumental variables regression model, where
+the instruments are now the environments.
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+411
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+all random variables in the system in terms of a structural
+equation model (unlike as in (3.1), where we have only
+one structural equation for Y ): instead of (3.2), we consider now the IV regression model
+
+linear form, is defined as follows: it is a structural equation model of the form
+⎛
+
+(4.1)
+
+Y ← fY (XpaX (Y ) , H, εY ),
+Xj ← fj (XpaX (Xj ) , H, E, εj ),
+where H, E, εY , ε1 , . . . , εp are mutually independent of
+each other. The variable H ∈ Rr is hidden (not observed)
+and possibly confounding between X and Y (if some
+components of H are descendants of X or Y , these are
+not relevant for inferring the effect from X to Y and hence
+w.l.o.g. H is a source node). Here, paX (•) denotes the
+parental variables X-variables (variables which are parents of • and from the set {X1 , . . . , Xp }). The main assumption in the IV regression model requires that the instruments or environments do not directly influence the
+response variable Y nor the hidden confounders H (this
+is an extension of the ad-hoc conditions 1 and 2 from
+Section 2.3); and ideally, they would influence or change
+the X variables in a sufficiently strong way (as with the
+ad-hoc aim in Section 2.3). We are not going into more
+details from the vast literature on IV models with for example, weak instruments, invalid instruments or partially
+identifiable parameters; see, for example, Stock, Wright
+and Yogo (2002), Murray (2006), Kang et al. (2016), Guo
+et al. (2018). Instead, we will relax this main assumption
+for an instrument as discussed next.
+
+⎛
+
+⎞
+
+where (all the components of) A, ε are jointly independent. We assume that all the variables are centered with
+mean zero. There could be feedback cycles and the graph
+of the structure could have cycles. In the latter case, we
+assume that I − B is invertible (which always holds if
+the graph is acyclic). The main assumption is that A is a
+source node and thus, the contribution of A enters as an
+additional linear term MA. Because of this, we use the
+terminology “anchor”: it is the anchor which is not influenced by other variables in the system and thus, it remains
+as the “static pole”.
+As mentioned above, one cannot identify the causal parameter BY,X , the row and columns corresponding to Y
+and X in the matrix B. However, we we will discuss in
+Section 4.3, that we can still get an interesting solution
+which optimizes a worst case risk over a class of scenarios or perturbations F , using the terminology and spirit of
+(2.3).
+4.2 Causal Regularization and the Anchor
+Regression Estimator
+
+We are particularly interested in the structural equation
+for Y in the model (4.1) which we write as
+
+4.1 The Anchor Regression Model
+
+We will allow now that the environments can act directly also on H and Y , relaxing a main assumption in IV
+regression models. In the terminology of IV regression,
+we thus consider the case with so-called invalid instruments (cf. Guo et al., 2018). This is an ill-posed situation
+for causal inference (from X to Y ), yet it is still possible
+to obtain more meaningful results than what is obtained
+from standard regression methodology; see Section 4.3.2.
+Instead of using the terminology “environment” we
+now us the word “anchor” (or anchor variable), for reasons which become more clear below. The structure of an
+anchor regression model is given by the graph in Figure 6.
+The anchor regression model, for simplicity here only in
+
+⎞
+
+X
+X
+⎝ Y ⎠ = B ⎝ Y ⎠ + ε + MA,
+H
+H
+
+Y = XT β + H T α + AT ξ + εY ,
+with X ∈ Rp , H ∈ Rq and A ∈ Rr .
+In the instrumental variables regression model where A
+would directly influence X only, it holds that H , εY , A are
+mutually independent (but not so in the anchor regression
+model) and this then implies that
+Y − XT β is uncorrelated of A.
+Actually, we could substitute uncorrelatedness with independence in the IV model.
+In cases where the causal parameter is nonidentifiable,
+one could look for the solution
+
+
+ 
+
+argmin E Y − XT b 2
+b
+
+(4.2)
+
+
+
+such that
+
+
+
+Corr A, Y − XT b = 0.
+
+F IG . 6. Graphical structure of the anchor regression model in (4.1),
+where A denotes the anchors which have been referred to as environments before. Note that the anchor variables are source nodes in the
+graph.
+
+This leads to a unique parameter (assuming that Cov(X)
+is positive definite), and there is a simple pragmatic principle behind it. This principle and the property of uncorrelatedness of the residual term with the anchor variables
+A also plays a key role in the anchor regression model for
+a class of so-called shift perturbations.
+Similar to the idea in (4.2), we define the anchor regression estimator by using a regularization term, referred to
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+412
+
+P. BÜHLMANN
+
+as causal regularization, which encourages orthogonality
+or uncorrelatedness of the residuals with the anchor variables A. We denote the data quantities by the n × 1 response vector Y, the n × p covariate design matrix X and
+the n × q matrix A of the observed anchor variables. Let
+A the projection in Rn onto the column space of A. In
+practice, if the columns of X and Y are not centered, we
+would include an intercept column in A. We then define
+
+
+
+
+β̂(γ ) = argmin (I − A )(Y − Xb)22 /n
+b
+
+(4.3)
+
+
+
+
+
+
+
++ γ A (Y − Xb)22 /n .
+We implicitly assume here that rank(A) = r < n. For
+γ = 1, β̂(1) equals the ordinary least squares estimator,
+for γ → ∞ we obtain the two-stage least squares procedure from IV regression and for γ → 0 we adjust for the
+anchor variables in A. The properties of the anchor regression estimator in (4.3) are discussed next and make
+the role of the tuning parameter more clear.
+The criterion function on the right-hand side of (4.3) is
+a convex function in b; for high-dimensional scenarios,
+we can add an 1 -norm penalty, or any other sparsity inducing penalty:
+
+
+
+
+β̂(γ ) = argmin (I − A )(Y − Xb)22 /n
+b
+
+(4.4)
+
+
+
+
+
+
+
++ γ A (Y − Xb)22 /n + λb1 .
+The computation of the anchor regression estimator is
+trivial. We simply transform the variables Y and X,
+Ỹ = Wγ Y,
+
+X̃ = Wγ X,
+√
+Wγ = I − (1 − γ )A .
+The anchor regression estimator in (4.3) or (4.4) is then
+given by ordinary least squares or Lasso for the regression
+of Ỹ versus X̃.
+
+turbations as follows:
+
+
+Cγ = v; v = Mδ for random or deterministic δ,
+(4.5)
+
+uncorrelated with ε
+
+
+
+
+
+
+
+
+and E δδ T  γ E AAT .
+Thus, Cγ contains shift perturbations whose length v22
+is typically O(γ ) as γ → ∞.
+For the case with γ → ∞ one can characterize shiftinvariance of residuals as follows.
+P ROPOSITION 4.1 (Rothenhäusler, Meinshausen, Bühlmann and Peters, 2018, Theorem 3). Assume that E[AAT ]
+is positive definite. Consider
+
+
+ 
+
+
+
+I = b ∈ Rp ; E A Y − X T b = 0 .
+Since Y and X have mean zero it follows also that E[Y −
+Xb] = 0 and hence E[A(Y − X T b)] = Corr(A, Y − Xb).
+Then,
+b∈I
+
+⇐⇒
+
+
+
+
+
+Y v − Xv T b
+
+has the same distribution for all v ∈ span(M).
+With the goal to make the residuals invariant (for the
+class of shift perturbations), we aim to estimate the regression parameter β such that the residuals are encouraged to be fairly uncorrelated with A. This leads to the
+construction of the anchor regression estimator in (4.3) or
+(4.4).
+A more general result than Proposition 4.1 is possible,
+uncovering a robustness property of the anchor regression
+estimator. We focus first on the population case. We denote by PA (·) the projection operator, namely PA (Z) =
+E[Z|A]. In the anchor regression model (4.1) with (I −B)
+being invertible, PA (Y ) and PA (X) are linear functions in
+A. The population version of the anchor regression estimator is
+ 
+
+
+
+
+
+2 
+
+β(γ ) = argmin E (I − PA ) Y − XT b
+b
+
+4.3 Shift Perturbations and Robustness of the
+Anchor Regression Estimator
+
+(4.6)
+
+The anchor regression estimator solves a worst case risk
+optimization problem over a class of shift perturbations.
+We define the system under shift perturbations v by the
+same equations as in (4.1) but replacing the term MA
+from the contributions of the anchor variables by a deterministic or stochastic perturbation vector v. That is, the
+system under shift perturbations satisfies
+
+Then, the following fundamental result holds.
+
+⎛ v⎞
+X
+
+⎛ v⎞
+X
+
+Hv
+
+Hv
+
+
+
++ γ E PA Y − XT b
+
+The shift vector v is assumed to be in the span of M, that
+is, v = Mδ for some vector δ. The class of considered
+perturbations, denoted earlier as F ∈ (2.2), are shift per-
+
+.
+
+T HEOREM 4.1 (Rothenhäusler, Meinshausen, Bühlmann and Peters, 2018, Theorem 1). For any b ∈ Rp it
+holds that
+
+
+
+
+
+
+ 
+
+
+
+
+
+sup E Y v − X v T b 2 = E (I − PA ) Y − XT b
+
+2 
+
+v∈Cγ
+
+
+
+⎝ Y v ⎠ = B ⎝ Y v ⎠ + ε + v = (I − B)−1 (ε + v).
+
+2 
+
+
+
++ γ E PA Y − XT b
+
+2 
+
+.
+
+Thus, Theorem 4.1 establishes an exact duality between
+the causal regularized risk (which is the population version of the objective function for the estimator in (4.3))
+and worst-case risk over the class of shift perturbations.
+The regularization parameter equals the “strength” of the
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+413
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+shift, as defined in (4.5): regarding its choice; see Section 4.3.1. A useful interpretation of the theorem is as
+follows. The worst-case risk over shift perturbations can
+be considered as the one corresponding to future unseen
+data: this risk for future unseen data can be represented
+as a regularized risk for the data which we observe in the
+training sample. We further note that Theorem 4.1 holds
+for any b, and thus it also holds when taking the “argmin”
+on both sides of the equation. We then obtain that the
+population version β(γ ) in (4.6) is the minimizer of the
+worst-case risk:
+
+
+
+
+
+
+ 
+
+β(γ ) = argmin sup E Y v − X v T b 2 .
+b
+
+v∈Cγ
+
+One can argue that also in the finite sample highdimensional sparse scenario, the anchor regression estimator in (4.3) or (4.4) are asymptotically optimizing the
+worst-case risk:
+
+
+
+
+
+
+ 
+
+sup E Y v − X v T β̂(γ ) 2
+v∈Cγ
+
+
+
+
+
+
+
+ 
+
+≤ min sup E Y v − X v T b 2 +
+b v∈Cγ
+
+,
+
+where, under suitable conditions, → 0 as n → ∞, or
+p ≥ n → ∞ in the high-dimensional scenario. The details
+are given in Rothenhäusler, Meinshausen, Bühlmann and
+Peters (2018), Section 4.
+4.3.1 Choosing the amount of causal regularization.
+The value of γ in the estimator (4.3) or (4.4) relates to
+the class of shift perturbations over which we achieve the
+best protection against the worst case; see Theorem 4.1.
+Thus, we could decide a-priori how much protection we
+wish to have or how much perturbation we expect to have
+in new test data.
+Alternatively, we could do some sort of cross-validation. If the anchor variable encodes discrete environments,
+we could leave out data from one or several environments
+and predict on the left-out test-data optimizing the worstcase error. If the anchor variables are continuous, the following characterization is useful.
+The value γ in the causal regularization has also an interpretation as a quantile. Assuming a joint Gaussian distribution of the variables Y , X and A in the model (4.1),
+it holds that
+
+
+
+
+
+
+
+
+2 
+
+α − quantile of E Y − XT b 2 |A
+
+
+(4.7)
+
+= E (I − PA ) Y − XT β
+
+
+
+
++ γ E PA Y − XT β
+
+2 
+
+,
+
+for γ = α − quantile of χ12 .
+The right-hand side also equals a worst-case risk over
+shift perturbations, as stated in Theorem 4.1. Therefore,
+the relation above links the in-sample (for the nonper-
+
+turbed data) quantiles to the out-sample (for the perturbed
+data) worst-case risk. The exact correspondence of α and
+γ might not hold for more general situations. However,
+the qualitative correspondence is that a large α (high
+quantile) corresponds to a high value γ for the regularization term. Thus, one could choose a quantile value α,
+for example, α = 0.95, for the quantile of the conditional
+expectation of the squared error E[(Y − X T b)2 |A] and
+then calculate the γ which optimizes this quantile. Under
+a Gaussian assumption, we can estimate the quantities replacing expectations by mean squared test samples. This
+result also indicates that anchor regression with a large
+value of γ should result in good values for the high quantile of the squared prediction error (unconditional on A).
+4.3.2 Diluted form of causality. In the anchor regression model in general, it is impossible to infer the direct causal parameter β from X to Y . If the assumptions
+for instrumental variables regression are fulfilled, that is,
+no direct effects from A to H and to Y and rank(A) ≥
+dim(X) = p, then the anchor regression estimator with
+γ → ∞ equals the unique two stage least squares estimator and consistently infers β; in particular, we also have
+that β(γ → ∞) = β.
+If the IV assumptions do not hold, for example, in presence of invalid instruments where the anchor variables directly affect Y or H , the parameter β(γ ) with γ → ∞ or
+γ being large is often a more meaningful quantity than the
+standard regression parameter (with γ = 1). For large values of γ , the corresponding β(γ ) is minimizing a worstcase risk over a class of large shift perturbations. This
+parameter and its entries with large values corresponding
+to important variables is interesting in many applications:
+the variables (with corresponding large parameter components of β̂(γ )) are “key drivers” in a system of interest
+to explain the response Y in a stable manner over many
+strong shift perturbations. In fact, for γ → ∞, we can define
+
+
+supp β(γ → ∞)
+
+
+
+to be the set of variables which are called “diluted causal”
+for the response Y (the variables which are relevant for Y
+in a stable way across many strong shift perturbations).
+4.4 Some Empirical Illustrations
+
+We illustrate the performance and behavior of the estimator (4.3) in the linear anchor regression model (4.1).
+We consider the case where the anchors are invalid instruments and low-dimensional and hence, inferring the
+causal effects from X to Y is impossible. The model for
+the variables A, H and X is as in model (M3) described
+later in Section 5.4, with dim(A) = r = 2, dim(H ) = q =
+1 and dim(X) = p = 10. The structural equation for the
+response is
+Y ← 3X2 + 3X3 + H − 2A1
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
++ εY ,
+
+
+
+
+
+εY ∼ N 0, 0.252 .
+
+414
+
+P. BÜHLMANN
+
+F IG . 7. Left: empirical α-quantiles of |Yout,i − Ŷout,i | for i = 1, . . . , nout = 2000, averaged over 100 independent simulation runs. Right: estimated
+in-sample α-quantile of E[(Y − XT β̂(γ ))2 |A] in (4.7) with α = 0.9918 corresponding to γ = 7 (left boxplot) and out-sample (with perturbation)
+mean squared prediction error (right boxplot), for the 100 independent simulation runs.
+
+The training sample size is chosen as n = 300. The test
+sample is constructed with the same structure but√now the
+anchor variables A are multiplied by the factor 10 and
+the test sample size is chosen as nout = 2000. It is instructive to describe here how the anchor variables A act on X:
+the model is
+Xj ← A1 γ1 + A2 γ2 + H + εXj ,
+
+εXj ∼ N (0, 1),
+
+where γ1 , γ2 are coefficients which have been sampled
+i.i.d. from N (0, 1). The equation above changes in the
+test √
+sample where we multiply A1 and A2 with the factor 10 which results in perturbations for the Xj variables. Figure 7 describes the quantiles of the absolute outT β̂(γ )| where γ = 7
+sample prediction error |Yout,i − Xout,i
+has been prespecified. We also show the empirical relation between the in-sample quantile in (4.7)
+and the out1 2000
+sample mean squared prediction error 2000
+i=1 (Yout,i −
+T
+2
+Xout,i β̂(γ )) . We conclude from the left panel of Figure 7 that the anchor regression estimator exhibits a substantially better prediction performance under perturbation out-sample scenarios than the ordinary least squares
+estimator. If the out-sample data would be generated as
+the in-sample training data, that is, without new perturbations in the test data, there would be no gain, or actually a
+slight loss, of anchor regression over OLS (empirical results not shown here). Anchor regression only pays-off for
+prediction if some perturbations happen in new future data
+points which amplify the effect of heterogeneity (generated from the anchor variables A) in the future test data.
+This is briefly discussed next.
+4.5 Distributional Robustness
+
+Anchor regression and causality can be viewed from
+the angle of distributional robustness (Heinze-Deml and
+Meinshausen, 2017, Meinshausen, 2018a). Distributional
+
+robustness refers to optimizing a worst-case risk over a
+class of distributions:
+
+
+
+
+argmin max E (Z; θ ) ,
+P ∈P
+
+θ
+
+where (·; ·) denotes a loss function, Z is the random variable generating a data point (e.g., Z = (Y, X)), θ is an unknown (potentially high- or infinite-dimensional) parameter and P is a class of probability distributions.
+A typical choice for the class of distributions is
+
+
+P = P ; d(P , P0 ) ≤ ρ ,
+
+where P0 is the reference distribution, for example being
+the empirical measure, d(·, ·) is a metric, for example, the
+Wasserstein distance, and ρ is a pre-specified radius; see,
+for example, Sinha, Namkoong and Duchi (2017), Gao,
+Chen and Kleywegt (2017).
+For causality and anchor regression, the class of distributions P is given by a causal or “anchor-type” model
+consisting of perturbation distributions. Theorem 4.1 describes the connection more explicitly: the class P consists of amplifications of the observed heterogeneity in
+the data. This, because the perturbation distributions arise
+from shifts v ∈ span(M), thus being shifts in the direction
+of the effects from the observed anchor variable contribution which equals the term MA in the model (4.1); and the
+strength of the shifts in the perturbations is given by the
+parameter γ which has an analogous role as the radius ρ
+in the definition of P above. Thus, with anchor regression,
+the class of distributions is not pre-defined via a metric
+d(·, ·) and a radius ρ but rather through the observed heterogeneities in span(M) and a strength of perturbations or
+“radius” γ .
+We also note that the distributional robustness above is
+in a different spirit from classical statistical robustness (cf.
+Huber, 1964, Hampel et al., 1986). Unlike as in the latter,
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+415
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+distributional robustness mentioned above is mostly concerned about protection on new test data which is allowed
+to come from a different distribution that the training data.
+
+Using the abbreviated notation with f mentioned
+above, the nonlinear anchor regression estimator is defined as
+fˆanchor = argmin G(f ),
+
+5. NONLINEAR ANCHOR REGRESSION
+
+We present here a methodology for anchor regression
+generalizing the linear case. A core motivation is to design
+an algorithm for which any “machine learning” technology for regression can be plugged-in, including for example Random Forests or even Deep Neural Nets. We will
+argue that in presence of heterogeneity, essentially “any”
+of these machine learning methods can be improved using
+additional causal regularization.
+We consider a nonlinear anchor regression structural
+equation model where the dependence of Y on X is a nonlinear function:
+X ← MX A + BX,H H + εX ,
+(5.1)
+
+Y ← f (X) + MY A + BY,H H + εY ,
+H ← MH A + εH ,
+
+where (all the components of) A, εX , εY , εH are jointly
+independent. We consider more general nonlinear models
+in (5.10), although a too high degree of nonlinearity can
+become more difficult with the anchor regression algorithm presented below. The issue is discussed after Corollary 5.1. We note that with MY and MH being equal to
+zero we have a nonlinear instrumental variables regression model with linear dependences on the instruments
+(or the anchors) A and the hidden variables H .
+
+f ∈C
+
+(5.3)
+
+G(f ) = Gγ (f ) =
+
+
+f (x) = E[Y |X = x]
+which is a map from X to Y , where X and Y are the domains of X and Y , respectively. Given data (Y (1) , X (1) ),
+. . . , (Y (n) , X (n) ), many estimation methods or algorithms
+for f can be written in the form
+n
+
+(5.2)
+
+
+
+
+
+1
+Y (i) − f X (i)
+fˆ = argmin
+f ∈C 2n i=1
+= argmin
+f ∈C
+
+2
+
+1
+Y − f 22 ,
+2n
+
+where C denotes a suitable subclass which incorporates
+certain restrictions such as smoothness or sparsity. On the
+right-hand side we have used a slight abuse of notation
+where f = (f (X (1) ), . . . , f (X(n) ))T denotes the vector
+of function values at the observed X (1) , . . . , X(n) . As will
+be seen below, the estimation algorithm is not necessarily
+of the form as in (5.2) but we use this formulation for the
+sake of simplicity.
+
+
+
+
+
++ γ A (Y − f )22 /n .
+As in (4.3), A denotes the linear projection onto the column space of the observed anchor variable matrix A. If
+the anchor variables A have a linear effect onto X, Y and
+the hidden confounders H , it is reasonable to consider the
+estimator with the linear projection operator A . We will
+give some justification for it in Section 5.5.
+It is straightforward to see that the objective function
+can be represented as
+
+
+
+
+G(f ) = W (Y − f )22 /(2n),
+√
+W = Wγ = I − (1 − γ )A .
+5.2 Anchor Boosting: A “Regularized”
+Approximation of the Estimator
+
+The question is how to compute or approximate the estimator in (5.3). We aim here for a solution where standard
+existing software can be used.
+Our proposal is to use boosting. For this, we consider
+the negative gradient
+−
+
+5.1 The Objective Function and the Algorithm
+
+Consider a nonlinear regression function f , defined as
+
+
+1 
+(I − A )(Y − f )22 /n
+2
+
+∂
+G(f ) = W 2 (Y − f )/n
+∂f
+
+and pursue iterative fitting of the negative gradient. The
+negative gradient fitting is done with a prespecified base
+learner (or “weak learner”): it is a regression estimator fˆU,X based on input data (U, X) with U denoting
+a response vector (e.g., U = Y corresponds to the estimator applied to the original data). This is the standard
+recipe of gradient boosting (Breiman, 1999, Friedman,
+2001, Bühlmann and Yu, 2003, Bühlmann and Hothorn,
+2007) and the method is summarized in Algorithm 1. The
+choice of the stopping iteration mstop is discussed in Section 5.2.1. The stopping iteration is a regularization parameter: it is governing a bias-variance trade-off, on top
+of the regularization of causal regularization from anchor
+regression which is encoded in the matrix W = Wγ .
+From another view point for regularization, we can
+think of the regression estimator fˆỸ ,X as an operator B
+(when evaluated at the observed X; it is a “hat” operator):
+B : (Ỹ , X) → fˆỸ ,X (·).
+Then, it is straightforward to see that
+
+
+
+
+ 
+
+f [m] (X1 ), . . . , f [m] (Xn ) = I − I − W 2 B m Y,
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+416
+
+P. BÜHLMANN
+
+Algorithm 1 Anchor Boosting algorithm
+1: Initialize with f [0] ≡ 0. Set m = 0.
+2: Increase m by 1: m ← m + 1.
+3: Compute the pseudo-response Ỹ = W 2 (Y −
+f [m−1] )/n which equals the negative gradient vector
+evaluated at f [m−1] .
+4: Compute the regression function estimator fˆỸ ,X from
+the base learner and up-date
+
+The population version of the optimization is
+
+
+
+
+(5.4)
+
+
+
+
+
+
+
+mstop = argminWγ Y − f [m] 22 ,
+m
+
+
+
+
+mstop = argmaxWγ Y − f [m] 2
+2
+
+m
+
+(5.5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+such that Wγ Y − f [m] 22
+≤ 1.1 minWγ Y − f [m] 22 .
+m
+
+In general, we propose a rule based on the following
+observation. Consider the population version of W = Wγ
+and denote it by
+√
+Rγ = Id − (1 − γ )PA ,
+where PA (·) denotes the best linear projection onto A.
+That is,
+ 0 T
+
+PA (Z) = α
+
+A,
+
+
+ 
+
+α 0 = argmin E Z − α T A 2
+α
+
+= Cov(A)−1 Cov(A, Z).
+Thus, Rγ is a function of A and random.
+
+ 
+
+= argmin E Rγ Y − Rγ f (X) 2 ,
+f ∈CX
+
+due to linearity of Rγ ; here CX denotes the class of measurable functions of X. We decompose this problem into
+two parts:
+
+
+ 
+
+E Rγ Y − Rγ f (X) 2
+
+
+where 0 < ν < 1 is a pre-specified parameter. The default value is ν = 0.1.
+5: Repeat steps 2–4 until reaching a stopping iteration
+mstop .
+
+5.2.1 Some criteria for choosing the stopping iteration.
+In connection with a Random Forests (Breiman, 2001)
+learner for the estimator fˆỸ ,X in step 5 of Algorithm 1, we
+found that we can choose the stopping iteration m such as
+to minimize the objective function Wγ (Y − f [m] )22 or
+even overshooting the minimum by say 10%. Formally,
+the two stopping rules are
+
+2 
+
+f ∈CX
+
+f [m] = f [m−1] + ν · fˆỸ ,X ,
+
+that is, the boosting operator at iteration m is equal to
+(I − (I − W 2 B)m ). If W 2 B has a suitable norm being
+strictly < 1, then there is geometrical convergence to the
+identity which would fit the data Y perfectly. This indicates, that we should stop the boosting procedure to
+avoid overfitting. However, especially for large values of
+γ in W = Wγ , the norm of W 2 B will be larger than one
+and geometrical contraction, that is, overfitting, to the response vector Y will not happen.
+
+
+
+argmin E Rγ Y − f (X)
+
+ 
+
+= E Rγ Y − gopt (X, A) 2
+
+
+ 
+
++ E gopt (X, A) − Rγ f (X) 2 ,
+gopt = E[Rγ Y |X, A].
+This motivates a finite sample criterion guarding against
+overfitting. Whenever we estimate f (·) by fˆ(·) with
+boosting as in Algorithm 1, the residual sum of squares
+Wγ (Y − fˆ(X))22 should be at least as large as the residual sum of squares of Wγ Y − ĝopt (X, A)22 of any good
+and reasonably tuned machine learning estimator ĝopt .
+That is, we should choose the number of boosting iterations such that it minimizes the objective function under
+the given constraint:
+
+
+
+
+
+
+mstop = minWγ Y − f [m] (X) 22
+m
+
+(5.6)
+
+such that
+
+
+
+
+Wγ Y − f [m] (X) 2
+
+
+
+≥ Wγ Y − ĝopt (X, A)2 .
+
+2
+
+2
+
+This guards against overfitting and avoids choosing a too
+large boosting iteration. We could also modify the rule to
+choose m as in (5.5) under the constraint that Wγ (Y −
+f [m] (X))22 ≥ Wγ Y − ĝopt (X, A)22 .
+5.2.2 Random Forests learner with a linear model component. Besides using Random Forests as a base learner
+fˆU,X in the Anchor-Boosting Algorithm 1, we consider
+also a modification which fits a linear model first and
+applies Random Forests on the resulting residuals. This
+modification is denoted by “LM+RF”, standing for Linear Models+Random Forests. The LM+RF procedure is
+built on the idea that the linear model part is the “primary
+part” and the remaining nonlinearities are then estimated
+by Random Forests. This base leaner is able to cope well
+with estimating partial linear functions.
+The “LM+RF” algorithm is defined as follows. Given
+a response variable Y and some covariates X:
+(1) Fit a linear model of Y versus X, by default including an intercept. The fitted (linear) regression function is
+denoted by fˆ1 .
+(2) Compute the residuals from step 1, denoted by R.
+Fit a Random Forests of R (being now the response variable) versus X: the fitted regression function is denoted
+by fˆ2 .
+(3) The final estimator is fˆ1 + fˆ2 .
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+The LM+RF base learner is typically outperforming plain
+Random Forests if the underlying regression function is
+an additive combination of a linear and a nonlinear function. Related and more refined is the idea of local linear
+forests (Friedberg, Tibshirani, Athey and Wager, 2018)
+which are reported to perform better than a (perhaps conservative) sample splitting version of “LM+RF”.
+5.2.3 Plug-in of any “machine learning” algorithm.
+Obviously, any “machine learning” regression technique
+can be used as base learner in the Anchor Boosting Algorithm 1. In addition, also the stopping rule in (5.6) involving an estimator ĝopt (X, A) can be used with any reasonable regression algorithm.
+5.3 Some Empirical Results
+
+We consider the following structural equation model for
+the in-sample data used for training with sample size n =
+300:
+A ∼ N2 (0, I),
+H ∼ N1 (0, 1),
+(5.7)
+
+Xj = A1 + A2 + 2H + εX,j
+
+
+(j = 1 . . . , p),
+
+
+
+εX ∼ N10 0, 0.52 · I ,
+Y = f (X2 , X3 ) − 2A1 + 3H + εY ,
+
+
+
+
+εY ∼ N1 0, 0.252 ,
+where A, H , εX , εY are jointly independent. The dimensions of the variables are dim(A) = 2, dim(H ) = 1,
+dim(X) = 10 and dim(Y ) = 1. For the function f (·), we
+consider the following two models:
+(M1) I (X2 ≤ 0) + I (X2 ≤ −0.5)I (X3 ≤ 1),
+(M2) X2 + X3 + I (X2 ≤ 0) + I (X2 ≤ −0.5) ×
+I (X3 ≤ 1).
+The model (M1) has no linear term while (M2) does have
+one; for both models, the number of active variables is
+2. The out-of-sample data is generated according to the
+same structural equation model as in (5.7) but with two
+different perturbations for the anchor variables, denoted
+by Aout . We consider the following:
+(i) moderate shift perturbation:
+
+
+
+
+μ ∼ Nnout 1, 22 I ,
+Aout ∼ Nnout (μ, I),
+where nout = 2000 denotes the number of out-of-sample
+observations.
+(ii) strong shift perturbation:
+μ ∼ Nnout (10, I),
+Aout ∼ Nnout (μ, I),
+where nout = 2000 denotes the number of out-of-sample
+observations.
+
+417
+
+We report some performances of Anchor Boosting with
+Random Forests, Anchor Boosting with the LM+RF
+learner from Section 5.2.2 and plain Random Forests in
+Figures 8–9. We do not tune the parameter γ and consider only the choice γ = 7. The performance measures
+are empirical α-quantiles of the out-of-sample predictions
+|Yout,i − Ŷout,i | for a range of different α-values. In terms
+of quantitative numbers, the relative performance gain
+of Anchor Boosting with stopping as in (5.5) (“stop2”)
+over the corresponding plain Random Forests algorithm
+is given in Table 1.
+The performance gain with Anchor Boosting is substantial, with the only exception of the case (M2) with
+strong shift perturbations (ii) and the Random Forest
+base learner (RF). This is a situation where a RF learner
+is “misspecified” since it cannot capture well the linear function part in model (M2): it is particularly harmful with strong shift perturbations where a strong shift
+in the anchor variables Aout results in strong shifts
+of the covariates and through the linear function also
+in Y . The RF learner cannot capture such strong shifts
+well; when using the much better Linear Model + Random Forests (LM+RF) learner, the performance gain of
+Anchor Boosting is massive. When comparing Anchor
+Boosting with LM+RF to plain Random Forests (RF),
+the relative gain over plain RF at α ∈ {0.5, 0.8, 1} in the
+model (M2) with strong strong shift perturbations is
+15.2%, 19.2%, 23.6%
+which is again in clear favor of Anchor Boosting with the
+LM+RF learner.
+Even if the model has no linear function (as in model
+(M1)), it seems to pay-off to use the LM+RF learner in
+presence of strong shift interventions. A possible reason is
+that extrapolation for large X-values is not easily possible
+with Random Forests.
+5.4 Variable Importance
+
+Of particular interest is the notion of variable importance: in connection with (nonlinear) anchor regression, it
+is a more causally oriented measure than a plain variable
+importance measure in standard (nonlinear) regression.
+See also the term of “diluted causality” in Section 4.3.2.
+We suggest a variable importance measure based on
+permutation, following Breiman’s proposal for Random
+Forests (Breiman, 2001). Unlike Breiman’s original proposal which involves the out-of-bag observations occurring in Random Forests, we work with the training data
+only. It seems to work as long as the estimated anchor regression function is reasonably regularized and does not
+overfit.
+Consider an estimated anchor regression function
+fˆanchor (·) : X → Y . For j ∈ {1, . . . , p}, permute the j th
+covariate Xj (permute the sample indices) and denote this
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+418
+
+P. BÜHLMANN
+
+F IG . 8. Empirical α-quantiles of |Yout,i − Ŷout,i | for i = 1, . . . , nout = 2000, averaged over 100 independent simulation runs. Model (M1) and
+moderate shift perturbations (i) for Aout (top) and strong shift perturbations (ii) for Aout (bottom). The Anchor Boosting algorithm is always used
+with γ = 7, with Random Forests (left) and with Linear Model + Random Forests (right), and with the two stopping criteria from (5.4) (stop1) and
+(5.5) (stop2).
+
+permuted variable by Xperm(j ) . We define the variable, for
+j ∈ {1, . . . , p}
+(i)
+
+ (i)
+
+(i)
+
+(i)
+
+X̃perm(j ) = X1 , . . . , Xj −1 , Xperm(j ) ,
+(i) T
+
+(i)
+
+Xj +1 , . . . , Xp
+
+,
+
+n
+
+The importance measure is the relative increase in of
+RSSj in comparison to the standard RSS = n−1 ×
+n
+(i) − fˆ
+(i) 2
+anchor (X )) :
+i=1 (Y
+Impj =
+
+RSSj − RSS
+.
+RSS
+
+hj − h
+,
+h
+
+
+
+
+
+
+
+
+
+
+
+(i)
+
+hj = sample median Y (i) − fˆ X̃perm(j
+) ;
+
+i = 1, . . . , n ,
+
+(5.9)
+
+
+
+h = sample median Y (i) − fˆ X (i) ;
+
+ (i)
+ (i)
+
+Y − fˆanchor X̃perm(j ) 2 .
+
+i=1
+
+(5.8)
+
+Impmed,j =
+
+i = 1, . . . , n,
+
+where the j th component is permuted relative to the observed variable X (i) . We then compute the residual sum
+of squares
+RSSj = n−1
+
+As an alternative, we also consider the median absolute
+loss instead of the residual sum of squares:
+
+i = 1, . . . , n .
+For empirical results we note that the models (M1) and
+(M2) from Section 5.3 are very difficult in terms of identifying important variables. In fact, with the latter models, the correlation among the covariates X is extremely
+strong: the average absolute value of the off-diagonal elements of the empirical (in-sample) correlation matrix is
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+419
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+F IG . 9. Empirical α-quantiles of |Yout,i − Ŷout,i | for i = 1, . . . , nout = 2000, averaged over 100 independent simulation runs. Model (M2) and
+moderate shift perturbations (i) for Aout (top) and strong shift perturbations (ii) for Aout (bottom). The Anchor Boosting algorithm is always used
+with γ = 7, with Random Forests (left) and with Linear Model + Random Forests (right), and with the two stopping criteria from (5.4) (stop1) and
+(5.5) (stop2).
+
+TABLE 1
+Relative performance gain of empirical α-quantiles of absolute out-of-sample prediction errors (see also captions in Figures 8–9) of Anchor
+Boosting with γ = 7 and stopping from (5.5) over the corresponding plain base learner. The base learners are Random Forests (RF) and Linear
+Model + Random Forests (LM+RF)
+Performance gains at α ∈ {0.5, 0.8, 1}
+
+Model & learner
+(M1); moderate shift & RF
+(M1); moderate shift & LM+RF
+(M1); strong shift & RF
+(M1); strong shift & LM+RF
+(M2); moderate shift & RF
+(M2); moderate shift & LM+RF
+(M2); strong shift & RF
+(M2); strong shift & LM+RF
+
+23.2%, 22.3%, 16.7%
+23.5%, 22.7%, 18.3%
+28.6%, 25.0%, 18.0%
+65.6%, 57.1%, 39.5%
+12.5%, 11.1%, −3.7%
+19.5%, 18.9%, 12.6%
+−100.8%, −73.9%, −30.1%
+83.3%, 73.4%, 47.6%
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+420
+
+P. BÜHLMANN
+TABLE 2
+Relative performance gain of Anchor Boosting, analogous as in Table 1
+Model & learner
+(M3); strong shift & RF
+(M3); strong shift & LM+RF
+
+found to be
+
+9.6%, 8.4%, 6.3%
+28.5%, 18.5%, 1.5%
+
+Y ← f (X) + g(A, H, εY ),
+
+(5.10)
+
+
+
+1
+
+Corr(X
+
+j , Xk ) = 0.97
+p(p − 1) j =k
+
+for a representative sample. We modify to the following
+model:
+(M3) The structural equation model is:
+A ∼ N2 (0, I),
+
+where (all the components of) A, εX , εY , εH are jointly
+independent.
+We consider the situation when the regularization parameter γ → ∞. Then, in the population version, the
+regularization enforces a solution f (·) with Corr(A, Y −
+f (X)) = 0. We thus consider the set
+
+
+a 2 × 10 matrix with i.i.d. N (0, 1) entries,
+
+Xj = AT •j + H + εX,j
+(j = 1 . . . , p), εX ∼ N10 (0, I),
+Y = f (X2 , X3 ) − 2A1 + 3H + εY ,
+
+
+H ← hH (A, εH ),
+
+ 
+
+
+
+I = f (·); E A Y − f (X) = 0 and
+
+H ∼ N1 (0, 1),
+
+
+Performance gains at α ∈ {0.5, 0.8, 1}
+
+2
+
+εY ∼ N1 0, 0.25 ,
+where A, H , εX , εY ,  are jointly independent and
+f (x2 , x3 ) = x2 + x3 + I (x2 ≤ 0)
++ I (x2 ≤ −0.5)I (x3 ≤ 1).
+The dimensions of the variables are dim(A) = 2,
+dim(H ) = 1, dim(X) = 10 and dim(Y ) = 1.
+We consider again sample size n = 300 and out-of-sample
+size nout = 2000 (for variable importance, we do not need
+this). In terms of the empirical performance for prediction, the analogue of Table 1 is given in Table 2.
+For variable importance, the measures Impj and
+Impmed,j are displayed in Figure 10. Since the variables X2 and X3 are the only active variables in the true
+function f (X) in model (M3) we conclude that Anchor
+Boosting with LM+RF does a substantially better job for
+quantifying variable importance than standard Random
+Forests. Note that, as in Section 5.3, there was no tuning
+for the parameter γ which was set to the value γ = 7.
+5.5 Some Arguments Why a Simple Linear Projection
+A Is Sufficient
+
+We present here some arguments under what conditions
+a linear projection A in the estimator in (5.3) is reasonable even in presence of a nonlinear function f (·) and a
+potentially more nonlinear model than in (5.1), namely:
+X ← hX (A, H, εX ),
+
+
+
+
+
+E Y − f (X) = 0 .
+Assuming that E[Y − f (X)|A] is a linear function in A,
+which naturally holds for discrete anchor variables as discussed in Section 5.5.1, we then have the following result.
+P ROPOSITION 5.1. Consider a nonlinear anchor regression model as in (5.10). We assume that Cov(A)
+is positive definite and I = ∅. Assume that E[Y −
+f (X)|A] = μf + αfT A is a linear function of A with
+μf ∈ R and αf a r × 1 vector. Then, for any f ∈ I and
+every do-perturbation on A with do(A = a) (cf. Pearl,
+2009), where the value a is deterministic:
+
+
+
+
+E Y a − f Xa
+
+
+
+= μf = constant w.r.t. a.
+
+Here, Y a and X a denote the random variables corresponding to the do-perturbation do(A = a).
+A proof is given at the end of the section. Proposition 5.1 leads to invariance of the first moment of the
+residuals Y a − f (X a ) but is not saying anything on higher
+moments or the invariance of the distribution as in Proposition 4.1.
+5.5.1 Discrete anchor variables. For nonlinear f (·),
+the conditional expectation E[Y − f (X)|A] in the model
+(5.10) is typically nonlinear in A, thus violating the assumption of Proposition 5.1; the same statement holds
+for the model (5.1) due to the nonlinearity of the function f (·). There is one very notable and relevant exception
+though: for discrete anchor variables A ∈ A = {1, . . . , m}
+with labels 1, . . . , m, we can always write
+
+
+
+
+E Y − f (X)|A = a = μf + αfT A,
+where A is now with dummy-encoding having an r =
+(m − 1)-dimensional representation (and implicitly assuming that this conditional distribution exists). Positive definiteness of Cov(A) is ensured by assuming 0 <
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+421
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+F IG . 10. Boxplots of the ranks of variable importance (rank 1 lowest priority for variable importance, rank 10 highest priority), based on 100
+independent simulations of model (M3) with the only active variables {X2 , X3 } in the nonlinear structural equation for Y . The different boxes
+correspond to the different variable indices j ∈ {1, . . . , 10}. Anchor Boosting with LM+RF and γ = 7: measure (5.8) (top), measure (5.9) (middle);
+variable importance of standard Random Forests measuring the increase in residual sum of squares based on out-of-bag observations (bottom).
+
+P[A = k] < 1 for all k. Then, we have the following result.
+C OROLLARY 5.1. Consider a nonlinear anchor regression model as in (5.10). Assume discrete anchor variables A with dummy encoding. We further assume that
+0 < P[A = k] < 1 for all k, and I = ∅. Then, for any
+f ∈ I and every do-perturbation on A with do(A = a)
+(cf. Pearl, 2009), where the value a is deterministic:
+
+
+
+
+E Y a − f Xa
+
+
+
+= μf = constant w.r.t. a.
+
+We note that a do-perturbation on A would simply
+change the value of the dummy-encoding: say do(Aj = 5)
+would imply a 5-fold effect of the variable Aj if the observed Aj = 1.
+We point out that the model in (5.10) is very general.
+However, Corollary 5.1 is only making a statement if the
+set I is nonempty. This is ensured for example, for a broad
+class of nonlinear instrumental variables regression of the
+form:
+Y ← f (X) + g(H, εY ),
+X ← h(A, H, εX ),
+
+where (all components of) A, H , εX , εY are jointly independent. Obviously, Y − f (X) is then independent of A
+and therefore f ∈ I . We do not elaborate more under what
+conditions I is nonempty: in the case of linear structural
+equations we note the result in Proposition 4.1.
+For nondiscrete anchor variables and where the conditional expectation E[Y − f (X)|A] = μf + αfT A +
+AT βf A + · · · , with βf a r × r matrix, is nonlinear in
+A, the nonlinear anchor boosting algorithm leads to invariance of the linearized part:
+
+
+
+
+E Y a − f Xa
+
+
+
+≈ μf + a T βf a + · · · ,
+
+where the expression does not involve dependence on A
+through the linear part αfT a. A linear approximation is
+more likely to be good if A has only a linear influence
+on X, H and Y , as in the model (5.1), and if f (·) is not
+too far away from a linear function. Thus, we would conclude that the nonlinear anchor boosting estimator leads
+to good predictive robustness if the direct effects of A are
+linear and the nonlinearity enters via a nonlinear function
+f (·) in the structural equation for Y . If the conditional expectation E[Y − f (X)|A] becomes highly nonlinear, one
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+422
+
+P. BÜHLMANN
+
+would need a different penalization which could be of the
+form such as
+
+
+
+
+
+
+max E g(A) Y − f (X) ,
+where G is a suitable class of functions.
+P ROOF OF P ROPOSITION 5.1. Since A is a source
+node, the do-perturbation on A is the same as the conditional expectation:
+
+
+
+
+
+
+E Y − f (X)|A = a = E Y − f (X)|do(A = a)
+
+ 
+= E Y a − f Xa ,
+
+(i)
+
+(i)
+
+
+
+
+
+where i = 1, . . . , n. The out-of-sample values of Aout are
+three times amplified:
+A1 = (3, 3, . . . , 3, 0, 0, . . . , 0)T
+where the first 150 entries are all 3 and then 0,
+A2 = (0, 0, . . . , 0, 3, 3, . . . , 3)T
+where the first 150 entries are all 0 and then 3.
+
+where the last equality is just a definition.
+We have for f ∈ I that
+ 
+
+(i)
+
+Xj = 2A2 − 2A2 + 2H (i) + εX, j (i) ,
+εX ∼ N10 0, 0.52 I ,
+
+g∈G
+
+
+
+The structural equation for X is
+
+The results are displayed in Figure 11 and are consistent
+with the earlier results in Figures 8–9.
+
+
+
+E A Y − f (X) = 0.
+Therefore, by linearity of the conditional expectation we
+obtain
+
+
+ 
+
+0 = E A Y − f (X) 22
+
+
+
+
+
+= E AE Y − f (X)|A 22
+  
+
+
+
+= E A μf + αfT A 22
+
+
+
+
+
+= E AαfT A − E[A] 22
+
+
+
+2
+
+ 
+
+  
+= E A − E[A] AT − E AT αf 2
+2
+
+= αf 22 = αfT  T αf ,
+where  = Cov(A) is positive definite. This implies that
+αf ≡ 0. Note that we have exploited above that μf =
+−αfT E[A] since E[(Y − f (X))] = 0 for all f (·) in I .
+Therefore, we have that
+
+
+
+
+E Y a − f Xa
+
+
+
+
+
+
+
+= E Y − f (X)|do(A = a)
+
+
+One can switch to an alternative view and, although perhaps thought-provoking, define a (diluted) form of causality via the invariance assumption.
+Consider a class of perturbations F . Invariance (of variables) with respect to the class of perturbations F is then
+defined as any set of covariates such that the invariance
+assumption in Section 3 holds, that is,
+L Y e |XSe
+
+ 
+ 
+
+= E A − E[A] α T A − E[A] 2
+f
+
+6. TURNING AROUND THE VIEWPOINT
+
+
+
+= E Y − f (X)|A = a ≡ μf ,
+and thus being constant w.r.t. a. 
+5.5.2 Some empirical results. To investigate the nature
+of discrete anchor variables, we consider a model similar
+to (M2) and sample sizes n = 300 and nout = 2000 as before. The structural equation model is as for model (M2),
+except that the anchor variables and the structural equation for X are as follows:
+(M2-discr)
+A1 = (1, 1, . . . , 1, 0, 0, . . . , 0)T
+where the first 150 entries are all 1 and then 0,
+A2 = (0, 0, . . . , 0, 1, 1, . . . , 1)T
+where the first 150 entries are all 0 and then 1.
+
+
+
+is the same for all e ∈ F .
+
+When F is sufficiently rich and fulfills the ad-hoc conditions 1 and 2 in Section 2 or the assumption (B(F )) from
+Section 3.1, then the F invariance corresponds to a definition of causality in the literature, for example, as in Pearl
+(2009). This is just another version of the worst-case risk
+optimization viewpoint in (2.4). If F is not sufficiently
+rich, F -invariance does not coincide with the set of causal
+variables; see also Figure 12 for a “typical” situation.
+If F violates the ad-hoc conditions, then invariance as
+above does not hold in general and is too demanding: but
+when restricting to shift perturbations v in an anchor regression model we still obtain invariance of the residuals
+
+
+L Y v − Xv β
+
+
+
+is the same for all v ∈ F ,
+
+where F is a subclass of shift perturbations; see Proposition 4.1 and formula (4.2). We referred to this as the
+F diluted causality (see Section 4.3.2) but we emphasize
+here that it is a certain shift invariance.
+Such invariances have interesting implications in terms
+of interpretability and may lead to better insights in real
+applications. Thus, even for cases where inferring causality is ill-posed and nonidentifiable, the invariance or diluted form of causality can provide more meaningful results and potentially contributes to an important aspect of
+“interpretable machine learning”. We illustrate this point
+also in Figure 12 but need to expand a bit more the following informal discussion.
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+
+423
+
+F IG . 11. Empirical α-quantiles of |Yout,i − Ŷout,i | for i = 1, . . . , nout = 2000, averaged over 100 independent simulation runs. Model (M2-discr)
+with 3-fold amplification for Aout . The Anchor Boosting algorithm is always with γ = 7, with Random Forests (left) and with Linear Model +
+Random Forests (right), and with the two stopping criteria from (5.4) (stop1) and (5.5) (stop2).
+
+6.1 Stabilizing and Following up on Tukey (1954)
+
+Our attempts with invariant prediction and anchor regression can be seen in the light of stabilizing results
+across perturbations. As Tukey (1954) writes:
+“One of the major arguments for regression instead of correlation is potential stability. We
+are very sure that the correlation cannot remain the same over a wide range of situations,
+but it is possible that the regression coefficient
+might. We are seeking stability of our coeffi-
+
+cients so that we can hope to give them theoretical significance.”
+We go a step beyond and stabilize the notion of regression
+association across perturbations, resulting in a further hierarchical step from regression association to invariance
+and eventually to causality as indicated in Figure 12. The
+hierarchy is not strict and the figure only indicates a “typical” behavior and does not claim that invariance would
+capture all useful definitions of causality. If we restrict
+ourselves to a certain mathematical definition of causality in terms of for example, parents in directed acyclic
+
+F IG . 12. Stabilizing associations between covariates X and a response Y . Marginal correlation of components of X with the response Y is a weak
+notion; collecting all variables with a nonzero regression coefficient is often more informative as it measures the partial correlation of components
+of X with Y . Under a faithfulness assumption, the causal* variables are a subset of the relevant regression variables (for the notation “causal*”, see
+below). In between is the notion of invariance and the diluted form of causality: even when inferring causality is impossible, obtaining the variables
+which satisfy invariance is often useful in many applications. The notation “causal*” emphasizes that not all notions of causality are included. As
+written in the text, the figure is not valid in general but should serve as a line of thinking for stabilizing, related to the quotation above from Tukey
+(1954).
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+424
+
+P. BÜHLMANN
+
+graphs from a structural equation model, then for a certain
+class of perturbations with an autonomy property, and assuming a faithfulness property, the hierarchy in Figure 12
+can be mathematically derived. But in general, the picture is not valid (not even for the step from correlation
+to regression). In particular, not all notions of causality
+are captured by invariance, especially when it comes to
+heterogeneous, changing treatment effects where a form
+of invariance might only be realistic under strong assumptions. Nevertheless, we find it useful as a line of
+thinking “geared towards causality” for stabilizing associations across perturbations, including unseen manipulations which might occur in new future data.
+7. CONCLUSIONS
+
+Causality can be phrased in terms of worst-case prediction risk, see Section 2.3, showing that causal inference is
+linked to a form of predictive robustness. The notion of (a
+certain) invariance can be beneficially exploited for predictive robustness and hence also for causality. The invariances themselves can be estimated from heterogeneous
+data: heterogeneity is important and informative for inferring invariances. The paper includes a review of recent
+results, points to the R-packages InvariantCausalPrediction (Meinshausen, 2018b), nonlinearICP
+(Heinze-Deml and Peters, 2017) and seqICP (Pfister and
+Peters, 2017), and contributes some new developments for
+nonlinear problems in Section 5.
+Our contribution can be seen as dealing with “statistics for perturbation (or heterogeneous) data”. Even when
+causal inference is ill-posed, we show here some attempts
+to obtain predictive robustness and more meaningful approaches than what is provided by standard regression or
+curve fitting methodology.
+ACKNOWLEDGMENTS
+
+We thank Nicolai Meinshausen, Jonas Peters, Dominik
+Rothenhäusler and Niklas Pfister for many fruitful conversations. Furthermore, we thank an anonymous reviewer
+for insightful and valuable comments.
+This project has received funding from the European
+Research Council under the Grant Agreement No 786461
+(CausalStats—ERC-2017-ADG).
+REFERENCES
+A NGRIST, J., I MBENS , G. and RUBIN , D. (1996). Identification of
+causal effects using instrumental variables. J. Amer. Statist. Assoc.
+91 444–455.
+B OTTOU , L., P ETERS , J., Q UIÑONERO -C ANDELA , J., C HARLES , D.
+X., C HICKERING , D. M., P ORTUGALY, E., R AY, D., S IMARD ,
+P. and S NELSON , E. (2013). Counterfactual reasoning and learning systems: The example of computational advertising. J. Mach.
+Learn. Res. 14 3207–3260. MR3144461
+
+B OWDEN , R. J. and T URKINGTON , D. A. (1990). Instrumental
+Variables. Econometric Society Monographs in Quantitative Economics. Cambridge Univ. Press, Cambridge. MR1113481
+B REIMAN , L. (1999). Prediction games and arcing algorithms. Neural
+Comput. 11 1493–1517.
+B REIMAN , L. (2001). Random forests. Mach. Learn. 45 5–32.
+B RODERSEN , K. H., G ALLUSSER , F., KOEHLER , J., R EMY, N. and
+S COTT, S. L. (2015). Inferring causal impact using Bayesian structural time-series models. Ann. Appl. Stat. 9 247–274. MR3341115
+https://doi.org/10.1214/14-AOAS788
+B ÜHLMANN , P. and H OTHORN , T. (2007). Boosting algorithms: Regularization, prediction and model fitting. Statist. Sci. 22 477–505.
+MR2420454 https://doi.org/10.1214/07-STS242
+B ÜHLMANN , P., P ETERS , J. and E RNEST, J. (2014). CAM:
+Causal additive models, high-dimensional order search and penalized regression. Ann. Statist. 42 2526–2556. MR3277670
+https://doi.org/10.1214/14-AOS1260
+B ÜHLMANN , P. and VAN DE G EER , S. (2011). Statistics for
+High-Dimensional Data: Methods, Theory and Applications.
+Springer Series in Statistics. Springer, Heidelberg. MR2807761
+https://doi.org/10.1007/978-3-642-20192-9
+B ÜHLMANN , P. and Y U , B. (2003). Boosting with the L2 loss: Regression and classification. J. Amer. Statist. Assoc. 98 324–339.
+MR1995709 https://doi.org/10.1198/016214503000125
+C HERNOZHUKOV, V., C HETVERIKOV, D., D EMIRER , M., D UFLO ,
+E., H ANSEN , C., N EWEY, W. and ROBINS , J. (2018). Double/debiased machine learning for treatment and structural parameters. Econom. J. 21 C1–C68. MR3769544 https://doi.org/10.1111/
+ectj.12097
+C HICKERING , D. M. (2002). Optimal structure identification with
+greedy search J. Mach. Learn. Res. 3 507–554. MR1991085
+https://doi.org/10.1162/153244303321897717
+C HOW, G. C. (1960). Tests of equality between sets of coefficients
+in two linear regressions. Econometrica 28 591–605. MR0141193
+https://doi.org/10.2307/1910133
+DAWID , A. P. (2000). Causal inference without counterfactuals.
+J. Amer. Statist. Assoc. 95 407–448. MR1803167 https://doi.org/10.
+2307/2669377
+E DITORIAL (2010). Cause and effect. Nat. Methods 7 243.
+E RNEST, J. and B ÜHLMANN , P. (2015). Marginal integration for
+nonparametric causal inference. Electron. J. Stat. 9 3155–3194.
+MR3453973 https://doi.org/10.1214/15-EJS1075
+F RIEDBERG , R., T IBSHIRANI , J., ATHEY, S. and WAGER , S. (2018).
+Local linear forests. Preprint. Available at arXiv:1807.11408.
+F RIEDMAN , J. H. (2001). Greedy function approximation: A gradient boosting machine. Ann. Statist. 29 1189–1232. MR1873328
+https://doi.org/10.1214/aos/1013203451
+G AO , R., C HEN , X. and K LEYWEGT, A. J. (2017). Wasserstein distributional robustness and regularization in statistical learning. ArXiv
+preprint. Available at arXiv:1712.06050.
+G REENLAND , S., P EARL , J. and ROBINS , J. M. (1999). Causal diagrams for epidemiologic research. Epidemiology 10 37–48.
+G UO , Z., K ANG , H., C AI , T. T. and S MALL , D. S. (2018). Confidence intervals for causal effects with invalid instruments by using two-stage hard thresholding with voting. J. R. Stat. Soc. Ser. B.
+Stat. Methodol. 80 793–815. MR3849344 https://doi.org/10.1111/
+rssb.12275
+H AAVELMO , T. (1943). The statistical implications of a system
+of simultaneous equations. Econometrica 11 1–12. MR0007954
+https://doi.org/10.2307/1905714
+H AMPEL , F. R., RONCHETTI , E. M., ROUSSEEUW, P. J. and S TA HEL , W. A. (1986). Robust Statistics: The Approach Based on
+Influence Functions. Wiley Series in Probability and Mathematical Statistics: Probability and Mathematical Statistics. Wiley, New
+York. MR0829458
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+INVARIANCE, CAUSALITY AND ROBUSTNESS
+H AUSER , A. and B ÜHLMANN , P. (2015). Jointly interventional and
+observational data: Estimation of interventional Markov equivalence classes of directed acyclic graphs. J. R. Stat. Soc. Ser. B. Stat.
+Methodol. 77 291–318. MR3299409 https://doi.org/10.1111/rssb.
+12071
+H EINZE -D EML , C. and M EINSHAUSEN , N. (2017). Conditional variance penalties and domain shift robustness. Preprint. Available at
+arXiv:1710.11469.
+H EINZE -D EML , C. and P ETERS , J. (2017). nonlinearICP: Invariant
+Causal Prediction for Nonlinear Models. R package version 0.1.2.1.
+H EINZE -D EML , C., P ETERS , J. and M EINSHAUSEN , N. (2018). Invariant causal prediction for nonlinear models. J. Causal Inf. 6.
+H ERNÁN , M. A. and ROBINS , J. M. (2006). Estimating causal effects from epidemiological data. J. Epidemiol. Community Health
+60 578–586.
+H ERNÁN , M. A. and ROBINS , J. M. (2010). Causal Inference. CRC,
+Boca Raton, FL.
+H OLLAND , P. W. (1986). Statistics and causal inference. J. Amer.
+Statist. Assoc. 81 945–970. MR0867618
+H OYER , P., JANZING , D., M OOIJ , J., P ETERS , J. and S CHÖLKOPF,
+B. (2009). Nonlinear causal discovery with additive noise models. In Advances in Neural Information Processing Systems 21,
+22nd Annual Conference on Neural Information Processing Systems (NIPS 2008) 689–696.
+H UBER , P. J. (1964). Robust estimation of a location parameter. Ann.
+Math. Stat. 35 73–101. MR0161415 https://doi.org/10.1214/aoms/
+1177703732
+I MBENS , G. W. (2014). Instrumental variables: An econometrician’s perspective. Statist. Sci. 29 323–358. MR3264545
+https://doi.org/10.1214/14-STS480
+I MBENS , G. W. and RUBIN , D. B. (2015). Causal Inference—
+for Statistics, Social, and Biomedical Sciences. Cambridge
+Univ. Press, New York. MR3309951 https://doi.org/10.1017/
+CBO9781139025751
+K ALISCH , M. and B ÜHLMANN , P. (2007). Estimating highdimensional directed acyclic graphs with the PC-algorithm.
+J. Mach. Learn. Res. 8 613–636.
+K ANG , H., Z HANG , A., C AI , T. T. and S MALL , D. S. (2016). Instrumental variables estimation with some invalid instruments and
+its application to Mendelian randomization. J. Amer. Statist. Assoc. 111 132–144. MR3494648 https://doi.org/10.1080/01621459.
+2014.994705
+K EMMEREN , P., S AMEITH , K., VAN DE PASCH , L., B ENSCHOP, J.,
+L ENSTRA , T., M ARGARITIS , T., O’D UIBHIR , E., A PWEILER , E.,
+VAN WAGENINGEN , S. et al. (2014). Large-scale genetic perturbations reveal regulatory networks and an abundance of gene-specific
+repressors. Cell 157 740–752.
+K ENNEDY, E. H., M A , Z., M C H UGH , M. D. and S MALL , D. S.
+(2017). Non-parametric methods for doubly robust estimation of
+continuous treatment effects. J. R. Stat. Soc. Ser. B. Stat. Methodol.
+79 1229–1245. MR3689316 https://doi.org/10.1111/rssb.12212
+K ÜNZEL , S., S EKHON , J., B ICKEL , P. J. and Y U , B. (2019). Metalearners for estimating heterogeneous treatment effects using
+machine learning. Proc. Natl. Acad. Sci. USA 116 4156–4165.
+https://doi.org/10.1073/pnas.1804597116
+M AATHUIS , M. H., K ALISCH , M. and B ÜHLMANN , P. (2009). Estimating high-dimensional intervention effects from observational
+data. Ann. Statist. 37 3133–3164. MR2549555 https://doi.org/10.
+1214/09-AOS685
+M AATHUIS , M., C OLOMBO , D., K ALISCH , M. and B ÜHLMANN , P.
+(2010). Predicting causal effects in large-scale systems from observational data. Nat. Methods 7 247–248.
+M EINSHAUSEN , N. (2018a). Causality from a distributional robustness point of view. In 2018 IEEE Data Science Workshop (DSW)
+6–10. IEEE.
+
+425
+
+M EINSHAUSEN , N. (2018b). InvariantCausalPrediction: Invariant
+Causal Prediction. R package version 0.7-2.
+M EINSHAUSEN , N. and B ÜHLMANN , P. (2010). Stability selection.
+J. R. Stat. Soc. Ser. B. Stat. Methodol. 72 417–473. MR2758523
+https://doi.org/10.1111/j.1467-9868.2010.00740.x
+M EINSHAUSEN , N., H AUSER , A., M OOIJ , J., P ETERS , J., V ER STEEG , P. and B ÜHLMANN , P. (2016). Methods for causal inference from gene perturbation experiments and validation. Proc.
+Natl. Acad. Sci. USA 113 7361–7368.
+M URRAY, M. P. (2006). Avoiding invalid instruments and coping with
+weak instruments. J. Econ. Perspect. 20 111–132.
+N IE , X. and WAGER , S. (2017). Quasi-oracle estimation of heterogeneous treatment effects. Preprint. Available at arXiv:1712.04912.
+PAN , S. J. and YANG , Q. (2010). A survey on transfer learning. IEEE
+Trans. Knowl. Data Eng. 22 1345–1359.
+P EARL , J. (2009). Causality: Models, Reasoning, and Inference, 2nd ed. Cambridge Univ. Press, Cambridge. MR2548166
+https://doi.org/10.1017/CBO9780511803161
+P ETERS , J. and B ÜHLMANN , P. (2014). Identifiability of Gaussian
+structural equation models with equal error variances. Biometrika
+101 219–228. MR3180667 https://doi.org/10.1093/biomet/ast043
+P ETERS , J., B ÜHLMANN , P. and M EINSHAUSEN , N. (2016). Causal
+inference by using invariant prediction: Identification and confidence intervals. J. R. Stat. Soc. Ser. B. Stat. Methodol. 78 947–1012.
+MR3557186 https://doi.org/10.1111/rssb.12167
+P FISTER , N., B ÜHLMANN , P. and P ETERS , J. (2018). Invariant causal
+prediction for sequential data. J. Amer. Statist. Assoc. Published online. https://doi.org/10.1080/01621459.2018.1491403.
+P FISTER , N. and P ETERS , J. (2017). seqICP: Sequential Invariant
+Causal Prediction. R package version 1.1.
+P RATT, L. Y. (1993). Discriminability-based transfer between neural
+networks. In Advances in Neural Information Processing Systems
+(NIPS) 204–211.
+R ICHARDSON , T. and S PIRTES , P. (2002). Ancestral graph Markov
+models. Ann. Statist. 30 962–1030. MR1926166 https://doi.org/10.
+1214/aos/1031689015
+ROBINS , J. M., H ERNÁN , M. A. and B RUMBACK , B. (2000).
+Marginal structural models and causal inference in epidemiology.
+Epidemiology 11 550–560.
+ROJAS -C ARULLA , M., S CHÖLKOPF, B., T URNER , R. and P ETERS ,
+J. (2018). Invariant models for causal transfer learning. J. Mach.
+Learn. Res. 19 36. MR3862443
+ROTHENHÄUSLER , D., B ÜHLMANN , P. and M EINSHAUSEN , N.
+(2019). Causal Dantzig: Fast inference in linear structural equation models with hidden variables under additive interventions.
+Ann. Statist. 47 1688–1722. MR3911127 https://doi.org/10.1214/
+18-AOS1732
+ROTHENHÄUSLER , D., M EINSHAUSEN , N., B ÜHLMANN , P. and P E TERS , J. (2018). Anchor regression: heterogeneous data meets
+causality. Preprint. Available at arXiv:1801.06229.
+S HIMIZU , S., H OYER , P. O., H YVÄRINEN , A. and K ERMINEN , A.
+(2006). A linear non-Gaussian acyclic model for causal discovery.
+J. Mach. Learn. Res. 7 2003–2030. MR2274431
+S INHA , A., NAMKOONG , H. and D UCHI , J. (2017). Certifiable distributional robustness with principled adversarial training. Preprint.
+Available at arXiv:1710.10571. Presented at Sixth International
+Conference on Learning Representations (ICLR 2018).
+S PIRTES , P., G LYMOUR , C. and S CHEINES , R. (2000). Causation,
+Prediction, and Search, 2nd ed. Adaptive Computation and Machine Learning. MIT Press, Cambridge, MA. MR1815675
+S PLAWA -N EYMAN , J. (1990). On the application of probability theory
+to agricultural experiments. Essay on principles. Section 9. Statist.
+Sci. 5 465–472. Translated from the Polish and edited by D. M.
+Dabrowska and T. P. Speed. MR1092986
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+426
+
+P. BÜHLMANN
+
+S TEKHOVEN , D., M ORAES , I., S VEINBJÖRNSSON , G., H ENNIG , L.,
+M AATHUIS , M. and B ÜHLMANN , P. (2012). Causal stability ranking. Bioinformatics 28 2819–2823.
+S TOCK , J. H., W RIGHT, J. H. and YOGO , M. (2002). A survey of
+weak instruments and weak identification in generalized method
+of moments. J. Bus. Econom. Statist. 20 518–529. MR1973801
+https://doi.org/10.1198/073500102288618658
+T CHETGEN T CHETGEN , E. J. and VANDERW EELE , T. J. (2012).
+On causal inference in the presence of interference. Stat. Methods Med. Res. 21 55–75. MR2867538 https://doi.org/10.1177/
+0962280210386779
+
+T IBSHIRANI , R. (1996). Regression shrinkage and selection via the
+lasso. J. Roy. Statist. Soc. Ser. B 58 267–288. MR1379242
+T UKEY, J. (1954). Causation, regression, and path analysis. In Statistics and Mathematics in Biology (O. Kempthorne, ed.) 35–66. Iowa
+State College Press, Ames, IA.
+VANDERW EELE , T. (2015). Explanation in Causal Inference: Methods for Mediation and Interaction. Oxford Univ. Press.
+WAGER , S. and ATHEY, S. (2018). Estimation and inference of
+heterogeneous treatment effects using random forests. J. Amer.
+Statist. Assoc. 113 1228–1242. MR3862353 https://doi.org/10.
+1080/01621459.2017.1319839
+
+This content downloaded from
+128.59.222.107 on Tue, 10 Jun 2025 04:52:48 UTC
+All use subject to https://about.jstor.org/terms
+
+

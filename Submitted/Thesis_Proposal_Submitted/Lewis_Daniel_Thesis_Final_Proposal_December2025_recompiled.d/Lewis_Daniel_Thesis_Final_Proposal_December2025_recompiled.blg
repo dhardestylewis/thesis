@@ -1,0 +1,23 @@
+[0] Config.pm:328> INFO - This is Biber 2.21
+[0] Config.pm:331> INFO - Logfile is 'Lewis_Daniel_Thesis_Final_Proposal_December2025_recompiled.blg'
+[461] biber-MSWIN64:342> INFO - === 
+[567] Biber.pm:421> INFO - Reading 'Lewis_Daniel_Thesis_Final_Proposal_December2025_recompiled.bcf'
+[950] Biber.pm:1002> INFO - Found 18 citekeys in bib section 0
+[1018] Biber.pm:4487> INFO - Processing section 0
+[1056] Biber.pm:4678> INFO - Looking for bibtex file 'references.bib' for section 0
+[1232] bibtex.pm:1713> INFO - LaTeX decoding ...
+[1321] bibtex.pm:1519> INFO - Found BibTeX data source 'references.bib'
+[1743] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1743] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1743] Biber.pm:4307> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'en-US'
+[1743] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[1853] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1853] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1853] Biber.pm:4307> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'en-US'
+[1853] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[1926] bbl.pm:676> INFO - Writing 'Lewis_Daniel_Thesis_Final_Proposal_December2025_recompiled.bbl' with encoding 'UTF-8'
+[1980] bbl.pm:779> INFO - Output to Lewis_Daniel_Thesis_Final_Proposal_December2025_recompiled.bbl
+[1981] Biber.pm:132> WARN - legacy month field 'November' in entry 'axios2023parking' is not an integer - this will probably not sort properly.
+[1981] Biber.pm:132> WARN - legacy month field 'August' in entry 'efa2025' is not an integer - this will probably not sort properly.
+[1981] Biber.pm:132> WARN - legacy month field 'February' in entry 'idc2024' is not an integer - this will probably not sort properly.
+[1981] Biber.pm:134> INFO - WARNINGS: 3

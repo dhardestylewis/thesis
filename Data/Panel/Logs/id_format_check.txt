@@ -1,0 +1,20 @@
+﻿python : Traceback (most recent call 
+last):
+At line:1 char:1
++ python -c "
++ ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (Traceback (most recent call l  
+  ast)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+  File "<string>", line 7, in <module>
+  File "C:\Program Files\WindowsApps\Pyt
+honSoftwareFoundation.Python.3.12_3.12.2
+800.0_x64__qbz5n2kfra8p0\Lib\csv.py", 
+line 116, in __next__
+    row = next(self.reader)
+          ^^^^^^^^^^^^^^^^^
+_csv.Error: field larger than field 
+limit (131072)

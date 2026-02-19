@@ -1,0 +1,80 @@
+=== 2022 ===
+       2.5 MB  EARS_2022_Manifest.pdf
+     709.5 MB  EARS_2022_Master.csv
+       0.1 MB  EARS_2022_PTD_50_253.pdf
+       0.2 MB  EARS_2022_PTD_ACREAGE.pdf
+       3.6 MB  EARS_2022_PTD_ACREAGE_DETAIL.pdf
+       0.3 MB  EARS_2022_PTD_ASSUMPTION.pdf
+       0.5 MB  EARS_2022_PTD_CITY_50_109.pdf
+       0.0 MB  EARS_2022_PTD_COUNTY_50_105.pdf
+       0.4 MB  EARS_2022_PTD_SCHOOL_50_108.pdf
+      11.3 MB  EARS_2022_PTD_SCHOOL_LIMITATION_DETAIL.pdf
+       2.4 MB  EARS_2022_PTD_SPECIAL_DISTRICT_50_868.pdf
+     142.8 MB  EARS_2022_Source_Archive.zip
+              ->      1.8 MB  2022 Totals supp 2.pdf
+              ->      0.1 MB  2022_PTD_50_253.pdf
+              ->      0.2 MB  2022_PTD_ACREAGE.pdf
+              ->      3.6 MB  2022_PTD_ACREAGE_DETAIL.pdf
+              ->      0.3 MB  2022_PTD_ASSUMPTION.pdf
+              ->      0.5 MB  2022_PTD_CITY_50_109.pdf
+              ->      0.0 MB  2022_PTD_COUNTY_50_105.pdf
+              ->      0.4 MB  2022_PTD_SCHOOL_50_108.pdf
+              ->     11.3 MB  2022_PTD_SCHOOL_LIMITATION_DETAIL.pdf
+              ->      2.4 MB  2022_PTD_SPECIAL_DISTRICT_50_868.pdf
+              ->      0.0 MB  227_2022 EARS Tax Rate Submission.xlsx
+              ->      2.5 MB  227_EARS_MIF_092822_Signed.pdf
+              ->    123.9 MB  227EARS092822.zip
+     123.9 MB  EARS_2022_Source_Archive_Alt.zip
+              ->    709.5 MB  227EARS092822.csv
+       0.0 MB  EARS_2022_Tax_Rate_Submission.xlsx
+       1.8 MB  EARS_2022_Totals_Supp_2.pdf
+       0.0 MB  README.md
+
+=== 2023 ===
+       2.0 MB  2023 Totals supp 2 PTD.pdf
+       0.1 MB  2023_PTD_50_253_TOTALS.pdf
+       3.6 MB  2023_PTD_ACREAGE_DETAIL_TOTALS.pdf
+       0.2 MB  2023_PTD_ACREAGE_TOTALS.pdf
+       0.3 MB  2023_PTD_ASSUMPTION.pdf
+       0.5 MB  2023_PTD_CITY_50_109_TOTALS.pdf
+       0.0 MB  2023_PTD_COUNTY_50_105_TOTALS.pdf
+       0.4 MB  2023_PTD_SCHOOL_50_108_TOTALS.pdf
+      13.2 MB  2023_PTD_SCHOOL_LIMITATION_DETAIL_TOTALS.pdf
+       2.4 MB  2023_PTD_SPECIAL_DISTRICT_50_868_TOTALS.pdf
+     122.7 MB  227EARS082923.zip
+              ->    725.2 MB  227EARS083023.csv
+       0.2 MB  227_EARS_MIF_082923_Signed.pdf
+
+=== 2024 ===
+       2.1 MB  2024 Totals supp 1 PTD.pdf
+       0.1 MB  2024_PTD_50_253_TOTALS.pdf
+       1.6 MB  2024_PTD_50_897.zip
+              ->     11.4 MB  227_50_897_082924.csv
+       3.6 MB  2024_PTD_ACREAGE_DETAIL_TOTALS.pdf
+       0.2 MB  2024_PTD_ACREAGE_TOTALS.pdf
+       0.3 MB  2024_PTD_ASSUMPTION.pdf
+       0.5 MB  2024_PTD_CITY_50_109_TOTALS.pdf
+       0.0 MB  2024_PTD_COUNTY_50_105_TOTALS.pdf
+       0.4 MB  2024_PTD_SCHOOL_50_108_TOTALS.pdf
+      13.9 MB  2024_PTD_SCHOOL_LIMITATION_DETAIL_TOTALS.pdf
+       2.4 MB  2024_PTD_SPECIAL_DISTRICT_50_868_TOTALS.pdf
+      46.5 MB  227EARS082824.zip
+              ->    928.0 MB  227EARS082824.csv
+       0.1 MB  227_EARS_MIF_082824_Signed.pdf
+
+=== 2025 ===
+       2.3 MB  2025-3 Totals PTD.pdf
+       0.1 MB  2025_PTD_50_253_TOTALS.pdf
+       6.3 MB  2025_PTD_50_897.zip
+              ->      9.8 MB  227_50_897_090425.xlsx
+       3.7 MB  2025_PTD_ACREAGE_DETAIL_TOTALS.pdf
+       0.2 MB  2025_PTD_ACREAGE_TOTALS.pdf
+       0.4 MB  2025_PTD_ASSUMPTION.pdf
+       0.5 MB  2025_PTD_CITY_50_109_TOTALS.pdf
+       0.0 MB  2025_PTD_COUNTY_50_105_TOTALS.pdf
+       0.4 MB  2025_PTD_SCHOOL_50_108_TOTALS.pdf
+      14.5 MB  2025_PTD_SCHOOL_LIMITATION_DETAIL_TOTALS.pdf
+       2.6 MB  2025_PTD_SPECIAL_DISTRICT_50_868_TOTALS.pdf
+      53.0 MB  227EARS090425.zip
+              ->   1011.1 MB  227EARS090425.csv
+       0.1 MB  227_EARS_MIF_090425_Signed.pdf

@@ -1,0 +1,73 @@
+# Pearl (2016) Chapters 3-4: Verbatim Transcript
+
+---
+
+# Chapter 3: The Effects of Interventions
+## 3.1 Interventions
+
+The ultimate aim of many statistical studies is to predict the effects of interventions. When we collect data on factors associated with wildfires in the west, we are actually searching for something we can intervene upon in order to decrease wildfire frequency. When we perform a study on a new cancer drug, we are trying to identify how a patient's illness responds when we intervene upon it by medicating the patient. When we research the correlation between violent television and acts of aggression in children, we are trying to determine whether intervening to reduce children's access to violent television will reduce their aggressiveness.
+
+As you have undoubtedly heard many times in statistics classes, correlation is not causation. A mere association between two variables does not necessarily or even usually mean that one of those variables causes the other. (The famous example of this property is that an increase in ice cream sales is correlated with an increase in violent crimenot because ice cream causes crime, but because both ice cream sales and violent crime are more common in hot weather.)
+
+For this reason, the randomized controlled experiment is considered the golden standard of statistics. In a properly randomized controlled experiment, all factors that influence the outcome variable are either static, or vary at random, except for oneso any change in the outcome variable must be due to that one input variable.
+
+Unfortunately, many questions do not lend themselves to randomized controlled experiments. We cannot control the weather, so we can't randomize the variables that affect wildfires. We could conceivably randomize the participants in a study about violent television, but it would be difficult to effectively control how much television each child watches, and nearly impossible to know whether we were controlling them effectively or not. Even randomized drug trials can run into problems when participants drop out, fail to take their medication, or misreport their usage.
+
+In cases where randomized controlled experiments are not practical, researchers instead perform observational studies, in which they merely record data, rather than controlling it. The problem of such studies is that it is difficult to untangle the causal from the merely correlative. Our common sense tells us that intervening on ice cream sales is unlikely to have any effect on crime, but the facts are not always so clear. Consider, for instance, a recent University of Winnipeg study that showed that heavy text messaging in teens was correlated with shallowness. Media outlets jumped on this as proof that texting makes teenagers more shallow. (Or, to use the language of intervention, that intervening to make teens text less would make them less shallow.) The study, however, proved nothing of the sort. It might be the case that shallowness makes teens more drawn to texting. It might be that both shallowness and heavy texting are caused by a common factora gene, perhapsand that intervening on that variable, if possible, would decrease both.
+
+The difference between intervening on a variable and conditioning on that variable should, hopefully, be obvious. When we intervene on a variable in a model, we fix its value. We change the system, and the values of other variables often change as a result. When we condition on a variable, we change nothing; we merely narrow our focus to the subset of cases in which the variable takes the value we are interested in. What changes, then, is our perception about the world, not the world itself.
+
+Consider, for instance, Figure 3.1 that shows a graphical model of our ice cream sales example, with X as ice cream sales, Y as crime rates, and Z as temperature. When we intervene to fix the value of a variable, we curtail the natural tendency of that variable to vary in response to other variables in nature. This amounts to performing a kind of surgery on the graphical model, removing all edges directed into that variable. If we were to intervene to make ice cream sales low (say, by shutting down all ice cream)
+
+## 3.2 The Adjustment Formula
+The ice cream example represents an extreme case in which the correlation between X and Y was totally spurious from a causal perspective, because there was no causal path from X to Y. Most real-life situations are not so clear-cut. To explore a more realistic situation, let us examine Figure 3.3, in which Y responds to both Z and X. Such a model could represent, for example, the first story we encountered for Simpson's paradox, where X stands for drug usage, Y stands for recovery, and Z stands for gender.
+
+population, we imagine a hypothetical intervention by which we administer the drug uniformly to the entire population and compare the recovery rate to what would obtain under the complementary intervention, where we prevent everyone from using the drug. Denoting the first intervention by do(X=1) and the second by do(X=0), our task is to estimate the difference 3.1
+P(Y=1|do(X=1)) - P(Y=1|do(X=0))
+which is known as the causal effect difference, or average causal effect (ACE). In general, however, if X and Y can each take on more than one value, we would wish to predict the general causal effect P(Y=y|do(X=x)), where x and y are any two values that X and Y can take on. For example, x may be the dosage of the drug and y the patient's blood pressure.
+Figure 3.3 A graphical model representing the effects of a new drug, with Z representing gender, X standing for drug usage, and Y standing for recovery. We know from first principles that causal effects cannot be estimated from the data set itself without a causal story. That was the lesson of Simpson's paradox...
+The causal effect P(Y=y|do(X=x)) is equal to the conditional probability P_m(Y=y|X=x) that prevails in the manipulated model...
+We can therefore write two equations of invariance:
+P_m(Y=y|Z=z,X=x) = P(Y=y|Z=z,X=x)
+and
+P_m(Z=z) = P(Z=z)
+We can also use the fact that Z and X are d-separated in the modified model... This tells us that P_m(Z=z|X=x) = P_m(Z=z) = P(Z=z).
+
+population, we imagine a hypothetical intervention by which we administer the drug uniformly to the entire population and compare the recovery rate to what would obtain under the complementary intervention, where we prevent everyone from using the drug. Denoting the first intervention by do(X=1) and the second by do(X=0), our task is to estimate the difference 3.1
+P(Y=1|do(X=1)) - P(Y=1|do(X=0))
+which is known as the causal effect difference, or average causal effect (ACE). In general, however, if X and Y can each take on more than one value, we would wish to predict the general causal effect P(Y=y|do(X=x)), where x and y are any two values that X and Y can take on. For example, x may be the dosage of the drug and y the patient's blood pressure.
+Figure 3.3 A graphical model representing the effects of a new drug, with Z representing gender, X standing for drug usage, and Y standing for recovery. We know from first principles that causal effects cannot be estimated from the data set itself without a causal story. That was the lesson of Simpson's paradox...
+The causal effect P(Y=y|do(X=x)) is equal to the conditional probability P_m(Y=y|X=x) that prevails in the manipulated model...
+We can therefore write two equations of invariance:
+P_m(Y=y|Z=z,X=x) = P(Y=y|Z=z,X=x)
+and
+P_m(Z=z) = P(Z=z)
+We can also use the fact that Z and X are d-separated in the modified model... This tells us that P_m(Z=z|X=x) = P_m(Z=z) = P(Z=z).
+Equation (3.5) is called the adjustment formula, and as you can see, it computes the association between X and Y for each value z of Z, then averages over those values. This procedure is referred to as adjusting for Z or controlling for Z.
+
+
+## 3.3 The Backdoor Criterion
+In the previous section, we came to the conclusion that we should adjust for a variable's parents... But often, we know, or believe, that the variables have unmeasured parents... In those cases, we need to find an alternative set of variables to adjust for. This dilemma unlocks a deeper statistical question: Under what conditions does a causal story permit us to compute the causal effect of one variable on another, from data obtained by passive observations, with no interventions?
+
+Definition 3.3.1 (The Backdoor Criterion) Given an ordered pair of variables (X, Y) in a directed acyclic graph G, a set of variables Z satisfies the backdoor criterion relative to (X, Y) if no node in Z is a descendant of X, and Z blocks every path between X and Y that contains an arrow into X.
+If a set of variables Z satisfies the backdoor criterion for X and Y, then the causal effect of X on Y is given by the formula
+P(Y=y|do(X=x)) = sum_z P(Y=y|X=x, Z=z)P(Z=z)
+just as when we adjust for PA(X). (Note that PA(X) always satisfies the backdoor criterion.)
+
+The logic behind the backdoor criterion is fairly straightforward. In general, we would like to condition on a set of nodes Z such that 1. We block all spurious paths between X and Y. 2. We leave all directed paths from X to Y unperturbed. 3. We create no new spurious paths. When trying to find the causal effect of X on Y, we want the nodes we condition on to block any backdoor path in which one end has an arrow into X, because such paths may make X and Y dependent, but are obviously not transmitting causal
+
+
+[MANUAL ENTRY]
+Definition 3.4.1 (The Front-Door Criterion)
+A set of variables Z is said to satisfy the front-door criterion relative to an ordered pair of variables (X, Y) if:
+1. Z intercepts all directed paths from X to Y.
+2. There is no backdoor path from X to Z.
+3. All backdoor paths from Z to Y are blocked by X.
+
+
+[MANUAL ENTRY]
+The Three Steps in Computing Counterfactuals
+i. Abduction: Use evidence E = e to determine the value of U.
+ii. Action: Modify the model, M, by removing the structural equations for the variables in X and replacing them with the appropriate functions X = x, to obtain the modified model, M_x.
+iii. Prediction: Use the modified model, M_x, and the value of U to compute the value of Y, the consequence of the counterfactual.
+

@@ -1,0 +1,179 @@
+======================================================================
+EARS vs LUI VARIABLE OVERLAP AUDIT
+======================================================================
+LUI columns: ['general_land_use', 'land_use', 'parcel_id_10', 'property_id', 'shape_area', 'shape_length', 'the_geom']
+LUI parcels: 282772
+EARS 2024 parcels: 420458
+Overlap parcels: 257244
+
+--- 5 sample parcels ---
+Parcel 0166380102:
+  LUI.land_use = 100
+  EARS.land_use_code = N
+  LUI.general_land_use = 100
+  EARS.property_category_code = A
+  EARS.subcategory_code = A
+  EARS.zoning_code = 0
+  LUI.shape_area = 99203.197265625
+  EARS.deed_acreage = 1.000000
+
+Parcel 0143630701:
+  LUI.land_use = 100
+  EARS.land_use_code = N
+  LUI.general_land_use = 100
+  EARS.property_category_code = A
+  EARS.subcategory_code = A
+  EARS.zoning_code = 0
+  LUI.shape_area = 9712.498046875
+  EARS.deed_acreage = 1.000000
+
+Parcel 0221150904:
+  LUI.land_use = 100
+  EARS.land_use_code = N
+  LUI.general_land_use = 100
+  EARS.property_category_code = A
+  EARS.subcategory_code = A
+  EARS.zoning_code = 0
+  LUI.shape_area = 6180.607421875
+  EARS.deed_acreage = 1.000000
+
+Parcel 0338080727:
+  LUI.land_use = 910
+  EARS.land_use_code = N
+  LUI.general_land_use = 900
+  EARS.property_category_code = C1
+  EARS.subcategory_code = 
+  EARS.zoning_code = 0
+  LUI.shape_area = 5294.279296875
+  EARS.deed_acreage = 1.000000
+
+Parcel 0420341014:
+  LUI.land_use = 100
+  EARS.land_use_code = N
+  LUI.general_land_use = 100
+  EARS.property_category_code = A
+  EARS.subcategory_code = A
+  EARS.zoning_code = 0
+  LUI.shape_area = 8539.072265625
+  EARS.deed_acreage = 1.000000
+
+--- Systematic overlap (5000 parcels) ---
+EARS.land_use_code vs LUI.land_use: same=0 diff=5000 ears_empty=0 lui_empty=0
+  Example: 0166380102 -> EARS=N LUI=100
+  Example: 0143630701 -> EARS=N LUI=100
+  Example: 0221150904 -> EARS=N LUI=100
+EARS.property_category_code vs LUI.general_land_use: same=0 diff=5000 ears_empty=0 lui_empty=0
+  Example: 0166380102 -> EARS=A LUI=100
+  Example: 0143630701 -> EARS=A LUI=100
+  Example: 0221150904 -> EARS=A LUI=100
+
+======================================================================
+PANEL COVERAGE AUDIT
+======================================================================
+Total rows: 5089896
+Columns: 93
+
+EARS source distribution:
+  2019_backfill: 3155400 (62.0%)
+  (empty/unmatched): 323028 (6.3%)
+  2023: 271524 (5.3%)
+  2022: 271462 (5.3%)
+  2024: 270707 (5.3%)
+  2021: 269012 (5.3%)
+  2020: 265813 (5.2%)
+  2019: 262950 (5.2%)
+
+Column coverage (sorted by coverage):
+  appraisal_district_id_2: 0 (0.0%)
+  owner_city: 2555 (0.1%)
+  owner_address_line2: 2986 (0.1%)
+  council_district: 51228 (1.0%)
+  latitude: 52236 (1.0%)
+  longitude: 52236 (1.0%)
+  nearby_GEOID: 52236 (1.0%)
+  zoning_case_GEOID: 52236 (1.0%)
+  property_type_code: 88216 (1.7%)
+  exemption_amount_solar_wind: 270707 (5.3%)
+  exemption_amount_other5: 270707 (5.3%)
+  exemption_amount_other8: 270707 (5.3%)
+  exemption_amount_other9: 270707 (5.3%)
+  exemption_amount_other10: 270707 (5.3%)
+  exemption_amount_other11: 270707 (5.3%)
+  total_exemption_amount: 270707 (5.3%)
+  freeze_flag: 270707 (5.3%)
+  exemption_amount_other1: 270708 (5.3%)
+  exemption_amount_other4: 270708 (5.3%)
+  exemption_amount_other12: 270709 (5.3%)
+  exemption_amount_ht: 270724 (5.3%)
+  exemption_amount_other7: 270938 (5.3%)
+  exemption_amount_other6: 270973 (5.3%)
+  exemption_amount_fr: 273987 (5.4%)
+  exemption_amount_dp: 274339 (5.4%)
+  exemption_amount_other2: 278671 (5.5%)
+  exemption_amount_pc: 290232 (5.7%)
+  ag_market_value: 314839 (6.2%)
+  exemption_amount_ch313: 322685 (6.3%)
+  exemption_amount_other3: 325133 (6.4%)
+  partial_exemption_flag: 343276 (6.7%)
+  exemption_amount_dv: 343376 (6.7%)
+  exemption_flag_dv: 494204 (9.7%)
+  zoning_code: 592085 (11.6%)
+  school_district_flag: 592085 (11.6%)
+  owner_name: 811415 (15.9%)
+  exemption_amount_hs: 813693 (16.0%)
+  exemption_amount_ov65: 816129 (16.0%)
+  owner_address_line1: 912844 (17.9%)
+  total_market_value: 933938 (18.3%)
+  productivity_value: 1036246 (20.4%)
+  supplemental_record_count: 1604657 (31.5%)
+  net_taxable_value: 1681365 (33.0%)
+  new_construction_value: 2543804 (50.0%)
+  exemption_amount_ex366: 2703789 (53.1%)
+  situs_city_state_zip: 3339024 (65.6%)
+  situs_street_suffix: 4082135 (80.2%)
+  legal_description: 4082135 (80.2%)
+  taxing_unit_name: 4097424 (80.5%)
+  improvement_sq_ft: 4326128 (85.0%)
+  taxable_value: 4329766 (85.1%)
+  assessed_value: 4353226 (85.5%)
+  year_built: 4574464 (89.9%)
+  owner_state: 4601158 (90.4%)
+  appraised_value: 4630526 (91.0%)
+  subcategory_code: 4632157 (91.0%)
+  improvement_market_value: 4708408 (92.5%)
+  owner_id: 4762215 (93.6%)
+  tax_year: 4766868 (93.7%)
+  appraisal_district_id: 4766868 (93.7%)
+  county_id: 4766868 (93.7%)
+  taxing_unit_id: 4766868 (93.7%)
+  account_number_formatted: 4766868 (93.7%)
+  situs_street_number: 4766868 (93.7%)
+  situs_street_prefix: 4766868 (93.7%)
+  situs_street_name: 4766868 (93.7%)
+  special_use_flag: 4766868 (93.7%)
+  homesite_flag: 4766868 (93.7%)
+  deed_acreage: 4766868 (93.7%)
+  most_recent_sale_date: 4766868 (93.7%)
+  second_most_recent_sale_date: 4766868 (93.7%)
+  land_acres: 4766868 (93.7%)
+  land_market_value: 4766868 (93.7%)
+  property_category_code: 4766868 (93.7%)
+  exemption_flag_hs: 4766868 (93.7%)
+  exemption_flag_ov65: 4766868 (93.7%)
+  exemption_flag_dp: 4766868 (93.7%)
+  freeze_flag_2: 4766868 (93.7%)
+  ch313_flag: 4766868 (93.7%)
+  abatement_flag: 4766868 (93.7%)
+  partial_exemption_flag_2: 4766868 (93.7%)
+  land_use_code: 4766868 (93.7%)
+  ceiling_value: 4766868 (93.7%)
+  prior_year_taxable_value: 4766868 (93.7%)
+  record_sequence_number: 4766868 (93.7%)
+  ears_source: 4766868 (93.7%)
+  lui_land_use: 5089626 (100.0%)
+  lui_general_land_use: 5089626 (100.0%)
+  standardized_tcad_id: 5089896 (100.0%)
+  year: 5089896 (100.0%)
+  protest: 5089896 (100.0%)
+  ears_matched: 5089896 (100.0%)
+  lui_shape_area: 5089896 (100.0%)

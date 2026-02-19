@@ -89,15 +89,15 @@ across distribution shifts (Arjovsky et al., 2019; Peters et al., 2018) % "Covar
 features that predict resistance consistently across the distinct \textbf{market regimes} (Peters et al., 2016) % "environments"
 from 2018 to 2025, which are robust (Bühlmann, 2020) % "Robustness"
 to unobserved confounding (Peters et al., 2016) % "hidden variables"
-. Since standard ERM minimizes average risk (Arjovsky et al., 2019, Eq. 1), it absorbs spurious background correlations (e.g., "traffic" as a proxy for race); I need a method that enforces the \textbf{IRM principle}: optimal classifiers must match across environments (Arjovsky et al., 2019, Definition 3).
+. Since standard ERM minimizes average risk (Arjovsky et al., 2019, Eq. 1), it absorbs spurious background correlations (e.g., traffic as a proxy for race); I need a method that enforces the \textbf{IRM principle}: optimal classifiers must match across environments (Arjovsky et al., 2019, Definition 3).
 
-    In domain terms, this means ensuring predictions of NIMBYism remain reliable even when the economic context shifts drastically—for instance, from the low-interest-rate boom of 2021 to the high-rate environment of 2024. By targeting \textit{invariance} rather than mere correlation (e.g., ``luxury projects = opposition''), we isolate stable, structural drivers (e.g., ``loss of sunlight'') that persist regardless of the market, allowing for robust policy design.
+    In domain terms, this means ensuring predictions of NIMBYism remain reliable even when the economic context shifts drastically—for instance, from the low-interest-rate boom of 2021 to the high-rate environment of 2024. By targeting \textit{invariance} rather than mere correlation (e.g., associating luxury projects with opposition), we isolate stable, structural drivers (e.g., loss of sunlight) that persist regardless of the market, allowing for robust policy design.
 
 \section*{2. Why is this problem important? To whom?}
 This problem is critical for urban planners. Standard models (e.g., OLS, topic models) fail when \textbf{market regimes} (Peters et al., 2016) % "environments"
 shift, such as during interest rate hikes. By identifying \textbf{causally robust} (Bühlmann, 2020) % "Causality and Robustness"
-drivers of opposition, planners can design interventions (e.g., "guaranteed parking") that remain effective even when the economic wind changes.
-    For a planner asking ``Will this concession work in 2025?'', standard OLS models only reveal what worked \textit{on average} in the past. Causally robust models, by contrast, identify interventions that work \textit{consistently} across varying past conditions, making them a safer bet for future, unseen environments (Bühlmann, 2020).
+drivers of opposition, planners can design interventions (e.g., guaranteed parking) that remain effective even when the economic wind changes.
+    For a planner asking whether a concession will work in 2025, standard OLS models only reveal what worked \textit{on average} in the past. Causally robust models, by contrast, identify interventions that work \textit{consistently} across varying past conditions, making them a safer bet for future, unseen environments (Bühlmann, 2020).
 .
 
 \section*{3. What is my strategy for solving it?}
@@ -130,7 +130,7 @@ to handle unobserved confounding.
 This solution is good because it directly addresses the fragility of current models to distribution shift (Arjovsky et al., 2019; Peters et al., 2018) % "Covariate Shift"
 . \textbf{Anchor Regression} provides a principled way to trade off predictiveness and robustness (Bühlmann, 2020) % "Invariance, Causality and Robustness"
 when strict causal discovery is impossible.
-    Crucially, this acknowledges that we can never perfectly de-confound observational text data (e.g., we cannot see "backroom deals"). Anchor Regression allows us to explicitly choose how much "insurance" we want against this missing information, preventing the model from being overconfident.
+    Crucially, this acknowledges that we can never perfectly de-confound observational text data (e.g., we cannot see backroom deals). Anchor Regression allows us to explicitly choose how much insurance we want against this missing information, preventing the model from being overconfident.
 
 The solution falls short because IRM and ICP require environments to lie in \textbf{linear general position} (Arjovsky et al., 2019, Theorem 9) or satisfying \textbf{diversity assumptions} (Peters et al., 2016).
 With fewer than $d$ environments (here, only a few market regimes), identifying the unique invariant representation may be impossible without strong priors. However, these methods have proven effective in analogous high-dimensional settings, such as \textbf{gene perturbation analysis} (Wu et al., 2025b; Kemmeren et al., 2014), where they successfully identified stable mechanisms amidst noisy data—a challenge parallel to our text-as-data context.
@@ -138,7 +138,7 @@ With fewer than $d$ environments (here, only a few market regimes), identifying 
 \section*{5. How can I demonstrate that the solution works?}
 To empirically validate this approach, I will train the model on the training environments $\mathcal{E}_{tr}$ and test it on the future horizons $\mathcal{E}_{te}$. A successful model will demonstrate \textbf{predictive stability} (Bühlmann, 2020) % "stability"
 , or invariant performance, across regimes.
-    Empirically, if a model trained on 2018-2022 data accurately predicts opposition levels in the radically different 2023-2024 market, it proves we have captured the "invariant mechanism" of NIMBYism rather than just the era's noise.
+    Empirically, if a model trained on 2018-2022 data accurately predicts opposition levels in the radically different 2023-2024 market, it proves we have captured the invariant mechanism of NIMBYism rather than just the era's noise.
 
 It will outperform standard ERM baselines on \textbf{worst-case} unseen environments (Krueger et al., 2021; Bühlmann, 2020).
 I will also compare IRM against \textbf{Risk Extrapolation (V-REx)}, which penalizes the \textit{variance} of training risks (Krueger et al., 2021, Eq. 8) rather than the gradient norm, to see which regularization better captures the stability of NIMBYism.

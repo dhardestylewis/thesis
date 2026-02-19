@@ -1,0 +1,3308 @@
+539 sources
+
+Austin data portal dashboard planning department
+10 results
+
+
+favicon
+City of Austin Open Data Portal - AustinTexas.gov
+
+austintexas.gov
+
+
+Austin Transportation Data and Performance Hub
+
+austin.gov
+
+
+favicon
+City Data Hub | City of Austin
+
+austintexas.gov
+
+
+favicon
+Interactive Data Dashboards – Office of Institutional Research and Analytics
+
+austincc.edu
+
+
+favicon
+State of Texas | Open Data Portal | Open Data Portal
+
+texas.gov
+
+
+favicon
+Open Data Portal | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+APD announces partial release of mandated data dashboard - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Site Plan Cases | Open Data | City of Austin Texas
+
+austintexas.gov
+
+
+favicon
+Travis County Open Data Portal
+
+traviscountytx.gov
+
+
+favicon
+Exploring the Austin Police Department’s new crime data dashboard
+
+kxan.com
+
+
+Austin smart city initiatives technology urban planning
+10 results
+
+
+favicon
+Smart Cities Project
+
+utexas.edu
+
+
+favicon
+Austin Smart City Alliance
+
+austinsmartcity.org
+
+
+favicon
+A Good System for Smart Cities | Bridging Barriers
+
+utexas.edu
+
+
+favicon
+Emerging Mobility Technology | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Projects - Smart Cities
+
+utexas.edu
+
+
+favicon
+Austin ranked a Top 5 'smart city' for tech and sustainability
+
+mysanantonio.com
+
+
+favicon
+City of Austin Partners with NTT to Accelerate Smart City Technologies | NTT DATA
+
+nttdata.com
+
+
+favicon
+LIVE FROM AUSTIN, TEXAS: - The Smart City Challenge
+
+austintexas.gov
+
+
+favicon
+Is Austin a Smart City? Exploring Innovations and Challenges — Sparkly Maid Austin
+
+sparklymaidaustin.com
+
+
+favicon
+$7B all-electric light rail project moves ahead in Austin, Texas | Smart Cities Dive
+
+smartcitiesdive.com
+
+
+predictive analytics AI urban planning cities
+10 results
+
+
+favicon
+Predictive Analytics in Urban Planning – IGNESA
+
+ignesa.com
+
+
+favicon
+The Role of AI in Predictive Modelling for Sustainable Urban Development: Challenges and Opportunities
+
+mdpi.com
+
+
+favicon
+AI in Urban Planning: Using Tech to Redefine City Design
+
+sandtech.com
+
+
+favicon
+Impact of AI-Based Tools and Urban Big Data Analytics on the Design and Planning of Cities
+
+mdpi.com
+
+
+favicon
+AI and Cities: An International Forum for Innovation and Collaboration | Department of Urban and Regional Planning
+
+ufl.edu
+
+
+favicon
+Algorithmic urban planning for smart and sustainable development: Systematic review of the literature - ScienceDirect
+
+sciencedirect.com
+
+
+favicon
+AI Tools That Revolutionise Urban Planning with Predictive Analysis
+
+parametric-architecture.com
+
+
+favicon
+AI-Powered: Building Smarter Cities with Real-Time Analytics | Keylabs
+
+keylabs.ai
+
+
+favicon
+Big Data Analytics for Urban Planning - LUNARTECH
+
+lunartech.ai
+
+
+favicon
+AI in Urban Planning and Smart City Development | by Jam Canda | Medium
+
+medium.com
+
+
+parcel level data privacy urban planning
+10 results
+
+
+favicon
+Unlock the Powers of Unified Parcel Data with UrbanFootprint | UrbanFootprint
+
+urbanfootprint.com
+
+
+Regrid: Parcel Data for the U.S. & Canada
+
+regrid.com
+
+
+favicon
+Data Science in Urban Planning - GeeksforGeeks
+
+geeksforgeeks.org
+
+
+favicon
+3 Needs and Benefits | National Land Parcel Data: A Vision for the Future | The National Academies Press
+
+nationalacademies.org
+
+
+favicon
+[1403.5864] Mapping parcel-level urban areas for a large geographical area
+
+arxiv.org
+
+
+favicon
+Urban Indicators Database
+
+unhabitat.org
+
+
+favicon
+Living Textbook | [GS-01-004] Location Privacy | By ITC, University of Twente
+
+ucgis.org
+
+
+favicon
+Develop a parcel—ArcGIS Urban | Documentation
+
+arcgis.com
+
+
+Regrid: Enterprise Parcel Data for the U.S. & Canada
+
+regrid.com
+
+
+favicon
+Parcel Definition | GIS Dictionary
+
+esri.com
+
+
+predictive algorithm government privacy concerns controversy
+10 results
+
+
+favicon
+Predictive privacy: Collective data protection in the context of artificial intelligence and big data - Rainer Mühlhoff, 2023
+
+sagepub.com
+
+
+favicon
+Predictive privacy: towards an applied ethics of data analytics | Ethics and Information Technology
+
+springer.com
+
+
+favicon
+The Age of Predictive Analytics: From Patterns to Predictions - Office of the Privacy Commissioner of Canada
+
+priv.gc.ca
+
+
+favicon
+When Does Predictive Technology Become Unethical?
+
+hbr.org
+
+
+favicon
+Reasonably Suspicious Algorithms: Predictive Policing at the United States Border | N.Y.U. Review of Law & Social Change
+
+socialchangenyu.com
+
+
+favicon
+UK Government's 'Murder Prediction' Program Faces Backlash Over Privacy Concerns, Bias Allegations
+
+techtimes.com
+
+
+favicon
+Predictive policing algorithms are racist. They need to be dismantled. | MIT Technology Review
+
+technologyreview.com
+
+
+favicon
+Surveillance and Predictive Policing Through AI | Deloitte
+
+deloitte.com
+
+
+favicon
+Privacy Campaigners Slam Labour for Developing 'Predictive Crime' Algorithm Surveillance System – Guido Fawkes
+
+order-order.com
+
+
+favicon
+Artificial Intelligence and Privacy – Issues and Challenges – Office of the Victorian Information Commissioner
+
+ovic.vic.gov.au
+
+
+NIMBY prediction housing opposition AI machine learning
+10 results
+
+
+favicon
+Overcoming NIMBY Opposition to Affordable Housing
+
+nlihc.org
+
+
+favicon
+Nimby Assessment - HUD Exchange
+
+hudexchange.info
+
+
+favicon
+What Is NIMBYism? How Do Affordable Housing Developers Respond to It? — Shelterforce Shelterforce
+
+shelterforce.org
+
+
+favicon
+NIMBY - Wikipedia
+
+wikipedia.org
+
+
+NIMBYism as a barrier to housing and social mix in San Francisco - PMC
+
+nih.gov
+
+
+favicon
+Confronting the Challenges of “Not in My Backyard (NIMBY)” Attitudes | NAHB
+
+nahb.org
+
+
+favicon
+(PDF) Machine Learning for Housing Price Prediction
+
+researchgate.net
+
+
+favicon
+GPT-3’s New AI is a NIMBY! NIMBY Conversation Simulator 2020 #YIMBY #HousingForAll | by Ryan Tanaka | Medium
+
+medium.com
+
+
+favicon
+Housing Price Prediction via Improved Machine Learning Techniques - ScienceDirect
+
+sciencedirect.com
+
+
+favicon
+(PDF) Housing Price Prediction via Improved Machine Learning Techniques
+
+researchgate.net
+
+
+city dashboard public opposition data transparency
+10 results
+
+
+favicon
+5 Real-Life Local Government Dashboards for Transparency
+
+clearpointstrategy.com
+
+
+favicon
+Dallas City Hall Data Transparency
+
+dallascityhall.com
+
+
+favicon
+City of Philadelphia Releases Public Dashboard for Residents and Users to Track Open Data Metrics | CityGeo | City of Philadelphia
+
+phila.gov
+
+
+favicon
+8 Local Government Public Dashboard Examples | Envisio
+
+envisio.com
+
+
+favicon
+Data science empowering the public: Data-driven dashboards for transparent and accountable decision-making in smart cities - ScienceDirect
+
+sciencedirect.com
+
+
+favicon
+Creating Public Dashboards to Improve Transparency in Government
+
+achieveit.com
+
+
+favicon
+Baltimore Public Safety Accountability Dashboard | Mayor’s Office of Neighborhood Safety and Engagement
+
+baltimorecity.gov
+
+
+favicon
+Texas Transparency
+
+texas.gov
+
+
+favicon
+Open Data Program
+
+cambridgema.gov
+
+
+favicon
+Open Data and Transparency Portal | City of Fort Lauderdale, FL
+
+fortlauderdale.gov
+
+
+algorithmic bias urban planning housing case studies
+10 results
+
+
+favicon
+Full article: The Ethical Concerns of Artificial Intelligence in Urban Planning
+
+tandfonline.com
+
+
+favicon
+Algorithmic urban planning for smart and sustainable development: Systematic review of the literature - ScienceDirect
+
+sciencedirect.com
+
+
+favicon
+Algorithmic Bias Explained | 1
+
+greenlining.org
+
+
+favicon
+Ghosts in the Machine: How Past and Present Biases Haunt Algorithmic Tenant Screening Systems
+
+americanbar.org
+
+
+favicon
+How biased algorithms create barriers to housing | ACLU of Washington
+
+aclu-wa.org
+
+
+favicon
+Bridging Research Gaps Between Academic Research and Legal Investigations of Algorithmic Discrimination
+
+arxiv.org
+
+
+favicon
+Artificial intelligence adoption in urban planning governance: A systematic review of advancements in decision-making, and policy making - ScienceDirect
+
+sciencedirect.com
+
+
+favicon
+NFHTA Forum: Mining the Data: Algorithmic Bias in Housing Related Transactions - NFHA
+
+nationalfairhousing.org
+
+
+favicon
+AI in urban planning: Challenges and ethical considerations, Phillip Babich
+
+reedsmith.com
+
+
+favicon
+Teaching Data Justice: Algorithmic Bias and Critical Spatial Analysis in Urban Planning Education - Arthur Acolin, Annette M. Kim, 2024
+
+sagepub.com
+
+
+city officials technology adoption barriers resistance
+10 results
+
+
+favicon
+Government Barriers to Digital Technology Adoption - Cocoflo innovation
+
+cocoflo.com
+
+
+favicon
+Governments Want Artificial Intelligence, but Adoption Lags
+
+govtech.com
+
+
+favicon
+Cities must deploy digital initiatives to cope with unknowns | World Economic Forum
+
+weforum.org
+
+
+favicon
+Understanding Local Government Digital Technology Adoption Strategies: A PRISMA Review
+
+mdpi.com
+
+
+favicon
+Barriers to adoption and attitudes towards technology
+
+pewresearch.org
+
+
+favicon
+5 challenges for government adoption of AI | World Economic Forum
+
+weforum.org
+
+
+favicon
+Top 15 Barriers to Adopting New Technology
+
+linkedin.com
+
+
+favicon
+What Are Common Technology Adoption Barriers?
+
+onsite-hq.com
+
+
+favicon
+Challenges And Barriers To Adoption - FasterCapital
+
+fastercapital.com
+
+
+favicon
+Smart City Adoption Rates: How Many Cities Are Going Digital? | PatentPC
+
+patentpc.com
+
+
+false positive predictive model consequences public sector
+10 results
+
+
+favicon
+Unlock the Power of Predictive Accuracy: The Ultimate Guide to Positive Predictive Value Formula - Cyber Innovation Hub
+
+mit.edu
+
+
+favicon
+Machine Learning Accuracy: True-False Positive/Negative
+
+aimultiple.com
+
+
+favicon
+Why Predictive Algorithms are So Risky for Public Sector Bodies by Madeleine Waller, Paul Waller :: SSRN
+
+ssrn.com
+
+
+favicon
+Model Behavior: Mitigating Bias in Public Sector Machine ...
+
+harvard.edu
+
+
+favicon
+Full article: Predictive Policing: Review of Benefits and Drawbacks
+
+tandfonline.com
+
+
+favicon
+False Positives, False Negatives, and False Analyses
+
+uscourts.gov
+
+
+favicon
+AI in the Public Sector: How Do We Know When it is Safe to Use an Algorithm? (Part 1) | by Data & Policy Blog | Data & Policy Blog | Medium
+
+medium.com
+
+
+Three myths about risk thresholds for prediction models - PMC
+
+nih.gov
+
+
+favicon
+Chapter 7 People-Based ML Models: Algorithmic Fairness | Public Policy Analytics: Code & Context for Data Science in Government
+
+github.io
+
+
+favicon
+AML Alerts: A Predictive Modeling Guide To Solve False Negatives
+
+zencos.com
+
+
+Austin city council members 2020-2025 housing
+10 results
+
+
+favicon
+City Council
+
+austin.mn.us
+
+
+favicon
+Council Meeting Information Center Home | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin City Council | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin City Council - Wikipedia
+
+wikipedia.org
+
+
+favicon
+Austin City Council approves $6.3 billion fiscal year 2025-2026 budget | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Housing panelists examine what's worked in Austin, and across Texas - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+Meet the candidates running for Austin City Council | KUT Radio, Austin's NPR Station
+
+kut.org
+
+
+favicon
+August 28, 2025 Austin City Council Regular Meeting | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+February 13, 2025 Austin City Council Regular Meeting | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin enacts sweeping reforms to cut down housing costs | The Texas Tribune
+
+texastribune.org
+
+
+Austin city council housing votes supermajority
+10 results
+
+
+favicon
+What's next following supermajority passage of H.O.M.E. Initiative
+
+cbsaustin.com
+
+
+favicon
+Austin enacts sweeping reforms to cut down housing costs | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+Victory in Austin: City Council Votes for Incremental Housing Development
+
+strongtowns.org
+
+
+How HOME Backers Built a Council Supermajority - The Austin Independent
+
+theaustinindependent.org
+
+
+Austin's zoning woes serve as case study for housing crises across Texas
+
+culturemap.com
+
+
+favicon
+“Tyrant’s Veto” Used to Slow Austin Housing Reforms Now on Life Support: House Bill 24 brings big change to 100-year-old law - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Austin City Council Backs 'HOME' Initiative to Boost Middle-Income Housing Options
+
+hoodline.com
+
+
+favicon
+Breaking Down What the HOME Initiative’s Passing Means for Austin: Council approves HOME phase one, looks ahead to phase two - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Election 2024 - After Another Election, City Council Remains Staunchly Pro-Housing: But outcome in D7 contest remains undecided - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Archives: Search for "supermajority vote" - The Austin Chronicle
+
+austinchronicle.com
+
+
+Austin Texas council-manager government structure mayor powers
+10 results
+
+
+favicon
+CITY OF AUSTIN GOVERNMENT STRUCTURE: A COMPARATIVE ANALYSIS Terrell Blodgett
+
+austintexas.gov
+
+
+favicon
+City Manager | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+JULY 2020 1 UNDERSTANDING CITY GOVERNMENT STRUCTURES IN TEXAS
+
+ilrc.org
+
+
+favicon
+Austin City Council - Wikipedia
+
+wikipedia.org
+
+
+favicon
+Mayor of Austin - Wikipedia
+
+wikipedia.org
+
+
+favicon
+3/30/2023 Page 1 of 3 Overview of the Austin City Government
+
+austintexas.gov
+
+
+favicon
+Groups discuss proposal of 'strong mayor' form of government for Austin | kvue.com
+
+kvue.com
+
+
+favicon
+Should Austin Have A 'Strong Mayor' Government? Here Are 7 Things To Know About Prop F. | KUT Radio, Austin's NPR Station
+
+kut.org
+
+
+favicon
+Austin, Texas, Proposition F, Eliminate City Manager and Establish Mayor-Council Government Initiative (May 2021) - Ballotpedia
+
+ballotpedia.org
+
+
+favicon
+Government | AustinTexas.gov
+
+austintexas.gov
+
+
+Texas housing preemption state law override local
+10 results
+
+
+favicon
+Texas Preemption Law Overrides City Laws on Workers Rights, Evictions - Bloomberg
+
+bloomberg.com
+
+
+favicon
+Texas Law Enabling Citizens to Sue Over Local Ordinances Pre-Empted by State Laws Takes Effect | Office of the Attorney General
+
+texasattorneygeneral.gov
+
+
+favicon
+Exploring the Double-Edged Sword of Housing Preemption — Local Solutions Support Center
+
+supportdemocracy.org
+
+
+favicon
+Texas suburbs resist new state law allowing more apartments | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+Preemption Of Local Laws Laws in Texas | Giffords
+
+giffords.org
+
+
+favicon
+Texas House approves sweeping limits on local regulations in GOP’s latest jab at blue cities
+
+texastribune.org
+
+
+favicon
+Easing Texas Housing Affordability Through State Legislation - Texas Public Policy Foundation
+
+texaspolicy.com
+
+
+favicon
+Also Bigger in Texas: The State’s Preemption of Local Ordinances
+
+bloomberglaw.com
+
+
+favicon
+State Preemption of Local Zoning Laws as Intersectional Climate Policy - Harvard Law Review
+
+harvardlawreview.org
+
+
+favicon
+Texas Republicans ended a patchwork of local rules they say hurt business. They also eroded powers of city councils.
+
+texastribune.org
+
+
+Austin housing lawsuit court case 2020 land development code
+10 results
+
+
+favicon
+City loses Land Development Code lawsuit appeal - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Hearing set for Austin's land development code lawsuit | kvue.com
+
+kvue.com
+
+
+favicon
+Appeals court confirms Austin's land code rewrite skirted state law, effectively killing the decade-long effort | KUT Radio, Austin's NPR Station
+
+kut.org
+
+
+favicon
+Court hears Austin's land development code lawsuit Wednesday | kvue.com
+
+kvue.com
+
+
+favicon
+Appeals court sides with property owners in Austin land code revision case | Community Impact
+
+communityimpact.com
+
+
+favicon
+Lawsuit Threatens Council’s Modest Progress on Housing Crisis: Same group that blocked land code rewrite in 2020 is back - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+CodeNEXT, Austin land development code rewrite, effectively over after appeals court ruling | kvue.com
+
+kvue.com
+
+
+favicon
+Habitat for Humanity, Environment Texas weigh in on land code lawsuit - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Homeowners who fought Austin land code changes celebrate court victory
+
+kvue.com
+
+
+favicon
+Lawsuit filed challenging Austin’s land development code rewrite | KXAN Austin
+
+kxan.com
+
+
+Austin Travis County district attorney housing policy
+10 results
+
+
+favicon
+Travis County District Attorney's Office
+
+traviscountytx.gov
+
+
+favicon
+Travis County Law Library
+
+traviscountytx.gov
+
+
+favicon
+Travis County District Attorney's Office | Austin TX | Facebook
+
+facebook.com
+
+
+favicon
+Travis County Code
+
+traviscountytx.gov
+
+
+favicon
+Criminal District Attorney – Austin County, TX
+
+austincounty.com
+
+
+favicon
+Travis County District Attorney's Office (@DATravisCounty) / X
+
+x.com
+
+
+favicon
+County Attorney
+
+traviscountytx.gov
+
+
+favicon
+District Attorney
+
+traviscountytx.gov
+
+
+favicon
+District Attorney's Contact
+
+traviscountytx.gov
+
+
+favicon
+Tenant Stabilization and Renters Rights | AustinTexas.gov
+
+austintexas.gov
+
+
+HB 2127 Texas 2023 local preemption death star
+10 results
+
+
+favicon
+Houston sues Texas to block “Death Star” preemption law | The Texas Tribune
+
+texastribune.org
+
+
+88(R) HB 2127 - Enrolled version - Bill Text
+
+state.tx.us
+
+
+favicon
+Texas's HB 2127 'Death Star' Law Doesn't Strike Back ...
+
+ogletree.com
+
+
+favicon
+Judge Strikes Down Lege's Power-Grab Against Cities, HB 2127 - The Texas Observer
+
+texasobserver.org
+
+
+favicon
+Judge declares Texas “Death Star” bill law unconstitutional | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+Texas Senate advances “Death Star bill” preempting self-government powers of cities and counties | Houston Public Media
+
+houstonpublicmedia.org
+
+
+favicon
+'Death Star' Bill Is About Kneecapping Democracy in Texas
+
+texasobserver.org
+
+
+favicon
+Texas District Court Declares State Preemption Law Unconstitutional. What Now? | Littler
+
+littler.com
+
+
+favicon
+City of Houston files lawsuit against Texas’ ‘Death Star’ Super Preemption Law
+
+click2houston.com
+
+
+favicon
+Texas’s “Death Star Bill” Is an Attack on Workers and Democracy
+
+jacobin.com
+
+
+Texas SB 840 2025 housing apartments state law
+10 results
+
+
+favicon
+Texas SB840 | 2025-2026 | 89th Legislature
+
+legiscan.com
+
+
+favicon
+Texas SB 840 Eases Zoning for Multifamily Conversions
+
+natlawreview.com
+
+
+favicon
+New Opportunities for Housing Developers Under SB 840 | M&D Real Estate
+
+mdregroup.com
+
+
+favicon
+SB 840: A Game-Changer for Multifamily Development and Land Use in Texas Cities – Zoning Regulation Reform
+
+hunton.com
+
+
+favicon
+Texas Senate Bill 840: A Game-Changer for Housing Development - Troutman Pepper Locke
+
+troutman.com
+
+
+favicon
+Texas-2025-SB840-Analysis (Introduced)
+
+legiscan.com
+
+
+favicon
+Texas Enacts Critical Real Estate Reforms—Senate Bills 15, 17, 840 | Foley & Lardner LLP
+
+foley.com
+
+
+favicon
+Zoning Reimagined: What Newly Signed Senate Bill 840 Means for
+
+northmarq.com
+
+
+favicon
+SB 840 Poised To Unleash Multifamily Development in TX’s Biggest Cities
+
+candysdirt.com
+
+
+favicon
+Texas suburbs resist new state law allowing more apartments | The Texas Tribune
+
+texastribune.org
+
+
+Austin land development code reforms 2020-2025
+10 results
+
+
+favicon
+City and Land Development Code | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Residential Zoning Laws and Regulations Austin, TX in 2025
+
+steadily.com
+
+
+favicon
+Land Development Code | Austin, TX - Municode Library
+
+municode.com
+
+
+favicon
+Nationalhousingcrisis
+
+nationalhousingcrisis.org
+
+
+favicon
+Land Development Code Amendments - PublicInput
+
+speakupaustin.org
+
+
+favicon
+Tag: land development code - Austin
+
+aura-atx.org
+
+
+favicon
+Housing Advocacy & Affordability – AIA Austin
+
+aiaaustin.org
+
+
+favicon
+Land Development Code Revision | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+“Tyrant’s Veto” Used to Slow Austin Housing Reforms Now on Life Support: House Bill 24 brings big change to 100-year-old law - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Draft of Land Development code aims to let Austin build 6 times more affordable housing | KXAN Austin
+
+kxan.com
+
+
+Austin density bonus programs affordable housing
+10 results
+
+
+favicon
+Development Incentives and Agreements | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Downtown Density Bonus Program | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin City Council amends density bonus program for affordable housing | FOX 7 Austin
+
+fox7austin.com
+
+
+favicon
+Focused on real affordability, City Council moves to improve density bonus programs - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Density bonus programs under review to address affordability needs, market conditions - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Council passes affordable housing density bonus program - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+Adjusted density bonus program pushes housing, affordability on commercial properties - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+Density Bonus Program - Real Estate Council of Austin
+
+reca.org
+
+
+favicon
+Austin's density bonus program creates more affordable housing on Rainey Street
+
+kxan.com
+
+
+favicon
+City planning revision of density bonus programs - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+Austin HOME initiative housing policy
+10 results
+
+
+favicon
+HOME Amendments | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+HOME initiatives doing little to provide affordable housing - The Austin Bulldog
+
+theaustinbulldog.org
+
+
+favicon
+How Austin HBA Engaged in Transformative City Code Reform | NAHB
+
+nahb.org
+
+
+favicon
+C20-2023-035 HOME Phase 2 - PublicInput
+
+speakupaustin.org
+
+
+favicon
+Austin will allow more homes to be built on single-family lots | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+HOME Initiative Statement – October 2023 – AIA Austin
+
+aiaaustin.org
+
+
+favicon
+Austin City Council passes HOME Initiative Phase 2 | kvue.com
+
+kvue.com
+
+
+favicon
+HOME Phase 1 - AURA
+
+aura-atx.org
+
+
+favicon
+More than 200 people weigh in on Austin HOME Initiative | kvue.com
+
+kvue.com
+
+
+favicon
+HOME INITIATIVE PHASE I ORDINANCE SUMMARY + FAQ
+
+aiaaustin.org
+
+
+Austin housing regulations compared San Francisco Seattle NYC
+10 results
+
+
+favicon
+Here's why Austin and Seattle are building way more housing than San Francisco
+
+sfchronicle.com
+
+
+favicon
+Where land-use regulations are driving up housing costs
+
+housingwire.com
+
+
+favicon
+Austin vs. San Francisco Bay Area — Housing | by Andrew Shi | Medium
+
+medium.com
+
+
+favicon
+How Does Austin's Cost of Living Compare to Other Major Cities?
+
+seelyproperties.com
+
+
+favicon
+Strategies to Boost Housing Production in the New York City Metropolitan Area |
+
+cbcny.org
+
+
+favicon
+The zoning puzzle driving up housing costs in Seattle and San Francisco
+
+axios.com
+
+
+favicon
+The Difference Between Living in NYC & Living in San Francisco
+
+newyorkdearest.com
+
+
+favicon
+How Has Austin Been Able To Build More Housing Than Anywhere Else? - Propmodo
+
+propmodo.com
+
+
+favicon
+What differences are there between San Francisco and Austin in terms of quality of life? - Quora
+
+quora.com
+
+
+favicon
+*The idea that New York cost of living is much higher is just false. You can sac... | Hacker News
+
+ycombinator.com
+
+
+Austin tenant protections rent control regulations
+10 results
+
+
+favicon
+Tenant Stabilization and Renters Rights | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin Tenants Council | Texas Law Help
+
+texaslawhelp.org
+
+
+favicon
+Overview of Tenants Rights - BASTA Austin
+
+bastaaustin.org
+
+
+favicon
+Texas Rent Control (Laws, Rental Limit & Tenant Rights)
+
+victorsteffen.com
+
+
+favicon
+General Information - Landlord/Tenant Law - Guides at Texas State Law Library
+
+texas.gov
+
+
+favicon
+Texas Rental Laws - An Overview of Landlord-Tenant Rights in Austin | Keyrenter Austin
+
+keyrenteraustin.com
+
+
+favicon
+Rent Increase Laws and Regulations in Austin, TX - 2025
+
+steadily.com
+
+
+favicon
+Renter's Rights | Office of the Attorney General
+
+texasattorneygeneral.gov
+
+
+favicon
+Rent - Landlord/Tenant Law - Guides at Texas State Law Library
+
+texas.gov
+
+
+favicon
+Civil Rights ATX: Tenant Rights to Organize and Eviction Protections | SpeakUp Austin!
+
+engagementhq.com
+
+
+Austin affordable housing density bonus program statistics utilization units completed
+10 results
+
+
+favicon
+City planning revision of density bonus programs - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+Development Incentives and Agreements | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Council passes affordable housing density bonus program - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+Downtown Density Bonus Program | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Adjusted density bonus program pushes housing, affordability on commercial properties - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+$42 million Approved in Funding for Affordable Housing Developments across Austin | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austintexas
+
+austintexas.gov
+
+
+favicon
+Austin City Council amends density bonus program for affordable housing | FOX 7 Austin
+
+fox7austin.com
+
+
+favicon
+Planning memo details performance, possible changes for density bonus programs - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+1 How-To and Guide for the Proposed Affordable Housing Bonus Program
+
+austintexas.gov
+
+
+Austin housing policies 2020 2021 2022 2023 ordinances adopted
+10 results
+
+
+favicon
+Austin Strategic Housing Blueprint | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+HOME Amendments | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+ORDINANCE AMENDMENT REVIEW SHEET Amendment: C20-2023-024 HOME Phase 2
+
+austintexas.gov
+
+
+favicon
+Austin will allow more homes to be built on single-family lots | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+Austin’s Exclusionary Housing Policies Are Getting Revolutionary Rewrites: After decades of resistance doors open for less-wealthy Austinites - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Advocacy HousingWorks Austin: Affordable Housing Advocacy and Policy
+
+housingworksaustin.org
+
+
+favicon
+Breaking Down What the HOME Initiative’s Passing Means for Austin: Council approves HOME phase one, looks ahead to phase two - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Housing Advocacy & Affordability – AIA Austin
+
+aiaaustin.org
+
+
+favicon
+Austin enacts sweeping reforms to cut down housing costs | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+Austin land-use code changes including 'HOME' Phase 2 to be considered this spring | Community Impact
+
+communityimpact.com
+
+
+Austin SMART housing program utilization data
+10 results
+
+
+favicon
+Development Incentives and Agreements | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+SMART Housing Program | Revolve
+
+revolveatx.com
+
+
+favicon
+SMART housing program | SYNC ...
+
+syncatmueller.com
+
+
+favicon
+Smart Housing | The Standard at Austin
+
+landmark-properties.com
+
+
+favicon
+Affordable Housing Online Search Tool (AHOST) | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Income & Rent Limits | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Smart Housing Program | Residences at Domain
+
+udr.com
+
+
+favicon
+SMART Housing | The Mark Austin
+
+themarkatx.com
+
+
+favicon
+What is SMART Housing? - Affordable Living for UT Students
+
+rambleratx.com
+
+
+favicon
+Emergency Housing Voucher Program - Austin, ECHO
+
+austinecho.org
+
+
+homeowner renter voting participation housing
+10 results
+
+
+favicon
+Homeownership and voter turnout in u.s. local elections - ScienceDirect
+
+sciencedirect.com
+
+
+favicon
+Report: Renters lean more Democratic, but much less likely to vote, than homeowners - The Washington Post
+
+washingtonpost.com
+
+
+favicon
+If You Lived Here, You Might Be a Voter By Now | Stanford Graduate School of Business
+
+stanford.edu
+
+
+favicon
+New Census Data Reveal Voter Turnout Disparities in 2022 Midterm Elections | National Low Income Housing Coalition
+
+nlihc.org
+
+
+favicon
+Renters vs. Homeowners at the Ballot Box -- Will America’s Politicians Represent the Voice of Renters?
+
+apartmentlist.com
+
+
+favicon
+Why the voter turnout gap between renters and homeowners may finally be narrowing
+
+apartmentlist.com
+
+
+favicon
+Vote! Because Housing is Built with Ballots | National Low Income Housing Coalition
+
+nlihc.org
+
+
+Does Homeownership Inﬂuence Political Behavior?
+
+andrewbenjaminhall.com
+
+
+favicon
+Homeownership and Local Voting in Disadvantaged Urban ...
+
+huduser.gov
+
+
+favicon
+Renter Voter Turnout Increasing | National Apartment Association
+
+naahq.org
+
+
+Austin YIMBY AURA housing advocacy
+10 results
+
+
+favicon
+Home - AURA
+
+aura-atx.org
+
+
+favicon
+YIMBYtown 2023 - Austin, Texas - YIMBYtown 5
+
+yimby.town
+
+
+favicon
+Farm&City and AURA are proud to host YIMBYtown 2024 in Austin – Farm&City
+
+farmandcity.org
+
+
+favicon
+Austin enacts sweeping reforms to cut down housing costs | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+Austin Passes Series of YIMBY Resolutions
+
+therealdeal.com
+
+
+favicon
+YIMBYtown 2024 Conference, Austin, TX, Feb 26-28, 2024
+
+yimby.town
+
+
+Austin's zoning woes serve as case study for housing crises across Texas
+
+culturemap.com
+
+
+favicon
+YIMBYtown 2025
+
+yimby.town
+
+
+favicon
+Can Austin’s YIMBY Movement Go From Backyard to Ballot?
+
+nextcity.org
+
+
+favicon
+YIMBYTown 2024 Takes Austin
+
+therealdeal.com
+
+
+Austin NIMBY neighborhood opposition housing
+10 results
+
+
+favicon
+Why Bringing More Affordable Housing to Austin Is a Block-by-Block Battle – Texas Monthly
+
+texasmonthly.com
+
+
+favicon
+Has Austin Become the NIMBY Capital of Texas? - Austin Monthly Magazine
+
+austinmonthly.com
+
+
+Austin's zoning woes serve as case study for housing crises across Texas
+
+culturemap.com
+
+
+favicon
+Neighbors protested housing for homeless Austinites. Then, they (sort of) changed their stance. | KUT Radio, Austin's NPR Station
+
+kut.org
+
+
+favicon
+Overcoming NIMBY Opposition to Affordable Housing
+
+nlihc.org
+
+
+favicon
+Can Austin’s YIMBY Movement Go From Backyard to Ballot?
+
+nextcity.org
+
+
+favicon
+NIMBY-ism vs YIMBY-ism - Juana Palacios - HomeBase
+
+homebasetexas.org
+
+
+favicon
+The YIMBYs Come to Town, and City Council Joins Them: Yes in Austin’s Backyard - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Confronting the Challenges of “Not in My Backyard (NIMBY)” Attitudes | NAHB
+
+nahb.org
+
+
+favicon
+NIMBY - Wikipedia
+
+wikipedia.org
+
+
+civic engagement comparison cities Austin Seattle San Francisco
+10 results
+
+
+favicon
+San Francisco vs Seattle: What is the difference?
+
+versus.com
+
+
+favicon
+Cities Similar To San Francisco: Warm, Progressive Alternatives To Explore [Updated On 2025]
+
+travelpander.com
+
+
+favicon
+Most Caring Cities in America in 2025
+
+wallethub.com
+
+
+favicon
+2025 Compare Cities People: Seattle, WA vs San Francisco, CA
+
+bestplaces.net
+
+
+favicon
+The Current State of Civic Engagement in America | Pew Research Center
+
+pewresearch.org
+
+
+favicon
+Civic Engagement | SF GSA
+
+sfgov.org
+
+
+favicon
+Seattle CityClub Civic Health Index | Civic Health Index
+
+seattlecityclub.org
+
+
+Past Winners - National Civic League
+
+nationalcivicleague.org
+
+
+favicon
+What Do the World’s Most Engaged Cities Have in Common? | by Cities of Service | Office of Citizen | Medium
+
+medium.com
+
+
+favicon
+Most & Least Politically Engaged States in 2025
+
+wallethub.com
+
+
+Austin neighborhood associations housing opposition
+10 results
+
+
+favicon
+Neighborhood Advocacy | Austin Neighborhoods Council Neighborhood
+
+atxanc.org
+
+
+favicon
+Community Registry Search | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Community Registry | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+RESOURCES | Austin Neighborhood Council
+
+atxanc.org
+
+
+favicon
+100-unit supportive housing project clears Austin Planning Commission over Hancock neighbors' opposition | Community Impact
+
+communityimpact.com
+
+
+favicon
+Major upzoning in Zilker neighborhood draws opposition - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Austin Neighborhoods Council ATX
+
+facebook.com
+
+
+favicon
+Hyde Park Neighborhood Association - Austin, Texas
+
+austinhydepark.org
+
+
+favicon
+Austin Neighborhoods Council Archives - Austin Monitor
+
+austinmonitor.com
+
+
+Dallas and Austin are facing the same kind of housing issues - CultureMap Dallas
+
+culturemap.com
+
+
+"Austin City Council" housing testimony public hearing attendance
+10 results
+
+
+favicon
+Council Meeting Information Center Home | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Judge upholds new Austin City Council rules for meetings, public testimony | Community Impact
+
+communityimpact.com
+
+
+favicon
+Court orders extend public testimony at Austin City Council meetings | Community Impact
+
+communityimpact.com
+
+
+favicon
+Participate in a City Council meeting | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+‘I will sue you’: Austin City Council public comment rules in limbo after judge ruling | KXAN Austin
+
+kxan.com
+
+
+favicon
+Austin residents divided over HOME Act in packed City Council hearing
+
+cbsaustin.com
+
+
+favicon
+Does Public Testimony At Austin City Council Meetings Make A Difference? | KUT Radio, Austin's NPR Station
+
+kut.org
+
+
+favicon
+CITY COUNCIL AGENDA JUNE 1,2000 Austin City Council MINUTES REGULAR MEETING
+
+austintexas.gov
+
+
+favicon
+Austin City Council begins hearings on phase 2 of changes to land development code
+
+cbsaustin.com
+
+
+favicon
+Agenda | AustinTexas.gov
+
+austintexas.gov
+
+
+Austin HOME initiative zoning reform 2024
+10 results
+
+
+favicon
+How Austin HBA Engaged in Transformative City Code Reform | NAHB
+
+nahb.org
+
+
+favicon
+HOME Amendments | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin enacts sweeping reforms to cut down housing costs | The Texas Tribune
+
+texastribune.org
+
+
+favicon
+HOME INITIATIVE PHASE I ORDINANCE SUMMARY + FAQ
+
+aiaaustin.org
+
+
+favicon
+Austin’s HOME Initiative Shakes Up ADU Regulations in 2024 - Maxable
+
+maxablespace.com
+
+
+favicon
+Austin cuts minimum residential lot size by more than two-thirds under HOME Phase 2 | Community Impact
+
+communityimpact.com
+
+
+favicon
+Council to Approve More Ambitious Development Reforms, and Considers Displacement: City aims to lower housing cost, considers gentrification risk - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Austin land-use code changes including 'HOME' Phase 2 to be considered this spring | Community Impact
+
+communityimpact.com
+
+
+favicon
+Austin cuts minimum lot size by more than half, requiring less land to build a home
+
+kut.org
+
+
+favicon
+Austin will allow more homes to be built on single-family lots | The Texas Tribune
+
+texastribune.org
+
+
+Farm and City Austin housing advocacy
+10 results
+
+
+favicon
+Farm&City
+
+farmandcity.org
+
+
+favicon
+Council pushes for ‘agrihood’ pilot program merging homes with farmland in East Austin - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+City could push 'agrihood' combos of farmland, housing developments in East Austin - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Housing Advocacy & Affordability – AIA Austin
+
+aiaaustin.org
+
+
+favicon
+What Austin’s Pro-Housing Wins Can Teach Us
+
+newamerica.org
+
+
+favicon
+East Austin/Village Farm — Green Gate Farms
+
+greengatefarms.net
+
+
+favicon
+Affordable Housing Advocacy and Policy
+
+housingworksaustin.org
+
+
+favicon
+Austin Housing Coalition
+
+austinhousingcoalition.org
+
+
+favicon
+Urban Roots - The Farm Is your Classroom
+
+urbanrootsatx.org
+
+
+favicon
+TAAHP - Texas Affiliation of Affordable Housing Providers
+
+taahp.org
+
+
+YIMBY movement strength comparison cities Austin San Francisco Seattle
+10 results
+
+
+favicon
+Mapping the Y.I.M.B.Y. Movement | Pacaso
+
+pacaso.com
+
+
+favicon
+YIMBYtown 2025
+
+yimby.town
+
+
+favicon
+Comparing the Strong Towns and YIMBY Approaches to the Housing Crisis
+
+strongtowns.org
+
+
+favicon
+D.C., Chicago are top YIMBY cities for housing development
+
+housingwire.com
+
+
+favicon
+YIMBY - Wikipedia
+
+wikipedia.org
+
+
+favicon
+What does “Yes In My Backyard” (YIMBY) really mean?
+
+buildcasa.com
+
+
+favicon
+Can Austin’s YIMBY Movement Go From Backyard to Ballot?
+
+nextcity.org
+
+
+favicon
+'Yes In My Backyard' Movement, YIMBY, Grows As Bay Area Housing Tightens | Here & Now
+
+wbur.org
+
+
+favicon
+5 Big Takeaways from YIMBYtown - Beyond Chron
+
+beyondchron.org
+
+
+favicon
+YIMBY? Smart Growth? New Urbanism? Understand the various movements for sustainable urban planning – Greater Greater Washington
+
+ggwash.org
+
+
+City of Austin housing report 2024
+10 results
+
+
+Austin housing market shows promising stability in 2025, report says
+
+culturemap.com
+
+
+favicon
+2024 Housing Department Annual Report | Open Data | City of Austin, Texas
+
+austintexas.gov
+
+
+favicon
+2024 Housing Department Annual Report | City Data Hub | City of Austin
+
+austintexas.gov
+
+
+favicon
+Austin Real Estate: 2-4 Unit Permits Surge in September ...
+
+teamprice.com
+
+
+Austin housing market improves despite sales drop in May - CultureMap Austin
+
+culturemap.com
+
+
+favicon
+A Safe Place to Call Home: Housing Department’s Fiscal Year 2024 Annual Report | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Market Research & Statistics | Unlock MLS
+
+unlockmls.com
+
+
+favicon
+Affordable housing in Austin continues to lag, despite residential construction surge | Community Impact
+
+communityimpact.com
+
+
+favicon
+Austin Housing Market: Trends and Forecast 2025-2026
+
+noradarealestate.com
+
+
+favicon
+Austin’s housing market: How quickly are homes selling, and for how much?
+
+kxan.com
+
+
+Austin Texas housing prices 2020-2025 year trends
+10 results
+
+
+favicon
+One in Five Homes Slashes Prices in September, Realtor.com® Reports | Morningstar
+
+morningstar.com
+
+
+favicon
+Austin, TX Housing Market: 2025 Home Prices & Trends | Zillow
+
+zillow.com
+
+
+favicon
+Austin Housing Market: House Prices & Trends | Redfin
+
+redfin.com
+
+
+favicon
+Austin Housing Market: Trends and Forecast 2025-2026
+
+noradarealestate.com
+
+
+favicon
+Is Austin’s Housing Market Cooling in 2025? — LRG Realty
+
+lrgrealty.com
+
+
+favicon
+Texas housing data: How much are homes selling for in Austin?
+
+kxan.com
+
+
+favicon
+All-Transactions House Price Index for Austin-Round Rock-Georgetown, TX (MSA) (ATNHPIUS12420Q) | FRED | St. Louis Fed
+
+stlouisfed.org
+
+
+favicon
+Austin Housing Market Forecast: Will Home Prices Drop ...
+
+teamprice.com
+
+
+favicon
+Austin Housing Market: Stats & Trends | Orchard
+
+orchard.com
+
+
+favicon
+Austin Housing Market: Trends & Prices (2025)
+
+sofi.com
+
+
+Austin rent increases 2020-2025 data
+10 results
+
+
+favicon
+Austin Apartment Rents Down 17% Since 2022 Peak
+
+teamprice.com
+
+
+favicon
+Average Rent in Austin, TX: 2025 Rent Prices by Neighborhood
+
+rentcafe.com
+
+
+favicon
+Why Is Rent in Austin Going Down? Exploring the 2025 Data
+
+teamprice.com
+
+
+favicon
+Apartment rent and rental growth in Austin, TX, 2025
+
+statista.com
+
+
+favicon
+Average rent predicted to increase across ATX metro in 2025
+
+cbsaustin.com
+
+
+favicon
+Austin's asking rent prices dipped YoY in 2025 amid US rent increase: Redfin | kvue.com
+
+kvue.com
+
+
+favicon
+"What will happen in 2025 to rent in Austin?"
+
+luxehomesaustin.com
+
+
+favicon
+Average Rental Price in Austin, TX & Market Trends | Zillow Rental Manager
+
+zillow.com
+
+
+Austin rent prices increased nearly 10 percent from 2022, report finds - CultureMap Austin
+
+culturemap.com
+
+
+Austin has highest rent prices in Texas for 2025, per report - CultureMap Austin
+
+culturemap.com
+
+
+Austin housing crisis 2021 2022 rent spike
+10 results
+
+
+favicon
+Austin Rents Tumble 22% From Peak on Massive Home Building Spree - Bloomberg
+
+bloomberg.com
+
+
+favicon
+NMHC | Austin's Rent Drop Isn't "Weird"—It's Economics
+
+nmhc.org
+
+
+favicon
+Austin Rent Prices Are Collapsing - Newsweek
+
+newsweek.com
+
+
+Austin rent prices increased nearly 10 percent from 2022, report finds - CultureMap Austin
+
+culturemap.com
+
+
+favicon
+Austin Housing Market: Trends and Forecast 2025-2026
+
+noradarealestate.com
+
+
+favicon
+Austin Rental Market 'Collapsing,' Real Estate Expert Says - Newsweek
+
+newsweek.com
+
+
+favicon
+Some say Austin's rental market might collapse. That's not reality
+
+housingwire.com
+
+
+favicon
+Why Is Rent in Austin Going Down? Exploring the 2025 Data
+
+teamprice.com
+
+
+favicon
+Austin is one of the worst cities in the country for renters - Axios Austin
+
+axios.com
+
+
+favicon
+Housing affordability gap hits Texas
+
+texas.gov
+
+
+Austin Texas demographic changes 2020-2025 population income
+10 results
+
+
+favicon
+Austin, Texas Population 2025
+
+worldpopulationreview.com
+
+
+favicon
+Demographic Trends in Texas and the Austin Region February 4, 2025
+
+texas.gov
+
+
+favicon
+Austin Population Change and Demographic Trends Joint Inclusion Committee
+
+austintexas.gov
+
+
+favicon
+2025 City of Austin Demographic Profiles | City Data Hub | City of Austin
+
+austintexas.gov
+
+
+favicon
+Austin Metro Area Population (1950-2025) | MacroTrends
+
+macrotrends.net
+
+
+favicon
+City of Austin - 2025 City of Austin Demographic Profiles
+
+data.gov
+
+
+favicon
+Austin growth is slowing, increasingly driven by international migration, as Hispanic and Black residents leave - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Demographic Trends and Characteristics for Texas February 6, 2025 Austin, Texas
+
+texas.gov
+
+
+favicon
+Texas Demographic Center (TDC)
+
+texas.gov
+
+
+favicon
+Austin Demographics | Current Texas Census Data
+
+texas-demographics.com
+
+
+Austin neighborhoods home prices 2020-2025 Travis Williamson Hays
+10 results
+
+
+favicon
+One in Five Homes Slashes Prices in September, Realtor.com® Reports | Morningstar
+
+morningstar.com
+
+
+favicon
+Austin’s housing market: How quickly are homes selling, and for how much?
+
+kxan.com
+
+
+favicon
+Austin Home Prices 2025: Zip Codes with Rising and ...
+
+teamprice.com
+
+
+favicon
+Austin Real Estate Market Correction: Median Home Prices Drop 27% Since 2022 Peak | Team Price Real Estate
+
+teamprice.com
+
+
+favicon
+Austin, TX Housing Market: 2025 Home Prices & Trends | Zillow
+
+zillow.com
+
+
+favicon
+Austin Housing Market: Trends and Forecast 2025-2026
+
+noradarealestate.com
+
+
+Austin and Travis County home prices hit all-time highs last month - CultureMap Austin
+
+culturemap.com
+
+
+favicon
+Is Austin’s Housing Market Cooling in 2025? — LRG Realty
+
+lrgrealty.com
+
+
+favicon
+Rent Prices Dropping in Austin: What the Latest Data ...
+
+teamprice.com
+
+
+Austin is becoming a buyer's market, new housing reports say - CultureMap Austin
+
+culturemap.com
+
+
+Texas Real Estate Research Center Austin housing data 2020-2025
+10 results
+
+
+favicon
+Housing Activity | Texas Real Estate Research Center
+
+tamu.edu
+
+
+favicon
+Texas Real Estate Forecast –12 Months Ending Summer 2026 | Texas Real Estate Research Center
+
+tamu.edu
+
+
+favicon
+Texas Housing Insight | January 2025 | Texas Real Estate Research Center
+
+tamu.edu
+
+
+favicon
+Texas housing data: How much are homes selling for in Austin?
+
+kxan.com
+
+
+favicon
+Housing Reports By MSA | Texas Real Estate Research Center
+
+tamu.edu
+
+
+favicon
+2025 Texas Real Estate Forecast | Texas Real Estate Research Center
+
+tamu.edu
+
+
+favicon
+Texas Homebuyers Had More Homes to Choose from in Q1 of 2025 – Texas REALTORS®
+
+texasrealestate.com
+
+
+favicon
+Texas Housing Insight | October 2024 | Texas Real Estate Research Center
+
+tamu.edu
+
+
+favicon
+Market Research & Statistics | Unlock MLS
+
+unlockmls.com
+
+
+favicon
+Texas Housing Market 2025: Key Trends, Predictions & Insights | Independence Title
+
+independencetitle.com
+
+
+Austin city council override commission recommendations housing
+10 results
+
+
+favicon
+SMART housing to see changes in “phase two” of City Council-initiated review - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Planning Commission forwards amendments on Austin's HOME plan | Community Impact
+
+communityimpact.com
+
+
+favicon
+Planning Commission recommends allowing housing in commercial zoning - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Planning Commission asks Council to defend the HOME initiative - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Planning Commission wants more teeth in HOME proposal - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+Council to Approve More Ambitious Development Reforms, and Considers Displacement: City aims to lower housing cost, considers gentrification risk - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+favicon
+Austin will vote on rules that impact housing. Here's what's on the table. - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Housing and Planning Committee discusses sustainable building design, Land Development Code amendments, and Northeast Planning District - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+Affordable development program revision heads to Austin City Council | Community Impact
+
+communityimpact.com
+
+
+favicon
+Planning Commission offers solutions to missing-middle housing problem - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+Austin Zoning Platting Commission powers authority
+10 results
+
+
+favicon
+Zoning | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Zoning and Platting Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+City of Austin Zoning and Platting Commission Archives - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+Planning & Zoning
+
+austin.mn.us
+
+
+favicon
+ARTICLE 3. | Code of Ordinances | Austin, TX
+
+municode.com
+
+
+favicon
+Zoning and Platting Commission may want duties swap with Planning Commission - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Planning Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Meetings of the Zoning and Platting Commission - Page 1 | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Zoning & Platting 101—Riley Fletcher 2020
+
+texascityattorneys.org
+
+
+favicon
+FAQs Planning/Zoning/Building.
+
+austin.mn.us
+
+
+Austin development approval process Planning Commission
+10 results
+
+
+favicon
+Planning Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Planning Commission
+
+crccheck.com
+
+
+favicon
+Site Plans, Exemptions, and Corrections | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Site Plan Requirements | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Planning Commission
+
+granicus.com
+
+
+favicon
+Austin Planning Commission OKs 64K-square-foot music venue for Riverside development | Community Impact
+
+communityimpact.com
+
+
+favicon
+Planning & Zoning
+
+austin.mn.us
+
+
+favicon
+Zoning and Platting Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Redevelopment of East Austin dairy plant gets Planning Commission approval - Austin MonitorAustin Monitor
+
+austinmonitor.com
+
+
+favicon
+City of Austin Planning Commission Archives - Austin Monitor
+
+austinmonitor.com
+
+
+Austin city council overrule commission zoning 2020-2025
+10 results
+
+
+favicon
+Meetings of the Zoning and Platting Commission - Page 1 | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Zoning and Platting Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Planning Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Planning & Zoning
+
+austin.mn.us
+
+
+favicon
+Land Development Code Amendments - PublicInput
+
+speakupaustin.org
+
+
+favicon
+Zoning and Platting Commission Regular Meeting of the Zoning and Platting Commission | Zoning and Platting Commission
+
+crccheck.com
+
+
+favicon
+Zoning and Platting Commission - 2023 Meetings - Page 1 | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+HOME returns to Council and Planning Commission for public hearing - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+West Campus zoning program set for changes as city plans density-focused upgrade - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Zoning and Platting Commission may want duties swap with Planning Commission - Austin Monitor
+
+austinmonitor.com
+
+
+Austin Development Services Department organizational structure
+10 results
+
+
+favicon
+Development Services Department | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin Development Services | Austin TX | Facebook
+
+facebook.com
+
+
+favicon
+Departments | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+About Development Services | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Development Services Department
+
+austintexas.gov
+
+
+favicon
+Version: September 2, 2025 Elaine Garrett Assistant Director Code Compliance
+
+austintexas.gov
+
+
+favicon
+Development Services Department (DSD)
+
+cpshr.us
+
+
+favicon
+City of Austin Development Services Department Organizational Chart - February 15, 2022 | Policy Commons
+
+policycommons.net
+
+
+favicon
+Development Services
+
+traviscountytx.gov
+
+
+favicon
+Organization Development | AustinTexas.gov
+
+austintexas.gov
+
+
+Austin city council ignores Planning Commission housing zoning 2023 2024
+10 results
+
+
+favicon
+Updated: Council and Planning Commission hear from public on proposed land use changes - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+HOME returns to Council and Planning Commission for public hearing - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Land Development Code Amendments - PublicInput
+
+speakupaustin.org
+
+
+favicon
+Planning Commission moves to create new zoning category to allow more housing - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+C20-2023-035 HOME Phase 2 - PublicInput
+
+speakupaustin.org
+
+
+favicon
+Zoning and Platting Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Planning Commission | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Zoning and Platting Commission - 2023 Meetings - Page 1 | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Planning Commission postpones East Austin rezoning decision after clerical error - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+After Long Day of Testimony, Council Votes to End Single-Family Zoning: New rules will allow three homes on every lot - News - The Austin Chronicle
+
+austinchronicle.com
+
+
+Austin Housing Department organizational structure role
+10 results
+
+
+favicon
+Housing Department | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Departments | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Housing Authority of the City of Austin | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Housing Authority City Of Austin
+
+hacanet.org
+
+
+favicon
+Home Page | Texas Department of Housing and Community Affairs
+
+texas.gov
+
+
+favicon
+Austin Housing Public Facility Corporation | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Development Services Department | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Meet the Land Development Code Revision Team | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Austin Affordable Housing Corporation
+
+aahcnet.org
+
+
+favicon
+Housing Authority of the City of Austin: Employee Directory | ZoomInfo.com
+
+zoominfo.com
+
+
+Austin city council reject commission recommendation 2021 2022 2023
+10 results
+
+
+favicon
+Ethics commission requests more information - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Ryan Alter and colleagues propose revision of boards and commissions - Austin Monitor
+
+austinmonitor.com
+
+
+favicon
+Boards and Commissions | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+City of Austin - Calendar
+
+legistar.com
+
+
+favicon
+July 20, 2023 Austin City Council Regular Meeting | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+June 1, 2023 Austin City Council Regular Meeting | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+City of Austin Boards and Commissions
+
+crccheck.com
+
+
+favicon
+City Council Minutes
+
+austin.mn.us
+
+
+favicon
+Council Meeting Information Center Home | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+September 21, 2023 Austin City Council Regular Meeting | AustinTexas.gov
+
+austintexas.gov
+
+
+Austin regional planning collaborations Capital Metro transit
+10 results
+
+
+favicon
+A New Transit Plan for Austin - Project Connect by CapMetro
+
+projectconnect.com
+
+
+favicon
+Transit Plan 2035 – Capital Metro – Austin Public Transit
+
+capmetro.org
+
+
+favicon
+City of Austin Project Connect Office | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Transit Enhancement Program | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Project Connect – Capital Metro – Austin Public Transit
+
+capmetro.org
+
+
+favicon
+CapMetro Board Approves Project Connect Vision – Capital Metro – Austin Public Transit
+
+capmetro.org
+
+
+favicon
+Major Projects – Capital Metro – Austin Public Transit
+
+capmetro.org
+
+
+favicon
+Project Connect. A Transit Plan Designed for Austin.
+
+capmetro.org
+
+
+favicon
+Planning and Development – Capital Metro – Austin Public Transit
+
+capmetro.org
+
+
+favicon
+Home - Austin Transit Partnership
+
+atptx.org
+
+
+Texas state legislation HB 1869 Austin development zoning 2023 2024
+10 results
+
+
+favicon
+HOME Amendments | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+City of Austin Land Development Code Amendments Fall 2023 | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+Land Development Code | Austin, TX - Municode Library
+
+municode.com
+
+
+favicon
+Zoning Resources & Site Regulations | AustinTexas.gov
+
+austintexas.gov
+
+
+favicon
+LegiScan | Texas State Legislative Dashboard
+
+legiscan.com
+
+
+favicon
+Texas SB1787 | 2023-2024 | 88th Legislature
+
+legiscan.com
+
+
+favicon
+Texas lawmakers review bills to cut zoning limits, bring more housing to large cities such as Austin | Community Impact
+
+communityimpact.com
+
+
+favicon
+Residential Zoning Laws and Regulations Austin, TX in 2025
+
+steadily.com
+
+
+favicon
+Land Development Code Amendments - PublicInput
+
+speakupaustin.org
+
+
+favicon
+Austin cuts minimum lot size for the first time in 80 years | KUT Radio, Austin's NPR Station
+
+kut.org
+

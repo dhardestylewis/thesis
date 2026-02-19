@@ -1,0 +1,480 @@
+MIME-Version: 1.0
+Date: Thu, 4 Dec 2025 08:00:00 -0500
+References: <CAAQFZ3HDk6361ETqX=QbXfpd55mv_3G2=ymGTiN9oNDDc2Dubw@mail.gmail.com>
+	<CWLP265MB4660CBE7E4792FA7C244A568FFD6A@CWLP265MB4660.GBRP265.PROD.OUTLOOK.COM>
+	<CAAQFZ3Hgea3ZAE7c32XE-SLtmv0puQbR21N5pgOiSFAiZT2HAw@mail.gmail.com>
+	<CWLP265MB466032F341AC30178755B45EFFD0A@CWLP265MB4660.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <CWLP265MB466032F341AC30178755B45EFFD0A@CWLP265MB4660.GBRP265.PROD.OUTLOOK.COM>
+Message-ID: <CAAQFZ3GiNgTnJaNtcTbpKyKCO4r3btx7z0KyS-uzbjYBanN1_A@mail.gmail.com>
+Subject: Fwd: Request to discuss research proposal
+From: Daniel Lewis <dl3645@columbia.edu>
+To: Daniel Lewis <dl3645@columbia.edu>
+Content-Type: multipart/alternative; boundary="000000000000408564064511b6a2"
+
+--000000000000408564064511b6a2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+---------- Forwarded message ---------
+From: Thies Lindenthal <htl24@cam.ac.uk>
+Date: Mon, Nov 24, 2025 at 6:22=E2=80=AFAM
+Subject: Re: Request to discuss research proposal
+To: Daniel Lewis <dl3645@columbia.edu>
+
+
+Dear Daniel, Why real estate? Which aspects/rearch questions would you like
+to explore beyond methodological contributions? Compared to US
+universities, funding opportunities are more limited in the UK. Any
+application for funding competes with
+ZjQcmQRYFpfptBannerStart
+This Message Is From an External Sender
+This message came from outside your organization.
+
+ZjQcmQRYFpfptBannerEnd
+
+Dear Daniel,
+
+Why real estate? Which aspects/rearch questions would you like to
+explore beyond methodological contributions?
+
+Compared to US universities, funding opportunities are more limited in
+the UK. Any application for funding competes with a strong field.
+
+Best wishes, Thies
+
+=3D=3D=3D=3D
+Thies Lindenthal
+Grosvenor Professor of Real Estate Finance
+Department of Land Economy, University of Cambridge
+
+________________________________________
+From: Daniel Lewis <dl3645@columbia.edu>
+Sent: 19 November 2025 02:31
+To: Thies Lindenthal
+Subject: Re: Request to discuss research proposal
+
+Absolutely and thank you for the quick response, Prof Lindenthal,
+
+
+Thank you for clarifying your interests.
+
+
+In your recent REIT paper with Kahshin Leow you show that ML can
+extract cross-sectional expected return premia from a very
+high-dimensional set of characteristics, and in your work with Wayne
+Wan you use LIME to test image-based AVMs. I would like to build on
+this by using attribution methods, made distributionally robust to
+changes in the cross-section (across cities, property types, and
+market regimes) as well as to long and sparse tails, to recover a
+stable map from observable characteristics and frictions - for
+example, zoning and planning regulations, liquidity, climate risk,
+building features - to prices and expected returns.
+
+
+Standard explanation methods such as LIME or SHAP can shift when you
+resample the data or focus on thin, high-value or high-risk parts of
+the distribution. Yet, for some, it is exactly in these long tails
+that accurate explanations matters the most. Additionally, drivers
+whose importance survives cross-sectional resampling may be treated as
+structural across markets and regimes. As one concrete example, this
+would facilitate testing where a pro forma differs in treatment to a
+machine learning model in how it factors more strongly or weakly
+features into prices and expected returns, and how the strength of
+that driver varies depending on which part of the market you are in.
+
+Let me know if this sounds aligned to your work, and if so when works
+best to chat.
+
+
+My best,
+Daniel
+
+
+
+On Tue, Nov 18, 2025 at 5:46=E2=80=AFAM Thies Lindenthal
+<htl24@cam.ac.uk<mailto:htl24@cam.ac.uk>> wrote:
+Dear Daniel, Thank you for your message and for sharing your proposal.
+I had a look, and before we set up a meeting I would like to
+understand more clearly how this line of work would deepen our
+understanding of real estate investments at the
+ZjQcmQRYFpfptBannerStart
+This Message Is From an External Sender
+This message came from outside your organization.
+
+ZjQcmQRYFpfptBannerEnd
+
+Dear Daniel,
+
+Thank you for your message and for sharing your proposal. I had a
+look, and before we set up a meeting I would like to understand more
+clearly how this line of work would deepen our understanding of real
+estate investments at the asset or cross-sectional level. In
+particular, I am interested in how your approach would speak to the
+specific frictions and characteristics of the real estate asset class,
+rather than primarily time-series dynamics.
+
+If you can elaborate briefly on this connection, I will be better able
+to assess how well the project fits with my supervision interests and
+the department=E2=80=99s focus. I do take on new PhD students when there is=
+ a
+strong alignment, so I am open to continuing the conversation once I
+have a clearer sense of the real estate angle.
+
+Best regards,
+Thies
+
+=3D=3D=3D=3D
+Thies Lindenthal
+Grosvenor Professor of Real Estate Finance
+Department of Land Economy, University of Cambridge
+
+________________________________________
+From: Daniel Lewis <dl3645@columbia.edu<mailto:dl3645@columbia.edu>>
+Sent: 18 November 2025 01:01
+To: Thies Lindenthal
+Subject: Request to discuss research proposal
+
+Dear Prof Thies Lindenthal,
+
+I would like to find a time to discuss the following research proposal
+with you. It centres on distributionally robust attribution methods
+with applications to finance, real estate, language modelling, and
+other domains.https://urldefense.com/v3/__https://docs.google.com/document/=
+d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;!!BDUfV=
+1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofvi=
+YlyDoV_UrGETRHKJcFG$<https://urldefense.com/v3/__https://docs.google.com/do=
+cument/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;=
+!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzS=
+RPMofviYlyDoV_UrGETRHKJcFG$><https://urldefense.com/v3/__https://docs.googl=
+e.com/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsh=
+aring__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_=
+nS1yHKzSRPMofviYlyDoV_UrGETRHKJcFG$<https://urldefense.com/v3/__https://doc=
+s.google.com/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?u=
+sp=3Dsharing__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEk=
+NktYka_nS1yHKzSRPMofviYlyDoV_UrGETRHKJcFG$>>
+
+It <https://urldefense.com/v3/__https://docs.google.com/document/d/1bKCd0Z3=
+qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;!!BDUfV1Et5lrpZQ!=
+Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYlyDoV_UrG=
+ETRHKJcFG$%3Chttps://urldefense.com/v3/__https://docs.google.com/document/d=
+/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;!!BDUfV1=
+Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviY=
+lyDoV_UrGETRHKJcFG$%3E%3Chttps://urldefense.com/v3/__https://docs.google.co=
+m/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharin=
+g__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1y=
+HKzSRPMofviYlyDoV_UrGETRHKJcFG$%3Chttps://urldefense.com/v3/__https://docs.=
+google.com/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=
+=3Dsharing__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNk=
+tYka_nS1yHKzSRPMofviYlyDoV_UrGETRHKJcFG$%3E%3EIt>is
+my hope to gain your permission to name you on my application and
+confirm both that this research can be undertaken within your
+department and that you are accepting new PhD students.
+
+Best wishes and looking forward to hearing from you,
+Daniel
+
+--
+Daniel Hardesty
+Lewis<https://urldefense.com/v3/__https://www.linkedin.com/in/dhardestylewi=
+s/__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1=
+yHKzSRPMofviYlyDoV_UrGETWryHrkP$<https://urldefense.com/v3/__https://www.li=
+nkedin.com/in/dhardestylewis/__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8Xdp=
+KRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYlyDoV_UrGETWryHrkP$>>
+
+prev <https://urldefense.com/v3/__https://www.linkedin.com/in/dhardestylewi=
+s/__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1=
+yHKzSRPMofviYlyDoV_UrGETWryHrkP$%3Chttps://urldefense.com/v3/__https://www.=
+linkedin.com/in/dhardestylewis/__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8X=
+dpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYlyDoV_UrGETWryHrkP$%3E%3Eprev>Bag=
+nold
+2022 Medal research contributor | NSF 10 Big Ideas | UT Austin
+moonshot initiatives
+Graduate candidate, Columbia University
+
+
+
+--
+Daniel Hardesty
+Lewis<https://urldefense.com/v3/__https://www.linkedin.com/in/dhardestylewi=
+s/__;!!BDUfV1Et5lrpZQ!Uz7jBXw1D-wm6FoNqX97csFnS_yTO3Q29J5tRQBPmP8iAwruntGJ5=
+UICed6GdT1-Y4L3QBHpNVZtZxhq8GMt$>
+
+prev Bagnold 2022 Medal research contributor | NSF 10 Big Ideas | UT
+Austin moonshot initiatives
+Graduate candidate, Columbia University
+
+
+
+--=20
+*Daniel Hardesty Lewis <https://www.linkedin.com/in/dhardestylewis/>*
+
+prev Bagnold 2022 Medal research contributor | NSF 10 Big Ideas | UT Austin
+moonshot initiatives
+Graduate candidate, Columbia University
+
+--000000000000408564064511b6a2
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><br><div class=3D"gmail_quote gmail_quote_container"><=
+div dir=3D"ltr" class=3D"gmail_attr">---------- Forwarded message ---------=
+<br>From: <strong class=3D"gmail_sendername" dir=3D"auto">Thies Lindenthal<=
+/strong> <span dir=3D"auto">&lt;<a href=3D"mailto:htl24@cam.ac.uk">htl24@ca=
+m.ac.uk</a>&gt;</span><br>Date: Mon, Nov 24, 2025 at 6:22=E2=80=AFAM<br>Sub=
+ject: Re: Request to discuss research proposal<br>To: Daniel Lewis &lt;<a h=
+ref=3D"mailto:dl3645@columbia.edu">dl3645@columbia.edu</a>&gt;<br></div><br=
+><br><div class=3D"msg5619037812289588140"><u></u>
+
+
+<div style=3D"display:none!important;display:none;font-size:1px;color:#ffff=
+ff;line-height:1px;max-height:0px;opacity:0;overflow:hidden">
+Dear Daniel, Why real estate? Which aspects/rearch questions would you like=
+ to explore beyond methodological contributions? Compared to US universitie=
+s, funding opportunities are more limited in the UK. Any application for fu=
+nding competes with</div>
+
+
+
+<div style=3D"display:none!important;display:none;font-size:1px;color:#ffff=
+ff;line-height:1px;max-height:0px;opacity:0;overflow:hidden">ZjQcmQRYFpfptB=
+annerStart</div>
+
+
+
+<u></u>
+  <div dir=3D"ltr" lang=3D"en" id=3D"m_5619037812289588140pfptBannerssx2d9z=
+" style=3D"display:block!important;text-align:left!important;margin:0 0 10p=
+x 0!important;padding:7px 16px 8px 16px!important;border-radius:4px!importa=
+nt;min-width:200px!important;background-color:#d0d8dc!important;background-=
+color:#d0d8dc;border-top:4px solid #90a4ae!important;border-top:4px solid #=
+90a4ae">
+    <div id=3D"m_5619037812289588140pfptBannerssx2d9z" style=3D"float:left!=
+important;display:block!important;margin:1px 0 1px 0!important;max-width:60=
+0px!important">
+      <div id=3D"m_5619037812289588140pfptBannerssx2d9z" style=3D"display:b=
+lock!important;background-color:#d0d8dc!important;color:#000000!important;c=
+olor:#000000;font-family:&#39;Arial&#39;,sans-serif!important;font-family:&=
+#39;Arial&#39;,sans-serif;font-weight:bold!important;font-weight:bold;font-=
+size:14px!important;line-height:1.29!important;line-height:1.29">
+	This Message Is From an External Sender
+      </div>
+      <div id=3D"m_5619037812289588140pfptBannerssx2d9z" style=3D"display:b=
+lock!important;background-color:#d0d8dc!important;color:#000000!important;c=
+olor:#000000;font-weight:normal;font-family:&#39;Arial&#39;,sans-serif!impo=
+rtant;font-family:&#39;Arial&#39;,sans-serif;font-size:12px!important;line-=
+height:1.5!important;line-height:1.5;margin-top:2px!important">
+This message came from outside your organization.
+      </div>
+
+    </div>
+
+    <div style=3D"clear:both!important;display:block!important;line-height:=
+0!important;font-size:0.01px!important;height:0px">=C2=A0</div>
+  </div>
+<u></u>
+
+<div style=3D"display:none!important;display:none;font-size:1px;color:#ffff=
+ff;line-height:1px;max-height:0px;opacity:0;overflow:hidden">ZjQcmQRYFpfptB=
+annerEnd</div>
+
+
+
+
+
+
+
+
+<div><pre style=3D"font-family:sans-serif;font-size:100%;white-space:pre-wr=
+ap;word-wrap:break-word">Dear Daniel,
+
+Why real estate? Which aspects/rearch questions would you like to explore b=
+eyond methodological contributions?
+
+Compared to US universities, funding opportunities are more limited in the =
+UK. Any application for funding competes with a strong field.
+
+Best wishes, Thies
+
+=3D=3D=3D=3D
+Thies Lindenthal
+Grosvenor Professor of Real Estate Finance
+Department of Land Economy, University of Cambridge
+
+________________________________________
+From: Daniel Lewis &lt;<a href=3D"mailto:dl3645@columbia.edu" target=3D"_bl=
+ank">dl3645@columbia.edu</a>&gt;
+Sent: 19 November 2025 02:31
+To: Thies Lindenthal
+Subject: Re: Request to discuss research proposal
+
+Absolutely and thank you for the quick response, Prof Lindenthal,
+
+
+Thank you for clarifying your interests.
+
+
+In your recent REIT paper with Kahshin Leow you show that ML can extract cr=
+oss-sectional expected return premia from a very high-dimensional set of ch=
+aracteristics, and in your work with Wayne Wan you use LIME to test image-b=
+ased AVMs. I would like to build on this by using attribution methods, made=
+ distributionally robust to changes in the cross-section (across cities, pr=
+operty types, and market regimes) as well as to long and sparse tails, to r=
+ecover a stable map from observable characteristics and frictions - for exa=
+mple, zoning and planning regulations, liquidity, climate risk, building fe=
+atures - to prices and expected returns.
+
+
+Standard explanation methods such as LIME or SHAP can shift when you resamp=
+le the data or focus on thin, high-value or high-risk parts of the distribu=
+tion. Yet, for some, it is exactly in these long tails that accurate explan=
+ations matters the most. Additionally, drivers whose importance survives cr=
+oss-sectional resampling may be treated as structural across markets and re=
+gimes. As one concrete example, this would facilitate testing where a pro f=
+orma differs in treatment to a machine learning model in how it factors mor=
+e strongly or weakly features into prices and expected returns, and how the=
+ strength of that driver varies depending on which part of the market you a=
+re in.
+
+Let me know if this sounds aligned to your work, and if so when works best =
+to chat.
+
+
+My best,
+Daniel
+
+
+
+On Tue, Nov 18, 2025 at 5:46=E2=80=AFAM Thies Lindenthal &lt;<a href=3D"mai=
+lto:htl24@cam.ac.uk" target=3D"_blank">htl24@cam.ac.uk</a>&lt;mailto:<a hre=
+f=3D"mailto:htl24@cam.ac.uk" target=3D"_blank">htl24@cam.ac.uk</a>&gt;&gt; =
+wrote:
+Dear Daniel, Thank you for your message and for sharing your proposal. I ha=
+d a look, and before we set up a meeting I would like to understand more cl=
+early how this line of work would deepen our understanding of real estate i=
+nvestments at the
+ZjQcmQRYFpfptBannerStart
+This Message Is From an External Sender
+This message came from outside your organization.
+
+ZjQcmQRYFpfptBannerEnd
+
+Dear Daniel,
+
+Thank you for your message and for sharing your proposal. I had a look, and=
+ before we set up a meeting I would like to understand more clearly how thi=
+s line of work would deepen our understanding of real estate investments at=
+ the asset or cross-sectional level. In particular, I am interested in how =
+your approach would speak to the specific frictions and characteristics of =
+the real estate asset class, rather than primarily time-series dynamics.
+
+If you can elaborate briefly on this connection, I will be better able to a=
+ssess how well the project fits with my supervision interests and the depar=
+tment=E2=80=99s focus. I do take on new PhD students when there is a strong=
+ alignment, so I am open to continuing the conversation once I have a clear=
+er sense of the real estate angle.
+
+Best regards,
+Thies
+
+=3D=3D=3D=3D
+Thies Lindenthal
+Grosvenor Professor of Real Estate Finance
+Department of Land Economy, University of Cambridge
+
+________________________________________
+From: Daniel Lewis &lt;<a href=3D"mailto:dl3645@columbia.edu" target=3D"_bl=
+ank">dl3645@columbia.edu</a>&lt;mailto:<a href=3D"mailto:dl3645@columbia.ed=
+u" target=3D"_blank">dl3645@columbia.edu</a>&gt;&gt;
+Sent: 18 November 2025 01:01
+To: Thies Lindenthal
+Subject: Request to discuss research proposal
+
+Dear Prof Thies Lindenthal,
+
+I would like to find a time to discuss the following research proposal with=
+ you. It centres on distributionally robust attribution methods with applic=
+ations to finance, real estate, language modelling, and other domains.
+<a href=3D"https://urldefense.com/v3/__https://docs.google.com/document/d/1=
+bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;!!BDUfV1Et=
+5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYly=
+DoV_UrGETRHKJcFG$%3Chttps://urldefense.com/v3/__https://docs.google.com/doc=
+ument/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;!=
+!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSR=
+PMofviYlyDoV_UrGETRHKJcFG$%3E%3Chttps://urldefense.com/v3/__https://docs.go=
+ogle.com/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=
+=3Dsharing__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNk=
+tYka_nS1yHKzSRPMofviYlyDoV_UrGETRHKJcFG$%3Chttps://urldefense.com/v3/__http=
+s://docs.google.com/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw=
+/edit?usp=3Dsharing__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0=
+rkjREEkNktYka_nS1yHKzSRPMofviYlyDoV_UrGETRHKJcFG$%3E%3EIt" target=3D"_blank=
+">https://urldefense.com/v3/__https://docs.google.com/document/d/1bKCd0Z3qV=
+TaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;!!BDUfV1Et5lrpZQ!Th=
+xyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYlyDoV_UrGET=
+RHKJcFG$&lt;https://urldefense.com/v3/__https://docs.google.com/document/d/=
+1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dsharing__;!!BDUfV1E=
+t5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYl=
+yDoV_UrGETRHKJcFG$&gt;&lt;https://urldefense.com/v3/__https://docs.google.c=
+om/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?usp=3Dshari=
+ng__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1=
+yHKzSRPMofviYlyDoV_UrGETRHKJcFG$&lt;https://urldefense.com/v3/__https://doc=
+s.google.com/document/d/1bKCd0Z3qVTaggZUjm4rrH4xbnIbPdMjhQ15Np2Bx1nw/edit?u=
+sp=3Dsharing__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEk=
+NktYka_nS1yHKzSRPMofviYlyDoV_UrGETRHKJcFG$&gt;&gt;
+
+It</a>is my hope to gain your permission to name you on my application and =
+confirm both that this research can be undertaken within your department an=
+d that you are accepting new PhD students.
+
+Best wishes and looking forward to hearing from you,
+Daniel
+
+--
+Daniel Hardesty Lewis&lt;<a href=3D"https://urldefense.com/v3/__https://www=
+.linkedin.com/in/dhardestylewis/__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8=
+XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYlyDoV_UrGETWryHrkP$%3Chttps://ur=
+ldefense.com/v3/__https://www.linkedin.com/in/dhardestylewis/__;!!BDUfV1Et5=
+lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYlyD=
+oV_UrGETWryHrkP$%3E%3Eprev" target=3D"_blank">https://urldefense.com/v3/__h=
+ttps://www.linkedin.com/in/dhardestylewis/__;!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZ=
+dPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzSRPMofviYlyDoV_UrGETWryHrkP$&lt=
+;https://urldefense.com/v3/__https://www.linkedin.com/in/dhardestylewis/__;=
+!!BDUfV1Et5lrpZQ!Thxyi51O0R3QZdPQmYRwTk8XdpKRKMfavkS0rkjREEkNktYka_nS1yHKzS=
+RPMofviYlyDoV_UrGETWryHrkP$&gt;&gt;
+
+prev</a>Bagnold 2022 Medal research contributor | NSF 10 Big Ideas | UT Aus=
+tin moonshot initiatives
+Graduate candidate, Columbia University
+
+
+
+--
+Daniel Hardesty Lewis&lt;<a href=3D"https://urldefense.com/v3/__https://www=
+.linkedin.com/in/dhardestylewis/__;!!BDUfV1Et5lrpZQ!Uz7jBXw1D-wm6FoNqX97csF=
+nS_yTO3Q29J5tRQBPmP8iAwruntGJ5UICed6GdT1-Y4L3QBHpNVZtZxhq8GMt$" target=3D"_=
+blank">https://urldefense.com/v3/__https://www.linkedin.com/in/dhardestylew=
+is/__;!!BDUfV1Et5lrpZQ!Uz7jBXw1D-wm6FoNqX97csFnS_yTO3Q29J5tRQBPmP8iAwruntGJ=
+5UICed6GdT1-Y4L3QBHpNVZtZxhq8GMt$</a>&gt;
+
+prev Bagnold 2022 Medal research contributor | NSF 10 Big Ideas | UT Austin=
+ moonshot initiatives
+Graduate candidate, Columbia University
+</pre></div>
+</div></div><div><br clear=3D"all"></div><div><br></div><span class=3D"gmai=
+l_signature_prefix">-- </span><br><div dir=3D"ltr" class=3D"gmail_signature=
+" data-smartmail=3D"gmail_signature"><div dir=3D"ltr"><div style=3D"margin:=
+0px;min-width:0px;padding:0px 0px 20px;width:initial;font-family:&quot;Goog=
+le Sans&quot;,Roboto,RobotoDraft,Helvetica,Arial,sans-serif"><div style=3D"=
+margin:8px 0px 0px;padding:0px;overflow-x:hidden"><div dir=3D"ltr"><font><d=
+iv dir=3D"ltr"><div dir=3D"ltr"><div><font color=3D"#000000" size=3D"1"><b>=
+<a href=3D"https://www.linkedin.com/in/dhardestylewis/" target=3D"_blank">D=
+aniel Hardesty Lewis</a></b><br></font></div><div><font color=3D"#000000" s=
+ize=3D"1"><br></font></div><div><span style=3D"color:rgb(0,0,0);font-size:x=
+-small">prev=C2=A0</span><span style=3D"color:rgb(0,0,0);font-size:x-small"=
+>Bagnold 2022 Medal research contributor |=C2=A0</span><span style=3D"color=
+:rgb(0,0,0);font-size:x-small">NSF 10 Big Ideas | UT Austin moonshot initia=
+tives</span></div><div><span style=3D"color:rgb(0,0,0);font-size:x-small">G=
+raduate candidate, Columbia University</span></div></div></div></font></div=
+><div style=3D"color:rgb(34,34,34);font-size:medium"></div><div style=3D"co=
+lor:rgb(34,34,34);font-size:medium"></div></div></div></div></div></div>
+
+--000000000000408564064511b6a2--
