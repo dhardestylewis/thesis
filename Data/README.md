@@ -62,6 +62,34 @@ Since large files (>100MB) are excluded from this repository, follow these steps
 *   **Parsing**: Run `Analysis/Scripts/parse_petition_pdf.py` to extract signer data.
 *   **Panel integration**: Run `Analysis/Scripts/rebuild_protest_panel.py` to merge into panel.
 
+### 4. Panel v3 Build
+
+The panel integrates three data sources into a balanced parcel × year structure:
+
+**Data Sources:**
+*   **ZC CSV** (`CoA_Open_Data/Zoning/ZC_current_edir-dcnf.csv`): 6,865 zoning cases (1997–2024) with TCAD IDs and dates.
+*   **Pre-computed 200ft buffer** (`Zoning_Cases/Processed_Data/combined_cases_with_nearby.geojson`): 65,167 features with polygon-overlap area calculations.
+*   **PDF petition signers** (`Protest_Petitions/petition_signers_from_pdf.csv`): 8,843 parcels, 252 cases (2007–2024).
+
+**New Columns (v3):**
+| Column | Description |
+|--------|-------------|
+| `zoning_case_on_parcel` | 1 if a zoning case was filed directly on this parcel |
+| `zoning_case_nearby` | 1 if any zoning case is within 200ft (polygon overlap) |
+| `protest_signed` | 1 if parcel owner signed a protest petition (PDF ground truth) |
+| `protest_nearby_area_pct` | Parcel's area share within the 200ft buffer zone |
+| `zoning_case_numbers` | Pipe-delimited case numbers linked to this parcel |
+
+**Spatial Methodology:**
+*   Parcel centroids derived from **LUI 2024** (`LUI_2024_7vsm-dvxg.csv`) MULTIPOLYGON WKT geometry (`the_geom` column).
+*   Single LUI vintage used for all panel years because the parcel universe is stable: 284,924 (2012) → 284,958 (2024), <0.1% change.
+*   200ft buffer analysis uses **pre-computed polygon-overlap** from `combined_cases_with_nearby.geojson`, not centroid distance.
+*   Reference centroids saved to `Panel/Reference/parcel_centroids.csv`.
+
+**Scripts:**
+*   `Analysis/Scripts/Pipeline/rebuild_panel_v3.py` — Main panel rebuild.
+*   `Analysis/Scripts/Pipeline/extract_centroids.py` — Centroid extraction from LUI geometry.
+
 ### Original File Inventory (Pre-Processing)
 
 These files existed in the original data delivery before processing:

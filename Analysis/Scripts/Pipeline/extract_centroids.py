@@ -1,99 +1,147 @@
-"""Extract lat/lon centroids from LUI geometry for all parcels."""
-import csv, json, sys, os
-csv.field_size_limit(min(sys.maxsize, 2**31-1))
+"""
+Extract parcel centroids from LUI 2024 geometry and merge into panel.
+====================================================================
+Uses the LUI 2024 CSV which contains MULTIPOLYGON WKT in `the_geom`.
+Computes centroids for all ~285K parcels and writes a lookup CSV.
 
-LUI_PREFETCHED = "Data/Zoning_Cases/Source_Data/land_use_inventory_prefetched.csv"
-LUI_2024 = "Data/CoA_Open_Data/LUI_2024_7vsm-dvxg.csv"
-OUT_PATH = "Data/Panel/Reference/parcel_centroids.csv"
+Justification: parcels are stable across vintages (~284K in 2012 & 2024),
+so we use 2024 as the single reference geometry for all panel years.
+"""
+import csv, sys, time, re, os, shutil
 
-def centroid_from_geojson(geom_str):
-    """Compute centroid from GeoJSON geometry string."""
-    try:
-        geom = json.loads(geom_str.replace("'", '"'))
-    except (json.JSONDecodeError, ValueError):
+csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
+
+LUI_PATH = "Data/CoA_Open_Data/Land_Use/LUI_2024_7vsm-dvxg.csv"
+OUT_CENTROIDS = "Data/Panel/Reference/parcel_centroids.csv"
+PANEL_IN = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+PANEL_OUT = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+
+# ========== Step 1: Extract centroids from WKT ==========
+print("=" * 60)
+print("Step 1: Extracting centroids from LUI 2024 geometry...")
+print("=" * 60)
+t0 = time.time()
+
+def parse_wkt_centroid(wkt):
+    """Extract centroid from WKT MULTIPOLYGON by averaging all vertex coords."""
+    if not wkt or wkt.strip() == "":
         return None, None
-
-    coords_flat = []
-    gtype = geom.get("type", "")
-    raw = geom.get("coordinates", [])
-
-    if gtype == "Point":
-        return raw[1], raw[0]  # lat, lon
-    elif gtype == "Polygon":
-        for ring in raw:
-            coords_flat.extend(ring)
-    elif gtype == "MultiPolygon":
-        for polygon in raw:
-            for ring in polygon:
-                coords_flat.extend(ring)
-    else:
-        return None, None
-
-    if not coords_flat:
-        return None, None
-
-    lons = [c[0] for c in coords_flat]
-    lats = [c[1] for c in coords_flat]
-    return sum(lats) / len(lats), sum(lons) / len(lons)
-
-
-def centroid_from_wkt(wkt_str):
-    """Compute centroid from WKT POLYGON/MULTIPOLYGON string."""
-    import re
-    # Extract all coordinate pairs
-    nums = re.findall(r'(-?\d+\.?\d*)\s+(-?\d+\.?\d*)', wkt_str)
+    nums = re.findall(r'(-?\d+\.?\d*)\s+(-?\d+\.?\d*)', wkt)
     if not nums:
         return None, None
     lons = [float(n[0]) for n in nums]
     lats = [float(n[1]) for n in nums]
     return sum(lats) / len(lats), sum(lons) / len(lons)
 
+centroids = {}
+n_total = 0
+n_geo = 0
 
-print("=== Extracting Parcel Centroids ===")
-
-centroids = {}  # parcel_id_10 -> (lat, lon)
-
-# Source 1: prefetched LUI (GeoJSON in the_geom)
-print("Reading prefetched LUI...")
-with open(LUI_PREFETCHED, "r", encoding="utf-8") as f:
+with open(LUI_PATH, "r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     for row in reader:
-        pid = row.get("parcel_id_10", "").strip()
-        if not pid or pid in centroids:
+        n_total += 1
+        pid = (row.get("PARCEL_ID_10") or "").strip()
+        if not pid:
             continue
-        geom_str = row.get("the_geom", "")
-        if geom_str:
-            lat, lon = centroid_from_geojson(geom_str)
-            if lat and lon and -98.5 < lon < -97.0 and 29.5 < lat < 31.0:
-                centroids[pid] = (lat, lon)
+        wkt = row.get("the_geom") or ""
+        lat, lon = parse_wkt_centroid(wkt)
+        if lat is not None:
+            centroids[pid] = (lat, lon)
+            n_geo += 1
 
-print("After prefetched LUI: %d parcels with coords" % len(centroids))
+elapsed = time.time() - t0
+print(f"  Total LUI rows: {n_total:,}")
+print(f"  With geometry: {n_geo:,}")
+print(f"  Unique parcels: {len(centroids):,}")
+print(f"  Time: {elapsed:.1f}s")
 
-# Source 2: LUI 2024 (WKT in the_geom) — fill gaps
-print("Reading LUI 2024...")
-with open(LUI_2024, "r", encoding="utf-8") as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        pid = row.get("PARCEL_ID_10", "").strip()
-        if not pid or pid in centroids:
-            continue
-        geom_str = row.get("the_geom", "")
-        if geom_str:
-            if geom_str.startswith("MULTI") or geom_str.startswith("POLY"):
-                lat, lon = centroid_from_wkt(geom_str)
-            else:
-                lat, lon = centroid_from_geojson(geom_str)
-            if lat and lon and -98.5 < lon < -97.0 and 29.5 < lat < 31.0:
-                centroids[pid] = (lat, lon)
+# ========== Step 2: Write centroid reference file ==========
+print()
+print("=" * 60)
+print("Step 2: Writing centroid reference CSV...")
+print("=" * 60)
 
-print("After LUI 2024: %d parcels with coords" % len(centroids))
+os.makedirs(os.path.dirname(OUT_CENTROIDS), exist_ok=True)
 
-# Write centroids
-with open(OUT_PATH, "w", newline="", encoding="utf-8") as f:
+with open(OUT_CENTROIDS, "w", newline="", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(["parcel_id_10", "latitude", "longitude"])
-    for pid in sorted(centroids.keys()):
+    for pid in sorted(centroids):
         lat, lon = centroids[pid]
-        writer.writerow([pid, "%.8f" % lat, "%.8f" % lon])
+        writer.writerow([pid, f"{lat:.8f}", f"{lon:.8f}"])
 
-print("Wrote %d centroids to %s" % (len(centroids), OUT_PATH))
+print(f"  Written {len(centroids):,} centroids to {OUT_CENTROIDS}")
+
+# ========== Step 3: Build TCAD -> centroid lookup ==========
+print()
+print("=" * 60)
+print("Step 3: Mapping panel TCADs to centroids...")
+print("=" * 60)
+
+def normalize_tcad(tid):
+    if not tid:
+        return ""
+    return tid.replace("-", "").replace(" ", "").lstrip("0")
+
+norm_centroids = {}
+for pid, (lat, lon) in centroids.items():
+    norm = normalize_tcad(pid)
+    norm_centroids[norm] = (lat, lon)
+
+print(f"  Normalized centroid lookup: {len(norm_centroids):,} entries")
+
+# ========== Step 4: Update panel with centroids ==========
+print()
+print("=" * 60)
+print("Step 4: Updating panel lat/lon from LUI centroids...")
+print("=" * 60)
+t0 = time.time()
+
+TEMP_OUT = "Data/Panel/Output/Property_Year_Panel_v3_tmp.csv"
+
+with open(PANEL_IN, "r", encoding="utf-8") as fin:
+    reader = csv.DictReader(fin)
+    fieldnames = list(reader.fieldnames)
+
+    if "latitude" not in fieldnames:
+        fieldnames.append("latitude")
+    if "longitude" not in fieldnames:
+        fieldnames.append("longitude")
+
+    n_written = 0
+    n_updated = 0
+
+    with open(TEMP_OUT, "w", newline="", encoding="utf-8") as fout:
+        writer = csv.DictWriter(fout, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for row in reader:
+            pid = row.get("standardized_tcad_id", "")
+            norm = normalize_tcad(pid)
+
+            if norm in norm_centroids:
+                lat, lon = norm_centroids[norm]
+                row["latitude"] = f"{lat:.8f}"
+                row["longitude"] = f"{lon:.8f}"
+                n_updated += 1
+
+            writer.writerow(row)
+            n_written += 1
+
+elapsed = time.time() - t0
+print(f"  Written: {n_written:,} rows in {elapsed:.1f}s")
+print(f"  Updated with centroid: {n_updated:,} ({n_updated/n_written*100:.1f}%)")
+
+shutil.move(TEMP_OUT, PANEL_OUT)
+print(f"  Replaced {PANEL_OUT}")
+
+# ========== Summary ==========
+print()
+print("=" * 60)
+print("SUMMARY")
+print("=" * 60)
+print(f"  LUI parcels with geometry: {n_geo:,}")
+print(f"  Panel rows with centroids: {n_updated:,} / {n_written:,}")
+print(f"  Coverage: {n_updated/n_written*100:.1f}%")
+print(f"  Reference file: {OUT_CENTROIDS}")
