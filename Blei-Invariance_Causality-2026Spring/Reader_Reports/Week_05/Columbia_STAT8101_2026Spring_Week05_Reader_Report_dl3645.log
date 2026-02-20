@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.16)  19 FEB 2026 23:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.16)  19 FEB 2026 23:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -307,8 +307,8 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 x.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count311
-) (dl3645_STAT8101_Spring2026_Week05_Reader_Report.aux)
-\openout1 = `dl3645_STAT8101_Spring2026_Week05_Reader_Report.aux'.
+) (Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.aux)
+\openout1 = `Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
@@ -364,10 +364,10 @@ LaTeX Font Info:    ... okay on input line 29.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 Package hyperref Info: Link coloring OFF on input line 29.
-(dl3645_STAT8101_Spring2026_Week05_Reader_Report.out)
-(dl3645_STAT8101_Spring2026_Week05_Reader_Report.out)
+(Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.out)
+(Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.out)
 \@outlinefile=\write3
-\openout3 = `dl3645_STAT8101_Spring2026_Week05_Reader_Report.out'.
+\openout3 = `Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.out'.
 
 LaTeX Font Info:    Trying to load font information for U+msa on input line 32.
 
@@ -389,20 +389,20 @@ Overfull \hbox (3.7793pt too wide) in paragraph at lines 62--63
 (Jan 2023), parking-reform elim-i-na-tion (Nov 2023),
  []
 
-(dl3645_STAT8101_Spring2026_Week05_Reader_Report.bbl) [2]
-(dl3645_STAT8101_Spring2026_Week05_Reader_Report.aux)
+(Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.bbl) [2]
+(Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
-Package rerunfilecheck Info: File `dl3645_STAT8101_Spring2026_Week05_Reader_Rep
-ort.out' has not changed.
+Package rerunfilecheck Info: File `Columbia_STAT8101_2026Spring_Week05_Reader_R
+eport_dl3645.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
  10375 strings out of 467871
- 159626 string characters out of 5419344
- 592137 words of memory out of 5000000
+ 159824 string characters out of 5419344
+ 592164 words of memory out of 5000000
  39138 multiletter control sequences out of 15000+600000
  637579 words of font info for 78 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -429,8 +429,8 @@ ublic/amsfonts/cm/cmtt12.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/amsfonts/cm/cmtt8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/amsfonts/cm/cmtt9.pfb><C:/Users/dhl/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on dl3645_STAT8101_Spring2026_Week05_Reader_Report.pdf (2 pages,
- 271223 bytes).
+Output written on Columbia_STAT8101_2026Spring_Week05_Reader_Report_dl3645.pdf 
+(2 pages, 271223 bytes).
 PDF statistics:
  156 PDF objects out of 1000 (max. 8388607)
  11 named destinations out of 1000 (max. 500000)
