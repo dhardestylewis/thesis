@@ -19,11 +19,11 @@
 \fancyhf{}
 \lhead{\footnotesize STAT8101}
 \chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
-\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (db2128)}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (\texttt{db2128})}
 \cfoot{\thepage}
 
 \title{\vspace{-2.5em}\textbf{Reader Report: Week 05} \\ \vspace{0.1em} \large Bayesian Invariant Prediction \& Optimization-Based ICP}
-\author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (dl3645)}
+\author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (\texttt{dl3645})}
 \date{\vspace{-0.5em}2026 Spring}
 
 \begin{document}
@@ -35,18 +35,23 @@
 \section*{Summary}
 \citet{wu2025bayesian} introduce \textbf{Bayesian Invariant Prediction} (BIP), casting ICP as latent-variable inference. A binary selector $z\in\{0,1\}^p$ indexes invariant features; the posterior $p(z\mid\mathcal{D})$ is proportional to likelihood ratios between pooled and per-environment conditionals. They prove consistency (Thm~1) and exponential contraction at rate $O(R\cdot e^{-\kappa nE\mu_{\min}})$ (Thm~2), where $\mu_{\min}$ captures environment heterogeneity. For scalability, \textbf{VI-BIP} uses mean-field variational inference with the U2G gradient estimator; it identifies invariant genes in a 6{,}170-gene perturbation dataset where competing methods falter.
 
-\citet{fan2024negdro} propose \textbf{NegDRO}, a continuous minimax formulation: $\min_{b}\max_{w\in U(\gamma)}\sum_e w_e\,\mathbb{E}[Y^e{-}b^\top X^e]^2$, where $U(\gamma)$ allows \emph{negative weights} to enforce risk invariance. Under additive interventions, every stationary point is $O((1{+}\gamma|E|)^{-1}{+}T^{-1/4}{+}n^{-1/4})$-close to $\beta^*$ (Thm~5), enabling gradient descent in \emph{polynomial} time rather than $2^p$ enumeration.
+\citet{fan2024negdro} propose \textbf{NegDRO}, a continuous minimax formulation
+\[
+  \min_{b}\max_{w\in U(\gamma)}\textstyle\sum_e w_e\,\mathbb{E}[Y^e{-}b^\top X^e]^2,
+\]
+where $U(\gamma)$ allows \emph{negative weights} to enforce risk invariance. Under additive interventions, every stationary point is $O((1{+}\gamma|E|)^{-1}{+}T^{-1/4}{+}n^{-1/4})$-close to $\beta^*$ (Thm~5), enabling gradient descent in \emph{polynomial} time rather than $2^p$ enumeration.
 
 \textbf{Contrast:} BIP gives full posterior uncertainty over invariant sets; NegDRO trades distributional characterization for polynomial-time convergence with provable rates.
 
 \section*{Critique \& Project Connection}
-For my \textit{Predicting NIMBYism Causally} project ($\sim$4 temporal environments, $p{\approx}50$ features), BIP's multi-modal posterior honestly quantifies which invariant sets remain ambiguous with limited environments. NegDRO's polynomial-time guarantee and tolerance of hidden confounding (e.g., unmeasured wealth confounding school quality and opposition) better suit iterative model development. A hybrid strategy could use NegDRO for fast screening, then BIP for uncertainty quantification on a reduced feature set.
-\textbf{Limitation:} both assume linear/squared-loss models; extending to binary outcomes ($Y\in\{0,1\}$) remains future work.
+My \textit{Predicting NIMBYism Causally} project observes roughly four temporal environments and approximately fifty features. In this low-environment regime, BIP's multi-modal posterior honestly quantifies which invariant sets remain ambiguous rather than returning a single point estimate that may be an artifact of limited data. NegDRO's polynomial-time guarantee and tolerance of hidden confounders better suit iterative model development, since unmeasured wealth may simultaneously confound school quality and zoning opposition. A productive strategy is to run NegDRO first for fast screening, then apply BIP to the reduced feature set; features flagged as causal by both methods warrant confidence, while disagreements signal that additional environments are needed.
+
+\textbf{Limitation.} Both methods assume linear models with squared loss. Extending to binary outcomes remains open; our protest indicator $Y\in\{0,1\}$ requires either a link function or a loss-function generalization that preserves the invariance guarantee.
 
 \section*{Questions}
 \begin{enumerate}
-    \item NegDRO identifies $\beta^*$ when Condition~1b holds ($\lambda>0$, second-moment heterogeneity); BIP's posterior contracts when $\mu_{\min}>0$ (KL heterogeneity between local and pooled conditionals). Can environments satisfy one measure but not the other---and if so, which method degrades more gracefully?
-    \item Both methods assume squared loss. For binary $Y$ (as in protest data), the invariance guarantee rests on a misspecified loss. Does misspecification break symmetrically, or could NegDRO's risk-parity constraint remain well-posed while BIP's posterior concentrates on the wrong $z^*$?
+    \item NegDRO identifies $\beta^*$ when Condition~1b holds, requiring that second-moment matrices exhibit sufficient heterogeneity across environments ($\lambda>0$). BIP's posterior contracts when $\mu_{\min}>0$, a KL-divergence measure between local and pooled conditionals. These are distinct notions of ``sufficient heterogeneity.'' Can environments satisfy one but not the other, and if so, which method degrades more gracefully when its specific heterogeneity condition is only weakly satisfied?
+    \item Both methods assume squared loss. For binary $Y$, the invariance guarantee therefore rests on a misspecified loss function. Does misspecification affect the two methods symmetrically? NegDRO enforces risk parity across environments, which may remain well-posed even under misspecification since equal risk is a relative condition. BIP's posterior, by contrast, depends on absolute likelihood evaluations, raising the possibility that it concentrates on the wrong $z^*$ when the assumed Gaussian conditionals are far from the true Bernoulli data-generating process.
 \end{enumerate}
 
 \newpage
@@ -56,21 +61,29 @@ For my \textit{Predicting NIMBYism Causally} project ($\sim$4 temporal environme
 \vspace{0.5em}
 
 \section*{1. What is the problem?}
-We seek the causal drivers of zoning opposition (NIMBYism) in Austin, TX. Following \citet{peters2016icp}, we adopt invariant causal prediction (ICP): find $S^*$ such that $P_e(Y \mid X_{S^*}) = P(Y \mid X_{S^*})$ across all environments $e$. Features stable across regimes are identified as causal; those whose predictive power breaks are discarded as spurious.
+We seek the causal drivers of zoning opposition in Austin, TX. Following \citet{peters2016icp}, we adopt invariant causal prediction: find $S^*$ such that $P_e(Y \mid X_{S^*}) = P(Y \mid X_{S^*})$ across all environments $e$. Features stable across regimes are causal; those whose predictive power breaks are spurious.
 
-The key to identification is environment diversity---each regime change stress-tests predictors, eliminating spurious ones. Over 2019--2024, Austin experienced the Adler-to-Watson mayoral transition (Jan~2023), parking-reform elimination (Nov~2023), the HOME Initiative (Feb~2024), and council-seat turnovers. These yield \emph{temporal} environments (citywide reforms) and \emph{geographic} ones (council-district turnovers; parcels outside Austin city limits as a natural control). Each event intervenes on a subset of covariates while preserving the causal mechanism \citep[assumption~B]{buhlmann2020invariance}, constituting \textbf{limited additive interventions} \citep{rothenhausler2019causal,fan2024negdro}. \citeauthor{peters2016icp}'s estimated set $\hat{S}(\mathcal{E}) \supseteq S^*$ is an outer bound on the true causal parents that shrinks monotonically with each additional environment \citep[Thm~1]{peters2016icp}; \citeauthor{fan2024negdro}'s Condition~4 extends identification to partial interventions, and BIP's posterior quantifies remaining ambiguity. With $p{\approx}50$ features, classical ICP's $2^p$ enumeration is infeasible, motivating both methods.
+The key to identification is environment diversity: each regime change stress-tests predictors. Over 2019--2024, Austin experienced the mayoral transition (Jan~2023), parking-reform elimination (Nov~2023), the HOME Initiative (Feb~2024), and council-seat turnovers. These yield temporal and geographic environments \citep[assumption~B]{buhlmann2020invariance}, constituting \textbf{limited additive interventions} \citep{rothenhausler2019causal,fan2024negdro}. \citeauthor{peters2016icp}'s estimated set $\hat{S}(\mathcal{E}) \supseteq S^*$ is an outer bound that shrinks monotonically with each additional environment \citep[Thm~1]{peters2016icp}; \citeauthor{fan2024negdro}'s Condition~4 extends identification to partial interventions, and BIP's posterior quantifies remaining ambiguity. With approximately fifty features, classical ICP's $2^p$ enumeration is infeasible, motivating both methods.
 
 \section*{2. Mathematical Formulation}
 
-We formalize the environments from Section~1. Let $\mathcal{E}=\{e_1,\ldots,e_K\}$ index the $K$ regimes above. In each $e$ we observe $(X^e_i, Y^e_i)_{i=1}^{n_e}$ with $X^e\in\mathbb{R}^p$ (valuations, lot dimensions, land-use class, tax exemptions) and $Y^e\in\{0,1\}$ (protest signed). Covariates partition into intervened $S_L$ (regulatory/market features) and untouched $S_L^c$ (demographics, schools, transit).
+Let $\mathcal{E}=\{e_1,\ldots,e_K\}$ index the $K$ regimes above. In each $e$ we observe $(X^e_i, Y^e_i)_{i=1}^{n_e}$ with $X^e\in\mathbb{R}^p$ and $Y^e\in\{0,1\}$ (protest signed). Covariates partition into intervened $S_L$ (regulatory/market features) and untouched $S_L^c$ (demographics, schools, transit).
 
 This partition motivates the linear SEM \citep[Ch.~4]{peters2017elements} under the additive intervention regime \citep{rothenhausler2019causal}:
 \[
     Y^e = (\beta^*)^\top X^e_{S^*} + \varepsilon^e_Y, \quad \varepsilon^e_X \stackrel{d}{=} \eta_X + (0_{S_L^c},\, \delta^e_{S_L})^\top, \quad \mathbb{E}[\eta\,(\delta^e)^\top]=0.
 \]
-Here $S^*\!\subseteq[p]$ indexes the true causal parents; $S_L$ the intervened covariates; $S_L^c$ the untouched ones. Only $\delta^e_{S_L}$ varies, so $Y\mid X_{S^*}$ is stable and prediction risk $\mathbb{E}[(Y^e - (\beta^*)^\top X^e)^2]=\sigma^2_Y$ holds in every environment---the \emph{risk invariance} we seek to exploit.
+Here $S^*\!\subseteq[p]$ indexes the true causal parents; $S_L$ the intervened covariates; $S_L^c$ the untouched ones. Only $\delta^e_{S_L}$ varies, so $Y\mid X_{S^*}$ is stable and prediction risk $\mathbb{E}[(Y^e - (\beta^*)^\top X^e)^2]=\sigma^2_Y$ holds in every environment. This is the \emph{risk invariance} we seek to exploit.
 
-With ${\sim}4$ environments and $p{\approx}50$ features the invariant set is likely underdetermined, so we pair two methods that trade off differently. \citet{fan2024negdro} cast recovery as minimax: $\hat\beta^{\gamma}\in\arg\min_{b}\max_{w\in U(\gamma)}\sum_{e} w_e\,\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2]$, where $U(\gamma)$ permits \emph{negative} weights; under Condition~4 this yields a fast point estimate of $\beta^*$ even with limited interventions. \citet{wu2025bayesian} place a prior over selectors $z\in\{0,1\}^p$ whose posterior $p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat g(Y^e_i\mid X^z_{ei})/\hat p_e(Y^e_i\mid X^z_{ei})$ concentrates on $z^*$ but crucially reveals \emph{which features remain ambiguous} when environments are few. Where the two methods agree we make confident causal claims; where they diverge the data are insufficient to resolve $S^*$.
+With ${\sim}4$ environments and $p{\approx}50$ features the invariant set is likely underdetermined, so we pair two methods that trade off differently. \citet{fan2024negdro} cast recovery as minimax,
+\[
+  \hat\beta^{\gamma}\in\arg\min_{b}\max_{w\in U(\gamma)}\textstyle\sum_{e} w_e\,\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2],
+\]
+where $U(\gamma)$ permits \emph{negative} weights; under Condition~4 this yields a fast point estimate of $\beta^*$ even with limited interventions. \citet{wu2025bayesian} place a prior over selectors $z\in\{0,1\}^p$ whose posterior
+\[
+  p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat g(Y^e_i\mid X^z_{ei})\big/\hat p_e(Y^e_i\mid X^z_{ei})
+\]
+concentrates on $z^*$ but crucially reveals \emph{which features remain ambiguous} when environments are few. Where the two agree we make confident causal claims; where they diverge the data cannot resolve $S^*$.
 
 \vspace{-0.5em}
 {\scriptsize\setlength{\bibsep}{0pt}
