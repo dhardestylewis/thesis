@@ -51,9 +51,9 @@ For my \textit{Predicting NIMBYism Causally} project ($\sim$4 temporal environme
 
 \newpage
 \title{\vspace{-2em}\textbf{Project Update: Predicting NIMBYism Causally}}
-\vspace{1em}
+\vspace{0.5em}
 \hrule
-\vspace{1em}
+\vspace{0.5em}
 
 \section*{1. What is the problem?}
 We seek the causal drivers of zoning opposition (NIMBYism) in Austin, TX. Following \citet{peters2016icp}, we adopt invariant causal prediction (ICP): find $S^*$ such that $P_e(Y \mid X_{S^*}) = P(Y \mid X_{S^*})$ across all environments $e$. Features stable across regimes are identified as causal; those whose predictive power breaks are discarded as spurious.
@@ -70,10 +70,10 @@ This partition motivates the linear SEM \citep[Ch.~4]{peters2017elements} under 
 \]
 Here $S^*\!\subseteq[p]$ indexes the true causal parents; $S_L$ the intervened covariates; $S_L^c$ the untouched ones. Only $\delta^e_{S_L}$ varies, so $Y\mid X_{S^*}$ is stable and prediction risk $\mathbb{E}[(Y^e - (\beta^*)^\top X^e)^2]=\sigma^2_Y$ holds in every environment---the \emph{risk invariance} we seek to exploit.
 
-Two complementary methods recover $S^*,\beta^*$. \citet{fan2024negdro} cast the problem as a minimax optimization: $\hat\beta^{\gamma}\in\arg\min_{b}\max_{w\in U(\gamma)}\sum_{e} w_e\,\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2]$, where $U(\gamma)$ allows \emph{negative} weights to enforce risk parity; under Condition~4, this recovers $\beta^*$ even with limited interventions. \citet{wu2025bayesian} take a Bayesian route: a latent selector $z\in\{0,1\}^p$ with posterior $p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat g(Y^e_i\mid X^z_{ei})/\hat p_e(Y^e_i\mid X^z_{ei})$ concentrates on $z^*$ as data and environments grow, while quantifying remaining ambiguity.
+With ${\sim}4$ environments and $p{\approx}50$ features the invariant set is likely underdetermined, so we pair two methods that trade off differently. \citet{fan2024negdro} cast recovery as minimax: $\hat\beta^{\gamma}\in\arg\min_{b}\max_{w\in U(\gamma)}\sum_{e} w_e\,\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2]$, where $U(\gamma)$ permits \emph{negative} weights; under Condition~4 this yields a fast point estimate of $\beta^*$ even with limited interventions. \citet{wu2025bayesian} place a prior over selectors $z\in\{0,1\}^p$ whose posterior $p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat g(Y^e_i\mid X^z_{ei})/\hat p_e(Y^e_i\mid X^z_{ei})$ concentrates on $z^*$ but crucially reveals \emph{which features remain ambiguous} when environments are few. Where the two methods agree we make confident causal claims; where they diverge the data are insufficient to resolve $S^*$.
 
 \vspace{-0.5em}
-{\footnotesize\setlength{\bibsep}{0pt}
+{\scriptsize\setlength{\bibsep}{0pt}
 \bibliographystyle{abbrvnat}
 \bibliography{references}
 }
