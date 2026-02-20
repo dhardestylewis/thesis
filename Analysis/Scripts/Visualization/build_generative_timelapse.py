@@ -13,7 +13,7 @@ from collections import defaultdict
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 random.seed(42)
 
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel.csv"
+PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
 CENTROIDS_PATH = "Data/Panel/Reference/parcel_centroids.csv"
 OUT_DIR = "Analysis/Results"
 os.makedirs(OUT_DIR, exist_ok=True)
@@ -59,10 +59,6 @@ with open(PANEL_PATH, "r", encoding="utf-8") as f:
     for row in csv.DictReader(f):
         year = int(row["year"])
         if year < TRAIN_START:
-            continue
-        if row.get("ears_matched") != "1":
-            continue
-        if "backfill" in row.get("ears_source", ""):
             continue
         rows_by_year[year].append(row)
 

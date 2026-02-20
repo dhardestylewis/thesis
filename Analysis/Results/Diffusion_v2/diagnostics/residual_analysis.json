@@ -1,0 +1,772 @@
+{
+  "residuals": {
+    "2021": {
+      "year": 2021,
+      "n_total": 29476,
+      "n_positive": 325,
+      "prevalence_pct": 1.103,
+      "lr_resid_mean": 0.03831,
+      "lr_resid_std": 0.13495,
+      "lr_resid_median": 0.01405,
+      "lr_resid_skew": 0.601,
+      "lr_mean_on_positives": 0.4995,
+      "lr_mean_on_negatives": 0.0443,
+      "diff_resid_mean": 0.48621,
+      "diff_resid_std": 0.17733,
+      "diff_resid_median": 0.5,
+      "diff_resid_skew": -0.5847,
+      "diff_mean_on_positives": 0.8242,
+      "diff_mean_on_negatives": 0.4936
+    },
+    "2022": {
+      "year": 2022,
+      "n_total": 29467,
+      "n_positive": 246,
+      "prevalence_pct": 0.835,
+      "lr_resid_mean": 0.08387,
+      "lr_resid_std": 0.2458,
+      "lr_resid_median": 0.00773,
+      "lr_resid_skew": 3.2985,
+      "lr_mean_on_positives": 0.9672,
+      "lr_mean_on_negatives": 0.0848,
+      "diff_resid_mean": 0.48497,
+      "diff_resid_std": 0.17554,
+      "diff_resid_median": 0.5,
+      "diff_resid_skew": -0.4994,
+      "diff_mean_on_positives": 0.7735,
+      "diff_mean_on_negatives": 0.491
+    },
+    "2023": {
+      "year": 2023,
+      "n_total": 29474,
+      "n_positive": 113,
+      "prevalence_pct": 0.383,
+      "lr_resid_mean": 0.02658,
+      "lr_resid_std": 0.10109,
+      "lr_resid_median": 0.00633,
+      "lr_resid_skew": 7.9694,
+      "lr_mean_on_positives": 0.9612,
+      "lr_mean_on_negatives": 0.0268,
+      "diff_resid_mean": 0.48777,
+      "diff_resid_std": 0.16982,
+      "diff_resid_median": 0.5,
+      "diff_resid_skew": -0.2079,
+      "diff_mean_on_positives": 0.7859,
+      "diff_mean_on_negatives": 0.4905
+    },
+    "2024": {
+      "year": 2024,
+      "n_total": 29490,
+      "n_positive": 408,
+      "prevalence_pct": 1.384,
+      "lr_resid_mean": 0.02369,
+      "lr_resid_std": 0.09582,
+      "lr_resid_median": 0.00589,
+      "lr_resid_skew": 7.8973,
+      "lr_mean_on_positives": 0.9623,
+      "lr_mean_on_negatives": 0.0246,
+      "diff_resid_mean": 0.48138,
+      "diff_resid_std": 0.18253,
+      "diff_resid_median": 0.5,
+      "diff_resid_skew": -0.708,
+      "diff_mean_on_positives": 0.7851,
+      "diff_mean_on_negatives": 0.4912
+    }
+  },
+  "calibration": {
+    "LogReg": [
+      {
+        "year": 2021,
+        "bin": 0,
+        "mean_predicted": 0.00329,
+        "actual_rate": 0.05429,
+        "n": 2947,
+        "gap": 0.051
+      },
+      {
+        "year": 2021,
+        "bin": 1,
+        "mean_predicted": 0.01362,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01362
+      },
+      {
+        "year": 2021,
+        "bin": 2,
+        "mean_predicted": 0.01399,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01399
+      },
+      {
+        "year": 2021,
+        "bin": 3,
+        "mean_predicted": 0.01402,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01402
+      },
+      {
+        "year": 2021,
+        "bin": 4,
+        "mean_predicted": 0.01404,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01404
+      },
+      {
+        "year": 2021,
+        "bin": 5,
+        "mean_predicted": 0.01406,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01406
+      },
+      {
+        "year": 2021,
+        "bin": 6,
+        "mean_predicted": 0.01409,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01409
+      },
+      {
+        "year": 2021,
+        "bin": 7,
+        "mean_predicted": 0.01418,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01418
+      },
+      {
+        "year": 2021,
+        "bin": 8,
+        "mean_predicted": 0.03756,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.03756
+      },
+      {
+        "year": 2021,
+        "bin": 9,
+        "mean_predicted": 0.35386,
+        "actual_rate": 0.05588,
+        "n": 2953,
+        "gap": 0.29799
+      },
+      {
+        "year": 2022,
+        "bin": 0,
+        "mean_predicted": 0.00511,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00511
+      },
+      {
+        "year": 2022,
+        "bin": 1,
+        "mean_predicted": 0.00767,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00767
+      },
+      {
+        "year": 2022,
+        "bin": 2,
+        "mean_predicted": 0.00769,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00769
+      },
+      {
+        "year": 2022,
+        "bin": 3,
+        "mean_predicted": 0.00771,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00771
+      },
+      {
+        "year": 2022,
+        "bin": 4,
+        "mean_predicted": 0.00772,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00772
+      },
+      {
+        "year": 2022,
+        "bin": 5,
+        "mean_predicted": 0.00774,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00774
+      },
+      {
+        "year": 2022,
+        "bin": 6,
+        "mean_predicted": 0.00778,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00778
+      },
+      {
+        "year": 2022,
+        "bin": 7,
+        "mean_predicted": 0.00833,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.00833
+      },
+      {
+        "year": 2022,
+        "bin": 8,
+        "mean_predicted": 0.06583,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.06583
+      },
+      {
+        "year": 2022,
+        "bin": 9,
+        "mean_predicted": 0.79489,
+        "actual_rate": 0.08331,
+        "n": 2953,
+        "gap": 0.71159
+      },
+      {
+        "year": 2023,
+        "bin": 0,
+        "mean_predicted": 0.00429,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.00429
+      },
+      {
+        "year": 2023,
+        "bin": 1,
+        "mean_predicted": 0.0063,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.0063
+      },
+      {
+        "year": 2023,
+        "bin": 2,
+        "mean_predicted": 0.00631,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.00631
+      },
+      {
+        "year": 2023,
+        "bin": 3,
+        "mean_predicted": 0.00631,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.00631
+      },
+      {
+        "year": 2023,
+        "bin": 4,
+        "mean_predicted": 0.00633,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.00633
+      },
+      {
+        "year": 2023,
+        "bin": 5,
+        "mean_predicted": 0.00634,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.00634
+      },
+      {
+        "year": 2023,
+        "bin": 6,
+        "mean_predicted": 0.00636,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.00636
+      },
+      {
+        "year": 2023,
+        "bin": 7,
+        "mean_predicted": 0.0066,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.0066
+      },
+      {
+        "year": 2023,
+        "bin": 8,
+        "mean_predicted": 0.01757,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.01757
+      },
+      {
+        "year": 2023,
+        "bin": 9,
+        "mean_predicted": 0.2375,
+        "actual_rate": 0.03829,
+        "n": 2951,
+        "gap": 0.19921
+      },
+      {
+        "year": 2024,
+        "bin": 0,
+        "mean_predicted": 0.00411,
+        "actual_rate": 0.00305,
+        "n": 2949,
+        "gap": 0.00106
+      },
+      {
+        "year": 2024,
+        "bin": 1,
+        "mean_predicted": 0.00586,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.00586
+      },
+      {
+        "year": 2024,
+        "bin": 2,
+        "mean_predicted": 0.00587,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.00587
+      },
+      {
+        "year": 2024,
+        "bin": 3,
+        "mean_predicted": 0.00588,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.00588
+      },
+      {
+        "year": 2024,
+        "bin": 4,
+        "mean_predicted": 0.00589,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.00589
+      },
+      {
+        "year": 2024,
+        "bin": 5,
+        "mean_predicted": 0.0059,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.0059
+      },
+      {
+        "year": 2024,
+        "bin": 6,
+        "mean_predicted": 0.00591,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.00591
+      },
+      {
+        "year": 2024,
+        "bin": 7,
+        "mean_predicted": 0.00627,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.00627
+      },
+      {
+        "year": 2024,
+        "bin": 8,
+        "mean_predicted": 0.01812,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.01812
+      },
+      {
+        "year": 2024,
+        "bin": 9,
+        "mean_predicted": 0.31145,
+        "actual_rate": 0.1353,
+        "n": 2949,
+        "gap": 0.17615
+      }
+    ],
+    "Diffusion": [
+      {
+        "year": 2021,
+        "bin": 0,
+        "mean_predicted": 0.22238,
+        "actual_rate": 0.00271,
+        "n": 2947,
+        "gap": 0.21966
+      },
+      {
+        "year": 2021,
+        "bin": 1,
+        "mean_predicted": 0.31231,
+        "actual_rate": 0.0017,
+        "n": 2947,
+        "gap": 0.31061
+      },
+      {
+        "year": 2021,
+        "bin": 2,
+        "mean_predicted": 0.4,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.4
+      },
+      {
+        "year": 2021,
+        "bin": 3,
+        "mean_predicted": 0.4039,
+        "actual_rate": 0.00136,
+        "n": 2947,
+        "gap": 0.40254
+      },
+      {
+        "year": 2021,
+        "bin": 4,
+        "mean_predicted": 0.5,
+        "actual_rate": 0.00034,
+        "n": 2947,
+        "gap": 0.49966
+      },
+      {
+        "year": 2021,
+        "bin": 5,
+        "mean_predicted": 0.5,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.5
+      },
+      {
+        "year": 2021,
+        "bin": 6,
+        "mean_predicted": 0.56809,
+        "actual_rate": 0.00713,
+        "n": 2947,
+        "gap": 0.56097
+      },
+      {
+        "year": 2021,
+        "bin": 7,
+        "mean_predicted": 0.6,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.6
+      },
+      {
+        "year": 2021,
+        "bin": 8,
+        "mean_predicted": 0.67709,
+        "actual_rate": 0.00204,
+        "n": 2947,
+        "gap": 0.67505
+      },
+      {
+        "year": 2021,
+        "bin": 9,
+        "mean_predicted": 0.78802,
+        "actual_rate": 0.09482,
+        "n": 2953,
+        "gap": 0.6932
+      },
+      {
+        "year": 2022,
+        "bin": 0,
+        "mean_predicted": 0.21944,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.21944
+      },
+      {
+        "year": 2022,
+        "bin": 1,
+        "mean_predicted": 0.30658,
+        "actual_rate": 0.00204,
+        "n": 2946,
+        "gap": 0.30455
+      },
+      {
+        "year": 2022,
+        "bin": 2,
+        "mean_predicted": 0.4,
+        "actual_rate": 0.00102,
+        "n": 2946,
+        "gap": 0.39898
+      },
+      {
+        "year": 2022,
+        "bin": 3,
+        "mean_predicted": 0.4,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.4
+      },
+      {
+        "year": 2022,
+        "bin": 4,
+        "mean_predicted": 0.49631,
+        "actual_rate": 0.00305,
+        "n": 2946,
+        "gap": 0.49325
+      },
+      {
+        "year": 2022,
+        "bin": 5,
+        "mean_predicted": 0.5,
+        "actual_rate": 0.00034,
+        "n": 2946,
+        "gap": 0.49966
+      },
+      {
+        "year": 2022,
+        "bin": 6,
+        "mean_predicted": 0.56121,
+        "actual_rate": 0.0017,
+        "n": 2946,
+        "gap": 0.55951
+      },
+      {
+        "year": 2022,
+        "bin": 7,
+        "mean_predicted": 0.6,
+        "actual_rate": 0.0,
+        "n": 2946,
+        "gap": 0.6
+      },
+      {
+        "year": 2022,
+        "bin": 8,
+        "mean_predicted": 0.67142,
+        "actual_rate": 0.0258,
+        "n": 2946,
+        "gap": 0.64562
+      },
+      {
+        "year": 2022,
+        "bin": 9,
+        "mean_predicted": 0.77756,
+        "actual_rate": 0.04944,
+        "n": 2953,
+        "gap": 0.72812
+      },
+      {
+        "year": 2023,
+        "bin": 0,
+        "mean_predicted": 0.21579,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.21579
+      },
+      {
+        "year": 2023,
+        "bin": 1,
+        "mean_predicted": 0.3032,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.3032
+      },
+      {
+        "year": 2023,
+        "bin": 2,
+        "mean_predicted": 0.4,
+        "actual_rate": 0.0,
+        "n": 2947,
+        "gap": 0.4
+      },
+      {
+        "year": 2023,
+        "bin": 3,
+        "mean_predicted": 0.4,
+        "actual_rate": 0.00034,
+        "n": 2947,
+        "gap": 0.39966
+      },
+      {
+        "year": 2023,
+        "bin": 4,
+        "mean_predicted": 0.49513,
+        "actual_rate": 0.00204,
+        "n": 2947,
+        "gap": 0.4931
+      },
+      {
+        "year": 2023,
+        "bin": 5,
+        "mean_predicted": 0.5,
+        "actual_rate": 0.00102,
+        "n": 2947,
+        "gap": 0.49898
+      },
+      {
+        "year": 2023,
+        "bin": 6,
+        "mean_predicted": 0.55686,
+        "actual_rate": 0.00339,
+        "n": 2947,
+        "gap": 0.55347
+      },
+      {
+        "year": 2023,
+        "bin": 7,
+        "mean_predicted": 0.6,
+        "actual_rate": 0.00102,
+        "n": 2947,
+        "gap": 0.59898
+      },
+      {
+        "year": 2023,
+        "bin": 8,
+        "mean_predicted": 0.6681,
+        "actual_rate": 0.00204,
+        "n": 2947,
+        "gap": 0.66607
+      },
+      {
+        "year": 2023,
+        "bin": 9,
+        "mean_predicted": 0.77657,
+        "actual_rate": 0.02846,
+        "n": 2951,
+        "gap": 0.74811
+      },
+      {
+        "year": 2024,
+        "bin": 0,
+        "mean_predicted": 0.21976,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.21976
+      },
+      {
+        "year": 2024,
+        "bin": 1,
+        "mean_predicted": 0.30723,
+        "actual_rate": 0.0017,
+        "n": 2949,
+        "gap": 0.30553
+      },
+      {
+        "year": 2024,
+        "bin": 2,
+        "mean_predicted": 0.4,
+        "actual_rate": 0.0,
+        "n": 2949,
+        "gap": 0.4
+      },
+      {
+        "year": 2024,
+        "bin": 3,
+        "mean_predicted": 0.40259,
+        "actual_rate": 0.00203,
+        "n": 2949,
+        "gap": 0.40056
+      },
+      {
+        "year": 2024,
+        "bin": 4,
+        "mean_predicted": 0.5,
+        "actual_rate": 0.00441,
+        "n": 2949,
+        "gap": 0.49559
+      },
+      {
+        "year": 2024,
+        "bin": 5,
+        "mean_predicted": 0.5,
+        "actual_rate": 0.00136,
+        "n": 2949,
+        "gap": 0.49864
+      },
+      {
+        "year": 2024,
+        "bin": 6,
+        "mean_predicted": 0.56299,
+        "actual_rate": 0.00475,
+        "n": 2949,
+        "gap": 0.55824
+      },
+      {
+        "year": 2024,
+        "bin": 7,
+        "mean_predicted": 0.6,
+        "actual_rate": 0.00102,
+        "n": 2949,
+        "gap": 0.59898
+      },
+      {
+        "year": 2024,
+        "bin": 8,
+        "mean_predicted": 0.67419,
+        "actual_rate": 0.03662,
+        "n": 2949,
+        "gap": 0.63756
+      },
+      {
+        "year": 2024,
+        "bin": 9,
+        "mean_predicted": 0.78541,
+        "actual_rate": 0.08647,
+        "n": 2949,
+        "gap": 0.69894
+      }
+    ]
+  },
+  "spatial": {
+    "2021": {
+      "morans_i_diff": -0.0449,
+      "morans_i_lr": 0.2097,
+      "spatial_r2_diff": 0.0316,
+      "spatial_r2_lr": 0.0864,
+      "n_occupied_cells": 276
+    },
+    "2022": {
+      "morans_i_diff": 0.0569,
+      "morans_i_lr": 0.2534,
+      "spatial_r2_diff": 0.0225,
+      "spatial_r2_lr": 0.1144,
+      "n_occupied_cells": 284
+    },
+    "2023": {
+      "morans_i_diff": -0.068,
+      "morans_i_lr": 0.1643,
+      "spatial_r2_diff": 0.0177,
+      "spatial_r2_lr": 0.0507,
+      "n_occupied_cells": 279
+    },
+    "2024": {
+      "morans_i_diff": -0.0479,
+      "morans_i_lr": 0.2096,
+      "spatial_r2_diff": 0.0294,
+      "spatial_r2_lr": 0.0593,
+      "n_occupied_cells": 279
+    }
+  },
+  "temporal": {
+    "n_multi_year_parcels": 1204,
+    "diff_temporal_corrs": [
+      -0.0571,
+      0.1328,
+      0.0371
+    ],
+    "lr_temporal_corrs": [
+      0.201,
+      0.4392,
+      0.6554
+    ],
+    "diff_avg_temporal_corr": 0.0376,
+    "lr_avg_temporal_corr": 0.4319
+  },
+  "diagnosis": {
+    "is_error_structured": false,
+    "is_data_issue": null,
+    "is_model_issue": null
+  }
+}

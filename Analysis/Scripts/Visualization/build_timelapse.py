@@ -5,7 +5,7 @@ from collections import defaultdict
 
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel.csv"
+PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
 CENTROIDS_PATH = "Data/Panel/Reference/parcel_centroids.csv"
 OUT_DIR = "Analysis/Results"
 TRAIN_START = 2019
@@ -34,17 +34,13 @@ with open(CENTROIDS_PATH, "r") as f:
         centroids[row["parcel_id_10"]] = (float(row["latitude"]), float(row["longitude"]))
 print("Centroids: %d" % len(centroids))
 
-# ---- Load panel (year-matched EARS only) ----
+# ---- Load panel (v3 — all rows for train/eval years) ----
 print("Loading panel...")
 rows_by_year = defaultdict(list)
 with open(PANEL_PATH, "r", encoding="utf-8") as f:
     for row in csv.DictReader(f):
         year = int(row["year"])
         if year < TRAIN_START:
-            continue
-        if row.get("ears_matched") != "1":
-            continue
-        if "backfill" in row.get("ears_source", ""):
             continue
         rows_by_year[year].append(row)
 

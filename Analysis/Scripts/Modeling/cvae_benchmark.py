@@ -36,7 +36,7 @@ types = {
 }
 
 print("Loading data (optimized)...")
-df = pd.read_csv("Data/Panel/Output/Property_Year_Panel.csv", usecols=cols, dtype=types)
+df = pd.read_csv("Data/Panel/Output/Property_Year_Panel_v3.csv", usecols=cols, dtype=types)
 df['improvement_sq_ft'] = pd.to_numeric(df['improvement_sq_ft'], errors='coerce').astype('float32')
 
 # Filter for relevant years (2019-2024 for training/val)
