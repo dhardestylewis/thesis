@@ -39,14 +39,10 @@
 \[
   \min_{b}\max_{w\in U(\gamma)}\textstyle\sum_e w_e\,\mathbb{E}[Y^e{-}b^\top X^e]^2,
 \]
-where $U(\gamma)$ allows \emph{negative weights} to enforce risk invariance. Under additive interventions, every stationary point is $O((1{+}\gamma|E|)^{-1}{+}T^{-1/4}{+}n^{-1/4})$-close to $\beta^*$ (Thm~5), enabling gradient descent in \emph{polynomial} time rather than $2^p$ enumeration.
-
-\textbf{Contrast:} BIP gives full posterior uncertainty over invariant sets; NegDRO trades distributional characterization for polynomial-time convergence with provable rates.
+where $U(\gamma)$ allows \emph{negative weights} to enforce risk invariance. Under additive interventions, every stationary point is $O((1{+}\gamma|E|)^{-1}{+}T^{-1/4}{+}n^{-1/4})$-close to $\beta^*$ (Thm~5), enabling gradient descent in \emph{polynomial} time rather than $2^p$ enumeration. In short, BIP gives full posterior uncertainty over invariant sets, while NegDRO trades distributional characterization for polynomial-time convergence with provable rates.
 
 \section*{Critique \& Project Connection}
-My \textit{Predicting NIMBYism Causally} project observes roughly four temporal environments and approximately fifty features. In this low-environment regime, BIP's multi-modal posterior honestly quantifies which invariant sets remain ambiguous rather than returning a single point estimate that may be an artifact of limited data. NegDRO's polynomial-time guarantee and tolerance of hidden confounders better suit iterative model development, since unmeasured wealth may simultaneously confound school quality and zoning opposition. A productive strategy is to run NegDRO first for fast screening, then apply BIP to the reduced feature set; features flagged as causal by both methods warrant confidence, while disagreements signal that additional environments are needed.
-
-\textbf{Limitation.} Both methods assume linear models with squared loss. Extending to binary outcomes remains open; our protest indicator $Y\in\{0,1\}$ requires either a link function or a loss-function generalization that preserves the invariance guarantee.
+My \textit{Predicting NIMBYism Causally} project observes roughly four temporal environments and approximately fifty features. In this low-environment regime, BIP's multi-modal posterior honestly quantifies which invariant sets remain ambiguous rather than returning a single point estimate that may be an artifact of limited data. NegDRO's polynomial-time guarantee and tolerance of hidden confounders better suit iterative model development, since unmeasured wealth may simultaneously confound school quality and zoning opposition. A productive strategy is to run NegDRO first for fast screening, then apply BIP to the reduced feature set; features flagged as causal by both methods warrant confidence, while disagreements signal that additional environments are needed. Both methods assume linear models with squared loss, however, and our protest indicator $Y\in\{0,1\}$ requires either a link function or a loss-function generalization that preserves the invariance guarantee.
 
 \section*{Questions}
 \begin{enumerate}
@@ -75,7 +71,7 @@ This partition motivates the linear SEM \citep[Ch.~4]{peters2017elements} under 
 \]
 Here $S^*\!\subseteq[p]$ indexes the true causal parents; $S_L$ the intervened covariates; $S_L^c$ the untouched ones. Only $\delta^e_{S_L}$ varies, so $Y\mid X_{S^*}$ is stable and prediction risk $\mathbb{E}[(Y^e - (\beta^*)^\top X^e)^2]=\sigma^2_Y$ holds in every environment. This is the \emph{risk invariance} we seek to exploit.
 
-With ${\sim}4$ environments and $p{\approx}50$ features the invariant set is likely underdetermined, so we pair two methods that trade off differently. \citet{fan2024negdro} cast recovery as minimax,
+With roughly four environments and fifty features the invariant set is likely underdetermined, so we pair two methods that trade off differently. \citet{fan2024negdro} cast recovery as minimax,
 \[
   \hat\beta^{\gamma}\in\arg\min_{b}\max_{w\in U(\gamma)}\textstyle\sum_{e} w_e\,\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2],
 \]

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.16)  19 FEB 2026 23:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.16)  19 FEB 2026 23:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -383,7 +383,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [1{C:/Users/dhl/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}
 
 ]
-Overfull \hbox (3.7793pt too wide) in paragraph at lines 66--67
+Overfull \hbox (3.7793pt too wide) in paragraph at lines 62--63
 \OT1/cmr/m/n/10.95 2019--2024, Austin ex-pe-ri-enced the may-oral tran-si-tion 
 (Jan 2023), parking-reform elim-i-na-tion (Nov 2023),
  []
@@ -426,7 +426,7 @@ ublic/amsfonts/cm/cmtt12.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/amsfonts/cm/cmtt8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/amsfonts/cm/cmtt9.pfb><C:/Users/dhl/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Reader_Report.pdf (2 pages, 271862 bytes).
+Output written on Reader_Report.pdf (2 pages, 271223 bytes).
 PDF statistics:
  156 PDF objects out of 1000 (max. 8388607)
  11 named destinations out of 1000 (max. 500000)
