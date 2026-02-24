@@ -41,18 +41,16 @@ VI-BIP \citep[Sec.~4]{wu2025bayesian} approximates the posterior via mean-field 
 
 \section*{Critique}
 
-\citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce the same invariance condition, yet what separates them is what the practitioner assumes about the environments before seeing data.
+\citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce the same invariance condition, yet what separates them is what the practitioner assumes about the environments before seeing data. BIP's symmetric product likelihood weights every environment equally, so its contraction rate $nE \gtrsim O(p/\mu_{\min})$ is bottlenecked by the weakest environment signal. NegDRO makes the opposite assumption: by permitting negative environment weights \citep[Def.~1]{fan2024negdro}, it can amplify a dominant intervention the practitioner knows \emph{a priori} to be strong. These are incompatible design choices, and which is appropriate depends entirely on what the practitioner knows.
 
-When the practitioner \emph{does} know which environment carries the strongest signal---e.g., a single CRISPR knockout versus observational controls---BIP's symmetric product likelihood cannot exploit this. It weights every environment equally, so the contraction rate $nE \gtrsim O(p/\mu_{\min})$ depends on the \emph{average} signal across environments rather than the maximum. A practitioner holding domain knowledge about intervention strength pays the same sample cost as one who holds none.
+Yet no theory characterizes where the boundary lies. There is no decision rule telling a practitioner when symmetric weighting wastes known structure, or when asymmetric weighting overfits to a misidentified dominant environment. The gap between the two frameworks is acknowledged by neither paper.
 
-NegDRO can exploit such knowledge through negative environment weights \citep[Def.~1]{fan2024negdro}, but no theory characterizes the boundary at which asymmetric weighting becomes preferable to symmetric. A practitioner facing a new multi-environment dataset therefore has no decision rule for choosing between the two frameworks, nor any way to verify post hoc that the choice was appropriate.
-
-The empirical evaluation does not help resolve this. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP exclusively on CRISPR knockouts where $\mu_{\min}>0$ holds by construction---the regime where BIP's agnosticism is least needed. The theoretical guarantee holds regardless, but the empirical case for VI-BIP in observational or low-intervention settings, where the symmetric design should matter most, remains unmade.
+The experiments do not close this gap. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP exclusively on CRISPR knockouts where $\mu_{\min}>0$ holds by construction, the one regime where a practitioner \emph{could} justify asymmetric weighting and BIP's agnosticism is least needed. The empirical case for VI-BIP in observational or low-intervention settings, where symmetric weighting should matter most, remains unmade.
 
 \section*{Questions}
 Both questions below concern whether the practitioner-knowledge gap between BIP and NegDRO can be bridged.
 \begin{enumerate}\setlength\itemsep{1pt}
-  \item The critique above treats practitioner knowledge as a binary: either environments are exchangeable (ICP/BIP) or one dominant intervention is known (NegDRO). Can this be formalized as a continuous parameter, so that a single framework interpolates between symmetric and asymmetric environment weighting? If so, does the minimax estimation rate vary smoothly along this axis, or is there a phase transition at which asymmetric weighting becomes strictly preferable?
+  \item A continuous parameter $\alpha$ interpolating between BIP's symmetric weight constraint and NegDRO's negative-weight set is straightforward to define. The harder question is whether the minimax estimation rate varies smoothly along this axis, or whether there is a phase transition at some $\alpha^*$ below which symmetric weighting is minimax-optimal and above which asymmetric weighting becomes strictly preferable.
   \item Nonparametric extensions of ICP exist for the symmetric case \citep{heinzedeml2018nonparametric}, but no nonparametric analogue of NegDRO's asymmetric weighting has been proposed. Does the practitioner-knowledge distinction identified above survive when the loss is no longer quadratic, or does the symmetry-versus-asymmetry tradeoff collapse under nonparametric conditionals?
 \end{enumerate}
 
