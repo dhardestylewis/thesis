@@ -1,0 +1,154 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.85in,top=0.7in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage[round,sort&compress]{natbib}
+\usepackage{hyperref}
+\renewcommand{\bibsection}{\section*{References}}
+\setlength{\bibsep}{1pt}
+
+% Ultra-compact spacing
+\titlespacing*{\section}{0pt}{6pt}{2pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize STAT8101}
+\chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (\texttt{db2128})}
+\cfoot{\thepage}
+
+\title{\vspace{-2.5em}\textbf{Reader Report: Week 06} \\ \vspace{0.1em} \large VI-BIP, ICP Theorems, \& Causal Representation Learning}
+\author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (\texttt{dl3645})}
+\date{\vspace{-0.5em}2026 Spring}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\vspace{-1em}
+
+\section*{Summary: Revisiting VI-BIP and the Core ICP Theorems}
+
+\citet{wu2025bayesian} frame ICP as sparse Bayesian variable selection.
+The binary selector $z \in \{0,1\}^p$ marks invariant features; the
+posterior
+\[
+  p(z \mid \mathcal{D})\;\propto\;
+  p(z)\prod_{e,i}
+  \frac{\hat{g}(Y^e_i \mid X^z_{ei})}{\hat{p}_e(Y^e_i \mid X^z_{ei})}
+\]
+up-weights $z$ whose pooled conditional $\hat{g}$ dominates each local
+conditional $\hat{p}_e$---a likelihood-ratio test embedded in a prior.
+\textbf{Consistency (Thm~1)} requires only $\mu_{\min}>0$ (positive
+KL-divergence between pooled and local conditionals on at least one bad
+feature); the posterior then concentrates on $z^*$.
+\textbf{Contraction (Thm~2)} sharpens this: the posterior mass on
+$\{z: z\neq z^*\}$ decays as $O(R\,e^{-\kappa n E \mu_{\min}})$,
+where $R=2^p$ is the model count, $E$ the number of environments, and
+$\kappa$ a universal constant.
+Two messages emerge: (i) the exponential in $nE\mu_{\min}$ means
+\emph{either} more data or more diverse environments can substitute for
+each other; (ii) because $R=2^p$ appears only in the pre-exponential,
+large feature spaces slow convergence polynomially in $p$, not
+exponentially---a surprisingly benign curse of dimensionality.
+
+\textbf{VI-BIP} approximates $p(z\mid\mathcal{D})$ via a mean-field
+family $q(z)=\prod_j q_j(z_j)$, optimizing ELBO.
+The obstacle is that the ELBO gradient involves discrete $z$; the paper
+applies the \textbf{U2G estimator} (unbiased-to-Gaussian), which
+reparameterizes the discrete draw through a continuous Gaussian relaxation
+before taking gradients.
+This allows standard stochastic gradient ascent despite the combinatorial
+support.
+The approximation cost is a gap between the true posterior and $q^*$;
+in practice, on a 6{,}170-gene perturbation dataset, VI-BIP recovers
+the same invariant genes as exact BIP while being orders of magnitude faster.
+
+\citet{fan2024negdro} offer a complementary perspective: recast ICP as a\
+continuous minimax problem
+\[
+  \min_{b}\max_{w \in U(\gamma)}
+  \textstyle\sum_e w_e\,\hat{\mathbb{E}}[(Y^e - b^\top X^e)^2],
+\]
+where $U(\gamma)$ admits negative weights.
+By contrast with BIP's combinatorial posterior, NegDRO has a convex inner
+problem and differentiable outer problem, enabling polynomial-time
+convergence.
+The conceptual gap is that BIP produces a \emph{distribution} over
+invariant sets---revealing ambiguity when environments are few---while
+NegDRO returns a single point estimate $\hat\beta^\gamma$ with explicit
+finite-sample rates but no uncertainty quantification.
+
+\section*{Causal Representation Learning (Schölkopf et al.)}
+
+\citet{scholkopf2021toward} argue that robustness and out-of-distribution
+generalization require not merely statistical patterns but an
+\emph{approximate causal model} of the data-generating process.
+Their central organizing principle is the \textbf{independent causal
+mechanisms (ICM)} conjecture: the causal Markov factorization
+$p(X_1,\ldots,X_d)=\prod_i p(X_i\mid \mathrm{pa}_i)$ decomposes reality
+into modules that are \emph{independently} modifiable by interventions.
+Anti-causal directions---modeling effects given causes---violate ICM
+because they conflate mechanism with marginal, yielding fragile predictors
+that break under distributional shift.
+This connects directly to ICP: Peters et al.'s invariant set $S^*$ is
+precisely the set whose \emph{causal} conditional $p(Y\mid X_{S^*})$ is
+stable, while anti-causal features' conditionals shift.
+
+The paper surveys three operationalizations of ICM: (1) independence of
+noise variables in additive SEMs (link to ICP); (2) Kolmogorov-complexity
+arguments implying that $p(\text{cause})$ and $p(\text{effect}\mid
+\text{cause})$ compress independently; (3) disentangled representation
+learning, where latent variables recover causal factors.
+While the survey is technically rich, it does not yet deliver a single
+unified algorithm---the ``messiness'' Blei notes is real: the paper is a
+call to arms rather than a solved problem.
+
+\section*{Critique \& Project Connection}
+
+For my \textit{Predicting NIMBYism Causally} project the Schölkopf
+framework clarifies a modeling choice I had left implicit.
+My protest indicator $Y$ (zoning opposition) is an \emph{effect} of
+regulatory and demographic causes; I have been modeling $p(Y\mid X)$,
+an anti-causal direction, which ICM theory warns will be fragile across
+the policy regimes I use as environments.
+The appropriate posture is to encode the regulatory shifts as
+\emph{interventions} on the causal graph and identify $S^*$ as the
+features whose \emph{causal} conditional is intervention-stable---precisely
+what ICP formalizes.
+VI-BIP's posterior is especially useful here: with only four temporal
+environments and $\sim50$ features, the posterior over $z$ will be
+multi-modal, and those multi-modal regions identify the features where
+additional environment diversity is most needed.
+NegDRO's fast point estimate can serve as a computational screen before
+committing to the full VI-BIP run.
+
+\section*{Questions}
+\begin{enumerate}
+    \item The contraction rate $O(R\,e^{-\kappa nE\mu_{\min}})$ treats all
+      $R=2^p$ candidate sets equally in the pre-factor.
+      In practice, sparsity priors (e.g.\ Beta-Bernoulli with small mean)
+      reduce the effective model count.
+      Does the contraction result sharpen when $p(z)$ concentrates on sparse
+      $z$, or does the $2^p$ bound remain tight regardless of the prior?
+    \item Schölkopf et al.\ argue that anti-causal predictors are less
+      robust, yet NegDRO optimizes a squared-loss objective on
+      $p(Y\mid X)$---ostensibly anti-causal.
+      NegDRO's invariance guarantee holds under additive interventions
+      on $X$; does this suffice to recover causal features even when the
+      regression direction is anti-causal, or does an anti-causal
+      orientation introduce a systematic bias that its finite-sample rates
+      do not capture?
+\end{enumerate}
+
+{\scriptsize\setlength{\bibsep}{0pt}
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+}
+
+\end{document}

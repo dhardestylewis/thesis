@@ -1,0 +1,3890 @@
+Bayesian Invariance Modeling
+of Multi-Environment Data
+
+Luhuan Wu†, Mingzhang Yin#, Yixin Wang∗,
+John P. Cunningham†, David M. Blei†,‡
+
+5
+2
+0
+2
+
+l
+u
+J
+
+9
+
+]
+L
+M
+
+.
+t
+a
+t
+s
+[
+
+3
+v
+5
+7
+6
+2
+2
+.
+6
+0
+5
+2
+:
+v
+i
+X
+r
+a
+
+Abstract
+
+Invariant prediction [Peters et al., 2016] analyzes feature/outcome data from
+multiple environments to identify invariant features–those with a stable predictive
+relationship to the outcome. Such features support generalization to new envi-
+ronments and help reveal causal mechanisms. Previous methods have primarily
+tackled this problem through hypothesis testing or regularized optimization. Here
+we develop Bayesian Invariant Prediction (BIP), a probabilistic model for invariant
+prediction. BIP encodes the indices of invariant features as a latent variable and
+recover them by posterior inference. Under the assumptions of Peters et al. [2016],
+the BIP posterior targets the true invariant features. We prove that the posterior
+is consistent and that greater environment heterogeneity leads to faster posterior
+contraction. To handle many features, we design an efficient variational approxi-
+mation called VI-BIP. In simulations and real data, we find that BIP and VI-BIP
+are more accurate and scalable than existing methods for invariant prediction.
+
+Keywords: Bayesian Modeling; Feature Selection; Invariant Prediction; Varia-
+
+tional Inference.
+
+1
+
+Introduction
+
+An important goal of statistics is to identify features that have stable effects across varying
+settings and conditions. This ability is important for building robust prediction models
+that generalize well to novel situations, and for uncovering causal mechanisms to inform
+effective interventions.
+
+To this end, Peters et al. [2016] introduced the problem of invariant prediction. In this
+problem, we are given feature/outcome data from multiple environments, each involving
+a different data-generating distribution. Our goal is to find the set of features that are
+invariant to the environment, i.e., those that govern the outcome in the same way across
+all environments. To solve the problem, existing algorithms either search over invariant
+
+†Department of Statistics, Columbia University. ‡Department of Computer Science, Columbia Uni-
+versity. #Warrington College of Business, University of Florida. ∗Department of Statistics, University
+of Michigan.
+
+1
+
+ 
+ 
+ 
+ 
+ 
+ 
+sets and use hypothesis testing [Peters et al., 2016], or frame the problem as a regularized
+optimization that encourages an invariant solution [Fan et al., 2023].
+
+In this paper, we introduce Bayesian Invariant Prediction (BIP). We design a prob-
+abilistic model of multi-environment data, where the invariant set is encoded as a latent
+variable, and we infer the invariant set through Bayesian posterior inference. The BIP
+posterior targets the true invariant solution, and it provides a model-based quantification
+of uncertainty about the invariant set. We investigate BIP theoretically and empirically.
+How does BIP work? At its core, Peters et al. [2016] makes two assumptions about
+
+the data-generating process for invariant prediction:
+
+1. The p features x1, . . . , xp follow different distributions across environments.
+
+2. The outcome y depends on a subset of x in the same way across environments; this
+
+subset is the invariant set.
+
+BIP explicitly bakes these data-generating assumptions into a joint distribution of the
+invariant feature set and multi-environment data. We model the outcome, conditional
+on the invariant features, to be independent of the environment, and we explicitly model
+the per-environment distributions of the features. (We note that Peters et al. [2016] also
+assumes a linear data-generating process. Here we do not make linear assumptions.)
+Crucially, the invariant feature set is treated as a latent variable.
+
+Originally, Peters et al. [2016] motivated these assumptions through a causal problem.
+Each environment arises by an unknown intervention on the features x; the outcome y
+is directly caused by a subset of those features; and the goal is to analyze the multi-
+environment data to determine the direct causes of y. Here we solve the same problem
+but state the invariance assumption directly without appealing to causality. While these
+assumptions often arise from a causal problem, invariance has wider applications including
+prediction robustness [B¨uhlmann, 2020], domain adaptation [Rojas-Carulla et al., 2018],
+and out-of-distribution generalization [Arjovsky et al., 2019].
+
+In detail, BIP models data from E environments, D = {{xei, yei}ne
+
+e=1, where xei
+is a vector of p features and yei is an outcome. We encode the latent invariant feature
+set through a feature selection vector z ∈ {0, 1}p, where each entry z(i) indicates the
+inclusion of the i-th feature. Let xz denote the subvector of features where z(i) = 1 and
+x−z the subvector where z(i) = 0. With this notation, the BIP model factorizes as follows
+
+i=1}E
+
+p(z, D) = p(z)
+
+E
+(cid:89)
+
+ne(cid:89)
+
+e=1
+
+i=1
+
+pe(xz
+
+ei) g(yei | xz
+
+ei) pe(x−z
+
+ei | yei, xz
+
+ei).
+
+(1)
+
+Notice where the distribution depends on the environment pe and where it is invariant
+g. As a generative process, the model says that each environment first produces the
+invariant features from a per-environment distribution; then produces the outcome from
+an invariant conditional distribution; and finally produces the non-invariant features from
+a per-environment distribution, conditional on the invariant features and the outcome.
+
+Given multi-environment data, we can use this model to calculate the posterior dis-
+tribution of the invariant set p(z | D). We prove that this posterior distribution is con-
+
+2
+
+sistent under the data generating assumptions of Peters et al. [2016], targeting the true
+invariant features. We also analyze the posterior contraction rate with respect to the
+per-environment sample size and the number of environments, and characterize its de-
+pendence on the prior of z and the heterogeneity of the environments.
+
+Similar to the hypothesis testing method in Peters et al. [2016], exact posterior in-
+ference for BIP requires searching over 2p possible sets of invariant features. When p
+is large, exact inference is computationally prohibitive. To address this challenge, we
+develop VI-BIP a variational inference (VI) algorithm [Jordan et al., 1999, Blei et al.,
+2017] to approximate the posterior. VI-BIP finds a p-vector of approximate posterior
+probabilities that each feature is in the invariant set. Algorithmically, it optimizes a vari-
+ational objective over the discrete feature selector. In this way, it resembles some of the
+optimization-based approaches to invariant prediction that optimize continuous regres-
+sion parameters with regularization [Arjovsky et al., 2019, Yin et al., 2024]. Compared
+to exact inference, VI-BIP does not require an exhaustive exponential search.
+
+We study BIP and VI-BIP on both simulated and real data, comparing performance to
+existing approaches [Peters et al., 2016, Rothenh¨ausler et al., 2019, Fan et al., 2023]. The
+simulation study verifies our theoretical findings and demonstrates improved accuracy and
+scalability of our methods compared to existing works. In particular, VI-BIP performs
+competitively with exact inference in low-dimensional settings, while remaining scalable
+to high-dimensional cases.
+In a real-world study, we examine gene perturbation data
+that includes p = 6, 179 features [Kemmeren et al., 2014]. VI-BIP outperforms existing
+methods by identifying more true effects based on the inferred invariant features. As a
+comparison, existing methods are sensitive to the required feature screening step, which
+usually results in either overly conservative predictions or false predictions.
+
+We summarize our contributions as follows:
+
+1. We design Bayesian Invariant Prediction (BIP) for multi-environment data.
+
+It
+encodes the invariance assumption and enables posterior inference of the invariant
+features.
+
+2. We establish theoretical guarantees for BIP, including posterior consistency and
+
+contraction rates.
+
+3. We develop VI-BIP, a scalable variational inference algorithm for high-dimensional
+
+settings. It overcomes the exponential complexity of exact BIP inference.
+
+4. On simulated and real-world data, we demonstrate that BIP outperforms existing
+
+approaches in terms of inference accuracy and scalability.
+
+The paper is organized as follows. In § 2 we state the invariance assumption and in-
+troduce BIP, including the model structure, the exact inference procedure, and a scalable
+variational approximation. In § 3, we present theoretical results on posterior consistency
+and contraction rates. In § 4, we validate BIP on simulations. In § 5, we use BIP to
+study real data. In § 6, we summarize BIP and discuss limitations and future work.
+
+3
+
+1.1 Related works
+
+Invariance closely relates to the independent causal mechanism in causal inference litera-
+ture [Peters et al., 2017, Sch¨olkopf et al., 2021], which states that the causal mechanism
+p(y|x) and the cause distribution p(x) are independent under the causal structure x → y.
+This property implies the possibility of intervening on p(x) while keeping p(y|x) invariant.
+Invariance was also studied in econometrics under the terms autonomy and modularity
+[Frisch et al., 1948, Hoover, 2008], and later appeared in computer science as stable and
+autonomous parent-child relationships in causal graphs [Pearl, 2009, p. 22]. For a histor-
+ical overview of invariance, see Peters et al. [2017, Chapter 2.2] and B¨uhlmann [2020].
+
+Peters et al. [2016] is the seminal work that formalized the concept of invariant pre-
+diction for machine learning problems, as well as connecting it to causal inference. It
+assumes that the distribution of the outcome given a subset of features remains the same
+across environments, and under certain conditions, these features are the direct causes of
+the outcome. It develops a hypothesis testing approach for identifying such features in
+linear models, which requires an exhaustive search over exponentially many candidates.
+Since Peters et al. [2016], invariant prediction has become an active area of research.
+Heinze-Deml et al. [2018] extends this framework to non-linear settings. Rothenh¨ausler
+et al. [2019] proposes an invariance notion based on feature-residual inner products in
+linear models, linking it to causal inference under additive interventions. Fan et al. [2023]
+incorporates residual-based invariance as a regularization term in linear regression. Wang
+et al. [2024] establishes a theoretical connection between invariant prediction models and
+causal outcome models, leading to a computationally efficient algorithm for causal dis-
+covery. Gu et al. [2025] shows that solving for exact invariance is NP-hard and introduces
+an objective that interpolates between exact invariance and predictive performance. In
+concurrent research, Madaleno et al. [2025] leverages a Bayesian hierarchical model to
+explicitly test the invariance of causal mechanisms.
+
+This paper offers a probabilistic perspective on invariant prediction, with goals closely
+aligned to Peters et al. [2016] and Fan et al. [2023]. As we will see below, this perspective
+opens the door to both new algorithms and new theoretical understanding.
+
+2 Bayesian Invariant Prediction
+
+2.1 Multi-environment data and the invariance assumption
+
+Consider a dataset of feature-outcome pairs that are organized into multiple environments,
+D := {{xei, yei}ne
+In each pair, x is a p-dimensional vector and y is a general
+outcome. Each environment e indexes a distinct data distribution pe(x, y), and xei, yei
+were drawn IID from this distribution.
+
+i=1}E
+
+e=1.
+
+Our main assumption is that some of the features are invariant—the conditional dis-
+tribution of the outcome given these features remains unchanged across all environments
+[Peters et al., 2016]. We formally state this assumption as follows:
+
+4
+
+Assumption 1 (Invariance). Consider a collection of environments E. Then ∃ z∗ ∈
+{0, 1}p such that pe(y | xz∗) is invariant with respect to e ∈ E.
+
+We call z∗ the (true) invariant feature selector and xz∗ the (true) invariant features.
+
+By Assumption 1 and the chain rule, each environment’s joint distribution factorizes,
+
+pe(x, y) = pe(xz∗)p∗(y | xz∗)pe(x−z∗ | xz∗, y).
+
+(2)
+
+The invariant conditional p∗(y | xz∗) ≡ pe(y | xz∗) for all environments e ∈ E.
+
+The problem is that we do not observe the invariant feature selector z∗. Our goal is
+
+to infer z∗ from the observed multi-environment data.
+
+2.2 A Bayesian model of invariant prediction
+
+We propose Bayesian Invariant Prediction (BIP) to infer the true invariant features z∗.
+Our model places a prior distribution p(z) over feature selectors z ∈ {0, 1}p and defines
+a likelihood based on the invariance assumption.
+
+For now, we assume the local joint distributions {pe(x, y)}E
+
+e=1 are known. Conse-
+quently, for any candidate invariant feature selector z, we can calculate the local marginal
+pe(xz), local conditionals pe(y|xz), and local feature conditionals pe(x−z | xz, y), all de-
+rived from the local joint pe(x, y). In practice, we can estimate these distributions with
+a sufficiently large dataset.
+
+To build our likelihood, we also define a pooled conditional distribution of the outcome
+
+given candidate features xz, derived from the collection of local distributions.
+
+Definition 1 (Pooled conditional). Given a feature selector z and a collection of local
+distributions {pe(x, y)}e∈E, define the pooled conditional as:
+
+g(y | xz) :=
+
+(cid:80)
+
+e∈E
+
+(cid:82) pe(x, y) dx−z
+(cid:80)
+e∈E pe(xz)
+
+.
+
+The pooled conditional characterizes the distribution of outcome y given candidate
+features xz, based on distributions pooled across environments. In BIP, the pooled con-
+ditional will serve as the invariant distribution of the outcome. Its key property is that
+it matches the local conditional distributions pe(y | xz) simultaneously across all envi-
+ronments if and only if z = z∗. Therefore it will help the posterior center on the true
+invariant feature selector. We state this idea formally as follows.
+
+Proposition 1 (Identifiability of invariant features). Under Assumption 1, the equality
+
+g(y | xz) = pe(y | xz),
+
+∀e ∈ E,
+
+holds if and only if z = z∗.
+
+Proof If z = z∗, then by definition of invariance (Assumption 1), pe(y | xz∗) is identical
+across environments. Substituting the true factorization from Eq. 2 into the pooled defini-
+tion shows equality. Conversely, if g(y | xz) matches each environment’s local conditional
+
+5
+
+distribution pe(y | xz) simultaneously, then these local distributions must themselves be
+identical across environments. Thus z must satisfy Assumption 1, making z = z∗.
+
+With the pooled conditional in hand, we now define the BIP model for invariant
+
+feature selection:
+
+• Draw invariant feature selector z ∼ p(z).
+
+• For e = 1, · · · , E ∈ E, and each observation i = 1, . . . , ne:
+
+1. Draw invariant features xz
+
+2. Draw outcome yei | xz
+3. Draw remaining features x−z
+ei
+
+ei).
+
+ei ∼ pe(xz
+ei ∼ g(yei | xz
+ei).
+ei, yei ∼ pe(x−z
+| xz
+ei
+
+| xz
+
+ei, yei).
+
+The BIP model encodes invariance. Step 2 explicitly uses the pooled conditional, thereby
+enforcing a single conditional distribution for y | xz across environments. The joint
+distribution of latent and observed variables was introduced earlier in Eq. 1.
+
+Under Assumption 1, the BIP’s posterior will concentrate around the true invariant
+selector z∗. For any candidate z ̸= z∗, the pooled conditional g(y | xz) cannot match all
+the true local distributions pe(y | xz), resulting in a lower data likelihood and posterior
+probability. But when z = z∗, the pooled conditional matches all local distributions
+exactly, leading to maximal likelihood and a posterior centered around the truth.
+
+To see this observation more concretely, we write the posterior distribution explicitly
+as a product of prior and likelihood ratios – each between the pooled conditional and a
+local conditional. This expression is a key property of our model.
+
+Proposition 2 (Posterior expression). Under the BIP model in Eq. 1, the posterior
+distribution simplifies to:
+
+p(z | D) ∝ p(z)
+
+E
+(cid:89)
+
+ne(cid:89)
+
+e=1
+
+i=1
+
+g(yei | xz
+ei)
+pe(yei | xz
+ei)
+
+.
+
+(3)
+
+Proof Start from the joint distribution under the model:
+
+p(z, D) = p(z)
+
+E
+(cid:89)
+
+ne(cid:89)
+
+e=1
+
+i=1
+
+pe(xz
+
+ei)g(yei | xz
+
+ei)pe(x−z
+ei
+
+| xz
+
+ei, yei).
+
+Multiplying a constant of 1 in the form of pe(yei | xz
+
+ei)/pe(yei | xz
+
+ei), we obtain
+
+p(z, D) = p(z)
+
+E
+(cid:89)
+
+ne(cid:89)
+
+e=1
+
+i=1
+
+pe(xz
+
+ei)g(yei | xz
+
+ei)pe(x−z
+ei
+
+| xz
+
+ei, yei)
+
+pe(yei | xz
+pe(yei | xz
+
+ei)
+ei)
+
+.
+
+Note that pe(xz
+
+ei)pe(yei | xz
+
+ei)pe(x−z
+ei
+
+| xz
+
+ei, yei) = pe(xei, yei). So,
+
+p(z, D) = p(z)
+
+E
+(cid:89)
+
+ne(cid:89)
+
+e=1
+
+i=1
+
+pe(xei, yei)
+
+g(yei | xz
+ei)
+pe(yei | xz
+ei)
+
+.
+
+6
+
+The local joint distribution pe(xei, yei) is constant with respect to z. Therefore we obtain
+the simplified posterior of Eq. 3.
+
+This expression for the posterior highlights the role of the ratio between the pooled
+conditional and the local conditionals, and shows that the posterior centers on the true
+invariant feature selector. For choices of z ̸= z∗, the pooled conditional g(y | xz) differs
+from the true local distributions pe(y | xz), decreasing the likelihood ratio. However,
+at z = z∗, Proposition 1 guarantees equality between the pooled and local conditionals,
+maximizing this ratio. Thus the posterior concentrates around the true z∗. We formalize
+this intuition through posterior consistency and contraction results in § 3.
+
+Note that the likelihood ratio between pooled and local conditionals precisely tar-
+gets the invariance criteria in the frequentist framework of Peters et al. [2016]. In that
+framework, a likelihood ratio of one corresponds to the null hypothesis being satisfied,
+indicating invariance. Here, the likelihood ratio naturally arises from our distributional
+assumptions and a probabilistic modeling perspective.
+
+2.3 Exact posterior inference for BIP
+
+We now turn to the problem of calculating the posterior. In practice, we do not have
+access to the true data distributions pe(x, y) and must estimate them. In principle we
+could estimate these full joint distributions from data. But note that the simplified
+posterior expression in Eq. 3 depends only on the local conditionals pe(y | xz) and pooled
+conditional g(y | xz) for each feature selector z. So, we directly model these relevant
+conditionals. Specifically, let Py|xz be a conditional model class indexed by z. We estimate
+local and pooled conditionals, respectively, via maximum likelihood:
+
+ˆpe(y | xz) := arg max
+˜p(y|xz)∈Py|xz
+
+ˆg(y | xz) := arg max
+˜p(y|xz)∈Py|xz
+
+ne(cid:88)
+
+i=1
+E
+(cid:88)
+
+log ˜p(yei | xz
+
+ei),
+
+∀e, z
+
+ne(cid:88)
+
+log ˜p(yei | xz
+
+ei),
+
+∀z.
+
+e=1
+
+i=1
+
+(4)
+
+(5)
+
+We then compute the posterior distribution explicitly by iterating over all candidate
+
+feature selectors z according to Eq. 3:
+
+ˆp(z | D) ∝ p(z)
+
+(cid:89)
+
+ne(cid:89)
+
+e∈E
+
+i=1
+
+ˆg(yei | xz
+ei)
+ˆpe(yei | xz
+ei)
+
+.
+
+(6)
+
+The exact posterior inference procedure is summarized in Algorithm 1. The algorithm
+explicitly enumerates all candidate feature selectors, estimates the local and pooled con-
+ditionals, and calculates the posterior probabilities accordingly.
+
+This procedure can be expensive. When the prior p(z) has full support on {0, 1}p,
+the complexity of PI-exact is O(2p · c(D, p)), where c(D, p) is the cost of estimating and
+evaluating the conditional models in Eq. 4 and Eq. 5 from data with up to p features.
+
+7
+
+Algorithm 1: BIP: exact posterior inference for invariant features
+
+Input: Dataset D = {(xei, yei)}
+Output: Posterior distribution ˆp(z | D)
+
+1 for z in support of p(z) do
+2
+
+Estimate local conditionals {ˆpe(y | xz)}E
+via Eq. 4 and Eq. 5;
+Compute the likelihood ratio: ˆΛ(z) ← (cid:81)E
+4 Compute the posterior: ˆp(z | D) ∝ p(z)ˆΛ(z).
+
+3
+
+e=1 and pooled conditional ˆg(y | xz)
+
+(cid:81)ne
+i=1
+
+ˆg(yei|xz
+ei)
+ei) .
+ˆpe(yei|xz
+
+e=1
+
+Algorithm 2: VI-BIP: variational inference for invariant features
+
+Input: Dataset D, iterations T , number of gradient samples M , learning rate
+
+scheduler r(·)
+
+Output: Variational posterior qϕT (z)
+
+1 Initialize variational parameter ϕ0
+2 for t = 1 to T do
+3
+
+Compute M unbiased gradient estimates of the ELBO using U2G
+(Algorithm 3, see the supplementary materials): ˆhm ≈ ∇ϕL(D, ϕt−1) for
+m = 1, . . . , M
+Update variational parameters: ϕt ← ϕt−1 + r(t) · 1
+M
+
+(cid:80)M
+
+ˆhm
+
+m=1
+
+4
+
+With prior information restricting the support of p(z) to subsets of size at most pmax,
+the complexity reduces to O(ppmax · c(D, pmax)). However, this complexity may still be
+prohibitive for large p. In the next section, we introduce a scalable variational inference
+method suitable for high-dimensional settings.
+
+2.4 Variational inference for BIP
+
+Exact posterior inference (§ 2.3) enumerates all possible invariant selectors, which is
+infeasible for large feature sets. Here we turn to variational inference [VI, Blei et al.,
+2017] to develop VI-BIP, an approximate inference algorithm to estimate the posterior.
+VI approximates the posterior with a simpler distribution. We posit a mean-field
+
+family of approximate posterior distributions of z:
+
+qϕ(z) :=
+
+p
+(cid:89)
+
+j=1
+
+Bernoulli (cid:0)z(j) | sigmoid(ϕ(j))(cid:1) ,
+
+where sigmoid(·) := exp(·)
+parameters by maximizing the evidence lower bound (ELBO),
+
+1+exp(·) , and ϕ ∈ Rp are the variational parameters. We then fit these
+
+L(D, ϕ) = Eqϕ(z) [log p(z, D) − log qϕ(z)]
+
+(cid:34)
+
+= Eqϕ(z)
+
+log p(z) +
+
+E
+(cid:88)
+
+ne(cid:88)
+
+e=1
+
+i=1
+
+log
+
+g(yei | xz
+ei)
+pe(yei | xz
+ei)
+
+(cid:35)
+
+− log qϕ(z)
+
++ C,
+
+(7)
+
+where C = (cid:80)E
+
+e=1
+
+(cid:80)ne
+
+i=1 log p(xei, yei) is a constant with respect to ϕ. The optimal varia-
+
+8
+
+tional parameters minimize the KL divergence to the exact posterior.
+
+In detail, we first estimate ˆg(y | xz) and ˆpe(y | xz) from data, and then optimize
+Eq. 7 with stochastic optimization. Specifically, we use Monte Carlo approximations of
+gradients of the ELBO, a form of black box variational inference [Kingma and Welling,
+2014, Ranganath et al., 2014]. Algorithm 2 summarizes this procedure. The complexity
+of VI-BIP is O(T · M · c(D, p)) for T iterations and M gradient samples. When the cost
+of exact BIP inference is prohibitive, VI-BIP provides a good alternative.
+
+A technical challenge in VI-BIP is computing gradients of the ELBO, which involve
+expectations with respect to the discrete variational distribution qϕ(z). Standard repa-
+rameterization gradients do not directly apply, as they require continuous latent variables.
+Here we use the unbiased U2G gradient estimator [Yin et al., 2020]; see Algorithm 3 in the
+supplementary materials. For a comprehensive discussion of gradient estimation methods
+for discrete latent variables, see Mohamed et al. [2020]. Additional implementation and
+optimization details for VI-BIP are provided in Supplementary Section B.2.
+
+3 Theory
+
+We analyze asymptotic behavior of the posterior distribution ˆp(z | D) obtained via exact
+inference (under estimated models ˆpe) as described in Algorithm 1. For simplicity (and
+without loss) we assume the sample size is the same across environments, i.e. ne = n.
+To enable asymptotic analysis of infinite environments, we assume each environment is
+drawn from a uniform distribution p(e) over the set of all environments of interest E.
+
+We outline our theoretical findings as follows:
+
+• § 3.1: Under suitable assumptions the posterior ˆp(z | D) concentrates on the true
+z∗ as both environment size E and per-environment sample size n grow to infinity.
+With additional regularity conditions, it contracts exponentially in n and E, with
+faster rates under stronger prior knowledge and greater environment heterogeneity.
+
+• § 3.2: We extend the main results to settings with finite n or E. Additionally, we
+show that when assumptions are relaxed, the posterior concentrates on the most
+“approximately invariant” feature selectors under the given model and prior.
+
+We use P→ to denote convergence in probability, supp (p(z)) for the support of p(z),
+and ∀pz to mean for every z with positive prior value. Additional results and proofs are
+included in Supplementary Section A.
+
+3.1 Main results
+
+We make the following assumptions:
+
+Assumption 2 (Uniqueness). In Assumption 1, the existence of z∗ is unique.
+
+Assumption 3 (Prior positivity). In Assumption 1, z∗ has positive prior mass.
+
+9
+
+Assumption 4 (Estimation consistency). ∀pz, as n → ∞ and E → ∞,
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+log ˆpe(yei | xz
+
+ei) P→ Ep(e)pe(y,xz) [log pe(y | xz)] ,
+
+1
+nE
+
+and
+
+1
+nE
+
+i=1
+n
+(cid:88)
+
+e=1
+E
+(cid:88)
+
+i=1
+
+e=1
+
+log ˆg(yei | xz
+
+ei) P→ Ep(e)pe(y,xz) [log g(y | xz)] .
+
+With these assumptions, we now state our first theorem. Given infinite data and
+
+environments, BIP correctly identifies the invariant z∗.
+
+Theorem 1 (Posterior consistency). Suppose Assumptions 1 to 4 hold, and take the
+limits n → ∞ and E → ∞. The BIP posterior satisfies the following properties:
+
+• consistency of the posterior mode: ˆzn,E := arg maxz ˆp(z | D) P→ z∗
+• consistency of the posterior at z∗: ˆp(z∗ | D) P→ 1.
+
+The proof is provided in Supplementary Section A.2. Theorem 1 relies on key as-
+sumptions: Assumption 1 asserts that the true data generating process satisfies invari-
+ance; Assumption 2 guarantees identifiability of z∗; Assumption 3 requires the prior is
+well-specified; Assumption 4 ensures consistent estimation of the likelihood.
+
+Next, we characterize the posterior contraction rate. First we make an assumption.
+
+Assumption 5 (Finite variance of log-likelihood ratio). ∀pz, the log-likelihood ratio
+log pe(y | xz) − log g(y | xz) has finite variance, that is,
+
+v(z) := Varp(e)pe(y,xz) ([log pe(y | xz) − log g(y | xz)]) < ∞.
+
+This regularity condition enables control over posterior contraction through Cheby-
+shev’s inequality. To state the contraction rate, we define the total variational distance
+TV(·, ·) between the posterior and the Dirac measure centered at the true z∗ as follows,
+
+(cid:16)
+
+TV
+
+ˆp(z | D), δz∗(z)
+
+(cid:17)
+
+=
+
+1
+2
+
+(cid:32)
+
+(cid:88)
+
+z̸=z∗
+
+|ˆp(z | D) − 0| + |p(z∗|D) − 1|
+
+= 1 − ˆp(z∗|D).
+
+(cid:33)
+
+Theorem 2 (Posterior contraction rate). Given Assumptions 1 to 5, there exists a se-
+quence ϵn,E = O(R · e−κnEµmin) such that
+
+(cid:32)
+
+P
+
+(cid:16)
+
+TV
+
+ˆp(z | D), δz∗(z)
+
+(cid:17)
+
+(cid:33)
+
+> ϵn,E
+
+→ 0
+
+as n → ∞ and E → ∞, where κ is a fixed value in (0, 1), and
+
+(cid:18)
+
+R :=
+
+max
+z̸=z∗
+
+(cid:19)
+
+p(z)
+p(z∗)
+
+· |supp (p(z)) |,
+
+µ(z) := Ep(e)pe(xz) [KL [pe(y | xz) ∥ g(y | xz))]] ,
+µmin := min
+
+¯µ(z).
+
+z̸=z∗,p(z)>0
+
+10
+
+(8)
+
+(9)
+
+(10)
+
+The proof is provided in Supplementary Section A.3. Theorem 2 shows that the BIP
+posterior contracts around z∗ exponentially fast, with respect to n and E. It also reveals
+two key factors that influences the contraction rate.
+
+The first is the prior, which influences the term R in Eq. 8. An informative prior that
+p(z)
+p(z∗) (or
+assigns lower probability to non-invariant zs will lead to smaller value of maxz̸=z∗
+|supp (p(z)) |), and hence a smaller R and faster contraction. In contrast, a prior fully
+supported on {0, 1}p results in an exponential dependence of R on the dimensionality
+p, since |supp (p(z)) | = 2p. This analysis highlights the challenge of high-dimensional
+invariant prediction problems and the importance of an informative prior in that setting.
+The second factor is the heterogeneity of environments, captured by µmin in Eq. 10.
+µmin is defined as minimum of µ(z) (Eq. 9) among non-invariant zs, where each µ(z)
+measures the discrepancy between local and pooled conditionals given z. By Assump-
+tion 1, µ(z∗) = 0 and µ(z) > 0 for z ̸= z∗. When environments are more similar, local
+conditionals pe(y | xz) tend to align and hence closer to the pooled conditional g(y | xz),
+yielding smaller µ(z). As a result, µmin is smaller, and the posterior contracts more
+slowly. Conversely, a larger µmin suggests greater environment heterogeneity, leading to
+faster posterior contraction. We empirically confirm this relationship in § 4.1, where we
+manually increase the environment heterogeneity level and observe faster contraction.
+
+3.2 Finite-sample extensions and violations of the assumptions
+
+We presented our main theoretical results with infinite samples per environments and
+infinite environments. Here, we consider several extensions, including finite-sample situ-
+ations and cases where assumptions are violated. The detailed theorems and proofs are
+in Appendices A.4 and A.5. Here we summarize the main findings.
+
+First, consider finite samples. Suppose we observe a fixed set of environments and let
+per-environment sample size n → ∞. The consistency results and rates from Section 3.1
+continue to hold, provided that z∗ remains identifiable within the observed environments.
+This condition requires sufficient heterogeneity among the environments.
+
+Alternatively, when each environment has finite samples but the number of environ-
+ments grows large (E → ∞), the local models ˆpe(y | xz) become biased. We must control
+these biases for the consistency results to extend.
+
+Now we consider violations of the main assumptions.
+
+• Violation of invariance (Assumption 1). Recall the discrepancy measure µ(z) in Eq. 9.
+If invariance holds exactly, µ(z) reaches its minimum at z∗, with zero discrepancy
+µ(z∗) = 0. When invariance is violated, the posterior concentrates on the feature se-
+lector minimizing µ(z), which is considered the most approximately invariant solution.
+
+• Violation of uniqueness (Assumption 2). When multiple invariant feature selectors
+exist, the posterior distributes its mass among all invariant solutions. This issue is am-
+plified with limited environments, while introducing additional environments reduces
+the number of posterior modes. § 4.2 provides an empirical illustration.
+
+11
+
+• Violation of positive prior support (Assumption 3). Suppose the prior assigns zero
+probability to the true invariant feature selector z∗. Then the posterior again concen-
+trates on the most approximately invariant feature selector within the prior support.
+
+• Model misspecification (Assumption 4). Suppose the estimation consistency assump-
+tion fails. Then the posterior concentrates on the minimizer of an alternative discrep-
+ancy measured (as opposed to µ(z) in Eq. 9), which captures the expected difference
+between the best-fitting local and pooled models within the assumed model class.
+
+In sum, when assumptions hold exactly, the posterior is consistent for the true in-
+variant features. When assumptions fail, it remains consistent, but toward the most
+approximately invariant features that are feasible within the model class and prior.
+
+4 Synthetic study
+
+We evaluate the BIP framework with simulated data under known distributions. With
+these simulations, we confirm our theory, explore the properties of uncertainty quantifica-
+tion, and empirically compare our approach to existing methods for invariant prediction.
+In what follows, BIP as a standalone method refers to the version with exact inference,
+and VI-BIP denotes its variational approximation. All experimental details are provided
+in Supplementary Section C. We summarize our findings as follows:
+
+• In § 4.1 we empirically verify the theory in § 3.1 with p = 3 features where exact
+inference for BIP is tractable. Our results confirm posterior consistency and contraction
+rates as the number of environments E and per-environment sample size n increase.
+
+• In § 4.2 we demonstrate how the BIP posterior quantifies uncertainty when there are
+multiple invariant sets, limited environments, and p = 2 features. We show how a multi-
+modal posterior empirically favors sparser feature selectors. As more environments
+are observed, the number of posterior modes decreases and the posterior uncertainty
+shrinks. This study supports the theory in § 3.2.
+
+• In § 4.3 we compare BIP and VI-BIP to existing methods for invariant prediction.
+We study both a low-dimensional setting (p = 10) and a high-dimensional setting
+(p = 450). We show that BIP and VI-BIP recover the invariant feature selector in
+low dimensions; and for high-dimensions, VI-BIP is more scalable and accurate than
+existing methods, while BIP with exact inference becomes computationally infeasible.
+
+Data generation. To simulate multi-environment data, we specify a series of joint
+distributions that factorize consistently across environments:
+
+pe(x, y) =
+
+p+1
+(cid:89)
+
+i=1
+
+pe(t(i) | t(1:i−1)),
+
+∀e,
+
+(11)
+
+12
+
+where the vector t ∈ Rp+1 is a permuted version of the concatenated vector (x(1:p), y).
+The permutation is drawn once and fixed across all environments.
+
+Each conditional distribution in Eq. 11 is a linear Gaussian. For i > 1,
+
+pe(t(i) | t(1:i−1)) = N (t(i) | α⊤
+
+eit(1:i−1) + βei, σ2
+
+ei),
+
+with parameters αei ∈ Ri−1, βei, σei ∈ R. For i = 1 we set pe(t(1) | t(1:0)) = N (t(1) |
+e1) with parameters βe1, σe1 ∈ R. (For convenience, t(1:0) denotes an empty vector.)
+βe1, σ2
+We generate the parameters of these conditionals for the different environments as
+follows. For the observational environment (e = 1), we independently draw the parameter
+values {α1i, β1i, σ1i} for each of the p features and the outcome, where i = 1, · · · , p+1. For
+the subsequent interventional environments (e > 1), we intervene on a subset of features
+based on the observational environment. Specifically, we draw an intervention set of
+features xI ⊂ x and modify their conditional distributions. For non-intervened features
+t(i) ̸∈ xI, we retain the same conditional as in the observational environment, pe(t(i) |
+t(1:i−1)) = p1(t(i) | t(1:i−1)). For intervened features t(i) ∈ xI, we independently draw new
+values {αei, βei, σei} for each environment e > 2. Per the assumptions, the conditional
+distribution for the outcome y is invariant across all environments. This setup ensures
+distinct joint distributions pe(x, y) across environments, while the conditional outcome
+distribution p(y | xz∗) remains invariant. To control the diversity of the environments,
+we also modulate the intervention strength, the fraction of intervened features |xI|/p.
+
+Prior specification and model estimation With low-dimensional data (p = 2, 3, 10)
+we use a uniform prior of z over {0, 1}p. With high-dimensional data (p = 450) we
+use a sparse prior.
+In all settings, we model local and pooled conditionals as linear
+Gaussians and estimate parameters via maximum likelihood estimation (Eq. 4 and Eq. 5,
+respectively). We use linear Gaussian models for competing methods as well.
+
+4.1 Empirical verification of theory
+
+We study the empirical behavior of the posterior in simulations with p = 3 features. We
+vary per-environment sample size n from 10 to 200, the number of environments E from
+1 to 5, and intervention strength from 0.33 to 1 (intervening on 1 to 3 features).
+
+Figure 1 (A) shows the posterior value at the true z∗, ˆp(z∗|D). For each level of
+intervention strength, ˆp(z∗|D) converges to 1 with increasing n or E, corroborating the
+theory on posterior consistency in § 3.1. The empirical rate at which ˆp(z∗|D) converges
+to 1 is faster under higher intervention strength.
+
+Figure 1 (B) plots the heterogeneity metric µmin that governs the posterior contrac-
+tion rate ϵn,E = O(R · e−κnEµmin) against the number of environments E under different
+intervention strength. We observe that µmin increases with both E and intervention
+strength. In both cases, the observed environments become more heterogeneous, leading
+to faster posterior contraction. The trend in Figure 1 (B) aligns with the empirical trend
+in Figure 1 (A), confirming the expected posterior contraction behavior.
+
+13
+
+Figure 1: Synthetic study: empirical verification of posterior consistency (left) and con-
+traction rate (right) with p = 3 features. (A): The posterior value at the invariant z∗,
+ˆp(z∗ | D), increases with the per-environment sample size n, number of environments
+E, and intervention strength “Int. strength”. Results are averaged over 1,000 simula-
+tions with 95% confidence bands. (B): The heterogeneity measure µmin (Eq. 10), which
+controls the posterior contraction rate ϵn,E = O(R · e−κnEµmin), increases with both the
+number of environments E as well as intervention strength.
+
+Figure 2: Synthetic study: uncertainty quantification with p = 2 features. Given E = 2
+environments (left), the posterior ˆp(z | D) is multi-modal, centered at two invariant
+solutions z = [1, 0], [1, 1]. When a new environment is introduced (E = 3, right), z = [1, 0]
+becomes the only invariant feature selector. The updated posterior is only concentrated
+at [1, 0]. All results are averaged over 1,000 simulations with 95% confidence bands.
+
+4.2 Uncertainty quantification in limited environments
+
+We present a synthetic example in which multiple invariant feature selectors exist under
+a limited number of environments, supporting the discussion in § 3.2.
+
+We construct 3 environments with p = 2 features, x = [x(1), x(2)], with following
+properties: (A) pe(y | x(1)) and pe(y | x(1:2)) are invariant across e = 1, 2; (B) After intro-
+ducing the third environment, only pe(y | x(1)) remains invariant. For each environment,
+we draw n = 200 samples. Supplementary Section C.2 gives the details of this data.
+
+Figure 2 plots the posterior distribution for all four possible z values. With only two
+environments (left panel), the posterior is multimodal, placing substantial mass on z =
+[1, 0] and z = [1, 1]. After introducing the third environment (right panel), the posterior
+concentrates only at z = [1, 0] and the uncertainty shrinks accordingly. This result
+supports the discussion in § 3.2: sufficiently heterogeneous environments are necessary
+for posterior consistency, whereas with limited environments, the posterior concentrates
+on all valid invariant selectors.
+
+14
+
+123450.00.51.0̂p(z*|D)(A)Int. strength = 0.3312345Int. strength = 0.6612345Int. strength = 1.00sample size n1025501002001234501234μmin(B)Int. strength0.330.661.0# of environments E# of environments E[0,0][1,0][0,1][1,1]0.00.51.0̂p(z|D)# of environments E = 2[0,0][1,0][0,1][1,1]# of environments E = 3feature selector zFinally, we note that with two environments (Figure 2, left panel), the posterior
+density at z = [1, 0] is higher than that at z = [1, 1], despite both yielding invariant
+predictions. This difference arises from model estimation bias: estimating conditional
+models given two features (z = [1, 1]) typically results in a larger estimation bias, com-
+pared to models given one feature (z = [1, 0]), and especially so for small sample sizes.
+When true models are available, this estimation artifact disappears—with large sample
+sizes (and a uniform prior), the posterior assigns equal mass to both solutions.
+
+4.3 Comparison to other methods
+
+We now compare BIP and VI-BIP to existing methods for invariant estimation. Here
+we present the main results. Supplementary Section C.3 contains additional details and
+results.
+
+Empirical setup. We perform separate simulations with feature sizes p = 10 and
+p = 450. We vary the per-environment sample size n from {50, 200, 500}, and vary the
+number of environments E from 1 to 20 for p = 10, and from 1 to 40 for p = 450. For each
+combination of (p, n, E), we generate 400 datasets under different intervention strengths.
+
+With this catalog of simulations, we compare the following methods:
+
+1. Oracle: We fit a pooled linear regression on the true invariant features xz∗ and return
+
+the ones significant at the α = 0.05 level.
+
+2. Regression: Similar to Oracle, but linear regression is performed on all features rather
+than restricting to the true invariant features. If p + 1 > nE, we use Lasso [Tibshirani,
+1996] with 10-fold cross-validation.
+
+3. Invariant causal prediction (ICP) [Peters et al., 2016] : With ICP, we use the signifi-
+
+cance level α = 0.05 for its multiple hypothesis testing procedure.
+
+4. Hidden-ICP [Rothenh¨ausler et al., 2019] An extension of ICP enabling faster inference
+for an alternative notion of invariance. We run it at the significance level α = 0.05.
+
+5. EILLS [Fan et al., 2023] : A linear regression model that introduces a regularization
+term to encourage invariant predictions among environments. Following the default
+choice in their codebase, the invariance regularization strength γ is set to 36.
+
+6. Bayesian invariant prediction (BIP) [this paper] : Our method with exact inference
+(Algorithm 1). We use the posterior mode as the BIP estimate of the invariant selector.
+
+7. Variational inference BIP (VI-BIP) [this paper] : Our method with variational infer-
+ence (Algorithm 2). Again, we use the posterior mode as the VI-BIP estimate of the
+invariant selector.
+
+Note that BIP, ICP and EILLS require enumerating all candidate invariant sets, which
+is only feasible for small p. And for Hidden-ICP, parameter estimation is intractable when
+p exceeds the number of observations. To address these issues in the high dimensions
+
+15
+
+Figure 3: Synthetic study: comparison to other methods with p = 10 features. Results
+are averaged over cases with n = 50, 200, 500, each with 400 random simulations under
+varying intervention strength. Error bars indicate 95% confidence intervals. (A): Exact
+discovery rate improves with E for all methods, with Oracle converging fastest, followed
+by BIP and VI-BIP. Oracle and ICP maintain coverage near 1 across all E, while coverage
+for BIP, VI-BIP, and ELLIS gradually increases to 1. Other methods show relatively
+low coverage. (B): BIP’s posterior value at z∗ increases with both E and intervention
+strength, as each case leads to higher heterogeneity across environments.
+
+(p = 450), we first apply a screening step, selecting the 10 features with the largest
+absolute regression coefficients. We then apply the methods that cannot handle the full
+dimension to only the screened features. In the results, we label these screened versions
+of the algorithms as BIP-s, ICP-s, Hidden-ICP-s, and EILLS-s.
+
+We emphasize that VI-BIP does not require enumeration of candidate sets, and so
+more easily applies to high-dimensional settings. However, we found that the uniform
+prior over the full space of {0, 1}p leads to unstable optimization when p is large. In the
+high dimensional case (p = 450), we set the prior to be uniform over {z ∈ {0, 1}p : ∥z∥0 ≤
+20}, i.e., a uniform prior over sets of up to 20 features. Note we still optimize over all
+sets of 20 features. This informative prior is significantly different from a screening step.
+
+Evaluation metrics. Each method produces an estimate of the invariant selector ˆz∗.
+Given the ground truth z∗, we use two metrics: (i) exact discovery rate, which measures
+the average occurrence where the estimated invariant features exactly recover the true
+invariant features, and (ii) coverage, which measures the average occurrence where the
+estimated invariant features is a subset of the true invariant features. A perfect method
+should achieve 1 on both metrics. We emphasize that coverage alone can be misleading,
+as always predicting the empty set yields full coverage but zero exact discovery.
+
+Low-dimensional results. Figure 3 displays the results for p = 10. Panel (A) plots the
+exact discovery rate (left) and coverage (right) versus the number of environments E. As
+E increases, all methods improve in exact discovery rate. At E = 20, all except Regression
+and Hidden-ICP reach an exact discovery rate close to 1, demonstrating effectiveness with
+sufficient environments. Oracle converges fastest, followed by BIP and VI-BIP.
+
+For coverage, we observe an upward trend for all methods as E increases. Both the
+oracle and ICP consistently maintain a coverage close to 1 across different values of E.
+Notably, when E is small, ICP returns empty prediction for most simulations, leading to
+a high coverage but low exact discovery rate. The coverage of our methods, both BIP
+
+16
+
+051015200.00.51.0Exact discovery(A)051015200.00.51.0CoverageMethodOracleRegressionEILLSHidden-ICPICPBIPVI-BIP051015200.00.51.0̂p(z*|D)(B)Int. strength0.20.40.60.81.0# of environments E# of environments EFigure 4: Synthetic study: comparison to other methods with p = 450 features. Results
+are averaged over cases with n = 50, 200, 500, each with 400 random simulations under
+varying intervention strength. Error bars indicate 95% confidence intervals. Methods
+with the “-s” suffix use a pre-screening step. (A): The exact discovery rate of Ora-
+cle and VI-BIP converges to 1 as E increases, while it remains low for other methods.
+Oracle maintains near-perfect coverage across all E, and coverage of VI-BIP gradually
+approaches to 1. EILLS-s achieves high coverage at large E but this is due to frequent
+empty predictions. Other methods have low coverage. (B): The variational posterior
+value at the true z∗ by VI-BIP increases with both E and intervention strength, but
+remains below 0.2 even at the largest E = 40 considered.
+
+and VI-BIP, converges to near perfect coverage when E = 20.
+
+Figure 3 (B) displays the posterior value at the true z∗ given by BIP. The posterior
+value converges to 1 as the number of environments increases. Additionally, the con-
+vergence is faster with higher intervention strength. This result is consistent with the
+theoretical contraction rates. We include the variational posterior value at z∗ from VI-
+BIP in Figure S3 in the supplementary material, where we observe a similar trend as in
+the exact inference, but with a slower convergence rate compared to the exact posterior.
+
+High-dimensional results. Figure 4 gives the results for p = 450. Panel A (Left)
+shows that the exact discovery rate of Oracle and VI-BIP converges to 1 as the number
+of environments E increases.
+In contrast, the remaining methods exhibit a near-zero
+exact discovery rate across E, primarily due to failures in the pre-screening step.
+
+In Figure 4, Panel A (Right) displays the coverage results. As expected, Oracle main-
+tains near-perfect coverage. The coverage of VI-BIP approaches 1 as more environments
+are observed. Notably, EILLS-s achieves high coverage at large E by predicting an empty
+invariant feature set in these scenarios. The remaining methods have low coverage.
+
+Figure 4 (B) plots the variational posterior density q(z∗) at the true z∗ by VI-BIP.
+q(z∗) increases with larger E or higher intervention strength. However, q(z∗) is not close
+to 1 even at the largest E = 40 tested, reflecting a sufficient amount of uncertainty.
+This uncertainty amplifies the marginal uncertainty in the mean-field variational distri-
+bution. For example, if each marginal q(z∗(i)) = .996, ∀i, then the joint posterior value is
+exponentially smaller q(z∗) = .996450 = .165, leading to substantial overall uncertainty.
+
+17
+
+0102030400.00.51.0Exact discovery(A)0102030400.00.51.0CoverageMethodOracleRegressionEILLS-sHidden-ICP-sICP-sBIP-sVI-BIP0102030400.00.10.2q(z*)(B)Int. strength0.20.40.60.81.0# of environments E# of environments E5 Gene perturbation study
+
+We revisit a real-world application studied in Peters et al. [2016], Meinshausen et al.
+[2016], Rothenh¨ausler et al. [2019] which involves predicting genes whose deletion signif-
+icantly alters the expression of some target gene. All experimental details are provided
+in Supplementary Section D. Our findings are summarized below.
+
+• VI-BIP achieves high precision and moderate recall, outperforming existing invariant
+
+prediction approaches that depend on feature pre-screening in high dimensions.
+
+• VI-BIP’s predictions closely align with the top 10 stable findings reported in Mein-
+
+shausen et al. [2016].
+
+Dataset and setup. The dataset comes from a large-scale gene perturbation experi-
+ment in yeast, where genome-wide mRNA expression levels are measured for 6,170 genes
+[Kemmeren et al., 2014]. It includes two environments: 262 observational samples for
+e = 1 where no gene deletion is performed, and 1,479 interventional samples for e = 2
+where each sample is obtained by a unique gene deletion. Our goal is to predict whether
+an unseen gene deletion will significantly change the expression level of some target gene.
+Following Peters et al. [2016], this problem can be approached by invariant prediction.
+We treat the expression level of the target gene as outcome y and the expression levels
+of the remaining p = 6, 169 genes as features x. The goal becomes to find a subset of
+feature genes xz∗ ⊂ x that invariantly predict y across environments.
+If an invariant
+feature x′ ∈ xz∗ is deleted, then the outcome y is expected to change in the resulting
+new environment, which allows us to predict the gene deletion effect. For non-invariant
+̸∈ xz∗, we do not make such prediction. Peters et al. [2016] also provides a
+feature x′
+justification through a causal perspective, where the invariant feature genes are viewed
+as the direct causes of the target gene.
+
+We set up the training and validation procedure largely following Peters et al. [2016].
+The interventional samples from e = 2 are randomly divided into 5 blocks at the be-
+ginning. We then sweep through 6,170 genes, treating each as the target gene, with the
+remaining genes as features. For each target gene, we construct a training set that in-
+cludes all observational samples from e = 1 and 4 out of 5 blocks of interventional samples
+from e = 2, reserving the remaining block for validation. Note if the training set contains
+a sample corresponding to the perturbation of the target gene, we exclude it as we want
+to make sure the distribution of the target gene is not affected. This process is repeated
+five times, with each block of interventional samples held out once, ensuring that each
+gene perturbation result is used for validation at least once. To evaluate predictions of
+invariant features, we check the validation set to determine whether perturbing these
+features leads to a significant change in the expression level of the target gene.
+We run the following methods to infer the invariant feature selector z∗:
+
+1. Marginal : we pool training data over the two environments and retain all features
+that have a correlation with the outcome y at significance level α/p with α = 0.01.
+
+18
+
+2. Lasso: we run Lasso on the pooled training data where the regularization penalty is
+selected from {0.1, 0.05, 0.01, 0.005, 0.001} with 5-fold cross-validation and retain up
+to 10 features with the highest non-zero absolute coefficient values.
+
+3. EILLS-s [Fan et al., 2023] : we run EILLS on the screened features with an invariance
+
+regularization strength γ. We vary γ ∈ {1, 25, 50, 75, 100};
+
+4. Hidden-ICP-s [Rothenh¨ausler et al., 2019] : We run hidden-ICP on the screened co-
+
+varaites at significance level α. We vary α ∈ {0.001, 0.005, 0.01, 0.05, 0.1};
+
+5. ICP-s [Peters et al., 2016] : we run ICP on the screened features at significance level
+α/nint. We vary α ∈ {0.001, 0.005, 0.01, 0.05, 0.1}, and the factor nint = 1, 479 is used
+for Bonferroni correction, as suggested by Peters et al. [2016].
+
+6. BIP-s [this paper] : we calculate the exact BIP posterior using the screened features
+with a uniform prior, retaining features whose marginal posterior probability is above
+a threshold t. We vary t ∈ {0.5, 0.6, 0.7, 0.8, 0.9}.
+
+7. VI-BIP [this paper] : we run VI-BIP using the full set of features with a sparse prior
+uniform over {z ∈ {0, 1}p : ∥z∥0 ≤ 200}, retaining the features whose marginal pos-
+terior probability is above a threshold t. We vary t ∈ {0.5, 0.6, 0.7, 0.8, 0.9}. See the
+optimization details in Supplementary Section D.
+
+As in the synthetic study, EILLS-s, ICP-s, BIP-s and Hidden-ICP-s all use a pre-screening
+step due to high dimensionality. The screened features are initially selected using the
+features returned by Lasso. If Lasso does not return any features (all coefficients are 0)
+we instead select up to the top 10 features with largest absolute correlation values from
+Marginal. For all methods, the conditional outcome distribution is a linear Gaussian.
+
+Evaluation metrics. To compare the methods, we measure precision and recall. We
+evaluate the effect of a predicted invariant feature gene on the target gene using a held-out
+validation set. If deleting the feature gene leads to a significant change in the expression
+level of the target, the prediction is considered correct.
+
+Due to the limited validation data, not all predictions can be empirically validated.
+Therefore, we compute precision as the ratio of correct predictions to the total number of
+predictions that can be validated. Similarly, recall is the ratio of the correct predictions
+to the total number of significant gene deletion effects that can be validated.
+
+Results. Figure 5 presents the results, excluding Marginal as it is an outlier. Different
+methods demonstrate different trade-offs between precision and recall. We summarize
+as follows: (i) VI-BIP is the most accurate method (with highest precision) and has a
+moderate recall; (ii) ICP-s is the second most accurate but also the most conservative as
+indicated by the lowest recall; (iii) Other invariant prediction methods and Lasso have
+lower precision and higher recall compared to VI-BIP; (iv) Marginal, which is not plotted
+in the figure, has the lowest precision of 0.11, but the highest recall of 0.87. These patterns
+remain consistent across the range of hyperparameter settings used for each method.
+
+19
+
+Figure 5: Gene perturbation study: precision v.s. recall. Each dot shows the average
+result over 3 random seeds, with error bars indicating 2 standard errors. Colors denote
+methods, and multiple dots per method reflect different hyperparameter settings with
+larger dots indicating more conservative settings (see Supplementary Section D). VI-
+BIP consistently achieves a favorable precision-recall trade-off with the highest precision
+among all methods and recall higher than ICP-s across different hyperparameter settings.
+
+We discuss potential reasons why Marginal exhibits significantly higher recall values
+than the other methods. For methods that rely on screening, lower recall is expected
+as their predictions are constrained within a maximum of 10 screened features. VI-BIP,
+while it does not use screening, imposes a sparse prior with a maximum invariant feature
+size of 200, which also restricts recall. Moreover, the true posterior, based on only two
+environments, may be multi-modal. In such cases, the mean-field variational distribution
+used by VI-BIP may struggle to capture the full posterior landscape, leading to partial
+coverage and thereby reduced recall. Other contributing factors include violations of the
+invariance assumption and misspecification of the conditional outcome model.
+
+Comparison between VI-BIP and ICP-s. Finally, we provide a detailed comparison
+between VI-BIP and ICP-s, as they achieve higher precision than other methods. We
+examine the predictions made by VI-BIP with a marginal probability threshold of t = 0.5,
+and by ICP-s with a significance level of α = 0.01. For a fixed target gene, we take the
+intersection of predicted invariant feature sets across 3 random seeds per method. We find
+that approximately 42% (27 out of 67) of correct predictions by ICP-s are also identified
+by VI-BIP, suggesting some degree of consistency. Moreover, VI-BIP is less conservative
+than ICP-s, with a total of 371 correct predictions – about 5.5 times as many as ICP-s.
+We also compare our findings with those of Meinshausen et al. [2016]. They use ICP
+at a significance level of α = 0.01 after a Lasso pre-screening procedure, followed by
+an additional stability selection step [Meinshausen and B¨uhlmann, 2010] applied to 50
+In addition, the dataset used in Meinshausen et al.
+randomly bootstrapped datasets.
+[2016] only has 160 observational samples, whereas the updated version that we use
+has 262 observational samples 1. Table 1 gives the results. Most of the verified effects
+predicted by VI-BIP, ICP-s, and Meinshausen et al. [2016] are the same.
+
+1The updated dataset can be downloaded at https://deleteome.holstegelab.nl/.
+
+20
+
+0.0000.0010.002Recall0.20.40.6PrecisionMethodLassoEILLS-sHidden-ICP-sICP-sBIP-sVI-BIPTarget gene
+
+Meinshausen et al. [2016]
+YMR104C
+YMR103C
+YPL273W
+YMR321C
+YCL040W
+YCL042W
+YLL019C
+YLL020C
+YMR186W
+YPL240C
+YBR126C
+YDR074W
+YMR173W-A YMR173W
+YGR162W
+YGR264C
+YOR027W
+YJL077C
+YJL115W×
+YLR170C
+
+Inferred invariant feature gene(s)
+
+ICP-s (α = 0.01)
+YMR104C
+YPL273W
+YCL040W
+YLL019C
+YMR186W
+∅
+YMR173W, YOL100W∗
+∅
+∅
+YDR322C-A∗, YDR180W∗ YJL184W∗, YLR438C-A∗
+
+VI-BIP (t = 0.5)
+YMR104C, YHR209W∗
+YPL273W
+YCL040W
+YLL019C
+YJL077C, YMR186W
+YGR008C∗, YKL035W∗, YDR074W
+YMR173W
+∅
+YLL026W∗, YOR027W, YFL010W-A∗
+∅
+
+Table 1: Invariant genes predicted by different methods: ICP from previous findings
+[Meinshausen et al., 2016] (left column); our implementation of ICP-s (middle column);
+and VI-BIP (right column). We observe consistency in most of their predictions on the
+10 target genes selected by Meinshausen et al. [2016]. Genes in blue are validated to have
+significant effects on the corresponding target gene; genes marked with a superscript ∗
+cannot be checked given existing data. Genes with a superscript × can be checked but do
+not have a significant effect; ∅ means no invariant features are predicted by the method.
+
+6 Discussion and future works
+
+We present Bayesian Invariant Prediction (BIP) to infer the subset of features that invari-
+antly predict the outcome across diverse environments. For high-dimensional settings, we
+develop VI-BIP, a scalable variational algorithm that addresses the exponential complex-
+ity of exact inference. We establish theoretical guarantees on posterior consistency and
+derive posterior contraction rates that depend both on the amount of data and the het-
+erogeneity of the environments. We validate BIP and VI-BIP in both synthetic and real
+data studies, demonstrating their accuracy, uncertainty quantification, and scalability.
+
+The fundamental assumptions of BIP are that the multi-environment data generative
+process is truly invariant, and that the chosen model class accurately reflects the invariant
+prediction mechanism. When these conditions are met, BIP offers a principled way to
+identify invariant features and make predictions that are robust to distribution shifts
+In practice, when these assumptions may not hold exactly, BIP
+across environments.
+identifies the most approximately invariant feature set. These results remain valuable for
+interpreting the data through a simplified lens and identifying robust features.
+
+BIP also offers a new perspective to invariant prediction in high dimensions. While
+previous methods often rely on feature pre-screening or additional regularization terms,
+our variational approach VI-BIP provides an optimization-based alternative. Our empir-
+ical results that that it achieves higher accuracy, and without being overly conservative.
+One limitation BIP is that they rely on fixed estimates of per-environment distribu-
+tions, and do not quantify uncertainty around them.
+In this work, we use maximum
+likelihood estimates and, as a result, the estimation bias can obscure the posterior infer-
+ence especially with small sample size. Integrating conditional model estimation into the
+overall probabilistic framework is an important avenue of further research.
+
+Another future direction is to explore more expressive conditional model classes and
+develop efficient training algorithms. While our method and theory apply generally, our
+experiments only considered linear Gaussian models (for computational convenience).
+Future work can consider richer model classes, combined with amortized computation.
+
+21
+
+Finally, VI-BIP uses a factorized mean-field variational family, which is effective and
+efficient, but may limit posterior expressiveness. A third future direction is to incorporate
+advances in variational inference and discrete variable optimization to improve VI-BIP.
+
+References
+
+Jonas Peters, Peter B¨uhlmann, and Nicolai Meinshausen. Causal inference by using
+invariant prediction: Identification and confidence intervals. Journal of the Royal Sta-
+tistical Society Series B: Statistical Methodology, 78(5):947–1012, 2016.
+
+Jianqing Fan, Cong Fang, Yihong Gu, and Tong Zhang. Environment invariant linear
+
+least squares. arXiv:2303.03092, 2023.
+
+Peter B¨uhlmann. Invariance, causality and robustness. Statistical Science, 35(3):404–426,
+
+2020.
+
+Mateo Rojas-Carulla, Bernhard Sch¨olkopf, Richard Turner, and Jonas Peters. Invariant
+models for causal transfer learning. Journal of Machine Learning Research, 19(36):
+1–34, 2018.
+
+Martin Arjovsky, L´eon Bottou, Ishaan Gulrajani, and David Lopez-Paz. Invariant risk
+
+minimization. arXiv:1907.02893, 2019.
+
+Micheal Jordan, Zoubin Ghahramani, Tommi Jaakkola, and Lawrence Saul. Introduction
+to variational methods for graphical models. Machine Learning, 37:183–233, 1999.
+
+David M. Blei, Alp Kucukelbir, and Jon D McAuliffe. Variational inference: A review for
+statisticians. Journal of the American statistical Association, 112(518):859–877, 2017.
+
+Mingzhang Yin, Yixin Wang, and David M. Blei. Optimization-based causal estimation
+from heterogeneous environments. Journal of Machine Learning Research, 25(168):
+1–44, 2024.
+
+Dominik Rothenh¨ausler, Peter B¨uhlmann, and Nicolai Meinshausen. Causal Dantzig.
+
+The Annals of Statistics, 47(3):1688–1722, 2019.
+
+Patrick Kemmeren, Katrin Sameith, Loes A. L. van de Pasch, Joris J. Benschop, Tineke L.
+Lenstra, Thanasis Margaritis, Eoghan O’Duibhir, Eva Apweiler, Sake van Wagenin-
+gen, Cheuk W. Ko, Sebastiaan van Heesch, Mehdi M. Kashani, Giannis Ampatziadis-
+Michailidis, Mariel O. Brok, Nathalie A. C. H. Brabers, Anthony J. Miles, Diane
+Bouwmeester, Sander R. van Hooff, Harm van Bakel, Erik Sluiters, Linda V. Bakker,
+Berend Snel, Philip Lijnzaad, Dik van Leenen, and Marian J. A. Groot Koerkamp.
+Large-scale genetic perturbations reveal regulatory networks and an abundance of gene-
+specific repressors. Cell, 157(3):740–752, 2014.
+
+Jonas Peters, Dominik Janzing, and Bernhard Sch¨olkopf. Elements of Causal Inference:
+
+Foundations and Learning Algorithms. The MIT Press, 2017.
+
+22
+
+Bernhard Sch¨olkopf, Francesco Locatello, Stefan Bauer, Nan Rosemary Ke, Nal Kalch-
+brenner, Anirudh Goyal, and Yoshua Bengio. Toward causal representation learning.
+Proceedings of the IEEE, 109(5):612–634, 2021.
+
+Ragnar Frisch, Trygve Haavelmo, Tjalling C. Koopmans, and Jan Tinbergen. Autonomy
+of Economic Relations. Memorandum fra Universitets Socialøkonomiske Institutt. Uni-
+versitets Socialøkonomiske Institutt, Oslo, Norway, 1948.
+
+Kevin D. Hoover. Causality in economics and econometrics. In Steven N. Durlauf and
+Lawrence E. Blume, editors, The New Palgrave Dictionary of Economics. Palgrave
+Macmillan, Basingstoke, UK, 2nd edition, 2008.
+
+Judea Pearl. Causality: Models, Reasoning, and Inference. Cambridge University Press,
+
+New York, NY, 2nd edition, 2009.
+
+Christina Heinze-Deml, Jonas Peters, and Nicolai Meinshausen. Invariant causal predic-
+
+tion for nonlinear models. Journal of Causal Inference, 6(2):20170016, 2018.
+
+Zhenyu Wang, Yifan Hu, Peter B¨uhlmann, and Zijian Guo. Causal invariance learning
+
+via efficient optimization of a nonconvex objective. arXiv:2412.11850, 2024.
+
+Yihong Gu, Cong Fang, Yang Xu, Zijian Guo, and Jianqing Fan. Fundamental computa-
+tional limits in pursuing invariant causal prediction and invariance-guided regulariza-
+tion. arXiv:2501.17354, 2025.
+
+Francisco Madaleno, Pernille Julie Viuff Sand, Francisco C Pereira, and Sergio Her-
+nan Garrido Mejia. Bayesian hierarchical invariant prediction. arXiv:2505.11211, 2025.
+
+Diederik P. Kingma and Max Welling. Auto-encoding variational Bayes. In International
+
+Conference on Learning Representations, 2014.
+
+Rajesh Ranganath, Sean Gerrish, and David Blei. Black box variational inference. In
+
+Artificial Intelligence and Statistics, pages 814–822, 2014.
+
+Mingzhang Yin, Nhat Ho, Bowei Yan, Xiaoning Qian, and Mingyuan Zhou. Probabilistic
+
+best subset selection via gradient-based optimization. arXiv:2006.06448, 2020.
+
+Shakir Mohamed, Mihaela Rosca, Michael Figurnov, and Andriy Mnih. Monte Carlo
+gradient estimation in machine learning. Journal of Machine Learning Research, 21
+(132):1–62, 2020.
+
+Robert Tibshirani. Regression shrinkage and selection via the lasso. Journal of the Royal
+
+Statistical Society Series B: Statistical Methodology, 58(1):267–288, 1996.
+
+Nicolai Meinshausen, Alain Hauser, Joris M. Mooij, Jonas Peters, Philip Versteeg, and
+Peter B¨uhlmann. Methods for causal inference from gene perturbation experiments
+and validation. Proceedings of the National Academy of Sciences, 113(27):7361–7368,
+2016.
+
+23
+
+Nicolai Meinshausen and Peter B¨uhlmann. Stability selection. Journal of the Royal
+
+Statistical Society Series B: Statistical Methodology, 72(4):417–473, 2010.
+
+Leslie N. Smith. Cyclical learning rates for training neural networks.
+
+In 2017 IEEE
+
+Winter Conference on Applications of Computer Vision, pages 464–472, 2017.
+
+Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory
+Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Alban Des-
+maison, Andreas K¨opf, Edward Yang, Zach DeVito, Martin Raison, Alykhan Tejani,
+Sasank Chilamkurthy, Benoit Steiner, Lu Fang, Junjie Bai, and Soumith Chintala.
+Pytorch: An imperative style, high-performance deep learning library. In Advances in
+Neural Information Processing Systems, volume 32, 2019.
+
+24
+
+Supplementary Material
+
+A Additional Theory and Proofs
+
+In this section we provide additional theoretical results and proofs that are in complement
+to § 3.
+
+Notation. We write ∀pa to mean “for p(a)-almost every realization of a” where a is a
+random variable a and p(a) is its probability measure.
+
+A.1 Preliminary lemmas
+
+We first introduce two lemmas that are helpful for proofs of the main theorems.
+
+Lemma 1. Let {Xn} be a sequence of random variables where each Xn ∈ Rp and p is
+P→ µ for some constant µ ∈ Rp, and define I ∗ := {i : µi =
+a fixed number. Assume Xn
+µmax} where µmax is value of the largest component(s) of µ and therefore I ∗ is the set of
+corresponding indices. Let i∗
+n denote the index of the maximal component
+of Xn. Then we have
+
+n := arg maxi X (i)
+
+P (i∗
+
+n ∈ I ∗) → 1, as n → ∞.
+
+As a special case, when I ∗ = {i∗ : µi∗ > µj∀j ̸= i∗} is a singleton, we have
+
+i∗
+n
+
+P→ i∗, as n → ∞.
+
+Proof By continuous mapping theorem, ∀j ̸∈ I ∗, as n → ∞,
+
+X (i)
+
+n − X (j)
+n
+
+P→ µmax − µ(j) > 0.
+
+max
+i∈I∗
+
+Hence P (maxi∈I∗ X (i)
+
+n − X (j)
+Consequently, as n → ∞,
+
+n < 0) → 0 as n → ∞.
+
+P (i∗
+
+n ̸∈ I ∗) = P (∃j ̸∈ I ∗, max
+i∈I∗
+
+and therefore
+
+X (i)
+
+n < X (j)
+
+n ) ≤
+
+(cid:88)
+
+j̸∈I∗
+
+P (max
+i∈I∗
+
+X (i)
+
+n − X (j)
+
+n < 0) → 0,
+
+P (i∗
+
+n ∈ I ∗) → 1.
+
+Lemma 2. Let {Xn} be a sequence of random variables such that its sample average Sn
+n
+converges to some constant µ in probability, where Sn := (cid:80)n
+i=1 Xi. When µ < 0, Then
+
+25
+
+we have
+
+And when µ > 0, we have
+
+exp{Sn} P→ 0.
+
+exp{Sn} P→ ∞.
+
+Proof
+
+Suppose µ < 0. ∀ϵ > 0, ∀δ > 0, it suffices to find an N = N (ϵ, δ) such that for n > N ,
+
+P (exp{Sn} < ϵ) = P (
+
+Sn
+n
+
+<
+
+1
+n
+
+log ϵ) > 1 − δ.
+
+Since Sn
+n
+
+P→ µ, for ϵ′ = − µ
+
+2 and δ given above, ∃N ′ = N ′(ϵ′, δ) such that for n > N ′,
+
+P (
+
+Sn
+n
+
+< µ + ϵ′) > 1 − δ.
+
+We choose N = max(N ′,
+
+1
+µ+ϵ′ log ϵ). For n > N , we have
+
+1
+n
+
+log ϵ > µ + ϵ′,
+
+and therefore
+
+P (
+
+Sn
+n
+
+<
+
+1
+n
+
+log ϵ) > P (
+
+Sn
+n
+
+< µ + ϵ′) > 1 − δ.
+
+Next, we consider µ > 0. ∀δ > 0, M > 0, it suffices to find an N = N (M, δ) such that
+
+for n > N ,
+
+P (exp{Sn} > M ) = P (Sn > log M ) > 1 − δ.
+
+Since Sn
+n
+
+P→ µ, for ϵ′ = µ
+
+2 and δ given above, ∃N ′ = N ′(ϵ′, δ) such that
+
+P (
+
+Sn
+n
+
+> µ − ϵ′) > 1 − δ.
+
+We choose N = max(N,
+
+1
+µ−ϵ′ log M ). For n > N, we have
+
+n(µ − ϵ′) > log M
+
+and therefore
+
+P (Sn > log M ) > P (Sn > n(µ − ϵ′) > 1 − δ.
+
+26
+
+Lemma 3. Recall definition of µ(z) in Eq. 9:
+
+µ(z) = Ep(e)pe(xz) [KL [pe(y | xz) ∥ g(y | xz)]] .
+
+We have
+
+µ(z) = 0 ⇔ pe(y | xz) is invariant with respect to e ∀pe∀xz
+
+Proof By the property of KL divergence, we have
+
+µ(z) = 0 ⇔ KL [pe(y | x) ∥ g(y | xz)] = 0 ∀pe∀xz
+⇔ pe(y | xz) = g(y | xz) ∀pe∀xz
+⇔ pe(y | xz) is invariant to e ∀pe∀xz
+
+A.2 Proof of Theorem 1
+
+Theorem (Posterior consistency) (Restatement of Theorem 1). Suppose Assump-
+tions 1 to 4 hold, and take the limits n → ∞ and E → ∞. The BIP posterior satisfies
+the following properties:
+
+• consistency of the posterior mode: ˆzn,E := arg maxz ˆp(z | D) P→ z∗
+
+• consistency of the posterior at z∗: ˆp(z∗ | D) P→ 1.
+
+Proof The posterior in Eq. 6 can be re-written as
+
+ˆp(z | D) =
+
+p(z) exp{− ˆSn,E(z)}
+z p(z) exp{− ˆSn,E(z)}
+
+(cid:80)
+
+where ˆSn,E(z) is the log-likelihood ratio given z,
+
+ˆSn,E(z) :=
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+i=1
+
+e=1
+
+By Assumption 4, as n, E → ∞,
+
+log ˆpe(yei | xz
+
+ei) − log ˆg(yei | xz
+
+ei).
+
+1
+nE
+
+ˆSn,E(z) P→ Ep(e)pe(y|xz) [log pe(y | xz)] − Ep(e)pe(y|xz) [log g(y | xz)] .
+
+Recall the definition of µ(z) in Eq. 9, the RHS reduces to µ(z) and hence
+
+1
+nE
+
+ˆSn,E(z) P→ µ(z).
+
+27
+
+(12)
+
+(13)
+
+(14)
+
+Applying Lemma 1, as n → ∞ and E → ∞
+
+arg max
+z:p(z)>0
+
+−
+
+1
+nE
+
+ˆSn,E(z) P→ arg max
+
+−µ(z) = z∗,
+
+z:p(z)>0
+
+where the last equality follows from Assumptions 2 and 3 and Lemma 3.
+
+Consequently, the posterior mode is consistent:
+
+ˆzn,E := arg max
+
+z
+
+ˆp(z | D)
+
+log p(z) − ˆSn,E(z)
+
+log p(z) −
+
+1
+nE
+
+ˆSn,E(z)
+
+= arg max
+z:p(z)>0
+
+= arg max
+z:p(z)>0
+
+= arg max
+z:p(z)>0
+
+1
+nE
+1
+nE
+
+−
+
+ˆSn,E(z)
+
+(for sufficiently large n, E)
+
+P→ z∗
+
+as n, E → ∞.
+
+Next, we prove the posterior consistency at z∗.
+By Assumption 3, p(z∗) > 0. Dividing both the numerator and denominator in the
+
+RHS of Eq. 12 by p(z∗) exp{−Sn,E(z∗)}, the posterior can be expressed as
+
+ˆp(z∗ | D) =
+
+1 + (cid:80)
+
+z̸=z∗ p(z)/p(z∗) · exp{ ˆSn,E(z∗) − ˆSn,E(z)}
+
+1
+
+.
+
+To show ˆp(z∗|D) P→ 1, it suffices to show that ∀pz ̸= z∗,
+
+exp{ ˆSn,E(z∗) − ˆSn,E(z)} P→ 0.
+
+(15)
+
+By Eq. 14, ∀z ̸= z∗,
+
+(cid:104) ˆSn,E(z∗) − ˆSn,E(z)
+
+(cid:105) P→ µ(z∗) − µ(z) < 0.
+
+1
+nE
+
+Applying Lemma 2 to the above inequality, Eq. 15 holds. Hence we conclude the proof.
+
+A.3 Proof of Theorem 2
+
+Theorem (Posterior contraction rate) (Restatement of Theorem 2). Given Assump-
+tions 1 to 5, there exists a sequence ϵn,E = O(R · e−κnEµmin) such that
+
+(cid:32)
+
+P
+
+(cid:16)
+
+TV
+
+ˆp(z | D), δz∗(z)
+
+(cid:17)
+
+(cid:33)
+
+> ϵn,E
+
+→ 0
+
+28
+
+as n → ∞ and E → ∞, where
+
+(cid:18)
+
+R =
+
+max
+z̸=z∗
+
+(cid:19)
+
+p(z)
+p(z∗)
+
+· |supp(p(z))|,
+
+µ(z) := Ep(e)pe(xz) [KL [pe(y | xz) ∥ g(y | xz))]] ,
+µmin :=
+
+¯µ(z),
+
+min
+z̸=z∗,z∈supp(p(z))
+
+(16)
+
+(17)
+
+(18)
+
+and κ is a fixed value in (0, 1).
+
+Proof Based on the expression of the posterior in Eq. 12, we have the following lower
+bound on the posterior value at z∗
+
+ˆp(z∗ | D) ≥
+
+1
+
+1 + Rmax
+
+(cid:80)
+
+z̸=z∗ exp{ ˆSn,E(z∗) − ˆSn,E(z)}
+
+.
+
+(19)
+
+where Rmax := maxz̸=z∗
+
+p(z)
+p(z∗) .
+
+We decompose ˆSn,E(z) as follows:
+
+ˆSn,E(z) = Sn,E(z) + Bn,E(z)
+
+where
+
+Sn,E(z) :=
+
+E
+(cid:88)
+
+ne(cid:88)
+
+e=1
+
+i=1
+
+log pe(yei | xz
+
+ei) − log g(yei | xz
+
+ei),
+
+(20)
+
+(21)
+
+is the log-likelihood ratio under the true model, and
+
+Bn,E(z) := ˆSn,E(z) − Sn,E(z)
+
+is the estimation bias of the log-likelihood ratios.
+
+Step 1. We first show the concentration behavior of Sn,E(z∗) − Sn,E(z).
+
+For any z ̸= z∗ and any k > 0, by Chebyshev’s inequality we have
+
+(cid:18)
+
+P
+
+| Sn,E(z∗) − Sn,E(z) − E [Sn,E(z∗) − Sn,E(z)] | ≥ k
+
+(cid:19)
+
+≤
+
+Var [Sn,E(z∗) − Sn,E(z)]
+k2
+
+.
+
+(22)
+
+Note that by definitions of µ(z) and v(z),
+
+E [Sn,E(z)] = nEµ(z),
+
+Var [Sn,E(z)] = nEv(z).
+
+Furthermore we have
+
+E [Sn,E(z∗) − Sn,E(z)] = µ(z∗) − µ(z) < 0
+
+(23)
+
+29
+
+by Assumption 2, and
+
+Var [Sn,E(z∗) − Sn,E(z)] ≤ 2nEvmax
+
+(24)
+
+where vmax := maxz v(z) < ∞ by Assumption 5.
+
+Setting k = (1 − κ)nEµ(z) for a fixed value κ ∈ (0, 1), and substituting the expres-
+sions for the mean and variance from Eq. 23 and Eq. 24 into Eq. 22, we obtain
+
+(cid:18)
+
+P
+
+| Sn,E(z∗) − Sn,E(z) + nEµ(z)| ≥ (1 − κ)nEµ(z)
+
+(cid:19)
+
+≤
+
+2vmax
+nE(1 − κ)2µ(z)2 .
+
+(25)
+
+Step 2. We then show the concentration behavior of Bn,E(z∗) − Bn,E(z).
+
+By Assumption 4 and LLN, as n → ∞ and E → ∞, each estimation bias ˆBn,E(z)
+goes to 0, and so
+
+1
+nE
+
+[Bn,E(z∗) − Bn,E(z)] P→ 0.
+
+(26)
+
+Step 3. Having characterized the concentration behaviors of Sn,E(z) and Bn,E(z), we are
+
+now ready to prove the posterior contraction rate.
+
+We define the rate ϵn,E as follows
+
+ϵn,E := 1 −
+
+1
+1 + Re−κnEµmin
+
+= O(R · e−κnEµmin).
+
+Our goal is to show
+
+(cid:16)
+
+P
+
+TV
+
+(cid:16)
+
+p(z | D), δz∗(z)
+
+(cid:17)
+
+(cid:17)
+
+> ϵn,E
+
+→ 0,
+
+as n → ∞ and E → ∞.
+
+Recall TV
+
+(cid:16)
+
+p(z | D), δz∗(z)
+
+(cid:17)
+
+= 1 − p(z∗|D), if suffices to show that
+
+(cid:32)
+
+P
+
+(cid:18)
+ˆp
+
+z∗ | D
+
+(cid:19)
+
+(cid:33)
+
+< 1 − ϵn,E
+
+P→ 0,
+
+as n → ∞ and E → ∞.
+
+30
+
+Using the inequality that lower bounds p(z∗ | D) from Eq. 19, we have
+
+(cid:32)
+
+P
+
+(cid:18)
+ˆp
+
+z∗ | D
+
+(cid:19)
+
+< 1 − ϵn,E
+
+(cid:33)
+
+1
+
+(cid:32)
+
+(cid:32)
+
+≤ P
+
+= P
+
+1 + Rmax
+
+(cid:80)
+
+z̸=z∗ exp{ ˆSn,E(z∗) − ˆSn,E(z)}
+
+1
+
+(cid:80)
+
+z̸=z∗ exp{Sn,E(z∗) − Sn,E(z)}
+
+1
+
+1 + Rmax
+(cid:32)
+
++ P
+
+1 + Rmax
+
+(cid:80)
+
+z̸=z∗ exp{Sn,E(z∗) − Sn,E(z)}
+
+(cid:33)
+
+< 1 − ϵn,E
+
+(cid:33)
+
+< 1 − ϵn,E | Ac
+
+n,E
+
+P (Ac
+
+n,E)
+
+(cid:33)
+
+< 1 − ϵn,E | An,E
+
+P (An,E)
+
+(27)
+
+where An,E is the event that ∃z ̸= z∗ such that |Sn,E(z∗) − Sn,E(z) + nEµ(z)| ≥
+2(1 − κ)nEµ(z) or |Bn,E(z∗) − Bn,E(z)| ≥ 1
+1
+n,E denotes the
+complement of An,E.
+
+2(1 − κ)nEµ(z), and Ac
+
+We consider the following two cases:
+
+(a) Given the event An,E, by definition of An,E and the subadditivity of probability
+
+measure, we have
+
+P (An,E) ≤
+
+(cid:88)
+
+(cid:110)
+
+P
+
+z̸=z∗
+
+(cid:18)
+
+|Sn,E(z∗) − Sn,E(z) + nEµ(z)| ≥
+
+(1 − κ)nEµ(z)|
+
+(cid:19)
+
+1
+2
+
+(cid:18)
+
++ P
+
+|Bn,E(z∗) − Bn,E(z)| ≥
+
+(1 − κ)nEµ(z)
+
+(cid:19) (cid:111)
+.
+
+1
+2
+
+As n → ∞ and E → ∞, the first term in the summation on the RHS of the
+inequality converges to zero by Eq. 25 from Step 1, and the term converges to
+0 as well by Eq. 26 from Step 2. Thus,
+
+P (An,E) → 0,
+
+as n → ∞ and E → ∞.
+
+(28)
+
+(b) Given the complement event Ac
+
+1
+
+2(1 − κ)nEµ(z), and |Bn,E(z∗) − Bn,E(z)| < 1
+inequality and the decomposition of ˆSn,E(z) in Eq. 20, we have
+
+n,E, ∀z ̸= z∗ both |Sn,E(z∗)−Sn,E(z)+nEµ(z)| <
+2(1 − κ)nEµ(z). By the triangle
+
+| ˆSn,E(z∗) − ˆSn,E(z∗) + nEµ(z)|
+= |Sn,E(z∗) − Sn,E(z) + nEµ(z) + Bn,E(z∗) − Bn,E(z)| < (1 − κ)nEµ(z).
+
+Hence, Ac
+
+n,E implies that
+
+ˆSn,E(z∗) − ˆSn,E < −κnEµ(z),
+
+∀z ̸= z∗
+
+31
+
+which further implies
+
+1 + Rmax
+
+(cid:80)
+
+z̸=z∗ exp{Sn,E(z∗) − Sn,E(z)}
+
+1
+
+>
+
+>
+
+1
+
+(cid:80)
+
+1 + Rmax
+
+z̸=z∗ exp{−κnEµ(z)}
+1
+1 + R exp{−κnEµmin}
+
+= 1 − ϵn,E
+
+where the last inequality follows from the definitions of R and µmin in Eq. 16
+and Eq. 18, respectively.
+
+Therefore,
+
+(cid:32)
+
+P
+
+1 + Rmax
+
+(cid:80)
+
+z̸=z∗ exp{Sn,E(z∗) − Sn,E(z)}
+
+1
+
+(cid:33)
+
+< 1 − ϵn,E | Ac
+
+n,E
+
+= 0.
+
+(29)
+
+Combining the analysis in these two cases, namely Eq. 28 and Eq. 29, with Eq. 27
+we prove the final contraction rate result: as n → ∞ and E → ∞,
+
+(cid:32)
+
+P
+
+(cid:18)
+ˆp
+
+z∗ | D
+
+(cid:19)
+
+(cid:33)
+
+< 1 − ϵn,E
+
+→ 0.
+
+A.4 Theory extensions to finite n and finite E cases
+
+We present extensions of Theorems 1 and 2 to two separate cases: (1) E is held fixed while
+letting n → ∞, and (2) n is held fixed while letting E → ∞. These results corroborate
+the first part of § 3.2.
+
+Case 1: E fixed and n → ∞. Given fixed E environments Eobs = {1, · · · , E}, we set
+the collection of environments of interests E to Eobs. Importantly, the pooled conditional
+g(y | xz) in Definition 1 and Assumption 1, which depend on E, should adapt to Eobs
+(cid:80)E
+accordingly. We also re-define p(e) = 1
+e′=1 δe′(e) as a uniform distribution over the
+E
+finite set Eobs, and any expectation with respect to p(e) should be re-interpreted.
+
+We then make the following assumption:
+
+Assumption 6 (Estimation consistency given fixed environments). Given fixed E envi-
+ronments Eobs, ∀pz, as n → ∞,
+
+1
+nE
+
+1
+nE
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+log ˆpe(yei | xz
+
+ei) P→ Ep(e)pe(y|xz) [log pe(y | xz)] ,
+
+i=1
+n
+(cid:88)
+
+e=1
+E
+(cid:88)
+
+i=1
+
+e=1
+
+log ˆg(yei | xz
+
+ei) P→ Eg(y|xz) [log g(y | xz)] .
+
+32
+
+Theorem 3 (Posterior consistency given infinite per-environment samples). Given fixed
+E environments E, and Assumptions 1 to 3 and 6, as n → ∞, we have
+
+• posterior mode consistency, i.e. ˆzn,E := arg maxz ˆp(z | D) P→ z∗, and
+
+• posterior consistency at z∗, i.e. ˆp(z∗ | D) P→ 1.
+
+Theorem 4 (Posterior contraction rate given infinite per-environment samples). Given
+Assumptions 1 to 3, 6 and 5, there exists a sequence ϵn,E = O(R · e−κnEµmin) such that
+
+(cid:32)
+
+P
+
+(cid:16)
+
+TV
+
+p(z | D), δz∗(z)
+
+(cid:17)
+
+(cid:33)
+
+> ϵn,E
+
+→ 0
+
+as n → ∞, where R and µmin are defined in Eq. 8 and Eq. 10, respectively, and κ is a
+fixed value in (0, 1).
+
+Assumption 4 is a modification of Assumption 4 where we only require the estimation
+
+consistency with respect to n within E environments.
+
+The proofs of Theorems 3 and 4 are essentially the same as the proofs of Theorems 1
+and 2, respectively, except that E is now held fixed, only taking n → ∞. Hence we
+abbreviate them here.
+
+Case 2: n fixed and E → ∞.
+In this case, we consider a similar setting as in the
+main theorems where E environments are sampled from p(e) – a uniform distribution
+over E. Given the drawn E environments, we relabel them by e = 1, · · · , E. And in each
+environment e, we draw n observations xei, yei i.i.d. from pe(x, y) for i = 1, · · · , n.
+
+Assumption 7 (Estimation consistency of pooled conditional given fixed n). Given fixed
+n, ∀pz, as E → ∞,
+
+1
+n
+
+1
+E
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+i=1
+
+e=1
+
+log ˆg(yei | xz
+
+ei) P→ Ep(e)pe(xz,y) [log g(y | xz)] .
+
+Assumption 8 (Identifiability of z∗ under estimation bias). z∗ minimizes µn(z) defined
+as follows
+
+µn(z) := Ep(e)pe(xz)KL [pe(y | xz) ∥ g(y | xz))]
+(cid:125)
+
+(cid:123)(cid:122)
+:=model discrepancy µ(z)
+
+(cid:124)
+
++
+
+1
+n
+(cid:124)
+
+Ep(e) (cid:81)n
+
+i=1 pe(xi,yi)
+
+n
+(cid:88)
+
+[log ˆpz
+
+e(yi; xz
+
+i ) − log pe(yi | xz
+
+i )]
+,
+
+i=1
+
+(cid:123)(cid:122)
+:=estimation bias of per-environment conditionals bn(z)
+
+(cid:125)
+
+(30)
+
+Theorem 5 (Posterior consistency given infinite environments). Given fixed n and As-
+sumptions 1 to 3, 7 and 8, as E → ∞, we have
+
+1. posterior mode consistency, i.e. ˆzn,E
+
+P→ z∗
+
+33
+
+2. posterior consistency at z∗, i.e. ˆp(z∗ | D) P→ 1.
+
+Assumption 7 ensures that the pooled model is consistently estimated given infinite
+environments, given finite data in each environments. This assumption is reasonable, as
+we view each observation (xei, yei) as i.i.d. copy from the pooled distribution g(x, y) :=
+(cid:82) p(e)pe(x, y)de.
+
+Assumption 8 is a non-trivial assumption – it requires that the invariant z∗ mini-
+mizes the combined value of model discrepancy µ(z) and local model estimation bias
+bn(z). Since z∗ minimizes µ(z) by Assumption 2, Assumption 8 is satisfied whenever
+the estimation bias is well-controlled, for example, if maxz |bn(z)| < minz:z̸=z∗ µ(z). In
+practice, when the per-environment sample size n is sufficiently large, the estimation bias
+becomes negligible, so that Assumption 8 is expected to hold.
+
+Incorporating these two assumptions, Theorem 5 establishes posterior consistency in
+the infinite environment regime. The proof follows the same structure as the proof of
+Theorem 1.
+Proof ∀z, by law of large number (LLN), as E → ∞
+
+1
+nE
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+i=1
+
+e=1
+
+[log ˆpe(yei | xz
+
+ei) − log pe(yei | xz
+
+ei)] P→ bn(z),
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+log g(y | xz) P→ Ep(e)pe(xz,y) [log g(y | xz)] ,
+
+(31)
+
+1
+nE
+
+1
+nE
+
+i=1
+n
+(cid:88)
+
+e=1
+E
+(cid:88)
+
+i=1
+
+e=1
+
+log pe(y | xz) P→ Ep(e)pe(xz,y) [log pe(y | xz)] .
+
+By Assumption 7 and Eq. 31, and recall the definitions of of µ(z) in Eq. 9 and ˆSn,E(z)
+
+in Eq. 13, we have ∀pz,
+
+1
+nE
+
+ˆSn,E(z) P→ µn(z)
+
+(32)
+
+Applying Lemma 1, as E → ∞
+
+arg max
+z:p(z)>0
+
+−
+
+1
+nE
+
+ˆSn,E(z) P→ arg max
+
+−µn(z) = z∗,
+
+z:p(z)>0
+
+where the last equality follows from Assumption 8.
+
+34
+
+Using the posterior expression in Eq. 12, we show that the posterior mode is consistent:
+
+ˆzn,E := arg max
+
+z
+
+ˆp(z | D)
+
+log p(z) − ˆSn,E(z)
+
+log p(z) −
+
+1
+nE
+
+ˆSn,E(z)
+
+ˆSn,E(z)
+
+= arg max
+z:p(z)>0
+
+= arg max
+z:p(z)>0
+
+= arg max
+z:p(z)>0
+
+P→ z∗.
+
+1
+nE
+1
+nE
+
+−
+
+Next, we prove the posterior consistency at z∗.
+
+By Assumption 3, p(z∗) > 0. Dividing both the numerator and denominator in the
+RHS of the posterior expression in Eq. 12 by p(z∗) exp{−Sn,E(z∗)}, the posterior reduces
+to
+
+ˆp(z∗ | D) =
+
+1 + (cid:80)
+
+z̸=z∗ p(z)/p(z∗) · exp{ ˆSn,E(z∗) − ˆSn,E(z)}
+
+1
+
+.
+
+(33)
+
+To show ˆp(z∗|D) P→ 1 as E → ∞, it suffices to show that ∀pz ̸= z∗,
+
+exp{ ˆSn,E(z∗) − ˆSn,E(z)} P→ 0.
+
+(34)
+
+By Eq. 32, ∀z ̸= z∗, as E → ∞,
+
+(cid:104) ˆSn,E(z∗) − ˆSn,E(z)
+
+(cid:105) P→ µn(z∗) − µn(z) < 0.
+
+1
+nE
+
+Applying Lemma 2 to the above inequality, Eq. 34 holds. Hence we conclude the proof.
+
+Next we establish the contraction rate result. Since the local model estimation bias
+
+is non-negligible, we need an additional assumption on its variance:
+
+Assumption 9 (Finite variance of estimation bias in per-environment models). For any
+fixed n, the variance of the estimation bias of per-environment conditionals
+
+vn(z) := Varp(e) (cid:81)n
+
+i=1 pe(yi|xz
+i )
+
+(cid:34) n
+
+(cid:88)
+
+i=1
+
+exists and is finite.
+
+(log ˆpe(yi | xz
+
+i ) − log pe(yi | xz
+
+(cid:35)
+i ))
+
+Theorem 6 (Contraction rate given infinite environments). Given Assumptions 1 to 3,
+7, 8, 5 and 9, for any fixed n, there exists a sequence ϵn,E = O(Re−κnEµmin) such that
+
+(cid:32)
+
+P
+
+TV
+
+(cid:16)
+
+p(z | D), δz∗(z)
+
+(cid:17)
+
+(cid:33)
+
+> ϵn,E
+
+→ 0
+
+(35)
+
+35
+
+as E → ∞, where R and µmin are defined in Eq. 8 and Eq. 10, respectively, and κ is a
+fixed value in (0, 1).
+
+Proof We consider the same posterior lower bound in Eq. 19, and decompose ˆSn,E(z)
+as follows
+
+ˆSn,E(z) = Sn,E(z) + B(1)
+
+n,E(z) − B(2)
+
+n,E(z),
+
+where Sn,E(z) is the log-likelihood ratio under the true model in Eq. 21, and
+
+B(1)
+
+n,E(z) =
+
+B(2)
+
+n,E(z) =
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+i=1
+n
+(cid:88)
+
+e=1
+E
+(cid:88)
+
+i=1
+
+e=1
+
+log ˆpe(yei | xz
+
+ei) − log pe(yei | xz
+ei)
+
+log ˆg(yei | xz
+
+ei) − log g(yei | xz
+ei)
+
+are the estimation biases of log-likelihood ratios of local and pooled models, respectively.
+
+We follow a similar 3-step proof strategy as in the proof of Theorem 2.
+
+Step 1. We first show the concentration behavior of dn,E(z∗, z) := Sn,E(z∗) + B(1)
+
+n,E(z∗) −
+
+Sn,E(z) − B(1)
+
+n,E(z) with respect to E.
+
+For any fixed κ ∈ (0, 1), by Chebyshev’s inequality, ∀z ̸= z∗,
+
+(cid:12)
+(cid:16)(cid:12)
+(cid:12)dn,E(z∗, z) − E[dn,E(z∗, z)]
+(cid:12)
+(cid:12)
+(cid:12) ≥
+
+P
+
+1 − κ
+2
+
+(cid:12)
+(cid:12)
+(cid:12)
+
+(cid:12)
+E[dn,E(z∗, z)]
+(cid:12)
+(cid:12)
+
+(cid:17)
+
+≤
+
+Var [dn,E(z∗, z)]
+(1 − κ)2/4 · E[dn,E(z∗, z)]2 .
+
+Note that
+
+E[dn,E(z∗, z)] = −nEµn(z, z∗)
+
+where µn(z, z∗) := µn(z) − µn(z∗) > 0 by Assumption 8, and
+
+Var[dn,E(z∗, z)] ≤ 2nEvn,max,
+
+(36)
+
+(37)
+
+(38)
+
+where vn,max := maxz vn(z) + maxz v(z) is finite given Assumptions 5 and 9.
+
+Substituting Eq. 37 and Eq. 38 into Eq. 36, we have
+
+(cid:12)
+(cid:16)(cid:12)
+(cid:12)dn,E(z∗, z) + nEµn(z, z∗)
+(cid:12)
+(cid:12)
+(cid:12) ≥
+
+P
+
+1 − κ
+2
+
+(cid:17)
+nEµn(z, z∗)
+
+≤
+
+2vn,max
+nE(1 − κ)2/4µn(z, z∗)2 .
+(39)
+
+Step 2. We then show the concentration behavior of B(2)
+
+n,E(z∗) − B(2)
+
+n,E(z) with respect to E.
+
+By Assumption 7 and LLN, ∀z, as E → ∞,
+
+1
+nE
+
+B(2)
+
+n,E(z∗) − B(2)
+
+n,E(z) P→ 0.
+
+36
+
+(40)
+
+Step 3. Having characterized the above concentration behaviors, we now prove the contrac-
+
+tion rate defined as
+
+ϵn,E := 1 −
+
+1
+1 + Re−κnEµmin
+
+= O(R · e−κnEµmin).
+
+We define An,E be the event that ∃z ̸= z∗ such that |dn,E(z∗, z) + nEµn(z, z∗)| ≥
+2 nEµn(z, z∗), or |B(2)
+1−κ
+Following a similar analysis in the proof of Theorem 2, we can show that as E → ∞
+
+2 nEµn(z, z∗).
+
+n,E(z∗) − B(2)
+
+n,E(z)| ≥ 1−κ
+
+(cid:32)
+
+P
+
+TV
+
+(cid:16)
+
+ˆp(z | D), δz∗(z)
+
+(cid:17)
+
+(cid:33)
+
+> ϵn,E
+
+= P
+
+(cid:32)
+
+(cid:18)
+ˆp
+
+z∗ | D
+
+(cid:19)
+
+(cid:33)
+
+< 1 − ϵn,E
+
+≤ P (An,E) → 0
+
+where the last convergence follows from Eq. 39 and Eq. 40.
+
+A.5 Theory generalization under relaxed assumptions
+
+We provide a generalization of Theorem 1 under more general conditions. This result
+supports the second part of § 3.2 where some of the original assumptions are violated.
+
+We define the best-fitting local model ¯pe(y | xz) and pooled model ¯g(y | xz) within
+
+the chosen model class Py|xz :
+
+¯pe(y | xz) := arg max
+˜p(y|xz)∈Py|xz
+¯g(y | xz) := arg max
+˜p(y|xz)∈Py|xz
+
+Epe(x,y) log ˜p(y | xz),
+
+∀e, z
+
+Epe(x,y) log ˜p(yei | xz
+
+ei),
+
+∀z,
+
+(cid:88)
+
+e∈E
+
+and the expected discrepancy between them
+
+¯µ(z) := Ep(e)pe(x,y) [log ¯pe(y | xz) − log ¯g(y | xz)] .
+
+(41)
+
+Theorem 7 (Posterior consistency under general conditions). Let ¯Z ∗ be the set of min-
+imizer(s) of ¯µ(z) defined in Eq. 41. Assume that p( ¯Z ∗) > 0, and ∀pz, as n → ∞ and
+E → ∞,
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+log ˆpe(yei | xz
+
+ei) P→ Ep(e)pe(y,xz) [log ¯pe(y | xz)] ,
+
+1
+nE
+
+and
+
+1
+nE
+
+i=1
+n
+(cid:88)
+
+e=1
+E
+(cid:88)
+
+i=1
+
+e=1
+
+log ˆg(yei | xz
+
+ei) P→ Ep(e)pe(y,xz) [log ¯g(y | xz)] .
+
+(42)
+
+Then as n → ∞ and E → ∞, we have
+
+• P (ˆzn,E ∈ ¯Z ∗) → 1,
+
+37
+
+• ˆp( ¯Z ∗ | D) P→ 1.
+
+Theorem 7 extends the posterior consistency result in Theorem 1 to a more general
+setting. The positive prior condition is now imposed on the set of minimizers ¯Z ∗ of
+the discrepancy measure between the best-fitting local and pooled models. Similarly, the
+estimation consistency condition in Eq. 42 is adapted to these models as well. As a result,
+the posterior concentrates on ¯Z ∗, which can be interpreted as the most approximately
+invariant feature selectors.
+
+Theorem 1 can be viewed as a special instance of Theorem 7 under stricter assump-
+tions: the model is correctly specified, and the exact invariant feature selector z∗ exists,
+is unique and has positive prior mass. The proof follows a similar structure as that of
+Theorem 1.
+Proof We recall the posterior expression
+
+ˆp(z | D) =
+
+p(z) exp{− ˆSn,E(z)}
+z p(z) exp{− ˆSn,E(z)}
+
+(cid:80)
+
+where ˆSn,E(z) is the log-likelihood ratio given z,
+
+ˆSn,E(z) :=
+
+n
+(cid:88)
+
+E
+(cid:88)
+
+i=1
+
+e=1
+
+By our assumption, as n, E → ∞,
+
+log ˆpe(yei | xz
+
+ei) − log ˆg(yei | xz
+
+ei).
+
+1
+nE
+
+ˆSn,E(z) P→ Ep(e)pe(y|xz) [log ¯pe(y | xz)] − Ep(e)pe(y|xz) [log ¯g(y | xz)] = ¯µ(z).
+
+(43)
+
+For large nE, we have
+
+ˆzn,E := arg max
+
+z
+
+ˆp(z | D)
+
+= arg max
+z:p(z)>0
+
+log p(z) − ˆSn,E(z)
+
+= arg max
+z:p(z)>0
+
+−
+
+1
+nE
+
+ˆSn,E(z).
+
+By Lemma 1 and Eq. 43, as n → ∞ and E → ∞
+
+P (ˆzn,E ∈ ¯Z ∗) → 1.
+
+where we recall ¯Z ∗ is the set of minimizers of ¯µ(z).
+
+Next, we consider any z ̸∈ ¯Z ∗ with p(z) > 0. Then
+
+ˆp(z | D) ≤
+
+=
+
+p(z) exp{− ˆSn,E(z)}
+
+p(z) exp{− ˆSn,E(z)} + (cid:80)
+1
+
+z′∈ ¯Z ∗ p(z′) exp{− ˆSn,E(z′)}
+
+1 + (cid:80)
+
+z′∈ ¯Z ∗ p(z′)/p(z) exp{ ˆSn,E(z) − ˆSn,E(z′)}
+
+38
+
+.
+
+Algorithm 3: U2G gradient estimation [Yin et al., 2020]
+
+Input: Objective function f , dataset D, variational parameter ϕ
+Output: A random unbiased estimate ˆg of ∇ϕEqϕ(z) [f (z, D, ϕ)]
+
+i=1 Uniform[0, 1]
+
+1 Draw u ∼ (cid:81)p
+2 z1 ← 1 [u > 1 − sigmoid(ϕ)] , z2 ← 1 [u < sigmoid(ϕ)]
+3 ˆg ← 1
+
+2sigmoid(|ϕ|) · [f (z1, D, ϕ) − f (z2, D, ϕ)] · (z1 − z2)
+
+Note that by our assumption, ∀z′ ∈ ¯Z ∗,
+
+(cid:16) ˆSn,E(z) − ˆSn,E(z′)
+
+(cid:17) P→ ¯µ(z) − ¯µ(z′) > 0,
+
+1
+nE
+
+and consequently by Lemma 2, we have exp{ ˆSn,E(z) − ˆSn,E(z′)} P→ ∞.
+Consequently, ∀z ̸∈ ¯Z ∗, ˆp(z | D) P→ 0, and therefore ˆp( ¯Z ∗ | D) P→ 1.
+
+B Details on VI-BIP
+
+We provide additional details on VI-BIP, including gradient estimation, optimization
+guidelines and implementation considerations.
+
+B.1 Gradient estimators for binary latent variables
+
+Optimizing VI-BIP requires computing gradients of the ELBO in Eq. 7, which involves
+expectations with respect to the discrete variational distribution qϕ(z). To obtain an
+unbiased gradient estimate, we use the U2G estimator proposed by Yin et al. [2020].
+
+Algorithm 3 describes the general U2G estimator for computing an unbiased estimate
+of ∇ϕEqϕ(z)[f (z, D, ϕ)], given an objective function f , dataset D, and variational param-
+eters ϕ. The algorithm constructs a single gradient estimate using pair of correlated
+samples z1 and z2 to reduce variance while maintaining unbiasedness. Multiple gradient
+estimates can be obtained by independently repeating this procedure, and their average
+is used to form the final gradient estimate.
+
+To use U2G in our setting (Algorithm 2), the objective function corresponds to the
+
+integrand inside the ELBO expression from Eq. 7, that is,
+
+f (z, D, ϕ) := [log p(z) +
+
+E
+(cid:88)
+
+ne(cid:88)
+
+e=1
+
+i=1
+
+log
+
+ˆg(yei | xz
+ei)
+ˆpe(yei | xz
+ei)
+
+− log qϕ(z),
+
+(44)
+
+where we replace the true pooled and local conditionals in the ELBO with estimated
+counterparts.
+
+39
+
+B.2 Optimization guidelines
+
+We provide guidelines for setting and tuning the hyperparameters. All of these hyperpa-
+rameters can be tuned by monitoring the training-set ELBO and the overall optimization
+behavior. In general, we expect a graduallly increasing ELBO trend during training, with
+higher ELBO values indicating better model fit. We refer to experiment sections for exact
+configurations used in each setting.
+
+The key hyperparameters are as follows:
+
+• Number of stochastic gradient samples M : At each iteration, we estimate the gra-
+dient of the ELBO using M samples. Increasing M can reduce the variance but
+increase the computational cost. In our experiments, we found that using M be-
+tween 10 and 20 strikes a good balance between performance and computational
+cost.
+
+• Prior p(z): The choice of prior is crucial in high-dimensional settings, as it influ-
+ences the sparsity of the inferred invariant sets and the initialization of variational
+parameters (see below). We recommend restricting the prior support to feature
+subset at size at most pmax, which can be informed by the domain knowledge. In
+practice, we found that the choice of pmax can affect optimization dynamics and can
+be treated as a tunable hyperparameter.
+
+• Initialization of variational parameters ϕ: The variational parameters ϕ are initial-
+ized to ensure that the expected number of invariant features is within the prior
+support. Specifically, we recommend initializing ϕ at ϕ0 such that
+
+Eqϕ0 (z) [∥z∥0∥] ≤ max
+
+z:p(z)>0
+
+∥z∥0.
+
+• Optimizer: We use stochastic gradient descent (SGD) throughout all experiments,
+
+following the practice of the original U2G paper [Yin et al., 2020].
+
+• Learning rate scheduling: We use a cyclical learning rate scheduler [Smith, 2017] to
+encourage mode exploration. However, alternative schedulers could be explored.
+
+• Number of optimization steps: The number of optimization steps should be chosen
+based on the problem scale and convergence behavior. In our experiments, we set
+a fixed budget for the total number of optimization steps and select the iteration
+with the highest training-set ELBO.
+
+B.3
+
+Implementation details
+
+We discuss several algorithmic techniques for Algorithm 2 that offer practical benefits.
+
+• Analytical KL gradients: The ELBO in Eq. 7 can be decomposed into an expected
+
+40
+
+likelihood term and a KL regularization term (up to a constant C)
+
+L(D, ϕ) = Eqϕ(z)
+
+(cid:34) E
+(cid:88)
+
+ne(cid:88)
+
+e=1
+
+i=1
+
+(cid:35)
+
+log
+
+g(yei | xz
+ei)
+pe(yei | xz
+ei)
+
++ KL [qϕ(z) ∥ p(z)] + C,
+
+Notably, under a uniform prior, the KL regularization term admits a closed-form
+gradient expression:
+
+(cid:12)
+(cid:12)
+∇ϕKL [qϕ(z) ∥ p(z)] = [log(σ) − log(1 − σ)] σ(1 − σ)
+(cid:12)σ= 1
+
+1+e−ϕ
+
+To balance variance reduction with the implicit generalization behavior of stochastic
+gradients, we can consider a hybrid strategy: at each iteration, with some prob-
+ability, we compute the analytical gradient of the KL term; otherwise, we use its
+stochastic estimate via the U2G estimator in Algorithm 3. The gradient of the re-
+(cid:105)
+construction term, ∇ϕEqϕ(z)
+, is always estimated by U2G.
+
+(cid:104)(cid:80)E
+
+(cid:80)ne
+
+i=1 log g(yei|xz
+ei)
+pe(yei|xz
+ei)
+
+e=1
+
+• Informative prior: In settings where the prior imposes a maximum number of invari-
+ant features pmax or restricts the support with in other ways, we design a tractable
+optimization procedure that enforces thes constraints.
+
+Specifically, during each U2G estimation step, we draw a pair of correlated samples
+of z (Algorithm 3, Line 2). Since the variational distribution does not explicitly
+encode prior constraints, it is possible for some sampled z to fall outside of the prior
+support, resulting in an infeasible objective value in Eq. 44, where log p(z) = −∞.
+
+To address this issue, we manually assign a fixed, low objective value for infeasible
+z samples, to guide the optimization to toward high-objective regions within the
+feasible support. This penalty can be tuned for the specific task, typically by
+referencing the range of feasible objective values. In all of our experiments, we set
+this penalty value to −1.
+
+C Synthetic data study
+
+We first describe the general data generative process for the experiments in § 4.1 and 4.3,
+and then we provide details for each experiment in Supplementary Sections C.1 to C.3.
+
+1. The factorization of the joint distribution. To simulate multi-environment
+data, we specify a series of joint distributions that factorize consistently across
+environments:
+
+p(x(1:p), y) =
+
+p+1
+(cid:89)
+
+i=1
+
+p(t(i) | t(1:i−1)),
+
+where permutation π is drawn uniformly over [1, · · · , p + 1], and t(i) = x(π(i)) if
+
+41
+
+π(i) ̸= p + 1 and t(i) = y otherwise. 2 For convenience, we define t(1:0) to be an
+empty conditioning set.
+
+Each conditional density is a linear Gaussian family, that is,
+
+pe(t(i) | t(1:i−1)) = N (t(i) | α⊤
+
+eit(1:i−1) + βei, σ2
+
+ei),
+
+for some parameters αei ∈ Ri−1, βei, σei ∈ R. For i = 1 we set pe(t(1) | t(1:0)) =
+e1) with parameters βe1, σe1 ∈ R. (For convenience, t(1:0) denotes an
+N (t(1) | βe1, σ2
+empty vector.)
+
+We next specify the joint distributions corresponding to different environments.
+
+2. Observational environment (e = 1). For i = 1, · · · , p + 1:
+
+• sample the intercept parameter β1i from N (0, 1),
+• sample the variance parameter σ2
+
+ei from Uniform ([σ2
+
+min, σ2
+
+max]), where σ2
+
+min and
+
+σ2
+max are lower and upper bounds on the variance parameter,
+
+• sample each dimension of the linear coefficient parameter αei independently:
+
+– if π(i) = p+1, i.e. t(i) = y, first sample its absolute value from Uniform ([lb, ub])
+
+and then assign a random sign;
+
+– if π(i) ̸= p+1 i.e. t(i) = x(π(i)), (i) with probability pact ∈ [0, 1] first sample
+its absolute value from Uniform ([lb, ub]) and then assign a random sign,
+(ii) otherwise set to 0.
+
+3. Interventional Environments (e = 2, · · · , E) For each interventional environ-
+ment e > 1, we first randomly draw a fraction ρint
+e ⊂ x to be in-
+tervened on – referred to as the intervention strength in the main text. Then, for
+e, we set pe(t(i) | t(1:i−1)) = p1(t(i) | t(1:i−1)); otherwise, we
+i = 1, · · · , p + 1, if t(i) ̸∈ x′
+draw new parameters for pe(t(i) | t(1:i−1)) as follows
+
+e of features x′
+
+• sample the intercept parameter βei by first sampling its absolute value from
+N (me, 1) and assigning to it a random sign, for some me ∈ R specific to the
+environment e.
+
+• sample the variance parameter σ2
+
+λ ∼ Uniform([λe,min, λe,min +λe,diff]), and then setting σ2
+λe,diff are parameters specific to the environment e.
+
+ei by first sampling a multiplicative factor
+1i, where λe,min,
+
+ei = λ2σ2
+
+• sample each dimension of the linear coefficient parameter αei independently:
+
+– with probability pchange, copy the corresponding coefficient from e = 1 case
+
+– with probability 1 − pchange, (i) with probability pact sample its absolute
+value from Uniform ([lbe, ube]), assign a random sign and (ii) otherwise set
+to 0.
+
+2If there are pre-specified lower bound p∗
+
+min and upper bound p∗
+
+features ∥z∗∥0, we keep uniformly sampling π until we get a π such that p∗
+
+max on the number of the true invariant
+min < π−1(p + 1) ≤ p∗
+max + 1.
+
+42
+
+4. Draw data. Finally, we can draw n data points {xei, yei}n
+
+i=1 from each environment
+
+e independently, for e = 1, · · · , E.
+
+C.1 Empirical verification of theory
+
+We include simulation details for the experiments in § 4.1. We follow the general data gen-
+erative process described in the preamble of Supplementary Section C with the following
+configuration:
+
+max = 3, p∗
+
+We set p = 3, p∗
+min = 1, and pact = 1.
+For e = 1, we set lb = 0.5, ub = 2; pact = 1.0, σmin = 0.1 and σmax = 0.2.
+For e = 2, · · · , E, we sample me ∼ Uniform([0, 1]), λe,min ∼ Uniform([0.1, 0.2]), and
+λe,diff ∼ Uniform([0.1, 0.5]), and we set lbe = (me + 0.01)2, ube = (me + 0.5)2, and
+pchange = 1.
+
+C.2 Uncertainty quantification in limited environments
+
+We provide the data generative process for the experiment in § 4.2, and include additional
+examples. All experiments are simulated with n = 200 per-environment samples.
+
+Example 1. We provide the data generative process for the experiment in § 4.2. The
+joint distributions {pe(x, y)}3
+
+e=1 factorize as follows
+
+p1(x, y) = p1(x(1))p(y | x(1))p1(x(2) | y)
+p2(x, y) = p2(x(1))p(y | x(1))p2(x(2) | y)
+p3(x, y) = p3(x(1))p(y | x(1))p3(x(2) | x(1), y)
+
+where
+
+p1(x(1)) = N (x(1) | 0, 0.12), p2(x(1)) = N (x(1) | 2, 0.12), p3(x(1)) = N (x(1) | 5, 0.12),
+p(y | x(1)) = N (y | x(1) + 0.5, 0.12),
+p1(x(2) | y) = p2(x(2) | y) = N (x(2) | y + 0.1, 0.12),
+p3(x(2) | x(1), y) = N (x(2) | x(1) + y + 0.1, 0.12).
+
+Considering only the first two environments (p1(x, y), p2(x, y)), both x(1) and x(1:2) are
+invariant features. As a result, the posterior places mass on both z = [1, 0] and z = [1, 1],
+as shown in Figure 2 (left). When the third environment (p3(x, y)) is introduced, only x(1)
+remains invariant, and the posterior consequently concentrates on z = [1, 0], as shown in
+Figure 2 (right).
+
+In addition, we include the following two examples where there exist multiple invariant
+solutions in limited number of environments. In both cases, when E = 2, there are two
+sets of invariant features within the first two environments; but after we include a third
+environment, only one set of invariant features remains. We observe similar uncertainty
+quantification behaviors as in Example 1.
+
+43
+
+Figure S1: Synthetic study (Example 2): uncertainty quantification with p = 2 features.
+With E = 2 environments (left), the posterior ˆp(z | D) is multi-modal over invariant
+selectors z = [1, 0] and [1, 1]. For E = 3 (right), only z = [1, 1] remains invariant, and the
+posterior concentrates at this solution. All results are averaged over 1,000 simulations
+with 95% confidence bands.
+
+Example 2. The joint distributions {pe(x, y)}3
+
+e=1 are given by
+
+p1(x, y) = p1(x(1))p1(x(2))p(y | x(1), x(2))
+p2(x, y) = p2(x(1))p2(x(2))p(y | x(1), x(2))
+p3(x, y) = p3(x(1))p3(x(2))p(y | x(1), x(2))
+
+where
+
+p1(x(1)) = N (x(1) | 0, 0.12), p2(x(1)) = N (x(1) | 2, 0.12), p3(x(1)) = N (x(1) | 5, 0.12)
+p1(x(2)) = p2(x(2)) = N (x(2) | 0.5, 0.12),
+p(y | x(1), x(2)) = N (y | x(1) + x(2) + 0.1, 0.12).
+
+p3(x(2)) = N (x(2) | −0.5, 0.12)
+
+x(1:2) is the only set of invariant features across E = {1, 2, 3} with z∗ = [1, 1] the
+invariant feature selector. But within the first two environments E ′ = {1, 2}, z = [1, 0] is
+also an invariant feature selector: By Definition 1, the pooled conditional within E ′ is
+
+gE ′(y | x(1)) :=
+
+(cid:80)
+
+e∈E ′
+(cid:80)
+
+(cid:82) p(e)pe(x, y) dx(2)
+e∈E ′ p(e)pe(x(1))
+
+(cid:82) 1
+
+(cid:90) 1
+2
+
+=
+
+=
+
+2p1(x(1))p1(x(2))p(y | x(1), x(2)) + 1
+2p1(x(1)) + 1
+
+1
+
+2p1(x(2))
+
+2p2(x(1))p2(x(2))p(y | x(1), x(2)) dx(2)
+
+p1(x(2))p(y | x(1), x(2)) +
+
+1
+2
+
+p2(x(2))p(y | x(1), x(2)) dx(2)
+
+= p1(y | x(1)) = p2(y | x(1)).,
+
+where the last equality follows from p1(x(2)) = p2(x(2)). This result shows that pe(y | x(1))
+is invariant within environments E ′ = {1, 2}. However, one can show that it is not the
+case when we extend to E = {1, 2, 3}, as p3(y | x(1)) ̸= p1(y | x(1)). The corresponding
+posterior distributions for the two scenarios are shown in Figure S1.
+
+44
+
+[0,0][1,0][0,1][1,1]0.00.51.0̂p(z|D)# of environments E = 2[0,0][1,0][0,1][1,1]# of environments E = 3feature selector zFigure S2: Synthetic study (Example 3): uncertainty quantification with p = 2 features.
+For E = 2 (left), the posterior ˆp(z | D) is multi-modal over invariant selectors [1, 0] and
+[1, 1]. With E = 3 (right), only [1, 0] remains invariant, and the posterior concentrates
+at this value. All results are averaged over 1,000 simulations with 95% confidence bands.
+
+Example 3. The joint distributions {pe(x, y)}3
+
+e=1 are given by
+
+p1(x, y) = p1(x(1))p(y | x(1))p1(x(2) | x(1))
+p2(x, y) = p2(x(1))p(y | x(1))p2(x(2) | x(1))
+p3(x, y) = p3(x(1))p(y | x(1))p3(x(2) | x(1), y)
+
+where
+
+p1(x(1)) = N (x(1) | 0, 0.12), p2(x(1)) = N (x(1) | 2, 0.12), p3(x(1)) = N (x(1) | 5, 0.12)
+p(y | x(1)) = N (x(1) | x(1) + 0.5, 0.12)
+p1(x(2) | x(1)) = N (x(2) | x(1) + 0.1, 0.12), p2(x(2) | x(1)) = N (x(2) | −2x(1) + 0.1, 0.12),
+p3(x(2) | x(1), y) = N (x(2) | x(1) + y, 0.12).
+
+The only set of invariant feature(s) across E = {1, 2, 3} is x(1), and the corresponding
+invariant feature selector is z∗ = [1, 0].
+
+In the first two environments E ′ = {1, 2}, x(1), x(2) are also invariant features:
+
+p1(y | x(1), x(2)) = p(y | x(1))
+p2(y | x(1), x(2)) = p(y | x(1))
+
+since x(2) ⊥ y | x(1) under both p1(x, y) and p2(x, y). The corresponding posterior
+distributions for the two scenarios are shown in Figure S2.
+
+C.3 Comparison to other methods
+
+For the experiments in § 4.3, we include details on data simulation, method implementa-
+tion, and additional results in Supplementary Sections C.3.1 to C.3.3, respectively.
+
+45
+
+[0,0][1,0][0,1][1,1]0.00.51.0̂p(z|D)# of environments E = 2[0,0][1,0][0,1][1,1]# of environments E = 3feature selector zC.3.1 Simulation details
+
+We follow the general data generative process described in the preamble of Supplementary
+Section C with the following configuration (The reason to differentiate between various
+p is to control the scale of parameter values to prevent the sampled x, y values from
+exploding when p increases.):
+
+1. When p = 10,
+
+(a) pact ∼ Uniform ({0.6, 0.7, 0.8, 0.9})
+
+(b) For e = 1: (i) coefficient lower bound lb = 1; (ii) coefficient upper bound
+ub = 2.1, (iii) noise level lower bound σmin = 0.1; (iv) noise level upper bound
+σmax = 0.2.
+
+(c) Separately for e = 2, · · · , E: for the intervened variable (i) mean of the abso-
+lute value of the intercept me ∼ Uniform ([0, 1]); (ii) coefficient lower bound
+lbe = (me + 0.01) ∗ 2; (iii) coefficient upper bound ube = (me + 0.5) ∗ 2;
+(iv) variance multiplicative factor lower bound λe,min ∼ Uniform ([0.1, 0.2]);
+(v) variance multiplicative factor relative range λe,diff ∼ Uniform ([0.1, 0.5]);
+(vi)the probability of changing the coefficient pchange ∼ Uniform ([0.1, 0.3]);
+and (vii) the fraction of features to be intervened on ρint
+e ∼ Uniform ([0.5, 1])
+
+2. When p = 450,
+
+(a) pact ∼ Uniform ({0.1, 0.15, 0.2, 0.25})
+
+(b) For e = 1: same as p = 10 case
+
+(c) Separately for e = 2, · · · , E: for the intervened variable (i) mean of the abso-
+lute value of the intercept me ∼ Uniform ([0, 0.4]); (ii) coefficient lower bound
+lbe = me + 0.01; (iii) coefficient upper bound ube = (me + 0.01) ∗ 1.5; other
+simulation hyperparameters are chosen in the same way as p = 10 case
+
+We set the maximum number of the true invariant features p∗
+max = 5 when p = 10, and
+p∗
+max = 10 otherwise. For all cases of p we set the minimum number of the true invariant
+features pmin = 1.
+
+C.3.2 Method implementation details
+
+1. EILLS: We follow the implementation at https://github.com/wmyw96/EILLS which
+
+accompanies the original paper by Fan et al. [2023].
+
+2. ICP: We use the implementation at https://github.com/juangamella/icp.
+
+3. Hidden-ICP: We implement a PyTorch version of the original R package available
+at https://cran.r-project.org/web/packages/InvariantCausalPrediction/
+index.html, which accompanies the original paper by Rothenh¨ausler et al. [2019].
+
+46
+
+Figure S3: Synthetic study with p = 10 features. Variational posterior at z∗ v.s. number
+of environments E under different fraction of intervention features. Similar to Figure 3
+(B), we observe that the variational posterior also concentrates at z∗ with increasing
+number of environments, and the convergence is faster when the fraction of intervention
+features is higher. The convergence of the variational posterior value at z∗ is slower than
+that under the exact posterior shown in Figure 3 (B).
+
+4. VI-BIP: The prior is uniform over {z ∈ {0, 1}p : ∥z∥0 ≤ pmax}. In low dimensions
+(p = 10), pmax = 10 leading to an uninformative prior; In high dimensions (p = 450),
+pmax = 20 encouraging sparsity.
+
+We run VI-BIP with two initialization strategies for the variational parameters and
+choose the one with better training-set ELBO. Consider each variational parameter
+ϕi initialized as log σ0i
+for i = 1, . . . , p. The two initializations are the following:
+1−σ0i
+(i) uninformative initialization: we set σ0i = min(pmax/p × 0.9, 0.4) for all i to
+encourage sparsity without strong prior belief; and (ii) informative initialization:
+based on the screening step described in the main text, we assign σ0i = 0.5 for the
+10 screened indices and σ0i = 0.1 for the remaining ones.
+
+As discussed in Supplementary Section B.3, when the sampled z is outside of prior
+support, we set the corresponding objective value in Eq. 44 to −1. We always
+compute analytical gradients of KL, and stochastic gradients of the likelihood com-
+ponent in the ELBO.
+
+In Algorithm 2, we use M = 20 gradient samples per iteration and optimize using
+SGD. For learning rate scheduling, we employ a cyclical learning rate strategy with a
+basic triangular cycle without amplitude scaling. Specifically, we set a base learning
+rate of 1.0, a maximum learning rate of 10, and a cycle length of 1000 iterations,
+with 500 steps in the increasing half. This scheduler can be implemented using the
+PyTorch package [Paszke et al., 2019]:
+
+torch.optim.lr scheduler.CyclicLR(optimizer, base lr=0.5, max lr=10,
+step size up=500, mode=‘triangular’)
+
+We run VI-BIP for a maximum of 2,000 iterations and select the variational pa-
+rameters corresponding to the highest training-set ELBO.
+
+47
+
+05101520# of environments E0.00.51.0q(z*)Int. strength0.20.40.60.81.0C.3.3 Additional results
+
+Figure S3 displays the variational posterior probability at the true z∗ by VI-BIP for the
+p = 10 setting. Similar to the exact posterior results in Figure 3 (B), the variational
+posterior concentrate around z∗ as the number of environments E increases, with faster
+convergence at under stronger interventions (which induce greated heterogeneity across
+environments). However, the convergence of the variational posterior probability at z∗ is
+slower than that of the exact posterior shown in Figure 3 (B).
+
+D Gene perturbation study
+
+We include additional details for the experiments in § 5.
+
+Evaluation details. We evaluate each method based on whether its predicted invariant
+feature gene has a significant effect on the target gene. Specifically, we say the deletion of
+gene j to have a significant effect on the target gene i, when (i) the deletion is successful,
+i.e. the expression level of gene j is above the 99% quantile or below the 1% quantile of its
+observational level, and (ii) the expression level of the target gene i changes significantly,
+which is above the 99% quantile or below the 1% quantile of its observational level.
+
+In Figure 5, each invariant inference method
+Hyperparameter settings in Figure 5.
+– EILLS-s, ICP-s, Hidden-ICP-s, BIP-s, and VI-BIP – is evaluated across multiple hy-
+perparameter settings, represented by dots of varying sizes. Larger dots indicate more
+conservative settings, where the method tends to predict fewer invariant feature genes.
+
+• EILLS-s: Higher invariance regularizaiton parameter γ corresponds to more con-
+
+servative behavior. We vary γ ∈ [1, 25, 50, 75, 100].
+
+• ICP-s: Lower significance level α results in more conservative predictions. We vary
+
+σ ∈ [0.001, 0.005, 0.01, 0.05, 0.1].
+
+• Hidden-ICP: In contrast, higher α leads to more conservative behavior. We vary
+
+σ ∈ [0.001, 0.005, 0.01, 0.05, 0.1].
+
+• BIP-s and VI-BIP: Higher posterior thresholds t lead to more conservative results.
+
+We vary t ∈ [0.5, 0.6, 0.7, 0.8, 0.9].
+
+Implementation details. The implementations of EILLS, ICP, and Hidden-ICP follow
+the same setup as described in Supplementary Section C.3.2.
+
+For VI-BIP, we initialize the variational parameters ϕi to log σ0
+1−σ0
+
+for i = 1, · · · , p,
+where the initial feature selection probability σ0 := 0.02. We choose the prior to be
+uniform over {z ∈ {0, 1}p : ∥z∥0 ≤ pmax} with pmax = 200. These choices are determined
+by coarsely searching over reasonable values guided by the optimization dynamics. A
+good starting point is to ensure that pmax is smaller than the per-environment sample
+size n so that the MLEs for local conditional models are well-defined. Additionally, it is
+
+48
+
+desirable that pσ0 < pmax so that the initial expected selected features is within the prior
+support.
+
+As discussed in Supplementary Section B.3, when the sampled z is outside of prior
+support, we set the corresponding objective value in Eq. 44 to −1. With probability
+of 0.5 we compute the analytical gradients of the KL regularization term in the ELBO;
+otherwise we compute the stochastic gradients.
+
+In Algorithm 2, we use M = 10 gradient samples per iteration and optimize using
+SGD. For learning rate scheduling, we employ a cyclical learning rate strategy with a
+basic triangular cycle that scales initial amplitude by half each cycle. Specifically, we set
+a base learning rate of 0.5, a maximum learning rate of 10, and a cycle length of 1000
+iterations, with 500 steps in the increasing half. This scheduler can be implemented using
+the PyTorch package:
+
+torch.optim.lr scheduler.CyclicLR(optimizer, base lr=0.5, max lr=10,
+step size up=500, mode=‘triangular2’)
+
+We run VI-BIP for a maximum of 10,000 iterations and select the variational param-
+
+eters corresponding to the highest training-set ELBO.
+
+49
+
+
