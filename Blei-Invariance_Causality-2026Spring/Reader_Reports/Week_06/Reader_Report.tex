@@ -37,7 +37,7 @@
 The posterior $p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat{g}(Y^e_i\mid X^z_{ei})/\hat{p}_e(Y^e_i\mid X^z_{ei})$ rewards selectors for which the pooled conditional $\hat{g}$ dominates each environment-specific conditional $\hat{p}_e$.
 Consistency (Thm~1) requires $\mu_{\min}>0$, the minimum KL divergence between $\hat{g}$ and any $\hat{p}_e$ over non-invariant features \citep[Def.~1]{wu2025bayesian}. Contraction (Thm~2) gives $\mathrm{TV}(p(z\mid\mathcal{D}),\,\delta_{z^*}) = O(2^p\,e^{-\kappa nE\mu_{\min}})$.
 Both bounds assume squared loss under a linear model, and the product likelihood weights all environments symmetrically.
-VI-BIP \citep[Sec.~4]{wu2025bayesian} scales this inference via mean-field variational approximation; its only empirical validation uses CRISPR-knockout environments \citep[Sec.~5]{wu2025bayesian}, where hard single-gene interventions guarantee $\mu_{\min}>0$ by construction.
+VI-BIP \citep[Sec.~4]{wu2025bayesian} scales this inference via mean-field variational approximation; its only empirical validation uses single-gene-deletion environments \citep[Sec.~5]{wu2025bayesian}, where hard interventions guarantee $\mu_{\min}>0$ by construction.
 
 \section*{Critique}
 
@@ -45,7 +45,7 @@ VI-BIP \citep[Sec.~4]{wu2025bayesian} scales this inference via mean-field varia
 
 Yet no theory characterizes where the boundary lies. There is no decision rule telling a practitioner when symmetric weighting wastes known structure, or when asymmetric weighting overfits to a misidentified dominant environment. The gap is acknowledged by neither paper.
 
-The experiments do not close this gap. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP exclusively on CRISPR knockouts where $\mu_{\min}>0$ holds by construction, the one regime where a practitioner \emph{could} justify asymmetric weighting and BIP's agnosticism is least needed. The empirical case for VI-BIP in observational or low-intervention settings, where symmetric weighting should matter most, remains unmade.
+The experiments do not close this gap. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP exclusively on single-gene-deletion data where $\mu_{\min}>0$ holds by construction, the one regime where a practitioner \emph{could} justify asymmetric weighting and BIP's agnosticism is least needed. The empirical case for VI-BIP in observational or low-intervention settings, where symmetric weighting should matter most, remains unmade.
 
 \section*{Questions}
 Both questions below concern whether the practitioner-knowledge gap between BIP and NegDRO can be bridged.
