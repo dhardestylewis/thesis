@@ -51,8 +51,8 @@ The benchmarking evidence inherits this bias. \citet[Sec.~5]{wu2025bayesian} val
 \section*{Questions}
 Both questions below concern whether the practitioner-knowledge gap between BIP and NegDRO can be bridged.
 \begin{enumerate}\setlength\itemsep{1pt}
-  \item BIP's contraction guarantee requires $\mu_{\min}>0$, but this quantity depends on the true invariant set $z^*$, which is what the method aims to discover. In the CRISPR benchmark, hard interventions guarantee $\mu_{\min}>0$ by construction. In observational settings, the practitioner cannot verify this condition without already having solved the problem. Is there a testable proxy for $\mu_{\min}>0$ that does not presuppose knowledge of $z^*$?
-  \item Wu et al.\ propose a size-restricted prior with parameter $p_{\max}$ to limit BIP's support to subsets of size at most $p_{\max}$. Could NegDRO's point estimate $\hat{\beta}^\gamma$ serve as the pre-screening filter, setting $z_j=0$ for features with $|\hat{\beta}^\gamma_j|<\varepsilon$ to reduce the effective model count from $2^p$ to $2^{p'}$, and does this avoid the double-dipping problem that arises from using the same data to form both the prior and the likelihood?
+  \item The critique above treats practitioner knowledge as a binary: either environments are exchangeable (ICP/BIP) or one dominant intervention is known (NegDRO). Can this be formalized as a continuous parameter, so that a single framework interpolates between symmetric and asymmetric environment weighting? If so, does the minimax estimation rate vary smoothly along this axis, or is there a phase transition at which asymmetric weighting becomes strictly preferable?
+  \item Both BIP and NegDRO operationalize the distribution-free condition $P_e(Y\mid X_{S^*}) = \text{const}$ through squared-loss residuals, which embed a linearity assumption. Does the practitioner-knowledge distinction identified above survive under nonparametric conditionals, or does the symmetry-versus-asymmetry tradeoff collapse when the loss is no longer quadratic?
 \end{enumerate}
 
 \vspace{-0.2em}
