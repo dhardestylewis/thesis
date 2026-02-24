@@ -1,11 +1,14 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.85in,top=0.7in]{geometry}
 \usepackage{titlesec}
 \usepackage{parskip}
 \usepackage{fancyhdr}
 \usepackage{amsmath, amssymb}
+\usepackage[round,sort&compress]{natbib}
 \usepackage{hyperref}
+\renewcommand{\bibsection}{\section*{References}}
+\setlength{\bibsep}{1pt}
 
 % Ultra-compact spacing
 \titlespacing*{\section}{0pt}{6pt}{2pt}
@@ -16,12 +19,12 @@
 \fancyhf{}
 \lhead{\footnotesize STAT8101}
 \chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
-\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (db2128)}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (\texttt{db2128})}
 \cfoot{\thepage}
 
-\title{\vspace{-2em}\textbf{Reader Report: Week 04} \\ \vspace{0.2em} \large Invariance, Causality, and Robustness \\ \footnotesize Bühlmann (2020), Peters et al. (2016), Peters, Janzing \& Schölkopf (2017)}
-\author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (dl3645)}
-\date{2026 Spring}
+\title{\vspace{-2.5em}\textbf{Reader Report: Week 04} \\ \vspace{0.1em} \large Bayesian Invariant Prediction \& Optimization-Based ICP}
+\author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (\texttt{dl3645})}
+\date{\vspace{-0.5em}2026 Spring}
 
 \begin{document}
 
@@ -30,56 +33,58 @@
 \vspace{-1em}
 
 \section*{Summary}
-This week's readings bridge the gap between statistical prediction and causal inference through the concept of \textbf{invariance}.
-\begin{itemize}
-    \item \textbf{Peters, Janzing, and Schölkopf (2017)} (Book, Ch 1, 2, 7) establish the \textbf{Principle of Independent Mechanisms}: causal mechanisms (e.g., $P(E|C)$) are autonomous and invariant to changes in other modules. While the joint distribution $P(C, E)$ may shift across environments, the conditional causal mechanism remains stable.
-    \item \textbf{Peters, Bühlmann, and Meinshausen (2016)} (JRSS-B) operationalize this with \textbf{Invariant Causal Prediction (ICP)}. They define ``plausible causal predictors'' as subsets $S$ that yield an invariant conditional distribution $P(Y \mid X_S)$ across heterogeneous environments $\mathcal{E}$. The intersection of such sets, $\hat{S}(\mathcal{E})$, consistently identifies causal ancestors (Theorem 1), transforming causal discovery into a search for stability.
-    \item \textbf{Bühlmann (2020)} generalizes this as a \textbf{risk minimization problem}, introducing \textbf{Anchor Regression}. This method relaxes strict invariance to find predictors robust to shift perturbations, allowing for \textbf{"diluted causality"} even when unobserved confounding prevents full causal discovery.
-\end{itemize}
+\citet{wu2025bayesian} introduce \textbf{Bayesian Invariant Prediction} (BIP), casting ICP as latent-variable inference. A binary selector $z\in\{0,1\}^p$ indexes invariant features; the posterior $p(z\mid\mathcal{D})$ is proportional to likelihood ratios between pooled and per-environment conditionals. They prove consistency (Thm~1) and exponential contraction at rate $O(R\cdot e^{-\kappa nE\mu_{\min}})$ (Thm~2), where $\mu_{\min}$ captures environment heterogeneity. For scalability, \textbf{VI-BIP} uses mean-field variational inference with the U2G gradient estimator; it identifies invariant genes in a 6{,}170-gene perturbation dataset where competing methods falter.
+
+\citet{fan2024negdro} propose \textbf{NegDRO}, a continuous minimax formulation
+\[
+  \min_{b}\max_{w\in U(\gamma)}\textstyle\sum_e w_e\,\mathbb{E}[Y^e{-}b^\top X^e]^2,
+\]
+where $U(\gamma)$ allows \emph{negative weights} to enforce risk invariance. Under additive interventions, every stationary point is $O((1{+}\gamma|E|)^{-1}{+}T^{-1/4}{+}n^{-1/4})$-close to $\beta^*$ (Thm~5), enabling gradient descent in \emph{polynomial} time rather than $2^p$ enumeration. In short, BIP gives full posterior uncertainty over invariant sets, while NegDRO trades distributional characterization for polynomial-time convergence with provable rates.
 
 \section*{Critique \& Project Connection}
-The shift from structure learning (finding the exact DAG) to invariant prediction (finding robust predictors) is highly relevant for applied work where the full causal graph is unknowable.
-For my \href{https://github.com/dhardestylewis/thesis/blob/main/Blei-Invariance_Causality-2026Spring/Project_Proposal.d/Project_Proposal_Final_V21.pdf}{\textit{Predicting NIMBYism Causally}} final project, this framework justifies pooling data from different ``regimes'' (e.g., pre/post-crash housing markets) to find invariant predictors of opposition.
-\begin{enumerate}
-    \item Following Peters et al. (2016), I can treat years or market states as environments $\mathcal{E}$. If a feature (e.g., ``gentrification score'') predicts opposition $Y$ invariantly across 2007 and 2024, it is a strong candidate for a stable driver.
-    \item Bühlmann's \textbf{Anchor Regression} offers a practical tool if the strict invariance of ICP is too strong for noisy text data. It helps identify ``diluted'' causal factors that remain predictive even under distribution shifts, aligning with the goal of robustly identifying NIMBYism drivers.
-\end{enumerate}
+My \textit{Predicting NIMBYism Causally} project observes roughly four temporal environments and approximately fifty features. In this low-environment regime, BIP's multi-modal posterior honestly quantifies which invariant sets remain ambiguous rather than returning a single point estimate that may be an artifact of limited data. NegDRO's polynomial-time guarantee and tolerance of hidden confounders better suit iterative model development, since unmeasured wealth may simultaneously confound school quality and zoning opposition. A productive strategy is to run NegDRO first for fast screening, then apply BIP to the reduced feature set; features flagged as causal by both methods warrant confidence, while disagreements signal that additional environments are needed. Both methods assume linear models with squared loss, however, and our protest indicator $Y\in\{0,1\}$ requires either a link function or a loss-function generalization that preserves the invariance guarantee.
 
 \section*{Questions}
 \begin{enumerate}
-    \item Bühlmann (2020) suggests that ``diluted causality'' is useful when strict causal discovery fails. Does this imply we should prefer Anchor Regression over ICP for high-dimensional, noisy text data where unconfoundedness is unlikely?
-    \item Peters et al. (2016) assume that the error distribution $F_\epsilon$ is identical across environments (Assumption 1). How sensitive is ICP to slight distributional drifts (e.g., concept drift in language use over decades) that do not strictly qualify as interventions?
+    \item NegDRO identifies $\beta^*$ when Condition~1b holds, requiring that second-moment matrices exhibit sufficient heterogeneity across environments ($\lambda>0$). BIP's posterior contracts when $\mu_{\min}>0$, a KL-divergence measure between local and pooled conditionals. These are distinct notions of ``sufficient heterogeneity.'' Can environments satisfy one but not the other, and if so, which method degrades more gracefully when its specific heterogeneity condition is only weakly satisfied?
+    \item Both methods assume squared loss. For binary $Y$, the invariance guarantee therefore rests on a misspecified loss function. Does misspecification affect the two methods symmetrically? NegDRO enforces risk parity across environments, which may remain well-posed even under misspecification since equal risk is a relative condition. BIP's posterior, by contrast, depends on absolute likelihood evaluations, raising the possibility that it concentrates on the wrong $z^*$ when the assumed Gaussian conditionals are far from the true Bernoulli data-generating process.
 \end{enumerate}
 
 \newpage
-\title{\vspace{-2em}\textbf{Project Proposal Update: Predicting NIMBYism Causally}}
-\vspace{1em}
+\title{\vspace{-2em}\textbf{Project Update: Predicting NIMBYism Causally}}
+\vspace{0.5em}
 \hrule
-\vspace{1em}
+\vspace{0.5em}
 
-\section*{1. What problem am I solving?}
-Investigating causal drivers of neighborhood opposition (NIMBYism) to housing. \textbf{Goal:} separate stable, \textbf{invariant} predictors of resistance from \textbf{spurious associations} driven by \textbf{environment-specific confounders}. \textbf{Aim:} find features predicting opposition consistently across the distinct \textbf{market regimes} of the 2018--2025 period.
+\section*{1. What is the problem?}
+We seek the causal drivers of zoning opposition in Austin, TX. Following \citet{peters2016icp}, we adopt invariant causal prediction: find $S^*$ such that $P_e(Y \mid X_{S^*}) = P(Y \mid X_{S^*})$ across all environments $e$. Features stable across regimes are causal; those whose predictive power breaks are spurious.
 
-\section*{2. Why is this problem important? To whom?}
-Critical for urban planners. Current models overfit to specific eras, failing when market regimes shift. Identifying \textit{invariant} causes enables policy design addressing fundamental concerns rather than symptoms of a moment, ensuring \textbf{robustness}.
+The key to identification is environment diversity: each regime change stress-tests predictors. Over 2019--2024, Austin experienced the mayoral transition (Jan~2023), parking-reform elimination (Nov~2023), the HOME Initiative (Feb~2024), and council-seat turnovers. These yield temporal and geographic environments \citep[assumption~B]{buhlmann2020invariance}, constituting \textbf{limited additive interventions} \citep{rothenhausler2019causal,fan2024negdro}. \citeauthor{peters2016icp}'s estimated set $\hat{S}(\mathcal{E}) \supseteq S^*$ is an outer bound that shrinks monotonically with each additional environment \citep[Thm~1]{peters2016icp}; \citeauthor{fan2024negdro}'s Condition~4 extends identification to partial interventions, and BIP's posterior quantifies remaining ambiguity. With approximately fifty features, classical ICP's $2^p$ enumeration is infeasible, motivating both methods.
 
-\section*{3. What is my strategy for solving it?}
-Using \textbf{Invariant Risk Minimization (IRM)} and \textbf{Bayesian Invariant Prediction (BIP)}, grounded in the \textbf{Invariant Prediction} framework:
-\begin{enumerate}
-    \setlength\itemsep{-0.3em}
-    \item \textbf{Environments:} Partition data via \textbf{expanding window Cross-Validation} into \textbf{Training Environments} ($\mathcal{E}_{tr}$) and \textbf{Test Environments} ($\mathcal{E}_{te}$).
-    \item \textbf{Representation:} Extract features $\Phi(X)$ from property data and protest letters.
-    \item \textbf{Methods:} Implement two core paradigms:
-    \begin{itemize}
-        \item \textbf{Invariant Risk Minimization (IRM):} A \textit{regularized optimization} paradigm to learn $\Phi$ such that a classifier is simultaneously optimal across all $\mathcal{E}_{tr}$.
-        \item \textbf{Bayesian Invariant Prediction (BIP):} A \textit{probabilistic inference} paradigm defining a latent feature selection vector $z$; the posterior $p(z|D)$ targets the true invariant features.
-    \end{itemize}
-\end{enumerate}
+\section*{2. Mathematical Formulation}
 
-\section*{4. Why is this solution good? Where does it fall short?}
-\textbf{Falls short:} It assumes an \textbf{invariant causal mechanism}. The assumption fails if the underlying reasons for NIMBYism undergo \textbf{mechanism change} over time (e.g., shifting from traffic concerns to displacement concerns).
+Let $\mathcal{E}=\{e_1,\ldots,e_K\}$ index the $K$ regimes above. In each $e$ we observe $(X^e_i, Y^e_i)_{i=1}^{n_e}$ with $X^e\in\mathbb{R}^p$ and $Y^e\in\{0,1\}$ (protest signed). Covariates partition into intervened $S_L$ (regulatory/market features) and untouched $S_L^c$ (demographics, schools, transit).
 
-\section*{5. How can I demonstrate that the solution works?}
-Train on expanding $\mathcal{E}_{tr}$, test on all \textbf{future horizons} in $\mathcal{E}_{te}$. A successful Invariant Model demonstrates \textbf{predictive stability} through the \textbf{invariance of its AUC} score across all horizons, maintaining reliability where baselines fail under \textbf{distribution shift}.
+This partition motivates the linear SEM \citep[Ch.~4]{peters2017elements} under the additive intervention regime \citep{rothenhausler2019causal}:
+\[
+    Y^e = (\beta^*)^\top X^e_{S^*} + \varepsilon^e_Y, \quad \varepsilon^e_X \stackrel{d}{=} \eta_X + (0_{S_L^c},\, \delta^e_{S_L})^\top, \quad \mathbb{E}[\eta\,(\delta^e)^\top]=0.
+\]
+Here $S^*\!\subseteq[p]$ indexes the true causal parents; $S_L$ the intervened covariates; $S_L^c$ the untouched ones. Only $\delta^e_{S_L}$ varies, so $Y\mid X_{S^*}$ is stable and prediction risk $\mathbb{E}[(Y^e - (\beta^*)^\top X^e)^2]=\sigma^2_Y$ holds in every environment. This is the \emph{risk invariance} we seek to exploit.
+
+With roughly four environments and fifty features the invariant set is likely underdetermined, so we pair two methods that trade off differently. \citet{fan2024negdro} cast recovery as minimax,
+\[
+  \hat\beta^{\gamma}\in\arg\min_{b}\max_{w\in U(\gamma)}\textstyle\sum_{e} w_e\,\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2],
+\]
+where $U(\gamma)$ permits \emph{negative} weights; under Condition~4 this yields a fast point estimate of $\beta^*$ even with limited interventions. \citet{wu2025bayesian} place a prior over selectors $z\in\{0,1\}^p$ whose posterior
+\[
+  p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat g(Y^e_i\mid X^z_{ei})\big/\hat p_e(Y^e_i\mid X^z_{ei})
+\]
+concentrates on $z^*$ but crucially reveals \emph{which features remain ambiguous} when environments are few. Where the two agree we make confident causal claims; where they diverge the data cannot resolve $S^*$.
+
+\vspace{-0.5em}
+{\scriptsize\setlength{\bibsep}{0pt}
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+}
 
 \end{document}

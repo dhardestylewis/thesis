@@ -5,16 +5,12 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[B{\"u}hlmann(2020)]{buhlmann2020invariance}
-P.~B{\"u}hlmann.
-\newblock Invariance, causality and robustness.
-\newblock \emph{Statistical Science}, 35\penalty0 (3):\penalty0 404--426, 2020.
-
-\bibitem[Fan et~al.(2024)Fan, Li, and Yang]{fan2024negdro}
-Y.~Fan, S.~Li, and Z.~Yang.
-\newblock Causal invariance learning via efficient nonconvex optimization.
-\newblock \emph{arXiv preprint arXiv:2412.11850}, 2024.
-\newblock URL \url{https://arxiv.org/abs/2412.11850}.
+\bibitem[Heinze-Deml et~al.(2018)Heinze-Deml, Peters, and
+  Meinshausen]{heinzedeml2018nonparametric}
+C.~Heinze-Deml, J.~Peters, and N.~Meinshausen.
+\newblock Invariant causal prediction for nonlinear models.
+\newblock \emph{Journal of Causal Inference}, 6\penalty0 (2), 2018.
+\newblock \doi{10.1515/jci-2017-0016}.
 
 \bibitem[Peters et~al.(2016)Peters, B{\"u}hlmann, and
   Meinshausen]{peters2016icp}
@@ -23,6 +19,12 @@ J.~Peters, P.~B{\"u}hlmann, and N.~Meinshausen.
   confidence intervals.
 \newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
   Methodology)}, 78\penalty0 (5):\penalty0 947--1012, 2016.
+
+\bibitem[Wang et~al.(2026)Wang, Hu, B{\"u}hlmann, and Guo]{wang2026negdro}
+Z.~Wang, Y.~Hu, P.~B{\"u}hlmann, and Z.~Guo.
+\newblock Causal invariance learning via efficient nonconvex optimization.
+\newblock \emph{arXiv preprint arXiv:2412.11850}, 2026.
+\newblock URL \url{https://arxiv.org/abs/2412.11850}.
 
 \bibitem[Wu and Blei(2025)]{wu2025bayesian}
 Y.~Wu and D.~M. Blei.

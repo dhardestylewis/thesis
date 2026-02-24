@@ -3,15 +3,14 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{titlesec}
 \usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage{hyperref}
 
 % Ultra-compact spacing
 \titlespacing*{\section}{0pt}{6pt}{2pt}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{3pt}
-
-\usepackage{fancyhdr}
-\usepackage{amsmath, amssymb}
-\usepackage{hyperref}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -20,7 +19,7 @@
 \rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (db2128)}
 \cfoot{\thepage}
 
-\title{\vspace{-2em}\textbf{Reader Report: Week 03} \\ \vspace{0.2em} \large \href{https://www.wiley.com/en-us/Causal+Inference+in+Statistics\%3A+A+Primer-p-9781119186847}{Pearl, J. (2016). \textit{Causal Inference in Statistics: A Primer}. Ch 3--4.}}
+\title{\vspace{-2em}\textbf{Reader Report: Week 03} \\ \vspace{0.2em} \large Invariance, Causality, and Robustness \\ \footnotesize Bühlmann (2020), Peters et al. (2016), Peters, Janzing \& Schölkopf (2017)}
 \author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (dl3645)}
 \date{2026 Spring}
 
@@ -31,21 +30,56 @@
 \vspace{-1em}
 
 \section*{Summary}
-Chapters 3 and 4 of Pearl's \textit{Primer} formalize the distinction between \textit{seeing} (observation) and \textit{doing} (intervention), providing the graphical and algebraic tools to move between them. 
-
-The core contribution of Chapter 3 is the \textbf{adjustment formula} (Eq 3.5), which allows us to compute the effect of an intervention $P(Y \mid do(x))$ purely from observational probabilities $P(Y \mid x, z)$, provided we can identify a valid adjustment set $Z$. This identification is governed by the \textbf{backdoor criterion} (Def 3.3.1), which states that a set $Z$ allows for identification if it blocks all spurious paths between the treatment $X$ and outcome $Y$ without blocking directed causal paths or opening new collider paths. When the backdoor path is blocked by an unobserved confounder, the \textbf{front-door criterion} (Def 3.4.1) offers an alternative identification strategy by exploiting a mediator $M$ that intercepts the causal effect.
-
-Chapter 4 extends this algebra to \textbf{counterfactuals}, defined as the potential outcome $Y$ had $X$ been different, given specific evidence about a \textbf{unit} $u$. Unlike interventions, which estimate the \textbf{average causal effect (ACE)} (Eq 3.1) over \textbf{populations} ($P(Y \mid do(x))$), counterfactuals \textbf{are specific to the unit} ($Y_x(u)$). They are computed via the three-step \textbf{abduction-action-prediction} algorithm: (1) \textit{Abduct} the state of exogenous variables $U$ from \textbf{evidence} ($E=e$), (2) \textit{Act} to \textbf{modify the structural equations} via graph surgery, and (3) \textit{Predict} the outcome in the modified model.
+This week's readings bridge the gap between statistical prediction and causal inference through the concept of \textbf{invariance}.
+\begin{itemize}
+    \item \textbf{Peters, Janzing, and Schölkopf (2017)} (Book, Ch 1, 2, 7) establish the \textbf{Principle of Independent Mechanisms}: causal mechanisms (e.g., $P(E|C)$) are autonomous and invariant to changes in other modules. While the joint distribution $P(C, E)$ may shift across environments, the conditional causal mechanism remains stable.
+    \item \textbf{Peters, Bühlmann, and Meinshausen (2016)} (JRSS-B) operationalize this with \textbf{Invariant Causal Prediction (ICP)}. They define ``plausible causal predictors'' as subsets $S$ that yield an invariant conditional distribution $P(Y \mid X_S)$ across heterogeneous environments $\mathcal{E}$. The intersection of such sets, $\hat{S}(\mathcal{E})$, consistently identifies causal ancestors (Theorem 1), transforming causal discovery into a search for stability.
+    \item \textbf{Bühlmann (2020)} generalizes this as a \textbf{risk minimization problem}, introducing \textbf{Anchor Regression}. This method relaxes strict invariance to find predictors robust to shift perturbations, allowing for \textbf{"diluted causality"} even when unobserved confounding prevents full causal discovery.
+\end{itemize}
 
 \section*{Critique \& Project Connection}
-Pearl's graph surgery metaphor provides a rigorous definition for the invariance we will seek in Weeks 6--7. An intervention is effectively an operation that creates a new environment $e'$ where the mechanism $P(X \mid PA(X))$ is destroyed, but the mechanism $P(Y \mid PA(Y))$ remains \textbf{invariant}.
-
-For my \href{https://github.com/dhardestylewis/thesis/blob/main/Blei-Invariance_Causality-2026Spring/Project_Proposal.d/Project_Proposal_Final_V21.pdf}{\textit{Predicting NIMBYism Causally}} final project for this class, this formalizes our identification strategy. We treat distinct market regimes as environments $E$. If the relationship between a feature such as school quality and an outcome such as opposition ($Y$) changes between 2007 and 2024, it implies that the unconditional relationship is confounded by an unblocked spurious path. Our goal is to discover a feature set that effectively blocks these paths, satisfying the \textbf{backdoor criterion} across all regimes. The Counterfactual algorithm is particularly relevant for the validity check when we want to ask retrospective questions such as, ``Would this specific development have been opposed if it were presented in a different year?'' tailored to the specific neighborhood's exogenous characteristics $U$, such as, for example, historical wealth.
+The shift from structure learning (finding the exact DAG) to invariant prediction (finding robust predictors) is highly relevant for applied work where the full causal graph is unknowable.
+For my \href{https://github.com/dhardestylewis/thesis/blob/main/Blei-Invariance_Causality-2026Spring/Project_Proposal.d/Project_Proposal_Final_V21.pdf}{\textit{Predicting NIMBYism Causally}} final project, this framework justifies pooling data from different ``regimes'' (e.g., pre/post-crash housing markets) to find invariant predictors of opposition.
+\begin{enumerate}
+    \item Following Peters et al. (2016), I can treat years or market states as environments $\mathcal{E}$. If a feature (e.g., ``gentrification score'') predicts opposition $Y$ invariantly across 2007 and 2024, it is a strong candidate for a stable driver.
+    \item Bühlmann's \textbf{Anchor Regression} offers a practical tool if the strict invariance of ICP is too strong for noisy text data. It helps identify ``diluted'' causal factors that remain predictive even under distribution shifts, aligning with the goal of robustly identifying NIMBYism drivers.
+\end{enumerate}
 
 \section*{Questions}
 \begin{enumerate}
-    \item When modeling multiple environments, is the environment variable $E$ simply a covariate we condition on using the adjustment formula, or does it strictly serve as a proxy for unknown intervenions?
-    \item Can the front-door criterion be applied to text data, where the mediator is a discovered latent topic, such as traffic congestion?
+    \item Bühlmann (2020) suggests that ``diluted causality'' is useful when strict causal discovery fails. Does this imply we should prefer Anchor Regression over ICP for high-dimensional, noisy text data where unconfoundedness is unlikely?
+    \item Peters et al. (2016) assume that the error distribution $F_\epsilon$ is identical across environments (Assumption 1). How sensitive is ICP to slight distributional drifts (e.g., concept drift in language use over decades) that do not strictly qualify as interventions?
 \end{enumerate}
+
+\newpage
+\title{\vspace{-2em}\textbf{Project Proposal Update: Predicting NIMBYism Causally}}
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\section*{1. What problem am I solving?}
+Investigating causal drivers of neighborhood opposition (NIMBYism) to housing. \textbf{Goal:} separate stable, \textbf{invariant} predictors of resistance from \textbf{spurious associations} driven by \textbf{environment-specific confounders}. \textbf{Aim:} find features predicting opposition consistently across the distinct \textbf{market regimes} of the 2018--2025 period.
+
+\section*{2. Why is this problem important? To whom?}
+Critical for urban planners. Current models overfit to specific eras, failing when market regimes shift. Identifying \textit{invariant} causes enables policy design addressing fundamental concerns rather than symptoms of a moment, ensuring \textbf{robustness}.
+
+\section*{3. What is my strategy for solving it?}
+Using \textbf{Invariant Risk Minimization (IRM)} and \textbf{Bayesian Invariant Prediction (BIP)}, grounded in the \textbf{Invariant Prediction} framework:
+\begin{enumerate}
+    \setlength\itemsep{-0.3em}
+    \item \textbf{Environments:} Partition data via \textbf{expanding window Cross-Validation} into \textbf{Training Environments} ($\mathcal{E}_{tr}$) and \textbf{Test Environments} ($\mathcal{E}_{te}$).
+    \item \textbf{Representation:} Extract features $\Phi(X)$ from property data and protest letters.
+    \item \textbf{Methods:} Implement two core paradigms:
+    \begin{itemize}
+        \item \textbf{Invariant Risk Minimization (IRM):} A \textit{regularized optimization} paradigm to learn $\Phi$ such that a classifier is simultaneously optimal across all $\mathcal{E}_{tr}$.
+        \item \textbf{Bayesian Invariant Prediction (BIP):} A \textit{probabilistic inference} paradigm defining a latent feature selection vector $z$; the posterior $p(z|D)$ targets the true invariant features.
+    \end{itemize}
+\end{enumerate}
+
+\section*{4. Why is this solution good? Where does it fall short?}
+\textbf{Falls short:} It assumes an \textbf{invariant causal mechanism}. The assumption fails if the underlying reasons for NIMBYism undergo \textbf{mechanism change} over time (e.g., shifting from traffic concerns to displacement concerns).
+
+\section*{5. How can I demonstrate that the solution works?}
+Train on expanding $\mathcal{E}_{tr}$, test on all \textbf{future horizons} in $\mathcal{E}_{te}$. A successful Invariant Model demonstrates \textbf{predictive stability} through the \textbf{invariance of its AUC} score across all horizons, maintaining reliability where baselines fail under \textbf{distribution shift}.
 
 \end{document}

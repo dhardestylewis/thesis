@@ -1,6 +1,6 @@
-\documentclass[11pt]{article}
+\documentclass[10.5pt]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=0.85in,top=0.7in]{geometry}
+\usepackage[margin=0.8in,top=0.6in,bottom=0.6in]{geometry}
 \usepackage{titlesec}
 \usepackage{parskip}
 \usepackage{fancyhdr}
@@ -8,12 +8,11 @@
 \usepackage[round,sort&compress]{natbib}
 \usepackage{hyperref}
 \renewcommand{\bibsection}{\section*{References}}
-\setlength{\bibsep}{1pt}
+\setlength{\bibsep}{0pt}
 
-% Ultra-compact spacing
-\titlespacing*{\section}{0pt}{6pt}{2pt}
+\titlespacing*{\section}{0pt}{5pt}{2pt}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{3pt}
+\setlength{\parskip}{2pt}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -22,7 +21,7 @@
 \rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (\texttt{db2128})}
 \cfoot{\thepage}
 
-\title{\vspace{-2.5em}\textbf{Reader Report: Week 05} \\ \vspace{0.1em} \large Bayesian Invariant Prediction \& Optimization-Based ICP}
+\title{\vspace{-2.5em}\textbf{Reader Report: Week 05} \\ \vspace{0.1em} \large Probabilistic Invariance: VI-BIP and the Core Theorems}
 \author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (\texttt{dl3645})}
 \date{\vspace{-0.5em}2026 Spring}
 
@@ -30,58 +29,32 @@
 
 \maketitle
 \thispagestyle{fancy}
-\vspace{-1em}
+\vspace{-1.4em}
 
 \section*{Summary}
-\citet{wu2025bayesian} introduce \textbf{Bayesian Invariant Prediction} (BIP), casting ICP as latent-variable inference. A binary selector $z\in\{0,1\}^p$ indexes invariant features; the posterior $p(z\mid\mathcal{D})$ is proportional to likelihood ratios between pooled and per-environment conditionals. They prove consistency (Thm~1) and exponential contraction at rate $O(R\cdot e^{-\kappa nE\mu_{\min}})$ (Thm~2), where $\mu_{\min}$ captures environment heterogeneity. For scalability, \textbf{VI-BIP} uses mean-field variational inference with the U2G gradient estimator; it identifies invariant genes in a 6{,}170-gene perturbation dataset where competing methods falter.
 
-\citet{fan2024negdro} propose \textbf{NegDRO}, a continuous minimax formulation
-\[
-  \min_{b}\max_{w\in U(\gamma)}\textstyle\sum_e w_e\,\mathbb{E}[Y^e{-}b^\top X^e]^2,
-\]
-where $U(\gamma)$ allows \emph{negative weights} to enforce risk invariance. Under additive interventions, every stationary point is $O((1{+}\gamma|E|)^{-1}{+}T^{-1/4}{+}n^{-1/4})$-close to $\beta^*$ (Thm~5), enabling gradient descent in \emph{polynomial} time rather than $2^p$ enumeration. In short, BIP gives full posterior uncertainty over invariant sets, while NegDRO trades distributional characterization for polynomial-time convergence with provable rates.
+\citet{wu2025bayesian} place a prior over binary selectors $z\in\{0,1\}^p$, where $z_j=1$ indexes a feature in the invariant set $S^*$ \citep{peters2016icp}.
+The posterior $p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat{g}(Y^e_i\mid X^z_{ei})/\hat{p}_e(Y^e_i\mid X^z_{ei})$ rewards selectors for which the pooled conditional $\hat{g}$ dominates each environment-specific conditional $\hat{p}_e$.
+Consistency (Thm~1) requires $\mu_{\min}>0$, the minimum KL divergence between $\hat{g}$ and any $\hat{p}_e$ over non-invariant features \citep[Def.~1]{wu2025bayesian}. Contraction (Thm~2) gives $\mathrm{TV}(p(z\mid\mathcal{D}),\,\delta_{z^*}) = O(2^p\,e^{-\kappa nE\mu_{\min}})$.
+Both bounds assume squared loss under a linear model, and the product likelihood weights all environments symmetrically.
+VI-BIP \citep[Sec.~4]{wu2025bayesian} scales this inference via mean-field variational approximation; its only empirical validation uses single-gene-deletion environments \citep[Sec.~5]{wu2025bayesian}, where hard interventions guarantee $\mu_{\min}>0$ by construction.
 
-\section*{Critique \& Project Connection}
-My \textit{Predicting NIMBYism Causally} project observes roughly four temporal environments and approximately fifty features. In this low-environment regime, BIP's multi-modal posterior honestly quantifies which invariant sets remain ambiguous rather than returning a single point estimate that may be an artifact of limited data. NegDRO's polynomial-time guarantee and tolerance of hidden confounders better suit iterative model development, since unmeasured wealth may simultaneously confound school quality and zoning opposition. A productive strategy is to run NegDRO first for fast screening, then apply BIP to the reduced feature set; features flagged as causal by both methods warrant confidence, while disagreements signal that additional environments are needed. Both methods assume linear models with squared loss, however, and our protest indicator $Y\in\{0,1\}$ requires either a link function or a loss-function generalization that preserves the invariance guarantee.
+\section*{Critique}
+
+\citet{peters2016icp}, \citet{wang2026negdro}, and \citet{wu2025bayesian} all enforce the same invariance condition under squared loss, yet what separates them is what the practitioner assumes about the environments before seeing data. BIP's symmetric product likelihood weights every environment equally, so its contraction rate $nE \gtrsim O(p/\mu_{\min})$ is bottlenecked by $\mu_{\min}$, the minimum KL divergence between pooled and local conditionals of $Y\mid X$. NegDRO measures heterogeneity differently: its identification requires $\lambda>0$, a spectral condition on the second moments of $X$ across environments \citep[Cond.~1b]{wang2026negdro}. Its tuning parameter $\gamma$ controls how negative the environment weights can go \citep[Eq.~9]{wang2026negdro}, with $\gamma=0$ recovering the symmetric simplex. A dataset can satisfy one heterogeneity condition but not the other, so the two frameworks are not merely different algorithms for the same problem.
+
+Yet no theory characterizes where the boundary lies. There is no decision rule telling a practitioner when symmetric weighting wastes known structure, or when asymmetric weighting overfits to a misidentified dominant environment. The gap is acknowledged by neither paper.
+
+The experiments do not close this gap. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP exclusively on single-gene-deletion data where $\mu_{\min}>0$ holds by construction, the one regime where a practitioner \emph{could} justify asymmetric weighting and BIP's agnosticism is least needed. The empirical case for VI-BIP in observational or low-intervention settings, where symmetric weighting should matter most, remains unmade.
 
 \section*{Questions}
-\begin{enumerate}
-    \item NegDRO identifies $\beta^*$ when Condition~1b holds, requiring that second-moment matrices exhibit sufficient heterogeneity across environments ($\lambda>0$). BIP's posterior contracts when $\mu_{\min}>0$, a KL-divergence measure between local and pooled conditionals. These are distinct notions of ``sufficient heterogeneity.'' Can environments satisfy one but not the other, and if so, which method degrades more gracefully when its specific heterogeneity condition is only weakly satisfied?
-    \item Both methods assume squared loss. For binary $Y$, the invariance guarantee therefore rests on a misspecified loss function. Does misspecification affect the two methods symmetrically? NegDRO enforces risk parity across environments, which may remain well-posed even under misspecification since equal risk is a relative condition. BIP's posterior, by contrast, depends on absolute likelihood evaluations, raising the possibility that it concentrates on the wrong $z^*$ when the assumed Gaussian conditionals are far from the true Bernoulli data-generating process.
+Both questions below concern whether the practitioner-knowledge gap between BIP and NegDRO can be bridged.
+\begin{enumerate}\setlength\itemsep{1pt}
+  \item NegDRO's rate improves smoothly in $\gamma$ \citep[Prop.~2]{wang2026negdro}, but this characterizes NegDRO alone. Is there a regime, characterized by the number of environments $E$, the ratio $\lambda/\mu_{\min}$, or the practitioner's uncertainty about which environment dominates, in which BIP's symmetric posterior provably outperforms NegDRO's asymmetric point estimate, or vice versa?
+  \item Nonparametric extensions of ICP exist for the symmetric case \citep{heinzedeml2018nonparametric}, but no nonparametric analogue of NegDRO's asymmetric weighting has been proposed. Does the practitioner-knowledge distinction identified above survive when the loss is no longer quadratic, or does the symmetry-versus-asymmetry tradeoff collapse under nonparametric conditionals?
 \end{enumerate}
 
-\newpage
-\title{\vspace{-2em}\textbf{Project Update: Predicting NIMBYism Causally}}
-\vspace{0.5em}
-\hrule
-\vspace{0.5em}
-
-\section*{1. What is the problem?}
-We seek the causal drivers of zoning opposition in Austin, TX. Following \citet{peters2016icp}, we adopt invariant causal prediction: find $S^*$ such that $P_e(Y \mid X_{S^*}) = P(Y \mid X_{S^*})$ across all environments $e$. Features stable across regimes are causal; those whose predictive power breaks are spurious.
-
-The key to identification is environment diversity: each regime change stress-tests predictors. Over 2019--2024, Austin experienced the mayoral transition (Jan~2023), parking-reform elimination (Nov~2023), the HOME Initiative (Feb~2024), and council-seat turnovers. These yield temporal and geographic environments \citep[assumption~B]{buhlmann2020invariance}, constituting \textbf{limited additive interventions} \citep{rothenhausler2019causal,fan2024negdro}. \citeauthor{peters2016icp}'s estimated set $\hat{S}(\mathcal{E}) \supseteq S^*$ is an outer bound that shrinks monotonically with each additional environment \citep[Thm~1]{peters2016icp}; \citeauthor{fan2024negdro}'s Condition~4 extends identification to partial interventions, and BIP's posterior quantifies remaining ambiguity. With approximately fifty features, classical ICP's $2^p$ enumeration is infeasible, motivating both methods.
-
-\section*{2. Mathematical Formulation}
-
-Let $\mathcal{E}=\{e_1,\ldots,e_K\}$ index the $K$ regimes above. In each $e$ we observe $(X^e_i, Y^e_i)_{i=1}^{n_e}$ with $X^e\in\mathbb{R}^p$ and $Y^e\in\{0,1\}$ (protest signed). Covariates partition into intervened $S_L$ (regulatory/market features) and untouched $S_L^c$ (demographics, schools, transit).
-
-This partition motivates the linear SEM \citep[Ch.~4]{peters2017elements} under the additive intervention regime \citep{rothenhausler2019causal}:
-\[
-    Y^e = (\beta^*)^\top X^e_{S^*} + \varepsilon^e_Y, \quad \varepsilon^e_X \stackrel{d}{=} \eta_X + (0_{S_L^c},\, \delta^e_{S_L})^\top, \quad \mathbb{E}[\eta\,(\delta^e)^\top]=0.
-\]
-Here $S^*\!\subseteq[p]$ indexes the true causal parents; $S_L$ the intervened covariates; $S_L^c$ the untouched ones. Only $\delta^e_{S_L}$ varies, so $Y\mid X_{S^*}$ is stable and prediction risk $\mathbb{E}[(Y^e - (\beta^*)^\top X^e)^2]=\sigma^2_Y$ holds in every environment. This is the \emph{risk invariance} we seek to exploit.
-
-With roughly four environments and fifty features the invariant set is likely underdetermined, so we pair two methods that trade off differently. \citet{fan2024negdro} cast recovery as minimax,
-\[
-  \hat\beta^{\gamma}\in\arg\min_{b}\max_{w\in U(\gamma)}\textstyle\sum_{e} w_e\,\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2],
-\]
-where $U(\gamma)$ permits \emph{negative} weights; under Condition~4 this yields a fast point estimate of $\beta^*$ even with limited interventions. \citet{wu2025bayesian} place a prior over selectors $z\in\{0,1\}^p$ whose posterior
-\[
-  p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat g(Y^e_i\mid X^z_{ei})\big/\hat p_e(Y^e_i\mid X^z_{ei})
-\]
-concentrates on $z^*$ but crucially reveals \emph{which features remain ambiguous} when environments are few. Where the two agree we make confident causal claims; where they diverge the data cannot resolve $S^*$.
-
-\vspace{-0.5em}
+\vspace{-0.2em}
 {\scriptsize\setlength{\bibsep}{0pt}
 \bibliographystyle{abbrvnat}
 \bibliography{references}
