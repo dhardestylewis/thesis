@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  24 FEB 2026 00:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  24 FEB 2026 00:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -408,7 +408,7 @@ Package rerunfilecheck Info: File `Reader_Report.out' has not changed.
 Here is how much of TeX's memory you used:
  10364 strings out of 467871
  159452 string characters out of 5419344
- 598008 words of memory out of 5000000
+ 599008 words of memory out of 5000000
  39131 multiletter control sequences out of 15000+600000
  636476 words of font info for 75 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -433,9 +433,9 @@ s/cm/cmtt12.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmtt8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/amsfonts/symbols/msam10.pfb>
 Output written on C:\Users\dhl\data\thesis\thesis\Blei-Invariance_Causality-202
-6Spring\Reader_Reports\Week_06\build\Reader_Report.pdf (1 page, 218143 bytes).
+6Spring\Reader_Reports\Week_06\build\Reader_Report.pdf (1 page, 218154 bytes).
 PDF statistics:
- 133 PDF objects out of 1000 (max. 8388607)
+ 135 PDF objects out of 1000 (max. 8388607)
  9 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
