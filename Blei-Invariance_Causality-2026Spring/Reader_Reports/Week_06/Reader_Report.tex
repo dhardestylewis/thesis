@@ -41,7 +41,7 @@ VI-BIP \citep[Sec.~4]{wu2025bayesian} approximates the posterior via mean-field 
 
 \section*{Critique}
 
-\citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce $P_e(Y\mid X_{S^*}) = \text{const}$ for all $e\in\mathcal{E}$, yet produce fundamentally different outputs: a confidence set, a point estimate, and a posterior distribution. The invariance condition alone does not determine the algorithm. What separates the three methods is what the practitioner assumes about the environments before seeing data.
+\citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce the same invariance condition, yet what separates them is what the practitioner assumes about the environments before seeing data.
 
 ICP assumes the least: environments are exchangeable, and adding more can only shrink the accepted set \citep[Thm.~1]{peters2016icp}. BIP inherits this agnosticism by weighting environments symmetrically in the product likelihood, but enumerates $2^p$ models to do so. Rearranging Thm~2 gives $nE \gtrsim O(p/\mu_{\min})$, the same functional dependence on environment count and dimensionality as ICP's power requirement.
 
