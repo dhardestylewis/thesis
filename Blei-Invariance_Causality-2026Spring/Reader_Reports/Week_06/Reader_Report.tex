@@ -1,6 +1,6 @@
-\documentclass[10pt]{article}
+\documentclass[10.5pt]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=0.75in,top=0.55in,bottom=0.6in]{geometry}
+\usepackage[margin=0.8in,top=0.6in,bottom=0.65in]{geometry}
 \usepackage{titlesec}
 \usepackage{parskip}
 \usepackage{fancyhdr}
@@ -10,9 +10,9 @@
 \renewcommand{\bibsection}{\section*{References}}
 \setlength{\bibsep}{0pt}
 
-\titlespacing*{\section}{0pt}{4pt}{1pt}
+\titlespacing*{\section}{0pt}{5pt}{2pt}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{2pt}
+\setlength{\parskip}{2.5pt}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -29,30 +29,42 @@
 
 \maketitle
 \thispagestyle{fancy}
-\vspace{-1.5em}
+\vspace{-1.2em}
 
 \section*{Summary}
-\citet{wu2025bayesian} recast ICP as sparse Bayesian variable selection.
-A binary selector $z \in \{0,1\}^p$ marks invariant features; the posterior
-\(p(z \mid \mathcal{D}) \propto p(z)\prod_{e,i}\hat{g}(Y^e_i \mid X^z_{ei})/\hat{p}_e(Y^e_i \mid X^z_{ei})\)
-up-weights selectors for which the pooled conditional $\hat{g}$ matches each local $\hat{p}_e$---a probabilistic analog of Peters et al.'s accept/reject invariance test.
 
-Two theorems govern the posterior. \textbf{Consistency (Thm~1):} if $\mu_{\min}>0$ (positive KL between pooled and local conditionals on any non-invariant feature), the posterior concentrates on $z^*$. \textbf{Contraction (Thm~2):} mass on $\{z \neq z^*\}$ decays as $O(R\,e^{-\kappa nE\mu_{\min}})$, where $R=2^p$, $E$ is environments, and $n$ is per-environment $n$. Key implications: (i) data and environments trade off in the exponent---helpful given my $K\!\approx\!4$ regimes; (ii) $R=2^p$ is only a prefactor, so the dimensionality curse is milder than expected.
+\citet{wu2025bayesian} place a prior over binary selectors $z\in\{0,1\}^p$ indexing the invariant features; the posterior
+$p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat{g}(Y^e_i\mid X^z_{ei})/\hat{p}_e(Y^e_i\mid X^z_{ei})$
+rewards selectors for which the pooled conditional $\hat{g}$ dominates each local $\hat{p}_e$---a probabilistic lift of Peters et al.'s test.
+Consistency (Thm~1) requires $\mu_{\min}>0$; contraction (Thm~2) gives mass on $\{z\neq z^*\}$ decaying as $O(R\,e^{-\kappa nE\mu_{\min}})$.
+VI-BIP approximates the posterior by mean-field ELBO maximization, using the U2G estimator to handle discrete gradients; it recovers the same invariant gene sets as exact BIP on a 6{,}170-gene dataset.
+\citet{fan2024negdro} take a different tack---a minimax formulation with negative environment weights---returning a point estimate $\hat\beta^\gamma$ with polynomial-time rates but no uncertainty.
 
-\textbf{VI-BIP} fits $q(z)=\prod_j \mathrm{Bern}(z_j;\pi_j)$ by ELBO maximization. The obstacle is differentiating through discrete $z$; the \textbf{U2G estimator} relaxes the discrete draw to a Gaussian surrogate, enabling standard stochastic gradient ascent. On a 6{,}170-gene perturbation dataset, VI-BIP matches exact BIP while being orders of magnitude faster.
+\section*{Critique}
 
-\section*{Critique \& Contrast with the Optimization Approach}
-\citet{fan2024negdro} replace the combinatorial posterior with a minimax problem
-$\min_b \max_{w \in U(\gamma)}\sum_e w_e \hat{\mathbb{E}}[(Y^e-b^\top X^e)^2]$,
-where $U(\gamma)$ permits negative weights. NegDRO yields a point estimate $\hat\beta^\gamma$ with polynomial-time convergence but no uncertainty quantification. The key difference: BIP exposes \emph{which} features remain ambiguous when environments are few; NegDRO gives a fast answer but not a sense of what additional data would resolve. For my $\sim\!4$-environment, $\sim\!50$-feature NIMBYism project, the multi-modal BIP posterior is directly informative about where more environment diversity is needed.
+The contraction exponent $\kappa nE\mu_{\min}$ is more informative than it looks.
+Rearranging the bound to achieve $\epsilon$ posterior mass on bad selectors requires
+$nE \gtrsim \frac{p\log 2 + \log(1/\epsilon)}{\kappa\mu_{\min}}$,
+i.e.\ roughly $O(p/(\mu_{\min}E))$ samples per environment.
+This makes explicit a tension the paper leaves implicit: $\mu_{\min}$ is a property of the \emph{intervention distribution}, not the sample, so collecting more data within a given set of environments hits a wall once $n$ is large but $E$ is fixed.
+For my NIMBYism project with $K\approx4$ regimes, the bound says I need $\mu_{\min}$ to be large---meaning the policy shifts (parking reform, HOME Initiative) must genuinely alter the distribution of non-causal features---and that I cannot compensate for weak interventions purely by accumulating more census tracts.
+
+Against NegDRO, the difference is not just uncertainty vs.\ point estimate.
+NegDRO's negative weights can \emph{amplify} contrasts between specific environment pairs, effectively up-weighting interventions that most violate invariance.
+BIP, by contrast, treats environments symmetrically inside the product likelihood; it cannot selectively stress-test a single environment pair.
+This means NegDRO may be more powerful when one environment is known \emph{a priori} to be the most informative intervention, while BIP is preferable when intervention quality is unknown and one wants the data to speak.
+
+VI-BIP's mean-field family $\prod_j\mathrm{Bern}(\pi_j)$ ignores posterior correlation between $z_j$ and $z_k$.
+For correlated covariates---say, school quality and income in census tracts---the true posterior likely assigns mass jointly to $\{z_j=z_k=1\}$ or $\{z_j=z_k=0\}$ rather than independently.
+Mean-field will spread this mass, biasing each $\pi_j$ toward 0.5 and understating our confidence in either covariate being causal.
 
 \section*{Questions}
-\begin{enumerate}\setlength\itemsep{0pt}
-  \item The contraction bound uses the population $\mu_{\min}$, not an estimate. Is there a pre-test analogous to classical ICP's global invariance check that certifies $\mu_{\min}>0$ before fitting BIP?
-  \item VI-BIP's mean-field family ignores posterior correlations between $z_j$ and $z_k$. For strongly correlated regulatory features (zoning category, parking requirements), does mean-field bias $\pi_j$ toward 0.5? Would a structured variational family (e.g.\ Ising) recover sharper posteriors?
+\begin{enumerate}\setlength\itemsep{1pt}
+  \item The sample complexity argument above suggests a diagnostic: estimate $\hat\mu_e$ for each environment pair, flag pairs where it is near zero as ``weak interventions,'' and prioritize collecting new environments there rather than more data within existing ones. Has this been explored as a practical acquisition strategy within the BIP framework?
+  \item Can the U2G estimator be paired with a structured (e.g.\ Ising) variational family to handle correlated selectors, or does U2G's Gaussian relaxation fundamentally assume independence across $z_j$?
 \end{enumerate}
 
-\vspace{-0.3em}
+\vspace{-0.2em}
 {\scriptsize\setlength{\bibsep}{0pt}
 \bibliographystyle{abbrvnat}
 \bibliography{references}
