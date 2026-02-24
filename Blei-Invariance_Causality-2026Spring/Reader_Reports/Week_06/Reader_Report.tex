@@ -33,35 +33,32 @@
 
 \section*{Summary}
 
-\citet{wu2025bayesian} place a prior over binary selectors $z\in\{0,1\}^p$ indexing the invariant features; the posterior
+\citet{wu2025bayesian} place a prior over binary selectors $z\in\{0,1\}^p$, where $z_j=1$ indexes a feature included in the invariant set $S^*$ \citep{peters2016icp}.
+The posterior
 $p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat{g}(Y^e_i\mid X^z_{ei})/\hat{p}_e(Y^e_i\mid X^z_{ei})$
-rewards selectors for which the pooled conditional $\hat{g}$ dominates each local $\hat{p}_e$---a probabilistic lift of Peters et al.'s test.
-Consistency (Thm~1) requires $\mu_{\min}>0$; contraction (Thm~2) gives mass on $\{z\neq z^*\}$ decaying as $O(R\,e^{-\kappa nE\mu_{\min}})$.
-VI-BIP approximates the posterior by mean-field ELBO maximization, using the U2G estimator to handle discrete gradients; it recovers the same invariant gene sets as exact BIP on a 6{,}170-gene dataset.
-\citet{fan2024negdro} take a different tack---a minimax formulation with negative environment weights---returning a point estimate $\hat\beta^\gamma$ with polynomial-time rates but no uncertainty.
+rewards selectors for which the pooled conditional $\hat{g}$ dominates each local conditional $\hat{p}_e$, where $\hat{p}_e$ is fit separately per environment $e$.
+Consistency (Thm~1) requires $\mu_{\min}>0$, defined as the minimum KL divergence between $\hat{g}$ and any $\hat{p}_e$ over non-invariant features \citep[Def.~1]{wu2025bayesian}.
+Contraction (Thm~2) gives posterior mass on $\{z\neq z^*\}$ scaling as $O(R\,e^{-\kappa nE\mu_{\min}})$, where $R=2^p$ counts hypotheses, $E$ is the number of environments, and $\kappa$ is a universal constant.
+VI-BIP \citep[Sec.~4]{wu2025bayesian} approximates the posterior via mean-field variational inference \citep{blei2017variational}, optimizing the evidence lower bound (ELBO) using the U2G gradient estimator to handle discrete $z$.
 
-\section*{Critique}
+\section*{Critique: One Invariance Condition, Three Algorithms}
 
-The contraction exponent $\kappa nE\mu_{\min}$ is more informative than it looks.
-Rearranging the bound to achieve $\epsilon$ posterior mass on bad selectors requires
-$nE \gtrsim \frac{p\log 2 + \log(1/\epsilon)}{\kappa\mu_{\min}}$,
-i.e.\ roughly $O(p/(\mu_{\min}E))$ samples per environment.
-This makes explicit a tension the paper leaves implicit: $\mu_{\min}$ is a property of the \emph{intervention distribution}, not the sample, so collecting more data within a given set of environments hits a wall once $n$ is large but $E$ is fixed.
-For my NIMBYism project with $K\approx4$ regimes, the bound says I need $\mu_{\min}$ to be large---meaning the policy shifts (parking reform, HOME Initiative) must genuinely alter the distribution of non-causal features---and that I cannot compensate for weak interventions purely by accumulating more census tracts.
+The most striking observation across this body of work is that \citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce the same underlying condition ($P_e(Y\mid X_{S^*})$ is constant across environments $e$) but operationalize it in structurally incompatible ways that each paper treats as self-contained.
 
-Against NegDRO, the difference is not just uncertainty vs.\ point estimate.
-NegDRO's negative weights can \emph{amplify} contrasts between specific environment pairs, effectively up-weighting interventions that most violate invariance.
-BIP, by contrast, treats environments symmetrically inside the product likelihood; it cannot selectively stress-test a single environment pair.
-This means NegDRO may be more powerful when one environment is known \emph{a priori} to be the most informative intervention, while BIP is preferable when intervention quality is unknown and one wants the data to speak.
+Peters et al.\ test invariance sequentially, building a confidence set $\hat{S}(\mathcal{E})$ that shrinks monotonically as environments accumulate \citep[Thm.~1]{peters2016icp}.
+BIP's Thm~2 is the probabilistic counterpart: rearranging the contraction gives sample complexity $nE \gtrsim O(p/\mu_{\min})$, which is the per-environment requirement for the Peters test to have nontrivial power.
+BIP thus does not replace ICP; it quantifies ICP's frequentist power curve in a Bayesian language.
 
-VI-BIP's mean-field family $\prod_j\mathrm{Bern}(\pi_j)$ ignores posterior correlation between $z_j$ and $z_k$.
-For correlated covariates---say, school quality and income in census tracts---the true posterior likely assigns mass jointly to $\{z_j=z_k=1\}$ or $\{z_j=z_k=0\}$ rather than independently.
-Mean-field will spread this mass, biasing each $\pi_j$ toward 0.5 and understating our confidence in either covariate being causal.
+NegDRO \citep{fan2024negdro} makes a third move.
+Its minimax problem $\min_b\max_{w\in U(\gamma)}\sum_e w_e\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2]$, where $U(\gamma)$ is the set of signed environment weights with total variation at most $\gamma$ \citep[Def.~1]{fan2024negdro}, is the distributionally robust framing of \citet{buhlmann2020invariance} pushed to an adversarial extreme.
+The critical difference from BIP is structural: BIP treats environments symmetrically inside the product likelihood, while NegDRO can amplify a single harsh environment pair, making it more powerful when one intervention is known \emph{a priori} to be maximally informative.
+Symmetry is appropriate when intervention quality is unknown and one wants the data to speak; asymmetry (NegDRO) is appropriate when domain knowledge identifies a dominant intervention.
+This suggests a natural hybrid: use NegDRO to identify the environment pair with the largest empirical $\hat\mu_e$, then initialize BIP's prior to concentrate on selectors that perform well under that pair, rather than treating both methods as competing alternatives.
 
 \section*{Questions}
 \begin{enumerate}\setlength\itemsep{1pt}
-  \item The sample complexity argument above suggests a diagnostic: estimate $\hat\mu_e$ for each environment pair, flag pairs where it is near zero as ``weak interventions,'' and prioritize collecting new environments there rather than more data within existing ones. Has this been explored as a practical acquisition strategy within the BIP framework?
-  \item Can the U2G estimator be paired with a structured (e.g.\ Ising) variational family to handle correlated selectors, or does U2G's Gaussian relaxation fundamentally assume independence across $z_j$?
+  \item If BIP's $\mu_{\min}$ plays the same role as the power parameter in Peters et al., can one construct a Bayesian power analysis (a prior over $\mu_{\min}$) to decide how many environments to collect before fitting BIP, analogous to classical sample-size planning?
+  \item VI-BIP's mean-field family $q(z)=\prod_j\mathrm{Bern}(z_j;\pi_j)$ ignores posterior correlation between $z_j$ and $z_k$. For strongly correlated covariates, does the mean-field gap bias $\pi_j$ toward 0.5? Would a structured variational family (e.g.\ an Ising model over $z$) recover sharper posteriors, and can the U2G estimator extend to that setting?
 \end{enumerate}
 
 \vspace{-0.2em}
