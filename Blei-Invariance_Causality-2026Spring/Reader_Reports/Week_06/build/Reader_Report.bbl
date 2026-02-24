@@ -1,21 +1,9 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[Blei et~al.(2017)Blei, Kucukelbir, and McAuliffe]{blei2017variational}
-D.~M. Blei, A.~Kucukelbir, and J.~D. McAuliffe.
-\newblock Variational inference: A review for statisticians.
-\newblock \emph{Journal of the American Statistical Association}, 112\penalty0
-  (518):\penalty0 859--877, 2017.
-
-\bibitem[Fan et~al.(2024)Fan, Li, and Yang]{fan2024negdro}
-Y.~Fan, S.~Li, and Z.~Yang.
-\newblock Causal invariance learning via efficient nonconvex optimization.
-\newblock \emph{arXiv preprint arXiv:2412.11850}, 2024.
-\newblock URL \url{https://arxiv.org/abs/2412.11850}.
 
 \bibitem[Heinze-Deml et~al.(2018)Heinze-Deml, Peters, and
   Meinshausen]{heinzedeml2018nonparametric}
@@ -31,6 +19,12 @@ J.~Peters, P.~B{\"u}hlmann, and N.~Meinshausen.
   confidence intervals.
 \newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
   Methodology)}, 78\penalty0 (5):\penalty0 947--1012, 2016.
+
+\bibitem[Wang et~al.(2026)Wang, Hu, B{\"u}hlmann, and Guo]{wang2026negdro}
+Z.~Wang, Y.~Hu, P.~B{\"u}hlmann, and Z.~Guo.
+\newblock Causal invariance learning via efficient nonconvex optimization.
+\newblock \emph{arXiv preprint arXiv:2412.11850}, 2026.
+\newblock URL \url{https://arxiv.org/abs/2412.11850}.
 
 \bibitem[Wu and Blei(2025)]{wu2025bayesian}
 Y.~Wu and D.~M. Blei.
