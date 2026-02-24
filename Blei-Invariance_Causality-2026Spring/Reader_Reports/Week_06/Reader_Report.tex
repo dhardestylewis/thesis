@@ -50,7 +50,7 @@ The experiments do not close this gap. \citet[Sec.~5]{wu2025bayesian} validate V
 \section*{Questions}
 Both questions below concern whether the practitioner-knowledge gap between BIP and NegDRO can be bridged.
 \begin{enumerate}\setlength\itemsep{1pt}
-  \item NegDRO's $\gamma$ already interpolates between symmetric ($\gamma=0$) and asymmetric ($\gamma>0$) weighting. Does the minimax estimation rate vary smoothly in $\gamma$, or is there a phase transition at some $\gamma^*$ below which symmetric weighting is minimax-optimal and above which asymmetric weighting becomes strictly preferable?
+  \item NegDRO's rate improves smoothly in $\gamma$ \citep[Prop.~2]{fan2024negdro}, but this characterizes NegDRO alone. Is there a regime---characterized by the number of environments $E$, the ratio $\lambda/\mu_{\min}$, or the practitioner's uncertainty about which environment dominates---in which BIP's symmetric posterior provably outperforms NegDRO's asymmetric point estimate, or vice versa?
   \item Nonparametric extensions of ICP exist for the symmetric case \citep{heinzedeml2018nonparametric}, but no nonparametric analogue of NegDRO's asymmetric weighting has been proposed. Does the practitioner-knowledge distinction identified above survive when the loss is no longer quadratic, or does the symmetry-versus-asymmetry tradeoff collapse under nonparametric conditionals?
 \end{enumerate}
 
