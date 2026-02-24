@@ -96,3 +96,23 @@
 - **Appendix C:** Limited intervention extensions (finite-sample analysis, hidden confounding), comparison with CausalDantzig/DRIG.
 - **Appendix D–E:** Full technical proofs and supporting lemmas.
 - **Appendix F:** SEM illustrations, additional simulation details including hidden confounders.
+
+---
+
+## Critical Notes (Week 06 additions)
+
+### Cross-paper connections
+- **Same invariance condition, different operationalization:** Peters et al. (2016), NegDRO, and BIP (Wu 2025) all enforce $P_e(Y|X_{S^*}) = \text{const}$ but operationalize it differently. Peters: sequential hypothesis test, set-valued output. NegDRO: continuous minimax, point estimate. BIP: Bayesian posterior over selectors. None of the papers explicitly positions itself against the others' operationalization choices.
+- **NegDRO as adversarial Bühlmann:** Bühlmann (2020) frames invariance as robustness to distributional shift (worst-case over a shift class). NegDRO's $U(\gamma)$ with negative weights is an adversarial extension — it can reverse-stress specific environments below zero weight, going beyond standard DRO. This makes NegDRO strictly more aggressive than Bühlmann's robustness framing.
+- **λ (NegDRO) vs. μ_min (BIP):** Both are "heterogeneity" measures but they are not the same. λ is a spectral condition on second moments of X across environments (Condition 1b). μ_min is a KL divergence between pooled and local conditionals of Y|X. A dataset could satisfy one but not the other. Which condition is easier to certify empirically is not discussed in either paper.
+- **BIP can handle what NegDRO cannot:** NegDRO requires a point identification (unique $\beta^*$); with few environments and many features, this may not hold. BIP's posterior honestly represents ambiguity in that case via multi-modality. Conversely, NegDRO operates in polynomial time; BIP's exact inference is $O(2^p)$.
+
+### Benchmarking critique
+- **NegDRO benchmarks are synthetic:** Simulations at p ∈ {5, 10, 40, 100}, 4 environments, n up to 20,000. This is more representative of applied settings than BIP's gene study, but still no real-data benchmark.
+- **Comparison set is limited:** NegDRO is compared to EILLS and ICP, but not to BIP, IRM (Arjovsky 2019), or REx (Krueger 2021) — the closest related methods. The paper's claim of outperformance is relative only to methods that hit time limits at $p \geq 20$.
+- **Runtime advantage is the main empirical contribution** — at p=100, competitors time out. The causal accuracy at feasible dimensions is comparable to EILLS.
+
+### Open questions / disagreements
+- **Negative weights' interpretation:** $w_e < 0$ means an environment is de-weighted below zero — the optimization is actively penalized for performing well on that environment. The geometric interpretation is clear (it enforces risk parity) but the statistical interpretation is unusual. What does a negative environment weight mean as a prior over interventions?
+- **Condition 1b vs. Condition 4 (limited interventions):** The paper relaxes to Condition 4 (children of Y only need intervention), which is strictly weaker. But Condition 4 still requires knowing the causal graph structure of Y's children — a strong assumption in practice. This is not flagged as a limitation.
+- **Hybrid with BIP:** Using NegDRO to screen which environment pair has largest empirical λ, then using BIP for posterior uncertainty, is not discussed. Given NegDRO's polynomial-time advantage, this seems like a natural two-stage pipeline.

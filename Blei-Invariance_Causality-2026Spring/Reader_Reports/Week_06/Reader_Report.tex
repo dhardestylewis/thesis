@@ -43,7 +43,7 @@ VI-BIP \citep[Sec.~4]{wu2025bayesian} approximates the posterior via mean-field 
 
 \section*{Critique: One Invariance Condition, Three Algorithms}
 
-The most striking observation across this body of work is that \citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce the same underlying condition ($P_e(Y\mid X_{S^*})$ is constant across environments $e$) but operationalize it in structurally incompatible ways that each paper treats as self-contained.
+The most striking observation across this body of work is that \citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce the invariance condition $P_e(Y\mid X_{S^*}) = \text{const}$ for all $e\in\mathcal{E}$, yet operationalize it through algorithms that produce different outputs: a confidence set, a point estimate, and a posterior distribution, respectively.
 
 Peters et al.\ test invariance sequentially, building a confidence set $\hat{S}(\mathcal{E})$ that shrinks monotonically as environments accumulate \citep[Thm.~1]{peters2016icp}.
 BIP's Thm~2 is the probabilistic counterpart: rearranging the contraction gives sample complexity $nE \gtrsim O(p/\mu_{\min})$, which is the per-environment requirement for the Peters test to have nontrivial power.
@@ -51,14 +51,15 @@ BIP thus does not replace ICP; it quantifies ICP's frequentist power curve in a 
 
 NegDRO \citep{fan2024negdro} makes a third move.
 Its minimax problem $\min_b\max_{w\in U(\gamma)}\sum_e w_e\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2]$, where $U(\gamma)$ is the set of signed environment weights with total variation at most $\gamma$ \citep[Def.~1]{fan2024negdro}, is the distributionally robust framing of \citet{buhlmann2020invariance} pushed to an adversarial extreme.
-The critical difference from BIP is structural: BIP treats environments symmetrically inside the product likelihood, while NegDRO can amplify a single harsh environment pair, making it more powerful when one intervention is known \emph{a priori} to be maximally informative.
-Symmetry is appropriate when intervention quality is unknown and one wants the data to speak; asymmetry (NegDRO) is appropriate when domain knowledge identifies a dominant intervention.
-This suggests a natural hybrid: use NegDRO to identify the environment pair with the largest empirical $\hat\mu_e$, then initialize BIP's prior to concentrate on selectors that perform well under that pair, rather than treating both methods as competing alternatives.
+BIP treats environments symmetrically in the product likelihood; NegDRO can amplify a single harsh environment pair via negative weights, making it more powerful when one intervention is known \emph{a priori} to be dominant.
+The two methods have different assumptions about what the analyst knows before seeing the data, which is a structural incompatibility neither paper acknowledges.
+
+A further issue concerns benchmarking. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP on a single genomics dataset: 6{,}170 yeast genes across CRISPR knockout conditions where $\mu_{\min}>0$ holds by construction. The paper provides no evaluation in low-environment or observational settings, where $\mu_{\min}$ is unknown; whether the contraction advantage over ICP survives soft-intervention regimes is unresolved.
 
 \section*{Questions}
 \begin{enumerate}\setlength\itemsep{1pt}
-  \item If BIP's $\mu_{\min}$ plays the same role as the power parameter in Peters et al., can one construct a Bayesian power analysis (a prior over $\mu_{\min}$) to decide how many environments to collect before fitting BIP, analogous to classical sample-size planning?
-  \item VI-BIP's mean-field family $q(z)=\prod_j\mathrm{Bern}(z_j;\pi_j)$ ignores posterior correlation between $z_j$ and $z_k$. For strongly correlated covariates, does the mean-field gap bias $\pi_j$ toward 0.5? Would a structured variational family (e.g.\ an Ising model over $z$) recover sharper posteriors, and can the U2G estimator extend to that setting?
+  \item NegDRO's $\lambda$ and BIP's $\mu_{\min}$ both quantify environment heterogeneity but measure different objects: $\lambda$ is a spectral condition on second moments of $X$, while $\mu_{\min}$ is a KL condition on $Y|X$ conditionals. Is it possible to certify $\mu_{\min}>0$ from observational data without already knowing $z^*$, or does this require the hard interventions that make the genomics setting tractable?
+  \item Wu et al.\ propose a size-restricted prior with parameter $p_{\max}$ to limit BIP's support to subsets of size at most $p_{\max}$. Could NegDRO's point estimate $\hat{\beta}^\gamma$ serve as the pre-screening filter, setting $z_j=0$ for features with $|\hat{\beta}^\gamma_j|<\varepsilon$ to reduce the effective model count from $2^p$ to $2^{p'}$, and does this avoid the double-dipping problem that arises from using the same data to form both the prior and the likelihood?
 \end{enumerate}
 
 \vspace{-0.2em}

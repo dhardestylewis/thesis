@@ -87,3 +87,23 @@
 - **§B:** VI-BIP details: U2G gradient estimator (Algorithm 3), optimization hyperparameters (M=10–20 gradient samples, cyclical LR scheduler, SGD), implementation tricks (analytical KL gradients, penalty for infeasible z).
 - **§C:** Synthetic data details: full generative process, 3 examples of uncertainty quantification with multiple invariant solutions.
 - **§D:** Gene data details: evaluation protocol, hyperparameter grids for all methods, VI-BIP initialization (σ0=0.02, pmax=200, 10,000 iterations).
+
+---
+
+## Critical Notes (Week 06 additions)
+
+### Cross-paper connections
+- **BIP as probabilistic ICP:** Peters et al. (2016) build a confidence set $\hat{S}(\mathcal{E})$ that shrinks monotonically with environments (their Thm 1). BIP's contraction (Thm 2 here) is the probabilistic analog: rearranging $O(R e^{-\kappa n E \mu_{\min}})$ gives sample complexity $nE \gtrsim O(p/\mu_{\min})$, which is precisely when the Peters test has nontrivial power. BIP does not replace ICP — it quantifies ICP's frequentist power curve in Bayesian language.
+- **μ_min vs. Peters's power:** Both require "sufficient heterogeneity" across environments. Peters's power is a $p$-value threshold; $\mu_{\min}$ is a KL divergence. These are related but not formally equivalent — the paper does not establish this link, which is a gap.
+- **vs. Bühlmann (2020):** Bühlmann frames invariance as worst-case robustness. BIP's symmetric environment weighting (product likelihood) contrasts with NegDRO's asymmetric/adversarial weighting. The BIP formulation is closer to an average-case Bayesian than a worst-case frequentist.
+- **vs. Fan et al. (2024) NegDRO:** Both target $\beta^*$, but BIP produces a distribution over invariant sets while NegDRO gives a point estimate. NegDRO can amplify a specific environment pair (via negative weights); BIP cannot. NegDRO is more powerful when a dominant intervention is known a priori; BIP is more honest about ambiguity when intervention quality is uncertain.
+
+### Benchmarking critique
+- **Single dataset:** Only the Kemmeren et al. (2014) yeast gene dataset is used. This is a best-case benchmark: hundreds of CRISPR knockout environments, hard single-gene interventions, biologically interpretable ground truth. $\mu_{\min} > 0$ is guaranteed by construction.
+- **No observational or low-environment benchmark:** The paper provides no evaluation where environments are soft (policy shifts, natural experiments) or few ($E \leq 5$). Whether VI-BIP's advantage over ICP survives soft interventions is entirely empirically open.
+- **Good public observational benchmarks for invariance are scarce** — this is a gap the field needs to address.
+
+### Open questions / disagreements
+- **Mean-field correlation gap:** The paper acknowledges mean-field may limit expressiveness (§6, Limitation 3) but does not quantify this. For correlated selectors ($z_j, z_k$ jointly invariant or not), mean-field will underestimate joint probability mass, biasing each $\pi_j$ toward 0.5. A structured variational family (Ising model over $z$) could address this — unclear if U2G generalizes.
+- **Estimation bias + contraction:** Thm 2 assumes consistent estimation of $\hat{g}$ and $\hat{p}_e$. The paper acknowledges estimation bias is a real concern at small $n$ (§6, Limitation 1) but does not characterize how the convergence rate of the estimators interacts with the exponential contraction rate.
+- **Hybrid with NegDRO:** Using NegDRO to identify the most informative environment pair, then initializing BIP's prior accordingly, is a natural strategy not discussed by either paper.
