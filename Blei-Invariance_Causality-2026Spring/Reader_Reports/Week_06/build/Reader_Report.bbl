@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -10,11 +10,6 @@ D.~M. Blei, A.~Kucukelbir, and J.~D. McAuliffe.
 \newblock Variational inference: A review for statisticians.
 \newblock \emph{Journal of the American Statistical Association}, 112\penalty0
   (518):\penalty0 859--877, 2017.
-
-\bibitem[B{\"u}hlmann(2020)]{buhlmann2020invariance}
-P.~B{\"u}hlmann.
-\newblock Invariance, causality and robustness.
-\newblock \emph{Statistical Science}, 35\penalty0 (3):\penalty0 404--426, 2020.
 
 \bibitem[Fan et~al.(2024)Fan, Li, and Yang]{fan2024negdro}
 Y.~Fan, S.~Li, and Z.~Yang.

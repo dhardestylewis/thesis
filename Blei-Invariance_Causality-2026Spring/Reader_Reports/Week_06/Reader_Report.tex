@@ -1,6 +1,6 @@
 \documentclass[10.5pt]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=0.8in,top=0.6in,bottom=0.65in]{geometry}
+\usepackage[margin=0.8in,top=0.6in,bottom=0.6in]{geometry}
 \usepackage{titlesec}
 \usepackage{parskip}
 \usepackage{fancyhdr}
@@ -12,7 +12,7 @@
 
 \titlespacing*{\section}{0pt}{5pt}{2pt}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{2.5pt}
+\setlength{\parskip}{2pt}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -29,34 +29,27 @@
 
 \maketitle
 \thispagestyle{fancy}
-\vspace{-1.2em}
+\vspace{-1.4em}
 
 \section*{Summary}
 
-\citet{wu2025bayesian} place a prior over binary selectors $z\in\{0,1\}^p$, where $z_j=1$ indexes a feature included in the invariant set $S^*$ \citep{peters2016icp}.
-The posterior
-$p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat{g}(Y^e_i\mid X^z_{ei})/\hat{p}_e(Y^e_i\mid X^z_{ei})$
-rewards selectors for which the pooled conditional $\hat{g}$ dominates each local conditional $\hat{p}_e$, where $\hat{p}_e$ is fit separately per environment $e$.
-Consistency (Thm~1) requires $\mu_{\min}>0$, defined as the minimum KL divergence between $\hat{g}$ and any $\hat{p}_e$ over non-invariant features \citep[Def.~1]{wu2025bayesian}.
-Contraction (Thm~2) gives posterior mass on $\{z\neq z^*\}$ scaling as $O(R\,e^{-\kappa nE\mu_{\min}})$, where $R=2^p$ counts hypotheses, $E$ is the number of environments, and $\kappa$ is a universal constant.
-VI-BIP \citep[Sec.~4]{wu2025bayesian} approximates the posterior via mean-field variational inference \citep{blei2017variational}, optimizing the evidence lower bound (ELBO) using the U2G gradient estimator to handle discrete $z$.
+\citet{wu2025bayesian} place a prior over binary selectors $z\in\{0,1\}^p$, where $z_j=1$ indexes a feature in the invariant set $S^*$ \citep{peters2016icp}.
+The posterior $p(z\mid\mathcal{D})\propto p(z)\prod_{e,i}\hat{g}(Y^e_i\mid X^z_{ei})/\hat{p}_e(Y^e_i\mid X^z_{ei})$ rewards selectors for which the pooled conditional $\hat{g}$ dominates each environment-specific conditional $\hat{p}_e$.
+Consistency (Thm~1) requires $\mu_{\min}>0$, the minimum KL divergence between $\hat{g}$ and any $\hat{p}_e$ over non-invariant features \citep[Def.~1]{wu2025bayesian}. Contraction (Thm~2) gives $\mathrm{TV}(p(z\mid\mathcal{D}),\,\delta_{z^*}) = O(2^p\,e^{-\kappa nE\mu_{\min}})$.
+VI-BIP \citep[Sec.~4]{wu2025bayesian} approximates the posterior via mean-field variational inference \citep{blei2017variational}, optimizing the ELBO with the U2G gradient estimator.
 
-\section*{Critique: One Invariance Condition, Three Algorithms}
+\section*{Critique: What Does the Analyst Know About the Environments?}
 
-The most striking observation across this body of work is that \citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce the invariance condition $P_e(Y\mid X_{S^*}) = \text{const}$ for all $e\in\mathcal{E}$, yet operationalize it through algorithms that produce different outputs: a confidence set, a point estimate, and a posterior distribution, respectively.
+\citet{peters2016icp}, \citet{fan2024negdro}, and \citet{wu2025bayesian} all enforce $P_e(Y\mid X_{S^*}) = \text{const}$ for all $e\in\mathcal{E}$, yet produce fundamentally different outputs: a confidence set, a point estimate, and a posterior distribution. The invariance condition alone does not determine the algorithm. What separates the three methods is what the analyst assumes about the environments before seeing data.
 
-Peters et al.\ test invariance sequentially, building a confidence set $\hat{S}(\mathcal{E})$ that shrinks monotonically as environments accumulate \citep[Thm.~1]{peters2016icp}.
-BIP's Thm~2 is the probabilistic counterpart: rearranging the contraction gives sample complexity $nE \gtrsim O(p/\mu_{\min})$, which is the per-environment requirement for the Peters test to have nontrivial power.
-BIP thus does not replace ICP; it quantifies ICP's frequentist power curve in a Bayesian language.
+ICP assumes the least: environments are exchangeable, and adding more can only shrink the accepted set \citep[Thm.~1]{peters2016icp}. BIP inherits this agnosticism by weighting environments symmetrically in the product likelihood. Its contraction rate suggests an analogy with ICP's power: rearranging Thm~2 gives $nE \gtrsim O(p/\mu_{\min})$, where $\mu_{\min}$ plays a role similar to the signal strength governing ICP's rejection rate. The analogy is suggestive but informal, since $\mu_{\min}$ is a KL divergence while ICP's power depends on $p$-value thresholds under a different test statistic.
 
-NegDRO \citep{fan2024negdro} makes a third move.
-Its minimax problem $\min_b\max_{w\in U(\gamma)}\sum_e w_e\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2]$, where $U(\gamma)$ is the set of signed environment weights with total variation at most $\gamma$ \citep[Def.~1]{fan2024negdro}, is the distributionally robust framing of \citet{buhlmann2020invariance} pushed to an adversarial extreme.
-BIP treats environments symmetrically in the product likelihood; NegDRO can amplify a single harsh environment pair via negative weights, making it more powerful when one intervention is known \emph{a priori} to be dominant.
-The two methods have different assumptions about what the analyst knows before seeing the data, which is a structural incompatibility neither paper acknowledges.
+NegDRO breaks this symmetry. Its minimax problem $\min_b\max_{w\in U(\gamma)}\sum_e w_e\hat{\mathbb{E}}[(Y^e{-}b^\top X^e)^2]$ permits negative environment weights \citep[Def.~1]{fan2024negdro}, penalizing the optimizer for performing well on a specific environment. This enforces risk parity across all pairs rather than robustness to the single worst one. NegDRO can therefore amplify a single harsh intervention when one environment is known \emph{a priori} to be dominant. Neither paper acknowledges this as a structural incompatibility in their assumptions.
 
-A further issue concerns benchmarking. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP on a single genomics dataset: 6{,}170 yeast genes across CRISPR knockout conditions where $\mu_{\min}>0$ holds by construction. The paper provides no evaluation in low-environment or observational settings, where $\mu_{\min}$ is unknown; whether the contraction advantage over ICP survives soft-intervention regimes is unresolved.
+The benchmarking evidence inherits this bias. \citet[Sec.~5]{wu2025bayesian} validate VI-BIP on 6{,}170 yeast genes across CRISPR knockouts where $\mu_{\min}>0$ holds by construction, a setting of maximal analyst knowledge. No evaluation is provided in observational or low-environment settings where $\mu_{\min}$ is unknown, which is where BIP's environment-agnostic design should matter most.
 
 \section*{Questions}
+Both questions below concern whether the analyst-knowledge gap between BIP and NegDRO can be bridged.
 \begin{enumerate}\setlength\itemsep{1pt}
   \item NegDRO's $\lambda$ and BIP's $\mu_{\min}$ both quantify environment heterogeneity but measure different objects: $\lambda$ is a spectral condition on second moments of $X$, while $\mu_{\min}$ is a KL condition on $Y|X$ conditionals. Is it possible to certify $\mu_{\min}>0$ from observational data without already knowing $z^*$, or does this require the hard interventions that make the genomics setting tractable?
   \item Wu et al.\ propose a size-restricted prior with parameter $p_{\max}$ to limit BIP's support to subsets of size at most $p_{\max}$. Could NegDRO's point estimate $\hat{\beta}^\gamma$ serve as the pre-screening filter, setting $z_j=0$ for features with $|\hat{\beta}^\gamma_j|<\varepsilon$ to reduce the effective model count from $2^p$ to $2^{p'}$, and does this avoid the double-dipping problem that arises from using the same data to form both the prior and the likelihood?
