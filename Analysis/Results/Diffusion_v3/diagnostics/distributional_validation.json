@@ -1,0 +1,436 @@
+{
+  "by_year": {
+    "2021": {
+      "actual_rate": 1.103,
+      "diff_cal_predicted_rate": 1.105,
+      "lr_predicted_rate": 5.148,
+      "ens_predicted_rate": 3.126,
+      "rate_ratio_cal": 1.001,
+      "n": 29456,
+      "n_pos": 325,
+      "pct_above_1pct": 5.1,
+      "pct_above_5pct": 3.3,
+      "pct_above_10pct": 2.6,
+      "pct_above_50pct": 0.5
+    },
+    "2022": {
+      "actual_rate": 0.836,
+      "diff_cal_predicted_rate": 0.838,
+      "lr_predicted_rate": 9.373,
+      "ens_predicted_rate": 5.106,
+      "rate_ratio_cal": 1.003,
+      "n": 29432,
+      "n_pos": 246,
+      "pct_above_1pct": 2.2,
+      "pct_above_5pct": 2.0,
+      "pct_above_10pct": 1.6,
+      "pct_above_50pct": 0.4
+    },
+    "2023": {
+      "actual_rate": 0.384,
+      "diff_cal_predicted_rate": 0.386,
+      "lr_predicted_rate": 2.966,
+      "ens_predicted_rate": 1.676,
+      "rate_ratio_cal": 1.007,
+      "n": 29463,
+      "n_pos": 113,
+      "pct_above_1pct": 1.2,
+      "pct_above_5pct": 1.2,
+      "pct_above_10pct": 1.0,
+      "pct_above_50pct": 0.0
+    },
+    "2024": {
+      "actual_rate": 1.384,
+      "diff_cal_predicted_rate": 1.39,
+      "lr_predicted_rate": 3.711,
+      "ens_predicted_rate": 2.55,
+      "rate_ratio_cal": 1.004,
+      "n": 29481,
+      "n_pos": 408,
+      "pct_above_1pct": 3.0,
+      "pct_above_5pct": 2.0,
+      "pct_above_10pct": 2.0,
+      "pct_above_50pct": 1.1
+    }
+  },
+  "stability": {
+    "percentiles": {
+      "2021": {
+        "p10": 0.0005,
+        "p25": 0.0005,
+        "p50": 0.00082,
+        "p75": 0.00082,
+        "p90": 0.00158,
+        "p99": 0.43548
+      },
+      "2022": {
+        "p10": 0.00075,
+        "p25": 0.00075,
+        "p50": 0.00085,
+        "p75": 0.00126,
+        "p90": 0.00147,
+        "p99": 0.36765
+      },
+      "2023": {
+        "p10": 0.0,
+        "p25": 0.00015,
+        "p50": 0.00015,
+        "p75": 0.00031,
+        "p90": 0.00031,
+        "p99": 0.12121
+      },
+      "2024": {
+        "p10": 0.00242,
+        "p25": 0.00242,
+        "p50": 0.00312,
+        "p75": 0.00312,
+        "p90": 0.00471,
+        "p99": 0.56376
+      }
+    },
+    "kl_divergence": {
+      "2021-2022": 0.44543,
+      "2021-2023": 0.22985,
+      "2021-2024": 0.25858,
+      "2022-2023": 0.22871,
+      "2022-2024": 0.18407,
+      "2023-2024": 0.09516
+    }
+  },
+  "by_geography": {
+    "5,5": {
+      "n": 6105,
+      "actual_rate": 2.457,
+      "predicted_rate": 1.896,
+      "ratio": 0.772,
+      "lat_range": "30.281-30.328",
+      "lon_range": "-97.748--97.695"
+    },
+    "6,5": {
+      "n": 6069,
+      "actual_rate": 0.56,
+      "predicted_rate": 0.465,
+      "ratio": 0.831,
+      "lat_range": "30.328-30.375",
+      "lon_range": "-97.748--97.695"
+    },
+    "3,4": {
+      "n": 5019,
+      "actual_rate": 1.713,
+      "predicted_rate": 1.3,
+      "ratio": 0.758,
+      "lat_range": "30.187-30.234",
+      "lon_range": "-97.801--97.748"
+    },
+    "2,3": {
+      "n": 4830,
+      "actual_rate": 0.186,
+      "predicted_rate": 0.379,
+      "ratio": 2.032,
+      "lat_range": "30.140-30.187",
+      "lon_range": "-97.854--97.801"
+    },
+    "4,5": {
+      "n": 4725,
+      "actual_rate": 2.011,
+      "predicted_rate": 2.66,
+      "ratio": 1.323,
+      "lat_range": "30.234-30.281",
+      "lon_range": "-97.748--97.695"
+    },
+    "8,4": {
+      "n": 4714,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.187,
+      "ratio": 1871.672,
+      "lat_range": "30.422-30.469",
+      "lon_range": "-97.801--97.748"
+    },
+    "3,3": {
+      "n": 4583,
+      "actual_rate": 2.16,
+      "predicted_rate": 1.42,
+      "ratio": 0.657,
+      "lat_range": "30.187-30.234",
+      "lon_range": "-97.854--97.801"
+    },
+    "3,2": {
+      "n": 4192,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.199,
+      "ratio": 1985.332,
+      "lat_range": "30.187-30.234",
+      "lon_range": "-97.907--97.854"
+    },
+    "5,6": {
+      "n": 4169,
+      "actual_rate": 1.871,
+      "predicted_rate": 2.352,
+      "ratio": 1.257,
+      "lat_range": "30.281-30.328",
+      "lon_range": "-97.695--97.642"
+    },
+    "4,4": {
+      "n": 3988,
+      "actual_rate": 2.758,
+      "predicted_rate": 3.203,
+      "ratio": 1.161,
+      "lat_range": "30.234-30.281",
+      "lon_range": "-97.801--97.748"
+    },
+    "7,6": {
+      "n": 3614,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.307,
+      "ratio": 3068.957,
+      "lat_range": "30.375-30.422",
+      "lon_range": "-97.695--97.642"
+    },
+    "8,6": {
+      "n": 3487,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.185,
+      "ratio": 1850.911,
+      "lat_range": "30.422-30.469",
+      "lon_range": "-97.695--97.642"
+    },
+    "5,4": {
+      "n": 3474,
+      "actual_rate": 2.303,
+      "predicted_rate": 1.169,
+      "ratio": 0.508,
+      "lat_range": "30.281-30.328",
+      "lon_range": "-97.801--97.748"
+    },
+    "2,4": {
+      "n": 3319,
+      "actual_rate": 3.194,
+      "predicted_rate": 1.533,
+      "ratio": 0.48,
+      "lat_range": "30.140-30.187",
+      "lon_range": "-97.801--97.748"
+    },
+    "6,4": {
+      "n": 3280,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.239,
+      "ratio": 2393.364,
+      "lat_range": "30.328-30.375",
+      "lon_range": "-97.801--97.748"
+    },
+    "7,5": {
+      "n": 3194,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.317,
+      "ratio": 3165.33,
+      "lat_range": "30.375-30.422",
+      "lon_range": "-97.748--97.695"
+    },
+    "2,5": {
+      "n": 3111,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.235,
+      "ratio": 2345.878,
+      "lat_range": "30.140-30.187",
+      "lon_range": "-97.748--97.695"
+    },
+    "6,6": {
+      "n": 2960,
+      "actual_rate": 1.858,
+      "predicted_rate": 1.526,
+      "ratio": 0.821,
+      "lat_range": "30.328-30.375",
+      "lon_range": "-97.695--97.642"
+    },
+    "9,4": {
+      "n": 2672,
+      "actual_rate": 0.0,
+      "predicted_rate": 0.24,
+      "ratio": 2400.763,
+      "lat_range": "30.469-30.516",
+      "lon_range": "-97.801--97.748"
+    },
+    "7,4": {
+      "n": 2415,
+      "actual_rate": 0.994,
+      "predicted_rate": 0.616,
+      "ratio": 0.62,
+      "lat_range": "30.375-30.422",
+      "lon_range": "-97.801--97.748"
+    }
+  },
+  "geotemporal": {
+    "5,5": {
+      "2021": {
+        "actual_rate": 2.649,
+        "predicted_rate": 1.945,
+        "n": 1548
+      },
+      "2022": {
+        "actual_rate": 2.787,
+        "predicted_rate": 1.921,
+        "n": 1507
+      },
+      "2023": {
+        "actual_rate": 1.027,
+        "predicted_rate": 1.072,
+        "n": 1558
+      },
+      "2024": {
+        "actual_rate": 3.418,
+        "predicted_rate": 2.682,
+        "n": 1492
+      }
+    },
+    "6,5": {
+      "2021": {
+        "actual_rate": 0.194,
+        "predicted_rate": 0.574,
+        "n": 1548
+      },
+      "2022": {
+        "actual_rate": 0.068,
+        "predicted_rate": 0.336,
+        "n": 1464
+      },
+      "2023": {
+        "actual_rate": 0.0,
+        "predicted_rate": 0.028,
+        "n": 1526
+      },
+      "2024": {
+        "actual_rate": 1.96,
+        "predicted_rate": 0.916,
+        "n": 1531
+      }
+    },
+    "3,4": {
+      "2021": {
+        "actual_rate": 2.179,
+        "predicted_rate": 1.927,
+        "n": 1285
+      },
+      "2022": {
+        "actual_rate": 0.162,
+        "predicted_rate": 0.658,
+        "n": 1232
+      },
+      "2023": {
+        "actual_rate": 2.318,
+        "predicted_rate": 0.852,
+        "n": 1251
+      },
+      "2024": {
+        "actual_rate": 2.158,
+        "predicted_rate": 1.735,
+        "n": 1251
+      }
+    },
+    "2,3": {
+      "2021": {
+        "actual_rate": 0.77,
+        "predicted_rate": 0.585,
+        "n": 1169
+      },
+      "2022": {
+        "actual_rate": 0.0,
+        "predicted_rate": 0.336,
+        "n": 1182
+      },
+      "2023": {
+        "actual_rate": 0.0,
+        "predicted_rate": 0.067,
+        "n": 1207
+      },
+      "2024": {
+        "actual_rate": 0.0,
+        "predicted_rate": 0.524,
+        "n": 1272
+      }
+    },
+    "4,5": {
+      "2021": {
+        "actual_rate": 1.042,
+        "predicted_rate": 2.309,
+        "n": 1152
+      },
+      "2022": {
+        "actual_rate": 0.0,
+        "predicted_rate": 1.691,
+        "n": 1156
+      },
+      "2023": {
+        "actual_rate": 0.0,
+        "predicted_rate": 1.208,
+        "n": 1201
+      },
+      "2024": {
+        "actual_rate": 6.826,
+        "predicted_rate": 5.347,
+        "n": 1216
+      }
+    }
+  },
+  "by_property_type": {
+    "A": {
+      "n": 93034,
+      "actual_rate": 0.79,
+      "predicted_rate": 0.826,
+      "ratio": 1.045
+    },
+    "B": {
+      "n": 5289,
+      "actual_rate": 1.305,
+      "predicted_rate": 1.871,
+      "ratio": 1.434
+    },
+    "C1": {
+      "n": 4775,
+      "actual_rate": 1.257,
+      "predicted_rate": 1.161,
+      "ratio": 0.924
+    },
+    "": {
+      "n": 4492,
+      "actual_rate": 0.779,
+      "predicted_rate": 0.282,
+      "ratio": 0.362
+    },
+    "F1": {
+      "n": 3729,
+      "actual_rate": 2.816,
+      "predicted_rate": 1.807,
+      "ratio": 0.642
+    },
+    "XV": {
+      "n": 3211,
+      "actual_rate": 1.495,
+      "predicted_rate": 0.305,
+      "ratio": 0.204
+    },
+    "O": {
+      "n": 1310,
+      "actual_rate": 0.687,
+      "predicted_rate": 0.451,
+      "ratio": 0.656
+    },
+    "E": {
+      "n": 696,
+      "actual_rate": 0.718,
+      "predicted_rate": 8.19,
+      "ratio": 11.4
+    },
+    "D1": {
+      "n": 556,
+      "actual_rate": 0.18,
+      "predicted_rate": 0.424,
+      "ratio": 2.357
+    },
+    "F2": {
+      "n": 532,
+      "actual_rate": 4.699,
+      "predicted_rate": 3.201,
+      "ratio": 0.681
+    }
+  }
+}
