@@ -1,0 +1,154 @@
+{
+  "2021": {
+    "original": {
+      "label": "diff_original_2021",
+      "auc_roc": 0.95668,
+      "auc_pr": 0.45833,
+      "brier": 0.06381,
+      "ece": 0.19272,
+      "precision": 0.25846,
+      "recall": 0.91692,
+      "f1": 0.40325,
+      "n": 29456,
+      "n_pos": 325
+    },
+    "isotonic": {
+      "label": "diff_isotonic_2021",
+      "auc_roc": 0.95881,
+      "auc_pr": 0.45715,
+      "brier": 0.0069,
+      "ece": 0.00071,
+      "precision": 0.59006,
+      "recall": 0.29231,
+      "f1": 0.39095,
+      "n": 29456,
+      "n_pos": 325
+    },
+    "ensemble_isotonic": {
+      "label": "ensemble_isotonic_2021",
+      "auc_roc": 0.94643,
+      "auc_pr": 0.37057,
+      "brier": 0.01048,
+      "ece": 0.02023,
+      "precision": 0.45272,
+      "recall": 0.48615,
+      "f1": 0.46884,
+      "n": 29456,
+      "n_pos": 325
+    }
+  },
+  "2022": {
+    "original": {
+      "label": "diff_original_2022",
+      "auc_roc": 0.94084,
+      "auc_pr": 0.46312,
+      "brier": 0.06222,
+      "ece": 0.19205,
+      "precision": 0.22963,
+      "recall": 0.88211,
+      "f1": 0.3644,
+      "n": 29432,
+      "n_pos": 246
+    },
+    "isotonic": {
+      "label": "diff_isotonic_2022",
+      "auc_roc": 0.93554,
+      "auc_pr": 0.43951,
+      "brier": 0.00532,
+      "ece": 0.00114,
+      "precision": 0.5339,
+      "recall": 0.2561,
+      "f1": 0.34615,
+      "n": 29432,
+      "n_pos": 246
+    },
+    "ensemble_isotonic": {
+      "label": "ensemble_isotonic_2022",
+      "auc_roc": 0.99057,
+      "auc_pr": 0.50333,
+      "brier": 0.02022,
+      "ece": 0.0427,
+      "precision": 0.12184,
+      "recall": 0.93902,
+      "f1": 0.21569,
+      "n": 29432,
+      "n_pos": 246
+    }
+  },
+  "2023": {
+    "original": {
+      "label": "diff_original_2023",
+      "auc_roc": 0.95853,
+      "auc_pr": 0.28991,
+      "brier": 0.05957,
+      "ece": 0.19022,
+      "precision": 0.13677,
+      "recall": 0.93805,
+      "f1": 0.23874,
+      "n": 29463,
+      "n_pos": 113
+    },
+    "isotonic": {
+      "label": "diff_isotonic_2023",
+      "auc_roc": 0.9469,
+      "auc_pr": 0.35215,
+      "brier": 0.00259,
+      "ece": 0.00026,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n": 29463,
+      "n_pos": 113
+    },
+    "ensemble_isotonic": {
+      "label": "ensemble_isotonic_2023",
+      "auc_roc": 0.99643,
+      "auc_pr": 0.35755,
+      "brier": 0.0043,
+      "ece": 0.01293,
+      "precision": 0.34915,
+      "recall": 0.9115,
+      "f1": 0.5049,
+      "n": 29463,
+      "n_pos": 113
+    }
+  },
+  "2024": {
+    "original": {
+      "label": "diff_original_2024",
+      "auc_roc": 0.89109,
+      "auc_pr": 0.51946,
+      "brier": 0.06013,
+      "ece": 0.18324,
+      "precision": 0.34267,
+      "recall": 0.77941,
+      "f1": 0.47605,
+      "n": 29481,
+      "n_pos": 408
+    },
+    "isotonic": {
+      "label": "diff_isotonic_2024",
+      "auc_roc": 0.89545,
+      "auc_pr": 0.51872,
+      "brier": 0.00767,
+      "ece": 0.00161,
+      "precision": 0.60831,
+      "recall": 0.50245,
+      "f1": 0.55034,
+      "n": 29481,
+      "n_pos": 408
+    },
+    "ensemble_isotonic": {
+      "label": "ensemble_isotonic_2024",
+      "auc_roc": 0.97442,
+      "auc_pr": 0.65188,
+      "brier": 0.0063,
+      "ece": 0.01316,
+      "precision": 0.63121,
+      "recall": 0.87255,
+      "f1": 0.73251,
+      "n": 29481,
+      "n_pos": 408
+    }
+  }
+}

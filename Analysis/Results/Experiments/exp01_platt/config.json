@@ -1,0 +1,45 @@
+{
+  "TRAIN_START": 2019,
+  "EVAL_YEARS": [
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "NUMERIC_FEATURES": [
+    "market_value",
+    "assessed_value",
+    "land_value",
+    "improvement_value",
+    "living_area",
+    "deed_acreage",
+    "year_built",
+    "land_acres",
+    "improvement_count"
+  ],
+  "CATEGORICAL_FEATURES": [
+    "property_category_code",
+    "lui_general_land_use",
+    "council_district"
+  ],
+  "TARGET": "protest",
+  "DIFF_TIMESTEPS": 200,
+  "DIFF_HIDDEN": 256,
+  "DIFF_LAYERS": 3,
+  "DIFF_EPOCHS": 75,
+  "DIFF_LR": 0.0003,
+  "DIFF_BATCH": 2048,
+  "EARLY_STOP_PATIENCE": 10,
+  "DDIM_STEPS": 50,
+  "N_SCENARIOS": 10,
+  "MAX_TRAIN_PAIRS": 100000,
+  "MAX_EVAL_PARCELS": 30000,
+  "LOOKBACK_YEARS": 2,
+  "ENSEMBLE_WEIGHT": 0.5,
+  "CLF_HIDDEN": 128,
+  "CLF_EPOCHS": 50,
+  "CLF_LR": 0.001,
+  "CLF_BATCH": 4096,
+  "experiment": "exp01_platt",
+  "method": "platt_scaling"
+}
