@@ -1,0 +1,93 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{top=0.75in, bottom=0.75in, left=1in, right=1in}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{fancyhdr}
+
+% Official Columbia Primary Color (Dark Blue)
+\definecolor{columbiablue_official}{RGB}{0, 33, 71}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{columbiablue_official}\leaders\hrule height \headrulewidth\hfill}}
+
+% Header
+\lhead{\small \textbf{\color{columbiablue_official} COLUMBIA UNIVERSITY} \\ \href{https://www.arch.columbia.edu/}{Graduate School of Architecture, Planning and Preservation}}
+\rhead{\small \href{https://www.linkedin.com/in/dhardestylewis}{Daniel Hardesty Lewis} \\ Ph.D. Candidate, Urban Planning} % Kept Ph.D as per your overview doc, adjust if needed
+
+% Section styling - Clean and branded
+\titleformat{\section}{\large\bfseries\color{columbiablue_official}}{}{0em}{}[\color{columbiablue_official}\titlerule]
+\titlespacing*{\section}{0pt}{8pt}{3pt}
+
+\begin{document}
+\pagestyle{fancy}
+
+\vspace*{0.2cm}
+
+\begin{center}
+    {\Large \textbf{\color{columbiablue_official} Thesis Outline}} \\[0.4em]
+    {\large \textit{\href{https://github.com/dhardestylewis/thesis}{Predicting Zoning Opposition}}}
+\end{center}
+
+\vspace{0.2cm}
+
+\section*{1. Introduction (3-5 pages)}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\square$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{1.1 Context:} Rise of zoning opposition and NIMBYism; protest risks for urban planning.
+    \item \textbf{1.2 Case Study:} Austin's housing market, rapid growth, and history of zoning protests.
+    \item \textbf{1.3 Research Objectives:} Forecasting per-parcel protest risks via DDPM and LogReg.
+\end{itemize}
+
+\section*{2. Literature Review (5-7 pages)}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\square$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{2.1 Zoning Opposition Dynamics:} NIMBYism, homevoter theory, neighborhood resistance.
+    \item \textbf{2.2 Quantitative Urban Planning:} Predictive modeling applied to urban phenomena.
+    \item \textbf{2.3 Generative Causal Models:} DDPM and Invariant Causal Prediction in tabular models.
+\end{itemize}
+
+\section*{3. Mixed-Methods Data and Methodology (8-10 pages) \textcolor{columbiablue_official}{\checkmark}}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\boxtimes$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{3.1 Quantitative Sources \& Panel:} Building the balanced property-year panel (282k parcels).
+    \item \textbf{3.2 Causal Prediction \& Leakage:} Preventing temporal leakage across distinct training years.
+    \item \textbf{3.3 Qualitative Stakeholder Interviews:} Methodology and thematic coding of 10 interviews.
+\end{itemize}
+
+\section*{4. Predictive Modeling Approach (Quantitative) (5-8 pages) \textcolor{columbiablue_official}{\checkmark}}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\boxtimes$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{4.1 Baseline Models:} Setting up Logistic Regression and XGBoost benchmarks.
+    \item \textbf{4.2 Conditional Diffusion (DDPM):} Training the generative model for tabular protest risk.
+    \item \textbf{4.3 Evaluation Metrics:} RMSE, MAE, CRPS, Scenario Std, out-of-sample validation.
+\end{itemize}
+
+\section*{5. Quantitative Results and Counterfactuals (8-10 pages) \textcolor{columbiablue_official}{\checkmark}}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\boxtimes$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{5.1 Baseline Performance:} Feature importance and predictive accuracy of traditional models.
+    \item \textbf{5.2 Generative Models:} Evaluating DDPM accuracy and its realistic counterfactuals.
+    \item \textbf{5.3 Comparative Analysis \& Policy:} Using evaluated models to inform proactive rezoning.
+\end{itemize}
+
+\section*{6. Qualitative Results: Stakeholder Perspectives (8-10 pages)}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\square$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{6.1 Planners and Advocates:} How institutional actors view algorithmic planning tools.
+    \item \textbf{6.2 Neighborhood Leaders:} The tension between predictive efficiency and civic participation.
+    \item \textbf{6.3 Democratic Implications:} Synthesizing the boundaries of acceptable use.
+\end{itemize}
+
+\section*{7. Synthesis and Conclusion (4-6 pages)}
+\begin{itemize}[leftmargin=*, label={\color{columbiablue_official}\tiny$\square$}, parsep=2pt, itemsep=2pt, topsep=0pt]
+    \item \textbf{7.1 Integrating Findings:} Reconciling models with stakeholder demands for transparency.
+    \item \textbf{7.2 Limitations:} ID crosswalk mismatch rates, assumption constraints, model bounding.
+    \item \textbf{7.3 Future Work:} Scaling to other jurisdictions; NLP-parsed qualitative petition data.
+\end{itemize}
+
+\vspace{1em}
+\noindent\textit{Total Estimated Length:} 41-56 pages (excluding Abstract, References, Appendices)
+
+\end{document}
