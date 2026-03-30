@@ -1,0 +1,503 @@
+\begin{thebibliography}{10}
+
+\bibitem{arjovsky2019}
+Martin Arjovsky, L{\'e}on Bottou, Ishaan Gulrajani, and David Lopez-Paz.
+\newblock Invariant risk minimization.
+\newblock {\em arXiv preprint arXiv:1907.02893}, 2019.
+\newblock URL: \url{https://arxiv.org/abs/1907.02893}, \href
+  {https://doi.org/10.48550/arXiv.1907.02893}
+  {\path{doi:10.48550/arXiv.1907.02893}}.
+
+\bibitem{athey2019ml}
+Susan Athey and Guido~W. Imbens.
+\newblock Machine learning methods that economists should know about.
+\newblock {\em Annual Review of Economics}, 11:685--725, 2019.
+\newblock \href {https://doi.org/10.1146/annurev-economics-080217-053433}
+  {\path{doi:10.1146/annurev-economics-080217-053433}}.
+
+\bibitem{barocas2016}
+Solon Barocas and Andrew~D. Selbst.
+\newblock Big data's disparate impact.
+\newblock {\em California Law Review}, 104(3):671--732, 2016.
+\newblock \href {https://doi.org/10.15779/Z38BG31}
+  {\path{doi:10.15779/Z38BG31}}.
+
+\bibitem{been2019supply}
+Vicki Been, Ingrid~Gould Ellen, and Katherine O'Regan.
+\newblock Supply skepticism: Housing supply and affordability.
+\newblock {\em Housing Policy Debate}, 29(1):25--40, 2019.
+\newblock \href {https://doi.org/10.1080/10511482.2018.1476899}
+  {\path{doi:10.1080/10511482.2018.1476899}}.
+
+\bibitem{bonura2024tyrant}
+James Bonura.
+\newblock The tyrant's veto: Valid petition reform.
+\newblock Technical report, Texas Public Policy Foundation, November 2024.
+\newblock URL:
+  \url{https://www.texaspolicy.com/the-tyrants-veto-valid-petition-reform/}.
+
+\bibitem{brinkley2021nlp}
+Catherine Brinkley and Carl Stahmer.
+\newblock What is in a plan? using natural language processing to read 461
+  {California} city general plans.
+\newblock {\em Journal of Planning Education and Research}, 44(2):632--648,
+  2024.
+\newblock \href {https://doi.org/10.1177/0739456X211065561}
+  {\path{doi:10.1177/0739456X211065561}}.
+
+\bibitem{buchler2024housing}
+Simon B{\"u}chler and Maximilian~von Lutz.
+\newblock Making housing affordable? the local effects of relaxing land-use
+  regulation.
+\newblock {\em Journal of Urban Economics}, 2024.
+\newblock \href {https://doi.org/10.1016/j.jue.2024.103618}
+  {\path{doi:10.1016/j.jue.2024.103618}}.
+
+\bibitem{callaway2021did}
+Brantly Callaway and Pedro~H.C. Sant'Anna.
+\newblock Difference-in-differences with multiple time periods.
+\newblock {\em Journal of Econometrics}, 225(2):200--230, 2021.
+\newblock \href {https://doi.org/10.1016/j.jeconom.2020.12.001}
+  {\path{doi:10.1016/j.jeconom.2020.12.001}}.
+
+\bibitem{calonico2014rdrobust}
+Sebastian Calonico, Matias~D. Cattaneo, and Roc{\'\i}o Titiunik.
+\newblock Robust nonparametric confidence intervals for
+  regression-discontinuity designs.
+\newblock {\em Econometrica}, 82(6):2295--2326, 2014.
+\newblock \href {https://doi.org/10.3982/ECTA11757}
+  {\path{doi:10.3982/ECTA11757}}.
+
+\bibitem{cellini2010schools}
+Stephanie~Riegg Cellini, Fernando Ferreira, and Jesse Rothstein.
+\newblock The value of school facility investments: Evidence from a dynamic
+  regression discontinuity design.
+\newblock {\em The Quarterly Journal of Economics}, 125(1):215--261, 2010.
+\newblock \href {https://doi.org/10.1162/qjec.2010.125.1.215}
+  {\path{doi:10.1162/qjec.2010.125.1.215}}.
+
+\bibitem{chen2016xgboost}
+Tianqi Chen and Carlos Guestrin.
+\newblock {XGBoost}: A scalable tree boosting system.
+\newblock In {\em Proceedings of the 22nd ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pages 785--794. ACM, 2016.
+\newblock \href {https://doi.org/10.1145/2939672.2939785}
+  {\path{doi:10.1145/2939672.2939785}}.
+
+\bibitem{chouldechova2017fair}
+Alexandra Chouldechova.
+\newblock Fair prediction with disparate impact: A study of bias in recidivism
+  prediction instruments.
+\newblock {\em Big Data}, 5(2):153--163, 2017.
+\newblock \href {https://doi.org/10.1089/big.2016.0047}
+  {\path{doi:10.1089/big.2016.0047}}.
+
+\bibitem{cityaustin2017codenext}
+{City of Austin}.
+\newblock {CodeNEXT} draft 3.
+\newblock Technical report, City of Austin, 2017.
+\newblock URL: \url{https://www.austintexas.gov/codenext}.
+
+\bibitem{coglianese2017robot}
+Cary Coglianese and David Lehr.
+\newblock Regulating by robot: Administrative decision making in the
+  machine-learning era.
+\newblock {\em Georgetown Law Journal}, 105(5):1147--1223, 2017.
+
+\bibitem{coglianese2019transparency}
+Cary Coglianese and David Lehr.
+\newblock Transparency and algorithmic governance.
+\newblock {\em Administrative Law Review}, 71(1):1--56, 2019.
+
+\bibitem{corbettdavies2024fairness}
+Sam Corbett-Davies and Sharad Goel.
+\newblock The measure and mismeasure of fairness.
+\newblock {\em Journal of Machine Learning Research}, 25(174):1--117, 2024.
+
+\bibitem{crawford2021atlas}
+Kate Crawford.
+\newblock {\em Atlas of {AI}: Power, Politics, and the Planetary Costs of
+  Artificial Intelligence}.
+\newblock Yale University Press, 2021.
+
+\bibitem{danaher2016algocracy}
+John Danaher.
+\newblock The threat of algocracy: Reality, resistance and accommodation.
+\newblock {\em Philosophy \& Technology}, 29(3):245--268, 2016.
+\newblock \href {https://doi.org/10.1007/s13347-015-0211-1}
+  {\path{doi:10.1007/s13347-015-0211-1}}.
+
+\bibitem{dechaisemartin2020twfe}
+Cl{\'e}ment de~Chaisemartin and Xavier D'Haultf{\oe}uille.
+\newblock Two-way fixed effects estimators with heterogeneous treatment
+  effects.
+\newblock {\em American Economic Review}, 110(9):2964--2996, 2020.
+\newblock \href {https://doi.org/10.1257/aer.20181169}
+  {\path{doi:10.1257/aer.20181169}}.
+
+\bibitem{delacuesta2016rd}
+Brandon de~la Cuesta and Kosuke Imai.
+\newblock Misunderstandings about the regression discontinuity design in the
+  study of close elections.
+\newblock {\em Annual Review of Political Science}, 19:375--396, 2016.
+\newblock \href {https://doi.org/10.1146/annurev-polisci-032015-010115}
+  {\path{doi:10.1146/annurev-polisci-032015-010115}}.
+
+\bibitem{einstein2019book}
+Katherine~Levine Einstein, Maxwell Palmer, and David~M. Glick.
+\newblock {\em Neighborhood Defenders: Participatory Politics and {America's}
+  Housing Crisis}.
+\newblock Cambridge University Press, 2019.
+\newblock \href {https://doi.org/10.1017/9781108769495}
+  {\path{doi:10.1017/9781108769495}}.
+
+\bibitem{einstein2019}
+Katherine~Levine Einstein, Maxwell Palmer, and David~M. Glick.
+\newblock Who participates in local government? evidence from meeting minutes.
+\newblock {\em Perspectives on Politics}, 17(1):28--46, 2019.
+\newblock \href {https://doi.org/10.1017/S153759271800213X}
+  {\path{doi:10.1017/S153759271800213X}}.
+
+\bibitem{eubanks2018}
+Virginia Eubanks.
+\newblock {\em Automating Inequality: How High-Tech Tools Profile, Police, and
+  Punish the Poor}.
+\newblock St. Martin's Press, 2018.
+
+\bibitem{fischel2001homevoter}
+William~A. Fischel.
+\newblock {\em The Homevoter Hypothesis: How Home Values Influence Local
+  Government Taxation, School Finance, and Land-Use Policies}.
+\newblock Harvard University Press, 2001.
+\newblock \href {https://doi.org/10.4159/9780674036901}
+  {\path{doi:10.4159/9780674036901}}.
+
+\bibitem{fu2024nlp}
+Xinyu Fu.
+\newblock Natural language processing in urban planning: A research agenda.
+\newblock {\em Journal of the American Planning Association}, 90(2), 2024.
+\newblock \href {https://doi.org/10.1080/01944363.2023.2259825}
+  {\path{doi:10.1080/01944363.2023.2259825}}.
+
+\bibitem{fujiwara2011rd}
+Thomas Fujiwara.
+\newblock A regression discontinuity test of strategic voting and {Duverger's}
+  law.
+\newblock {\em Quarterly Journal of Political Science}, 6(3--4):197--233, 2011.
+\newblock \href {https://doi.org/10.1561/100.00010037}
+  {\path{doi:10.1561/100.00010037}}.
+
+\bibitem{gama2014conceptdrift}
+Jo{\~a}o Gama, Indr{\.e} {\v{Z}}liobait{\.e}, Albert Bifet, Mykola Pechenizkiy,
+  and Abdelhamid Bouchachia.
+\newblock A survey on concept drift adaptation.
+\newblock {\em ACM Computing Surveys}, 46(4):1--37, 2014.
+\newblock \href {https://doi.org/10.1145/2523813} {\path{doi:10.1145/2523813}}.
+
+\bibitem{ganguli2022redteam}
+Deep Ganguli, Liane Lovitt, Jackson Kernion, Amanda Askell, Yuntao Bai, et~al.
+\newblock Red teaming language models to reduce harms: Methods, scaling
+  behaviors, and lessons learned.
+\newblock {\em arXiv preprint arXiv:2209.07858}, 2022.
+\newblock URL: \url{https://arxiv.org/abs/2209.07858}.
+
+\bibitem{glaeser2003zoning}
+Edward~L. Glaeser and Joseph Gyourko.
+\newblock The impact of building restrictions on housing affordability.
+\newblock {\em Federal Reserve Bank of New York Economic Policy Review},
+  9(2):21--39, June 2003.
+
+\bibitem{glaeser2005manhattan}
+Edward~L. Glaeser, Joseph Gyourko, and Raven Saks.
+\newblock Why is {Manhattan} so expensive? {Regulation} and the rise in housing
+  prices.
+\newblock {\em Journal of Law and Economics}, 48(2):331--369, 2005.
+\newblock \href {https://doi.org/10.1086/429979} {\path{doi:10.1086/429979}}.
+
+\bibitem{glaeser2018bigdata}
+Edward~L. Glaeser, Scott~Duke Kominers, Michael Luca, and Nikhil Naik.
+\newblock Big data and big cities: The promises and limitations of improved
+  measures of urban life.
+\newblock {\em Economic Inquiry}, 56(1):114--137, 2018.
+\newblock \href {https://doi.org/10.1111/ecin.12364}
+  {\path{doi:10.1111/ecin.12364}}.
+
+\bibitem{goodmanbacon2021did}
+Andrew Goodman-Bacon.
+\newblock Difference-in-differences with variation in treatment timing.
+\newblock {\em Journal of Econometrics}, 225(2):254--277, 2021.
+\newblock \href {https://doi.org/10.1016/j.jeconom.2021.03.014}
+  {\path{doi:10.1016/j.jeconom.2021.03.014}}.
+
+\bibitem{gyourko2021local}
+Joseph Gyourko, Jonathan Hartley, and Jacob Krimmel.
+\newblock The local residential land use regulatory environment across {US}
+  housing markets: Evidence from a new {Wharton} index.
+\newblock {\em Journal of Urban Economics}, 124:103337, 2021.
+\newblock \href {https://doi.org/10.1016/j.jue.2021.103337}
+  {\path{doi:10.1016/j.jue.2021.103337}}.
+
+\bibitem{gyourko2015regulation}
+Joseph Gyourko and Raven Molloy.
+\newblock Regulation and housing supply.
+\newblock In {\em Handbook of Regional and Urban Economics}, volume~5, pages
+  1289--1337. Elsevier, 2015.
+\newblock \href {https://doi.org/10.1016/B978-0-444-59531-7.00019-3}
+  {\path{doi:10.1016/B978-0-444-59531-7.00019-3}}.
+
+\bibitem{gyourko2008wrluri}
+Joseph Gyourko, Albert Saiz, and Anita Summers.
+\newblock A new measure of the local regulatory environment for housing
+  markets: The {Wharton} residential land use regulatory index.
+\newblock {\em Urban Studies}, 45(3):693--729, 2008.
+\newblock \href {https://doi.org/10.1177/0042098007087341}
+  {\path{doi:10.1177/0042098007087341}}.
+
+\bibitem{hamilton2024texas}
+Emily Hamilton and Salim Furth.
+\newblock Texas protest petition primer: How {HB} 24 reforms the supermajority
+  requirement.
+\newblock Policy brief, Mercatus Center at George Mason University, 2024.
+\newblock URL:
+  \url{https://www.mercatus.org/research/policy-briefs/texas-protest-petition-primer}.
+
+\bibitem{hankinson2018}
+Michael Hankinson.
+\newblock When do renters behave like homeowners? high rent, price anxiety, and
+  nimbyism.
+\newblock {\em American Political Science Review}, 112(3):473--493, 2018.
+\newblock \href {https://doi.org/10.1017/S0003055418000035}
+  {\path{doi:10.1017/S0003055418000035}}.
+
+\bibitem{hills2011zoning}
+Roderick~M. Hills, Jr. and David Schleicher.
+\newblock Balancing the ``zoning budget''.
+\newblock {\em Case Western Reserve Law Review}, 62(1):81--133, 2011.
+
+\bibitem{hills2015affordable}
+Roderick~M. Hills, Jr. and David Schleicher.
+\newblock Planning an affordable city.
+\newblock {\em Iowa Law Review}, 101:91--136, 2015.
+
+\bibitem{jean2016poverty}
+Neal Jean, Marshall Burke, Michael Xie, W.~Matthew Davis, David~B. Lobell, and
+  Stefano Ermon.
+\newblock Combining satellite imagery and machine learning to predict poverty.
+\newblock {\em Science}, 353(6301):790--794, 2016.
+\newblock \href {https://doi.org/10.1126/science.aaf7894}
+  {\path{doi:10.1126/science.aaf7894}}.
+
+\bibitem{ke2017lightgbm}
+Guolin Ke, Qi~Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei
+  Ye, and Tie-Yan Liu.
+\newblock {LightGBM}: A highly efficient gradient boosting decision tree.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~30, pages 3146--3154, 2017.
+
+\bibitem{kleinberg2018}
+Jon Kleinberg, Himabindu Lakkaraju, Jure Leskovec, Jens Ludwig, and Sendhil
+  Mullainathan.
+\newblock Human decisions and machine predictions.
+\newblock {\em The Quarterly Journal of Economics}, 133(1):237--293, 2018.
+\newblock \href {https://doi.org/10.1093/qje/qjx032}
+  {\path{doi:10.1093/qje/qjx032}}.
+
+\bibitem{kleinberg2015prediction}
+Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer.
+\newblock Prediction policy problems.
+\newblock {\em American Economic Review}, 105(5):491--495, 2015.
+\newblock \href {https://doi.org/10.1257/aer.p20151023}
+  {\path{doi:10.1257/aer.p20151023}}.
+
+\bibitem{krueger2021}
+David Krueger, Ethan Caballero, J{\"o}rn-Henrik Jacobsen, Amy Zhang, Jonathan
+  Binas, Dinghuai Zhang, R{\'e}mi Le~Priol, and Aaron Courville.
+\newblock Out-of-distribution generalization via risk extrapolation ({V-REx}).
+\newblock {\em Proceedings of the 38th International Conference on Machine
+  Learning}, pages 5815--5826, 2021.
+\newblock URL: \url{https://proceedings.mlr.press/v139/krueger21a.html}.
+
+\bibitem{lee2010rd}
+David~S. Lee and Thomas Lemieux.
+\newblock Regression discontinuity designs in economics.
+\newblock {\em Journal of Economic Literature}, 48(2):281--355, 2010.
+\newblock \href {https://doi.org/10.1257/jel.48.2.281}
+  {\path{doi:10.1257/jel.48.2.281}}.
+
+\bibitem{liao2025nyc}
+Weifeng Liao.
+\newblock The effect of rezoning on local housing supply and demand: Evidence
+  from {New York City}.
+\newblock {\em Journal of Urban Economics}, 2025.
+
+\bibitem{logan1987urban}
+John~R. Logan and Harvey~L. Molotch.
+\newblock {\em Urban Fortunes: The Political Economy of Place}.
+\newblock University of California Press, 1987.
+
+\bibitem{lum2016predict}
+Kristian Lum and William Isaac.
+\newblock To predict and serve?
+\newblock {\em Significance}, 13(5):14--19, 2016.
+\newblock \href {https://doi.org/10.1111/j.1740-9713.2016.00960.x}
+  {\path{doi:10.1111/j.1740-9713.2016.00960.x}}.
+
+\bibitem{lundberg2020treeshap}
+Scott~M. Lundberg, Gabriel Erion, Hugh Chen, Alex DeGrave, Jordan~M. Prutkin,
+  Bala Nair, Ronit Katz, Jonathan Himmelfarb, Nisha Bansal, and Su-In Lee.
+\newblock From local explanations to global understanding with explainable {AI}
+  for trees.
+\newblock {\em Nature Machine Intelligence}, 2(1):56--67, 2020.
+\newblock \href {https://doi.org/10.1038/s42256-019-0138-9}
+  {\path{doi:10.1038/s42256-019-0138-9}}.
+
+\bibitem{lundberg2017shap}
+Scott~M. Lundberg and Su-In Lee.
+\newblock A unified approach to interpreting model predictions.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~30, pages 4766--4777, 2017.
+
+\bibitem{mccabe2016}
+Brian~J. McCabe.
+\newblock {\em No Place Like Home: Wealth, Community, and the Politics of
+  Homeownership}.
+\newblock Oxford University Press, 2016.
+\newblock \href {https://doi.org/10.1093/acprof:oso/9780190270469.001.0001}
+  {\path{doi:10.1093/acprof:oso/9780190270469.001.0001}}.
+
+\bibitem{mitchell2019modelcards}
+Margaret Mitchell, Simone Wu, Andrew Zaldivar, Parker Barnes, Lucy Vasserman,
+  Ben Hutchinson, Elena Spitzer, Inioluwa~Deborah Raji, and Timnit Gebru.
+\newblock Model cards for model reporting.
+\newblock In {\em Proceedings of the Conference on Fairness, Accountability,
+  and Transparency (FAT* '19)}, pages 220--229. ACM, 2019.
+\newblock \href {https://doi.org/10.1145/3287560.3287596}
+  {\path{doi:10.1145/3287560.3287596}}.
+
+\bibitem{molotch1976growth}
+Harvey Molotch.
+\newblock The city as a growth machine: Toward a political economy of place.
+\newblock {\em American Journal of Sociology}, 82(2):309--332, 1976.
+\newblock \href {https://doi.org/10.1086/226311} {\path{doi:10.1086/226311}}.
+
+\bibitem{mullainathan2017ml}
+Sendhil Mullainathan and Jann Spiess.
+\newblock Machine learning: An applied econometric approach.
+\newblock {\em Journal of Economic Perspectives}, 31(2):87--106, 2017.
+\newblock \href {https://doi.org/10.1257/jep.31.2.87}
+  {\path{doi:10.1257/jep.31.2.87}}.
+
+\bibitem{nist2023airm}
+{National Institute of Standards and Technology}.
+\newblock Artificial intelligence risk management framework ({AI RMF} 1.0).
+\newblock Technical Report NIST AI 100-1, U.S. Department of Commerce, 2023.
+\newblock URL:
+  \url{https://www.nist.gov/artificial-intelligence/executive-order-safe-secure-and-trustworthy-artificial-intelligence},
+  \href {https://doi.org/10.6028/NIST.AI.100-1}
+  {\path{doi:10.6028/NIST.AI.100-1}}.
+
+\bibitem{oneil2016weapons}
+Cathy O'Neil.
+\newblock {\em Weapons of Math Destruction: How Big Data Increases Inequality
+  and Threatens Democracy}.
+\newblock Crown Publishers, 2016.
+
+\bibitem{peters2016causal}
+Jonas Peters, Peter B{\"u}hlmann, and Nicolai Meinshausen.
+\newblock Causal inference by using invariant prediction: Identification and
+  confidence intervals.
+\newblock {\em Journal of the Royal Statistical Society Series B: Statistical
+  Methodology}, 78(5):947--1012, 2016.
+\newblock \href {https://doi.org/10.1111/rssb.12167}
+  {\path{doi:10.1111/rssb.12167}}.
+
+\bibitem{pool2023}
+Kirk Pool.
+\newblock {HOME} initiative phase 1.
+\newblock Austin City Council, 2023.
+\newblock URL: \url{https://www.austintexas.gov/department/home-initiative}.
+
+\bibitem{prokhorenkova2018catboost}
+Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna~Veronika Dorogush,
+  and Andrey Gulin.
+\newblock {CatBoost}: Unbiased boosting with categorical features.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~31, pages 6639--6649, 2018.
+
+\bibitem{quigley2005effects}
+John~M. Quigley and Larry~A. Rosenthal.
+\newblock The effects of land-use regulation on the price of housing: What do
+  we know? what can we learn?
+\newblock {\em Cityscape}, 8(1):69--137, 2005.
+
+\bibitem{raji2020smactr}
+Inioluwa~Deborah Raji, Andrew Smart, Rebecca~N. White, Margaret Mitchell,
+  Timnit Gebru, Ben Hutchinson, Jamila Smith-Loud, Daniel Theron, and Parker
+  Barnes.
+\newblock Closing the {AI} accountability gap: Defining an end-to-end framework
+  for internal algorithmic auditing.
+\newblock In {\em Proceedings of the 2020 Conference on Fairness,
+  Accountability, and Transparency (FAT* '20)}, pages 33--44. ACM, 2020.
+\newblock \href {https://doi.org/10.1145/3351095.3372873}
+  {\path{doi:10.1145/3351095.3372873}}.
+
+\bibitem{richardson2019dirty}
+Rashida Richardson, Jason~M. Schultz, and Kate Crawford.
+\newblock Dirty data, bad predictions: How civil rights violations impact
+  police data, predictive policing systems, and justice.
+\newblock {\em NYU Law Review Online}, 94:192--233, 2019.
+
+\bibitem{roth2023did}
+Jonathan Roth, Pedro~H.C. Sant'Anna, Alyssa Bilinski, and John Poe.
+\newblock What's trending in difference-in-differences? a synthesis of the
+  recent econometrics literature.
+\newblock {\em Journal of Econometrics}, 235(2):2218--2244, 2023.
+\newblock \href {https://doi.org/10.1016/j.jeconom.2023.03.008}
+  {\path{doi:10.1016/j.jeconom.2023.03.008}}.
+
+\bibitem{selbst2019fairness}
+Andrew~D. Selbst, Danah Boyd, Sorelle~A. Friedler, Suresh Venkatasubramanian,
+  and Janet Vertesi.
+\newblock Fairness and abstraction in sociotechnical systems.
+\newblock In {\em Proceedings of the Conference on Fairness, Accountability,
+  and Transparency (FAT* '19)}, pages 59--68. ACM, 2019.
+\newblock \href {https://doi.org/10.1145/3287560.3287598}
+  {\path{doi:10.1145/3287560.3287598}}.
+
+\bibitem{sun2021eventstudies}
+Liyang Sun and Sarah Abraham.
+\newblock Estimating dynamic treatment effects in event studies with
+  heterogeneous treatment effects.
+\newblock {\em Journal of Econometrics}, 225(2):175--199, 2021.
+\newblock \href {https://doi.org/10.1016/j.jeconom.2020.09.006}
+  {\path{doi:10.1016/j.jeconom.2020.09.006}}.
+
+\bibitem{llm2025upzoning}
+{Various Authors}.
+\newblock Benchmarking large language models against qualitative coding and
+  natural language processing in decoding public sentiment on urban upzoning.
+\newblock {\em Urban Informatics}, 2025.
+\newblock \href {https://doi.org/10.1007/s44212-025-00083-x}
+  {\path{doi:10.1007/s44212-025-00083-x}}.
+
+\bibitem{axios2023parking}
+Nicole Wells.
+\newblock Austin eliminates parking requirements citywide.
+\newblock {\em Axios Austin}, November 2023.
+\newblock URL:
+  \url{https://www.axios.com/local/austin/2023/11/03/austin-parking-requirements-eliminated}.
+
+\bibitem{zarsky2013transparent}
+Tal Zarsky.
+\newblock Transparent predictions.
+\newblock {\em University of Illinois Law Review}, 2013(4):1503--1569, 2013.
+
+\bibitem{zarsky2016}
+Tal Zarsky.
+\newblock The trouble with algorithmic decisions: An analytic road map to
+  examine efficiency and fairness in automated and opaque decision making.
+\newblock {\em Science, Technology, \& Human Values}, 41(1):118--132, 2016.
+\newblock \href {https://doi.org/10.1177/0162243915605575}
+  {\path{doi:10.1177/0162243915605575}}.
+
+\end{thebibliography}
