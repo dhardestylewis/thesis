@@ -499,29 +499,13 @@ The opposition model achieves PR-AUC of 0.496 under in-distribution cross-valida
 
 The calibration failure has three identifiable sources. First, class imbalance pushes predicted probabilities toward the base rate, preventing confident predictions in upper reliability bins. Second, the $H_0$ feature set---limited to pre-hearing information---intrinsically constrains predictive certainty. Third, the 2022 council regime change creates temporal non-stationarity ($P_{\text{train}}(X,Y) \neq P_{\text{test}}(X,Y)$), causing models calibrated to pre-2022 data to mispredict post-2022 opposition dynamics.
 
-\begin{table}[htbp]
-\centering
-\caption{Multi-Horizon Opposition Model Performance (CatBoost, 95\% Bootstrap CIs). The $H_0$ result represents the genuine ex-ante forecast. $H_1$--$H_3$ results of 1.000 indicate that current horizon data files contain information that leaks the target; remediation of these feature sets is required before deployment-grade horizon comparisons.}
-\label{tab:multi_horizon}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{lccc}
-\toprule
-\textbf{Horizon} & \textbf{PR-AUC [95\% CI]} & \textbf{Brier} & \textbf{ECE} \\
-\midrule
-$H_0$ (Filing) & 0.638 $[0.449, 0.837]$ & 0.311 & 0.367 \\
-$H_1$ (Notice) & 1.000$^\dagger$ & 0.000 & 0.002 \\
-$H_2$ (Pre-Commission) & 1.000$^\dagger$ & 0.000 & 0.002 \\
-$H_3$ (Pre-Council) & 1.000$^\dagger$ & 0.000 & 0.001 \\
-\bottomrule
-\multicolumn{4}{l}{\footnotesize $^\dagger$ Suspected feature leakage; remediation required.}
-\end{tabular}
-\end{table}
+\input{Tables/multi_horizon_results.tex}
 
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.9\textwidth]{Track1_Exhibits/fig_calibration_ece.pdf}
-    \caption{Reliability diagram for the Stage C opposition model (ECE = 0.200). The model is systematically under-confident in upper deciles.}
+    \caption{Reliability diagram for the Stage C opposition model (ECE = 0.200). The model is systematically under-confident in upper deciles (calculated using 10 equal-frequency bins to account for severe class imbalance).}
     \label{fig:reliability}
 \end{figure}
 
@@ -549,11 +533,36 @@ $H_3$ (Pre-Council) & 1.000$^\dagger$ & 0.000 & 0.001 \\
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{Chapter4/F8_Calibration.png}
-\caption{Calibration reliability diagram (left) and top-$K$ capture curve (right) for the Stage A development model.}
+\caption{Calibration reliability diagram (left) and top-$K$ capture curve (right) for the Stage A development model (calculated using 10 equal-frequency bins to account for severe class imbalance).}
 \label{fig:f8_calibration}
 \end{figure}
 
 \subsection{Regression Discontinuity: The 20\% Petition Threshold}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=2cm and 2.5cm,
+    var/.style={circle, draw, minimum size=0.8cm},
+    arrow/.style={thick,->,>=stealth}
+]
+\node[var] (T) {$T$};
+\node[var, right=of T] (Y) {$Y$};
+\node[var, above right=1cm and 1cm of T] (U) {$U$};
+\node[var, below=of U] (X) {$X$};
+
+\draw[arrow] (T) -- node[above] {$\tau$} (Y);
+\draw[arrow] (U) -- (T);
+\draw[arrow] (U) -- (Y);
+\draw[arrow] (X) -- (T);
+\draw[arrow] (X) -- (Y);
+\draw[arrow, dashed, red] (T) to[bend right=45] node[below] {Selection} (X);
+
+\end{tikzpicture}
+\caption{Selection and Causal Inference DAG. T=Treatment (Petition/HOME), Y=Outcome (Delay/Dissent), X=Observed Covariates, U=Unobserved (e.g., informal negotiations).}
+\label{fig:causal_dag}
+\end{figure}
+
 
 To estimate the causal effect of crossing the formal protest threshold, a fuzzy regression discontinuity (RD) design exploits the 20\% statutory petition threshold under Texas LGC Chapter~211. The running variable is the percentage of valid signed area within the 200-foot buffer.
 
@@ -730,5 +739,33 @@ parcel_id     year  protest_buffer  owner_exempt  tract_wealth_gap  prop_med_ren
 1911420102    2008  False           False         -6500             1150           0.42
 \end{verbatim}
 }
+\newpage
+\section{Methodological Appendix: Expanded Details}
+\label{app:methodology_details}
+
+\subsection{Variable Dictionary}
+This thesis constructs features from multiple municipal and state sources:
+\begin{itemize}
+    \item \textbf{TCAD EARS:} Appraised structure/land value, improvement ratios, year built, explicitly lagged.
+    \item \textbf{Austin Open Data:} Base zoning codes (SF-1 through SF-6, MF-1 through MF-6, commercial variants), overlay districts (NP, NCCD), historic designations (HD), and environmental buffers.
+    \item \textbf{ACS 5-Year Interpolations:} Block-group demographics matched to parcel geometry, including median household income, tenure (owner-vs-renter ratios), bachelor's degree attainment, and race/ethnicity vectors (explicitly excluded from the deployment model feature set).
+\end{itemize}
+
+\subsection{Hyperparameter Search Grids}
+Tree-based models (CatBoost, Random Forest) utilized the following randomized search bounds across 5-fold temporal cross validation:
+\begin{itemize}
+    \item \textbf{learning\_rate:} Log-uniform [0.01, 0.3]
+    \item \textbf{depth:} [4, 6, 8, 10]
+    \item \textbf{l2\_leaf\_reg:} Uniform [1, 10]
+    \item \textbf{auto\_class\_weights:} [None, Balanced, SqrtBalanced]
+\end{itemize}
+Selected CatBoost models uniformly converged on Depth=6, Learning Rate $\approx$ 0.05, and 'Balanced' class weighting.
+
+\subsection{Subgroup Definitions \& Fairness Testing}
+To calculate the False Negative Rate (FNR) gaps:
+\begin{itemize}
+    \item \textbf{Geography:} Subgroups defined by the 10 Austin City Council Districts.
+    \item \textbf{Socioeconomic Vulnerability:} Subgroups defined by the UT-Austin Uprooted Displacement Risk index (Active, Vulnerable, Susceptible).
+\end{itemize}
 
 \end{document}
