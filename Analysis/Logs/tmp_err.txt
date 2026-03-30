@@ -1,0 +1,16 @@
++--------------------- Traceback (most recent call last) ---------------------+
+| C:\Users\dhl\data\Thesis\thesis\Analysis\Scripts\Experiments\evaluate_ood_m |
+| odal_fast.py:22 in <module>                                                 |
+|                                                                             |
+|    21 # We mount the pre-processed tensors instead of the 1.7GB csv         |
+| >  22 vol_mount = modal.Mount.from_local_dir(TENSORS_DIR, remote_path="/dat |
+|    23 @app.function(image=image, mounts=[vol_mount], gpu="T4", timeout=300) |
+|                                                                             |
+| C:\Users\dhl\data\Thesis\thesis\.venv\Lib\site-packages\modal\__init__.py:1 |
+| 07 in __getattr__                                                           |
+|                                                                             |
+|   106         )                                                             |
+| > 107     raise AttributeError(f"module 'modal' has no attribute '{name}'") |
+|   108                                                                       |
++-----------------------------------------------------------------------------+
+AttributeError: module 'modal' has no attribute 'Mount'

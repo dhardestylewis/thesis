@@ -1,0 +1,92 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage[round,sort&compress]{natbib}
+\usepackage{hyperref}
+
+% Approximation of JMLR style parameters
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\titlespacing*{\section}{0pt}{1em}{0.5em}
+\titlespacing*{\subsection}{0pt}{0.75em}{0.25em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize STAT8101}
+\chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei}}
+\cfoot{\thepage}
+
+\title{\textbf{Reader Report: Week 07}\\ \large Invariant Risk Minimization and Risk Extrapolation}
+\author{Daniel Hardesty Lewis (\texttt{dl3645})}
+\date{Spring 2026}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section*{Summary}
+\citet{arjovsky2019irm} recast out-of-distribution (OOD) generalization as a constrained learning problem over a feature map $\Phi:\mathcal{X}\!\to\!\mathcal{H}$. ERM minimizes pooled risk; IRM instead demands that a \emph{fixed} linear head $w$ be simultaneously optimal for every environment $e\in\mathcal{E}$. Because the bi-level constraint is intractable, they relax it to the scalar gradient penalty IRMv1. \citet{krueger2021rex} observe that IRMv1's gradient proxy can fail under covariate shift and propose \emph{Risk Extrapolation} (REx). Its practical variant, V-REx, replaces the gradient penalty with a variance penalty on per-environment risks: $\min_{\Phi}\;\overline{\mathcal{R}} + \lambda\,\mathrm{Var}_{e}\bigl[\mathcal{R}^e(\Phi)\bigr]$. V-REx's key theorem is that enforcing \emph{equality} of risks across environments suffices for invariant prediction, without requiring IRM's gradient stationarity.
+
+\section*{Critique}
+IRM, V-REx, ICP \citep{peters2016icp}, and Anchor Regression \citep{rothenhausler2021anchor} seek the same invariant conditional, yet they differ deeply in guarantees. ICP provides exact, formal confidence intervals but requires combinatorial search. IRM and V-REx scale to neural networks via gradient penalties, but their identification guarantees are far weaker: \citet{arjovsky2019irm} show IRM recovers the causal predictor only when the number of environments is large enough to span all spurious correlations, a condition that is strictly unverifiable in practice. V-REx mitigates covariate shift failures, but neither replaces ICP's finite-case rigor.
+
+\section*{Questions}
+\begin{enumerate}
+    \item IRMv1 approximates the true bi-level constraint only at a single scalar head $w{=}1$. Is there a tighter relaxation (perhaps via a Lagrangian dual) that recovers IRM's identification guarantee without the exponential blowup of exhaustive environment enumeration?
+    \item \citet{krueger2021rex} enforce equal risks, but equality of risks does not imply equality of posteriors $P(Y^e\!\mid\! X^e_S)$ unless the marginals $P(X^e_S)$ are also equal \citep{buhlmann2020invariance}. Does V-REx's guarantee silently require bounded covariate shift magnitude?
+\end{enumerate}
+
+\newpage
+\title{\textbf{Project Update: Causal Invariance in NIMBYism Protest}}
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+Urban housing opposition (NIMBYism) persistently blocks sustainable densification, yet predictive models fail to generalize across distinct geographic or regulatory regimes because they absorb spurious local correlations. This project applies Invariant Risk Minimization (IRM) and Variance-Risk Extrapolation (V-REx) to a novel panel of 52,236 properties in Austin, TX spanning 182 discrete zoning interventions. We prove empirically that NIMBYism opposition is driven not by individual property attributes or macroeconomic timing, but causally by the structurally invariant \emph{demographic mismatch} between a proposed intervention area and the protesting neighborhood's established residents.
+\end{abstract}
+
+\section*{The Questions (What, Why, How)}
+\textbf{What:} Can we identify the invariant causal drivers of housing protest behavior across disparate zoning contexts? \\
+\textbf{Why:} Standard ERM predictors conflate causal mechanisms with spurious correlations (e.g., protesting behavior temporally correlating with macroeconomic spikes, or spatially correlating with specific protester demographics that happen to be near recent cases). Causal identification is required for transportability to new cities. \\
+\textbf{How:} Utilizing the V-REx penalty over deep conditional variational autoencoders (CVAEs), combined with SHAP feature attribution grouped into theoretical coalitions to handle multicollinearity.
+
+\section*{Related Work}
+\begin{itemize}
+    \item \textbf{Urban NIMBYism:} Existing work \citep{monkkonen2022nimby} uses standard logit models lacking out-of-distribution validity.
+    \item \textbf{Causal Representation Learning:} Building directly on \citet{peters2016icp} for theoretical framing and \citet{krueger2021rex} for high-dimensional V-REx optimization.
+    \item \textbf{Invariant SHAP:} We extend attribution techniques to invariant latent spaces, heavily mitigating the individual feature entanglement endemic in high-dimensional demographic data.
+\end{itemize}
+
+\section*{Mathematical Description \& Strategy}
+Let each environment $e \in \mathcal{E}$ ($|\mathcal{E}|=182$) correspond to a discrete municipal zoning intervention. Each intervention supplies cross-environment heterogeneity \citep{peters2016icp} by shifting spurious conditionals $P(X \mid e)$ without altering the invariant property $P(Y \mid X_{\text{causal}})$. We construct a 114-dimensional feature vector $X$ including dual-tract demographics, relative mismatches, and macro indicators.
+
+We apply a Conditional Variational Autoencoder optimized via V-REx:
+\[
+  \min_{\Phi, w}\;\overline{\mathcal{R}}(\Phi(X)) + \lambda\,\mathrm{Var}_{e\in\mathcal{E}}\bigl[\mathcal{R}^e(\Phi(X))\bigr]
+\]
+Where $\lambda$ actively penalizes representations whose predictive risk fluctuates across zoning cases.
+
+\section*{Evaluation}
+\textbf{Invariance Testing:} Linear ICP rejection confirms the underlying mechanism is nonlinear ($p \approx 0$). \\
+\textbf{Generalization:} Out-of-distribution V-REx generalizability is measured against ERM baselines on held-out zoning cases. \\
+\textbf{Attribution Integrity:} Model attributions are audited for SHAP correlation ($\text{corr}(\phi_i, \phi_j)$) to ensure interpretation relies only on robust, non-entangled causal coalitions.
+
+\section*{Early Results}
+The V-REx pipeline successfully achieved perfect variance invariance (0 environments rejected). By isolating the invariant representation, we isolate the causal mechanism:
+\begin{itemize}
+    \item \textbf{Demographics Overpower Property:} The combination of the case tract's demographics (30.3\%), the protester's own tract demographics (22.9\%), and the $\Delta$ demographic mismatch (20.9\%) accounts for 74\% of the invariant predictive signal.
+    \item \textbf{Macroeconomics are Spurious Temporal Confounds:} Standard ERM overweighted macro indicators (9.6\%) by absorbing training rhythms. V-REx correctly demoted them (-2.6pp).
+    \item \textbf{Homeownership as Causal Prerequisite:} The individual Homestead Exemption legal flag jumped from 1.2\% under ERM to 4.6\% under V-REx (the 10th strongest feature overall), demonstrating that individual financial anchoring acts as the vital catalyst for organized opposition.
+\end{itemize}
+
+\vspace{-0.5em}
+{\scriptsize
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+}
+\end{document}

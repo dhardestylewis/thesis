@@ -1,0 +1,23 @@
+Loading panel data...
+Loading environment assignments...
+Dataset: 35,000 rows | 3 numeric features | 182 environments
+
+Testing 8 feature subsets for invariance (α = 0.05)...
+================================================================================
+  S = ∅ (empty set)                                           p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 3.97e-13  REJECTED ✗
+  S = {total_market_value}                                    p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 3.70e-13  REJECTED ✗
+  S = {deed_acreage}                                          p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 2.95e-12  REJECTED ✗
+  S = {improvement_sq_ft}                                     p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 3.97e-13  REJECTED ✗
+  S = {total_market_value, deed_acreage}                      p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 2.71e-12  REJECTED ✗
+  S = {total_market_value, improvement_sq_ft}                 p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 3.70e-13  REJECTED ✗
+  S = {deed_acreage, improvement_sq_ft}                       p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 2.95e-12  REJECTED ✗
+  S = {total_market_value, deed_acreage, improvement_sq_ft}   p_bonf = 0.000000  raw_mean = 0.00e+00  raw_var = 2.71e-12  REJECTED ✗
+
+================================================================================
+ICP RESULTS: Identified Causal Predictors
+================================================================================
+NO subsets were accepted. The ICP procedure found no invariant set.
+This means the data may violate the linear causal model assumption,
+or the environments are too diverse for any linear subset to be invariant.
+
+Completed in 33.3s

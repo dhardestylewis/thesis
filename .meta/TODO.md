@@ -12,13 +12,13 @@
 - [ ] [Target: 2026-02-04] [P2] **Draft Results (Preliminary)**: Visualize initial feature importance and accuracy metrics.
 
 ## 🟠 Thesis Writing & Research
-- [/] [Target: 2026-02-04] [P1] **Methodology Chapter**: Draft the chapter focusing on the now-complete data cleaning and acquisition pipeline.
+- [x] [Target: 2026-02-04] [P1] **Methodology Chapter**: Draft the chapter focusing on the now-complete data cleaning and acquisition pipeline.
 - [ ] [Target: 2026-02-04] [P2] **Reference Thesis Review**: Skim 3-5 theses (MIT/Berkeley/Columbia) for structure and methods inspiration.
 - [ ] [Target: 2026-02-28] [P3] **Literature Review**: Synthesize findings from reference theses and zoning opposition papers.
-- [ ] [Target: 2026-03-02] [P3] **Outline Draft**: Complete full skeleton of all chapters.
+- [x] [Target: 2026-03-02] [P3] **Outline Draft**: Complete full skeleton of all chapters.
 
 ## ⚪ Admin & Housekeeping
-- [ ] [P3] **Weekly Status Update**: Recurring task (Mondays).
+- [x] [P3] **Weekly Status Update**: Recurring task (Mondays).
 - [ ] [P4] **README Update**: Update `README.md` to reflect the new `Thesis_Draft` and `Data` directory structures.
 
 ## ✅ Recently Completed

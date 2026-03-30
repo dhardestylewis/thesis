@@ -1,0 +1,12 @@
+﻿ 5000  Zoning/Rezoning
+  550  Amended Neighborhood Plan
+  500  Historical
+  279  Capital View Corridor Height
+  227  Planned Unit Development (PUD)
+  106  Restrictive Covenant Amendment
+   73  Restricted Covenant Termination
+   63  Planned Development Agreement (PDA)
+   54  Municipal Utility District (MUD)
+    7  New Neighborhood Plan
+    3  Traditional Neighborhood District (TND)
+    3  Ordinance Zoning Text Amendment

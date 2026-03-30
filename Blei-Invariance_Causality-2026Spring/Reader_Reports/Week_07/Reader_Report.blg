@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Reader_Report.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: abbrvnat.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Database file #1: references.bib
+Warning--I didn't find a database entry for "monkkonen2022nimby"
+You've used 5 entries,
+            2773 wiz_defined-function locations,
+            625 strings with 5613 characters,
+and the built_in function-call counts, 2882 in all, are:
+= -- 254
+> -- 193
+< -- 2
++ -- 65
+- -- 60
+* -- 253
+:= -- 443
+add.period$ -- 16
+call.type$ -- 5
+change.case$ -- 35
+chr.to.int$ -- 5
+cite$ -- 10
+duplicate$ -- 117
+empty$ -- 212
+format.name$ -- 65
+if$ -- 596
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 5
+newline$ -- 33
+num.names$ -- 20
+pop$ -- 68
+preamble$ -- 1
+purify$ -- 30
+quote$ -- 0
+skip$ -- 95
+stack$ -- 0
+substring$ -- 128
+swap$ -- 17
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 55
+warning$ -- 0
+while$ -- 24
+width$ -- 0
+write$ -- 72
+(There was 1 warning)

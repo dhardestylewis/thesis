@@ -1,0 +1,21 @@
+﻿[*] Loading Final Goldmine Matrix...
+    -> Valid Econometric Records: 571
+    -> Baseline Contested Vote Rate: 27.15%
+    -> Valid Petition (NIMBY Treatment) Rate: 5.95%
+
+======================================================================
+TEST 1: THE NIMBY IMPACT (OLS ESTIMATOR)
+Question: Does the ability to protest prevent development approval?
+======================================================================
+[-] OLS 1 Failed: Error evaluating factor: NameError: name 'FEDFUNDS' is not defined
+    vote_no ~ valid_petition + is_residential + neighborhood_median_wealth + FEDFUNDS + neighborhood_protest_contagion
+                                                                             ^^^^^^^^
+
+======================================================================
+TEST 2: THE POLICY SHOCK (STAGGERED DIFFERENCE-IN-DIFFERENCES)
+Question: What was the causal effect of the residential protest rules repeal?
+Treatment: Residential Parcels | Control: Commercial Parcels
+======================================================================
+[-] OLS 2 Failed: Error evaluating factor: NameError: name 'FEDFUNDS' is not defined
+    vote_no ~ is_residential + post_shock + is_residential:post_shock + neighborhood_median_wealth + FEDFUNDS
+                                                                                                     ^^^^^^^^

@@ -1,0 +1,17 @@
+CASE_NUMBER,final_vote_yes,final_vote_no,final_vote_tally,final_reading_stage,final_nay_members,final_absent_members,all_readings_observed,total_vote_records,unanimous
+C14-2019-0082,11,0,11-0,1st,Harper-Madison,,1st; 2nd,5,True
+C814-2018-0121,7,4,7-4,1st,"Alter, Kitchen, Pool, Tovo",,1st,3,False
+C814-2018-0122,10,0,10-0,1st,,,1st,1,True
+C814-86-023.01,10,0,10-0,1st,,Pool,1st,1,True
+NPA-2018-0016.01,10,0,10-0,1st,,,1st,1,True
+NPA-2018-0021.03,11,0,11-0,1st,,,1st,1,True
+NPA-2018-0023.01,11,0,11-0,1st,,,1st,2,True
+NPA-2018-0026.01,10,0,10-0,1st,,,1st,1,True
+NPA-2018-0026.02,10,0,10-0,1st,,,1st,1,True
+NPA-2019-0015.01,9,2,9-2,1st,"Alter, Pool",,1st,1,False
+NPA-2019-0015.02,11,0,11-0,1st,,Casar,1st; 2nd,5,True
+NPA-2019-0016.01,11,0,11-0,1st,,Casar,1st; 2nd,4,True
+NPA-2019-0020.04,11,0,11-0,1st,Harper-Madison,,1st; 2nd,5,True
+NPA-2019-0027.02,9,1,9-1,1st,Tovo,,1st,1,False
+NPA-2020-0016.03,11,0,11-0,1st,,,1st,1,True
+NPA-2020-0019.01,11,0,11-0,1st,,,1st,2,True

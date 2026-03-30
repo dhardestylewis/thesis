@@ -1,0 +1,51 @@
+{
+    "PUD / large negotiated project": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3.0
+    },
+    "by-right infill": {
+        "precision": 0.6199524940617577,
+        "recall": 0.9775280898876404,
+        "f1-score": 0.7587209302325582,
+        "support": 267.0
+    },
+    "discretionary rezoning": {
+        "precision": 0.8837209302325582,
+        "recall": 0.5428571428571428,
+        "f1-score": 0.672566371681416,
+        "support": 70.0
+    },
+    "missing-middle": {
+        "precision": 0.6666666666666666,
+        "recall": 0.30303030303030304,
+        "f1-score": 0.4166666666666667,
+        "support": 66.0
+    },
+    "mixed-use": {
+        "precision": 0.8,
+        "recall": 0.19047619047619047,
+        "f1-score": 0.3076923076923077,
+        "support": 42.0
+    },
+    "multifamily": {
+        "precision": 0.5454545454545454,
+        "recall": 0.08571428571428572,
+        "f1-score": 0.14814814814814814,
+        "support": 70.0
+    },
+    "accuracy": 0.6486486486486487,
+    "macro avg": {
+        "precision": 0.752632439402588,
+        "recall": 0.5166010019942605,
+        "f1-score": 0.5506324040701828,
+        "support": 518.0
+    },
+    "weighted avg": {
+        "precision": 0.6682810795609779,
+        "recall": 0.6486486486486487,
+        "f1-score": 0.585813864253358,
+        "support": 518.0
+    }
+}

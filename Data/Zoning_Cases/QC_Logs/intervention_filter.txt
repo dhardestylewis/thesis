@@ -1,0 +1,47 @@
+﻿=== Closed multi-parcel interventions in panel window 2018-2025 ===
+Total: 300 of 1186 multi-parcel cases
+
+--- By sub_type ---
+ 184  tcad=176  Amended Neighborhood Plan
+  65  tcad=44  Planned Unit Development (PUD)
+  42  tcad=40  Planned Development Agreement (PDA)
+   5  tcad=3  Municipal Utility District (MUD)
+   2  tcad=2  Capital View Corridor Height
+   1  tcad=  New Neighborhood Plan
+   1  tcad=  Ordinance Zoning Text Amendment
+
+--- All multi-parcel by status ---
+ 687  Closed
+ 215  Approved
+  98  Withdrawn
+  49  Recommended for Approval
+  37  In Review
+  25  Scheduled for Hearing
+  18  Scheduled for Council Hearing
+  17  Expired
+  15  Pending
+   4  Denied
+   4  Awaiting Update
+   4  Aborted
+   3  Approved and Released
+   2  Reading Approved
+   2  Notice Sent
+   1  Partial Approval
+   1  Notice/Hearing Determination
+   1  Case Assigned
+   1  Cancelled
+   1  Postponed
+   1  VOID
+
+--- Closed cases by year (2015-2025) ---
+2015: 20
+2016: 20
+2017: 19
+2018: 32
+2019: 38
+2020: 33
+2021: 41
+2022: 60
+2023: 44
+2024: 33
+2025: 19

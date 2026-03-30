@@ -1,0 +1,15 @@
+﻿
+Count Has_TCAD Min_Date   Max_Date   Sub_Type                               
+----- -------- --------   --------   --------                               
+  550      509 01/06/2011 12/29/2025 Amended Neighborhood Plan              
+  279      272 01/03/2007 12/22/2003 Capital View Corridor Height           
+  227      130 01/08/2021 12/31/2012 Planned Unit Development (PUD)         
+   63       55 01/13/2023 12/15/2020 Planned Development Agreement (PDA)    
+   54       27 01/02/2013 12/30/2014 Municipal Utility District (MUD)       
+    7        3 02/26/2018 12/09/2008 New Neighborhood Plan                  
+    3        0 02/06/2008 12/08/2003 Traditional Neighborhood District (TND)
+    3        3 02/10/2014 06/25/2018 Ordinance Zoning Text Amendment        
+
+
+
+Total: 1186

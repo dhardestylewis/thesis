@@ -1,0 +1,36 @@
+CASE_NUMBER,Meeting_Date,Agenda_Item,Body,Source,Item_URL,vote_yes,vote_no,reading_stage,nay_members,absent_members,vote_tally
+NPA-2018-0023.01,2018-12-13T00:00:00.000,61,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2018/20181213-REG.htm#061,11,0,1st,,,11-0
+NPA-2018-0023.01,2018-11-29T00:00:00.000,51,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2018/20181129-REG.htm#051,11,0,1st,,,11-0
+NPA-2019-0015.01,2020-12-10T00:00:00.000,96,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201210-REG.htm#096,9,2,1st,"Alter, Pool",,9-2
+NPA-2019-0016.01,2020-10-01T00:00:00.000,65,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201001-REG.htm#065,11,0,1st,,Casar,11-0
+NPA-2019-0016.01,2020-10-01T00:00:00.000,65,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201001-REG.htm#065,10,0,2nd,,Casar,10-0
+NPA-2019-0016.01,2020-09-17T00:00:00.000,80,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200917-REG.htm#080,11,0,1st,,,11-0
+NPA-2019-0016.01,2020-08-27T00:00:00.000,102,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200827-REG.htm#102,11,0,1st,,,11-0
+NPA-2019-0015.02,2020-10-15T00:00:00.000,59,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201015-REG.htm#059,11,0,1st,,Casar,11-0
+NPA-2019-0015.02,2020-10-15T00:00:00.000,59,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201015-REG.htm#059,10,0,2nd,,Casar,10-0
+NPA-2019-0015.02,2020-09-17T00:00:00.000,84,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200917-REG.htm#084,11,0,1st,,,11-0
+NPA-2019-0015.02,2020-08-27T00:00:00.000,117,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200827-REG.htm#117,11,0,1st,,,11-0
+NPA-2019-0015.02,2020-07-30T00:00:00.000,31,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200730-REG.htm#031,11,0,1st,,,11-0
+NPA-2018-0026.02,2018-09-20T00:00:00.000,89,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2018/20180920-REG.htm#089,10,0,1st,,,10-0
+NPA-2020-0016.03,2020-12-10T00:00:00.000,94,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201210-REG.htm#094,11,0,1st,,,11-0
+C814-2018-0122,2020-10-01T00:00:00.000,42,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201001-REG.htm#042,10,0,1st,,,10-0
+NPA-2019-0020.04,2020-01-23T00:00:00.000,73,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200123-REG.htm#073,11,0,1st,Harper-Madison,,11-0
+NPA-2019-0020.04,2020-01-23T00:00:00.000,73,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200123-REG.htm#073,10,1,2nd,Harper-Madison,,10-1
+NPA-2019-0020.04,2019-12-05T00:00:00.000,111,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2019/20191205-REG.htm#111,11,0,1st,,,11-0
+NPA-2019-0020.04,2020-02-06T00:00:00.000,66,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200206-REG.htm#066,11,0,1st,Harper-Madison,,11-0
+NPA-2019-0020.04,2020-02-06T00:00:00.000,66,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200206-REG.htm#066,10,1,2nd,Harper-Madison,,10-1
+NPA-2018-0016.01,2019-02-21T00:00:00.000,35,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2019/20190221-REG.htm#035,10,0,1st,,,10-0
+C814-2018-0121,2020-12-10T00:00:00.000,87,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201210-REG.htm#087,7,4,1st,"Alter, Kitchen, Pool, Tovo",,7-4
+C814-2018-0121,2020-12-03T00:00:00.000,59,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201203-REG.htm#059,7,4,1st,"Alter, Kitchen, Pool, Tovo",,7-4
+C814-2018-0121,2020-11-12T00:00:00.000,50,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201112-REG.htm#050,7,4,1st,"Alter, Kitchen, Pool, Tovo",,7-4
+NPA-2018-0021.03,2019-03-28T00:00:00.000,55,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2019/20190328-REG.htm#055,11,0,1st,,,11-0
+NPA-2018-0026.01,2018-08-23T00:00:00.000,71,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2018/20180823-REG.htm#071,10,0,1st,,,10-0
+C14-2019-0082,2020-01-23T00:00:00.000,74,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200123-REG.htm#074,11,0,1st,Harper-Madison,,11-0
+C14-2019-0082,2020-01-23T00:00:00.000,74,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200123-REG.htm#074,10,1,2nd,Harper-Madison,,10-1
+C14-2019-0082,2019-12-05T00:00:00.000,112,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2019/20191205-REG.htm#112,11,0,1st,,,11-0
+C14-2019-0082,2020-02-06T00:00:00.000,67,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200206-REG.htm#067,11,0,1st,Harper-Madison,,11-0
+C14-2019-0082,2020-02-06T00:00:00.000,67,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20200206-REG.htm#067,10,1,2nd,Harper-Madison,,10-1
+NPA-2020-0019.01,2020-10-29T00:00:00.000,38,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201029-REG.htm#038,11,0,1st,,,11-0
+NPA-2020-0019.01,2020-10-15T00:00:00.000,67,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2020/20201015-REG.htm#067,11,0,1st,,,11-0
+C814-86-023.01,2018-11-01T00:00:00.000,55,Austin City Council,akgy-tbxy,http://austintexas.gov/department/city-council/2018/20181101-REG.htm#055,10,0,1st,,Pool,10-0
+NPA-2019-0027.02,2019-12-05T00:00:00.000,87,Austin City Council,scraped_akgy-tbxy,http://austintexas.gov/department/city-council/2019/20191205-REG.htm#087,9,1,1st,Tovo,,9-1

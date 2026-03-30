@@ -1,0 +1,798 @@
+Zoning Case: C14-2011-0116
+Meeting Date: 2012-03-01T00:00:00.000
+Agenda Item: 63
+Source URL: http://austintx.swagit.com/play/45498/0/
+================================================================================
+
+[0.00s -> 0.84s]  Thank you, Mayor and Council.
+[0.84s -> 5.84s]  That brings us back to the three items, 61, 62, and 63.
+[7.60s -> 11.20s]  And these are the items related to the St. John's
+[11.20s -> 13.84s]  Coronado Hills combined neighbor plan
+[13.84s -> 16.64s]  and the related plan resonings
+[16.64s -> 19.36s]  for the St. John's neighbor planning area
+[19.36s -> 21.96s]  and the Coronado Hills planning area.
+[21.96s -> 23.48s]  I'm gonna turn it over to my staff,
+[23.48s -> 25.84s]  my neighbor planning staff, to Greg and Deedine,
+[25.84s -> 28.04s]  let them come up and introduce themselves
+[28.04s -> 29.88s]  and go through the presentation
+[29.88s -> 32.36s]  and we've abbreviated the presentation
+[32.36s -> 36.00s]  given the lateness of the hour.
+[36.00s -> 38.24s]  So I hope you enjoy it.
+[38.24s -> 39.48s]  Good, sir, precedent.
+[55.04s -> 58.04s]  Good evening, Mayor, Mayor Pro Tem and Council members.
+[58.08s -> 59.12s]  My name is Deedine Coenley
+[59.12s -> 61.48s]  with the Planning and Development Review Department.
+[61.48s -> 63.00s]  I'm here tonight with my planning colleagues,
+[63.00s -> 65.96s]  Greg Dutton and Wendy Rhodes, our zoning planner.
+[65.96s -> 69.56s]  Tonight, we will present the St. John Coronado Hills
+[69.56s -> 72.92s]  combined neighborhood plan and associated resonings.
+[72.92s -> 74.76s]  These items are listed on your agendas
+[74.76s -> 79.76s]  as agenda item number 61, case number NP-2011-0029,
+[82.40s -> 87.40s]  agenda item number 62, case number C14-2011
+[89.04s -> 94.04s]  and agenda item number 63, case number C14-2011-0116.
+[99.92s -> 102.28s]  Our presentation this evening will be brief
+[102.28s -> 106.16s]  and in two parts, part one I will present
+[106.16s -> 107.72s]  and that'll be the St. John Coronado Hills
+[107.72s -> 110.12s]  combined neighborhood plan and then Greg will present
+[110.12s -> 112.68s]  the rezoning, infill options and design tools
+[112.68s -> 114.44s]  for the planning area.
+[114.44s -> 116.08s]  After the public hearing is closed,
+[116.08s -> 118.56s]  Greg will then lead you through the motion sheet.
+[120.48s -> 122.88s]  The St. John Coronado Hills combined planning area
+[122.88s -> 126.60s]  is 1.75 square miles and is bounded by
+[126.60s -> 128.92s]  East Anderson Lane on the north,
+[128.92s -> 131.36s]  US Highway 290 on the southeast
+[131.36s -> 133.88s]  and the western boundary follows Middle Fiskville
+[133.88s -> 137.64s]  to East Huntland, to Twincrest, to East Crossland
+[137.64s -> 141.08s]  and generally along a lot line to East Anderson Lane.
+[141.08s -> 143.44s]  The Cameron Road corridor connects St. John
+[143.44s -> 144.92s]  and Coronado Hills.
+[145.92s -> 147.60s]  As you can see, the area is adjacent
+[147.60s -> 149.16s]  to other neighborhood planning areas
+[149.16s -> 151.00s]  with adopted neighborhood plans.
+[153.24s -> 155.04s]  A sample of important physical assets
+[155.04s -> 157.52s]  in the community includes neighborhood schools,
+[157.52s -> 160.68s]  residential areas and the Buttermilk Branch Greenbelt.
+[162.92s -> 164.64s]  The current population of the planning area
+[164.64s -> 166.84s]  is about 13,000 people.
+[166.84s -> 170.44s]  Between 2000 and 2010, the area's population declined
+[170.44s -> 172.44s]  by 2.4%.
+[172.48s -> 175.12s]  The age cohorts with the most significant decline
+[175.12s -> 179.56s]  were 15 to 24-year-olds and ages 65 and older,
+[179.56s -> 183.56s]  declining at rates of 32% and 18% respectively.
+[185.08s -> 190.08s]  In contrast, the 55 to 64 cohort grew by 69%.
+[190.56s -> 193.16s]  A shifting share in population is a continued trend
+[193.16s -> 194.88s]  with persons of Hispanic origin,
+[194.88s -> 199.72s]  accounting for 70% of the population in 2010.
+[199.80s -> 202.24s]  In 2000, this figure was 62%.
+[204.92s -> 208.08s]  In 2010, 74% of the housing units in structure
+[208.08s -> 211.52s]  in the planning area were apartments and or condos.
+[211.52s -> 214.44s]  This speaks to the area's high renter occupancy rates,
+[214.44s -> 219.52s]  St. John at 89% and Coronado Hills at 70%.
+[219.52s -> 221.60s]  Coupled with high renter occupancy rates
+[221.60s -> 223.88s]  is a high vacant unit count.
+[223.88s -> 226.92s]  Between 2000 and 2010, the vacant count in St. John
+[226.96s -> 229.76s]  increased by 343 units.
+[229.76s -> 233.44s]  The count in Coronado Hills increased by 55 units.
+[233.44s -> 234.88s]  Later on in our presentation,
+[234.88s -> 236.36s]  we will touch on how the neighborhood plan
+[236.36s -> 239.00s]  aims to encourage home ownership opportunities.
+[240.48s -> 243.08s]  And now for the planning process highlights.
+[244.52s -> 247.48s]  The planning process began in February of 2009,
+[247.48s -> 251.72s]  and to date, staff has held a total of 30 community workshops,
+[251.72s -> 254.68s]  averaging 22 participants per workshop.
+[254.72s -> 257.24s]  68 participants attended the kickoff,
+[257.24s -> 260.00s]  24 attended the mid-process open house,
+[260.00s -> 263.20s]  and 27 attended the final open house.
+[263.20s -> 264.20s]  Throughout the process,
+[264.20s -> 266.40s]  decisions were made by consensus,
+[266.40s -> 268.88s]  which intended for all participants to be heard
+[268.88s -> 271.28s]  and for all to support the outcomes.
+[271.28s -> 273.44s]  And the event consensus could not be reached.
+[273.44s -> 275.24s]  We voted to break the deadlock.
+[277.56s -> 279.36s]  Outreach was one of the most important parts
+[279.36s -> 281.40s]  of the neighborhood planning process.
+[281.40s -> 283.44s]  Staff utilized both standard outreach
+[283.44s -> 285.48s]  and focused outreach methods.
+[285.48s -> 287.64s]  Standard methods included activities
+[287.64s -> 290.52s]  such as emailing and mailing monthly workshop notices
+[290.52s -> 292.44s]  in Spanish and English,
+[292.44s -> 294.96s]  and attending community events such as unity walks
+[294.96s -> 296.72s]  and holiday parties.
+[296.72s -> 300.52s]  In total, 37,500 notices were mailed,
+[300.52s -> 302.88s]  and 10,000 emails were sent.
+[302.88s -> 305.44s]  Over time, the St. John Coronado Hills interest list,
+[305.44s -> 308.32s]  which was our primary source for email communication,
+[308.32s -> 311.06s]  grew to 355 contacts total.
+[312.06s -> 314.86s]  Staff also conducted focused outreach
+[314.86s -> 317.94s]  to engage youth, seniors, and Spanish speakers,
+[317.94s -> 319.82s]  such as attending pickle parent coffees
+[319.82s -> 321.98s]  to engage Spanish-speaking mothers,
+[321.98s -> 323.62s]  presenting at boards and commissions,
+[323.62s -> 326.38s]  such as the African-American Quality of Life Commission,
+[326.38s -> 328.66s]  meeting with seniors during their lunch gatherings
+[328.66s -> 330.46s]  at the Virginia Brown Rec Center
+[330.46s -> 332.86s]  and collaborating with the Boys and Girls Clubs
+[332.86s -> 335.46s]  at Webb and Reagan to engage the youth.
+[337.26s -> 339.38s]  In summary, the St. John Coronado Hills plan
+[339.82s -> 342.10s]  is framed by area stakeholders main concern
+[342.10s -> 344.10s]  with quality of life in their community.
+[346.38s -> 348.06s]  The community life goal is to promote
+[348.06s -> 349.74s]  a community of involved citizens
+[349.74s -> 353.18s]  that starts to achieve a safe, healthy, well-maintained,
+[353.18s -> 355.26s]  and livable neighborhood for all.
+[355.26s -> 358.18s]  The top priorities which are identified by the community
+[358.18s -> 360.90s]  include crime prevention at key locations,
+[360.90s -> 363.26s]  native plantings at key locations,
+[363.26s -> 365.66s]  and to encourage residents to become mentors
+[365.66s -> 367.50s]  and or tutors in their community.
+[369.78s -> 371.58s]  The park's trees and environment goal
+[371.58s -> 374.30s]  is to increase and enhance recreational opportunities
+[374.30s -> 377.58s]  in the planning area by acquiring new park land,
+[377.58s -> 379.86s]  adding amenities to existing parks,
+[379.86s -> 381.74s]  creating community gardens,
+[381.74s -> 384.66s]  planning trees, and protecting the ecological assets
+[384.66s -> 386.22s]  of the community.
+[386.22s -> 388.62s]  The top priorities are to provide small parks
+[388.62s -> 390.94s]  or open spaces in Coronado Hills
+[390.94s -> 393.82s]  and to add amenities to existing St. John Park.
+[396.46s -> 398.18s]  The transportation goal is to improve
+[398.18s -> 399.90s]  the existing transportation system,
+[399.90s -> 402.02s]  to provide pedestrians, motorists,
+[402.02s -> 405.18s]  and transit users, and bicyclists of all ages,
+[405.18s -> 406.18s]  and physical abilities,
+[406.18s -> 408.66s]  the opportunity to travel safely and efficiently
+[408.66s -> 410.18s]  throughout the planning area,
+[410.18s -> 412.02s]  and to the rest of the city.
+[412.02s -> 415.12s]  Top priorities include connectivity and accessibility.
+[417.58s -> 419.18s]  And finally, the land use goal
+[419.18s -> 420.54s]  is to promote a land use pattern
+[420.54s -> 422.94s]  that benefits everybody in the planning area
+[422.94s -> 424.66s]  by enhancing neighborhood character,
+[424.66s -> 427.58s]  sense of community, pedestrian friendliness,
+[427.58s -> 430.54s]  and connectivity to neighborhood serving amenities.
+[430.54s -> 432.74s]  The top priority is to preserve the integrity
+[432.74s -> 435.22s]  of single family homes and neighborhoods.
+[437.66s -> 440.10s]  The future land use map for St. John Coronado Hills
+[440.10s -> 441.86s]  aims to address land use issues
+[441.86s -> 444.50s]  as well as broader quality of life issues.
+[444.50s -> 447.10s]  Specifically, the vision is to preserve
+[447.10s -> 450.38s]  and maintain the integrity of established residential areas,
+[450.38s -> 452.14s]  to promote neighborhood character,
+[452.14s -> 454.86s]  identity, and home ownership opportunities.
+[455.86s -> 458.86s]  To encourage civic uses throughout the community,
+[458.86s -> 461.86s]  and in some areas juxtapose civic with mixed use
+[461.86s -> 464.86s]  to encourage pedestrian friendly community hubs.
+[466.86s -> 468.86s]  To introduce mixed use to improve land use
+[468.86s -> 470.86s]  and transportation connectivity,
+[470.86s -> 472.86s]  encourage aging and place opportunities,
+[472.86s -> 474.86s]  promote neighborhood friendly services,
+[474.86s -> 477.86s]  and provide options for residents to live, work, and play
+[477.86s -> 479.86s]  in their community.
+[480.86s -> 484.86s]  And to promote options for housing affordability,
+[484.86s -> 487.86s]  by maintaining existing multifamily housing,
+[487.86s -> 489.86s]  as well as applying residential infill options,
+[489.86s -> 491.86s]  which we will cover with you later this evening.
+[491.86s -> 495.86s]  At this time, I'd like to turn the presentation over to Greg,
+[495.86s -> 498.86s]  who will cover the associated rezoning infill options
+[498.86s -> 500.86s]  and design tools, and then we'll take any questions
+[500.86s -> 502.86s]  that you have at that time.
+[502.86s -> 503.86s]  Thank you.
+[510.86s -> 515.86s]  Good evening, Mayor, Mayor Pro Tem and Council members.
+[515.86s -> 517.86s]  My name is Greg Dutton with the Planning and Development
+[517.86s -> 518.86s]  and Review Department.
+[518.86s -> 521.86s]  What I'd like to do is just give you a pretty brief overview
+[521.86s -> 523.86s]  of the rezoning recommendations that are associated
+[523.86s -> 525.86s]  with the St. John Cornano Hills neighborhood plan.
+[525.86s -> 527.86s]  So these are recommendations associated
+[527.86s -> 533.86s]  with case C14-2011-015 and C14-2011-0116.
+[533.86s -> 535.86s]  So this is just an overview.
+[535.86s -> 538.86s]  This is everything that's not contested.
+[539.86s -> 541.86s]  Tracks that have been contested have been pulled
+[541.86s -> 543.86s]  for discussion later.
+[543.86s -> 546.86s]  And my overview does include design tools,
+[546.86s -> 549.86s]  infill options, and affordable housing, as well.
+[549.86s -> 553.86s]  So in general, just one second here,
+[553.86s -> 556.86s]  and try to explain that we're considering,
+[556.86s -> 558.86s]  we're not going to consider them together,
+[558.86s -> 561.86s]  but we're doing the presentations and public hearings
+[561.86s -> 565.86s]  for Adam 6162 and 63 at the same time.
+[566.86s -> 568.86s]  We will take separate motions on those items
+[568.86s -> 570.86s]  when we get around to that part.
+[570.86s -> 571.86s]  Okay.
+[571.86s -> 572.86s]  Yeah.
+[572.86s -> 573.86s]  And I do have the motion sheet, which will.
+[573.86s -> 574.86s]  We got it.
+[574.86s -> 578.86s]  I think help walk us through that.
+[578.86s -> 582.86s]  So in general, the rezoning were not controversial at all there,
+[582.86s -> 585.86s]  except for what's been pulled for discussion.
+[585.86s -> 588.86s]  There are 72 tracks being rezoned in the planning area
+[588.86s -> 591.86s]  that can really be broken into four different categories.
+[591.86s -> 593.86s]  The first address is nonconforming uses.
+[593.86s -> 595.86s]  Number two is the application of P public zoning
+[595.86s -> 598.86s]  and some property that the city already owned.
+[598.86s -> 601.86s]  Three, application of some new conditional overlays,
+[601.86s -> 604.86s]  and then four, addition of some new mixed use zoning
+[604.86s -> 606.86s]  to the planning area.
+[606.86s -> 611.86s]  And I really just want to touch on three and four.
+[611.86s -> 614.86s]  So the new conditional overlay is there is one tracked,
+[614.86s -> 618.86s]  track 23 outlined in red.
+[618.86s -> 620.86s]  This is a track that has industrial zoning,
+[620.86s -> 622.86s]  so there are a few uses that are being prohibited.
+[622.86s -> 625.86s]  But in every other case, the conditional overlays are not
+[625.86s -> 627.86s]  too prohibited or make conditional any uses.
+[627.86s -> 631.86s]  They are for vegetative buffers between uses that are intense
+[631.86s -> 635.86s]  and uses that are lower intensity, typically commercial
+[635.86s -> 637.86s]  that's abut's residential.
+[637.86s -> 641.86s]  So that's what the conditional overlays are that are being proposed.
+[641.86s -> 645.86s]  You can see that on your map, and that's what those red lines are.
+[645.86s -> 648.86s]  And then the recommendations for mixed use,
+[648.86s -> 652.86s]  overwhelmingly the rezoning recommendations are for mixed use.
+[652.86s -> 655.86s]  Right now the planning area has very little mixed use zoning,
+[655.86s -> 659.86s]  and the plan is calling for the addition of about 230 acres
+[659.86s -> 661.86s]  of new mixed use zoning.
+[661.86s -> 665.86s]  And that's shown in red on your map, and it's really for two reasons.
+[665.86s -> 669.86s]  One, to kind of create a buffer between the highways,
+[669.86s -> 673.86s]  which are along the edges of most of the planning area
+[673.86s -> 676.86s]  between those highways and the more interior residential areas,
+[676.86s -> 679.86s]  and also to address the neighborhood's concern
+[679.86s -> 684.86s]  about wanting more walkable community more neighborhood serving uses.
+[684.86s -> 687.86s]  I'm going to jump to design tools, as you know,
+[687.86s -> 691.86s]  there are a number of design tools available to the planning areas
+[691.86s -> 693.86s]  through this process.
+[693.86s -> 696.86s]  They have to do with character, for the most part,
+[696.86s -> 699.86s]  and where you can put impervious cover on your front yard,
+[699.86s -> 703.86s]  where you can situate your garage or your front porch.
+[703.86s -> 706.86s]  Coronado Hills is opting into all three design tools
+[706.86s -> 708.86s]  that are available to them.
+[708.86s -> 712.86s]  St. John is opting into front porch placement.
+[712.86s -> 716.86s]  And then likewise, there are a number of infill options available
+[716.86s -> 719.86s]  to the neighborhoods through this process.
+[719.86s -> 724.86s]  These have to do with character, affordability, and density.
+[724.86s -> 727.86s]  The St. John neighborhood is opting into all of them
+[727.86s -> 729.86s]  in some form or fashion.
+[729.86s -> 734.86s]  The Coronado Hills neighborhood is opting into most of them.
+[734.86s -> 737.86s]  And then lastly, I just wanted to touch on affordable housing.
+[737.86s -> 739.86s]  This is the affordability impact statement
+[739.86s -> 741.86s]  from neighborhood housing community development.
+[741.86s -> 744.86s]  It's an assessment of the impact of the neighborhood plan
+[744.86s -> 747.86s]  on affordable housing in the planning area.
+[747.86s -> 751.86s]  And I just want to draw your attention here to the red oval
+[751.86s -> 755.86s]  showing you that overall the assessment is positive,
+[755.86s -> 757.86s]  largely for reasons we just talked about,
+[757.86s -> 760.86s]  the addition of new mixed use, selection of many of the infill options
+[760.86s -> 764.86s]  in some form or fashion, and really maintenance of housing stock
+[764.86s -> 767.86s]  that's already very diverse.
+[767.86s -> 769.86s]  And that concludes my brief overview.
+[769.86s -> 771.86s]  If you do have any questions for me or Dee Dee,
+[771.86s -> 773.86s]  we'd be happy to take them at this time.
+[773.86s -> 774.86s]  Councillor Marcell.
+[774.86s -> 775.86s]  Thank you.
+[775.86s -> 777.86s]  I just have one question of clarification.
+[777.86s -> 780.86s]  Back on the infill options chart.
+[780.86s -> 781.86s]  Could you go back to that?
+[781.86s -> 782.86s]  Yes.
+[783.86s -> 787.86s]  I can, if I can go backwards here.
+[797.86s -> 800.86s]  What is, I'm not familiar with an infill option
+[800.86s -> 802.86s]  called affordable housing.
+[802.86s -> 803.86s]  What does that mean?
+[803.86s -> 807.86s]  Yes, this is an infill option that I believe
+[807.86s -> 809.86s]  is a little bit newer than the others.
+[810.86s -> 812.86s]  What it does is relaxes site development standards
+[812.86s -> 815.86s]  for residential properties so that it allows a little bit more
+[815.86s -> 816.86s]  impervious cover.
+[816.86s -> 819.86s]  It allows duplexes that are slightly larger.
+[819.86s -> 823.86s]  I think the point of it is to attract more affordable housing
+[823.86s -> 826.86s]  and more smart housing developments.
+[826.86s -> 829.86s]  And I don't believe it's been done in any other planning areas
+[829.86s -> 833.86s]  so that maybe why it appears new.
+[833.86s -> 837.86s]  And do you, maybe we'll have to get a reference to look at it.
+[838.86s -> 842.86s]  So if you do relax, if you do take advantage of the relax standards,
+[842.86s -> 844.86s]  are you committing to affordable housing then,
+[844.86s -> 848.86s]  or is it just hoping that that'll just be less expensive?
+[848.86s -> 854.86s]  I think that the way it works is that if a developer commits
+[854.86s -> 859.86s]  to smart housing, for instance, then they get the relaxed standards.
+[859.86s -> 860.86s]  I see.
+[860.86s -> 861.86s]  Okay.
+[861.86s -> 864.86s]  And is that what kind of commitment is that in terms of duration?
+[864.86s -> 868.86s]  I don't recall at the top of my head, but there is some kind of duration,
+[868.86s -> 872.86s]  like a number of years that the units have to remain affordable,
+[872.86s -> 875.86s]  and there are some other stipulations as well.
+[875.86s -> 876.86s]  Okay.
+[876.86s -> 879.86s]  And I guess I can just find that in 25 to somewhere.
+[879.86s -> 880.86s]  Yeah.
+[880.86s -> 882.86s]  I mean, you should be able to find it.
+[882.86s -> 883.86s]  It should be no problem.
+[883.86s -> 884.86s]  Sure.
+[884.86s -> 886.86s]  I'm interested in that.
+[886.86s -> 890.86s]  I wasn't ever aware of that coming through in the past three years,
+[890.86s -> 893.86s]  but maybe it's been in there for a while.
+[893.86s -> 898.86s]  And this is the first time we finished up a plan with it,
+[898.86s -> 901.86s]  but I think Greg might have something to offer.
+[901.86s -> 905.86s]  A while back when Paul Hilgers was here, his office,
+[905.86s -> 909.86s]  and my office when I was never planning and zoning worked,
+[909.86s -> 913.86s]  there was a gentrification study and part of that that came out
+[913.86s -> 916.86s]  were some additional tools that could utilize under smart housing.
+[916.86s -> 920.86s]  And it's my understanding that, yes, you would have to opt in
+[920.86s -> 924.86s]  to do the smart housing type development in order to take advantage
+[924.86s -> 928.86s]  of those relaxations of certain development standards.
+[928.86s -> 932.86s]  And we're only prepared to go for first reading for all these items tonight.
+[932.86s -> 935.86s]  So before we come back, we'll certainly get that information to you
+[935.86s -> 938.86s]  and your backup materials to explain that.
+[938.86s -> 939.86s]  Great.
+[939.86s -> 941.86s]  I mean, it sounds like a terrific option.
+[941.86s -> 945.86s]  The only flag for me is to make sure that we have reasonable
+[945.86s -> 948.86s]  commitments on duration, because I know that, you know,
+[948.86s -> 951.86s]  some of our older programs were only like a year or something,
+[951.86s -> 953.86s]  which really feels like.
+[953.86s -> 956.86s]  We'll follow up on that and give you that information.
+[956.86s -> 960.86s]  Council Member Spelman.
+[960.86s -> 965.86s]  Greg, either of you, Greg's willing to walk us through the motion sheet?
+[965.86s -> 967.86s]  Sure.
+[967.86s -> 972.86s]  Well, I didn't know if the public comment first.
+[972.86s -> 973.86s]  Fair enough.
+[979.86s -> 982.86s]  You're ready to go, huh?
+[982.86s -> 983.86s]  All right.
+[983.86s -> 988.86s]  So I'm just going to call everyone that I have on the list.
+[988.86s -> 992.86s]  And then at the end, ask if I missed anybody because I'm working
+[992.86s -> 997.86s]  off of item 63, but I think the names are basically the same.
+[997.86s -> 1000.86s]  First is Majid Himasi.
+[1000.86s -> 1007.86s]  Majid, you want to speak?
+[1007.86s -> 1014.86s]  We have three minutes.
+[1014.86s -> 1015.86s]  Good evening.
+[1015.86s -> 1016.86s]  My name is Majid Himasi.
+[1016.86s -> 1021.86s]  We own a parcel of the land corner of the 290 and 183.
+[1021.86s -> 1026.86s]  We acquired that property I think in March of last year or late,
+[1026.86s -> 1028.86s]  February of last year.
+[1028.86s -> 1032.86s]  The zoning recommended for that parcel is totally inappropriate,
+[1032.86s -> 1037.86s]  which is an office building due to the high vacant offices
+[1037.86s -> 1041.86s]  across the street on Walnut Business Fork.
+[1041.86s -> 1047.86s]  By the location being like an island by the huge Walnut Creek 290
+[1047.86s -> 1052.86s]  and 183, that's the ideal location for retail center.
+[1052.86s -> 1054.86s]  And we don't understand.
+[1054.86s -> 1060.86s]  If we cannot have businesses on 290 and 183, where can we have it?
+[1060.86s -> 1064.86s]  There is a creek which separates us from the neighborhood.
+[1064.86s -> 1067.86s]  And I was on that side till 10 o'clock the night before.
+[1067.86s -> 1070.86s]  There is no noise from our property.
+[1070.86s -> 1074.86s]  Anything built on it will bother the housing.
+[1074.86s -> 1079.86s]  From the apartment, which is right behind our land,
+[1079.86s -> 1085.86s]  you cannot see existing bank, which is at the corner of the 290 and 183.
+[1085.86s -> 1091.86s]  So if you consider the location, the buffer zone between the neighborhood
+[1091.86s -> 1096.86s]  and our land, I don't believe it's any reason not to have it.
+[1096.86s -> 1099.86s]  Hotel, grocery store.
+[1099.86s -> 1103.86s]  Earlier you were talking about in 11th Street, 12th Street, I think.
+[1103.86s -> 1105.86s]  There is no grocery store.
+[1105.86s -> 1110.86s]  There is no grocery store in San Johns and Cornada Hill neighborhood.
+[1110.86s -> 1113.86s]  So what's wrong with having an HGB on that location?
+[1113.86s -> 1116.86s]  What's wrong with having a hotel over there?
+[1116.86s -> 1118.86s]  Why office?
+[1118.86s -> 1124.86s]  So our dilemma is nobody I think wants to hear to us and we met with some of you
+[1124.86s -> 1130.86s]  when I hope you have an open-minded reason that to consider.
+[1130.86s -> 1132.86s]  Just look at the picture I took.
+[1132.86s -> 1136.86s]  I don't believe anybody has been in that creek from the neighborhood,
+[1136.86s -> 1138.86s]  probably within past year except me.
+[1138.86s -> 1140.86s]  I took those picture limping.
+[1140.86s -> 1143.86s]  The creek is about 100 feet wide.
+[1143.86s -> 1149.86s]  That drop the elevation is about 40 feet, 30 feet from our property to the bottom of the creek.
+[1149.86s -> 1153.86s]  And the apartments are about 30 feet below us.
+[1153.86s -> 1158.86s]  So from the apartment you can see anything on top of our property.
+[1158.86s -> 1161.86s]  So, and I don't believe the noise is a problem.
+[1161.86s -> 1164.86s]  The retail would be the best for the neighborhood.
+[1164.86s -> 1167.86s]  We'll increase the value of the neighborhood.
+[1167.86s -> 1176.86s]  And I think they should be voted to have a hotel, grocery store, retail spaces.
+[1176.86s -> 1178.86s]  Just something to improve the neighborhood.
+[1178.86s -> 1181.86s]  But if you just say we're going to have an office over there, it's not going to happen.
+[1181.86s -> 1185.86s]  And that land is going to sit vacant over there for next 30 years.
+[1185.86s -> 1191.86s]  I know for fact I used to drive to Houston every Monday morning to work as an engineer in 1981
+[1191.86s -> 1193.86s]  and come home every weekend.
+[1193.86s -> 1195.86s]  That is the only piece of land I've seen.
+[1195.86s -> 1197.86s]  Nothing has happened for past 30 years.
+[1197.86s -> 1203.86s]  And I guarantee you if it's going to be zoned office or multi-family, single-family groups,
+[1203.86s -> 1207.86s]  nothing is going to happen to that land for next 30 years.
+[1207.86s -> 1208.86s]  Thank you.
+[1208.86s -> 1211.86s]  Thank you.
+[1211.86s -> 1213.86s]  Council Member Riley.
+[1213.86s -> 1214.86s]  Mr. Amasi.
+[1214.86s -> 1217.86s]  Can I ask just a couple questions?
+[1217.86s -> 1220.86s]  You and I had a chance to visit about this side.
+[1220.86s -> 1223.86s]  I just want to go over a couple things that we discussed.
+[1223.86s -> 1226.86s]  First, you mentioned the creek that's there on the back of the property.
+[1226.86s -> 1229.86s]  And you understand that there's some interest in a trail along that creek.
+[1229.86s -> 1231.86s]  And you'd be willing to allow for that?
+[1231.86s -> 1232.86s]  Yes.
+[1232.86s -> 1235.86s]  And you think that could work well?
+[1235.86s -> 1238.86s]  And you could provide an easement for that trail across the property?
+[1238.86s -> 1239.86s]  That's correct.
+[1239.86s -> 1246.86s]  The neighbors have expressed some concern about the design of a project on your side.
+[1246.86s -> 1250.86s]  You should be worried about things like light shining into the homes on the other side
+[1250.86s -> 1251.86s]  of the creek.
+[1251.86s -> 1257.86s]  Would you be willing to work with the neighborhood to put protections in place to make sure that
+[1257.86s -> 1264.86s]  the design of a project on your side would be friendly to the homes that are nearby?
+[1264.86s -> 1266.86s]  During the break, I took some pill.
+[1266.86s -> 1270.86s]  I was ready to talk because I was in a bad health situation.
+[1270.86s -> 1275.86s]  As I said, we are willing to work with neighborhoods in any form of fashion.
+[1275.86s -> 1281.86s]  Whatever we do on that property, we'll improve the neighborhood in the living condition
+[1281.86s -> 1283.86s]  and the value condition.
+[1283.86s -> 1289.86s]  Because, as I said, I visited that site about six hours the night before last night.
+[1289.86s -> 1290.86s]  My lights were on.
+[1290.86s -> 1292.86s]  Three-toe trucks were up there.
+[1292.86s -> 1294.86s]  No neighborhood noticed us.
+[1294.86s -> 1295.86s]  There's a bank on that.
+[1295.86s -> 1297.86s]  You know, there's an existing Comerico bank.
+[1297.86s -> 1303.86s]  On that location, I guarantee you, if you go to the Anderson Spring Apartments,
+[1303.86s -> 1308.86s]  which is the majority of our neighborhood, the other side of the creek, where there one night,
+[1308.86s -> 1309.86s]  you can't see nothing.
+[1309.86s -> 1311.86s]  You cannot see that after that.
+[1311.86s -> 1317.86s]  But if the neighborhood wants to discuss that issue or have any ideas, we'd be glad to.
+[1317.86s -> 1324.86s]  You'd be happy to have a dialogue about the side of the site and potentially uses that could be prohibited on the side.
+[1324.86s -> 1325.86s]  Absolutely.
+[1325.86s -> 1326.86s]  Things like that.
+[1326.86s -> 1327.86s]  Okay.
+[1327.86s -> 1328.86s]  Great.
+[1328.86s -> 1329.86s]  Thanks.
+[1329.86s -> 1330.86s]  Mayor?
+[1330.86s -> 1331.86s]  Yes.
+[1331.86s -> 1332.86s]  Could you remind me, please, what track this is?
+[1332.86s -> 1334.86s]  Could you remind me what your track is?
+[1334.86s -> 1337.86s]  At the corner of the 290 and 183.
+[1337.86s -> 1338.86s]  It's 108.
+[1338.86s -> 1339.86s]  Okay.
+[1339.86s -> 1342.86s]  So it is one of the tracks that we postponed action on today.
+[1342.86s -> 1344.86s]  Is that right?
+[1344.86s -> 1345.86s]  Yeah.
+[1345.86s -> 1352.86s]  The recommendation is that tracks 108, 113, 114 be excluded from the first-
+[1352.86s -> 1353.86s]  Right.
+[1353.86s -> 1354.86s]  Okay.
+[1354.86s -> 1355.86s]  Thank you.
+[1355.86s -> 1358.86s]  Next speaker is Meredith Morningstar.
+[1359.86s -> 1361.86s]  Not here?
+[1361.86s -> 1363.86s]  Oh, you are here.
+[1363.86s -> 1364.86s]  Okay.
+[1364.86s -> 1367.86s]  So you have three minutes.
+[1367.86s -> 1371.86s]  Good evening, Mayor, Council members.
+[1371.86s -> 1377.86s]  I'm not real sure if I ought to speak on this because I also was going to speak on 108.
+[1377.86s -> 1379.86s]  But if it's pulled.
+[1379.86s -> 1387.86s]  Well, I think the recommendation is going to be postpone action on tracks 108, 113, and
+[1388.86s -> 1389.86s]  14.
+[1389.86s -> 1394.86s]  So if they're going to be pulled, I don't really want to take up your time with that right
+[1394.86s -> 1395.86s]  now.
+[1395.86s -> 1398.86s]  You don't want to interfere with that process.
+[1398.86s -> 1399.86s]  Right.
+[1399.86s -> 1400.86s]  Okay.
+[1400.86s -> 1401.86s]  That's where we're running.
+[1401.86s -> 1405.86s]  I would just note that I hope, I know there's been some effort to have a dialogue with the
+[1405.86s -> 1408.86s]  owners on track 108, but that it hasn't gotten very far.
+[1408.86s -> 1411.86s]  And I'm just hoping that by the time this comes back, after the postponement, that
+[1411.86s -> 1416.86s]  there might have been a little more discussion between the neighborhood and the property
+[1416.86s -> 1424.86s]  owners about some potential, whether there's any room for agreement under which the property
+[1424.86s -> 1429.86s]  owner is willing to do some things, willing to talk about the design, prohibit certain
+[1429.86s -> 1431.86s]  uses, and allow a trail and things like that.
+[1431.86s -> 1436.86s]  So it seems like there's room for dialogue to see if y'all could agree on something that
+[1436.86s -> 1438.86s]  would actually create an amenity for your neighborhood.
+[1438.86s -> 1440.86s]  Do you think, would you be willing to do that?
+[1440.86s -> 1441.86s]  Yeah.
+[1441.86s -> 1446.86s]  I would just say that one of the reasons that we went forward with pulling these three
+[1446.86s -> 1448.86s]  items, I apologize for the confusion.
+[1448.86s -> 1455.86s]  There's been a lot of confusion in our process, especially here at the very end.
+[1455.86s -> 1465.86s]  The owners of 113 and 114, we got word, I got yesterday at 8.30 in the evening after I got
+[1465.86s -> 1473.86s]  off work that they had responded after our final open house was late last year.
+[1473.86s -> 1479.86s]  And so we've had two different, on these three different properties, we've had two different
+[1479.86s -> 1490.86s]  owners at the very end of the process, after the process, come forward and have concern
+[1490.86s -> 1497.86s]  about what we chose their zoning would be, what made sense in our plan.
+[1497.86s -> 1503.86s]  And never being involved in the process coming up afterwards, we decided we really wanted
+[1503.86s -> 1512.86s]  to have dialogue, we want to work with, try to stay with the zoning that makes sense for
+[1512.86s -> 1514.86s]  our plan.
+[1514.86s -> 1521.86s]  And so that's partly why we have postponed, is to be able to have dialogue.
+[1521.86s -> 1526.86s]  I hope that conversation, that y'all can continue that conversation with the owners on both
+[1526.86s -> 1528.86s]  tracks before it comes back to us.
+[1528.86s -> 1529.86s]  Thank you.
+[1534.86s -> 1536.86s]  Teresa Reel.
+[1536.86s -> 1538.86s]  Teresa Reel.
+[1538.86s -> 1540.86s]  Azam Wa.
+[1540.86s -> 1543.86s]  And Aaron Wa.
+[1543.86s -> 1546.86s]  Jim Bennett.
+[1554.86s -> 1556.86s]  Mayor Jim Bennett.
+[1556.86s -> 1561.86s]  We were in the impression that council had a request for postponement on the contested
+[1561.86s -> 1566.86s]  items, so we were not, that's really not, I think our speakers and their speakers have
+[1566.86s -> 1568.86s]  left because of that.
+[1568.86s -> 1569.86s]  That's correct.
+[1569.86s -> 1572.86s]  108, 113, and 114.
+[1572.86s -> 1575.86s]  But you still have that request for postponement, you know.
+[1575.86s -> 1579.86s]  You still want to hear those testimonies before you act on that postponement?
+[1579.86s -> 1580.86s]  No.
+[1580.86s -> 1582.86s]  That's what I hear.
+[1582.86s -> 1588.86s]  I am here to speak on 108, a contested item which is up for postponement.
+[1588.86s -> 1594.86s]  We'll be taking, we'll be entertaining most in the postpone action, all action on those three
+[1594.86s -> 1595.86s]  items.
+[1595.86s -> 1597.86s]  So you want to hear?
+[1597.86s -> 1599.86s]  No, we're not at that point yet.
+[1599.86s -> 1600.86s]  Okay.
+[1600.86s -> 1611.86s]  I am the agent representing the owners of track 108, track 108 as we've indicated to you is
+[1611.86s -> 1621.86s]  at the periphery of the neighborhood plan at the intersection of highway 183 and highway 290.
+[1621.86s -> 1627.86s]  It is physically separated from the rest of the plan by the creek and steep embankments
+[1627.86s -> 1632.86s]  that exist along the property.
+[1632.86s -> 1639.86s]  There is a floodplain along there that varies in width from 250 feet to 300 feet plus or minus.
+[1639.86s -> 1643.86s]  There are no single families in the immediate adjacent properties.
+[1643.86s -> 1648.86s]  There is an apartment complex condo as well as a townhouse project.
+[1649.86s -> 1656.86s]  We feel that, or as I understand, on the office zoning that is proposed in the plan initially
+[1656.86s -> 1660.86s]  was due to a lack of representation by the previous owner.
+[1660.86s -> 1669.86s]  So when the property came up without the representation, office zoning was assigned to it without considerations
+[1669.86s -> 1672.86s]  of other type zoning that could be applied for it.
+[1672.86s -> 1678.86s]  I think if it was in lack of a neighborhood plan that this site would probably be ideal
+[1678.86s -> 1685.86s]  for CS or GR zoning or even perhaps CH zoning when you're at the intersection of two major
+[1685.86s -> 1695.86s]  highways, we have met with the team just recently and proposed some conditional overlays, but at
+[1695.86s -> 1698.86s]  that meeting it was not very productive.
+[1698.86s -> 1705.86s]  We have offered a conditional overlay prohibiting certain uses, about nine uses, and additionally
+[1705.86s -> 1711.86s]  we are willing to create the hike and bike trail that would give you the connectivity from the
+[1711.86s -> 1715.86s]  north and the south.
+[1715.86s -> 1723.86s]  Pretty much council, we think that the office zoning is too restrictive for a site with these
+[1723.86s -> 1728.86s]  conditions and that CS is the appropriate use for this site.
+[1728.86s -> 1730.86s]  Should you have any questions?
+[1730.86s -> 1733.86s]  I'll be available to answer those.
+[1733.86s -> 1735.86s]  Questions?
+[1735.86s -> 1736.86s]  Okay.
+[1736.86s -> 1737.86s]  Thank you.
+[1737.86s -> 1738.86s]  Thanks, sir.
+[1738.86s -> 1739.86s]  Good.
+[1739.86s -> 1741.86s]  Mike Westerhausen.
+[1742.86s -> 1743.86s]  Is it on?
+[1743.86s -> 1748.86s]  And Zeta Easter Day?
+[1755.86s -> 1759.86s]  I hear this opportunity to speak to this issue of 108.
+[1759.86s -> 1766.86s]  I'm a resident in Coronado Hills and active in the neighborhood association and have been an
+[1766.86s -> 1770.86s]  active participant for over three years in the planning process.
+[1770.86s -> 1778.86s]  We proposed zoning for 108 with very much thought given to that area for office space because
+[1778.86s -> 1784.86s]  it is compatible with residential of single family and multifamily residents.
+[1784.86s -> 1790.86s]  Planning Commission and staff concur with this zoning change from residential.
+[1790.86s -> 1795.86s]  At our combined meeting with St. John's, they are very pleased to have offices at the corner
+[1795.86s -> 1801.86s]  of 183 and I-35 which buffer to some extent the traffic noise and pollution of two major
+[1801.86s -> 1806.86s]  thoroughfares and the offices are quiet in the evenings and on weekends.
+[1806.86s -> 1813.86s]  I understand 108 property was purchased at a tax sale by present owners in February of 2011.
+[1813.86s -> 1818.86s]  They did not participate in any meetings except the final showcase meeting of the plan.
+[1818.86s -> 1823.86s]  To say they were unaware of the process is difficult to understand as this was a citywide
+[1823.86s -> 1826.86s]  process and their self-proclaimed developers.
+[1826.86s -> 1832.86s]  The owners did not attempt to contact laborers in any way regarding compatibility with residential
+[1832.86s -> 1833.86s]  properties.
+[1833.86s -> 1838.86s]  Even though they ignored us, the neighborhood residents met with them earlier this week at their request
+[1838.86s -> 1840.86s]  to tell us their plans.
+[1840.86s -> 1845.86s]  Unfortunately, there were no plans laid out and owners indicated they may well sell the property.
+[1845.86s -> 1850.86s]  Owners make the case that office space within one half mile is vacant.
+[1850.86s -> 1856.86s]  I remind you that this is a plan for many years down the road, not for the next six months
+[1856.86s -> 1858.86s]  and not for the next year or two.
+[1858.86s -> 1865.86s]  Austin is very dynamic and eventually you'll need more office space than is currently available.
+[1865.86s -> 1870.86s]  Our neighborhood is one of the few remaining Austin jewels of urban residential neighborhood
+[1870.86s -> 1872.86s]  with affordable housing.
+[1872.86s -> 1878.86s]  These city assets need to be nurtured by city leaders and not eroded over time by parting out
+[1878.86s -> 1882.86s]  the plan plots to do the issues by commercial developers.
+[1882.86s -> 1889.86s]  We cannot afford from our association treasury to pay professional lobbyists as have the owners
+[1889.86s -> 1890.86s]  of 108.
+[1890.86s -> 1894.86s]  However, some residents took time to try to meet with many of you.
+[1894.86s -> 1900.86s]  Some of them taking time off work without pay to give you our side of the issue.
+[1900.86s -> 1906.86s]  Those of us living on east of I-35 should be accorded the same consideration of residential
+[1906.86s -> 1908.86s]  needs as the west side.
+[1908.86s -> 1916.86s]  Please don't perpetuate a history of decisions for areas east of I-35 that would never be tolerated west of I-35.
+[1916.86s -> 1921.86s]  There are environmental concerns because of the several creeks that run and the potential
+[1921.86s -> 1924.86s]  pollution and runoff of a commercial property.
+[1924.86s -> 1929.86s]  At Planning Commission, one of the commissioners noted in our land size we have more commercial
+[1929.86s -> 1932.86s]  surrounding us at present than almost anywhere in the city.
+[1932.86s -> 1937.86s]  I had audited Cameron and 290 and have a list that's too long to read to you.
+[1937.86s -> 1943.86s]  But suffice to say we have many commercial already.
+[1943.86s -> 1945.86s]  We've played by your rules.
+[1945.86s -> 1946.86s]  I've got one more sentence.
+[1946.86s -> 1948.86s]  May I have one more sentence.
+[1948.86s -> 1949.86s]  We've played by your rules.
+[1949.86s -> 1951.86s]  The planning process was mandated.
+[1951.86s -> 1955.86s]  We participated in good faith, thinking that when a final plan was completed,
+[1955.86s -> 1957.86s]  the city would support our vision for the future.
+[1957.86s -> 1961.86s]  We're now confronted with new owners who have the money to hire lobbyists,
+[1961.86s -> 1965.86s]  teams to lobby you, but have not played by the rules who come in at the last minute
+[1965.86s -> 1970.86s]  and expect you to support their wishes for a property in direct opposition to the wishes.
+[1970.86s -> 1972.86s]  There are a couple of periods in there.
+[1972.86s -> 1975.86s]  I have one long sentence.
+[1980.86s -> 1983.86s]  Catherine Winkleman.
+[1983.86s -> 1986.86s]  Catherine Winkleman.
+[1987.86s -> 1990.86s]  Is there anyone else whose name I haven't called it,
+[1990.86s -> 1996.86s]  sign up, speak on item 61, 62, or 63?
+[1996.86s -> 1997.86s]  All right.
+[1997.86s -> 1998.86s]  Well, come on down.
+[1998.86s -> 2006.86s]  Tell me your name and you have three minutes.
+[2006.86s -> 2011.86s]  Which item were you signed up on?
+[2011.86s -> 2018.86s]  And I'm also using time for Joaquin Guadarama for 61 as well.
+[2018.86s -> 2023.86s]  Okay.
+[2023.86s -> 2025.86s]  Delma Williams.
+[2025.86s -> 2026.86s]  I know.
+[2026.86s -> 2028.86s]  Delma Williams is also on here.
+[2028.86s -> 2031.86s]  She's gone.
+[2031.86s -> 2034.86s]  Joaquin Guadara.
+[2034.86s -> 2035.86s]  Is he here?
+[2035.86s -> 2036.86s]  Okay.
+[2036.86s -> 2037.86s]  And that's it.
+[2037.86s -> 2042.86s]  So you have six minutes.
+[2042.86s -> 2047.86s]  Good evening, Mayor, Mayor Pro Tem and members of the City Council.
+[2047.86s -> 2052.86s]  I want to thank you for your dedication and commitment at this late hour to hear our neighborhood plan.
+[2052.86s -> 2062.86s]  And I also want to thank Dee Dee Quinley and Greg Dutton and the other members of the staff that have worked with us over these past three years to develop this plan.
+[2062.86s -> 2063.86s]  I am here today.
+[2063.86s -> 2065.86s]  My name is Julie Weeks.
+[2065.86s -> 2068.86s]  I'm a resident of St. John for the past eight years.
+[2068.86s -> 2072.86s]  I'm a Co-Vice President of the St. John Neighborhood Association.
+[2072.86s -> 2078.86s]  And I stand before you on behalf of our neighborhood in full support of our plan.
+[2078.86s -> 2082.86s]  I also want to share with you a little bit about the St. John community.
+[2082.86s -> 2089.86s]  We are a very multicultural, multi-generational community that has been in transition.
+[2089.86s -> 2091.86s]  You probably know us well.
+[2091.86s -> 2102.86s]  We have gone under transition over the past 15 years from being a primarily African American neighborhood into a predominantly Hispanic neighborhood.
+[2102.86s -> 2111.86s]  Many people have been working for many years, including the City Council to bring about good changes in our community.
+[2111.86s -> 2114.86s]  And we are very grateful.
+[2114.86s -> 2116.86s]  I do want to share a little bit about our neighborhood.
+[2116.86s -> 2118.86s]  Our motto is together we can do more.
+[2118.86s -> 2121.86s]  Huntos puedemos hacer más.
+[2121.86s -> 2127.86s]  And we believe so strongly, I just wanted to share a few examples of how we live this out.
+[2127.86s -> 2139.86s]  For the past five years, St. John has been repeatedly recognized as one of the 100 best communities for youth in America by the Americas Promise Alliance in Washington, D.C.
+[2139.86s -> 2146.86s]  And this award does not negate the fact that our family has issues with poverty, issues, challenges.
+[2146.86s -> 2159.86s]  But what it does do is it recognizes that we work very hard to develop partnerships, collaboration, and engagement of individuals, families in our community,
+[2159.86s -> 2166.86s]  governmental agencies, non-profits, schools, churches, to do things that build community,
+[2166.86s -> 2171.86s]  support children, support families for their health, stability, growth, and success.
+[2171.86s -> 2175.86s]  The St. John Community School Alliance is another structure in our community.
+[2175.86s -> 2177.86s]  It's been in operation for four years.
+[2177.86s -> 2184.86s]  And it's a place where we bring together these collaborations and partnerships between community, parents, schools, agencies,
+[2184.86s -> 2188.86s]  organizations to support our schools and our families.
+[2188.86s -> 2192.86s]  One of the hallmarks of our community is that our low-performing schools, Reagan High School,
+[2192.86s -> 2199.86s]  Web Middle School, have turned around and these schools are stable, successful, and succeeding.
+[2199.86s -> 2206.86s]  Another part of our work is that we've created family resource centers in these schools to support struggling families.
+[2206.86s -> 2210.86s]  We have social workers that provide resources, information, referrals.
+[2210.86s -> 2216.86s]  Many of them to City and County programs that you create and fund and support.
+[2216.86s -> 2224.86s]  And these things bring stability to families and ultimately success to our students.
+[2224.86s -> 2228.86s]  One other thing that we do is we have a very strong neighborhood association.
+[2228.86s -> 2235.86s]  It may not look like a traditional neighborhood association sitting down and having meetings with Robert's Rules of Order,
+[2235.86s -> 2243.86s]  but what we do is we find ways to bring events and celebrations and structures into our community
+[2243.86s -> 2248.86s]  through clean-ups, block parties, festivals, and events, and many of you have been to some of our events
+[2249.86s -> 2254.86s]  that basically give opportunity for relationships to be built and a fabric to be woven together
+[2254.86s -> 2257.86s]  in our community of those relationships.
+[2257.86s -> 2261.86s]  And so tonight I want to take just a few minutes, actually three minutes and 30 seconds
+[2261.86s -> 2265.86s]  and share a video with you of our St. John Unity Walk from 2010.
+[2265.86s -> 2267.86s]  You only have two minutes and 20 seconds.
+[2267.86s -> 2268.86s]  Okay.
+[2268.86s -> 2269.86s]  He's free to cut it off.
+[2269.86s -> 2271.86s]  I don't want to share a video with you tonight.
+[2271.86s -> 2272.86s]  Okay.
+[2278.86s -> 2305.86s]  All right.
+[2305.86s -> 2307.86s]  Fozed.
+[2335.86s -> 2342.86s]  What they call buffering or something.
+[2343.86s -> 2349.86s]  You're not buffering.
+[2349.86s -> 2371.86s]  Okay, you're going to be able to make it work?
+[2371.86s -> 2375.86s]  No?
+[2375.86s -> 2378.86s]  You're running?
+[2378.86s -> 2382.86s]  Okay, all right.
+[2382.86s -> 2385.86s]  Okay, well, that's good on that.
+[2385.86s -> 2390.86s]  I think we get the idea.
+[2390.86s -> 2400.86s]  So is there anyone else wishing to speak on item 61, 62 or 63?
+[2400.86s -> 2407.86s]  So I got a question for staff while we're waiting here.
+[2407.86s -> 2414.86s]  So the request for postponement on tracks 108, 113, 114.
+[2414.86s -> 2417.86s]  And that's correct, right?
+[2417.86s -> 2418.86s]  That's correct, the postponement.
+[2418.86s -> 2420.86s]  And what's the date?
+[2420.86s -> 2434.86s]  April 5th, I believe, is the date that the neighborhood would like to request the postponement to.
+[2434.86s -> 2439.86s]  So I think we can.
+[2439.86s -> 2446.86s]  That's it on the video.
+[2446.86s -> 2452.86s]  So Council, I think we might be those are all speakers that we have.
+[2452.86s -> 2463.86s]  So if we can go ahead and get a motion to postpone action on items on tracks 108, 113, and 114.
+[2463.86s -> 2465.86s]  Until April 5th.
+[2465.86s -> 2468.86s]  And I think they'll simplify things for us.
+[2468.86s -> 2473.86s]  So moved by Council Member Riley.
+[2473.86s -> 2476.86s]  And second, back Council Member Spelman.
+[2476.86s -> 2478.86s]  I'll second by the other question there.
+[2478.86s -> 2479.86s]  Okay, go ahead.
+[2479.86s -> 2483.86s]  Greg, what's going to happen between now and April 5th?
+[2483.86s -> 2492.86s]  The neighborhood has indicated us that they'll use that time to work with the property owners towards some kind of solution.
+[2493.86s -> 2495.86s]  They are in attendance, two of them.
+[2495.86s -> 2498.86s]  I think they can answer your question better perhaps.
+[2498.86s -> 2502.86s]  If one of them could come up and tell me that would be great.
+[2502.86s -> 2519.86s]  For 113 and 114, I'm Zeta Easter Day.
+[2519.86s -> 2531.86s]  We were only notified yesterday late in the day that the property owner of 113 and 114 is not happy with what we put forth.
+[2531.86s -> 2539.86s]  And the property owner has never been to anything or never contacted us until yesterday we got an email from staff.
+[2539.86s -> 2546.86s]  And that's not time for us to talk to him or even know what he wants to do or doesn't want to do.
+[2546.86s -> 2550.86s]  And that's why we asked to postpone that one.
+[2550.86s -> 2556.86s]  It's remarkably kind of you to be willing to postpone after two and a half years worth of work.
+[2556.86s -> 2564.86s]  Just three and a half after somebody came up just the very, very last minute like this.
+[2564.86s -> 2567.86s]  It's been sent legal notices.
+[2567.86s -> 2568.86s]  Yeah.
+[2568.86s -> 2571.86s]  And every notice of every planning meeting.
+[2571.86s -> 2574.86s]  Right.
+[2574.86s -> 2575.86s]  Okay.
+[2575.86s -> 2577.86s]  And similarly, tracked 108.
+[2577.86s -> 2580.86s]  You mentioned you had a conversation already.
+[2580.86s -> 2581.86s]  Pardon, sir.
+[2581.86s -> 2585.86s]  You mentioned you had a conversation with the owner of tracked 108 already.
+[2585.86s -> 2586.86s]  Yes, sir.
+[2586.86s -> 2589.86s]  And what's going to happen between now and the 5th of April?
+[2589.86s -> 2592.86s]  We'll probably have more discussion.
+[2592.86s -> 2598.86s]  There's something I was interested in asking you when you were on the dies a few moments ago, if you would mind my asking you now.
+[2598.86s -> 2602.86s]  If the owners of tracked 108 actually had a formal proposal.
+[2602.86s -> 2613.86s]  Not just the vague idea that retail might be appropriate in that track, but actually a site plan or something like one that you could identify what the tenants would be.
+[2613.86s -> 2620.86s]  You could identify what kind of conditions might be, they might be willing to put up with things like that.
+[2620.86s -> 2627.86s]  Would you and your neighbors in your opinion be willing to consider some form of retail?
+[2627.86s -> 2630.86s]  I couldn't speak for anybody but me.
+[2630.86s -> 2631.86s]  Okay.
+[2631.86s -> 2642.86s]  And we gave a great deal of thought to this and we've talked with St. John's and we know that what a office building does to mitigate noise and pollution.
+[2642.86s -> 2652.86s]  And if text out has their way, eventually there will be a fly over from 183 to 290 right at that corner.
+[2652.86s -> 2657.86s]  It may not happen for 10 years, I don't know, but it's in their plan I've seen it.
+[2657.86s -> 2669.86s]  So for me, the only thing that makes sense to me for the residential is a office building which is quiet at night and quiet on the weekends.
+[2669.86s -> 2678.86s]  We have an overabundance of commercial and I've enumerated all of my auditors that drove around and counted and audited them.
+[2678.86s -> 2686.86s]  But they're in time to tell you about all of those, but we have an overabundance of commercial already.
+[2686.86s -> 2697.86s]  Plus if someone's going to that commercial and overshoots, they come right into our subdivision because that's a very next street.
+[2697.86s -> 2703.86s]  And we only have two ways in and out of that subdivision, the rest of the streets just circle around.
+[2703.86s -> 2707.86s]  So we'd have a great deal of increased traffic in the area.
+[2707.86s -> 2710.86s]  Actually they wouldn't be able to get back to where they were going anyway.
+[2710.86s -> 2711.86s]  They wouldn't.
+[2711.86s -> 2714.86s]  They just kind of wander around and be lost in there.
+[2714.86s -> 2717.86s]  So I can only speak for me about 108.
+[2717.86s -> 2719.86s]  So from your point of view, the prospects aren't really good.
+[2719.86s -> 2722.86s]  Did any kind of retail is likely to work?
+[2722.86s -> 2723.86s]  Not for me.
+[2723.86s -> 2724.86s]  Okay.
+[2724.86s -> 2728.86s]  And we've deliberated quite a bit for a number of years.
+[2728.86s -> 2729.86s]  Okay.
+[2729.86s -> 2732.86s]  Well, the planning commission and the staff seem to agree with you on 108.
+[2732.86s -> 2733.86s]  Okay.
+[2733.86s -> 2734.86s]  Thank you.
+[2734.86s -> 2737.86s]  Is there any other questions, sir?
+[2737.86s -> 2741.86s]  No, thank you.
+[2741.86s -> 2745.86s]  Motion and a second is our first question.
+[2745.86s -> 2747.86s]  All in favor say aye.
+[2747.86s -> 2748.86s]  Aye.
+[2748.86s -> 2749.86s]  Aye.
+[2749.86s -> 2750.86s]  Opposed say no.
+[2750.86s -> 2751.86s]  Passes on.
+[2751.86s -> 2752.86s]  No.
+[2753.86s -> 2754.86s]  Okay.
+[2754.86s -> 2760.86s]  Passes on a vote of six to one with Council Member Spelman voting no.
+[2760.86s -> 2761.86s]  Okay.
+[2761.86s -> 2762.86s]  Great.
+[2762.86s -> 2766.86s]  And then the only other page on the motion sheet is page one.
+[2766.86s -> 2769.86s]  This is all the items that are not contested.
+[2769.86s -> 2771.86s]  Motion's one through three.
+[2771.86s -> 2774.86s]  So these are the big components of the plan.
+[2774.86s -> 2778.86s]  The plan itself and then both of the zoning ordinances.
+[2778.86s -> 2782.86s]  And these are already on first reading.
+[2782.86s -> 2784.86s]  So we'll take them separately.
+[2784.86s -> 2790.86s]  And first would be a motion on item number 61.
+[2790.86s -> 2793.86s]  Accepting tracks 108, 113, 114.
+[2793.86s -> 2796.86s]  And this will be first reading only.
+[2796.86s -> 2798.86s]  Council Member Spelman moves approval.
+[2798.86s -> 2801.86s]  Close the public hearing on approval on first reading.
+[2801.86s -> 2803.86s]  Second by the Mayor Pro Tem.
+[2803.86s -> 2804.86s]  Further discussion?
+[2804.86s -> 2806.86s]  All in favor say aye.
+[2806.86s -> 2810.86s]  Opposed say no.
+[2810.86s -> 2811.86s]  Your aye.
+[2811.86s -> 2815.86s]  Council Member Chans passes on a vote of seven to zero.
+[2815.86s -> 2822.86s]  Item number 62 is to approve the rezoning for St. John's plan.
+[2822.86s -> 2828.86s]  Neighborhood plan combining district is recommended by the planning commission.
+[2828.86s -> 2829.86s]  Entirely.
+[2829.86s -> 2833.86s]  And again, ready on first reading.
+[2833.86s -> 2839.86s]  Council Member Riley moves to close the public hearing on approval on first reading only.
+[2839.86s -> 2842.86s]  Second by Council Member Martinez.
+[2842.86s -> 2844.86s]  Council Member Riley.
+[2844.86s -> 2851.86s]  I would like to take a moment to thank the folks who spoke tonight and all the neighbors who work so hard on this plan.
+[2851.86s -> 2855.86s]  I know it's been a long difficult process and I'm very impressed with the product.
+[2855.86s -> 2860.86s]  And I also want to thank the staff who put in so much time on this for over several years.
+[2860.86s -> 2866.86s]  It's a really impressive work and I think y'all should be proud and I hope it serves you well in the future.
+[2866.86s -> 2870.86s]  So thank y'all for all the work on this.
+[2870.86s -> 2871.86s]  All in favor say aye.
+[2871.86s -> 2872.86s]  Aye.
+[2872.86s -> 2873.86s]  Opposed say no.
+[2873.86s -> 2876.86s]  Passes on a vote of seven to zero.
+[2876.86s -> 2881.86s]  And the last motion would be to close the public hearing on approval on first reading.
+[2881.86s -> 2894.86s]  Resonings for Carnetta Hills Neighborhood Plan Combining District except for tracks 108-113 and 114 and that would be the planning commission recommendation.
+[2894.86s -> 2898.86s]  Mayor Pro Tem moves approval so moves.
+[2898.86s -> 2901.86s]  Second by Council Member Riley.
+[2901.86s -> 2903.86s]  Is there any discussion?
+[2903.86s -> 2905.86s]  All in favor say aye.
+[2905.86s -> 2906.86s]  Aye.
+[2906.86s -> 2907.86s]  Opposed say no.
+[2907.86s -> 2909.86s]  Passes on a vote of seven to zero.
+[2909.86s -> 2910.86s]  Thank you.
+[2910.86s -> 2918.86s]  Mr. Mayor if I could just add one more thing I think and I can answer Council Member Morrison's questions from earlier about the affordable housing.
+[2918.86s -> 2924.86s]  So that what that does generally is allows five percent more impervious cover.
+[2924.86s -> 2932.86s]  It allows it stipulates that units have to be for 20 years they have to be at 60 percent MFI or less.
+[2932.86s -> 2937.86s]  And it allows a total of eight bedrooms per duplex four percent.
+[2937.86s -> 2940.86s]  Okay great thank you and it's a 20 year duration.
+[2940.86s -> 2942.86s]  Thank you.

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\Users\dhl\data\thesis\thesis\Analysis\Scripts\Pipeline\transcribe_local_cpu.py", line 80, in main
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\dhl\\data\\thesis\\thesis\\Data\\Zoning_Cases\\Processed_Data\\Transcripts\\C14H-2010-0039_transcript.txt.tmp' -> 'C:\\Users\\dhl\\data\\thesis\\thesis\\Data\\Zoning_Cases\\Processed_Data\\Transcripts\\C14H-2010-0039_transcript.txt'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\dhl\data\thesis\thesis\Analysis\Scripts\Pipeline\transcribe_local_cpu.py", line 92, in <module>
+  File "C:\Users\dhl\data\thesis\thesis\Analysis\Scripts\Pipeline\transcribe_local_cpu.py", line 86, in main
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\dhl\\data\\thesis\\thesis\\Data\\Zoning_Cases\\Processed_Data\\Transcripts\\C14H-2010-0039_transcript.txt.tmp'

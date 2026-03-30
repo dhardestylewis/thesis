@@ -1,0 +1,37 @@
+﻿Loading data...
+Loading environment assignments...
+Sampled Dataset: 33,000 rows (3,004 positives)
+
+Features: 54 | Envs: 172
+
+==================================================
+Training Diffusion with ERM Penalty
+==================================================
+  Epoch  10 | Total Loss: 0.5149 | Var Pen: 0.0000
+  Epoch  20 | Total Loss: 0.2970 | Var Pen: 0.0000
+  Epoch  30 | Total Loss: 0.2721 | Var Pen: 0.0000
+  Epoch  40 | Total Loss: 0.2566 | Var Pen: 0.0000
+  Epoch  50 | Total Loss: 0.2454 | Var Pen: 0.0000
+Training finished in 42.19s
+Generating 5,000 artificial protest samples (ERM)...
+  Valid Protest Generates (y > 0.5): 1107
+
+==================================================
+Training Diffusion with V-REx Penalty
+==================================================
+  Epoch  10 | Total Loss: 0.5961 | Var Pen: 0.0160
+  Epoch  20 | Total Loss: 0.3267 | Var Pen: 0.0167
+  Epoch  30 | Total Loss: 0.2662 | Var Pen: 0.0163
+  Epoch  40 | Total Loss: 0.2387 | Var Pen: 0.0132
+  Epoch  50 | Total Loss: 0.2975 | Var Pen: 0.0270
+Training finished in 34.82s
+Generating 5,000 artificial protest samples (V-REx)...
+  Valid Protest Generates (y > 0.5): 2471
+
+================================================================================
+FINAL DOWNSTREAM LOGISTIC REGRESSION PERFORMANCE (Diffusion Syn. Augmentation)
+================================================================================
+Method/Architecture           Real ROC      Aug ROC |      Real PR       Aug PR
+--------------------------------------------------------------------------------
+ERM Diffusion                   0.9870       0.9899 |       0.8877       0.8878
+V-REx Diffusion                 0.9870       0.9867 |       0.8877       0.8810

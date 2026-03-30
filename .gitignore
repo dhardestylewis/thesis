@@ -48,3 +48,12 @@ _*.py
 _*.json
 Data/GIS/
 
+# Standalone nested projects
+v0-properlytic-8v/
+
+# Thesis specific large files
+Analysis/Data/CoA_Open_Data/
+Analysis/Data/Tensors/
+Analysis/Output/
+Data/Zoning_Cases/Processed_Data/GeoJSON/
+

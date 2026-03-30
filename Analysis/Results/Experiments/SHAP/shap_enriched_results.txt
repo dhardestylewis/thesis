@@ -1,0 +1,168 @@
+Loading enriched panel data...
+Dataset: 33,000 rows | 69 features (17 num + 52 cat) | Base rate: 0.091
+
+============================================================
+Training CVAE (ERM) with 69 enriched features...
+============================================================
+  Epoch  20 | Loss: 0.00000000
+  Epoch  40 | Loss: 0.00000000
+  Epoch  60 | Loss: 0.00000000
+  Epoch  80 | Loss: 0.00000000
+  Epoch 100 | Loss: 0.00000000
+  Epoch 120 | Loss: 0.00000000
+
+  Running SHAP GradientExplainer (ERM)...
+
+================================================================================
+SHAP ATTRIBUTION — ERM CVAE (Enriched with Demographics)
+================================================================================
+Rank  Group                  Feature                                      |SHAP|       %
+-------------------------------------------------------------------------------------
+1     Demographics (Tenure)  acs_owner_occupied_units                    0.00123   12.6%
+2     Demographics (Race)    acs_race_hispanic                           0.00117   11.9%
+3     Demographics           acs_median_home_value                       0.00088    9.0%
+4     Demographics (Race)    acs_race_white                              0.00082    8.4%
+5     Property               deed_acreage                                0.00074    7.6%
+6     Demographics (Income)  acs_poverty_count                           0.00051    5.2%
+7     Demographics           acs_total_population                        0.00050    5.1%
+8     Demographics (Tenure)  acs_renter_occupied_units                   0.00046    4.7%
+9     Geography              council_district_9.0                        0.00044    4.5%
+10    Demographics (Race)    acs_race_black                              0.00034    3.5%
+11    Land Use               property_category_code_Missing              0.00025    2.5%
+12    Demographics (Tenure)  acs_median_gross_rent                       0.00025    2.5%
+13    Geography              council_district_1.0                        0.00022    2.2%
+14    Zoning/Density         ldb_basezone_Single Family Residence (SF-3)    0.00021    2.2%
+15    Property               land_market_value                           0.00020    2.1%
+16    Zoning/Density         ldb_basezone_Single Family Standard Lot (SF-2)    0.00011    1.1%
+17    Geography              council_district_4.0                        0.00011    1.1%
+18    Land Use               lui_general_land_use_100                    0.00010    1.0%
+19    Demographics (Race)    acs_race_asian                              0.00010    1.0%
+20    Demographics           acs_median_age                              0.00009    1.0%
+21    Zoning/Density         ldb_basezone_infrequent_sklearn             0.00009    1.0%
+22    Geography              council_district_3.0                        0.00007    0.7%
+23    Demographics (Income)  acs_median_household_income                 0.00007    0.7%
+24    Land Use               lui_general_land_use_400                    0.00006    0.6%
+25    Geography              council_district_7.0                        0.00006    0.6%
+26    Land Use               lui_general_land_use_300                    0.00006    0.6%
+27    Zoning/Density         ldb_basezone_Limited Office (LO)            0.00005    0.5%
+28    Land Use               lui_general_land_use_900                    0.00005    0.5%
+29    Geography              council_district_2.0                        0.00005    0.5%
+30    Geography              council_district_6.0                        0.00005    0.5%
+31    Zoning/Density         ldb_basezone_SF-3                           0.00004    0.5%
+32    Geography              council_district_5.0                        0.00004    0.4%
+33    Land Use               lui_general_land_use_600                    0.00004    0.4%
+34    Land Use               lui_general_land_use_200                    0.00003    0.3%
+35    Land Use               lui_general_land_use_160                    0.00003    0.3%
+36    Geography              council_district_10.0                       0.00003    0.3%
+  ... 33 more features < 0.3%
+
+================================================================================
+GROUP-LEVEL ATTRIBUTION SUMMARY — ERM
+================================================================================
+Group                            Total |SHAP|       %
+-------------------------------------------------------
+Demographics (Race)                   0.00242   24.7%  ████████████
+Demographics (Tenure)                 0.00194   19.9%  █████████
+Demographics                          0.00147   15.1%  ███████
+Geography                             0.00107   10.9%  █████
+Property                              0.00096    9.8%  ████
+Land Use                              0.00070    7.2%  ███
+Zoning/Density                        0.00064    6.6%  ███
+Demographics (Income)                 0.00057    5.9%  ██
+
+TOP CAUSAL DRIVERS (≥ 3% of invariant prediction):
+  → [Demographics (Tenure)] acs_owner_occupied_units            (12.6%)  ↓ DECREASES protest
+  → [Demographics (Race)] acs_race_hispanic                   (11.9%)  ↑ INCREASES protest
+  → [Demographics] acs_median_home_value               (9.0%)  ↑ INCREASES protest
+  → [Demographics (Race)] acs_race_white                      (8.4%)  ↑ INCREASES protest
+  → [Property] deed_acreage                        (7.6%)  ↑ INCREASES protest
+  → [Demographics (Income)] acs_poverty_count                   (5.2%)  ↑ INCREASES protest
+  → [Demographics] acs_total_population                (5.1%)  ↓ DECREASES protest
+  → [Demographics (Tenure)] acs_renter_occupied_units           (4.7%)  ↑ INCREASES protest
+  → [Geography] council_district_9.0                (4.5%)  ↓ DECREASES protest
+  → [Demographics (Race)] acs_race_black                      (3.5%)  ↑ INCREASES protest
+
+============================================================
+Training CVAE (V-REx) with 69 enriched features...
+============================================================
+  Epoch  20 | Loss: 0.00000000
+  Epoch  40 | Loss: 0.00000000
+  Epoch  60 | Loss: 0.00000000
+  Epoch  80 | Loss: 0.00000000
+  Epoch 100 | Loss: 0.00000000
+  Epoch 120 | Loss: 0.00000000
+
+  Running SHAP GradientExplainer (V-REx)...
+
+================================================================================
+SHAP ATTRIBUTION — V-REx CVAE (Enriched with Demographics)
+================================================================================
+Rank  Group                  Feature                                      |SHAP|       %
+-------------------------------------------------------------------------------------
+1     Demographics           acs_median_age                              0.00162    9.4%
+2     Demographics (Race)    acs_race_asian                              0.00120    7.0%
+3     Demographics (Race)    acs_race_black                              0.00119    6.9%
+4     Geography              council_district_9.0                        0.00117    6.7%
+5     Demographics           acs_median_home_value                       0.00113    6.5%
+6     Demographics (Income)  acs_poverty_count                           0.00090    5.2%
+7     Demographics (Tenure)  acs_median_gross_rent                       0.00084    4.9%
+8     Property               deed_acreage                                0.00082    4.7%
+9     Geography              council_district_3.0                        0.00080    4.6%
+10    Geography              council_district_1.0                        0.00065    3.8%
+11    Property               land_market_value                           0.00062    3.6%
+12    Demographics (Race)    acs_race_white                              0.00060    3.5%
+13    Demographics           acs_total_population                        0.00047    2.7%
+14    Zoning/Density         ldb_basezone_Single Family Residence (SF-3)    0.00047    2.7%
+15    Demographics (Tenure)  acs_renter_occupied_units                   0.00041    2.4%
+16    Land Use               property_category_code_A                    0.00038    2.2%
+17    Demographics (Tenure)  acs_owner_occupied_units                    0.00037    2.1%
+18    Zoning/Density         ldb_basezone_Single Family Standard Lot (SF-2)    0.00033    1.9%
+19    Zoning/Density         ldb_basezone_SF-3                           0.00031    1.8%
+20    Land Use               lui_general_land_use_100                    0.00031    1.8%
+21    Geography              council_district_5.0                        0.00026    1.5%
+22    Geography              council_district_4.0                        0.00022    1.3%
+23    Land Use               property_category_code_Missing              0.00020    1.2%
+24    Zoning/Density         ldb_basezone_General Commercial Services (CS)    0.00020    1.2%
+25    Demographics (Race)    acs_race_hispanic                           0.00020    1.2%
+26    Demographics (Income)  acs_median_household_income                 0.00016    0.9%
+27    Land Use               lui_general_land_use_200                    0.00012    0.7%
+28    Zoning/Density         ldb_units                                   0.00010    0.6%
+29    Land Use               lui_general_land_use_400                    0.00009    0.5%
+30    Land Use               lui_general_land_use_900                    0.00009    0.5%
+31    Geography              council_district_10.0                       0.00009    0.5%
+32    Zoning/Density         ldb_basezone_Community Commercial (GR)      0.00008    0.5%
+33    Land Use               property_category_code_F1                   0.00006    0.4%
+34    Land Use               property_category_code_B                    0.00006    0.4%
+35    Land Use               lui_general_land_use_600                    0.00006    0.4%
+36    Zoning/Density         ldb_basezone_infrequent_sklearn             0.00006    0.3%
+  ... 33 more features < 0.3%
+
+================================================================================
+GROUP-LEVEL ATTRIBUTION SUMMARY — V-REx
+================================================================================
+Group                            Total |SHAP|       %
+-------------------------------------------------------
+Geography                             0.00330   19.1%  █████████
+Demographics                          0.00322   18.7%  █████████
+Demographics (Race)                   0.00319   18.5%  █████████
+Zoning/Density                        0.00181   10.5%  █████
+Land Use                              0.00162    9.4%  ████
+Demographics (Tenure)                 0.00161    9.4%  ████
+Property                              0.00145    8.4%  ████
+Demographics (Income)                 0.00106    6.2%  ███
+
+TOP CAUSAL DRIVERS (≥ 3% of invariant prediction):
+  → [Demographics] acs_median_age                      (9.4%)  ↑ INCREASES protest
+  → [Demographics (Race)] acs_race_asian                      (7.0%)  ↑ INCREASES protest
+  → [Demographics (Race)] acs_race_black                      (6.9%)  ↓ DECREASES protest
+  → [Geography] council_district_9.0                (6.7%)  ↓ DECREASES protest
+  → [Demographics] acs_median_home_value               (6.5%)  ↓ DECREASES protest
+  → [Demographics (Income)] acs_poverty_count                   (5.2%)  ↑ INCREASES protest
+  → [Demographics (Tenure)] acs_median_gross_rent               (4.9%)  ↑ INCREASES protest
+  → [Property] deed_acreage                        (4.7%)  ↓ DECREASES protest
+  → [Geography] council_district_3.0                (4.6%)  ↓ DECREASES protest
+  → [Geography] council_district_1.0                (3.8%)  ↓ DECREASES protest
+  → [Property] land_market_value                   (3.6%)  ↓ DECREASES protest
+  → [Demographics (Race)] acs_race_white                      (3.5%)  ↓ DECREASES protest
+
+Completed in 449.4s

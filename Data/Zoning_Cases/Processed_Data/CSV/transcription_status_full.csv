@@ -1,0 +1,2 @@
+CASE_NUMBER,Status,Message
+NPA-2019-0020.04,Failed,Transcription error: Library cublas64_12.dll is not found or cannot be loaded

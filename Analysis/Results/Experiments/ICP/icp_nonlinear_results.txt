@@ -1,0 +1,40 @@
+Loading panel data...
+Dataset: 35,000 rows | 54 features (3 num + 51 cat) | 182 environments
+
+================================================================================
+PART 1: LINEAR ICP (Logistic Regression) — Numeric Features Only
+================================================================================
+Testing 8 numeric subsets for invariance (α = 0.05)...
+  S = {∅}                                                     p_bonf = 0.0000e+00  envs_rej(mean/var): 80/9  REJECTED
+  S = {total_market_value}                                    p_bonf = 0.0000e+00  envs_rej(mean/var): 77/9  REJECTED
+  S = {deed_acreage}                                          p_bonf = 0.0000e+00  envs_rej(mean/var): 64/9  REJECTED
+  S = {improvement_sq_ft}                                     p_bonf = 0.0000e+00  envs_rej(mean/var): 80/9  REJECTED
+  S = {total_market_value, deed_acreage}                      p_bonf = 0.0000e+00  envs_rej(mean/var): 61/9  REJECTED
+  S = {total_market_value, improvement_sq_ft}                 p_bonf = 0.0000e+00  envs_rej(mean/var): 77/9  REJECTED
+  S = {deed_acreage, improvement_sq_ft}                       p_bonf = 0.0000e+00  envs_rej(mean/var): 64/9  REJECTED
+  S = {total_market_value, deed_acreage, improvement_sq_ft}   p_bonf = 0.0000e+00  envs_rej(mean/var): 61/9  REJECTED
+
+  Testing FULL feature set (54 features)...
+  S = {ALL 54 features}  p_bonf = 3.1456e-76  envs_rej(mean/var): 22/10  REJECTED
+
+================================================================================
+PART 2: NONLINEAR ICP — MLP Residual Invariance Test
+================================================================================
+
+  Training MLP (ERM)...
+  MLP ERM    Residual Invariance: p_bonf = 0.0000e+00  envs_rej(mean/var): 51/13  REJECTED ✗
+
+  Training MLP (V-REx)...
+  MLP V-REx  Residual Invariance: p_bonf = 0.0000e+00  envs_rej(mean/var): 69/13  REJECTED ✗
+
+================================================================================
+PART 3: NONLINEAR ICP — CVAE Residual Invariance Test
+================================================================================
+
+  Training CVAE (ERM)...
+  CVAE ERM    Residual Invariance: p_bonf = 5.8278e-22  envs_rej(mean/var): 39/0  REJECTED ✗
+
+  Training CVAE (V-REx)...
+  CVAE V-REx  Residual Invariance: p_bonf = 0.0000e+00  envs_rej(mean/var): 33/0  REJECTED ✗
+
+Completed in 461.8s

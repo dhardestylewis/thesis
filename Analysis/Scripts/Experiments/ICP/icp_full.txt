@@ -1,0 +1,99 @@
+﻿ICP with Expanding-Window CV: 1 folds
+Environments: Austin Council Districts (theory-grounded political subdivisions)
+================================================================================
+
+Loading fold_first_draft: Train <= 2020, Test = 2020
+  566 rows | 17 features | 11 environments (Council Districts)
+  Protest rate: 0.2668 (151 positives)
+
+================================================================================
+PART 1: LINEAR ICP (Logistic Regression) - Numeric Features Only
+================================================================================
+python : Traceback 
+(most recent call 
+last):
+At line:1 char:1
++ python 
+icp_nonlinear.py 
+2>&1 | Out-File 
+-Encoding utf8 
+icp_full.txt
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Traceba   
+ ck (most recent     
+call last)::Stri    
+ng) [], RemoteEx    
+ception
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+  File "C:\Users\dhl\
+data\thesis\thesis\An
+alysis\Scripts\Experi
+ments\ICP\icp_nonline
+ar.py", line 425, in 
+<module>
+    main()
+  File "C:\Users\dhl\
+data\thesis\thesis\An
+alysis\Scripts\Experi
+ments\ICP\icp_nonline
+ar.py", line 408, in 
+main
+    results = 
+run_fold(fold_dir, fo
+ld_meta['fold_name'],
+ fold_meta)
+              ^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+^^^^
+  File "C:\Users\dhl\
+data\thesis\thesis\An
+alysis\Scripts\Experi
+ments\ICP\icp_nonline
+ar.py", line 346, in 
+run_fold
+    
+run_linear_icp(X, y, 
+env_ids, 
+unique_envs, 
+feature_names)
+  File "C:\Users\dhl\
+data\thesis\thesis\An
+alysis\Scripts\Experi
+ments\ICP\icp_nonline
+ar.py", line 141, in 
+run_linear_icp
+    print(f"Testing 
+{len(all_subsets)} 
+numeric subsets for 
+invariance (\u03b1 = 
+{ALPHA})...")
+  File "C:\Program Fi
+les\WindowsApps\Pytho
+nSoftwareFoundation.P
+ython.3.12_3.12.2800.
+0_x64__qbz5n2kfra8p0\
+Lib\encodings\cp1252.
+py", line 19, in 
+encode
+    return codecs.cha
+rmap_encode(input,sel
+f.errors,encoding_tab
+le)[0]
+           ^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+^^^
+UnicodeEncodeError: 
+'charmap' codec 
+can't encode 
+character '\u03b1' 
+in position 43: 
+character maps to 
+<undefined>

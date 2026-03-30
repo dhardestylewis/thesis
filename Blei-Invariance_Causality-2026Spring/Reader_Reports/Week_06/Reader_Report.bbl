@@ -1,0 +1,49 @@
+\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[B{\"u}hlmann(2020)]{buhlmann2020invariance}
+P.~B{\"u}hlmann.
+\newblock Invariance, causality and robustness.
+\newblock \emph{Statistical Science}, 35\penalty0 (3):\penalty0 404--426, 2020.
+
+\bibitem[Moran and et~al.(2025)]{moran2025towards}
+G.~Moran and et~al.
+\newblock Towards interpretable deep generative models via causal
+  representation learning.
+\newblock \emph{arXiv preprint arXiv:2504.00000}, 2025.
+
+\bibitem[Peters et~al.(2016)Peters, B{\"u}hlmann, and
+  Meinshausen]{peters2016icp}
+J.~Peters, P.~B{\"u}hlmann, and N.~Meinshausen.
+\newblock Causal inference by using invariant prediction: identification and
+  confidence intervals.
+\newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 78\penalty0 (5):\penalty0 947--1012, 2016.
+
+\bibitem[Sch{\"o}lkopf et~al.(2021)Sch{\"o}lkopf, Locatello, Bauer, Ke,
+  Kalchbrenner, Goyal, and Bengio]{scholkopf2021toward}
+B.~Sch{\"o}lkopf, F.~Locatello, S.~Bauer, N.~R. Ke, N.~Kalchbrenner, A.~Goyal,
+  and Y.~Bengio.
+\newblock Toward causal representation learning.
+\newblock \emph{Proceedings of the IEEE}, 109\penalty0 (5):\penalty0 612--634,
+  2021.
+\newblock \doi{10.1109/JPROC.2021.3058954}.
+
+\bibitem[Uhler and Zhang(2025)]{uhler2025causal}
+C.~Uhler and J.~Zhang.
+\newblock Causal structure and representation learning with biomedical
+  applications.
+\newblock \emph{arXiv preprint arXiv:2511.04790}, 2025.
+
+\bibitem[Yao et~al.(2024)Yao, Rancati, Cadei, Fumero, and
+  Locatello]{yao2024unifying}
+D.~Yao, D.~Rancati, R.~Cadei, M.~Fumero, and F.~Locatello.
+\newblock Unifying causal representation learning with the invariance
+  principle.
+\newblock \emph{arXiv preprint arXiv:2409.00000}, 2024.
+
+\end{thebibliography}

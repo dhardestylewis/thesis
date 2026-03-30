@@ -1,0 +1,24 @@
+================================================================================
+MODAL ROBUSTNESS OOD RESULTS (N = 15 Architecture/Seed Variations)
+================================================================================
+Seed   42 | Arch:  8-dim | ERM PR: 0.9017 | V-REx PR: 0.9152 | Diff: +0.0135
+Seed   42 | Arch: 16-dim | ERM PR: 0.9024 | V-REx PR: 0.9109 | Diff: +0.0085
+Seed   42 | Arch:  4-dim | ERM PR: 0.9017 | V-REx PR: 0.9124 | Diff: +0.0106
+Seed  101 | Arch:  8-dim | ERM PR: 0.8950 | V-REx PR: 0.9114 | Diff: +0.0164
+Seed  101 | Arch: 16-dim | ERM PR: 0.9040 | V-REx PR: 0.9145 | Diff: +0.0105
+Seed  101 | Arch:  4-dim | ERM PR: 0.8997 | V-REx PR: 0.9131 | Diff: +0.0134
+Seed  777 | Arch:  8-dim | ERM PR: 0.9054 | V-REx PR: 0.9158 | Diff: +0.0104
+Seed  777 | Arch: 16-dim | ERM PR: 0.8954 | V-REx PR: 0.9138 | Diff: +0.0183
+Seed  777 | Arch:  4-dim | ERM PR: 0.9007 | V-REx PR: 0.9154 | Diff: +0.0147
+Seed 1234 | Arch:  8-dim | ERM PR: 0.9020 | V-REx PR: 0.9145 | Diff: +0.0126
+Seed 1234 | Arch: 16-dim | ERM PR: 0.8999 | V-REx PR: 0.9133 | Diff: +0.0134
+Seed 1234 | Arch:  4-dim | ERM PR: 0.9017 | V-REx PR: 0.9193 | Diff: +0.0176
+Seed 2024 | Arch:  8-dim | ERM PR: 0.9047 | V-REx PR: 0.9152 | Diff: +0.0104
+Seed 2024 | Arch: 16-dim | ERM PR: 0.8984 | V-REx PR: 0.9125 | Diff: +0.0141
+Seed 2024 | Arch:  4-dim | ERM PR: 0.8996 | V-REx PR: 0.9093 | Diff: +0.0098
+--------------------------------------------------------------------------------
+ERM   Mean PR-AUC: 0.9008 +/- 0.0030
+V-REx Mean PR-AUC: 0.9138 +/- 0.0024
+Average Improvement (VREx - ERM): +0.0130
+t-statistic: 16.9896
+RESULT: STATISTICALLY SIGNIFICANT IMPROVEMENT (p < 0.05)

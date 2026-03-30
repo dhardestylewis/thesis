@@ -1,0 +1,1 @@
+ERROR: Cannot connect to Ollama at http://localhost:11434/. Please ensure Ollama is running.

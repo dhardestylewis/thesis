@@ -1,0 +1,15 @@
+IRM vs V-REx vs ERM ? First Result
+=======================================================
+Generated: 2026-03-09
+Target: log(total_market_value)
+Features: ['year_built', 'deed_acreage', 'land_market_value', 'year', 'land_acres', 'new_construction_value']
+Train: 2018-2022 | Test: 2023-2025
+Min env size: 5
+Train obs: 2,300 | Test obs: 434
+Train envs: 115 | Test envs: 115
+
+Method      Mean Risk   Worst Risk   Risk Gap        Std
+-------------------------------------------------------
+ERM            3.4200      33.2537    33.2513     4.6258
+IRM          482.8232     910.3180   854.3464   186.0571
+V-REx        436.2735     645.7173   613.9635    89.3367

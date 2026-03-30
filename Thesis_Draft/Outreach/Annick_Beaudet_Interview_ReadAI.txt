@@ -1,0 +1,149 @@
+Annick Beaudet / Daniel Hardesty Lewis Columbia forecasting zoning opposition
+
+Annick Beaudet / Daniel Hardesty Lewis Columbia forecasting zoning opposition
+Annick Beaudet / Daniel Hardesty Lewis Columbia forecasting zoning opposition
+Research Interview
+The meeting reviewed a research project that combines Austin zoning protest records with parcel‑level tax and city data to model and forecast where residential rezoning opposition has occurred and may occur in the future. Daniel Hardesty Lewis described a multi‑year database of protest letters and related records dating to about 2007, explained that he is training machine‑learning models (with a simple linear regression baseline) to predict protest likelihood by parcel, and noted a Texas law change in September that removed the automatic supermajority trigger for residential rezoning protests, altering the protests’ legal weight. Daniel demonstrated a work‑in‑progress map and discussed calibration problems and data‑filtering bugs discovered in the training set.
+
+Annick Beaudet, a planner with over 25 years’ experience, summarized her career and recent zoning work, noting long‑running neighborhood opposition that stalled missing‑middle and transition zone efforts. She observed that opposition has become more granular—targeting density‑bonus calibration and legal constraints—and argued the protest process is burdensome for systematic planning. Participants discussed practical uses and risks of an AI‑generated opposition map: human intermediaries should introduce and interpret outputs, early one‑on‑one community engagement remains critical, and publishing maps could amplify vocal opposition. The group noted data limitations (minutes and sign‑up sheets skew toward opposition) and agreed to consult retired planning director Greg Guernsey; Annick offered to follow up by email with further input.
+
+59:30
+Annick will email Daniel if she thinks of any additional input on his last questions
+6:46
+Can you describe your research and what data you are using to model zoning opposition?
+Proposed answer: Daniel explained he is using Austin's protest process records and a compiled database of protest letters plus parcel-level tax and city records to predict and model where zoning opposition occurs.
+
+6:59
+Is the Austin protest process specific to zoning and how does it affect council vote requirements?
+Proposed answer: Daniel explained the protest process applies to opposition to zoning and historically could increase council vote requirements to pass rezoning within a specified proximity.
+
+8:55
+Did a law change remove the supermajority trigger for residential rezoning protests?
+Proposed answer: Daniel confirmed a September law change removed the automatic supermajority trigger when 20% protests were gathered against residential rezoning.
+
+16:45
+Why is tax data included in the model and what hypothesis does it support?
+Proposed answer: Daniel said tax data is included as covariates that might contribute to opposition and that property tax burden is a plausible predictor to test in the model.
+
+28:29
+What caused you to go into consulting?
+Proposed answer: Annick said she retired and then joined a civic-focused consulting firm started by a former assistant city manager; the firm focuses on public-sector economic development and occasional land-use or housing elements.
+
+30:23
+Is there a specific recent zoning case you recall, especially since you’re no longer in a formal planning role?
+Proposed answer: Annick identified the land development code revision around 2019–2020 that attempted to introduce missing-middle transition zones, which faced heavy neighborhood opposition and ultimately failed to advance as intended.
+
+37:34
+Do you view the protest and public-hearing process as fair?
+Proposed answer: Annick said she does not view it as fair; she described it as overly burdensome, prone to misinformation among protestors, and skewed toward vocal opponents rather than silent supporters.
+
+44:41
+Could AI help with public testimony and hearings?
+Proposed answer: Annick suggested AI could synthesize large volumes of input to identify valid themes for policymakers and filter low-quality opposition, improving policymaker focus on substantive concerns.
+
+47:43
+How does opposition affect whose interests are reflected in housing and zoning decisions?
+Proposed answer: Annick answered that vocal opposition previously influenced policy decisions and led to denial of multifamily or mixed-use rezonings in areas where they would have been appropriate.
+
+49:19
+How would an AI-generated map like this be used by any stakeholder?
+Proposed answer: Annick answered that AI tools need a trusted human to introduce and interpret them for stakeholders, and that gaining buy-in on using AI early in the planning process is important
+
+55:16
+What concerns exist about how release of such maps might impact stakeholder behavior?
+Proposed answer: Annick raised concerns that maps showing opposition patterns could amplify negative voices, give them a larger platform, and that data sources are skewed toward opponents, making results potentially misleading
+
+56:08
+What data exist to analyze past engagement and protests?
+Proposed answer: Daniel and Annick noted that meeting minutes and sign-up sheets exist and could be used, but gathering and centralizing those records is time-consuming and the data are not directly comparable for support versus opposition analysis
+
+3:34
+Introductions and connection check
+The meeting began with greetings and a technical check of audio and video as participants joined the call. Annick asked Daniel to describe his research, initiating the substantive discussion.
+
+6:50
+Overview of Austin protest process and legal context
+Daniel outlined Austin's protest process for zoning changes, its uniqueness among U.S. cities, and how protest letters historically triggered higher council vote requirements. The participants discussed a September state law change that removed the supermajority trigger for residential rezoning protests and the ongoing collection of protest letters by the city.
+
+A September state law change removed the automatic supermajority trigger for residential rezoning protests, reducing their legal effect though the city still collects protest letters.
+9:26
+Research goals and data sources
+Daniel described combining the protest letter database with parcel-level tax and city records to predict where protests occur and to evaluate model performance. He explained that the project covers both residential and commercial cases and that ongoing human behavior will affect the model's future value.
+
+15:28
+Demonstration of map, modeling approach, and model performance
+Daniel shared a live, incomplete map and explained a simple linear regression baseline, noted data-filtering bugs, and discussed calibration goals for predicting probabilities of protests. He showed overlays of predicted hotspots versus actual protested cases and discussed model limitations and iterations.
+
+Daniel is building a parcel-level database and predictive model of zoning protests using Austin protest letters and tax records.
+The dataset covers protests going back to roughly 2007 and is being used as a rare, direct source for modeling local NIMBY behavior.
+Tax data is being used as a covariate because it may be relevant to predicting opposition and will be evaluated during model development.
+The current model is a work in progress and uses a simple linear regression baseline while the developer addresses data-filtering bugs and calibration issues.
+20:16
+Planner perspective and implications for practice
+Annick, drawing on her years as a zoning planner, said planners often anticipate likely opposition neighborhoods and try proactive outreach and management strategies. She argued political attitudes toward infill and inner-city growth have shifted in the past eight to ten years, making NIMBY objections less likely to change policy outcomes in many cases.
+
+25:01
+Call logistics and introductory remarks
+Participants managed a brief technical interruption while joining the call and confirming materials on the screen. Daniel noted he had sent a list of questions and a project overview in the thread for the interview.
+
+27:21
+Annick’s background and consulting transition
+Annick described her credentials as an APA-certified urban planner with over 25 years in city land use, transportation, and zoning work, and explained that she retired and later joined a civic-focused consulting firm serving public-sector clients.
+
+Annick has over 25 years of experience in land use and transportation planning and now consults for civic-focused public-sector clients.
+30:23
+Recent involvement and specific zoning cases
+Daniel asked about specific recent cases; Annick recalled the 2019–2020 land development code revision and efforts to add missing-middle transition zones, which met concentrated opposition and required a supermajority to pass.
+
+Opposition has shifted from blanket resistance to more technical critiques, such as concerns about density-bonus calibration and affordable housing trade-offs.
+The land development code revision that attempted to introduce missing-middle transition zones faced strong neighborhood opposition and failed to advance as intended.
+35:02
+Nature and evolution of opposition
+Annick observed opposition shifted toward technical challenges—questioning density-bonus outcomes and exposing vulnerabilities in city policy—rather than pure anti-housing sentiment, and she noted state legal limits on tools like inclusionary zoning.
+
+37:34
+Fairness of the protest process and representativeness
+Annick judged the protest and public-hearing process as unfair and overly burdensome, arguing that vocal opponents are overrepresented while silent supporters are underrepresented, which impeded systematic planning.
+
+Annick believes the existing protest and public-hearing process allowed vocal opponents to block systematic planning and is therefore unfair.
+Large corridor rezonings (e.g., South Lamar) produced thousands of units that proved acceptable to neighbors after construction and did not cause the disruptions opponents predicted.
+43:38
+Outcomes, lessons, and use of AI for public input synthesis
+Annick cited South Lamar corridor rezonings that delivered thousands of units and ultimately were accepted by neighborhoods, and she proposed that AI could synthesize large volumes of testimony to highlight valid themes for policymakers.
+
+Annick recommends using AI to synthesize public testimony to identify legitimate themes for policymakers and reduce the weight of low-quality opposition.
+49:19
+Screen-sharing and initial question
+Daniel asked how an example map would be used by stakeholders and attempted to share his screen to illustrate the map. Technical screen-share troubleshooting occurred while the central question about map use was clarified.
+
+The primary question was how an AI-generated zoning opposition/support map would be used by any stakeholder.
+49:48
+Trust and human introduction of AI tools
+Annick argued that AI tools require a trusted human to introduce and interpret outputs for stakeholders, and that trust in the person presenting the tool determines trust in the AI. She emphasized that professionals will use such tools but must remain the human interface for public processes.
+
+Demonstrating and interpreting AI tools requires a trusted human intermediary to introduce the tool to stakeholders.
+50:54
+Early engagement and buy-in for AI use
+Annick described the value of starting planning processes early with one-on-one conversations to warm up community leaders and suggested that questioning about AI use should be part of that early outreach. She recommended gaining public buy-in on how AI will be used before deploying it in civic engagement.
+
+Early, one-on-one engagement with community leaders remains important before public rollouts of planning efforts.
+52:18
+Data availability and potential of AI to analyze past engagement
+Annick noted large historical datasets exist from past community efforts and suggested AI could extract insights from meeting minutes and protest sheets if permission and human checks are applied. She cautioned about bias in prompts and the need to manage consequences when using predictive or algorithmic tools.
+
+55:16
+Risks of publishing opposition maps and data skew
+The group discussed concerns that maps showing opposition patterns could give energy to negative voices and provide another platform for opponents, noting that protest sign-ups skew negative while silent supporters are underrepresented. They considered whether AI could cross-reference meeting minutes and support statements but acknowledged the data are not apples-to-apples.
+
+Historical meeting minutes and sign-up sheets exist but tend to overrepresent opposition, making comparisons between protest and support imperfect.
+Publishing maps that emphasize opposition risks amplifying negative voices and affecting public perception of a project.
+58:30
+Practical constraints and project framing
+Daniel identified data gathering as the main time barrier to analyzing meeting minutes with AI and said he could proceed if minutes were centralized and provided. He clarified that current framing emphasizes opposition rather than support, and both parties exchanged closing remarks about usefulness and next steps.
+
+Data collection effort is a key practical barrier; assembling minutes in one place would enable analysis but may require more time than available.
+59:30
+Recommendations and close
+Annick offered to email further thoughts if she had them and recommended contacting retired planning director Greg Guernsey for his perspective on public and staff responses to such maps. The meeting concluded with mutual thanks and good wishes.
+
+Annick recommended interviewing Greg Guernsey for his perspective on how staff and the public might respond to such maps.

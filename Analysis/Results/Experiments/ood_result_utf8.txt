@@ -1,0 +1,18 @@
+﻿Loading data...
+Loading environment assignments...
+
+OOD Split:
+  Train/Val (Non-Neighborhood Plans + Background): 33,803 rows
+  OOD Test (Strictly Neighborhood Plans): 1,197 rows
+    (Test Positives: 427)
+
+Training Generative ERM...
+Training Generative V-REx...
+
+================================================================================
+OOD EXTRAPOLATION TEST: Predict Protests strictly on Withheld PUDs
+================================================================================
+Method/Architecture           Real ROC      Aug ROC |      Real PR       Aug PR
+--------------------------------------------------------------------------------
+ERM Augmentation                0.9744       0.9720 |       0.9107       0.9026
+V-REx Augmentation              0.9744       0.9719 |       0.9107       0.9044

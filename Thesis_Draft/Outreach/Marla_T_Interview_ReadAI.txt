@@ -1,0 +1,110 @@
+Columbia interview w Daniel
+
+Research Interview
+The meeting reviewed a study combining Austin protest-letter records with machine learning and qualitative interviews to predict and interpret neighborhood opposition to development. Daniel Lewis described assembling protest letters back to 2007 alongside property and tax records (coverage through about 2018–2019) to train predictive models and to inform a qualitative phase assessing community views; he said the project will be fully open source with a complete model report. The models emphasize census-tract demographics and name-derived owner/neighborhood differences as predictive features.
+
+Participants discussed model inputs, calibration, and ethical risks, including how arbitrary thresholds could misclassify areas or people and how a public predictive tool might enable developer targeting. Daniel and Marla debated likely stakeholders and uses, with local government outreach and developer decision-making framed as primary applications but noted divergent incentives. Marla T outlined the City of Austin’s Displacement Prevention Division (established 2019), its three teams, and displacement pressures concentrated in historically Black and brown eastern neighborhoods. She summarized Project Connect’s anti-displacement funding structure and the Community Advisory Committee’s role in prioritizing funds into development, preservation/acquisition, and community-initiated solutions, offered to share a spending dashboard, and cautioned that quantitative tools should be paired with qualitative safeguards to protect households not served by the market.
+
+25:54
+Marla T will send Daniel the dashboard that tracks Project Connect fund spending and awarded organizations.
+
+3:01
+Why are you doing this work in Austin and are you from Austin?
+Proposed answer: Daniel said he lived in Austin for ten years and has ongoing ties and projects there
+
+9:29
+Is there an assumption about opposition being good or bad in the study?
+Proposed answer: Daniel responded that he views opposition as a process and expects various stakeholders will use a tool differently rather than treating opposition as inherently good or bad
+
+10:34
+Is the tool positioned for government and developers to understand where community opposition might come from?
+Proposed answer: Daniel answered that government can use the tool for proactive outreach and developers could use it to avoid areas of high opposition, while noting different stakeholders may view those uses differently
+
+15:39
+Would it be helpful if I describe what my division does and how it works with communities and potential opposition?
+Proposed answer: Marla proceeded to describe the Displacement Prevention Division’s history, teams, and focus on renter and homeowner support and research, indicating that this contextual information would be helpful
+
+22:21
+Is there still enough momentum for anti-displacement activities and development opposition in 2023 and beyond?
+Proposed answer: Marla said she believes there is still a lot of momentum and that the city will likely continue supporting stabilization programs, noting federal funding changes and ongoing cost pressures.
+
+23:45
+Are the anti-displacement funds you referenced specifically from Project Connect and targeted at rail-related indirect displacement?
+Proposed answer: Yes; Marla confirmed those funds came from Project Connect and target indirect displacement from the rail project.
+
+30:43
+What time is the Community Development Commission meeting presenting the equity-overlay study tonight?
+Proposed answer: The meeting is at 6:30 PM.
+
+31:59
+Are there other equity overlays already in place?
+
+35:29
+Will the predictive tool you mentioned be released publicly, and if so, how will potential misuse be addressed?
+
+0:08
+Meeting start and audio checks
+The meeting opened with audio checks and brief pleasantries before participants prepared to begin the interview. The conversation then transitioned to the interview agenda.
+
+0:46
+Project introduction and scope
+Daniel introduced the study as an analysis of zoning opposition in Austin using a historical database of protest letters and machine learning to predict opposition patterns. He noted the study includes a qualitative component to understand community perspectives.
+
+Daniel is studying zoning opposition in Austin using protest-letter records and property/tax data to build predictive models and a qualitative assessment.
+The dataset includes Austin protest letters back to 2007 and property/tax records available roughly to 2018–2019.
+
+4:13
+Data, methods, and researcher background
+Daniel outlined other relevant projects and his experience (including work with UT and other modeling efforts) and referenced related tools and sites he’s developed. He reiterated the study’s data sources and methodological framing, including limitations and his broader research interests.
+
+6:13
+Model details, ethical concerns, and stakeholder uses
+The attendees discussed model inputs (census tract demographics and name-derived indicators), calibration concerns, and the need for transparency; Daniel committed to an open-source release and a full model report. They debated potential users and impacts, noting government outreach use and developer avoidance as possible outcomes and the risk that lower-expression areas might be where outreach should increase.
+
+Marla emphasized concerns about model calibration and the risk of misidentifying communities in need due to arbitrary thresholds.
+Daniel intends to release the tool and methodology as fully open source with a full model report.
+The models rely on census-tract demographics and name-derived owner/neighborhood racial indicators as strong predictive variables.
+Daniel envisions the tool supporting proactive government outreach and allowing developers to identify areas of high opposition.
+
+13:47
+City context — Displacement Prevention Division overview
+Marla described the Displacement Prevention Division’s 2019 origin, its three teams (renters, homeowners, and research/capacity/policy), and its role in emergency rental assistance and tenant relocation processes. She highlighted displacement pressures concentrated in historically Black and brown eastern neighborhoods as development increases and west-side opposition and environmental protections shape outcomes.
+
+Marla summarized the Displacement Prevention Division’s structure and focus on renter protections, homeowner programs, and research/capacity building established after 2019 policy pushes.
+
+21:36
+Momentum and personal context
+Daniel Lewis recounted his activist background in Austin and asked whether momentum for anti-displacement activities and development opposition persists into 2023 and beyond. He connected past engagement with current questions he is investigating in his interview process.
+
+Daniel Lewis emphasized interest in whether anti-displacement momentum remains active in 2023 and beyond.
+
+22:35
+Project Connect funding structure
+Marla T outlined that Project Connect created anti-displacement funds targeting rail-related indirect displacement and that the Community Advisory Committee under the Austin Transit Partnership prioritizes those funds. She described three funding buckets: development, preservation/acquisition, and community-initiated solutions.
+
+Project Connect’s anti-displacement funds are divided into three priority buckets and are guided by the Community Advisory Committee under Austin Transit Partnership.
+The housing department separates responsibilities between real estate (development/acquisition/preservation) and displacement prevention teams.
+
+25:54
+Program oversight and dashboard
+Marla explained that real estate and displacement prevention are separate divisions within the housing department and that a dashboard tracks fund allocation and awarded organizations; she offered to send the dashboard to Daniel. She stated continued community interest in stabilization programs given federal funding reductions and cost pressures.
+
+A dashboard exists that tracks how Project Connect funds were spent and which organizations were awarded money; Marla offered to send it.
+
+27:03
+CAC meeting and future prioritization
+Marla noted the Community Advisory Committee will meet on Thursday to recommend prioritization for the next three years of funds, the meeting is public and recorded, and she expects no major shift away from the three funding buckets.
+
+The CAC will meet Thursday to recommend prioritization for the next three years of funds, and the meeting is open to the public and recorded.
+
+28:29
+Equity overlay and zoning changes
+Marla described an ordinance tied to the home initiative that loosened code to allow more building and prompted an equity-overlay study to examine area-specific anti-displacement strategies; the study is being presented to the Community Development Commission.
+
+An equity-overlay study tied to the home initiative is being presented to the Community Development Commission to recommend local strategies to mitigate displacement.
+
+32:36
+Analytical tool use, public release, and risks
+Daniel asked about the public release and potential misuse of a predictive tool; he noted developers could exploit such tools, while Marla supported using a mix of quantitative tools and qualitative lived-experience input and emphasized the city’s mission to serve those most in need.
+
+Daniel raised concerns that a publicly released predictive tool could be used by developers to avoid areas of opposition or to target opportunities, and Marla urged pairing quantitative tools with lived-experience qualitative input.

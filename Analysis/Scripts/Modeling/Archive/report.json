@@ -1,0 +1,27 @@
+{
+    "Commercial_Conversion": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 290.0
+    },
+    "Minor_Infill": {
+        "precision": 0.996791751482432,
+        "recall": 1.0,
+        "f1-score": 0.9983932983921904,
+        "support": 90102.0
+    },
+    "accuracy": 0.996791751482432,
+    "macro avg": {
+        "precision": 0.498395875741216,
+        "recall": 0.5,
+        "f1-score": 0.4991966491960952,
+        "support": 90392.0
+    },
+    "weighted avg": {
+        "precision": 0.9935937958234146,
+        "recall": 0.996791751482432,
+        "f1-score": 0.9951902045726738,
+        "support": 90392.0
+    }
+}

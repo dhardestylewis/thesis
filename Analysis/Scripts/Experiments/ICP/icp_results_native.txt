@@ -1,0 +1,76 @@
+ICP with Expanding-Window CV: 1 folds
+Environments: Austin Council Districts (theory-grounded political subdivisions)
+================================================================================
+
+Loading fold_first_draft: Train <= 2020, Test = 2020
+  566 rows | 17 features | 11 environments (Council Districts)
+  Protest rate: 0.2668 (151 positives)
+
+================================================================================
+PART 1: LINEAR ICP (Logistic Regression) - Numeric Features Only
+================================================================================
+Testing 30 numeric subsets for invariance (α = 0.05)...
+  S = {∅}                                                     p_bonf = 5.1341e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {valid_petition}                                        p_bonf = 2.9683e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {commission_disagree}                                   p_bonf = 3.7469e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {is_npa}                                                p_bonf = 1.3047e-04  envs_rej(mean/var): 2/2  REJECTED
+  S = {acreage}                                               p_bonf = 3.0631e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {neighborhood_protest_contagion}                        p_bonf = 5.1341e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {neighborhood_median_wealth}                            p_bonf = 5.1341e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {neighborhood_density}                                  p_bonf = 5.1341e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {valid_petition, commission_disagree}                   p_bonf = 2.3101e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {valid_petition, is_npa}                                p_bonf = 6.9848e-05  envs_rej(mean/var): 2/1  REJECTED
+  S = {valid_petition, acreage}                               p_bonf = 1.8651e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {valid_petition, neighborhood_protest_contagion}        p_bonf = 2.9683e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {valid_petition, neighborhood_median_wealth}            p_bonf = 2.9683e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {valid_petition, neighborhood_density}                  p_bonf = 2.9683e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {commission_disagree, is_npa}                           p_bonf = 1.0589e-04  envs_rej(mean/var): 2/2  REJECTED
+  S = {commission_disagree, acreage}                          p_bonf = 2.1292e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {commission_disagree, neighborhood_protest_contagion}   p_bonf = 3.7469e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {commission_disagree, neighborhood_median_wealth}       p_bonf = 3.7469e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {commission_disagree, neighborhood_density}             p_bonf = 3.7469e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {is_npa, acreage}                                       p_bonf = 8.3782e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {is_npa, neighborhood_protest_contagion}                p_bonf = 1.3047e-04  envs_rej(mean/var): 2/2  REJECTED
+  S = {is_npa, neighborhood_median_wealth}                    p_bonf = 1.3047e-04  envs_rej(mean/var): 2/2  REJECTED
+  S = {is_npa, neighborhood_density}                          p_bonf = 1.3047e-04  envs_rej(mean/var): 2/2  REJECTED
+  S = {acreage, neighborhood_protest_contagion}               p_bonf = 3.0631e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {acreage, neighborhood_median_wealth}                   p_bonf = 3.0631e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {acreage, neighborhood_density}                         p_bonf = 3.0631e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {neighborhood_protest_contagion, neighborhood_median_wealth} p_bonf = 5.1341e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {neighborhood_protest_contagion, neighborhood_density}  p_bonf = 5.1341e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {neighborhood_median_wealth, neighborhood_density}      p_bonf = 5.1341e-05  envs_rej(mean/var): 2/2  REJECTED
+  S = {valid_petition, commission_disagree, is_npa, acreage, neighborhood_protest_contagion, neighborhood_median_wealth, neighborhood_density} p_bonf = 3.9967e-05  envs_rej(mean/var): 2/1  REJECTED
+
+  Testing FULL feature set (17 features)...
+  S = {ALL 17 features}  p_bonf = 3.8864e-03  envs_rej(mean/var): 4/1  REJECTED
+
+================================================================================
+PART 2: MLP ICP (fold_first_draft)
+================================================================================
+
+  Training MLP (ERM)...
+  MLP ERM    p_bonf = 7.3483e-05  envs_rej: 3/2  REJECTED
+
+  Training MLP (V-REx)...
+  MLP V-REx  p_bonf = 4.1417e-04  envs_rej: 2/2  REJECTED
+
+================================================================================
+PART 3: CVAE ICP (fold_first_draft)
+================================================================================
+
+  Training CVAE (ERM)...
+  CVAE ERM    p_bonf = 5.3076e-05  envs_rej: 2/2  REJECTED
+
+  Training CVAE (V-REx)...
+    CVAE V-REx early stop at epoch 11/40
+  CVAE V-REx  p_bonf = 5.0377e-05  envs_rej: 2/2  REJECTED
+
+################################################################################
+AGGREGATE RESULTS ACROSS ALL FOLDS
+################################################################################
+  MLP_ERM     : 0/1 folds ACCEPTED invariance
+  MLP_V-REx   : 0/1 folds ACCEPTED invariance
+  CVAE_ERM    : 0/1 folds ACCEPTED invariance
+  CVAE_V-REx  : 0/1 folds ACCEPTED invariance
+
+Completed in 4.8s

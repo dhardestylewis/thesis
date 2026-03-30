@@ -1,0 +1,9 @@
+--- PDF BACKUP SUCCESS METRICS ---
+Total Cases Tracked: 3241
+Cases with Backup PDFs Found: 3228 (99.6%)
+Total individual PDF URLs harvested: 23281
+
+--- EMBEDDING TIME ESTIMATE ---
+Total raw text blocks to embed: 3241
+Running local Ollama embedding benchmark (model='llama3.1:8b')...
+Ollama failed: model "llama3.1:8b" not found, try pulling it first (status code: 404)

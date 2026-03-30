@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.85in,top=0.7in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage[round,sort&compress]{natbib}
+\usepackage{hyperref}
+\renewcommand{\bibsection}{\section*{References}}
+\setlength{\bibsep}{1pt}
+
+% Ultra-compact spacing
+\titlespacing*{\section}{0pt}{6pt}{2pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize STAT8101}
+\chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei} (\texttt{db2128})}
+\cfoot{\thepage}
+
+\title{\vspace{-2.5em}\textbf{Reader Report: Week 06} \\ \vspace{0.1em} \large Causal Representation Learning}
+\author{\href{https://github.com/dhardestylewis}{Daniel Hardesty Lewis} (\texttt{dl3645})}
+\date{\vspace{-0.5em}2026 Spring}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\vspace{-1em}
+
+\section*{Summary}
+The transition from i.i.d. pattern recognition to out-of-distribution (OOD) generalization requires a structural approach to representation learning. \citet{scholkopf2021toward} conceptualize Causal Representation Learning (CRL) by positing that true robustness stems from discovering latent variables governed by Independent Causal Mechanisms (ICM), rather than entangled statistical features. Extending this principle to generative models, \citet{moran2025towards} demonstrate how causal constraints impart interpretability, allowing deep generative architectures to synthesize novel, counterfactually valid outputs. 
+
+However, realizing these abstractions on finite data requires formal identification. \citet{yao2024unifying} unify the myriad CRL assumptions under the \textit{invariance principle}, proving that preserving data symmetries across environments is mathematically sufficient to identify the true causal graph mapping latents to observables. \citet{uhler2025causal} ground these theories in application, leveraging the hard structural constraints of biomedical perturbations (e.g., gene knockouts) to formally identify the latent representation despite the impossibility theorems plaguing purely observational contexts.
+
+\section*{Critique \& Project Connection}
+Both \citet{moran2025towards} and \citet{yao2024unifying} clarify that CRL requires some form of multi-environment or interventional data to resolve rotational entanglement in latent spaces. In my project forecasting NIMBYism, we lack the strictly controlled perturbations seen in \citet{uhler2025causal}'s biomedical deployments. Instead, our ``environments'' are discrete municipal policy shifts (such as the HOME Initiative or parking reform elimination). If we view \citeauthor{scholkopf2021toward}'s framework through \citeauthor{yao2024unifying}'s invariance lens, our goal is identical: we must recover a representation of structural neighborhood attributes that remain invariant across temporal policy environments, ensuring that our model does not collapse when the market regime changes.
+
+\section*{Questions}
+\begin{enumerate}
+    \item \citet{yao2024unifying} unify CRL under the invariance principle, but what happens when the available environments only partially cover the symmetry space? Can invariance still force partial identification of the latents, or does the entire representation collapse into entanglement?
+    \item \citet{uhler2025causal} exploit structural interventions, while \citet{moran2025towards} seek interpretability. Do generative models constrained by CRL naturally map latents to human-interpretable concepts even when the domain lacks the strict mechanistic interventions of biology?
+\end{enumerate}
+
+\newpage
+\title{\vspace{-2em}\textbf{Project Update: Predicting NIMBYism Causally}}
+\vspace{0.5em}
+\hrule
+\vspace{0.5em}
+
+\section*{1. Clear and Crisp Statement of the Problem}
+I am investigating the structural, causally robust drivers of neighborhood housing opposition (NIMBYism). Because opposition patterns shift substantially across different economic and housing market regimes (e.g., the low-interest-rate boom of 2021 vs.\ the high-rate environment of 2024), standard predictive models that rely on Empirical Risk Minimization (ERM) fail by absorbing spurious correlations. My problem is to identify stable, invariant predictors of opposition that generalize robustly to future, unseen market environments.
+
+\section*{2. Mathematical Description of the Goal}
+Let $(X^e, Y^e)$ be the features and opposition outcomes collected from environment $e \in \mathcal{E}$, where $\mathcal{E}$ represents distinct market regimes across time. Instead of minimizing pooled empirical risk,
+\[ \min_f \sum_{e \in \mathcal{E}} \mathbb{E}[L(f(X^e), Y^e)], \]
+which risks learning spurious correlations, the goal is to learn a representation or subset of predictors that satisfies an invariance constraint. Using Invariant Causal Prediction (ICP) \citep{peters2016icp}, the objective is to find a set of predictors $S \subseteq \{1, \dots, d\}$ such that the conditional distribution is invariant across environments:
+$$ P(Y^e \mid X_S^e) = P(Y^{e'} \mid X_S^{e'}) \quad \forall e, e' \in \mathcal{E}. $$
+To handle potential unobserved confounding in observational text data, this goal generalizes to minimizing the worst-case risk over shift perturbations using Anchor Regression \citep{buhlmann2020invariance}:
+$$ \min_{\beta} \max_{P \in \mathcal{P}(\gamma)} \mathbb{E}_P \left[ (Y - X^\top \beta)^2 \right], $$
+where $\mathcal{P}(\gamma)$ defines a set of distributions with bounded shift size $\gamma$.
+
+\section*{3. Evaluation of Proposed Solution}
+To evaluate the proposed causally robust solution, I will partition the historical data (2018--2025) sequentially into training environments $\mathcal{E}_{tr}$ (e.g., 2018--2022) and temporally disjoint, structurally distinct test environments $\mathcal{E}_{te}$ (e.g., 2023--2025). The evaluation will compare standard ERM baselines (like logistic regression and XGBoost) against the invariant methods (ICP and Anchor Regression) on these unseen regimes.
+
+A successful solution will demonstrate \textbf{predictive stability}: while an ERM model's accuracy may severely degrade on the unseen $\mathcal{E}_{te}$ due to distribution shifts, the robust models should maintain a stable risk profile and outperform ERM in terms of worst-case risk across shifting environments. Furthermore, the subsets of predictors identified by ICP will be evaluated for their causal interpretability and relevance to planning policy.
+
+\vspace{-0.5em}
+{\scriptsize\setlength{\bibsep}{0pt}
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+}
+
+\end{document}
