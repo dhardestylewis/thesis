@@ -217,13 +217,34 @@ def process_horizon(path, horizon_name):
     print("\nPART 0: DEPLOYMENT METRICS EXTRACTION (H0 EXACT)")
     optimal_model = run_bounded_optimization(X, y, weights)
     
-    # Generate OOF Preds for full Table 5 extraction using Optimal Model
+    # Generate OOF Preds for full Table 5 extraction (and multiple architectures for Fig 17)
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.ensemble import RandomForestClassifier
+    
     kf = KFold(n_splits=5, shuffle=True, random_state=42)
     oof_preds = np.zeros(len(y))
+    oof_preds_lr = np.zeros(len(y))
+    oof_preds_rf = np.zeros(len(y))
+    
     for train_idx, val_idx in kf.split(X):
+        X_tr, y_tr = X.iloc[train_idx], y.iloc[train_idx]
+        w_tr = weights.iloc[train_idx]
+        X_v = X.iloc[val_idx]
+        
+        # Primary CatBoost
         cb = clone(optimal_model)
-        cb.fit(X.iloc[train_idx], y.iloc[train_idx], sample_weight=weights.iloc[train_idx])
-        oof_preds[val_idx] = cb.predict_proba(X.iloc[val_idx])[:, 1]
+        cb.fit(X_tr, y_tr, sample_weight=w_tr)
+        oof_preds[val_idx] = cb.predict_proba(X_v)[:, 1]
+        
+        # Logistic Regression Baseline
+        lr = LogisticRegression(max_iter=1000, class_weight='balanced')
+        lr.fit(X_tr, y_tr, sample_weight=w_tr)
+        oof_preds_lr[val_idx] = lr.predict_proba(X_v)[:, 1]
+        
+        # Random Forest Baseline
+        rf = RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=42)
+        rf.fit(X_tr, y_tr, sample_weight=w_tr)
+        oof_preds_rf[val_idx] = rf.predict_proba(X_v)[:, 1]
         
     tbl5_metrics = extract_advanced_metrics(y, oof_preds, districts, name="Table 5 Final")
     print("\n>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<")
@@ -248,7 +269,14 @@ def process_horizon(path, horizon_name):
         print(f"    [!] Macro Telemetry Export Failed: {e}")
             
     # Save OOF Preds for Visualizations to pick up
-    df_oof = pd.DataFrame({'y_true': y, 'y_prob': oof_preds, 'year': df['year'], 'district': districts})
+    df_oof = pd.DataFrame({
+        'y_true': y, 
+        'y_prob': oof_preds, 
+        'y_prob_lr': oof_preds_lr,
+        'y_prob_rf': oof_preds_rf,
+        'year': df['year'], 
+        'district': districts
+    })
     df_oof.to_csv(os.path.join(OUT_DIR, f"stage_c_oof_predictions_{safe_hz}.csv"), index=False)
             
     # Retrain on full for subsequent holdouts

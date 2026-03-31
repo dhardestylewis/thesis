@@ -23,40 +23,40 @@ OUT_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # Try loading empirical output from Stage C or fallback if not fully arrayed to Stage A format
-# Stage A hazard results contain `Prob_LGBM_H=4`, `Prob_LR_H=4` etc.
-STAGE_A_OUT = os.path.join(ROOT, "Analysis", "Output", "Track0_Predictive", "stage_a_hazard_results.csv")
+# Stage C Opposition Results contain the authentic out-of-fold probabilistic outputs
+STAGE_C_OUT = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "stage_c_oof_predictions_H0.csv")
 
 def plot_f12():
     print("==============================================")
     print(" Rendering Authentic F12: PR Curves")
     print("==============================================")
     
-    if not os.path.exists(STAGE_A_OUT):
-        print("[-] Required Stage A predictive data not found.")
+    if not os.path.exists(STAGE_C_OUT):
+        print("[-] Required Stage C predictive data not found.")
         return
         
-    df = pd.read_csv(STAGE_A_OUT, usecols=['event_next_1yr', 'Prob_LR_H=4', 'Prob_LGBM_H=4', 'Prob_H=4'])
+    df = pd.read_csv(STAGE_C_OUT, usecols=['y_true', 'y_prob_lr', 'y_prob_rf', 'y_prob'])
     
     # We evaluate for the H=4 (1 Yr) horizon
-    y_true = df['event_next_1yr']
+    y_true = df['y_true']
     
     # Calculate PR Curves for the three empirical models
-    p_lr, r_lr, _ = precision_recall_curve(y_true, df['Prob_LR_H=4'])
-    auc_lr = average_precision_score(y_true, df['Prob_LR_H=4'])
+    p_lr, r_lr, _ = precision_recall_curve(y_true, df['y_prob_lr'])
+    auc_lr = average_precision_score(y_true, df['y_prob_lr'])
     
-    p_lgbm, r_lgbm, _ = precision_recall_curve(y_true, df['Prob_LGBM_H=4'])
-    auc_lgbm = average_precision_score(y_true, df['Prob_LGBM_H=4'])
+    p_rf, r_rf, _ = precision_recall_curve(y_true, df['y_prob_rf'])
+    auc_rf = average_precision_score(y_true, df['y_prob_rf'])
     
-    p_cb, r_cb, _ = precision_recall_curve(y_true, df['Prob_H=4'])
-    auc_cb = average_precision_score(y_true, df['Prob_H=4'])
+    p_cb, r_cb, _ = precision_recall_curve(y_true, df['y_prob'])
+    auc_cb = average_precision_score(y_true, df['y_prob'])
     
     baseline = y_true.sum() / len(y_true)
 
     plt.figure(figsize=(9, 7))
     plt.plot([0, 1], [baseline, baseline], label=f'Baseline Prevalence (PR-AUC {baseline:.2f})', linestyle=':', color='gray')
-    plt.plot(r_lr, p_lr, label=f'Logistic Econometric (PR-AUC {auc_lr:.2f})', linestyle='-.', color='orange')
-    plt.plot(r_lgbm, p_lgbm, label=f'LightGBM Challenger (PR-AUC {auc_lgbm:.2f})', linestyle='--', color='blue')
-    plt.plot(r_cb, p_cb, label=f'CatBoost Primary (PR-AUC {auc_cb:.2f})', linewidth=2.5, color='darkred')
+    plt.plot(r_lr, p_lr, label=f'ElasticNet Logistic (PR-AUC {auc_lr:.2f})', linestyle='-.', color='orange')
+    plt.plot(r_rf, p_rf, label=f'RandomForest (PR-AUC {auc_rf:.2f})', linestyle='--', color='blue')
+    plt.plot(r_cb, p_cb, label=f'CatBoost Primary (V-REx) (PR-AUC {auc_cb:.2f})', linewidth=2.5, color='darkred')
 
     plt.title('Precision-Recall Curves (1-Year Horizon)', fontsize=14, pad=15)
     plt.xlabel('Recall (Sensitivity)', fontsize=12)

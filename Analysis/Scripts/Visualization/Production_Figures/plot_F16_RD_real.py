@@ -36,7 +36,7 @@ def generate_exhibits():
     df_coa = pd.read_csv(COA_RAW, low_memory=False)
     
     df = df_h0.merge(df_pet[['case_number', 'signer_pct']], on='case_number', how='left')
-    df['signed_area_share'] = df['signer_pct'].fillna(0)
+    df['signed_area_share'] = df['signer_pct'].fillna(0) / 100.0
     
     df_coa['start'] = pd.to_datetime(df_coa['APPLICATION_START_DATE'], errors='coerce')
     df_coa['end'] = pd.to_datetime(df_coa['FINAL_DATE'], errors='coerce')

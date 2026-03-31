@@ -13,6 +13,7 @@ try:
     if _curr not in sys.path:
         sys.path.insert(0, _curr)
     from thesis_style import set_thesis_style
+import json
     set_thesis_style()
 except Exception:
     pass
@@ -80,6 +81,9 @@ def run_real_pipelines():
     # Bound at 2024 to prevent 2025 from duplicating or projecting beyond actual outcomes
     test_years = sorted([y for y in df['year'].unique() if 2021 <= y <= 2024])
     
+    with open(os.path.join(ROOT_DIR, "Analysis", "Scripts", "exhibit_titles.json"), "r") as f:
+        titles = json.load(f)
+        
     plt.figure(figsize=(9, 6))
     rolling_scores = []
     clf = CatBoostClassifier(silent=True, iterations=50, depth=4)
@@ -100,7 +104,7 @@ def run_real_pipelines():
     plt.axvline(2022.5, color='black', linestyle=':', lw=2, label="Council Regime Shift (2022)")
     plt.ylabel("Precision-Recall AUC (Test Year t)")
     plt.xlabel("Expanding Window Temporal Target (Year t)")
-    plt.title("Track 1: Genuine Rolling-Origin Expanding Window Validation")
+    plt.title(titles["track1_rolling_origin"])
     plt.xticks(test_years)
     plt.ylim([0, 1.05])
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -121,7 +125,7 @@ def run_real_pipelines():
     scores = [id_score, ood_score]
     plt.bar(names, scores, color=['steelblue', 'firebrick'], width=0.4)
     plt.ylabel('Precision-Recall AUC')
-    plt.title('Track 1: Empirical Temporal Decay (ID vs Worst-Regime OOD)')
+    plt.title(titles["track1_empirical_decay_ood"])
     plt.ylim([0, 1.05])
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, "Fig9_Model_Comparison_PR_AUC.png"), dpi=300)

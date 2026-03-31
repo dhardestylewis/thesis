@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import json
 
 import sys
 try:
@@ -24,6 +25,9 @@ FIG_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Track1_Exhi
 os.makedirs(FIG_DIR, exist_ok=True)
 
 def plot_all_track1_exhibits():
+    with open(os.path.join(ROOT, "Analysis", "Scripts", "exhibit_titles.json"), "r") as f:
+        titles = json.load(f)
+        
     for hz in ['H0', 'H3']:
         print("==============================================")
         print(f" Rendering Authentic Track 1 PDF Exhibits: {hz}")
@@ -38,7 +42,7 @@ def plot_all_track1_exhibits():
             plt.figure(figsize=(7, 6))
             plt.plot([0, 1], [0, 1], 'k--', label='Perfect Calibration')
             plt.plot(prob_pred, prob_true, 's-', color='darkred', label=f'CatBoost ({hz})')
-            plt.title(f'Stage C Opposition Reliability ({hz} Out-of-Fold)', fontsize=14)
+            plt.title(titles["stage_c_reliability"].format(hz=hz), fontsize=14)
             plt.xlabel('Mean Predicted Probability', fontsize=12)
             plt.ylabel('Fraction of Positives', fontsize=12)
             plt.legend()
@@ -57,7 +61,7 @@ def plot_all_track1_exhibits():
                     for anchor in df_drift['Anchor'].unique():
                         sub = df_drift[df_drift['Anchor'] == anchor]
                         plt.plot(sub['Offset'], sub['PR-AUC'], marker='o', label=f'Anchor < {anchor}')
-                    plt.title(f'Temporal Predictive Drift ({hz} Rolling Origin)', fontsize=14)
+                    plt.title(titles["stage_c_drift"].format(hz=hz), fontsize=14)
                     plt.xlabel('Years Out-of-Distribution (T + offset)', fontsize=12)
                     plt.ylabel('PR-AUC', fontsize=12)
                     plt.xticks([0, 1, 2, 3])
@@ -77,7 +81,7 @@ def plot_all_track1_exhibits():
                 df_reg = pd.read_csv(regimes_file)
                 if not df_reg.empty:
                     plt.bar(df_reg['Regime'], df_reg['PR-AUC'], color=['navy', 'orange', 'darkred'])
-                    plt.title(f'Out-of-Distribution Policy Regime Degradation ({hz})', fontsize=14)
+                    plt.title(titles["stage_c_policy_regimes"].format(hz=hz), fontsize=14)
                     plt.ylabel('PR-AUC', fontsize=12)
                     plt.ylim(0, max(0.5, df_reg['PR-AUC'].max() * 1.2))
                     plt.grid(axis='y', alpha=0.3)
@@ -96,7 +100,7 @@ def plot_all_track1_exhibits():
                 df_fi = df_fi.sort_values('Importance', ascending=True)
                 plt.figure(figsize=(10, 8))
                 plt.barh(df_fi['Feature'], df_fi['Importance'], color='darkblue', alpha=0.8)
-                plt.title(f'Top 15 Native Feature Importances ({hz})', fontsize=14)
+                plt.title(titles["stage_c_feature_importance"].format(hz=hz), fontsize=14)
                 plt.xlabel('Relative Importance (%)', fontsize=12)
                 plt.grid(axis='x', alpha=0.3)
                 plt.tight_layout()
