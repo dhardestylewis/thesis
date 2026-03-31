@@ -484,22 +484,23 @@ Consequently, predictive algorithms targeting terminal council votes suffer from
 \begin{tikzpicture}[
     node distance=1.5cm and 2.5cm,
     var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
-    arrow/.style={thick,->,>=stealth}
+    unobs/.style={rectangle, draw, dashed, fill=gray!10, minimum height=0.8cm, align=center, rounded corners},
+    arrow/.style={thick,->,>=stealth},
+    dashed_arrow/.style={thick,dashed,->,>=stealth}
 ]
 \node[var] (R) {$R$ \\ \footnotesize (Valid Signed Area \%)};
-\node[var, right=1.6cm of R] (T) {$T$ \\ \footnotesize ($\ge$ 20\% Legal Threshold)};
+\node[var, right=1.6cm of R, very thick] (T) {$T$ \\ \footnotesize ($\ge$ 20\% Legal Threshold)};
 \node[var, right=1.6cm of T] (Y) {$Y$ \\ \footnotesize (Council Delay)};
-\node[var, above=1.5cm of T] (U) {$U$ \\ \footnotesize (Unobserved Factors)};
+\node[unobs, above=1.5cm of T] (U) {$U$ \\ \footnotesize (Unobserved Factors)};
 \node[var, below=1.5cm of T] (X) {$X$ \\ \footnotesize (Observed Covariates)};
 
 \draw[arrow] (R) -- (T);
 \draw[arrow] (T) -- node[above] {$\tau$} (Y);
-\draw[arrow] (U) to[bend right=15] (R.north);
-\draw[arrow] (U) to[bend left=15] (Y.north);
-\draw[arrow] (U) -- (T);
+\draw[arrow] (R) to[bend right=30] (Y);
+\draw[dashed_arrow] (U) to[bend right=15] (R.north);
+\draw[dashed_arrow] (U) to[bend left=15] (Y.north);
 \draw[arrow] (X) to[bend left=15] (R.south);
 \draw[arrow] (X) to[bend right=15] (Y.south);
-\draw[arrow] (X) -- (T);
 \end{tikzpicture}
 
 \vspace{0.6cm}
@@ -507,18 +508,23 @@ Consequently, predictive algorithms targeting terminal council votes suffer from
 \begin{tikzpicture}[
     node distance=1.5cm and 3cm,
     var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
-    arrow/.style={thick,->,>=stealth}
+    unobs/.style={rectangle, draw, dashed, fill=gray!10, minimum height=0.8cm, align=center, rounded corners},
+    arrow/.style={thick,->,>=stealth},
+    dashed_arrow/.style={thick,dashed,->,>=stealth}
 ]
 \node[var] (Post) {Time Shock $t$ \\ \footnotesize (Post-HOME Phase 1)};
 \node[var, below=1.5cm of Post] (Treated) {Eligibility $E$ \\ \footnotesize (Treated Parcel)};
-\node[var, right=2cm of Post, yshift=-1.15cm] (D) {Treatment $D$ \\ \footnotesize ($E \times t$)};
+\node[var, right=2cm of Post, yshift=-1.15cm, very thick] (D) {Treatment $D$ \\ \footnotesize ($E \times t$)};
 \node[var, right=2cm of D] (Y) {$Y$ \\ \footnotesize (Council Dissent / No Votes)};
+\node[unobs, left=1cm of Treated] (U) {$U$ \\ \footnotesize (Unobserved Factors)};
 
 \draw[arrow] (Post) -- (D);
 \draw[arrow] (Treated) -- (D);
 \draw[arrow] (D) -- node[above] {$\tau$} (Y);
 \draw[arrow] (Post) to[bend left=15] (Y.north west);
 \draw[arrow] (Treated) to[bend right=15] (Y.south west);
+\draw[dashed_arrow] (U) -- (Treated);
+\draw[dashed_arrow] (U) to[bend right=40] (Y.south);
 \end{tikzpicture}
 
 \caption{Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis. \textbf{Panel A} illustrates the Fuzzy Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$). \textbf{Panel B} illustrates the Difference-in-Differences Event Study, isolating council dissent ($Y$) arising from the intersection of the discrete HOME Phase 1 policy time shock ($t$) and parcel eligibility ($E$).}
