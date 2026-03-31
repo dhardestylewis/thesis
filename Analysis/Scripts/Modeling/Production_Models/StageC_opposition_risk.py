@@ -220,6 +220,8 @@ def process_horizon(path, horizon_name):
     # Generate OOF Preds for full Table 5 extraction (and multiple architectures for Fig 17)
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn.impute import SimpleImputer
+    from sklearn.pipeline import Pipeline
     
     kf = KFold(n_splits=5, shuffle=True, random_state=42)
     oof_preds = np.zeros(len(y))
@@ -231,19 +233,25 @@ def process_horizon(path, horizon_name):
         w_tr = weights.iloc[train_idx]
         X_v = X.iloc[val_idx]
         
-        # Primary CatBoost
+        # Primary CatBoost (Natively handles missing data)
         cb = clone(optimal_model)
         cb.fit(X_tr, y_tr, sample_weight=w_tr)
         oof_preds[val_idx] = cb.predict_proba(X_v)[:, 1]
         
-        # Logistic Regression Baseline
-        lr = LogisticRegression(max_iter=1000, class_weight='balanced')
-        lr.fit(X_tr, y_tr, sample_weight=w_tr)
+        # Logistic Regression Baseline (Requires Imputation)
+        lr = Pipeline([
+            ('imputer', SimpleImputer(strategy='median')),
+            ('model', LogisticRegression(max_iter=1000, class_weight='balanced'))
+        ])
+        lr.fit(X_tr, y_tr, model__sample_weight=w_tr)
         oof_preds_lr[val_idx] = lr.predict_proba(X_v)[:, 1]
         
-        # Random Forest Baseline
-        rf = RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=42)
-        rf.fit(X_tr, y_tr, sample_weight=w_tr)
+        # Random Forest Baseline (Requires Imputation)
+        rf = Pipeline([
+            ('imputer', SimpleImputer(strategy='median')),
+            ('model', RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=42))
+        ])
+        rf.fit(X_tr, y_tr, model__sample_weight=w_tr)
         oof_preds_rf[val_idx] = rf.predict_proba(X_v)[:, 1]
         
     tbl5_metrics = extract_advanced_metrics(y, oof_preds, districts, name="Table 5 Final")
@@ -255,6 +263,11 @@ def process_horizon(path, horizon_name):
             print(f"  {k:20}: {v}")
             
     try:
+        import sys
+        module_path = os.path.join(ROOT, 'Analysis', 'Scripts', 'Modeling')
+        if module_path not in sys.path:
+            sys.path.append(module_path)
+            
         from Utilities_and_Logs.lib_metrics import update_metric
         if "H0" in horizon_name:
             update_metric("metricPRAUC", f"{tbl5_metrics.get('PR-AUC', 0):.3f}")

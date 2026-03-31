@@ -101,6 +101,11 @@ def run_stage_d():
         f.write(f"Accuracy: {acc:.4f}\n")
         
     try:
+        import sys
+        module_path = os.path.join(ROOT, 'Analysis', 'Scripts', 'Modeling')
+        if module_path not in sys.path:
+            sys.path.append(module_path)
+            
         from Utilities_and_Logs.lib_metrics import update_metric
         update_metric("metricOpposedTotal", f"{opposed_total}")
         update_metric("metricOpposedWithdrawn", f"{opposed_withdrawn}")

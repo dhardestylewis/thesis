@@ -120,7 +120,7 @@ The empirical foundation is a time-stamped relational data warehouse that recons
 
 \subsection{Data Warehouse Structure}
 
-The core analytics rely on \texttt{H0\_Filing\_Master\_Enriched.csv}, a consolidated master table used by the predictive orchestrator that merges variables into single parcel-year observations:
+The core analytics rely on the enriched filing-date master table, a consolidated structural matrix used by the predictive orchestrator that merges spatial and demographic variables into single parcel-year observations:
 \begin{enumerate}
     \item \textbf{case\_master:} Case ID, milestone dates (filing, notice, petition deadline, planning commission hearing, council reading, withdrawal), requested zoning changes, unit limits, target FAR, and disposition status.
     \item \textbf{site\_geometry:} Parcel IDs, geometries, acreage, frontage, and 200ft buffers used to aggregate nearby properties (council districts and overlapping geometries).
