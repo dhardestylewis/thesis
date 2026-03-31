@@ -1,6 +1,20 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 from sklearn.metrics import precision_recall_curve, average_precision_score
 import os
 
@@ -44,7 +58,7 @@ def plot_f12():
     plt.plot(r_lgbm, p_lgbm, label=f'LightGBM Challenger (PR-AUC {auc_lgbm:.2f})', linestyle='--', color='blue')
     plt.plot(r_cb, p_cb, label=f'CatBoost Primary (PR-AUC {auc_cb:.2f})', linewidth=2.5, color='darkred')
 
-    plt.title('Exhibit F12: Authentic Predictive PR Curves (Track 0 H=1 Yr)', fontsize=14, pad=15)
+    plt.title('Precision-Recall Curves (1-Year Horizon)', fontsize=14, pad=15)
     plt.xlabel('Recall (Sensitivity)', fontsize=12)
     plt.ylabel('Precision (Positive Predictive Value)', fontsize=12)
     plt.legend(loc='lower left', fontsize=11, frameon=True)

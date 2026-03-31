@@ -1,6 +1,20 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 from sklearn.calibration import calibration_curve
 import os
 
@@ -61,7 +75,7 @@ def plot_f8():
     ax2.legend()
     ax2.grid(True, alpha=0.3)
 
-    plt.suptitle('Exhibit F8: Empirical Development Calibration and Information Gains', fontsize=14, y=1.05)
+    plt.suptitle('Development Occurrence Calibration and Information Gains', fontsize=14, y=1.05)
     plt.tight_layout()
     f8_path = os.path.join(OUT_DIR, "F8_Calibration.png")
     plt.savefig(f8_path, dpi=300, bbox_inches='tight')

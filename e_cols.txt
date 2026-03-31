@@ -1,3 +1,0 @@
-CASE_NUMBER
-Meeting_Date
-agenda_text_raw

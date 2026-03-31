@@ -3,6 +3,20 @@ import glob
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 from collections import defaultdict
 
 out_dir = r"C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Figures\Chapter6"
@@ -39,7 +53,7 @@ for i, (role, path) in enumerate(interviews.items()):
 
 plt.figure(figsize=(11, 4))
 sns.heatmap(matrix, annot=True, fmt=".0%", cmap="YlOrRd", xticklabels=list(themes.keys()), yticklabels=list(interviews.keys()), vmin=0, vmax=1)
-plt.title('Exhibit F20: Empirical Stakeholder Theme Heatmap (Verified Transcripts)', fontsize=14, pad=15)
+plt.title('Stakeholder Theme Heatmap (Verified Transcripts)', fontsize=14, pad=15)
 plt.tight_layout()
 plt.savefig(os.path.join(out_dir, "F20_Stakeholder_Heatmap.png"), dpi=300)
 

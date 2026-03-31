@@ -3,6 +3,20 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import precision_recall_curve, auc
 from catboost import CatBoostClassifier
@@ -11,7 +25,7 @@ ROOT_DIR = r"C:\Users\dhl\data\thesis\thesis"
 WORK_DIR = os.path.join(ROOT_DIR, "Data", "Warehouse_As_Of")
 FIGURES_DIR = os.path.join(ROOT_DIR, "Thesis_Draft", "Draft_v1", "Figures")
 os.makedirs(FIGURES_DIR, exist_ok=True)
-sns.set_theme(style="whitegrid", context="paper")
+# Removed local style: sns.set_theme(style="whitegrid", context="paper")
 
 np.random.seed(42)
 

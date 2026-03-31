@@ -1,5 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 import os
 
 # F12: Organized Opposition PR Curves (H0, H1, H2, H3)
@@ -22,7 +36,7 @@ plt.plot(recall, pr_logistic, label='Hierarchical Logistic (PR-AUC 0.51)', lines
 plt.plot(recall, pr_boosted, label='Boosted Trees (CatBoost) (PR-AUC 0.82)', linestyle='--', color='blue')
 plt.plot(recall, pr_robust, label='Robust + Text + V-REx (PR-AUC 0.94)', linewidth=2.5, color='darkred')
 
-plt.title('Figure F12: Organized Opposition PR Curves (H0 Horizon)', fontsize=14, pad=15)
+plt.title('Organized Opposition Precision-Recall Curves (Filing-Date Horizon)', fontsize=14, pad=15)
 plt.xlabel('Recall (Sensitivity)', fontsize=12)
 plt.ylabel('Precision (Positive Predictive Value)', fontsize=12)
 plt.legend(loc='lower left', fontsize=11, frameon=True)

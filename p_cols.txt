@@ -1,5 +1,0 @@
-case_number
-year
-total_parcels
-signers
-signer_pct

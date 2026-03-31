@@ -10,47 +10,44 @@ Reallocating 'global_strs' (item size: 1) to 4000000 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Database file #1: references.bib
-Warning--I didn't find a database entry for "manville2016unpermitted"
-Warning--I didn't find a database entry for "whittemore2014racial"
-You've used 15 entries,
+You've used 18 entries,
             2943 wiz_defined-function locations,
-            745 strings with 7972 characters,
-and the built_in function-call counts, 7321 in all, are:
-= -- 812
-> -- 234
+            763 strings with 8378 characters,
+and the built_in function-call counts, 8616 in all, are:
+= -- 956
+> -- 267
 < -- 2
-+ -- 84
-- -- 66
-* -- 461
-:= -- 1045
-add.period$ -- 58
-call.type$ -- 15
-change.case$ -- 76
++ -- 95
+- -- 74
+* -- 536
+:= -- 1225
+add.period$ -- 68
+call.type$ -- 18
+change.case$ -- 89
 chr.to.int$ -- 0
-cite$ -- 15
-duplicate$ -- 182
-empty$ -- 671
-format.name$ -- 66
-if$ -- 1864
+cite$ -- 18
+duplicate$ -- 215
+empty$ -- 800
+format.name$ -- 74
+if$ -- 2201
 int.to.chr$ -- 0
-int.to.str$ -- 15
-missing$ -- 17
-newline$ -- 90
-num.names$ -- 30
-pop$ -- 139
+int.to.str$ -- 18
+missing$ -- 20
+newline$ -- 106
+num.names$ -- 36
+pop$ -- 161
 preamble$ -- 1
-purify$ -- 63
+purify$ -- 73
 quote$ -- 0
-skip$ -- 487
+skip$ -- 580
 stack$ -- 0
-substring$ -- 430
-swap$ -- 51
-text.length$ -- 26
+substring$ -- 516
+swap$ -- 56
+text.length$ -- 28
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 56
+type$ -- 68
 warning$ -- 0
-while$ -- 57
-width$ -- 17
-write$ -- 191
-(There were 2 warnings)
+while$ -- 69
+width$ -- 20
+write$ -- 226

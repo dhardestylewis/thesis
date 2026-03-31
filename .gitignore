@@ -57,3 +57,9 @@ Analysis/Data/Tensors/
 Analysis/Output/
 Data/Zoning_Cases/Processed_Data/GeoJSON/
 
+# ============================================
+# Analysis Output and Temp Folders
+# ============================================
+catboost_info/
+scratch/
+results/

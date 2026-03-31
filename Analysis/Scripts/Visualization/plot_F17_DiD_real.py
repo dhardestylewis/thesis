@@ -2,6 +2,20 @@ import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 import statsmodels.formula.api as smf
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
@@ -80,7 +94,7 @@ def generate_exhibits():
         plt.xticks(x_pos, labels)
         plt.ylabel('Treatment Effect on Council Vote_No Magnitude')
         plt.xlabel('Quarters Relative to HOME Phase 1')
-        plt.title('Figure F17: Authentic Event Study DiD (vote_no)', fontsize=14, pad=15)
+        plt.title('HOME Phase 1 Event-Study (Council Dissent)', fontsize=14, pad=15)
         plt.grid(alpha=0.3, axis='y')
         plt.legend(loc='lower left')
         plt.tight_layout()

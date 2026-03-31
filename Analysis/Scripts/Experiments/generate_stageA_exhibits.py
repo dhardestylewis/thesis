@@ -1,6 +1,20 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 from sklearn.metrics import precision_recall_curve, average_precision_score
 import os
 
@@ -56,7 +70,7 @@ def generate_exhibits():
 
     plt.xlabel('Recall (Fraction of True Events Captured)')
     plt.ylabel('Precision (Fraction of Predictions that are Events)')
-    plt.title('Figure 3: Multi-Horizon Hazard PR Curves (CatBoost)')
+    plt.title('Multi-Horizon Hazard PR Curves (CatBoost)')
     plt.legend(loc='upper right', fontsize=9)
     plt.grid(alpha=0.3)
     plt.tight_layout()
@@ -71,22 +85,28 @@ def generate_exhibits():
     map_data = map_data[(map_data.longitude > -98.1) & (map_data.longitude < -97.5) & 
                         (map_data.latitude > 30.0) & (map_data.latitude < 30.6)]
 
+    import contextily as cx
     threshold_90 = np.percentile(map_data['Prob_H=4'], 90)
     print(f"    Filtering out ambient noise below the 90th percentile hazard threshold: {threshold_90:.4f}")
     significant_hotspots = map_data[map_data['Prob_H=4'] >= threshold_90]
 
-    plt.figure(figsize=(10, 10))
-    plt.hexbin(significant_hotspots['longitude'], significant_hotspots['latitude'], 
-               C=significant_hotspots['Prob_H=4'], gridsize=100, cmap='YlOrRd', reduce_C_function=np.mean, mincnt=1, alpha=0.85)
-    plt.colorbar(label='Average Predicted Development Probability (Top 10% Sites)')
+    fig, ax = plt.subplots(figsize=(10, 10))
+    hb = ax.hexbin(significant_hotspots['longitude'], significant_hotspots['latitude'], 
+                   C=significant_hotspots['Prob_H=4'], gridsize=100, cmap='YlOrRd', reduce_C_function=np.mean, mincnt=15, alpha=0.85)
+    plt.colorbar(hb, ax=ax, label='Average Predicted Development Probability (Top 10% Sites)')
+    
+    # Add basemap using contextily (assuming coordinates are WGS84)
+    cx.add_basemap(ax, crs="EPSG:4326", source=cx.providers.CartoDB.Positron)
 
     events = map_data[map_data['y_1yr'] == 1]
-    plt.scatter(events['longitude'], events['latitude'], c='cyan', s=3, alpha=0.5, label='Observed Dev Event')
+    ax.scatter(events['longitude'], events['latitude'], c='cyan', s=3, alpha=0.5, label='Observed Dev Event')
 
-    plt.title('Figure 4: Ex-Ante Development Hotspot Density (Top Decile Filtered)')
-    plt.xlabel('Longitude')
-    plt.ylabel('Latitude')
-    plt.legend()
+    ax.set_title('Ex-ante predicted hotspot density vs. realized development events')
+    ax.set_xlabel('City of Austin')
+    ax.set_ylabel('')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.legend()
     plt.tight_layout()
     plt.savefig('Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png', dpi=300)
     plt.close()

@@ -1,5 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 import os
 
 print("Rendering F16: Petition Threshold RD Plot...")
@@ -30,7 +44,7 @@ plt.plot(x_left, y_left, color='black', linewidth=2.5)
 plt.plot(x_right, y_right, color='black', linewidth=2.5)
 
 plt.axvline(x=0.20, color='red', linestyle='--', linewidth=2, label='Statutory 20% Threshold')
-plt.title('Exhibit F16: Regression Discontinuity around 20% Protest Threshold', fontsize=14, pad=15)
+plt.title('Regression Discontinuity at the 20% Protest Petition Threshold', fontsize=14, pad=15)
 plt.xlabel('Valid Protest Petition Signed Area Share', fontsize=12)
 plt.ylabel('Probability of Substantial Council Delay / Continuance', fontsize=12)
 plt.legend(loc='upper left', fontsize=11, frameon=True)

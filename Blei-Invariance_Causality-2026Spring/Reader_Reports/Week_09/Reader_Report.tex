@@ -1,0 +1,91 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage[round,sort&compress]{natbib}
+\usepackage{hyperref}
+
+% Approximation of JMLR style parameters
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3em}
+\titlespacing*{\section}{0pt}{0.6em}{0.3em}
+\titlespacing*{\subsection}{0pt}{0.5em}{0.2em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize STAT8101}
+\chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei}}
+\cfoot{\thepage}
+
+\title{\textbf{Reader Report: Week 09}\\ \large Synthetic Control Methods}
+\author{Daniel Hardesty Lewis (\texttt{dl3645})}
+\date{Spring 2026}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section*{Summary}
+Synthetic control (SC) methods estimate causal effects by constructing data-driven counterfactuals from untreated donors. \citet{abadie2010sc} formalized this via a constrained-weight estimator, while \citet{abadie2021sc} surveys its feasibility and placebo-based inference. \citet{athey2021mc} recast SC as matrix completion, using nuclear-norm regularization to recover low-rank approximations that nest both SC and unconfoundedness-based methods. Finally, \citet{shi2022sc} question \emph{why} linear SC works. By disaggregating large units into constituent ``small units,'' they derive sufficient conditions for nonparametrically identifying the sub-population average treatment effect (SATE), demonstrating that SC's linearity arises naturally from granular models rather than opaque structural assumptions.
+
+\section*{Critique}
+A striking thread across these papers is the tension between flexibility and identifiability. Classical SC \citep{abadie2010sc} requires that the treated unit lie inside the convex hull of donors, a geometric condition that is fragile when the number of pre-treatment periods is small relative to the donor pool. \citet{athey2021mc} relax this via nuclear-norm regularization, but their estimator introduces a tuning parameter $\lambda$ whose optimal value requires cross-validation on a missing-data pattern that is not ignorable. \citet{shi2022sc} offer a satisfying resolution by reframing identification at the sub-population level, yet this shifts the data requirement from many pre-treatment periods to rich micro-level data within each aggregate unit. In all cases the core invariance assumption is the same: the latent factor structure governing untreated outcomes must be \emph{stable} across the pre- and post-treatment periods, a direct parallel to the invariance conditions of ICP \citep{peters2016icp} and V-REx \citep{krueger2021rex}, where the causal conditional must be stable across environments.
+
+\section*{Questions}
+\begin{enumerate}
+    \item \citet{shi2022sc} derive nonparametric identification by aggregating over small units, but their conditions require that donors share the same sub-population mixture as the treated unit. In practice, how would one verify this overlap condition, and can it be relaxed via empirical Bayes shrinkage on the mixture weights?
+    \item \citet{athey2021mc} show that SC and unconfoundedness-based methods are endpoints of a regularization continuum. Is there a principled way to learn the interpolation (i.e., an automatic ``bias direction''), or does the choice remain an analytic judgment about whether units or time periods provide more structure?
+\end{enumerate}
+
+\newpage
+\title{\textbf{Project Update: Causal Invariance in NIMBYism Protest}}
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+Urban housing opposition (NIMBYism) persistently blocks sustainable densification, yet predictive models fail to generalize across distinct geographic or regulatory regimes because they absorb spurious local correlations. This project applies Invariant Risk Minimization (IRM) and Variance-Risk Extrapolation (V-REx) to a novel panel of 282,000 properties in Austin, TX spanning 244 distinct multi-parcel zoning environments. Building on this week's discussion of synthetic controls, we explore how the SC framework could complement our invariance approach by constructing counterfactual opposition outcomes for zoning cases that received specific policy treatments (e.g., major Planned Unit Developments), providing a second identification strategy grounded in the same latent-factor stability assumption.
+\end{abstract}
+
+\section*{The Questions (What, Why, How)}
+\textbf{What:} Can we identify the invariant causal drivers of housing protest behavior across disparate zoning contexts, and can synthetic control counterfactuals provide independent validation of those drivers? \\
+\textbf{Why:} Standard ERM predictors conflate causal mechanisms with spurious correlations. SC offers a complementary lens: rather than learning an invariant representation, it directly constructs a counterfactual outcome from untreated donor neighborhoods, enabling a causal effect estimate without assuming a specific functional form. \\
+\textbf{How:} (1) V-REx penalty over deep CVAEs to learn invariant representations; (2) SC-based counterfactual construction where treated zoning cases are matched to weighted combinations of untreated donor cases sharing pre-treatment covariate trajectories.
+
+\section*{Related Work}
+\begin{itemize}
+    \item \textbf{SC in Policy Evaluation:} \citet{abadie2010sc} and \citet{abadie2021sc} established SC for state-level policy analysis; we adapt this to neighborhood-level zoning interventions.
+    \item \textbf{Matrix Completion:} \citet{athey2021mc} unify SC and panel methods under nuclear-norm regularization, which is directly applicable to our $N$-neighborhood $\times$ $T$-period outcome matrix.
+    \item \textbf{Invariance Methods:} \citet{krueger2021rex} and \citet{arjovsky2019irm} provide the V-REx/IRM framework we use as the primary identification strategy.
+    \item \textbf{SC Assumptions:} \citet{shi2022sc} justify linear SC from sub-population aggregation, suggesting that our parcel-level data (small units) within neighborhoods (large units) is precisely the granularity at which SC identification is strongest.
+\end{itemize}
+
+\section*{Mathematical Description \& Strategy}
+\textbf{Invariance arm:} Unchanged from Week 07. We minimize V-REx over 244 zoning environments:
+\[
+  \min_{\Phi, w}\;\overline{\mathcal{R}}(\Phi(X)) + \lambda\,\mathrm{Var}_{e\in\mathcal{E}}\bigl[\mathcal{R}^e(\Phi(X))\bigr]
+\]
+
+\textbf{Synthetic control arm:} For a treated neighborhood $j$ receiving a major policy intervention at time $T_0$, we estimate the counterfactual opposition level:
+\[
+  \hat{Y}_{j,t}^{(0)} = \sum_{i \in \text{donors}} \hat{w}_i \, Y_{i,t}, \qquad t > T_0,
+\]
+where the weights $\hat{w}_i$ are chosen to minimize pre-treatment fit $\sum_{t \leq T_0} \bigl(Y_{j,t} - \sum_i w_i Y_{i,t}\bigr)^2$ subject to $w_i \geq 0,\;\sum_i w_i = 1$. The treatment effect is $\hat{\tau}_{j,t} = Y_{j,t} - \hat{Y}_{j,t}^{(0)}$.
+
+\section*{Evaluation}
+\textbf{Invariance Testing:} V-REx risk-variance convergence across 244 environments. \\
+\textbf{SC Validation:} Placebo tests assigning fake treatment dates to untreated neighborhoods; a valid SC estimate should show large post-treatment gaps only for truly treated units. \\
+\textbf{Cross-Validation:} Compare the causal drivers identified by V-REx feature attribution (demographic mismatch) against the SC treatment-effect heterogeneity to check whether the two independent identification strategies converge on the same substantive conclusion.
+
+\section*{Early Results}
+V-REx results from Week 07 remain: demographics (74\% of invariant signal), with homestead exemption as a key causal prerequisite. The SC arm is currently in the design phase. Next steps include identifying valid untreated donor pools for recent major upzoning events and implementing the \citet{xu2017gsynth} generalized SC estimator, which accommodates interactive fixed effects and is well-suited to our multi-neighborhood panel.
+
+\vspace{-0.5em}
+{\scriptsize
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+}
+\end{document}

@@ -1,11 +1,25 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 import numpy as np
 
 FIGURES_DIR = r"C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Figures"
 os.makedirs(FIGURES_DIR, exist_ok=True)
-sns.set_theme(style="whitegrid", context="paper")
+# Removed local style: sns.set_theme(style="whitegrid", context="paper")
 
 def generate_partial_dependence():
     print("Generating Fig 5: Partial Dependence...")

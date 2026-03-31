@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  30 MAR 2026 20:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  30 MAR 2026 23:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -898,158 +898,150 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 [1
 
 {C:/Users/dhl/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/dhl/Ap
-pData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}]
+pData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}] [2]
 (Austin_NIMBY_Thesis_Draft.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 3.
- [2])
+ [3])
 \tf@toc=\write5
 \openout5 = `Austin_NIMBY_Thesis_Draft.toc'.
 
- (Austin_NIMBY_Thesis_Draft.lof)
+ (Austin_NIMBY_Thesis_Draft.lof [4{C:/Users/dhl/AppData/Local/Programs/MiKTeX/f
+onts/enc/dvips/lm/lm-mathit.enc}{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
+ts/enc/dvips/lm/lm-mathsy.enc}{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts
+/enc/dvips/lm/lm-rm.enc}])
 \tf@lof=\write6
 \openout6 = `Austin_NIMBY_Thesis_Draft.lof'.
 
 
-(Austin_NIMBY_Thesis_Draft.lot [3{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fo
-nts/enc/dvips/lm/lm-mathit.enc}{C:/Users/dhl/AppData/Local/Programs/MiKTeX/font
-s/enc/dvips/lm/lm-mathsy.enc}{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
-enc/dvips/lm/lm-rm.enc}])
+(Austin_NIMBY_Thesis_Draft.lot)
 \tf@lot=\write7
 \openout7 = `Austin_NIMBY_Thesis_Draft.lot'.
 
- [4]
+ [5]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 5
-5.
+9.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [5{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
-
-
-LaTeX Warning: Citation `manville2016unpermitted' on page 6 undefined on input 
-line 77.
-
-[6]
-
-LaTeX Warning: Citation `whittemore2014racial' on page 7 undefined on input lin
-e 89.
-
-[7]
-<Figures/Archive_Pipelines/fig1_spatial_distribution.png, id=337, 1438.173pt x 
+) [6{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 83.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 83.
+ [7] [8]
+<Figures/Archive_Pipelines/fig1_spatial_distribution.png, id=370, 1438.173pt x 
 1509.4794pt>
 File: Figures/Archive_Pipelines/fig1_spatial_distribution.png Graphic file (typ
 e png)
 <use Figures/Archive_Pipelines/fig1_spatial_distribution.png>
 Package pdftex.def Info: Figures/Archive_Pipelines/fig1_spatial_distribution.pn
-g  used on input line 114.
+g  used on input line 118.
 (pdftex.def)             Requested size: 281.85587pt x 295.83292pt.
- [8]
-<Figures/Exploratory_EDA/waller_buffer_map.png, id=347, 491.436pt x 720.291pt>
+
+[9]
+<Figures/Exploratory_EDA/waller_buffer_map.png, id=383, 491.436pt x 720.291pt>
 File: Figures/Exploratory_EDA/waller_buffer_map.png Graphic file (type png)
 <use Figures/Exploratory_EDA/waller_buffer_map.png>
 Package pdftex.def Info: Figures/Exploratory_EDA/waller_buffer_map.png  used on
- input line 121.
+ input line 125.
 (pdftex.def)             Requested size: 281.85587pt x 413.13097pt.
- [9 <./Figures/Archive_Pipelines/fig1_spatial_distribution.png>]
-Overfull \hbox (61.78677pt too wide) in paragraph at lines 150--151
+ [10 <./Figures/Archive_Pipelines/fig1_spatial_distribution.png>]
+Overfull \hbox (61.78677pt too wide) in paragraph at lines 154--155
  [][] 
  []
 
-[10 <./Figures/Exploratory_EDA/waller_buffer_map.png>] (summary_stats_table.tex
-) [11] [12]
-<../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png, id=374, 
+[11 <./Figures/Exploratory_EDA/waller_buffer_map.png>] (summary_stats_table.tex
+) [12] [13]
+<../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png, id=412, 
 650.43pt x 433.62pt>
 File: ../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png Grap
 hic file (type png)
 <use ../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png>
 Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/StageA_Figure3
-_PR_Curves.png  used on input line 251.
+_PR_Curves.png  used on input line 255.
 (pdftex.def)             Requested size: 375.80544pt x 250.54037pt.
-<../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png, id=375, 72
+<../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png, id=413, 72
 2.7pt x 722.7pt>
 File: ../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png Graphi
 c file (type png)
 <use ../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png>
 Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/StageA_Figure4
-_Hotspot.png  used on input line 258.
+_Hotspot.png  used on input line 262.
 (pdftex.def)             Requested size: 375.80544pt x 375.80615pt.
- [13 <../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png>] [1
-4 <../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png>]
-<Figures/Chapter4/F22_Joint_Policy_Map.png, id=391, 683.9151pt x 572.8602pt>
+ [14 <../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png>] [1
+5 <../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png>]
+<Figures/Chapter4/F22_Joint_Policy_Map.png, id=428, 1149.3339pt x 1147.8885pt>
 File: Figures/Chapter4/F22_Joint_Policy_Map.png Graphic file (type png)
 <use Figures/Chapter4/F22_Joint_Policy_Map.png>
 Package pdftex.def Info: Figures/Chapter4/F22_Joint_Policy_Map.png  used on inp
-ut line 332.
-(pdftex.def)             Requested size: 399.29463pt x 334.45317pt.
- [15]
-<Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png, id=397, 650.43pt x
+ut line 329.
+(pdftex.def)             Requested size: 399.29463pt x 398.78938pt.
+ [16] [17 <./Figures/Chapter4/F22_Joint_Policy_Map.png>]
+<Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png, id=439, 650.43pt x
  433.62pt>
 File: Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png Graphic file (
 type png)
 <use Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png>
 Package pdftex.def Info: Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons
-.png  used on input line 352.
+.png  used on input line 349.
 (pdftex.def)             Requested size: 375.80544pt x 250.54037pt.
- [16 <./Figures/Chapter4/F22_Joint_Policy_Map.png>]
-<Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png, id=403, 722.7pt x 
+<Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png, id=440, 722.7pt x 
 433.62pt>
 File: Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png Graphic file (
 type png)
 <use Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png>
 Package pdftex.def Info: Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC
-.png  used on input line 359.
+.png  used on input line 356.
 (pdftex.def)             Requested size: 375.80544pt x 225.48369pt.
- [17 <./Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png> <./Figures/
-Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png>] (Tables/multi_horizon_resu
-lts.tex)
-<Track1_Exhibits/fig_calibration_ece_H0.pdf, id=411, 505.89pt x 433.62pt>
+ [18 <./Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png>] [19 <./Fig
+ures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png>] (Tables/multi_horizon
+_results.tex)
+<Track1_Exhibits/fig_calibration_ece_H0.pdf, id=460, 505.89pt x 433.62pt>
 File: Track1_Exhibits/fig_calibration_ece_H0.pdf Graphic file (type pdf)
 <use Track1_Exhibits/fig_calibration_ece_H0.pdf>
 Package pdftex.def Info: Track1_Exhibits/fig_calibration_ece_H0.pdf  used on in
-put line 399.
+put line 400.
 (pdftex.def)             Requested size: 422.77664pt x 362.3857pt.
- [18]
-<Track1_Exhibits/fig_temporal_drift_H0.pdf, id=416, 505.89pt x 361.35pt>
+
+[20]
+<Track1_Exhibits/fig_temporal_drift_H0.pdf, id=465, 505.89pt x 361.35pt>
 File: Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
 <use Track1_Exhibits/fig_temporal_drift_H0.pdf>
 Package pdftex.def Info: Track1_Exhibits/fig_temporal_drift_H0.pdf  used on inp
-ut line 406.
+ut line 407.
 (pdftex.def)             Requested size: 422.77664pt x 301.98808pt.
-
-[19 <./Track1_Exhibits/fig_calibration_ece_H0.pdf>]
-<Track1_Exhibits/fig_policy_regimes_H0.pdf, id=466, 578.16pt x 361.35pt>
+ [21 <./Track1_Exhibits/fig_calibration_ece_H0.pdf>]
+<Track1_Exhibits/fig_policy_regimes_H0.pdf, id=514, 578.16pt x 361.35pt>
 File: Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
 <use Track1_Exhibits/fig_policy_regimes_H0.pdf>
 Package pdftex.def Info: Track1_Exhibits/fig_policy_regimes_H0.pdf  used on inp
-ut line 413.
+ut line 414.
 (pdftex.def)             Requested size: 422.77664pt x 264.23543pt.
- [20 <./Track1_Exhibits/fig_temporal_drift_H0.pdf>]
-<Track1_Exhibits/fig_feature_importance_H0.pdf, id=526, 722.7pt x 578.16pt>
+ [22 <./Track1_Exhibits/fig_temporal_drift_H0.pdf>]
+<Track1_Exhibits/fig_feature_importance_H0.pdf, id=574, 722.7pt x 578.16pt>
 File: Track1_Exhibits/fig_feature_importance_H0.pdf Graphic file (type pdf)
 <use Track1_Exhibits/fig_feature_importance_H0.pdf>
 Package pdftex.def Info: Track1_Exhibits/fig_feature_importance_H0.pdf  used on
- input line 420.
+ input line 421.
 (pdftex.def)             Requested size: 422.77664pt x 338.21782pt.
- [21 <./Track1_Exhibits/fig_policy_regimes_H0.pdf>]
-<Figures/Chapter4/F8_Calibration.png, id=580, 860.4948pt x 383.9946pt>
+ [23 <./Track1_Exhibits/fig_policy_regimes_H0.pdf>]
+<Figures/Chapter4/F8_Calibration.png, id=628, 860.013pt x 383.031pt>
 File: Figures/Chapter4/F8_Calibration.png Graphic file (type png)
 <use Figures/Chapter4/F8_Calibration.png>
 Package pdftex.def Info: Figures/Chapter4/F8_Calibration.png  used on input lin
-e 427.
-(pdftex.def)             Requested size: 422.77664pt x 188.66289pt.
-
-[22 <./Track1_Exhibits/fig_feature_importance_H0.pdf> <./Figures/Chapter4/F8_Ca
-libration.png>]
-<Figures/Chapter5/F16_Petition_RD.png, id=637, 650.43pt x 433.62pt>
+e 428.
+(pdftex.def)             Requested size: 422.77664pt x 188.29466pt.
+[24 <./Track1_Exhibits/fig_feature_importance_H0.pdf> <./Figures/Chapter4/F8_Ca
+libration.png>] [25]
+<Figures/Chapter5/F16_Petition_RD.png, id=691, 566.5968pt x 422.0568pt>
 File: Figures/Chapter5/F16_Petition_RD.png Graphic file (type png)
 <use Figures/Chapter5/F16_Petition_RD.png>
 Package pdftex.def Info: Figures/Chapter5/F16_Petition_RD.png  used on input li
-ne 469.
-(pdftex.def)             Requested size: 399.29463pt x 266.20163pt.
- [23]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 4
-78.
+ne 495.
+(pdftex.def)             Requested size: 399.29463pt x 297.43416pt.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 5
+04.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -1058,126 +1050,144 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<Figures/Chapter5/F17_HOME_EventStudy.png, id=643, 722.7pt x 433.62pt>
+ [26 <./Figures/Chapter5/F16_Petition_RD.png>]
+<Figures/Chapter5/F17_HOME_EventStudy.png, id=700, 722.7pt x 433.62pt>
 File: Figures/Chapter5/F17_HOME_EventStudy.png Graphic file (type png)
 <use Figures/Chapter5/F17_HOME_EventStudy.png>
 Package pdftex.def Info: Figures/Chapter5/F17_HOME_EventStudy.png  used on inpu
-t line 484.
+t line 510.
 (pdftex.def)             Requested size: 399.29463pt x 239.57684pt.
- [24 <./Figures/Chapter5/F16_Petition_RD.png>] [25 <./Figures/Chapter5/F17_HOME
-_EventStudy.png>] [26] (Austin_NIMBY_Thesis_Draft.bbl
+ [27 <./Figures/Chapter5/F17_HOME_EventStudy.png>] [28] (Austin_NIMBY_Thesis_Dr
+aft.bbl [29]
 Underfull \hbox (badness 1681) in paragraph at lines 4--9
 []\T1/lmr/m/n/10.95 (+20) Susan Athey and Guido W. Im-bens.  Ma-chine learn-ing
  meth-ods that economists
  []
 
-[27]) [28]
-<Figures/Qualitative_Appendix/project_overview.pdf, id=686, page=1, 614.295pt x
+[30]) [31]
+<Figures/Qualitative_Appendix/project_overview.pdf, id=743, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/project_overview.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/project_overview.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/project_overview.pdf , pa
-ge1 used on input line 564.
-(pdftex.def)             Requested size: 469.75502pt x 607.9196pt.
- [29] [30 <./Figures/Qualitative_Appendix/project_overview.pdf>]
-<Figures/Qualitative_Appendix/protocol_summary.pdf, id=936, page=1, 614.295pt x
+ge1 used on input line 590.
+(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
+ [32 <./Figures/Qualitative_Appendix/project_overview.pdf>]
+<Figures/Qualitative_Appendix/protocol_summary.pdf, id=989, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/protocol_summary.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/protocol_summary.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/protocol_summary.pdf , pa
-ge1 used on input line 573.
-(pdftex.def)             Requested size: 469.75502pt x 607.9196pt.
-
-[31] [32 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
-<Figures/Qualitative_Appendix/interview_guide.pdf, id=1187, page=1, 614.295pt x
+ge1 used on input line 600.
+(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
+ [33 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
+<Figures/Qualitative_Appendix/interview_guide.pdf, id=1235, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/interview_guide.pdf Graphic file (type pdf)
 <use Figures/Qualitative_Appendix/interview_guide.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/interview_guide.pdf , pag
-e1 used on input line 582.
-(pdftex.def)             Requested size: 469.75502pt x 607.9196pt.
- [33] [34 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
+e1 used on input line 610.
+(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
+ [34 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
 
-pdfTeX warning: pdflatex.exe (file ./Figures/Qualitative_Appendix/sample_protes
-t_petition.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1
-.5> allowed
-<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1385, page=1, 614
+pdfTeX warning: pdflatex (file ./Figures/Qualitative_Appendix/sample_protest_pe
+tition.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> 
+allowed
+<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1429, page=1, 614
 .295pt x 794.97pt>
 File: Figures/Qualitative_Appendix/sample_protest_petition.pdf Graphic file (ty
 pe pdf)
 <use Figures/Qualitative_Appendix/sample_protest_petition.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/sample_protest_petition.p
-df , page1 used on input line 591.
-(pdftex.def)             Requested size: 469.75502pt x 607.9196pt.
-[35] [36 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
-<Figures/Chapter4/F12_Opposition_PR.png, id=1400, 650.43pt x 505.89pt>
+df , page1 used on input line 620.
+(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
+[35 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
+<Figures/Chapter4/F12_Opposition_PR.png, id=1440, 650.43pt x 505.89pt>
 File: Figures/Chapter4/F12_Opposition_PR.png Graphic file (type png)
 <use Figures/Chapter4/F12_Opposition_PR.png>
 Package pdftex.def Info: Figures/Chapter4/F12_Opposition_PR.png  used on input 
-line 599.
+line 629.
 (pdftex.def)             Requested size: 469.75502pt x 365.37524pt.
- [37 <./Figures/Chapter4/F12_Opposition_PR.png>]
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 620--620
+ [36 <./Figures/Chapter4/F12_Opposition_PR.png>]
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 650--650
 []\T1/lmtt/m/n/10 parcel_id     year  protest_buffer  owner_exempt  tract_wealt
 h_gap  prop_med_rent  case_white_pct[] 
  []
 
-[38]
-<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1411, 653.3208pt x 428.0793pt
->
+[37] [38]
+<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1457, 790.6338pt x 570.933pt>
+
 File: Figures/Chapter6/F20_Stakeholder_Heatmap.png Graphic file (type png)
 <use Figures/Chapter6/F20_Stakeholder_Heatmap.png>
 Package pdftex.def Info: Figures/Chapter6/F20_Stakeholder_Heatmap.png  used on 
-input line 662.
-(pdftex.def)             Requested size: 399.29463pt x 261.63095pt.
+input line 704.
+(pdftex.def)             Requested size: 399.29463pt x 288.34065pt.
  [39]
-<Figures/Chapter6/F19_TextFrame_Composition.png, id=1416, 715.7139pt x 427.8384
-pt>
+<Figures/Chapter6/F19_TextFrame_Composition.png, id=1465, 715.473pt x 426.1521p
+t>
 File: Figures/Chapter6/F19_TextFrame_Composition.png Graphic file (type png)
 <use Figures/Chapter6/F19_TextFrame_Composition.png>
 Package pdftex.def Info: Figures/Chapter6/F19_TextFrame_Composition.png  used o
-n input line 669.
-(pdftex.def)             Requested size: 399.29463pt x 238.69348pt.
- [40 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png> <./Figures/Chapter6/F19_T
-extFrame_Composition.png>] (Austin_NIMBY_Thesis_Draft.aux)
+n input line 711.
+(pdftex.def)             Requested size: 399.29463pt x 237.82422pt.
+ [40 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [41 <./Figures/Chapter6/
+F19_TextFrame_Composition.png>] (Austin_NIMBY_Thesis_Draft.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `Austin_NIMBY_Thesis_Draft.out' has not chang
 ed.
 (rerunfilecheck)             Checksum: 9ACD5E9AC37C59DDC0AF917745E899D6;8310.
  ) 
 Here is how much of TeX's memory you used:
- 24916 strings out of 467871
- 466795 string characters out of 5419344
- 883714 words of memory out of 5000000
- 53036 multiletter control sequences out of 15000+600000
- 696590 words of font info for 180 fonts, out of 8000000 for 9000
+ 25029 strings out of 467871
+ 468278 string characters out of 5419344
+ 887458 words of memory out of 5000000
+ 53104 multiletter control sequences out of 15000+600000
+ 712930 words of font info for 204 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,10n,104p,1720b,845s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb>
-<C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C
-:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbxi10.pfb><C:
-/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/U
-sers/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/User
-s/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/d
-hl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/dhl/
-AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/dhl/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/dhl/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/dhl/AppData/L
-ocal/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/
-Programs/MiKTeX/fonts/type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (40 pages, 7007780 bytes).
+ 84i,12n,104p,1962b,829s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
+, replaced by a fixed one
+
+<C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C
+:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/
+Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbxi10.pfb><C:/U
+sers/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Use
+rs/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Users/
+dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi9.pfb><C:/Users/dhl
+/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/dhl/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/dhl/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/dhl/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/lm/lmr6.pfb><C:/Users/dhl/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/dhl/AppData/Local/Pr
+ograms/MiKTeX/fonts/type1/public/lm/lmr9.pfb><C:/Users/dhl/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/dhl/AppData/Local/Programs
+/MiKTeX/fonts/type1/public/lm/lmri9.pfb><C:/Users/dhl/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
+fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/lm/lmtt10.pfb>
+Output written on Austin_NIMBY_Thesis_Draft.pdf (41 pages, 16452133 bytes).
 PDF statistics:
- 1517 PDF objects out of 1728 (max. 8388607)
- 129 named destinations out of 1000 (max. 500000)
- 38310 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 1600 PDF objects out of 1728 (max. 8388607)
+ 140 named destinations out of 1000 (max. 500000)
+ 46502 words of extra memory for PDF output out of 51595 (max. 10000000)
 

@@ -38,7 +38,7 @@ Alexandra Chouldechova.
   {\path{doi:10.1089/big.2016.0047}}.
 
 \bibitem{einstein2019book}
-Katherine~Levine Einstein, Maxwell Palmer, and David~M. Glick.
+Katherine~Levine Einstein, David~M. Glick, and Maxwell Palmer.
 \newblock {\em Neighborhood Defenders: Participatory Politics and {America's}
   Housing Crisis}.
 \newblock Cambridge University Press, 2019.
@@ -94,6 +94,12 @@ Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer.
 \newblock \href {https://doi.org/10.1257/aer.p20151023}
   {\path{doi:10.1257/aer.p20151023}}.
 
+\bibitem{manville2016unpermitted}
+Michael Manville and Paavo Monkkonen.
+\newblock Unpermitted: Urban growth and the local politics of zoning.
+\newblock {\em Journal of the American Planning Association}, 82(1):73--74,
+  2016.
+
 \bibitem{mullainathan2017ml}
 Sendhil Mullainathan and Jann Spiess.
 \newblock Machine learning: An applied econometric approach.
@@ -106,5 +112,18 @@ Rashida Richardson, Jason~M. Schultz, and Kate Crawford.
 \newblock Dirty data, bad predictions: How civil rights violations impact
   police data, predictive policing systems, and justice.
 \newblock {\em NYU Law Review Online}, 94:192--233, 2019.
+
+\bibitem{shmueli2010}
+Galit Shmueli.
+\newblock To explain or to predict?
+\newblock {\em Statistical Science}, 25(3):289--310, 2010.
+\newblock \href {https://doi.org/10.1214/10-STS330}
+  {\path{doi:10.1214/10-STS330}}.
+
+\bibitem{whittemore2014racial}
+Andrew~H. Whittemore.
+\newblock Racial and class politics in zoning: A case study of single-family
+  zoning in {Durham}, {North Carolina}.
+\newblock {\em Journal of Urban Affairs}, 36(4):568--585, 2014.
 
 \end{thebibliography}

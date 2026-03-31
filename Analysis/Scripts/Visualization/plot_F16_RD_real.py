@@ -3,6 +3,20 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
+
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 DATA_H0 = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
 DATA_PETITION = os.path.join(ROOT, "Data", "Protest_Petitions", "petition_summary_from_pdf.csv")
@@ -71,7 +85,7 @@ def generate_exhibits():
     
     ax.set_ylabel('Empirical Days Delayed (Application to Ordinance)')
     ax.set_xlabel('Signed Petition Area Proportion')
-    ax.set_title('Figure F16: Authentic Regression Discontinuity (Delays)', fontsize=14, pad=15)
+    ax.set_title('Regression Discontinuity at the 20% Protest Petition Threshold', fontsize=14, pad=15)
     ax.set_xlim(0, 0.40)
     
     # Dynamic scaling using underlying variance
@@ -84,11 +98,13 @@ def generate_exhibits():
     ax.legend()
     plt.tight_layout()
     
-    out_path = os.path.join(OUT_DIR, "F16_RD_Scatter.png")
+    out_path = os.path.join(OUT_DIR, "F16_Petition_RD.png")
     plt.savefig(out_path, dpi=300)
     plt.close()
     
     print(f"    [+] Successfully produced Authentic F16 via absolute timeline extraction array.")
+
+plot_f16 = generate_exhibits
 
 if __name__ == "__main__":
     generate_exhibits()

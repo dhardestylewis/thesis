@@ -1,6 +1,20 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 import os
 
 print("Executing Formal Empirical Difference-in-Differences (DiD) for HOME Phase 1...")
@@ -54,7 +68,7 @@ plt.errorbar(df_res['Quarter'], df_res['ATT'], yerr=1.96*df_res['SE'], fmt='o', 
 plt.axhline(0, color='black', linestyle='-', linewidth=1)
 plt.axvline(-1, color='red', linestyle='--', linewidth=2, label='HOME Phase 1 Enactment (Q-1)')
 
-plt.title('Exhibit F17: Empirical HOME Phase 1 DiD Event-Study', fontsize=14, pad=15)
+plt.title('HOME Phase 1 DiD Event-Study', fontsize=14, pad=15)
 plt.xlabel('Quarters Relative to HOME Phase 1 Implementation (Dec 2023)', fontsize=12)
 plt.ylabel('Estimated Treatment Effect on Organized Opposition', fontsize=12)
 plt.xticks(df_res['Quarter'])

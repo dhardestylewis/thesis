@@ -26,12 +26,73 @@ def build_case_master():
     case_master['council_date'] = np.nan
     case_master['withdrawal_date'] = np.nan
     
-    # Placeholders for ZONING FROM / TO, UNITS, FAR, HEIGHT
-    case_master['zoning_from'] = np.nan
-    case_master['zoning_to'] = np.nan
+    # Austin LDC Chapter 25-2 Dimensional Standards
+    AUSTIN_LDC_TABLE = {
+        'RR':   {'max_height_ft': 35, 'max_far': 0.05, 'max_bldg_cov_pct': 20, 'min_lot_sqft': 43560},
+        'LA':   {'max_height_ft': 35, 'max_far': 0.15, 'max_bldg_cov_pct': 40, 'min_lot_sqft': 43560},
+        'DR':   {'max_height_ft': 35, 'max_far': 0.15, 'max_bldg_cov_pct': 15, 'min_lot_sqft': 43560},
+        'SF-1': {'max_height_ft': 35, 'max_far': 0.20, 'max_bldg_cov_pct': 35, 'min_lot_sqft': 10000},
+        'SF-2': {'max_height_ft': 35, 'max_far': 0.35, 'max_bldg_cov_pct': 40, 'min_lot_sqft': 5750},
+        'SF-3': {'max_height_ft': 35, 'max_far': 0.40, 'max_bldg_cov_pct': 40, 'min_lot_sqft': 5750},
+        'SF-4A':{'max_height_ft': 35, 'max_far': 0.45, 'max_bldg_cov_pct': 45, 'min_lot_sqft': 3600},
+        'SF-4B':{'max_height_ft': 35, 'max_far': 0.45, 'max_bldg_cov_pct': 55, 'min_lot_sqft': 3600},
+        'SF-5': {'max_height_ft': 35, 'max_far': 0.50, 'max_bldg_cov_pct': 55, 'min_lot_sqft': 5750},
+        'SF-6': {'max_height_ft': 35, 'max_far': 0.40, 'max_bldg_cov_pct': 40, 'min_lot_sqft': 5750},
+        'MH':   {'max_height_ft': 35, 'max_far': 0.50, 'max_bldg_cov_pct': 50, 'min_lot_sqft': 2500},
+        'MF-1': {'max_height_ft': 40, 'max_far': 0.50, 'max_bldg_cov_pct': 45, 'min_lot_sqft': 8000},
+        'MF-2': {'max_height_ft': 40, 'max_far': 0.60, 'max_bldg_cov_pct': 50, 'min_lot_sqft': 8000},
+        'MF-3': {'max_height_ft': 40, 'max_far': 0.75, 'max_bldg_cov_pct': 55, 'min_lot_sqft': 8000},
+        'MF-4': {'max_height_ft': 60, 'max_far': 1.00, 'max_bldg_cov_pct': 60, 'min_lot_sqft': 8000},
+        'MF-5': {'max_height_ft': 60, 'max_far': 1.00, 'max_bldg_cov_pct': 70, 'min_lot_sqft': 8000},
+        'MF-6': {'max_height_ft': 90, 'max_far': 3.00, 'max_bldg_cov_pct': 80, 'min_lot_sqft': 8000},
+        'NO':   {'max_height_ft': 35, 'max_far': 0.35, 'max_bldg_cov_pct': 35, 'min_lot_sqft': 5750},
+        'LO':   {'max_height_ft': 40, 'max_far': 0.70, 'max_bldg_cov_pct': 50, 'min_lot_sqft': 5750},
+        'GO':   {'max_height_ft': 60, 'max_far': 1.00, 'max_bldg_cov_pct': 60, 'min_lot_sqft': 5750},
+        'CR':   {'max_height_ft': 35, 'max_far': 0.35, 'max_bldg_cov_pct': 40, 'min_lot_sqft': 5750},
+        'LR':   {'max_height_ft': 40, 'max_far': 0.50, 'max_bldg_cov_pct': 50, 'min_lot_sqft': 5750},
+        'GR':   {'max_height_ft': 60, 'max_far': 1.00, 'max_bldg_cov_pct': 75, 'min_lot_sqft': 5750},
+        'CS':   {'max_height_ft': 60, 'max_far': 2.00, 'max_bldg_cov_pct': 95, 'min_lot_sqft': 5750},
+        'CS-1': {'max_height_ft': 60, 'max_far': 2.00, 'max_bldg_cov_pct': 95, 'min_lot_sqft': 5750},
+        'CH':   {'max_height_ft': 120,'max_far': 3.00, 'max_bldg_cov_pct': 95, 'min_lot_sqft': 5750},
+        'IP':   {'max_height_ft': 60, 'max_far': 1.00, 'max_bldg_cov_pct': 60, 'min_lot_sqft': 5750},
+        'LI':   {'max_height_ft': 60, 'max_far': 1.00, 'max_bldg_cov_pct': 75, 'min_lot_sqft': 5750},
+        'MI':   {'max_height_ft': 60, 'max_far': 2.00, 'max_bldg_cov_pct': 85, 'min_lot_sqft': 5750},
+        'HI':   {'max_height_ft': 60, 'max_far': 2.00, 'max_bldg_cov_pct': 90, 'min_lot_sqft': 5750},
+        'CBD':  {'max_height_ft': 400,'max_far': 8.00, 'max_bldg_cov_pct': 100,'min_lot_sqft': 0},
+        'DMU':  {'max_height_ft': 120,'max_far': 5.00, 'max_bldg_cov_pct': 100,'min_lot_sqft': 0},
+    }
+
+    import re
+    def extract_base_code(z_string):
+        if pd.isna(z_string): return None
+        parts = re.split(r'[/,]+', str(z_string).upper())
+        selected_base = None
+        max_height = -1
+        for part in parts:
+            match = re.match(r'^([A-Z]{2,3}(?:-[1-6A-B]+)?)', part.strip())
+            if match:
+                base = match.group(1)
+                stats = AUSTIN_LDC_TABLE.get(base)
+                if stats and stats['max_height_ft'] > max_height:
+                    max_height = stats['max_height_ft']
+                    selected_base = base
+        return selected_base
+
+    def extract_metric(z_string, metric):
+        base = extract_base_code(z_string)
+        return AUSTIN_LDC_TABLE[base][metric] if base in AUSTIN_LDC_TABLE else np.nan
+
+    # Preserve RAW variables
+    case_master['zoning_from'] = df['EXISTING_ZONING']
+    case_master['zoning_to'] = df['PROPOSED_ZONING']
+    
+    # Calculate dimensional vectors
+    case_master['requested_height'] = df['PROPOSED_ZONING'].apply(lambda x: extract_metric(x, 'max_height_ft')) - df['EXISTING_ZONING'].apply(lambda x: extract_metric(x, 'max_height_ft'))
+    case_master['requested_far'] = df['PROPOSED_ZONING'].apply(lambda x: extract_metric(x, 'max_far')) - df['EXISTING_ZONING'].apply(lambda x: extract_metric(x, 'max_far'))
+    case_master['requested_bldg_cov'] = df['PROPOSED_ZONING'].apply(lambda x: extract_metric(x, 'max_bldg_cov_pct')) - df['EXISTING_ZONING'].apply(lambda x: extract_metric(x, 'max_bldg_cov_pct'))
+    case_master['requested_lot_sqft'] = df['PROPOSED_ZONING'].apply(lambda x: extract_metric(x, 'min_lot_sqft')) - df['EXISTING_ZONING'].apply(lambda x: extract_metric(x, 'min_lot_sqft'))
     case_master['requested_units'] = np.nan
-    case_master['requested_far'] = np.nan
-    case_master['requested_height'] = np.nan
+
     
     print(f"Constructed Case Master skeleton with {len(case_master)} records.")
     case_master.to_csv(os.path.join(OUT_DIR, "case_master.csv"), index=False)

@@ -1,8 +1,8 @@
-\contentsline {table}{\numberline {1}{\ignorespaces Historical Panel Descriptive Statistics (V2 Full Dimensional Array)}}{11}{table.1}%
-\contentsline {table}{\numberline {2}{\ignorespaces Sample Filtration from Raw Records to Analytic Sample}}{11}{table.2}%
-\contentsline {table}{\numberline {3}{\ignorespaces Development Occurrence: Nested Targets}}{13}{table.3}%
-\contentsline {table}{\numberline {4}{\ignorespaces Development Occurrence: Hazard Model Performance}}{13}{table.4}%
-\contentsline {table}{\numberline {5}{\ignorespaces Project Type and Scale: Conditional Forecast (CatBoost)}}{15}{table.5}%
-\contentsline {table}{\numberline {6}{\ignorespaces Political Outcome Forecast (Opposed Cases Only, CatBoost)}}{15}{table.6}%
-\contentsline {table}{\numberline {7}{\ignorespaces Opposition Mobilization Model: Pre-Specified Operational Metrics ($H_0$ Horizon, $n = 7,074$, CatBoost, 5-fold CV)}}{18}{table.7}%
-\contentsline {table}{\numberline {8}{\ignorespaces Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}{18}{table.8}%
+\contentsline {table}{\numberline {1}{\ignorespaces Historical Panel Descriptive Statistics}}{12}{table.1}%
+\contentsline {table}{\numberline {2}{\ignorespaces Sample Filtration from Raw Records to Analytic Sample}}{12}{table.2}%
+\contentsline {table}{\numberline {3}{\ignorespaces Development Occurrence: Nested Targets}}{14}{table.3}%
+\contentsline {table}{\numberline {4}{\ignorespaces Development Occurrence: Hazard Model Performance}}{14}{table.4}%
+\contentsline {table}{\numberline {5}{\ignorespaces Project Type and Scale: Conditional Forecast (CatBoost)}}{16}{table.5}%
+\contentsline {table}{\numberline {6}{\ignorespaces Political Outcome Forecast (Opposed Cases Only, CatBoost)}}{16}{table.6}%
+\contentsline {table}{\numberline {7}{\ignorespaces Opposition Mobilization Model: Baseline Predictive Capacity}}{19}{table.7}%
+\contentsline {table}{\numberline {8}{\ignorespaces Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}{20}{table.8}%

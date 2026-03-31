@@ -23,6 +23,7 @@ import StageA_development_hazard as stage_a
 import StageB_6_Tier_Classifier as stage_b
 import StageC_opposition_risk as stage_c
 import StageD_institutional_outcome_real as stage_d
+import StageF_generative_simulation as stage_f
 import run_causal_track2_rd_real as track2
 import run_causal_track3_did_real as track3
 import run_multi_horizon as multi_horizon_table
@@ -82,6 +83,12 @@ def main():
         stage_d.run_stage_d()
     except Exception as e:
         print(f"    [!] Error running Stage D: {e}")
+
+    print("\n[+] Stage F: Generative Forward Simulation (Future Work Skeleton)")
+    try:
+        stage_f.run_generative_simulation()
+    except Exception as e:
+        print(f"    [!] Error running Stage F: {e}")
 
     # ---------------------------------------------------------
     # PART 2: CAUSAL PIPELINE (Tracks 2 & 3)

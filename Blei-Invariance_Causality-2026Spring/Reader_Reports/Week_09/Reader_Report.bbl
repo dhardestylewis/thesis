@@ -1,0 +1,62 @@
+\begin{thebibliography}{8}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abadie(2021)]{abadie2021sc}
+A.~Abadie.
+\newblock Using synthetic controls: {F}easibility, data requirements, and
+  methodological aspects.
+\newblock \emph{Journal of Economic Literature}, 59\penalty0 (2):\penalty0
+  391--425, 2021.
+
+\bibitem[Abadie et~al.(2010)Abadie, Diamond, and Hainmueller]{abadie2010sc}
+A.~Abadie, A.~Diamond, and J.~Hainmueller.
+\newblock Synthetic control methods for comparative case studies: {E}stimating
+  the effect of {C}alifornia's tobacco control program.
+\newblock \emph{Journal of the American Statistical Association}, 105\penalty0
+  (490):\penalty0 493--505, 2010.
+
+\bibitem[Arjovsky et~al.(2019)Arjovsky, Bottou, Gulrajani, and
+  Lopez-Paz]{arjovsky2019irm}
+M.~Arjovsky, L.~Bottou, I.~Gulrajani, and D.~Lopez-Paz.
+\newblock Invariant risk minimization.
+\newblock \emph{arXiv preprint arXiv:1907.02893}, 2019.
+
+\bibitem[Athey et~al.(2021)Athey, Bayati, Doudchenko, Imbens, and
+  Khosravi]{athey2021mc}
+S.~Athey, M.~Bayati, N.~Doudchenko, G.~Imbens, and K.~Khosravi.
+\newblock Matrix completion methods for causal panel data models.
+\newblock \emph{Journal of the American Statistical Association}, 116\penalty0
+  (536):\penalty0 1716--1730, 2021.
+
+\bibitem[Krueger et~al.(2021)Krueger, Caballero, Jacobsen, Zhang, Binas, Zhang,
+  Le~Priol, and Courville]{krueger2021rex}
+D.~Krueger, E.~Caballero, J.-H. Jacobsen, A.~Zhang, J.~Binas, D.~Zhang,
+  R.~Le~Priol, and A.~Courville.
+\newblock Out-of-distribution generalization via risk extrapolation ({V-REx}).
+\newblock pages 5815--5826, 2021.
+
+\bibitem[Peters et~al.(2016)Peters, B{\"u}hlmann, and
+  Meinshausen]{peters2016icp}
+J.~Peters, P.~B{\"u}hlmann, and N.~Meinshausen.
+\newblock Causal inference by using invariant prediction: identification and
+  confidence intervals.
+\newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 78\penalty0 (5):\penalty0 947--1012, 2016.
+
+\bibitem[Shi et~al.(2022)Shi, Sridhar, Misra, and Blei]{shi2022sc}
+C.~Shi, D.~Sridhar, V.~Misra, and D.~M. Blei.
+\newblock On the assumptions of synthetic control methods.
+\newblock In \emph{Proceedings of the 25th International Conference on
+  Artificial Intelligence and Statistics}, pages 7163--7175. PMLR, 2022.
+
+\bibitem[Xu(2017)]{xu2017gsynth}
+Y.~Xu.
+\newblock Generalized synthetic control method: {C}ausal inference with
+  interactive fixed effects models.
+\newblock \emph{Political Analysis}, 25\penalty0 (1):\penalty0 57--76, 2017.
+
+\end{thebibliography}

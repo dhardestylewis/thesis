@@ -1,6 +1,20 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 import statsmodels.formula.api as smf
 import geopandas as gpd
 import contextily as cx
@@ -58,7 +72,7 @@ def main():
                 
             ax.set_title(f"H0 Master Cases: {yr}", fontsize=14, fontweight='bold')
             ax.set_axis_off()
-            try: cx.add_basemap(ax, source=cx.providers.CartoDB.Positron, zoom=11)
+            try: cx.add_basemap(ax, source=cx.providers.CartoDB.Positron)
             except: pass
             
         plt.suptitle("Multi-Year Temporal Dispersion of Authentic H0 Master Zoning Array", fontsize=24, y=1.02, fontweight='bold')

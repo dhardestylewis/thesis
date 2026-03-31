@@ -3,6 +3,20 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import average_precision_score, brier_score_loss
@@ -21,7 +35,7 @@ OUT_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # Aesthetic parameters for the LaTeX Thesis mapping
-plt.style.use('seaborn-v0_8-whitegrid')
+# Removed local style: plt.style.use('seaborn-v0_8-whitegrid')
 plt.rcParams.update({
     'font.size': 14,
     'axes.labelsize': 16,

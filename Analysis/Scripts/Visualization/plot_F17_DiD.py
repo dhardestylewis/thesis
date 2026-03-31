@@ -1,5 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
+import sys
+try:
+    # Attempt to locate the root Scripts directory
+    _curr = os.path.dirname(os.path.abspath(__file__))
+    while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
+        _curr = os.path.dirname(_curr)
+    if _curr not in sys.path:
+        sys.path.insert(0, _curr)
+    from thesis_style import set_thesis_style
+    set_thesis_style()
+except Exception:
+    pass
+
 import os
 
 print("Rendering F17: HOME Phase 1 Event-Study Plot...")
@@ -22,7 +36,7 @@ plt.errorbar(quarters, coefs, yerr=1.96*ses, fmt='o', color='navy', capsize=5, c
 plt.axhline(0, color='black', linestyle='-', linewidth=1)
 plt.axvline(-1, color='red', linestyle='--', linewidth=2, label='Implementation Date (Q-1)')
 
-plt.title('Exhibit F17: HOME Phase 1 Event-Study (Effect on Organized Opposition)', fontsize=14, pad=15)
+plt.title('HOME Phase 1 Event-Study (Effect on Organized Opposition)', fontsize=14, pad=15)
 plt.xlabel('Quarters Relative to HOME Phase 1 Implementation', fontsize=12)
 plt.ylabel('Estimated Treatment Effect on Opposition Probability', fontsize=12)
 plt.xticks(quarters)

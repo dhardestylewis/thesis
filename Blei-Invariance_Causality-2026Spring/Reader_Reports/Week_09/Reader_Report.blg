@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Reader_Report.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: abbrvnat.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Database file #1: references.bib
+Warning--empty journal in krueger2021rex
+You've used 8 entries,
+            2773 wiz_defined-function locations,
+            645 strings with 6267 characters,
+and the built_in function-call counts, 4513 in all, are:
+= -- 406
+> -- 281
+< -- 4
++ -- 95
+- -- 87
+* -- 389
+:= -- 682
+add.period$ -- 25
+call.type$ -- 8
+change.case$ -- 53
+chr.to.int$ -- 8
+cite$ -- 17
+duplicate$ -- 190
+empty$ -- 342
+format.name$ -- 95
+if$ -- 942
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 8
+newline$ -- 48
+num.names$ -- 32
+pop$ -- 103
+preamble$ -- 1
+purify$ -- 45
+quote$ -- 0
+skip$ -- 155
+stack$ -- 0
+substring$ -- 224
+swap$ -- 30
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 88
+warning$ -- 1
+while$ -- 40
+width$ -- 0
+write$ -- 110
+(There was 1 warning)

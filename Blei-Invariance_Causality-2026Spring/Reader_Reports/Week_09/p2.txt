@@ -1,0 +1,64 @@
+Project Update: Causal Invariance in NIMBYism Protest
+Abstract
+Urban housing opposition (NIMBYism) persistently blocks sustainable densification, yet predictive models fail to generalize across distinct geographic or regulatory regimes because they
+absorb spurious local correlations. This project applies Invariant Risk Minimization (IRM) and
+Variance-Risk Extrapolation (V-REx) to a novel panel of 52,236 properties in Austin, TX spanning 182 discrete zoning interventions. Building on this week’s discussion of synthetic controls,
+we explore how the SC framework could complement our invariance approach by constructing
+counterfactual opposition outcomes for zoning cases that received specific policy treatments
+(e.g., the HOME Initiative), providing a second identification strategy grounded in the same
+latent-factor stability assumption.
+
+The Questions (What, Why, How)
+What: Can we identify the invariant causal drivers of housing protest behavior across disparate
+zoning contexts, and can synthetic control counterfactuals provide independent validation of those
+drivers?
+Why: Standard ERM predictors conflate causal mechanisms with spurious correlations. SC offers a complementary lens: rather than learning an invariant representation, it directly constructs
+a counterfactual outcome from untreated donor neighborhoods, enabling a causal effect estimate
+without assuming a specific functional form.
+How: (1) V-REx penalty over deep CVAEs to learn invariant representations; (2) SC-based counterfactual construction where treated zoning cases are matched to weighted combinations of untreated donor cases sharing pre-treatment covariate trajectories.
+
+Related Work
+ SC in Policy Evaluation: Abadie et al. (2010) and Abadie (2021) established SC for
+state-level policy analysis; we adapt this to neighborhood-level zoning interventions.
+ Matrix Completion: Athey et al. (2021) unify SC and panel methods under nuclearnorm regularization, which is directly applicable to our N -neighborhood × T -period outcome
+matrix.
+ Invariance Methods: Krueger et al. (2021) and Arjovsky et al. (2019) provide the VREx/IRM framework we use as the primary identification strategy.
+ SC Assumptions: Shi et al. (2022) justify linear SC from sub-population aggregation, suggesting that our parcel-level data (small units) within neighborhoods (large units) is precisely
+the granularity at which SC identification is strongest.
+
+Mathematical Description & Strategy
+Invariance arm: Unchanged from Week 07. We minimize V-REx over 182 zoning environments:
+
+
+min R(Φ(X)) + λ Vare∈E Re (Φ(X))
+Φ,w
+
+Synthetic control arm: For a treated neighborhood j receiving a major policy intervention at
+time T0 , we estimate the counterfactual opposition level:
+X
+(0)
+Ŷj,t =
+ŵi Yi,t ,
+t > T0 ,
+i∈donors
+
+where the weights ŵi are chosen to minimize pre-treatment fit
+P
+(0)
+wi ≥ 0, i wi = 1. The treatment effect is τ̂j,t = Yj,t − Ŷj,t .
+
+P
+
+t≤T0
+
+Yj,t −
+
+P
+
+i wi Yi,t
+
+2
+
+subject to
+
+

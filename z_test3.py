@@ -1,5 +1,0 @@
-import geopandas as gpd
-path = r'c:\Users\dhl\data\thesis\thesis\Data\Zoning_Cases\Processed_Data\GeoJSON\zoning_cases_with_nearby_parcels.geojson'
-gdf = gpd.read_file(path, rows=1)
-with open('z_cols.txt', 'w') as f:
-    f.write('\n'.join(gdf.columns))
