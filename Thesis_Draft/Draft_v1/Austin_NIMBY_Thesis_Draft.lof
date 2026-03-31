@@ -1,19 +1,19 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Spatial distribution of zoning cases across the Austin municipal core, 2007 to 2024.}}{8}{figure.1}%
-\contentsline {figure}{\numberline {2}{\ignorespaces 200ft and 500ft parcel buffer geometries used for local TCAD appraisal aggregation.}}{9}{figure.2}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Austin municipal zoning process. A valid protest petition securing 20\% of the affected buffer area triggers a supermajority requirement at City Council.}}{10}{figure.3}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Multi-horizon precision-recall curves for the Development Occurrence hazard model ($H \in \{4,8,12\}$ quarters).}}{12}{figure.4}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Ex-ante predicted hotspot density vs.\ realized development events.}}{13}{figure.5}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Expected contested units: geographic distribution of predicted development probability $\times $ expected unit count $\times $ opposition probability.}}{15}{figure.6}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Rolling-origin evaluation across prediction horizons $H_0$ through $H_3$.}}{16}{figure.7}%
-\contentsline {figure}{\numberline {8}{\ignorespaces In-distribution vs.\ worst-regime out-of-distribution PR-AUC across model architectures.}}{16}{figure.8}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Reliability diagram for the Opposition Mobilization model (ECE = 0.055). Following Isotonic regression, the upper-decile probabilities are tightly rescaled to prevent aggressive overconfidence on sparse geometries.}}{18}{figure.9}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Predictive performance decay across out-of-distribution temporal offsets ($T+0$ through $T+3$).}}{19}{figure.10}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Out-of-distribution performance by policy regime: the 2022 council transition and 2024 HOME Phase 1 each produce regime-specific performance degradation.}}{20}{figure.11}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Native CatBoost structural feature importance for the $H_0$ opposition mobilization baseline, correctly mapping colinearity through intrinsic LossFunctionChange rather than unstable univariate permutations.}}{21}{figure.12}%
-\contentsline {figure}{\numberline {13}{\ignorespaces Calibration reliability diagram (left) and top-$K$ capture curve (right) for the Development Occurrence model (calculated using 10 equal-frequency bins to account for severe class imbalance).}}{21}{figure.13}%
-\contentsline {figure}{\numberline {14}{\ignorespaces Selection and Causal Inference DAG. T=Treatment (Petition/HOME), Y=Outcome (Delay/Dissent), X=Observed Covariates, U=Unobserved (e.g., informal negotiations).}}{22}{figure.14}%
-\contentsline {figure}{\numberline {15}{\ignorespaces Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time.}}{23}{figure.15}%
-\contentsline {figure}{\numberline {16}{\ignorespaces HOME Phase 1 event-study coefficients relative to the implementation date.}}{24}{figure.16}%
-\contentsline {figure}{\numberline {17}{\ignorespaces Organized opposition precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}}{36}{figure.17}%
-\contentsline {figure}{\numberline {18}{\ignorespaces Geographic NLP text-frame gravity heatmap mapping structural TF-IDF linguistic themes across localized Council Districts.}}{39}{figure.18}%
-\contentsline {figure}{\numberline {19}{\ignorespaces Explicit transcribed hearing text-frame composition isolated by true structural opposition velocity (NLP TF-IDF activation frequency).}}{39}{figure.19}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Spatial distribution of zoning cases across the Austin municipal core, 2007 to 2024.}}{9}{figure.1}%
+\contentsline {figure}{\numberline {2}{\ignorespaces 200ft and 500ft parcel buffer geometries used for local TCAD appraisal aggregation.}}{10}{figure.2}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Austin municipal zoning process. A valid protest petition securing 20\% of the affected buffer area triggers a supermajority requirement at City Council.}}{11}{figure.3}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Multi-horizon precision-recall curves for the Development Occurrence hazard model ($H \in \{4,8,12\}$ quarters).}}{13}{figure.4}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Ex-ante predicted hotspot density vs.\ realized development events.}}{14}{figure.5}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Expected contested units: geographic distribution of predicted development probability $\times $ expected unit count $\times $ opposition probability.}}{16}{figure.6}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Rolling-origin evaluation across prediction horizons $H_0$ through $H_3$.}}{17}{figure.7}%
+\contentsline {figure}{\numberline {8}{\ignorespaces In-distribution vs.\ worst-regime out-of-distribution PR-AUC across model architectures.}}{17}{figure.8}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Reliability diagram for the Opposition Mobilization model (ECE = 0.055). Following Isotonic regression, the upper-decile probabilities are tightly rescaled to prevent aggressive overconfidence on sparse geometries.}}{19}{figure.9}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Predictive performance decay across out-of-distribution temporal offsets ($T+0$ through $T+3$).}}{20}{figure.10}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Out-of-distribution performance by policy regime: the 2022 council transition and 2024 HOME Phase 1 each produce regime-specific performance degradation.}}{21}{figure.11}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Native CatBoost structural feature importance for the $H_0$ opposition mobilization baseline, correctly mapping colinearity through intrinsic LossFunctionChange rather than unstable univariate permutations.}}{22}{figure.12}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Calibration reliability diagram (left) and top-$K$ capture curve (right) for the Development Occurrence model (calculated using 10 equal-frequency bins to account for severe class imbalance).}}{22}{figure.13}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Selection and Causal Inference DAG. T=Treatment (Petition/HOME), Y=Outcome (Delay/Dissent), X=Observed Covariates, U=Unobserved (e.g., informal negotiations).}}{23}{figure.14}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time.}}{24}{figure.15}%
+\contentsline {figure}{\numberline {16}{\ignorespaces HOME Phase 1 event-study coefficients relative to the implementation date.}}{25}{figure.16}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Organized opposition precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}}{37}{figure.17}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Geographic NLP text-frame gravity heatmap mapping structural TF-IDF linguistic themes across localized Council Districts.}}{40}{figure.18}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Explicit transcribed hearing text-frame composition isolated by true structural opposition velocity (NLP TF-IDF activation frequency).}}{40}{figure.19}%

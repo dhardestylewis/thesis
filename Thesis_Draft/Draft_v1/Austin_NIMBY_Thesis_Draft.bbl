@@ -1,5 +1,19 @@
 \begin{thebibliography}{10}
 
+\bibitem{athey2019ml}
+Susan Athey and Guido~W. Imbens.
+\newblock Machine learning methods that economists should know about.
+\newblock {\em Annual Review of Economics}, 11:685--725, 2019.
+\newblock \href {https://doi.org/10.1146/annurev-economics-080217-053433}
+  {\path{doi:10.1146/annurev-economics-080217-053433}}.
+
+\bibitem{barocas2016}
+Solon Barocas and Andrew~D. Selbst.
+\newblock Big data's disparate impact.
+\newblock {\em California Law Review}, 104(3):671--732, 2016.
+\newblock \href {https://doi.org/10.15779/Z38BG31}
+  {\path{doi:10.15779/Z38BG31}}.
+
 \bibitem{callaway2021did}
 Brantly Callaway and Pedro~H.C. Sant'Anna.
 \newblock Difference-in-differences with multiple time periods.
@@ -7,13 +21,13 @@ Brantly Callaway and Pedro~H.C. Sant'Anna.
 \newblock \href {https://doi.org/10.1016/j.jeconom.2020.12.001}
   {\path{doi:10.1016/j.jeconom.2020.12.001}}.
 
-\bibitem{calonico2014rdrobust}
-Sebastian Calonico, Matias~D. Cattaneo, and Roc{\'\i}o Titiunik.
-\newblock Robust nonparametric confidence intervals for
-  regression-discontinuity designs.
-\newblock {\em Econometrica}, 82(6):2295--2326, 2014.
-\newblock \href {https://doi.org/10.3982/ECTA11757}
-  {\path{doi:10.3982/ECTA11757}}.
+\bibitem{cellini2010schools}
+Stephanie~Riegg Cellini, Fernando Ferreira, and Jesse Rothstein.
+\newblock The value of school facility investments: Evidence from a dynamic
+  regression discontinuity design.
+\newblock {\em The Quarterly Journal of Economics}, 125(1):215--261, 2010.
+\newblock \href {https://doi.org/10.1162/qjec.2010.125.1.215}
+  {\path{doi:10.1162/qjec.2010.125.1.215}}.
 
 \bibitem{chouldechova2017fair}
 Alexandra Chouldechova.
@@ -60,6 +74,19 @@ Joseph Gyourko and Raven Molloy.
 \newblock \href {https://doi.org/10.1016/B978-0-444-59531-7.00019-3}
   {\path{doi:10.1016/B978-0-444-59531-7.00019-3}}.
 
+\bibitem{hankinson2018}
+Michael Hankinson.
+\newblock When do renters behave like homeowners? high rent, price anxiety, and
+  nimbyism.
+\newblock {\em American Political Science Review}, 112(3):473--493, 2018.
+\newblock \href {https://doi.org/10.1017/S0003055418000035}
+  {\path{doi:10.1017/S0003055418000035}}.
+
+\bibitem{hills2011zoning}
+Roderick~M. Hills, Jr. and David Schleicher.
+\newblock Balancing the ``zoning budget''.
+\newblock {\em Case Western Reserve Law Review}, 62(1):81--133, 2011.
+
 \bibitem{kleinberg2015prediction}
 Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer.
 \newblock Prediction policy problems.
@@ -67,31 +94,12 @@ Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer.
 \newblock \href {https://doi.org/10.1257/aer.p20151023}
   {\path{doi:10.1257/aer.p20151023}}.
 
-\bibitem{lundberg2017shap}
-Scott~M. Lundberg and Su-In Lee.
-\newblock A unified approach to interpreting model predictions.
-\newblock In {\em Advances in Neural Information Processing Systems},
-  volume~30, pages 4766--4777, 2017.
-
 \bibitem{mullainathan2017ml}
 Sendhil Mullainathan and Jann Spiess.
 \newblock Machine learning: An applied econometric approach.
 \newblock {\em Journal of Economic Perspectives}, 31(2):87--106, 2017.
 \newblock \href {https://doi.org/10.1257/jep.31.2.87}
   {\path{doi:10.1257/jep.31.2.87}}.
-
-\bibitem{pool2023}
-Kirk Pool.
-\newblock {HOME} initiative phase 1.
-\newblock Austin City Council, 2023.
-\newblock URL: \url{https://www.austintexas.gov/department/home-initiative}.
-
-\bibitem{prokhorenkova2018catboost}
-Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna~Veronika Dorogush,
-  and Andrey Gulin.
-\newblock {CatBoost}: Unbiased boosting with categorical features.
-\newblock In {\em Advances in Neural Information Processing Systems},
-  volume~31, pages 6639--6649, 2018.
 
 \bibitem{richardson2019dirty}
 Rashida Richardson, Jason~M. Schultz, and Kate Crawford.
