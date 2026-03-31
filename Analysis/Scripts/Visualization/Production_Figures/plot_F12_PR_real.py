@@ -35,17 +35,23 @@ def plot_f12():
         print("[-] Required Stage C predictive data not found.")
         return
         
-    df = pd.read_csv(STAGE_C_OUT, usecols=['y_true', 'y_prob_lr', 'y_prob_rf', 'y_prob'])
+    df = pd.read_csv(STAGE_C_OUT, usecols=['y_true', 'y_prob_lr', 'y_prob_rf', 'y_prob_spatial_lr', 'y_prob_anchor', 'y_prob'])
     
     # We evaluate for the H=4 (1 Yr) horizon
     y_true = df['y_true']
     
-    # Calculate PR Curves for the three empirical models
+    # Calculate PR Curves for the underlying empirical models
     p_lr, r_lr, _ = precision_recall_curve(y_true, df['y_prob_lr'])
     auc_lr = average_precision_score(y_true, df['y_prob_lr'])
     
     p_rf, r_rf, _ = precision_recall_curve(y_true, df['y_prob_rf'])
     auc_rf = average_precision_score(y_true, df['y_prob_rf'])
+    
+    p_sp, r_sp, _ = precision_recall_curve(y_true, df['y_prob_spatial_lr'])
+    auc_sp = average_precision_score(y_true, df['y_prob_spatial_lr'])
+    
+    p_anc, r_anc, _ = precision_recall_curve(y_true, df['y_prob_anchor'])
+    auc_anc = average_precision_score(y_true, df['y_prob_anchor'])
     
     p_cb, r_cb, _ = precision_recall_curve(y_true, df['y_prob'])
     auc_cb = average_precision_score(y_true, df['y_prob'])
@@ -54,8 +60,10 @@ def plot_f12():
 
     plt.figure(figsize=(9, 7))
     plt.plot([0, 1], [baseline, baseline], label=f'Baseline Prevalence (PR-AUC {baseline:.2f})', linestyle=':', color='gray')
-    plt.plot(r_lr, p_lr, label=f'ElasticNet Logistic (PR-AUC {auc_lr:.2f})', linestyle='-.', color='orange')
-    plt.plot(r_rf, p_rf, label=f'RandomForest (PR-AUC {auc_rf:.2f})', linestyle='--', color='blue')
+    plt.plot(r_lr, p_lr, label=f'Standard Logistic (ERM) (PR-AUC {auc_lr:.2f})', linestyle=':', color='coral')
+    plt.plot(r_rf, p_rf, label=f'RandomForest (ERM) (PR-AUC {auc_rf:.2f})', linestyle=':', color='gray')
+    plt.plot(r_sp, p_sp, label=f'Spatial-FE Logistic (Domain) (PR-AUC {auc_sp:.2f})', linestyle='--', color='purple')
+    plt.plot(r_anc, p_anc, label=f'Anchor Regression (Causal) (PR-AUC {auc_anc:.2f})', linestyle='-.', color='teal', linewidth=1.5)
     plt.plot(r_cb, p_cb, label=f'CatBoost Primary (V-REx) (PR-AUC {auc_cb:.2f})', linewidth=2.5, color='darkred')
 
     plt.title('Precision-Recall Curves (1-Year Horizon)', fontsize=14, pad=15)

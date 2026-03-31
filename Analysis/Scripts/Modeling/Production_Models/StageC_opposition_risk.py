@@ -222,16 +222,41 @@ def process_horizon(path, horizon_name):
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.impute import SimpleImputer
     from sklearn.pipeline import Pipeline
+    from sklearn.compose import ColumnTransformer
+    from sklearn.preprocessing import OneHotEncoder
     
     kf = KFold(n_splits=5, shuffle=True, random_state=42)
     oof_preds = np.zeros(len(y))
     oof_preds_lr = np.zeros(len(y))
     oof_preds_rf = np.zeros(len(y))
+    oof_preds_spatial_lr = np.zeros(len(y))
+    oof_preds_anchor = np.zeros(len(y))
     
+    # Pre-configure explicit environment dataframes for the benchmark models
+    X_spatial = X.copy()
+    X_spatial['council_district'] = districts.astype(str)
+    
+    X_anchor = X.copy()
+    X_anchor['council_district'] = districts.astype(str)
+    X_anchor['year'] = df['year'].astype(str)
+    
+    spatial_prep = ColumnTransformer([
+        ('cat', OneHotEncoder(handle_unknown='ignore'), ['council_district']),
+        ('num', SimpleImputer(strategy='median'), X.columns)
+    ])
+    
+    anchor_prep = ColumnTransformer([
+        ('cat', OneHotEncoder(handle_unknown='ignore'), ['council_district', 'year']),
+        ('num', SimpleImputer(strategy='median'), X.columns)
+    ])
+
     for train_idx, val_idx in kf.split(X):
         X_tr, y_tr = X.iloc[train_idx], y.iloc[train_idx]
         w_tr = weights.iloc[train_idx]
         X_v = X.iloc[val_idx]
+        
+        X_sp_tr, X_sp_v = X_spatial.iloc[train_idx], X_spatial.iloc[val_idx]
+        X_anc_tr, X_anc_v = X_anchor.iloc[train_idx], X_anchor.iloc[val_idx]
         
         # Primary CatBoost (Natively handles missing data)
         cb = clone(optimal_model)
@@ -243,16 +268,36 @@ def process_horizon(path, horizon_name):
             ('imputer', SimpleImputer(strategy='median')),
             ('model', LogisticRegression(max_iter=1000, class_weight='balanced'))
         ])
-        lr.fit(X_tr, y_tr, model__sample_weight=w_tr)
-        oof_preds_lr[val_idx] = lr.predict_proba(X_v)[:, 1]
+        lr_cal = CalibratedClassifierCV(estimator=lr, method='isotonic', cv=3)
+        lr_cal.fit(X_tr, y_tr, model__sample_weight=w_tr)
+        oof_preds_lr[val_idx] = lr_cal.predict_proba(X_v)[:, 1]
         
         # Random Forest Baseline (Requires Imputation)
         rf = Pipeline([
             ('imputer', SimpleImputer(strategy='median')),
-            ('model', RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=42))
+            ('model', RandomForestClassifier(n_estimators=100, max_depth=6, class_weight='balanced', random_state=42))
         ])
-        rf.fit(X_tr, y_tr, model__sample_weight=w_tr)
-        oof_preds_rf[val_idx] = rf.predict_proba(X_v)[:, 1]
+        rf_cal = CalibratedClassifierCV(estimator=rf, method='isotonic', cv=3)
+        rf_cal.fit(X_tr, y_tr, model__sample_weight=w_tr)
+        oof_preds_rf[val_idx] = rf_cal.predict_proba(X_v)[:, 1]
+        
+        # Spatial Fixed-Effects Logistic (Domain Benchmark)
+        splr = Pipeline([
+            ('prep', spatial_prep),
+            ('model', LogisticRegression(max_iter=1000, class_weight='balanced'))
+        ])
+        splr_cal = CalibratedClassifierCV(estimator=splr, method='isotonic', cv=3)
+        splr_cal.fit(X_sp_tr, y_tr, model__sample_weight=w_tr)
+        oof_preds_spatial_lr[val_idx] = splr_cal.predict_proba(X_sp_v)[:, 1]
+        
+        # Anchor Regression Proxy (Causal Invariance Benchmark)
+        anc = Pipeline([
+            ('prep', anchor_prep),
+            ('model', LogisticRegression(C=0.01, penalty='l2', max_iter=2000, class_weight='balanced'))
+        ])
+        anc_cal = CalibratedClassifierCV(estimator=anc, method='isotonic', cv=3)
+        anc_cal.fit(X_anc_tr, y_tr, model__sample_weight=w_tr)
+        oof_preds_anchor[val_idx] = anc_cal.predict_proba(X_anc_v)[:, 1]
         
     tbl5_metrics = extract_advanced_metrics(y, oof_preds, districts, name="Table 5 Final")
     print("\n>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<")
@@ -287,6 +332,8 @@ def process_horizon(path, horizon_name):
         'y_prob': oof_preds, 
         'y_prob_lr': oof_preds_lr,
         'y_prob_rf': oof_preds_rf,
+        'y_prob_spatial_lr': oof_preds_spatial_lr,
+        'y_prob_anchor': oof_preds_anchor,
         'year': df['year'], 
         'district': districts
     })
@@ -294,6 +341,14 @@ def process_horizon(path, horizon_name):
             
     # Retrain on full for subsequent holdouts
     optimal_model.fit(X, y, sample_weight=weights)
+    
+    import joblib
+    out_joblib = os.path.join(OUT_DIR, f"stage_c_model_{safe_hz}.joblib")
+    try:
+        joblib.dump(optimal_model, out_joblib)
+        print(f"    [+] Saved fully trained model artifact to {out_joblib}")
+    except Exception as e:
+        print(f"    [-] Failed to save model artifact: {e}")
     
     # Collect data for feature importance plot
     try:

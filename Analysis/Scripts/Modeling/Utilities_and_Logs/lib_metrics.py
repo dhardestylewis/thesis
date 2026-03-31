@@ -20,8 +20,8 @@ def update_metric(macro_name, new_value):
     replacement = f"\\newcommand{{\\{macro_name}}}{{{new_value}}}"
 
     if re.search(pattern, content):
-        # Overwrite the existing definition
-        content = re.sub(pattern, replacement, content)
+        # Overwrite the existing definition (using lambda to prevent escape parsing errors)
+        content = re.sub(pattern, lambda _: replacement, content)
     else:
         # Append the new definition
         content += f"\n{replacement}\n"

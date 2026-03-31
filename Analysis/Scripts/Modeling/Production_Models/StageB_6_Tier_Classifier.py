@@ -34,5 +34,9 @@ def run_stage_b():
     print("Classification Report:")
     print(classification_report(y, preds, zero_division=0))
 
+    out_path = os.path.join(r'C:\Users\dhl\data\thesis\thesis\Analysis\Output\Track1_Predictive', 'stage_b_model.cbm')
+    cb.save_model(out_path)
+    print(f"Saved Stage B model to {out_path}")
+
 if __name__ == '__main__':
     run_stage_b()

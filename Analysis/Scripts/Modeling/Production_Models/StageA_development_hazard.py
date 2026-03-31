@@ -3,6 +3,7 @@ import numpy as np
 from catboost import CatBoostClassifier
 from sklearn.metrics import average_precision_score
 import gc
+import os
 
 def run_stage_a():
     print("==============================================")
@@ -137,6 +138,13 @@ def run_stage_a():
             merged[f'Prob_{h_tag}'] = cb_base.predict_proba(X)[:, 1]
             pr_auc = average_precision_score(y, merged[f'Prob_{h_tag}'])
             print(f"    [+] Operational PR-AUC (CatBoost):          {pr_auc:.4f}")
+            
+            try:
+                import joblib
+                joblib.dump(lgbm_base, os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_model_lgbm_{h_tag}.joblib'))
+                cb_base.save_model(os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_model_cb_{h_tag}.cbm'))
+            except Exception as e:
+                print(f"    [-] Failed to export model artifacts for Stage F: {e}")
             
             if h_tag == 'H=4':
                 try:
