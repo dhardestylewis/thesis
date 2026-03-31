@@ -61,7 +61,7 @@ def generate_rd_plot():
     
     plt.ylabel("Days Delayed in Entitlement Pipeline")
     plt.xlabel("Continuous Signed-Area Share (Petition%)")
-    plt.title("Track 2: Fuzzy Regression Discontinuity\nInsufficient Causal Divergence (-0.68 days, p=0.685)")
+    plt.title("Track 2: Sharp Regression Discontinuity\nInsufficient Causal Divergence (-0.68 days, p=0.685)")
     plt.legend()
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, "Fig2_Regression_Discontinuity.png"), dpi=300)

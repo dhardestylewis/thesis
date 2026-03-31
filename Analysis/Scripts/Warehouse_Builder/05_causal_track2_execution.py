@@ -39,7 +39,7 @@ def execute_track2():
     np.random.seed(42)
     df['days_delayed'] = 15 + 60 * df['is_protested'].fillna(0) + 10 * df['signed_area_share'] + np.random.normal(0, 5, len(df))
 
-    print("Formatting Triangular-Kernel fuzzy design matrix...")
+    print("Formatting Triangular-Kernel sharp design matrix...")
     threshold = 0.20
     bandwidth = 0.10
     

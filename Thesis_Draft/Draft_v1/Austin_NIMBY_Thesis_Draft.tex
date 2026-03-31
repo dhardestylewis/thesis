@@ -11,6 +11,7 @@
 \usepackage{booktabs}
 \usepackage{setspace}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{lmodern}
 \usepackage{tikz}
@@ -384,13 +385,6 @@ The November 2022 council election is the primary regime boundary. The election 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png}
-    \caption{\textbf{Stage C:} Rolling-origin evaluation across prediction horizons from the initial filing date through the final pre-council reading.}
-    \label{fig:rolling_origin}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \includegraphics[width=0.8\textwidth]{Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png}
     \caption{\textbf{Stage C:} In-distribution vs.\ worst-regime out-of-distribution PR-AUC across model architectures.}
     \label{fig:model_array}
@@ -435,23 +429,9 @@ While the in-distribution cross-validation (Table~\ref{tab:metrics_summary}) est
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{Track1_Exhibits/fig_calibration_ece_H0.pdf}
-    \caption{\textbf{Stage C:} Reliability diagram for the Opposition Mobilization model (ECE = 0.055). Following Isotonic regression, the upper-decile probabilities are tightly rescaled to prevent aggressive overconfidence on sparse geometries.}
-    \label{fig:reliability}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \includegraphics[width=0.9\textwidth]{Track1_Exhibits/fig_temporal_drift_H0.pdf}
     \caption{Predictive performance decay across out-of-distribution temporal offsets ($T+0$ through $T+3$).}
     \label{fig:temporal_rot}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Track1_Exhibits/fig_policy_regimes_H0.pdf}
-    \caption{\textbf{Stage C:} Out-of-distribution performance by policy regime: the 2022 council transition and 2024 HOME Phase 1 each produce regime-specific performance degradation.}
-    \label{fig:policy_regimes}
 \end{figure}
 
 \begin{figure}[H]
@@ -461,12 +441,40 @@ While the in-distribution cross-validation (Table~\ref{tab:metrics_summary}) est
     \label{fig:feature_importance}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\textwidth]{Chapter4/F8_Calibration.png}
-\caption{\textbf{Stage A:} Calibration reliability diagram (left) and top-$K$ capture curve (right) for the Development Occurrence model (calculated using 10 equal-frequency bins to account for severe class imbalance).}
-\label{fig:f8_calibration}
-\end{figure}
+\begin{figure*}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Chapter4/F8_Calibration.png}
+        \caption{\textbf{Stage A:} Calibration reliability and capture curve.}
+        \label{fig:stage_a_calibration}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_calibration_ece_H0.pdf}
+        \caption{\textbf{Stage C:} Opposition model reliability (ECE = \metricECE{}).}
+        \label{fig:reliability}
+    \end{subfigure}
+
+    \vspace{0.8cm}
+
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png}
+        \caption{\textbf{Stage C:} Rolling-origin temporal evaluation.}
+        \label{fig:rolling_origin}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_policy_regimes_H0.pdf}
+        \caption{\textbf{Stage C:} Policy regime out-of-distribution tracking.}
+        \label{fig:policy_regimes}
+    \end{subfigure}
+    \caption{\textbf{Global Model Diagnostics Grid:} Parallel evaluation of calibration reliability and out-of-distribution temporal degradation across the Stage A (Development Occurrence) and Stage C (Opposition Risk) modeling architectures.}
+    \label{fig:global_diagnostics}
+\end{figure*}
 
 \subsection{The Chilling Effect: Pre-Council Attrition}
 
@@ -480,7 +488,7 @@ Consequently, predictive algorithms targeting terminal council votes suffer from
 \centering
 
 \vspace{0.2cm}
-\textbf{\small Panel A: Protest Petition Fuzzy Regression Discontinuity (RD)}\par\vspace{0.3cm}
+\textbf{\small Panel A: Protest Petition Sharp Regression Discontinuity (RD)}\par\vspace{0.3cm}
 \begin{tikzpicture}[
     node distance=1.5cm and 2.5cm,
     var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
@@ -527,12 +535,12 @@ Consequently, predictive algorithms targeting terminal council votes suffer from
 \draw[dashed_arrow] (U) to[bend right=40] (Y.south);
 \end{tikzpicture}
 
-\caption{Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis. \textbf{Panel A} illustrates the Fuzzy Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$). \textbf{Panel B} illustrates the Difference-in-Differences Event Study, isolating council dissent ($Y$) arising from the intersection of the discrete HOME Phase 1 policy time shock ($t$) and parcel eligibility ($E$).}
+\caption{Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis. \textbf{Panel A} illustrates the Sharp Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$). \textbf{Panel B} illustrates the Difference-in-Differences Event Study, isolating council dissent ($Y$) arising from the intersection of the discrete HOME Phase 1 policy time shock ($t$) and parcel eligibility ($E$).}
 \label{fig:causal_dag}
 \end{figure}
 
 
-To estimate the causal effect of crossing the formal protest threshold, a fuzzy regression discontinuity (RD) design exploits the 20\% statutory petition threshold under Texas LGC Chapter~211. The running variable is the percentage of valid signed area within the 200-foot buffer.
+To estimate the causal effect of crossing the formal protest threshold, a sharp regression discontinuity (RD) design exploits the 20\% statutory petition threshold under Texas LGC Chapter~211. The running variable is the percentage of valid signed area within the 200-foot buffer.
 
 A triangular-kernel weighted least squares estimator yields an estimated shift of $\metricRDDelay{}$ days in absolute council processing time at the threshold ($p < 0.001$, SE $= 2.53$, 95\% CI: $[47.09, 57.08]$). This estimate isolates a substantively significant compounding bottleneck strictly localized to the formal petition boundary.
 
@@ -723,8 +731,8 @@ Selected CatBoost models uniformly converged on Depth=6, Learning Rate $\approx$
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Archive_Pipelines/Fig10_Hyperparameter_Sweeps.png}
-\caption{Grid search precision-recall AUC optimization heatmap across maximum tree depth and learning rate parameters for the Opposition Mobilization model.}
+\includegraphics[width=\textwidth]{Fig10_Hyperparameter_Sweeps.png}
+\caption{\textbf{Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and learning rate parameters for the Development Occurrence and Opposition Mobilization models.}
 \label{fig:hyperparameters}
 \end{figure}
 

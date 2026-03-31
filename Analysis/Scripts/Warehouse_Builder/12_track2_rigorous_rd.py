@@ -8,7 +8,7 @@ WORK_DIR = os.path.join(ROOT_DIR, "Data", "Warehouse_As_Of", "Build")
 OUT_DIR = os.path.join(ROOT_DIR, "Analysis", "Output", "Track2_Causal")
 
 def rigorous_rd_diagnostics():
-    print("Initiating Rigorous Track 2: Fuzzy Regression Discontinuity Diagnostics...")
+    print("Initiating Rigorous Track 2: Sharp Regression Discontinuity Diagnostics...")
     
     try:
         cm = pd.read_csv(os.path.join(WORK_DIR, "case_master.csv"))
@@ -52,7 +52,7 @@ def rigorous_rd_diagnostics():
     results.append(run_wls(0.10, 0.05, "Placebo Cutoff (0.10)"))
     results.append(run_wls(0.30, 0.05, "Placebo Cutoff (0.30)"))
     
-    print("\n--- Track 2 Rigorous Causal Extrapolation (Fuzzy RD) ---")
+    print("\n--- Track 2 Rigorous Causal Extrapolation (Sharp RD) ---")
     os.makedirs(OUT_DIR, exist_ok=True)
     with open(os.path.join(OUT_DIR, "Track2_Rigorous_Results.txt"), "w") as f:
         for r in results:

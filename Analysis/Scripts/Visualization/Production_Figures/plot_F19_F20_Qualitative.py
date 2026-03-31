@@ -70,33 +70,67 @@ def generate_exhibits():
         plt.savefig(f19_path, dpi=300, bbox_inches='tight')
         plt.close()
 
-    # F20: Topic Activation Heatmap by Council District
+    # F20: Topic Activation Spatial Choropleth by Council District
     if 'council_district' in df.columns or 'council_district_x' in df.columns:
-        print("  -> Constructing F20 using qualitative active learning clustering...")
-        dist_col = 'council_district_x' if 'council_district_x' in df.columns else 'council_district'
-        districts = sorted(df[dist_col].dropna().unique())  # All districts
+        print("  -> Constructing F19/F20 Spatial Multiples using qualitative active learning clustering...")
+        import geopandas as gpd
         
+        dist_col = 'council_district_x' if 'council_district_x' in df.columns else 'council_district'
+        districts = sorted(df[dist_col].dropna().unique())
+        
+        # Aggregate mean probabilities
         heatmap_data = []
         for d in districts:
             d_sub = df[df[dist_col] == d]
-            row = []
+            row = {'COUNCIL_DI': int(d)}
             for col in frame_cols:
-                row.append(d_sub[col].mean())
+                row[col] = d_sub[col].mean()
             heatmap_data.append(row)
             
-        data = np.array(heatmap_data)
-        if data.size > 0:
-            # Normalize for heatmap visibility relative to max activation
-            data = data / (data.max() + 1e-9)
-            plt.figure(figsize=(12, 8))
-            sns.heatmap(data, annot=True, fmt=".2f", cmap="YlOrRd", xticklabels=frames, yticklabels=[f"District {int(d)}" for d in districts])
-            plt.title('Argument Frame Prevalence by Council District', fontsize=14, pad=15)
+        df_agg = pd.DataFrame(heatmap_data)
+        
+        # Load Geometries
+        geojson_path = os.path.join(ROOT, "Data", "GIS", "council_districts.geojson")
+        if os.path.exists(geojson_path):
+            gdf = gpd.read_file(geojson_path)
+            gdf['COUNCIL_DI'] = gdf['COUNCIL_DI'].astype(int)
+            
+            # Merge text probabilities into geometries
+            gdf_merged = gdf.merge(df_agg, on='COUNCIL_DI', how='inner')
+            
+            # Determine global upper bound for colorbar normalization
+            global_max = df_agg[frame_cols].values.max() + 1e-9
+            
+            n_frames = len(frame_cols)
+            fig, axes = plt.subplots(1, n_frames, figsize=(3.5 * n_frames, 5))
+            if n_frames == 1:
+                axes = [axes]
+                
+            for i, (col, frame_name) in enumerate(zip(frame_cols, frames)):
+                ax = axes[i]
+                # Normalize values to global maximum cell value for pure visual comparison
+                gdf_merged['norm_' + col] = gdf_merged[col] / global_max
+                
+                gdf_merged.plot(
+                    column='norm_' + col, 
+                    cmap="YlOrRd", 
+                    ax=ax, 
+                    edgecolor='black', 
+                    linewidth=0.5, 
+                    vmin=0, 
+                    vmax=1
+                )
+                ax.set_title(frame_name, fontsize=12)
+                ax.axis('off')
+                
+            plt.suptitle('Figure 19: Argument Frame Prevalence by Council District', fontsize=16, y=1.02)
             plt.tight_layout()
-            f20_path = os.path.join(out_dir, "F20_Stakeholder_Heatmap.png")
+            f20_path = os.path.join(out_dir, "F20_Stakeholder_Spatial_Multiples.png")
             plt.savefig(f20_path, dpi=300, bbox_inches='tight')
             plt.close()
-            
-    print(f"[+] Rebuilt F19 and F20 cleanly from {len(frame_cols)} explicit frame probabilities in H3_Filing_Master_NLP.csv")
+            print("[+] Successfully rendered Spatial Multiples into F20_Stakeholder_Spatial_Multiples.png")
+        else:
+            print("[!] Could not locate council_districts.geojson for spatial F19/F20.")
 
 if __name__ == "__main__":
     generate_exhibits()

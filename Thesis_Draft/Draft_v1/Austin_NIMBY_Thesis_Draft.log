@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  31 MAR 2026 18:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  31 MAR 2026 18:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -267,7 +267,36 @@ File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen180
 \Gin@req@width=\dimen181
-) (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+)
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.sty
+Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
+
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen182
+\captionmargin=\dimen183
+\caption@leftmargin=\dimen184
+\caption@rightmargin=\dimen185
+\caption@width=\dimen186
+\caption@indent=\dimen187
+\caption@parindent=\dimen188
+\caption@hangindent=\dimen189
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count305
+\c@continuedfloat=\count306
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+)
+Package caption Info: New subtype `subfigure' on input line 238.
+\c@subfigure=\count307
+Package caption Info: New subtype `subtable' on input line 238.
+\c@subtable=\count308
+)
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
 Package: amsmath 2025/07/09 v2.17z AMS math features
 \@mathmargin=\skip55
 
@@ -278,23 +307,23 @@ Package: amstext 2024/11/17 v2.01 AMS text
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks26
-\ex@=\dimen182
+\ex@=\dimen190
 ))
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen183
+\pmbraise@=\dimen191
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count305
+\inf@bad=\count309
 LaTeX Info: Redefining \frac on input line 233.
-\uproot@=\count306
-\leftroot@=\count307
+\uproot@=\count310
+\leftroot@=\count311
 LaTeX Info: Redefining \overline on input line 398.
 LaTeX Info: Redefining \colon on input line 409.
-\classnum@=\count308
-\DOTSCASE@=\count309
+\classnum@=\count312
+\DOTSCASE@=\count313
 LaTeX Info: Redefining \ldots on input line 495.
 LaTeX Info: Redefining \dots on input line 498.
 LaTeX Info: Redefining \cdots on input line 619.
@@ -304,30 +333,30 @@ LaTeX Info: Redefining \big on input line 721.
 LaTeX Info: Redefining \Big on input line 722.
 LaTeX Info: Redefining \bigg on input line 723.
 LaTeX Info: Redefining \Bigg on input line 724.
-\big@size=\dimen184
+\big@size=\dimen192
 LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
-\macc@depth=\count310
+\macc@depth=\count314
 LaTeX Info: Redefining \bmod on input line 904.
 LaTeX Info: Redefining \pmod on input line 909.
 LaTeX Info: Redefining \smash on input line 939.
 LaTeX Info: Redefining \relbar on input line 969.
 LaTeX Info: Redefining \Relbar on input line 970.
-\c@MaxMatrixCols=\count311
+\c@MaxMatrixCols=\count315
 \dotsspace@=\muskip18
-\c@parentequation=\count312
-\dspbrk@lvl=\count313
+\c@parentequation=\count316
+\dspbrk@lvl=\count317
 \tag@help=\toks27
-\row@=\count314
-\column@=\count315
-\maxfields@=\count316
+\row@=\count318
+\column@=\count319
+\maxfields@=\count320
 \andhelp@=\toks28
-\eqnshift@=\dimen185
-\alignsep@=\dimen186
-\tagshift@=\dimen187
-\tagwidth@=\dimen188
-\totwidth@=\dimen189
-\lineht@=\dimen190
+\eqnshift@=\dimen193
+\alignsep@=\dimen194
+\tagshift@=\dimen195
+\tagwidth@=\dimen196
+\totwidth@=\dimen197
+\lineht@=\dimen198
 \@envbody=\toks29
 \multlinegap=\skip56
 \multlinetaggap=\skip57
@@ -376,8 +405,8 @@ y (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-c
 ommon.tex
 \pgfutil@everybye=\toks31
-\pgfutil@tempdima=\dimen191
-\pgfutil@tempdimb=\dimen192
+\pgfutil@tempdima=\dimen199
+\pgfutil@tempdimb=\dimen256
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-l
 atex.def
@@ -407,26 +436,26 @@ ode.tex
 braryfiltered.code.tex
 \pgfkeys@tmptoks=\toks34
 ))
-\pgf@x=\dimen193
-\pgf@y=\dimen194
-\pgf@xa=\dimen195
-\pgf@ya=\dimen196
-\pgf@xb=\dimen197
-\pgf@yb=\dimen198
-\pgf@xc=\dimen199
-\pgf@yc=\dimen256
-\pgf@xd=\dimen257
-\pgf@yd=\dimen258
+\pgf@x=\dimen257
+\pgf@y=\dimen258
+\pgf@xa=\dimen259
+\pgf@ya=\dimen260
+\pgf@xb=\dimen261
+\pgf@yb=\dimen262
+\pgf@xc=\dimen263
+\pgf@yc=\dimen264
+\pgf@xd=\dimen265
+\pgf@yd=\dimen266
 \w@pgf@writea=\write3
 \r@pgf@reada=\read2
-\c@pgf@counta=\count317
-\c@pgf@countb=\count318
-\c@pgf@countc=\count319
-\c@pgf@countd=\count320
+\c@pgf@counta=\count321
+\c@pgf@countb=\count322
+\c@pgf@countc=\count323
+\c@pgf@countd=\count324
 \t@pgf@toka=\toks35
 \t@pgf@tokb=\toks36
 \t@pgf@tokc=\toks37
-\pgf@sys@id@count=\count321
+\pgf@sys@id@count=\count325
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.cfg
 File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
@@ -444,8 +473,8 @@ File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsyss
 oftpath.code.tex
 File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfsyssoftpath@smallbuffer@items=\count322
-\pgfsyssoftpath@bigbuffer@items=\count323
+\pgfsyssoftpath@smallbuffer@items=\count326
+\pgfsyssoftpath@bigbuffer@items=\count327
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsysp
 rotocol.code.tex
@@ -480,8 +509,8 @@ ex
 de.tex)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparser.
 code.tex
-\pgfmath@dimen=\dimen259
-\pgfmath@count=\count324
+\pgfmath@dimen=\dimen267
+\pgfmath@count=\count328
 \pgfmath@box=\box60
 \pgfmath@toks=\toks38
 \pgfmath@stack@operand=\toks39
@@ -509,39 +538,39 @@ ns.integerarithmetics.code.tex)
 de.tex)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat.c
 ode.tex
-\c@pgfmathroundto@lastzeros=\count325
+\c@pgfmathroundto@lastzeros=\count329
 ))
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.te
 x)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorep
 oints.code.tex
 File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@picminx=\dimen260
-\pgf@picmaxx=\dimen261
-\pgf@picminy=\dimen262
-\pgf@picmaxy=\dimen263
-\pgf@pathminx=\dimen264
-\pgf@pathmaxx=\dimen265
-\pgf@pathminy=\dimen266
-\pgf@pathmaxy=\dimen267
-\pgf@xx=\dimen268
-\pgf@xy=\dimen269
-\pgf@yx=\dimen270
-\pgf@yy=\dimen271
-\pgf@zx=\dimen272
-\pgf@zy=\dimen273
+\pgf@picminx=\dimen268
+\pgf@picmaxx=\dimen269
+\pgf@picminy=\dimen270
+\pgf@picmaxy=\dimen271
+\pgf@pathminx=\dimen272
+\pgf@pathmaxx=\dimen273
+\pgf@pathminy=\dimen274
+\pgf@pathmaxy=\dimen275
+\pgf@xx=\dimen276
+\pgf@xy=\dimen277
+\pgf@yx=\dimen278
+\pgf@yy=\dimen279
+\pgf@zx=\dimen280
+\pgf@zy=\dimen281
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorep
 athconstruct.code.tex
 File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@path@lastx=\dimen274
-\pgf@path@lasty=\dimen275
+\pgf@path@lastx=\dimen282
+\pgf@path@lasty=\dimen283
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorep
 athusage.code.tex
 File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@shorten@end@additional=\dimen276
-\pgf@shorten@start@additional=\dimen277
+\pgf@shorten@end@additional=\dimen284
+\pgf@shorten@start@additional=\dimen285
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcores
 copes.code.tex
@@ -549,19 +578,19 @@ File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfpic=\box61
 \pgf@hbox=\box62
 \pgf@layerbox@main=\box63
-\pgf@picture@serial@count=\count326
+\pgf@picture@serial@count=\count330
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreg
 raphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgflinewidth=\dimen278
+\pgflinewidth=\dimen286
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoret
 ransformations.code.tex
 File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@pt@x=\dimen279
-\pgf@pt@y=\dimen280
-\pgf@pt@temp=\dimen281
+\pgf@pt@x=\dimen287
+\pgf@pt@y=\dimen288
+\pgf@pt@temp=\dimen289
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreq
 uick.code.tex
@@ -578,14 +607,14 @@ File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorea
 rrows.code.tex
 File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfarrowsep=\dimen282
+\pgfarrowsep=\dimen290
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcores
 hade.code.tex
 File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@max=\dimen283
-\pgf@sys@shading@range@num=\count327
-\pgf@shadingcount=\count328
+\pgf@max=\dimen291
+\pgf@sys@shading@range@num=\count331
+\pgf@shadingcount=\count332
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorei
 mage.code.tex
@@ -624,8 +653,8 @@ File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp
 -version-0-65.sty
 Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@nodesepstart=\dimen284
-\pgf@nodesepend=\dimen285
+\pgf@nodesepstart=\dimen292
+\pgf@nodesepend=\dimen293
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp
 -version-1-18.sty
@@ -642,8 +671,8 @@ ex))
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.co
 de.tex
 Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
-\pgffor@iter=\dimen286
-\pgffor@skip=\dimen287
+\pgffor@iter=\dimen294
+\pgffor@skip=\dimen295
 \pgffor@stack=\toks41
 \pgffor@toks=\toks42
 ))
@@ -654,34 +683,34 @@ Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibrar
 yplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@plot@mark@count=\count329
-\pgfplotmarksize=\dimen288
+\pgf@plot@mark@count=\count333
+\pgfplotmarksize=\dimen296
 )
-\tikz@lastx=\dimen289
-\tikz@lasty=\dimen290
-\tikz@lastxsaved=\dimen291
-\tikz@lastysaved=\dimen292
-\tikz@lastmovetox=\dimen293
-\tikz@lastmovetoy=\dimen294
-\tikzleveldistance=\dimen295
-\tikzsiblingdistance=\dimen296
+\tikz@lastx=\dimen297
+\tikz@lasty=\dimen298
+\tikz@lastxsaved=\dimen299
+\tikz@lastysaved=\dimen300
+\tikz@lastmovetox=\dimen301
+\tikz@lastmovetoy=\dimen302
+\tikzleveldistance=\dimen303
+\tikzsiblingdistance=\dimen304
 \tikz@figbox=\box66
 \tikz@figbox@bg=\box67
 \tikz@tempbox=\box68
 \tikz@tempbox@bg=\box69
-\tikztreelevel=\count330
-\tikznumberofchildren=\count331
-\tikznumberofcurrentchild=\count332
-\tikz@fig@count=\count333
+\tikztreelevel=\count334
+\tikznumberofchildren=\count335
+\tikznumberofcurrentchild=\count336
+\tikz@fig@count=\count337
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulema
 trix.code.tex
 File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfmatrixcurrentrow=\count334
-\pgfmatrixcurrentcolumn=\count335
-\pgf@matrix@numberofcolumns=\count336
+\pgfmatrixcurrentrow=\count338
+\pgfmatrixcurrentcolumn=\count339
+\pgf@matrix@numberofcolumns=\count340
 )
-\tikz@expandcount=\count337
+\tikz@expandcount=\count341
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
 libraries\tikzlibrarytopaths.code.tex
@@ -694,25 +723,25 @@ File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibrar
 yarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfarrowinset=\dimen297
-\pgfarrowlength=\dimen298
-\pgfarrowwidth=\dimen299
-\pgfarrowlinewidth=\dimen300
+\pgfarrowinset=\dimen305
+\pgfarrowlength=\dimen306
+\pgfarrowwidth=\dimen307
+\pgfarrowlinewidth=\dimen308
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype.sty
 Package: microtype 2025/07/09 v3.2b Micro-typographical refinements (RS)
 \MT@toks=\toks43
 \MT@tempbox=\box70
-\MT@count=\count338
+\MT@count=\count342
 LaTeX Info: Redefining \noprotrusionifhmode on input line 1087.
 LaTeX Info: Redefining \leftprotrusion on input line 1088.
 \MT@prot@toks=\toks44
 LaTeX Info: Redefining \rightprotrusion on input line 1107.
 LaTeX Info: Redefining \textls on input line 1449.
-\MT@outer@kern=\dimen301
+\MT@outer@kern=\dimen309
 LaTeX Info: Redefining \microtypecontext on input line 2053.
 LaTeX Info: Redefining \textmicrotypecontext on input line 2070.
-\MT@listname@count=\count339
+\MT@listname@count=\count343
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype-pdfte
 x.def
@@ -729,7 +758,7 @@ File: microtype.cfg 2025/07/09 v3.2b microtype main configuration file (RS)
 )
 LaTeX Info: Redefining \microtypesetup on input line 3065.
 ) (Tables/metrics_config.tex) (Tables/lib_ast.tex)
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 35
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 36
 .
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
@@ -738,28 +767,28 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdfte
 x.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count340
+\l__color_backend_stack_int=\count344
 ) (Austin_NIMBY_Thesis_Draft.aux)
 \openout1 = `Austin_NIMBY_Thesis_Draft.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -795,7 +824,7 @@ LaTeX Font Info:    ... okay on input line 35.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 35.
+Package hyperref Info: Link coloring OFF on input line 36.
 (Austin_NIMBY_Thesis_Draft.out) (Austin_NIMBY_Thesis_Draft.out)
 \@outlinefile=\write4
 \openout4 = `Austin_NIMBY_Thesis_Draft.out'.
@@ -803,16 +832,16 @@ Package hyperref Info: Link coloring OFF on input line 35.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count341
-\scratchdimen=\dimen302
+\scratchcounter=\count345
+\scratchdimen=\dimen310
 \scratchbox=\box71
-\nofMPsegments=\count342
-\nofMParguments=\count343
+\nofMPsegments=\count346
+\nofMParguments=\count347
 \everyMPshowfont=\toks45
-\MPscratchCnt=\count344
-\MPscratchDim=\dimen303
-\MPnumerator=\count345
-\makeMPintoPDFobject=\count346
+\MPscratchCnt=\count348
+\MPscratchDim=\dimen311
+\MPnumerator=\count349
+\makeMPintoPDFobject=\count350
 \everyMPtoPDFconversion=\toks46
 )
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-bas
@@ -824,16 +853,18 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-LaTeX Info: Redefining \microtypecontext on input line 35.
-Package microtype Info: Applying patch `item' on input line 35.
-Package microtype Info: Applying patch `toc' on input line 35.
-Package microtype Info: Applying patch `eqnum' on input line 35.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Info: Redefining \microtypecontext on input line 36.
+Package microtype Info: Applying patch `item' on input line 36.
+Package microtype Info: Applying patch `toc' on input line 36.
+Package microtype Info: Applying patch `eqnum' on input line 36.
 
 
-Package microtype Warning: Unable to apply patch `footnote' on input line 35.
+Package microtype Warning: Unable to apply patch `footnote' on input line 36.
 
-Package microtype Info: Applying patch `verbatim' on input line 35.
-LaTeX Info: Redefining \microtypesetup on input line 35.
+Package microtype Info: Applying patch `verbatim' on input line 36.
+LaTeX Info: Redefining \microtypesetup on input line 36.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -849,36 +880,36 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (RS)
 )
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 3
-7.
+8.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 3
-7.
+8.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-37.
+38.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-37.
+38.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 37.
+(Font)              <12> on input line 38.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 37.
+(Font)              <8> on input line 38.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 37.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 37.
+(Font)              <6> on input line 38.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 38.
 
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
@@ -887,7 +918,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 37.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 38.
 
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -897,11 +928,11 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 39.
+(Font)              <10> on input line 40.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 39.
+(Font)              <7> on input line 40.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 39.
+(Font)              <5> on input line 40.
 
 [1
 
@@ -928,130 +959,128 @@ ts/enc/dvips/lm/lm-rm.enc}])
 
  [5]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 6
-1.
+2.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [6{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 85.
+(Font)              <9> on input line 86.
  [7] [8]
 [9]
-<Figures/Archive_Pipelines/fig1_spatial_distribution.png, id=395, 1406.856pt x 
+<Figures/Archive_Pipelines/fig1_spatial_distribution.png, id=386, 1406.856pt x 
 1509.4794pt>
 File: Figures/Archive_Pipelines/fig1_spatial_distribution.png Graphic file (typ
 e png)
 <use Figures/Archive_Pipelines/fig1_spatial_distribution.png>
 Package pdftex.def Info: Figures/Archive_Pipelines/fig1_spatial_distribution.pn
-g  used on input line 138.
+g  used on input line 139.
 (pdftex.def)             Requested size: 211.38832pt x 226.8037pt.
-<Figures/Exploratory_EDA/waller_buffer_map.png, id=397, 491.436pt x 720.291pt>
+<Figures/Exploratory_EDA/waller_buffer_map.png, id=388, 491.436pt x 720.291pt>
 File: Figures/Exploratory_EDA/waller_buffer_map.png Graphic file (type png)
 <use Figures/Exploratory_EDA/waller_buffer_map.png>
 Package pdftex.def Info: Figures/Exploratory_EDA/waller_buffer_map.png  used on
- input line 165.
+ input line 166.
 (pdftex.def)             Requested size: 258.36668pt x 378.69698pt.
  [10 <./Figures/Archive_Pipelines/fig1_spatial_distribution.png>]
-Overfull \hbox (61.78677pt too wide) in paragraph at lines 194--195
+Overfull \hbox (61.78677pt too wide) in paragraph at lines 195--196
  [][] 
  []
 
 [11 <./Figures/Exploratory_EDA/waller_buffer_map.png>] (summary_stats_table.tex
 ) [12] [13]
-<../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png, id=426, 
+<../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png, id=417, 
 638.8668pt x 422.0568pt>
 File: ../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png Grap
 hic file (type png)
 <use ../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png>
 Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/StageA_Figure3
-_PR_Curves.png  used on input line 293.
+_PR_Curves.png  used on input line 294.
 (pdftex.def)             Requested size: 375.80544pt x 248.27718pt.
-<../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png, id=427, 68
+<../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png, id=418, 68
 2.9515pt x 711.1368pt>
 File: ../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png Graphi
 c file (type png)
 <use ../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png>
 Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/StageA_Figure4
-_Hotspot.png  used on input line 300.
+_Hotspot.png  used on input line 301.
 (pdftex.def)             Requested size: 375.80544pt x 391.32176pt.
  [14 <../../Analysis/Output/Track0_Predictive/StageA_Figure3_PR_Curves.png>] [1
 5 <../../Analysis/Output/Track0_Predictive/StageA_Figure4_Hotspot.png>]
-<Figures/Chapter4/F22_Joint_Policy_Map.png, id=442, 1144.5159pt x 1144.7568pt>
+<Figures/Chapter4/F22_Joint_Policy_Map.png, id=433, 1144.5159pt x 1144.7568pt>
 File: Figures/Chapter4/F22_Joint_Policy_Map.png Graphic file (type png)
 <use Figures/Chapter4/F22_Joint_Policy_Map.png>
 Package pdftex.def Info: Figures/Chapter4/F22_Joint_Policy_Map.png  used on inp
-ut line 367.
+ut line 368.
 (pdftex.def)             Requested size: 399.29463pt x 399.37828pt.
  [16] [17 <./Figures/Chapter4/F22_Joint_Policy_Map.png>]
-<Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png, id=453, 631.158pt 
-x 422.0568pt>
-File: Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png Graphic file (
-type png)
-<use Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png>
-Package pdftex.def Info: Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons
-.png  used on input line 387.
-(pdftex.def)             Requested size: 375.80544pt x 251.29756pt.
-<Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png, id=454, 566.5968pt
+<Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png, id=444, 566.5968pt
  x 349.7868pt>
 File: Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png Graphic file (
 type png)
 <use Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png>
 Package pdftex.def Info: Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC
-.png  used on input line 394.
+.png  used on input line 388.
 (pdftex.def)             Requested size: 375.80544pt x 232.00218pt.
- [18 <./Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png>] [19 <./Fig
-ures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png>] (Tables/multi_horizon
-_results.tex)
-<Track1_Exhibits/fig_calibration_ece_H0.pdf, id=474, 505.89pt x 433.62pt>
-File: Track1_Exhibits/fig_calibration_ece_H0.pdf Graphic file (type pdf)
-<use Track1_Exhibits/fig_calibration_ece_H0.pdf>
-Package pdftex.def Info: Track1_Exhibits/fig_calibration_ece_H0.pdf  used on in
-put line 438.
-(pdftex.def)             Requested size: 422.77664pt x 362.3857pt.
-
-[20]
-<Track1_Exhibits/fig_temporal_drift_H0.pdf, id=479, 505.89pt x 361.35pt>
+ [18 <./Figures/Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png>]
+(Tables/multi_horizon_results.tex) [19]
+<Track1_Exhibits/fig_temporal_drift_H0.pdf, id=463, 505.89pt x 361.35pt>
 File: Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
 <use Track1_Exhibits/fig_temporal_drift_H0.pdf>
 Package pdftex.def Info: Track1_Exhibits/fig_temporal_drift_H0.pdf  used on inp
-ut line 445.
+ut line 432.
 (pdftex.def)             Requested size: 422.77664pt x 301.98808pt.
- [21 <./Track1_Exhibits/fig_calibration_ece_H0.pdf>]
-<Track1_Exhibits/fig_policy_regimes_H0.pdf, id=528, 578.16pt x 361.35pt>
-File: Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
-<use Track1_Exhibits/fig_policy_regimes_H0.pdf>
-Package pdftex.def Info: Track1_Exhibits/fig_policy_regimes_H0.pdf  used on inp
-ut line 452.
-(pdftex.def)             Requested size: 422.77664pt x 264.23543pt.
- [22 <./Track1_Exhibits/fig_temporal_drift_H0.pdf>]
-<Track1_Exhibits/fig_feature_importance_H0.pdf, id=588, 722.7pt x 578.16pt>
+<Track1_Exhibits/fig_feature_importance_H0.pdf, id=464, 722.7pt x 578.16pt>
 File: Track1_Exhibits/fig_feature_importance_H0.pdf Graphic file (type pdf)
 <use Track1_Exhibits/fig_feature_importance_H0.pdf>
 Package pdftex.def Info: Track1_Exhibits/fig_feature_importance_H0.pdf  used on
- input line 459.
+ input line 439.
 (pdftex.def)             Requested size: 422.77664pt x 338.21782pt.
- [23 <./Track1_Exhibits/fig_policy_regimes_H0.pdf>]
-<Figures/Chapter4/F8_Calibration.png, id=642, 855.6768pt x 380.622pt>
+ [20 <./Track1_Exhibits/fig_temporal_drift_H0.pdf>]
+<Figures/Chapter4/F8_Calibration.png, id=524, 855.6768pt x 380.622pt>
 File: Figures/Chapter4/F8_Calibration.png Graphic file (type png)
 <use Figures/Chapter4/F8_Calibration.png>
 Package pdftex.def Info: Figures/Chapter4/F8_Calibration.png  used on input lin
-e 466.
-(pdftex.def)             Requested size: 422.77664pt x 188.0629pt.
-[24 <./Track1_Exhibits/fig_feature_importance_H0.pdf>]
-Overfull \hbox (51.21436pt too wide) in paragraph at lines 528--529
+e 448.
+(pdftex.def)             Requested size: 211.38832pt x 94.02853pt.
+<Track1_Exhibits/fig_calibration_ece_H0.pdf, id=525, 505.89pt x 433.62pt>
+File: Track1_Exhibits/fig_calibration_ece_H0.pdf Graphic file (type pdf)
+<use Track1_Exhibits/fig_calibration_ece_H0.pdf>
+Package pdftex.def Info: Track1_Exhibits/fig_calibration_ece_H0.pdf  used on in
+put line 455.
+(pdftex.def)             Requested size: 211.38832pt x 181.19284pt.
+<Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png, id=526, 631.158pt 
+x 422.0568pt>
+File: Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png Graphic file (
+type png)
+<use Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png>
+Package pdftex.def Info: Figures/Archive_Pipelines/Fig8_Rolling_Origin_Horizons
+.png  used on input line 464.
+(pdftex.def)             Requested size: 211.38832pt x 141.35286pt.
+<Track1_Exhibits/fig_policy_regimes_H0.pdf, id=527, 578.16pt x 361.35pt>
+File: Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
+<use Track1_Exhibits/fig_policy_regimes_H0.pdf>
+Package pdftex.def Info: Track1_Exhibits/fig_policy_regimes_H0.pdf  used on inp
+ut line 471.
+(pdftex.def)             Requested size: 211.38832pt x 132.11496pt.
+
+Overfull \hbox (51.21436pt too wide) in paragraph at lines 536--537
  [][] 
  []
 
-[25 <./Figures/Chapter4/F8_Calibration.png>] [26]
-<Figures/Chapter5/F16_Petition_RD.png, id=709, 566.5968pt x 422.0568pt>
+[21 <./Track1_Exhibits/fig_feature_importance_H0.pdf>] [22 <./Figures/Chapter4/
+F8_Calibration.png> <./Track1_Exhibits/fig_calibration_ece_H0.pdf> <./Figures/A
+rchive_Pipelines/Fig8_Rolling_Origin_Horizons.png> <./Track1_Exhibits/fig_polic
+y_regimes_H0.pdf>] [23]
+<Figures/Chapter5/F16_Petition_RD.png, id=687, 566.5968pt x 422.0568pt>
 File: Figures/Chapter5/F16_Petition_RD.png Graphic file (type png)
 <use Figures/Chapter5/F16_Petition_RD.png>
 Package pdftex.def Info: Figures/Chapter5/F16_Petition_RD.png  used on input li
-ne 545.
+ne 553.
 (pdftex.def)             Requested size: 399.29463pt x 297.43416pt.
 
 ! Undefined control sequence.
-l.554 ...representing a \metricDiDSignificanceText
+l.562 ...representing a \metricDiDSignificanceText
                                                   {} structural \metricDiDDi...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1060,7 +1089,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.554 ...Text{} structural \metricDiDDirectionText
+l.562 ...Text{} structural \metricDiDDirectionText
                                                   {} in council voting fract...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1069,7 +1098,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 5
-54.
+62.
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -1077,18 +1106,18 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [27 <./Figures/Chapter5/F16_Petition_RD.png>]
-<Figures/Chapter5/F17_HOME_EventStudy.png, id=717, 722.7pt x 433.62pt>
+ [24 <./Figures/Chapter5/F16_Petition_RD.png>]
+<Figures/Chapter5/F17_HOME_EventStudy.png, id=695, 722.7pt x 433.62pt>
 File: Figures/Chapter5/F17_HOME_EventStudy.png Graphic file (type png)
 <use Figures/Chapter5/F17_HOME_EventStudy.png>
 Package pdftex.def Info: Figures/Chapter5/F17_HOME_EventStudy.png  used on inpu
-t line 560.
+t line 568.
 (pdftex.def)             Requested size: 399.29463pt x 239.57684pt.
- [28 <./Figures/Chapter5/F17_HOME_EventStudy.png>] [29]
+ [25 <./Figures/Chapter5/F17_HOME_EventStudy.png>] [26]
 ! Undefined control sequence.
 <argument> ...solates a \metricRDSignificanceText 
                                                   {} \metricRDDelay {} day s...
-l.618 ...cil voting fracture (\metricDiDVotes{}).}
+l.626 ...cil voting fracture (\metricDiDVotes{}).}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1099,7 +1128,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...y structural \metricRDDirectionText 
                                                   {}. The HOME Phase~1 event...
-l.618 ...cil voting fracture (\metricDiDVotes{}).}
+l.626 ...cil voting fracture (\metricDiDVotes{}).}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1110,7 +1139,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ... shows a \metricDiDSignificanceText 
                                                   {} structural \metricDiDDi...
-l.618 ...cil voting fracture (\metricDiDVotes{}).}
+l.626 ...cil voting fracture (\metricDiDVotes{}).}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1121,7 +1150,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ... structural \metricDiDDirectionText 
                                                   {} in council voting fract...
-l.618 ...cil voting fracture (\metricDiDVotes{}).}
+l.626 ...cil voting fracture (\metricDiDVotes{}).}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1129,91 +1158,87 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-[30] (Austin_NIMBY_Thesis_Draft.bbl
+[27] (Austin_NIMBY_Thesis_Draft.bbl
 Underfull \hbox (badness 1681) in paragraph at lines 4--9
 []\T1/lmr/m/n/10.95 (+20) Susan Athey and Guido W. Im-bens.  Ma-chine learn-ing
  meth-ods that economists
  []
 
-[31]) [32]
-<Figures/Qualitative_Appendix/project_overview.pdf, id=761, page=1, 614.295pt x
+[28]) [29]
+<Figures/Qualitative_Appendix/project_overview.pdf, id=739, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/project_overview.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/project_overview.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/project_overview.pdf , pa
-ge1 used on input line 640.
+ge1 used on input line 648.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [33 <./Figures/Qualitative_Appendix/project_overview.pdf>]
-<Figures/Qualitative_Appendix/protocol_summary.pdf, id=1007, page=1, 614.295pt 
-x 794.97pt>
+ [30 <./Figures/Qualitative_Appendix/project_overview.pdf>]
+<Figures/Qualitative_Appendix/protocol_summary.pdf, id=985, page=1, 614.295pt x
+ 794.97pt>
 File: Figures/Qualitative_Appendix/protocol_summary.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/protocol_summary.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/protocol_summary.pdf , pa
-ge1 used on input line 650.
+ge1 used on input line 658.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [34 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
-<Figures/Qualitative_Appendix/interview_guide.pdf, id=1253, page=1, 614.295pt x
+ [31 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
+<Figures/Qualitative_Appendix/interview_guide.pdf, id=1232, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/interview_guide.pdf Graphic file (type pdf)
 <use Figures/Qualitative_Appendix/interview_guide.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/interview_guide.pdf , pag
-e1 used on input line 660.
+e1 used on input line 668.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [35 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
+ [32 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./Figures/Qualitative_Appendix/sample_protes
 t_petition.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1
 .5> allowed
-<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1447, page=1, 614
+<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1426, page=1, 614
 .295pt x 794.97pt>
 File: Figures/Qualitative_Appendix/sample_protest_petition.pdf Graphic file (ty
 pe pdf)
 <use Figures/Qualitative_Appendix/sample_protest_petition.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/sample_protest_petition.p
-df , page1 used on input line 670.
+df , page1 used on input line 678.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
-[36 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
-<Figures/Chapter4/F12_Opposition_PR.png, id=1458, 650.43pt x 505.89pt>
+[33 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
+<Figures/Chapter4/F12_Opposition_PR.png, id=1437, 650.43pt x 505.89pt>
 File: Figures/Chapter4/F12_Opposition_PR.png Graphic file (type png)
 <use Figures/Chapter4/F12_Opposition_PR.png>
 Package pdftex.def Info: Figures/Chapter4/F12_Opposition_PR.png  used on input 
-line 679.
+line 687.
 (pdftex.def)             Requested size: 469.75502pt x 365.37524pt.
- [37 <./Figures/Chapter4/F12_Opposition_PR.png>]
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 700--700
+ [34 <./Figures/Chapter4/F12_Opposition_PR.png>]
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 708--708
 []\T1/lmtt/m/n/10 parcel_id     year  protest_buffer  owner_exempt  tract_wealt
 h_gap  prop_med_rent  case_white_pct[] 
  []
 
-[38]
-<Figures/Archive_Pipelines/Fig10_Hyperparameter_Sweeps.png, id=1469, 471.9231pt
- x 349.7868pt>
-File: Figures/Archive_Pipelines/Fig10_Hyperparameter_Sweeps.png Graphic file (t
-ype png)
-<use Figures/Archive_Pipelines/Fig10_Hyperparameter_Sweeps.png>
-Package pdftex.def Info: Figures/Archive_Pipelines/Fig10_Hyperparameter_Sweeps.
-png  used on input line 726.
-(pdftex.def)             Requested size: 328.82707pt x 243.72826pt.
- [39] [40 <./Figures/Archive_Pipelines/Fig10_Hyperparameter_Sweeps.png>]
-<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1481, 792.0792pt x 566.5968pt
+[35]
+<Figures/Fig10_Hyperparameter_Sweeps.png, id=1447, 846.0408pt x 349.7868pt>
+File: Figures/Fig10_Hyperparameter_Sweeps.png Graphic file (type png)
+<use Figures/Fig10_Hyperparameter_Sweeps.png>
+Package pdftex.def Info: Figures/Fig10_Hyperparameter_Sweeps.png  used on input
+ line 734.
+(pdftex.def)             Requested size: 469.75502pt x 194.21404pt.
+ [36 <./Figures/Fig10_Hyperparameter_Sweeps.png>] [37]
+<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1463, 792.0792pt x 566.5968pt
 >
 File: Figures/Chapter6/F20_Stakeholder_Heatmap.png Graphic file (type png)
 <use Figures/Chapter6/F20_Stakeholder_Heatmap.png>
 Package pdftex.def Info: Figures/Chapter6/F20_Stakeholder_Heatmap.png  used on 
-input line 762.
+input line 770.
 (pdftex.def)             Requested size: 399.29463pt x 285.632pt.
-
-[41]
-<Figures/Chapter6/F19_TextFrame_Composition.png, id=1489, 711.1368pt x 422.0568
-pt>
+<Figures/Chapter6/F19_TextFrame_Composition.png, id=1464, 715.473pt x 426.1521p
+t>
 File: Figures/Chapter6/F19_TextFrame_Composition.png Graphic file (type png)
 <use Figures/Chapter6/F19_TextFrame_Composition.png>
 Package pdftex.def Info: Figures/Chapter6/F19_TextFrame_Composition.png  used o
-n input line 769.
-(pdftex.def)             Requested size: 399.29463pt x 236.98131pt.
- [42 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [43 <./Figures/Chapter6/
+n input line 777.
+(pdftex.def)             Requested size: 399.29463pt x 237.82422pt.
+ [38 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [39 <./Figures/Chapter6/
 F19_TextFrame_Composition.png>] (Austin_NIMBY_Thesis_Draft.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -1228,13 +1253,13 @@ ed.
 (rerunfilecheck)             Checksum: D8952BF5292749D4D631EF4146AFB7C9;8378.
  ) 
 Here is how much of TeX's memory you used:
- 25149 strings out of 467871
- 470855 string characters out of 5419344
- 889189 words of memory out of 5000000
- 53197 multiletter control sequences out of 15000+600000
- 721467 words of font info for 220 fonts, out of 8000000 for 9000
+ 26567 strings out of 467871
+ 498645 string characters out of 5419344
+ 911294 words of memory out of 5000000
+ 54607 multiletter control sequences out of 15000+600000
+ 721727 words of font info for 223 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,12n,104p,2015b,860s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,104p,2015b,848s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exist
 , replaced by a fixed one
@@ -1270,9 +1295,9 @@ eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (43 pages, 14286019 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (39 pages, 14339393 bytes).
 PDF statistics:
- 1627 PDF objects out of 1728 (max. 8388607)
- 146 named destinations out of 1000 (max. 500000)
+ 1599 PDF objects out of 1728 (max. 8388607)
+ 139 named destinations out of 1000 (max. 500000)
  50611 words of extra memory for PDF output out of 51595 (max. 10000000)
 
