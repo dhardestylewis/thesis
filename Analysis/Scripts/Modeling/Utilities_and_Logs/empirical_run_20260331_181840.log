@@ -1,0 +1,302 @@
+
+============================================================
+ THESIS ORCHESTRATOR: END-TO-END EXECUTION
+============================================================
+
+============================================================
+ PHASE 1: PREDICTIVE PIPELINE
+============================================================
+[+] Stage A: Development Hazard (Computed via StageA_development_hazard.py)
+==============================================
+ STAGE A: Development-Occurrence Hazard Model
+==============================================
+[*] Loading FULL 282k Parcel Panel (v3.csv) via Multi-Core PyArrow...
+    Loaded Full Panel Shape: (5089896, 98)
+[*] Loading historical zoning cases...
+[*] Constructing Site-Time Horizons (1-5 Year Forward Windows)...
+    [+] Vectorizing 5-million row temporal shift constraints...
+
+[*] Establishing Domain Heuristic (Highest & Best Use)...
+
+==============================================
+ EVALUATING GAUNTLET HORIZON: H=4 Quarters (1 Yr)
+==============================================
+    [+] Domain Heuristic (ILR < 1.0) PR-AUC:   0.0000
+    [+] Training Logistic Regression Econometric Baseline...
+    [+] Econometric Baseline (Logistic) PR-AUC: 0.0001
+    [+] Initializing Unconstrained Global LightGBM...
+    [+] Operational PR-AUC (LightGBM):          0.4534
+    [+] Initializing Unconstrained Global CatBoost...
+    [+] Operational PR-AUC (CatBoost):          0.0084
+    [!] Macro Telemetry Export Failed: bad escape \m at position 12
+
+==============================================
+ EVALUATING GAUNTLET HORIZON: H=8 Quarters (2 Yr)
+==============================================
+    [+] Domain Heuristic (ILR < 1.0) PR-AUC:   0.0000
+    [+] Training Logistic Regression Econometric Baseline...
+    [+] Econometric Baseline (Logistic) PR-AUC: 0.0001
+    [+] Initializing Unconstrained Global LightGBM...
+    [+] Operational PR-AUC (LightGBM):          0.3386
+    [+] Initializing Unconstrained Global CatBoost...
+    [+] Operational PR-AUC (CatBoost):          0.0059
+
+==============================================
+ EVALUATING GAUNTLET HORIZON: H=12 Quarters (3 Yr)
+==============================================
+    [+] Domain Heuristic (ILR < 1.0) PR-AUC:   0.0000
+    [+] Training Logistic Regression Econometric Baseline...
+    [+] Econometric Baseline (Logistic) PR-AUC: 0.0001
+    [+] Initializing Unconstrained Global LightGBM...
+    [+] Operational PR-AUC (LightGBM):          0.2864
+    [+] Initializing Unconstrained Global CatBoost...
+    [+] Operational PR-AUC (CatBoost):          0.0077
+
+[+] Saved multi-horizon multi-model probabilities to: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv
+Stage A Complete.
+    Output: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv (1.08 GB)
+
+[+] Stage B: Project Scale & Typology
+Macro-F1 (6-Tier): 0.5478
+Classification Report:
+                                precision    recall  f1-score   support
+
+PUD / large negotiated project       1.00      1.00      1.00         3
+               by-right infill       0.57      0.93      0.70       215
+        discretionary rezoning       0.79      0.67      0.72        94
+                missing-middle       0.61      0.29      0.39        66
+                     mixed-use       0.73      0.19      0.30        42
+                   multifamily       0.47      0.10      0.16        70
+
+                      accuracy                           0.61       490
+                     macro avg       0.69      0.53      0.55       490
+                  weighted avg       0.62      0.61      0.56       490
+
+
+[+] Stage C: Neighborhood Opposition Risk
+Initiating Master Multi-Horizon Structural Engine (Aligned)...
+
+==============================================
+ HORIZON ALIGNED EXECUTION: H0 (Filing Baseline) (H0)
+==============================================
+[+] IPW: Ingesting Optimal Stage A Hazard Probabilities (LightGBM 1-Year)...
+    Successfully aligned IPW weights. Mean weight: 273.28
+
+PART 0: DEPLOYMENT METRICS EXTRACTION (H0 EXACT)
+
+[*] Executing Calibration-Bounded Model Optimization (Isotonic [0.9, 1.1] Slope)
+    Params {'depth': 4, 'l2_leaf_reg': 3, 'learning_rate': 0.05} -> Isotonic Config Slope: 1.172, PR-AUC: 0.866
+    Params {'depth': 6, 'l2_leaf_reg': 1, 'learning_rate': 0.03} -> Isotonic Config Slope: 1.157, PR-AUC: 0.865
+    Params {'depth': 8, 'l2_leaf_reg': 5, 'learning_rate': 0.01} -> Isotonic Config Slope: 1.168, PR-AUC: 0.852
+    [!] No configuration perfectly satisfied [0.9, 1.1] bounds. Selecting closest bounded architecture (Slope 1.157, PR-AUC 0.865).
+
+>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<
+  Model               : Table 5 Final
+  PR-AUC              : 0.890
+  Top-Decile Lift     : 9.835
+  ECE                 : 0.132
+  Brier               : 0.028
+  Calib-Slope         : 1.119
+  FPR%                : 44.710
+  Mean Prob (TP)      : 0.717
+  Mean Prob (TN)      : 0.092
+  FNR-Gap%            : 2.564
+    [!] Macro Telemetry Export Failed: bad escape \m at position 12
+
+PART A: TEMPORAL DRIFT (ROLLING-ORIGIN)
+
+PART B: POLICY REGIMES HOLDOUTS
+
+PART C: SPATIAL HOLDOUTS (DISTRICT LEVEL OOD)
+   Spatial Holdout GroupKFold PR-AUC: 0.821
+
+==============================================
+ HORIZON ALIGNED EXECUTION: H3 (Pre-Council with NLP) (H3)
+==============================================
+[+] IPW: Ingesting Optimal Stage A Hazard Probabilities (LightGBM 1-Year)...
+    Successfully aligned IPW weights. Mean weight: 273.28
+
+PART 0: DEPLOYMENT METRICS EXTRACTION (H0 EXACT)
+
+[*] Executing Calibration-Bounded Model Optimization (Isotonic [0.9, 1.1] Slope)
+    Params {'depth': 4, 'l2_leaf_reg': 3, 'learning_rate': 0.05} -> Isotonic Config Slope: 1.166, PR-AUC: 0.812
+    Params {'depth': 6, 'l2_leaf_reg': 1, 'learning_rate': 0.03} -> Isotonic Config Slope: 1.161, PR-AUC: 0.838
+    Params {'depth': 8, 'l2_leaf_reg': 5, 'learning_rate': 0.01} -> Isotonic Config Slope: 1.107, PR-AUC: 0.812
+    [!] No configuration perfectly satisfied [0.9, 1.1] bounds. Selecting closest bounded architecture (Slope 1.107, PR-AUC 0.812).
+
+>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<
+  Model               : Table 5 Final
+  PR-AUC              : 0.805
+  Top-Decile Lift     : 8.253
+  ECE                 : 0.127
+  Brier               : 0.033
+  Calib-Slope         : 1.169
+  FPR%                : 31.382
+  Mean Prob (TP)      : 0.679
+  Mean Prob (TN)      : 0.074
+  FNR-Gap%            : 12.821
+
+PART A: TEMPORAL DRIFT (ROLLING-ORIGIN)
+
+PART B: POLICY REGIMES HOLDOUTS
+
+PART C: SPATIAL HOLDOUTS (DISTRICT LEVEL OOD)
+   Spatial Holdout GroupKFold PR-AUC: 0.711
+Evaluation Cycle Exhausted.
+
+[+] Stage D: Institutional Outcome
+==============================================
+ STAGE D: Institutional Outcome Forecast
+==============================================
+
+[*] STRUCTURAL ATTRITION ANALYSIS (CENSORSHIP BIAS):
+    Total Protested Cases Filed: 721
+    Protested Cases Withdrawn/Stalled Before Council: 319
+    NIMBY 'Chilling Effect' Attrition Rate: 44.2%
+    Baseline Unopposed Attrition Rate: 92.0%
+
+    [!] Macro Telemetry Export Failed: bad escape \m at position 12
+[+] Evaluated on 721 explicitly opposed cases.
+    Stage D Pipeline Log Loss (Predicting Attrition Risk): 0.1320
+    Stage D Pipeline Accuracy: 0.9681
+[+] Complete. Output saved to Track1_Predictive/stage_d_results.txt
+
+[+] Stage F: Generative Forward Simulation (Future Work Skeleton)
+
+============================================================
+ PHASE 2: CAUSAL PIPELINE
+============================================================
+==============================================
+ TRACK 2: Authentic Causal Study 1 (RD)
+==============================================
+[!] Track 2 Failed: Insufficient density directly on the bandwidth.
+==============================================
+ TRACK 3: Authentic Causal Study 2 (DiD)
+==============================================
+    [!] Macro Telemetry Export Failed: bad escape \m at position 12
+[+] Track 3 Complete using actual `vote_no`. Fabricated `np.random` architectures explicitly purged.
+
+============================================================
+ PHASE 3: TABLES & VISUALIZATIONS
+============================================================
+==============================================
+ Generating Authentic Table 1: Summary Stats
+==============================================
+[+] Successfully built and saved authentic table to C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\summary_stats_table.tex
+Loading 141-column master baseline from C:\Users\dhl\data\thesis\thesis\Data\Warehouse_As_Of\H0_Filing_Master_Enriched.csv...
+
+============================================================
+ H0 (Filing): 7153 rows x 141 cols
+============================================================
+Target: is_protested, Prevalence: 0.058 (411/7074)
+Feature count: 110
+
+Results (CatBoost):
+  PR-AUC:  0.5328  [0.3404, 0.8080]
+  ROC-AUC: 0.9392  [0.8223, 0.9947]
+  Brier:   0.0238
+  ECE:     0.2832
+[+] Reintegrating stub 'H1 (Notice)' (cols=11) dynamically against Master Spine...
+
+============================================================
+ H1 (Notice): 7153 rows x 144 cols
+============================================================
+Target: is_protested, Prevalence: 0.058 (411/7074)
+Feature count: 111
+
+Results (CatBoost):
+  PR-AUC:  0.5295  [0.3455, 0.8063]
+  ROC-AUC: 0.9422  [0.8334, 0.9949]
+  Brier:   0.0233
+  ECE:     0.2981
+[+] Reintegrating stub 'H2 (Pre-Commission)' (cols=12) dynamically against Master Spine...
+
+============================================================
+ H2 (Pre-Commission): 7153 rows x 145 cols
+============================================================
+Target: is_protested, Prevalence: 0.058 (411/7074)
+Feature count: 112
+
+Results (CatBoost):
+  PR-AUC:  0.6732  [0.4556, 0.8790]
+  ROC-AUC: 0.9909  [0.9842, 0.9964]
+  Brier:   0.0214
+  ECE:     0.3151
+
+============================================================
+ H3 (Pre-Council): 7153 rows x 147 cols
+============================================================
+Target: is_protested, Prevalence: 0.058 (411/7074)
+Feature count: 116
+
+Results (CatBoost):
+  PR-AUC:  0.5557  [0.3538, 0.8037]
+  ROC-AUC: 0.9398  [0.8219, 0.9954]
+  Brier:   0.0227
+  ECE:     0.3601
+
+
+Results saved to C:\Users\dhl\data\thesis\thesis\Analysis\Output\Track1_Predictive\multi_horizon_results.json
+LaTeX table saved to C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Tables\multi_horizon_results.tex
+==============================================
+ Rendering Authentic F8: Calibration & Gains
+==============================================
+[+] Successfully saved C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Figures\Chapter4\F8_Calibration.png
+==============================================
+ Rendering Authentic F12: PR Curves
+==============================================
+[+] Successfully saved C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Figures\Chapter4\F12_Opposition_PR.png
+[*] Rendering Authentic F16: RD Scatterplot Execution...
+    [+] Successfully produced Authentic F16 via absolute timeline extraction array.
+[*] Rendering Authentic F17: Event Study Execution (DiD)...
+    [+] Successfully produced Authentic F17 via live OLS extraction.
+==============================================
+ Rendering Authentic Track 1 PDF Exhibits: H0
+==============================================
+  [+] Saved fig_calibration_ece_H0.pdf
+  [+] Saved fig_temporal_drift_H0.pdf
+  [+] Saved fig_policy_regimes_H0.pdf
+  [+] Saved fig_feature_importance_H0.pdf
+==============================================
+ Rendering Authentic Track 1 PDF Exhibits: H3
+==============================================
+  [+] Saved fig_calibration_ece_H3.pdf
+  [+] Saved fig_temporal_drift_H3.pdf
+  [+] Saved fig_policy_regimes_H3.pdf
+  [+] Saved fig_feature_importance_H3.pdf
+[*] Rendering Empirical NLP Aggregations (F19, F20)...
+  -> Constructing F19 using authentic qualitative probabilities...
+  -> Constructing F20 using qualitative active learning clustering...
+[+] Rebuilt F19 and F20 cleanly from 5 explicit frame probabilities in H3_Filing_Master_NLP.csv
+[*] Rendering Authentic F22: Joint Policy Map (Expected Contested Units)...
+    [+] Successfully saved 4-panel explicit C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Figures\Chapter4\F22_Joint_Policy_Map.png via authentic hazard vectors and basemaps.
+[*] Generating Stage A Exhibits (Figures 3 & 4)...
+    Loading spatial coordinates and calculating events...
+[*] Plotting Figure 3: Multi-Horizon PR Curves...
+[*] Plotting Figure 4: Spatial Hexbin Map (1-Year Hazard, Top Decile)...
+    Filtering out ambient noise below the 90th percentile hazard threshold: 0.0006
+[+] Done! Exhibits saved to Analysis/Output/Track0_Predictive/
+[*] Generating Centralized Thesis Figures (Figures 1, 2, 3, OLS Table)...
+  -> Drawing Geodesic Mapping using strict H0 coordinates...
+[+] Successfully re-aligned general thesis figures.
+    [!] Could not load 18_real_model_sweeps module.
+
+============================================================
+ PHASE 4: EVALUATING LLM NARRATIVE AST DEPENDENCIES
+============================================================
+==============================================
+ STAGE E: Hierarchical Semantic AST Engine
+==============================================
+[+] All AST mathematical constraints hold. No semantic injection triggered.
+
+Stage E Complete.
+
+============================================================
+ PHASE 4: COMPILING THESIS DOCUMENT
+============================================================
+
+[+] PDF compiled successfully.
+
+============================================================
+ ORCHESTRATOR COMPLETE (11.1 minutes)
+============================================================

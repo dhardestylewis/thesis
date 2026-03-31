@@ -40,10 +40,12 @@ def main():
     df['post_shock'] = (df['Meeting_Date'] >= POLICY_SHOCK_DATE).astype(int)
     
     # Clean continuous controls, standardizing to mean=0, std=1 for clean OLS coefficients
+    controls = []
     for col in ['neighborhood_median_wealth', 'neighborhood_density', 'neighborhood_protest_contagion', 'FEDFUNDS']:
         if col in df.columns:
             df[col] = df[col].fillna(df[col].median())
             df[col] = (df[col] - df[col].mean()) / (df[col].std() + 1e-9)
+            controls.append(col)
 
     print(f"    -> Valid Econometric Records: {len(df)}")
     print(f"    -> Baseline Contested Vote Rate: {(df['vote_no'] >= 1).mean():.2%}")
@@ -75,7 +77,8 @@ def main():
     print("======================================================================")
     
     # The Interaction Term `is_residential:post_shock` is the explicit DiD Estimator
-    formula_2 = "vote_no ~ is_residential + post_shock + is_residential:post_shock"
+    # Included conditional covariates to cleanly isolate the causal time shift
+    formula_2 = f"vote_no ~ is_residential + post_shock + is_residential:post_shock + {' + '.join(controls)}"
     try:
         model_2 = smf.ols(formula_2, data=df).fit()
         print(model_2.summary().tables[1])
