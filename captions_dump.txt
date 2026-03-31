@@ -1,0 +1,38 @@
+IMG: Archive_Pipelines/fig1_spatial_distribution.png
+CAPTION: Spatial distribution of zoning cases across the Austin municipal core, 2007--2024.
+IMG: Exploratory_EDA/waller_buffer_map.png
+CAPTION: 200ft and 500ft parcel buffer geometries used for local TCAD appraisal aggregation.
+IMG: UNKNOWN_FILE
+CAPTION: Austin municipal zoning process. A valid protest petition securing 20\% of the affected buffer area triggers a supermajority requirement at City Council.
+IMG: Track0_Predictive/StageA_Figure3_PR_Curves.png
+CAPTION: Multi-horizon precision-recall curves for the Development Occurrence hazard model ($H \in \{4,8,12\
+IMG: Track0_Predictive/StageA_Figure4_Hotspot.png
+CAPTION: Ex-ante predicted hotspot density vs.\ realized development events.
+IMG: Chapter4/F22_Joint_Policy_Map.png
+CAPTION: Expected contested units: geographic distribution of predicted development probability $\times$ expected unit count $\times$ opposition probability.
+IMG: Archive_Pipelines/Fig8_Rolling_Origin_Horizons.png
+CAPTION: Rolling-origin evaluation across prediction horizons $H_0$ through $H_3$.
+IMG: Archive_Pipelines/Fig9_Model_Comparison_PR_AUC.png
+CAPTION: In-distribution vs.\ worst-regime out-of-distribution PR-AUC across model architectures.
+IMG: Track1_Exhibits/fig_calibration_ece_H0.pdf
+CAPTION: Reliability diagram for the Opposition Mobilization model (ECE = 0.055). Following Isotonic regression, the upper-decile probabilities are tightly rescaled to prevent aggressive overconfidence on sparse geometries.
+IMG: Track1_Exhibits/fig_temporal_drift_H0.pdf
+CAPTION: Predictive performance decay across out-of-distribution temporal offsets ($T+0$ through $T+3$).
+IMG: Track1_Exhibits/fig_policy_regimes_H0.pdf
+CAPTION: Out-of-distribution performance by policy regime: the 2022 council transition and 2024 HOME Phase 1 each produce regime-specific performance degradation.
+IMG: Track1_Exhibits/fig_feature_importance_H0.pdf
+CAPTION: Permutation feature importance for the $H_0$ opposition model.
+IMG: Chapter4/F8_Calibration.png
+CAPTION: Calibration reliability diagram (left) and top-$K$ capture curve (right) for the Development Occurrence model (calculated using 10 equal-frequency bins to account for severe class imbalance).
+IMG: UNKNOWN_FILE
+CAPTION: Selection and Causal Inference DAG. T=Treatment (Petition/HOME), Y=Outcome (Delay/Dissent), X=Observed Covariates, U=Unobserved (e.g., informal negotiations).
+IMG: Chapter5/F16_Petition_RD.png
+CAPTION: Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time.
+IMG: Chapter5/F17_HOME_EventStudy.png
+CAPTION: HOME Phase 1 event-study coefficients relative to the implementation date.
+IMG: Chapter6/F20_Stakeholder_Heatmap.png
+CAPTION: Stakeholder interview theme prevalence across respondents.
+IMG: Chapter6/F19_TextFrame_Composition.png
+CAPTION: Public hearing text-frame composition by speaker stance (NLP classification).
+IMG: Chapter4/F12_Opposition_PR.png
+CAPTION: Organized opposition precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.

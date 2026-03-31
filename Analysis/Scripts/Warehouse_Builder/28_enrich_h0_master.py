@@ -5,7 +5,7 @@ import os
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 DATA = os.path.join(ROOT, "Data")
 
-H0_BASE = os.path.join(DATA, "Warehouse_As_Of", "H0_Filing.csv")
+H0_BASE = os.path.join(DATA, "Warehouse_As_Of", "H0_Filing_Complete.csv")
 ZONING_CAUSAL = os.path.join(DATA, "Zoning_Cases", "Processed_Data", "CSV", "enriched_zoning_data_causal.csv")
 ENRICHED_PANEL = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 OUT_FILE = os.path.join(DATA, "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
@@ -46,6 +46,45 @@ def run():
     final = df.merge(panel, left_on=['TCAD ID', 'year'], right_on=['standardized_tcad_id', 'year'], how='left')
     
     print(f"Final Enriched Matrix dynamically expanded to {final.shape[1]} columns for {len(final)} unique Zoning Cases.")
+    
+    # ----------------------------------------------------
+    # NEW FEATURE: Spatial Contagion (Historical Protests)
+    # ----------------------------------------------------
+    print("Calculating endogenous spatial contagion (past protested zoning cases)...")
+    if 'latitude' in final.columns and 'longitude' in final.columns:
+        lats = np.radians(final['latitude'].fillna(0).values)
+        lons = np.radians(final['longitude'].fillna(0).values)
+        years = final['year'].values
+        protests = final['is_protested'].fillna(0).values
+        
+        contagion_1yr = np.zeros(len(final))
+        contagion_3yr = np.zeros(len(final))
+        MILE_RADS = 1.0 / 3958.8 # 1 mile radius in radians
+        
+        for i in range(len(final)):
+            if lats[i] == 0: continue
+            
+            dlat = lats - lats[i]
+            dlon = lons - lons[i]
+            a = np.sin(dlat/2)**2 + np.cos(lats[i]) * np.cos(lats) * np.sin(dlon/2)**2
+            c = 2 * np.arcsin(np.clip(np.sqrt(a), 0, 1))
+            mask_dist = c <= MILE_RADS
+            
+            mask_past = (years < years[i])
+            mask_protested = (protests == 1)
+            
+            mask_1yr = mask_past & (years >= (years[i] - 1)) & mask_dist & mask_protested
+            mask_3yr = mask_past & (years >= (years[i] - 3)) & mask_dist & mask_protested
+            
+            contagion_1yr[i] = mask_1yr.sum()
+            contagion_3yr[i] = mask_3yr.sum()
+            
+        final['spatial_contagion_1yr'] = contagion_1yr
+        final['spatial_contagion_3yr'] = contagion_3yr
+        print(f"Endogenous clustering calculated. Avg 3-yr contagion: {contagion_3yr.mean():.3f} per case")
+    else:
+        print("[!] Warning: Missing latitude/longitude. Spatial contagion failed.")
+    # ----------------------------------------------------
     
     # Validate missing merges
     missing = final['standardized_tcad_id'].isna().sum()

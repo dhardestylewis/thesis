@@ -1,0 +1,25 @@
+--- FILE MODIFICATION TIMES ---
+2026-03-30 19:04:06 | multi_horizon_results.tex
+2026-03-30 19:03:59 | summary_stats_table.tex
+MISSING             | ..\..\Analysis\Output\Archive_Pipelines\fig1_spatial_distribution.png
+MISSING             | ..\..\Analysis\Output\Exploratory_EDA\waller_buffer_map.png
+2026-03-30 19:06:08 | StageA_Figure3_PR_Curves.png
+2026-03-30 19:06:10 | StageA_Figure4_Hotspot.png
+MISSING             | ..\..\Analysis\Output\Chapter4\F22_Joint_Policy_Map.png
+MISSING             | ..\..\Analysis\Output\Archive_Pipelines\Fig8_Rolling_Origin_Horizons.png
+MISSING             | ..\..\Analysis\Output\Archive_Pipelines\Fig9_Model_Comparison_PR_AUC.png
+MISSING             | ..\..\Analysis\Output\Track1_Exhibits\fig_calibration_ece.pdf
+MISSING             | ..\..\Analysis\Output\Track1_Exhibits\fig_temporal_drift.pdf
+MISSING             | ..\..\Analysis\Output\Track1_Exhibits\fig_policy_regimes.pdf
+MISSING             | ..\..\Analysis\Output\Track1_Exhibits\fig_feature_importance.pdf
+MISSING             | ..\..\Analysis\Output\Chapter4\F8_Calibration.png
+MISSING             | ..\..\Analysis\Output\Chapter5\F16_Petition_RD.png
+MISSING             | ..\..\Analysis\Output\Chapter5\F17_HOME_EventStudy.png
+MISSING             | ..\..\Analysis\Output\Chapter6\F20_Stakeholder_Heatmap.png
+MISSING             | ..\..\Analysis\Output\Chapter6\F19_TextFrame_Composition.png
+MISSING             | Qualitative_Appendix\project_overview.pdf
+MISSING             | Qualitative_Appendix\protocol_summary.pdf
+MISSING             | Qualitative_Appendix\interview_guide.pdf
+MISSING             | Qualitative_Appendix\sample_protest_petition.pdf
+MISSING             | ..\..\Analysis\Output\Chapter4\F12_Opposition_PR.png
+-------------------------------

@@ -2,9 +2,9 @@
 run_thesis.py: The Top-Level Thesis Orchestrator
 
 This script executes the entire empirical pipeline for the Austin NIMBY thesis.
-It runs the 4-Stage Predictive Pipeline and the 2-Track Causal Pipeline using 
-exclusively real data from the Data/Warehouse_As_Of/ directory. All outputs
-are written to the Analysis/Output/ directory.
+It runs the 4-Stage Predictive Pipeline, the 2-Track Causal Pipeline, and the
+Visualizations/Tables pipeline using exclusively real data from the Data/Warehouse_As_Of/ directory. 
+All outputs are written to the Analysis/Output/ directory and draft Figures folders.
 """
 import sys
 import os
@@ -13,6 +13,10 @@ import time
 # Add Scripts to path so we can import modules
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Modeling"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Visualization"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "DiD"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Warehouse_Builder"))
 
 # Import pipeline stages (Real Data Versions)
 import StageA_development_hazard as stage_a
@@ -21,6 +25,24 @@ import StageC_opposition_risk as stage_c
 import StageD_institutional_outcome_real as stage_d
 import run_causal_track2_rd_real as track2
 import run_causal_track3_did_real as track3
+import run_multi_horizon as multi_horizon_table
+
+# Import Visualizations & Tables (Real Data Versions)
+import plot_F8_Calibration_real as f8
+import plot_F12_PR_real as f12
+import plot_F16_RD_real as f16
+import plot_F17_DiD_real as f17
+import plot_Track1_exhibits_real as t1_ex
+import generate_summary_stats_real as stats_table
+import plot_F19_F20_Qualitative as f19_f20
+import plot_F22_HexMap as f22
+import generate_stageA_exhibits as stage_a_exhibits
+import generate_thesis_figures as fig1_and_more
+import importlib
+try:
+    sweeps = importlib.import_module("18_real_model_sweeps")
+except Exception as e:
+    sweeps = None
 
 def print_header(title):
     print("\n" + "="*60)
@@ -36,28 +58,25 @@ def main():
     # ---------------------------------------------------------
     print_header("PHASE 1: PREDICTIVE PIPELINE")
     
-    # Stage A: Development Occurrence (Hazard Model)
-    # stage_a.py executes independently when imported, but due to length and 
-    # memory usage (282k parcels), we typically run it as a standalone subprocess.
-    # For this orchestrator, we print its status since its outputs (1GB CSV) already exist.
     print("[+] Stage A: Development Hazard (Computed via StageA_development_hazard.py)")
-    print("    Output: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv (1.08 GB)")
+    try:
+        stage_a.run_stage_a()
+        print("    Output: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv (1.08 GB)")
+    except Exception as e:
+        print(f"    [!] Error running Stage A: {e}")
     
-    # Stage B: Project Scale & Typology
     print("\n[+] Stage B: Project Scale & Typology")
     try:
-        stage_b.run_stage_b() if hasattr(stage_b, 'run_stage_b') else print("    Stage B logic executed via module import.")
+        stage_b.run_stage_b()
     except Exception as e:
         print(f"    [!] Error running Stage B: {e}")
         
-    # Stage C: Opposition Risk (Multi-Horizon)
     print("\n[+] Stage C: Neighborhood Opposition Risk")
     try:
         stage_c.run_track1()
     except Exception as e:
         print(f"    [!] Error running Stage C: {e}")
         
-    # Stage D: Institutional Outcome (Real subset)
     print("\n[+] Stage D: Institutional Outcome")
     try:
         stage_d.run_stage_d()
@@ -69,22 +88,88 @@ def main():
     # ---------------------------------------------------------
     print_header("PHASE 2: CAUSAL PIPELINE")
     
-    # Track 2: Regression Discontinuity (Real Running Variable)
     try:
         track2.run_track2()
     except Exception as e:
         print(f"    [!] Error running Track 2: {e}")
         
-    # Track 3: Difference-in-Differences (Real Setup)
     try:
         track3.run_track3()
     except Exception as e:
         print(f"    [!] Error running Track 3: {e}")
 
     # ---------------------------------------------------------
-    # PART 3: LATEX COMPILATION
+    # PART 3: TABLES & VISUALIZATIONS
     # ---------------------------------------------------------
-    print_header("PHASE 3: COMPILING THESIS DOCUMENT")
+    print_header("PHASE 3: TABLES & VISUALIZATIONS")
+    
+    try:
+        stats_table.generate_summary_stats()
+    except Exception as e:
+        print(f"    [!] Error generating summary stats table: {e}")
+
+    try:
+        multi_horizon_table.main()
+    except Exception as e:
+        print(f"    [!] Error generating Table 8 (Multi-Horizon): {e}")
+
+    try:
+        f8.plot_f8()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 8 (Calibration): {e}")
+
+    try:
+        f12.plot_f12()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 12 (PR Curves): {e}")
+
+    try:
+        f16.plot_f16()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 16 (RD): {e}")
+        
+    try:
+        f17.plot_f17()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 17 (DiD): {e}")
+
+    try:
+        t1_ex.plot_all_track1_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Track 1 exhibits: {e}")
+
+    try:
+        f19_f20.generate_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 19/20 (Qualitative): {e}")
+
+    try:
+        f22.generate_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 22 (HexMap): {e}")
+
+    try:
+        stage_a_exhibits.generate_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Stage A exhibits: {e}")
+
+    try:
+        fig1_and_more.main()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 1 (Spatial Map) and others: {e}")
+
+    try:
+        if sweeps:
+            sweeps.run_real_pipelines()
+        else:
+            print("    [!] Could not load 18_real_model_sweeps module.")
+    except Exception as e:
+        print(f"    [!] Error generating Real Model Sweeps (Fig 8, 9, 10): {e}")
+
+    # ---------------------------------------------------------
+    # PART 4: LATEX COMPILATION
+    # ---------------------------------------------------------
+    print_header("PHASE 4: COMPILING THESIS DOCUMENT")
     os.chdir(os.path.join(ROOT, "Thesis_Draft", "Draft_v1"))
     result = os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex")
     

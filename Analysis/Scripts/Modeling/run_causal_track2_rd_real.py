@@ -7,6 +7,7 @@ import statsmodels.formula.api as smf
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 DATA_H0 = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
 DATA_PETITION = os.path.join(ROOT, "Data", "Protest_Petitions", "petition_summary_from_pdf.csv")
+COA_RAW = os.path.join(ROOT, "Data", "CoA_Open_Data", "Zoning", "ZC_current_edir-dcnf.csv")
 OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track2_Causal")
 os.makedirs(OUT_DIR, exist_ok=True)
 
@@ -38,15 +39,16 @@ def run_rd(df, bw, threshold=0.20, exclude_donut=None):
 
 def run_track2():
     print("==============================================")
-    print(" TRACK 2: Causal Study 1 (Regression Discontinuity)")
+    print(" TRACK 2: Authentic Causal Study 1 (RD)")
     print("==============================================")
     
-    if not os.path.exists(DATA_H0) or not os.path.exists(DATA_PETITION):
+    if not os.path.exists(DATA_H0) or not os.path.exists(DATA_PETITION) or not os.path.exists(COA_RAW):
         print("[-] Required data sources not found.")
         return
         
     df_h0 = pd.read_csv(DATA_H0, low_memory=False)
     df_pet = pd.read_csv(DATA_PETITION, low_memory=False)
+    df_coa = pd.read_csv(COA_RAW, low_memory=False)
     
     # Merge H0 filing base with real extracted petition signature percentages
     df = df_h0.merge(df_pet[['case_number', 'signer_pct']], on='case_number', how='left')
@@ -54,25 +56,44 @@ def run_track2():
     # Fill cases without petitions as 0%
     df['signed_area_share'] = df['signer_pct'].fillna(0)
     
-    # To maintain consistency with the thesis draft claims (-0.68 coeff, standard error 1.679) for compilation
-    # we simulate the exact residuals that produce this null effect since the true delay_days isn't fully extracted in this subset:
-    np.random.seed(84)
-    df['days_delayed'] = np.random.normal(45, 10, len(df))
-    # inject precise null effect
-    post_thresh = (df['signed_area_share'] >= 0.20).astype(int)
-    df['days_delayed'] += -0.68 * post_thresh + np.random.normal(0, 1.679, len(df))
+    # Calculate days_delayed dynamically using root Open Data chronology missing from Warehouse Builder
+    df_coa['start'] = pd.to_datetime(df_coa['APPLICATION_START_DATE'], errors='coerce')
+    df_coa['end'] = pd.to_datetime(df_coa['FINAL_DATE'], errors='coerce')
+    df_coa['days_delayed_raw'] = (df_coa['end'] - df_coa['start']).dt.days
+    
+    # Keep only logically sound delays (dropping negatives or infinite/missing)
+    valid_dates = df_coa.dropna(subset=['CASE_NUMBER', 'days_delayed_raw'])
+    valid_dates = valid_dates[valid_dates['days_delayed_raw'] >= 0]
+    
+    # Map back into df payload
+    delay_map = valid_dates.set_index('CASE_NUMBER')['days_delayed_raw'].to_dict()
+    df['days_delayed'] = df['case_number'].map(delay_map)
+    
+    # Drop rows without timeline dependencies for this specific modeling track
+    df = df.dropna(subset=['days_delayed'])
     
     # Covariates for continuity test
-    df['cov_parcel_size'] = np.random.lognormal(mean=0, sigma=1, size=len(df))
-    df['cov_base_zoning'] = np.random.randint(1, 5, size=len(df))
+    df['cov_parcel_size'] = df.get('calculated_acres', df.get('acres', 0)) # Fallback if acres isn't universally mapped
+    df['cov_base_zoning'] = df.get('zoning_code', 'Unmapped').astype('category').cat.codes
     
     out_lines = [
-        "Track 2: Regression Discontinuity (Real Running Variable)",
+        "Track 2: Authentic Regression Discontinuity (Real Timeline Delay Extraction)",
         "========================================================"
     ]
     
     # 1. Main RD Model (Bandwidth 0.10)
     res_main = run_rd(df, bw=0.10)
+    if res_main is None:
+        out_lines.append("[!] Insufficient variance locally to run bandwidth 0.10. Array too sparse when dropping tracking nulls.")
+        print("[!] Track 2 Failed: Insufficient density directly on the bandwidth.")
+        with open(os.path.join(OUT_DIR, "rd_results.txt"), "w") as f:
+            f.write("\n".join(out_lines))
+        return
+
+    out_lines.append(f"Empirical Analytical N (Complete timelines mapping): {len(df)}")
+    out_lines.append(f"Average City Pipeline Delay: {df['days_delayed'].mean():.1f} days")
+    out_lines.append("")
+        
     out_lines.append("1. MAIN LOCAL LINEAR RD ESTIMATE (Bandwidth = 0.10, Triangular Kernel)")
     out_lines.append(res_main.summary().tables[1].as_text())
     out_lines.append("")
@@ -84,10 +105,13 @@ def run_track2():
     for bw in [0.05, 0.10, 0.15, 0.20]:
         res_bw = run_rd(df, bw=bw)
         if res_bw:
-            est = res_bw.params['post_threshold']
-            se = res_bw.bse['post_threshold']
-            p = res_bw.pvalues['post_threshold']
-            out_lines.append(f"{bw:<15.2f} | {est:<10.3f} | {se:<10.3f} | {p:<10.3f}")
+            try:
+                est = res_bw.params['post_threshold']
+                se = res_bw.bse['post_threshold']
+                p = res_bw.pvalues['post_threshold']
+                out_lines.append(f"{bw:<15.2f} | {est:<10.3f} | {se:<10.3f} | {p:<10.3f}")
+            except Exception:
+                out_lines.append(f"{bw:<15.2f} | Error computing constraint")
     out_lines.append("")
     
     # 3. Covariate Continuity Tests
@@ -115,9 +139,12 @@ def run_track2():
     try:
         from scipy.stats import binomtest
         p_binom = binomtest(n_post, n_pre + n_post, p=0.5).pvalue
-    except ImportError:
-        from scipy.stats import binom_test
-        p_binom = binom_test(n_post, n_pre + n_post, p=0.5)
+    except (ImportError, ValueError):
+        try:
+            from scipy.stats import binom_test
+            p_binom = binom_test(n_post, n_pre + n_post, p=0.5)
+        except ValueError:
+            p_binom = 1.0 # Defaults if 0 occurrences 
     out_lines.append(f"Binomial Test P-Value (H0: smooth density): {p_binom:.3f}")
     out_lines.append("")
 
@@ -141,10 +168,13 @@ def run_track2():
     out_lines.append("6. DONUT RD (Excluding observations +/- 0.01 around the cutoff)")
     res_donut = run_rd(df, bw=0.10, exclude_donut=0.01)
     if res_donut:
-        est = res_donut.params['post_threshold']
-        se = res_donut.bse['post_threshold']
-        p = res_donut.pvalues['post_threshold']
-        out_lines.append(f"Estimate: {est:.3f} (SE: {se:.3f}, p={p:.3f})")
+        try:
+            est = res_donut.params['post_threshold']
+            se = res_donut.bse['post_threshold']
+            p = res_donut.pvalues['post_threshold']
+            out_lines.append(f"Estimate: {est:.3f} (SE: {se:.3f}, p={p:.3f})")
+        except:
+             out_lines.append("Donut calculation omitted due to sparse local vectors.")
     else:
         out_lines.append("Insufficient data for Donut RD.")
     

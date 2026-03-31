@@ -5,36 +5,50 @@ warnings.filterwarnings('ignore')
 
 ROOT_DIR = r"C:\Users\dhl\data\thesis\thesis"
 DATA = os.path.join(ROOT_DIR, "Data")
-IN_FILE = os.path.join(DATA, "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv") # Upgrade to OSMnx later if finished
-QUEUE_PATH = os.path.join(DATA, "Zoning_Cases", "Processed_Data", "CSV", "transcription_queue_full.csv")
-OUT_FILE = os.path.join(DATA, "Warehouse_As_Of", "H3_Filing_Master_NLP.csv")
+IN_FILE = os.path.join(DATA, "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
+SPEECH_FILE = os.path.join(DATA, "Warehouse_As_Of", "Build", "speech_comment.csv")
+OUT_FILE_NLP = os.path.join(DATA, "Warehouse_As_Of", "H3_Filing_Master_NLP.csv")
+OUT_FILE_FINAL = os.path.join(DATA, "Warehouse_As_Of", "H3_Pre_Council.csv")
 
 def fold_nlp_transcriptions():
-    print("Loading V2 Master Warehouse...")
+    print("Loading V2 Master Warehouse Baseline...")
+    if not os.path.exists(IN_FILE):
+        print(f"Error: {IN_FILE} not found.")
+        return
     df = pd.read_csv(IN_FILE, low_memory=False)
     
-    print("Loading active NLP Transcription Queue...")
-    queue_df = pd.read_csv(QUEUE_PATH)
+    print("Loading textual structural representation matrix (TF-IDF)...")
+    if not os.path.exists(SPEECH_FILE):
+        print(f"Error: {SPEECH_FILE} not found. Run transcript ingestion first.")
+        return
+    speech_df = pd.read_csv(SPEECH_FILE)
     
-    # Process the queue target variables
-    queue_df['case_number'] = queue_df['CASE_NUMBER'].astype(str).str.strip().str.upper()
+    # Process the target variables
+    speech_df['case_number'] = speech_df['CASE_NUMBER'].astype(str).str.strip().str.upper()
+    speech_df.drop(columns=['CASE_NUMBER'], inplace=True)
     
-    # Example proxy metrics for H3 (what we have right now before full semantic parsing)
-    if 'Transcription_Status' in queue_df.columns:
-        queue_df['has_audio_record'] = (queue_df['Transcription_Status'] == 'Complete').astype(int)
+    # Aggregate to case-level to handle multi-parcel filings / multiple hearings
+    # For count data, max or sum is fine. We take max for binary flags and mean for tfidf
+    agg_funcs = {}
+    for col in speech_df.columns:
+        if col != 'case_number':
+            agg_funcs[col] = 'max' if col == 'has_transcribed_opposition' else 'mean'
+            
+    speech_grouped = speech_df.groupby('case_number').agg(agg_funcs).reset_index()
     
-    # Aggregate to case-level to handle multi-parcel filings
-    queue_grouped = queue_df.groupby('case_number').agg(
-        has_audio_record=('has_audio_record', 'max') if 'has_audio_record' in queue_df.columns else ('case_number', 'count')
-    ).reset_index()
+    df['case_number'] = df['case_number'].astype(str).str.strip().str.upper()
+    print(f"Folding {len(speech_grouped)} textual vectors into Master panel...")
+    df_h3 = df.merge(speech_grouped, on='case_number', how='left')
     
-    print(f"Folding {len(queue_grouped)} transcription status vectors into Master panel...")
-    df_h3 = df.merge(queue_grouped, on='case_number', how='left')
-    df_h3['has_audio_record'] = df_h3['has_audio_record'].fillna(0).astype(int)
-    
-    print(f"Exporting H3 Master NLP panel to {OUT_FILE}...")
-    df_h3.to_csv(OUT_FILE, index=False)
-    print("Intermediate NLP Fold Complete.")
+    # Fill NAs for missing transcripts
+    for col in speech_grouped.columns:
+        if col != 'case_number':
+            df_h3[col] = df_h3[col].fillna(0)
+            
+    print(f"Exporting H3 Master NLP panel to {OUT_FILE_NLP} and {OUT_FILE_FINAL}...")
+    df_h3.to_csv(OUT_FILE_NLP, index=False)
+    df_h3.to_csv(OUT_FILE_FINAL, index=False)
+    print("Authentic NLP Fold Complete!")
 
 if __name__ == "__main__":
     fold_nlp_transcriptions()

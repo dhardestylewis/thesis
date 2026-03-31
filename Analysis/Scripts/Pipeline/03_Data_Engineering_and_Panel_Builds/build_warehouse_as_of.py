@@ -64,13 +64,26 @@ def build_horizons():
     print(f"H0 Target Dimension: {len(df)}")
     df[h0_cols].to_csv(os.path.join(OUT_DIR, "H0_Filing.csv"), index=False)
     
-    # H1 / H2: Notice & Pre-Commission (Petitions received prior to council)
+    # H1: Notice (Institutional Entry)
     h1_cols = h0_cols + ['signers', 'signer_pct']
     df[h1_cols].to_csv(os.path.join(OUT_DIR, "H1_Notice.csv"), index=False)
-    df[h1_cols].to_csv(os.path.join(OUT_DIR, "H2_Pre_Commission.csv"), index=False) # H1 and H2 share empirical petitions here
+    
+    # H2: Pre-Commission (Merge Empirical Staff Recommendations)
+    STAFF_CSV = os.path.join(DATA, "Scraped_Agendas", "staff_recommendations.csv")
+    if os.path.exists(STAFF_CSV):
+        staff_df = pd.read_csv(STAFF_CSV)
+        # Map categorical text to structural baseline: Approval=0.0 (baseline support), Disapproval=1.0 (friction), missing=0.5
+        staff_df['staff_friction_index'] = staff_df['STAFF_RECOMMENDATION'].map({'Approval': 0.0, 'Disapproval': 1.0}).fillna(0.5)
+        df = df.merge(staff_df[['CASE_NUMBER', 'staff_friction_index']], left_on='case_number', right_on='CASE_NUMBER', how='left')
+        df['staff_friction_index'] = df['staff_friction_index'].fillna(0.5)
+        h2_cols = h1_cols + ['staff_friction_index']
+    else:
+        h2_cols = h1_cols
+
+    df[h2_cols].to_csv(os.path.join(OUT_DIR, "H2_Pre_Commission.csv"), index=False) 
     
     # H3: Pre-Council (Empirical TF-IDF/SVD Text Embeddings)
-    h3_cols = h1_cols + nlp_cols
+    h3_cols = h2_cols + nlp_cols
     df[h3_cols].to_csv(os.path.join(OUT_DIR, "H3_Pre_Council.csv"), index=False)
     
     print("Warehouse Built Successfully integrating LDC Deltas, Signatures, and Agenda constraints.")

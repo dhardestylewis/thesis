@@ -1,73 +1,94 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
+DATA_H0 = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
+DATA_PETITION = os.path.join(ROOT, "Data", "Protest_Petitions", "petition_summary_from_pdf.csv")
+COA_RAW = os.path.join(ROOT, "Data", "CoA_Open_Data", "Zoning", "ZC_current_edir-dcnf.csv")
 OUT_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter5")
 os.makedirs(OUT_DIR, exist_ok=True)
 
-DATA_H0 = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
-DATA_PETITION = os.path.join(ROOT, "Data", "Protest_Petitions", "petition_summary_from_pdf.csv")
-
-def plot_f16():
-    print("==============================================")
-    print(" Rendering Authentic F16: RD Scatter")
-    print("==============================================")
+def generate_exhibits():
+    print("[*] Rendering Authentic F16: RD Scatterplot Execution...")
     
-    if not os.path.exists(DATA_H0) or not os.path.exists(DATA_PETITION):
+    if not os.path.exists(DATA_H0) or not os.path.exists(DATA_PETITION) or not os.path.exists(COA_RAW):
         print("[-] Required data sources not found.")
         return
         
     df_h0 = pd.read_csv(DATA_H0, low_memory=False)
     df_pet = pd.read_csv(DATA_PETITION, low_memory=False)
+    df_coa = pd.read_csv(COA_RAW, low_memory=False)
+    
     df = df_h0.merge(df_pet[['case_number', 'signer_pct']], on='case_number', how='left')
     df['signed_area_share'] = df['signer_pct'].fillna(0)
     
-    # Empirical RD proxy (using random assignment strictly for `days_delayed` visualization fallback if untracked to mirror the null-effect reported)
-    # The actual RD Track script guarantees -0.68 effect exactly as asserted in the draft compilation.
-    np.random.seed(84)
-    df['post_threshold'] = (df['signed_area_share'] >= 0.20).astype(int)
-    df['days_delayed'] = np.random.normal(45, 10, len(df))
-    df['days_delayed'] += -0.68 * df['post_threshold'] + np.random.normal(0, 1.679, len(df))
+    df_coa['start'] = pd.to_datetime(df_coa['APPLICATION_START_DATE'], errors='coerce')
+    df_coa['end'] = pd.to_datetime(df_coa['FINAL_DATE'], errors='coerce')
+    df_coa['days_delayed_raw'] = (df_coa['end'] - df_coa['start']).dt.days
     
-    # Filter within bandwidth for visualizing exactly
-    bandwidth = 0.10
-    mask = (df['signed_area_share'] >= 0.10) & (df['signed_area_share'] <= 0.30)
-    df_bw = df[mask].copy()
-
-    running_var_left = df_bw[df_bw['signed_area_share'] < 0.20]['signed_area_share']
-    outcome_left = df_bw[df_bw['signed_area_share'] < 0.20]['days_delayed']
+    valid_dates = df_coa.dropna(subset=['CASE_NUMBER', 'days_delayed_raw'])
+    valid_dates = valid_dates[valid_dates['days_delayed_raw'] >= 0]
     
-    running_var_right = df_bw[df_bw['signed_area_share'] >= 0.20]['signed_area_share']
-    outcome_right = df_bw[df_bw['signed_area_share'] >= 0.20]['days_delayed']
-
-    plt.figure(figsize=(9, 6))
-    plt.scatter(running_var_left, outcome_left, alpha=0.4, color='gray', s=20, label='Control (Valid Petition < 20%)')
-    plt.scatter(running_var_right, outcome_right, alpha=0.6, color='darkred', s=20, label=r'Treated (Valid Petition $\geq$ 20%)')
-
-    # Fit actual observed OLS inside bandwidth
-    if len(running_var_left) > 1 and len(running_var_right) > 1:
-        z_left = np.polyfit(running_var_left, outcome_left, 1)
-        z_right = np.polyfit(running_var_right, outcome_right, 1)
+    delay_map = valid_dates.set_index('CASE_NUMBER')['days_delayed_raw'].to_dict()
+    df['days_delayed'] = df['case_number'].map(delay_map)
+    df = df.dropna(subset=['days_delayed'])
+    
+    # Isolate analysis bound: [0, 0.40] for neighborhood visualization 
+    df_plot = df[(df['signed_area_share'] >= 0.0) & (df['signed_area_share'] <= 0.40)].copy()
+    
+    if len(df_plot) < 20: # Sparse density guard
+        print("    [!] F16 Failed. Array lacked sufficient mass within plotting envelope.")
+        return
         
-        x_left = np.linspace(0.10, 0.20, 100)
-        x_right = np.linspace(0.20, 0.30, 100)
-        
-        plt.plot(x_left, np.poly1d(z_left)(x_left), color='black', linewidth=2.5)
-        plt.plot(x_right, np.poly1d(z_right)(x_right), color='black', linewidth=2.5)
-
-    plt.axvline(x=0.20, color='red', linestyle='--', linewidth=2, label='Statutory 20% Threshold')
-    plt.title('Exhibit F16: Empirical Regression Discontinuity (20% Protest Threshold)', fontsize=14, pad=15)
-    plt.xlabel('Valid Protest Petition Signed Area Share', fontsize=12)
-    plt.ylabel('Days of Subsequent Delay', fontsize=12)
-    plt.legend(loc='upper left', fontsize=11, frameon=True)
-    plt.grid(True, linestyle='--', alpha=0.6)
+    # Create bin-averages
+    bins = np.linspace(0, 0.40, 40)
+    df_plot['bin'] = pd.cut(df_plot['signed_area_share'], bins=bins)
+    df_binned = df_plot.groupby('bin', observed=True)['days_delayed'].mean().reset_index()
+    # Handle Interval extract for plotting X axis natively
+    df_binned['signed_area_share'] = df_binned['bin'].apply(lambda x: x.mid).astype(float)
+    
+    # Fit Lowess left and right of the 20% cut line natively
+    import statsmodels.api as sm
+    left = df_plot[df_plot['signed_area_share'] < 0.20].sort_values('signed_area_share')
+    right = df_plot[df_plot['signed_area_share'] >= 0.20].sort_values('signed_area_share')
+    
+    lowess_left = sm.nonparametric.lowess(left['days_delayed'], left['signed_area_share'], frac=0.4)
+    lowess_right = sm.nonparametric.lowess(right['days_delayed'], right['signed_area_share'], frac=0.4)
+    
+    fig, ax = plt.subplots(figsize=(8, 6))
+    
+    # Plot true binned averages
+    ax.scatter(df_binned['signed_area_share'], df_binned['days_delayed'], 
+               color='gray', alpha=0.6, s=50, label='Bin Average (True Observation)')
+               
+    # Plot Local regressions natively mapped 
+    ax.plot(lowess_left[:, 0], lowess_left[:, 1], color='darkblue', linewidth=2.5, label='Local Linear Fit')
+    ax.plot(lowess_right[:, 0], lowess_right[:, 1], color='darkred', linewidth=2.5)
+    
+    ax.axvline(x=0.20, color='black', linestyle='--', linewidth=2, label='Statutory Cutoff (20%)')
+    
+    ax.set_ylabel('Empirical Days Delayed (Application to Ordinance)')
+    ax.set_xlabel('Signed Petition Area Proportion')
+    ax.set_title('Figure F16: Authentic Regression Discontinuity (Delays)', fontsize=14, pad=15)
+    ax.set_xlim(0, 0.40)
+    
+    # Dynamic scaling using underlying variance
+    y_min, y_max = df_binned['days_delayed'].min() * 0.8, df_binned['days_delayed'].max() * 1.2
+    if pd.isna(y_min): y_min = 0
+    if pd.isna(y_max) or y_max < 150: y_max = 500
+    ax.set_ylim(y_min, y_max)
+    
+    ax.grid(alpha=0.3)
+    ax.legend()
     plt.tight_layout()
+    
+    out_path = os.path.join(OUT_DIR, "F16_RD_Scatter.png")
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    
+    print(f"    [+] Successfully produced Authentic F16 via absolute timeline extraction array.")
 
-    f16_path = os.path.join(OUT_DIR, "F16_Petition_RD.png")
-    plt.savefig(f16_path, dpi=300)
-    print(f"[+] Successfully saved {f16_path}")
-
-if __name__ == '__main__':
-    plot_f16()
+if __name__ == "__main__":
+    generate_exhibits()

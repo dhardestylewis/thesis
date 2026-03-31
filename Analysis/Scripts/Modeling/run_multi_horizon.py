@@ -85,7 +85,7 @@ def run_horizon(path, horizon_name, results_collector):
     # Feature selection
     drop_cols = [target_col, 'case_number', 'organized_opposition', 'is_protested',
                  'has_audio_record', 'TCAD ID', 'date', 'application_start_date', 
-                 'final_date', 'year']
+                 'final_date', 'year', 'signers', 'signer_pct']
     X = df.drop(columns=[c for c in drop_cols if c in df.columns], errors='ignore')
     X = X.select_dtypes(include=[np.number]).fillna(0)
     y = df[target_col].values
