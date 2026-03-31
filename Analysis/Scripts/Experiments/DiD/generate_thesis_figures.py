@@ -21,7 +21,7 @@ import contextily as cx
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 MASTER_DATA = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
-IMG_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures")
+IMG_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Archive_Pipelines")
 os.makedirs(IMG_DIR, exist_ok=True)
 
 def main():
@@ -86,8 +86,9 @@ def main():
         plt.close(fig1)
 
     # ---------------------------------------------------------
-    # Render Figure 2: Temporal Macro
+    # Render Figure 2: Temporal Macro (Disabled - Orphaned from Thesis Draft)
     # ---------------------------------------------------------
+    """
     print("  -> Drawing Figure 2 Timeseries directly from H0...")
     fig2, ax2 = plt.subplots(figsize=(8, 4))
     yearly_friction = df[df['valid_petition'] == 1].groupby('Year').size()
@@ -96,10 +97,12 @@ def main():
     ax2.set_ylabel('Valid Organizers', fontsize=12)
     fig2.savefig(os.path.join(IMG_DIR, "fig2_timeseries_macro.png"), dpi=300, bbox_inches='tight')
     plt.close(fig2)
+    """
 
     # ---------------------------------------------------------
-    # Render Figure 3: Demographic Friction
+    # Render Figure 3: Demographic Friction (Disabled - Orphaned from Thesis Draft)
     # ---------------------------------------------------------
+    """
     if 'acs_median_household_income' in df.columns:
         print("  -> Drawing demographic friction mappings...")
         import seaborn as sns
@@ -110,6 +113,7 @@ def main():
         ax3.legend()
         fig3.savefig(os.path.join(IMG_DIR, "fig3_demographic_friction.png"), dpi=300, bbox_inches='tight')
         plt.close(fig3)
+    """
 
     print("[+] Successfully re-aligned general thesis figures.")
 

@@ -23,7 +23,7 @@ from catboost import CatBoostClassifier
 
 ROOT_DIR = r"C:\Users\dhl\data\thesis\thesis"
 WORK_DIR = os.path.join(ROOT_DIR, "Data", "Warehouse_As_Of")
-FIGURES_DIR = os.path.join(ROOT_DIR, "Thesis_Draft", "Draft_v1", "Figures")
+FIGURES_DIR = os.path.join(ROOT_DIR, "Thesis_Draft", "Draft_v1", "Figures", "Archive_Pipelines")
 os.makedirs(FIGURES_DIR, exist_ok=True)
 # Removed local style: sns.set_theme(style="whitegrid", context="paper")
 
@@ -77,7 +77,8 @@ def run_real_pipelines():
     # 3. EXPANDING WINDOW ROLLING-ORIGIN TRACKING
     #################################################
     print("[*] Executing Authentic Expanding Window Rolling-Origin Tracking (Fig 8)...")
-    test_years = sorted([y for y in df['year'].unique() if y >= 2021])
+    # Bound at 2024 to prevent 2025 from duplicating or projecting beyond actual outcomes
+    test_years = sorted([y for y in df['year'].unique() if 2021 <= y <= 2024])
     
     plt.figure(figsize=(9, 6))
     rolling_scores = []

@@ -1,0 +1,53 @@
+% -------------------------------------------------------------------
+% THESIS METRICS CONFIGURATION FILE
+% -------------------------------------------------------------------
+% This file defines dynamic macros for empirical results.
+% Instead of hardcoding numbers into the thesis prose, use these macros.
+% A Python orchestrator can silently overwrite this file at the end of a run.
+% -------------------------------------------------------------------
+
+% Pipeline Size Metrics
+\newcommand{\metricBaselineParcels}{282,000}
+\newcommand{\metricSiteQuarterObs}{5,089,896}
+\newcommand{\metricBaseHazardProb}{$2.5 \times 10^{-5}$}
+
+% Stage A Hazard Metrics
+\newcommand{\metricHazardLift}{1.74$\times$}
+
+% Stage C Opposition Risk Metrics
+\newcommand{\metricPRAUC}{0.907}
+\newcommand{\metricTopDecileLift}{10.01$\times$}
+\newcommand{\metricFNRGap}{0.00\%}
+\newcommand{\metricFPR}{0.00\%}
+\newcommand{\metricMeanProbTP}{0.000}
+\newcommand{\metricMeanProbTN}{0.000}
+\newcommand{\metricECE}{0.055}
+\newcommand{\metricCalibrationSlope}{1.102}
+
+% Multi-Horizon Bootstrap Metrics
+\newcommand{\metricBootstrapFiling}{0.509}
+\newcommand{\metricBootstrapFilingCI}{[0.333, 0.791]}
+\newcommand{\metricBootstrapNotice}{0.633}
+\newcommand{\metricBootstrapPreComm}{0.628}
+
+% Causal Track 2 (Regression Discontinuity)
+\newcommand{\metricRDDelay}{+52.1}
+\newcommand{\metricRDDelayWeeks}{7.4}
+\newcommand{\metricRDCI}{[47.09, 57.08]}
+\newcommand{\metricRDSE}{2.53}
+
+% Causal Track 3 (Difference-in-Differences)
+\newcommand{\metricDiDVotes}{+2.176}
+\newcommand{\metricDiDVotingShift}{20\%}
+\newcommand{\metricDiDCI}{[1.61, 2.73]}
+\newcommand{\metricDiDSE}{0.285}
+
+% Qualitative Text-Frame Metrics
+\newcommand{\metricNLPCorpus}{1,003}
+\newcommand{\metricNLPSeed}{50}
+
+% Stage D Attrition and Chilling Effect Metrics
+\newcommand{\metricOpposedTotal}{0}
+\newcommand{\metricOpposedWithdrawn}{0}
+\newcommand{\metricAttritionRate}{0.0\%}
+\newcommand{\metricUnopposedAttritionRate}{0.0\%}

@@ -9,11 +9,32 @@ All outputs are written to the Analysis/Output/ directory and draft Figures fold
 import sys
 import os
 import time
+import datetime
+
+class DualLogger:
+    def __init__(self, filename):
+        self.terminal = sys.stdout
+        self.log = open(filename, "w", encoding='utf-8')
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+
+ROOT = r"C:\Users\dhl\data\thesis\thesis"
+log_dir = os.path.join(ROOT, "Analysis", "Scripts", "Modeling", "Utilities_and_Logs")
+os.makedirs(log_dir, exist_ok=True)
+run_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+sys.stdout = DualLogger(os.path.join(log_dir, f"empirical_run_{run_id}.log"))
 
 # Add Scripts to path so we can import modules
-ROOT = r"C:\Users\dhl\data\thesis\thesis"
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Modeling"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Modeling", "Production_Models"))
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Visualization"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Visualization", "Production_Figures"))
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments"))
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "DiD"))
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Warehouse_Builder"))
@@ -52,7 +73,13 @@ def print_header(title):
 
 def main():
     start_time = time.time()
-    print_header("THESIS ORCHESTRATOR: END-TO-END EXECUTION")
+    
+    # Enable bypass for heavy 5M row CatBoost matrix if --fast is passed
+    fast_mode = '--fast' in sys.argv
+    if fast_mode:
+        print_header("THESIS ORCHESTRATOR: END-TO-END EXECUTION [FAST MODE ENABLED]")
+    else:
+        print_header("THESIS ORCHESTRATOR: END-TO-END EXECUTION")
     
     # ---------------------------------------------------------
     # PART 1: PREDICTIVE PIPELINE (Stages A - D)
@@ -60,9 +87,13 @@ def main():
     print_header("PHASE 1: PREDICTIVE PIPELINE")
     
     print("[+] Stage A: Development Hazard (Computed via StageA_development_hazard.py)")
+    stage_a_path = os.path.join(ROOT, "Analysis", "Output", "Track0_Predictive", "stage_a_hazard_results.csv")
     try:
-        stage_a.run_stage_a()
-        print("    Output: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv (1.08 GB)")
+        if fast_mode and os.path.exists(stage_a_path):
+            print(f"    [--fast bypass] Found cached Stage A hazard probabilities ({os.path.getsize(stage_a_path) / 1e6:.1f} MB). Skipping heavy CatBoost 5M-row training!")
+        else:
+            stage_a.run_stage_a()
+            print("    Output: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv (1.08 GB)")
     except Exception as e:
         print(f"    [!] Error running Stage A: {e}")
     
@@ -85,10 +116,10 @@ def main():
         print(f"    [!] Error running Stage D: {e}")
 
     print("\n[+] Stage F: Generative Forward Simulation (Future Work Skeleton)")
-    try:
-        stage_f.run_generative_simulation()
-    except Exception as e:
-        print(f"    [!] Error running Stage F: {e}")
+    # try:
+    #     stage_f.run_generative_simulation()
+    # except Exception as e:
+    #     print(f"    [!] Error running Stage F: {e}")
 
     # ---------------------------------------------------------
     # PART 2: CAUSAL PIPELINE (Tracks 2 & 3)
@@ -174,7 +205,17 @@ def main():
         print(f"    [!] Error generating Real Model Sweeps (Fig 8, 9, 10): {e}")
 
     # ---------------------------------------------------------
-    # PART 4: LATEX COMPILATION
+    # PART 4: AST SEMANTIC NARRATIVE GENERATION
+    # ---------------------------------------------------------
+    print_header("PHASE 4: EVALUATING LLM NARRATIVE AST DEPENDENCIES")
+    try:
+        from Analysis.Scripts.Modeling.Production_Models import StageE_narrative_generation
+        StageE_narrative_generation.run_stage_e()
+    except Exception as e:
+        print(f"    [!] Error during semantic AST generation: {e}")
+
+    # ---------------------------------------------------------
+    # PART 5: LATEX COMPILATION
     # ---------------------------------------------------------
     print_header("PHASE 4: COMPILING THESIS DOCUMENT")
     os.chdir(os.path.join(ROOT, "Thesis_Draft", "Draft_v1"))

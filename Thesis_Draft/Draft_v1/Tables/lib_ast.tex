@@ -1,0 +1,24 @@
+% -------------------------------------------------------------------
+% THESIS AST (Abstract Syntax Tree) CONFIGURATION FILE
+% -------------------------------------------------------------------
+% This file defines the semantic boundary macros used by the 
+% Stage E Narrative Generation Python script.
+% 
+% By wrapping text in these boundaries, the LLM can surgically
+% target and extract math-dependent claims for dynamic rewriting
+% without threatening the surrounding academic citations and structures.
+% -------------------------------------------------------------------
+
+\usepackage{xcolor}
+
+% The standard AST macros compile exactly as normal text algebraically.
+% However, they serve as regex anchors for the Python AST parser.
+\newcommand{\dependentclaim}[2]{#2}
+\newcommand{\dependentcontext}[2]{#2}
+
+% Optional Dev Flag: If you want to visually see which sentences in the 
+% compiled PDF are actively monitored and rewritten by the Agent, 
+% you can uncomment the lines below to highlight them during drafting.
+
+% \renewcommand{\dependentclaim}[2]{{\color{blue}#2}}
+% \renewcommand{\dependentcontext}[2]{{\color{purple}#2}}
