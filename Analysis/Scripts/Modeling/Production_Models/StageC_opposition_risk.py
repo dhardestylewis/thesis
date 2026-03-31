@@ -14,6 +14,54 @@ try:
 except ImportError:
     pass
 
+from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.linear_model import LinearRegression
+
+class AnchorRegressionLPM(BaseEstimator, ClassifierMixin):
+    """
+    True Anchor Regression formulated as a Linear Probability Model (LPM) 
+    for out-of-distribution causal inference (Rothenhausler et al. 2021).
+    X_anc = X + (sqrt(gamma) - 1) * P_A X
+    y_anc = y + (sqrt(gamma) - 1) * P_A y
+    """
+    def __init__(self, gamma=10.0, n_anchors=None):
+        self.gamma = gamma
+        self.n_anchors = n_anchors
+        self.model = LinearRegression(fit_intercept=True)
+        self.proj_X = LinearRegression(fit_intercept=False)
+        self.proj_y = LinearRegression(fit_intercept=False)
+        
+    def fit(self, X_transformed, y, sample_weight=None):
+        import pandas as pd
+        if isinstance(X_transformed, pd.DataFrame): X_transformed = X_transformed.values
+        if isinstance(y, (pd.Series, pd.DataFrame)): y = y.values
+            
+        A = X_transformed[:, :self.n_anchors]
+        
+        self.proj_X.fit(A, X_transformed, sample_weight=sample_weight)
+        self.proj_y.fit(A, y, sample_weight=sample_weight)
+        
+        X_P = self.proj_X.predict(A)
+        y_P = self.proj_y.predict(A)
+        
+        factor = np.sqrt(self.gamma) - 1.0
+        X_anc = X_transformed + factor * X_P
+        y_anc = y + factor * y_P
+        
+        self.model.fit(X_anc, y_anc, sample_weight=sample_weight)
+        self.classes_ = np.array([0, 1])
+        return self
+
+    def predict_proba(self, X_transformed):
+        import pandas as pd
+        if isinstance(X_transformed, pd.DataFrame): X_transformed = X_transformed.values
+        preds = self.model.predict(X_transformed)
+        preds = np.clip(preds, 0, 1) # Bound probability 0-1
+        return np.vstack([1 - preds, preds]).T
+        
+    def predict(self, X_transformed):
+        return (self.predict_proba(X_transformed)[:, 1] > 0.5).astype(int)
+
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 DATA = os.path.join(ROOT, "Data", "Warehouse_As_Of")
 OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive")
@@ -93,32 +141,35 @@ def extract_advanced_metrics(y_true, y_pred, districts=None, name=""):
     return metrics
 
 def run_bounded_optimization(X, y, sample_weights):
-    print("\n[*] Executing Calibration-Bounded Model Optimization (Isotonic [0.9, 1.1] Slope)")
-    # Grid search across explicit depth/regularization
-    grid = [
-        {'depth': 4, 'l2_leaf_reg': 3, 'learning_rate': 0.05},
-        {'depth': 6, 'l2_leaf_reg': 1, 'learning_rate': 0.03},
-        {'depth': 8, 'l2_leaf_reg': 5, 'learning_rate': 0.01}
-    ]
+    print("\n[*] Executing Calibration-Bounded Model Optimization (Adaptive Search for [0.9, 1.1] Slope)")
+    
+    # Starting point
+    current_params = {'depth': 6, 'l2_leaf_reg': 3, 'learning_rate': 0.03}
     
     best_prauc = -1
     best_model = None
     best_metrics = None
     
-    # Store configuration with the slope mathematically closest to perfect 1.0 calibration
-    closest_slope = float('inf')
+    closest_slope_dist = float('inf')
     closest_params = None
     closest_prauc = -1
+    closest_actual_slope = None
     
     kf = KFold(n_splits=5, shuffle=True, random_state=42)
     
-    for params in grid:
+    # Adaptive Search parameters
+    max_steps = 10
+    step_count = 0
+    
+    while step_count < max_steps:
+        step_count += 1
         oof_preds = np.zeros(len(y))
+        
         for train_idx, val_idx in kf.split(X):
             X_tr, y_tr, w_tr = X.iloc[train_idx], y.iloc[train_idx], sample_weights.iloc[train_idx]
             X_va, y_va = X.iloc[val_idx], y.iloc[val_idx]
             
-            cb = CatBoostClassifier(iterations=100, **params, verbose=0, random_seed=42)
+            cb = CatBoostClassifier(iterations=100, **current_params, verbose=0, random_seed=42)
             calibrated_cb = CalibratedClassifierCV(estimator=cb, method='isotonic', cv=3)
             calibrated_cb.fit(X_tr, y_tr, sample_weight=w_tr)
             oof_preds[val_idx] = calibrated_cb.predict_proba(X_va)[:, 1]
@@ -126,26 +177,44 @@ def run_bounded_optimization(X, y, sample_weights):
         slope = compute_calibration_slope(y, oof_preds)
         prauc = average_precision_score(y, oof_preds)
         
-        print(f"    Params {params} -> Isotonic Config Slope: {slope:.3f}, PR-AUC: {prauc:.3f}")
+        print(f"    Step {step_count}: Params {current_params} -> Slope: {slope:.3f}, PR-AUC: {prauc:.3f}")
         
-        # Track closest bounds to 1.0 in case of absolute failure
         dist_to_perfect = abs(slope - 1.0)
-        if dist_to_perfect < closest_slope:
-            closest_slope = dist_to_perfect
-            closest_params = params
+        if dist_to_perfect < closest_slope_dist:
+            closest_slope_dist = dist_to_perfect
+            closest_params = current_params.copy()
             closest_prauc = prauc
             closest_actual_slope = slope
         
-        # Section 4.6 Strict Constraint
+        # Section 4.6 Strict Constraint Validation
         if 0.9 <= slope <= 1.1:
-            if prauc > best_prauc:
-                best_prauc = prauc
-                best_cb = CatBoostClassifier(iterations=150, **params, verbose=0, random_seed=42)
-                best_model = CalibratedClassifierCV(estimator=best_cb, method='isotonic', cv=5)
-                best_metrics = (slope, prauc)
+            print(f"    [+] Strict calibration bound satisfied at step {step_count}!")
+            best_prauc = prauc
+            best_cb = CatBoostClassifier(iterations=150, **current_params, verbose=0, random_seed=42)
+            best_model = CalibratedClassifierCV(estimator=best_cb, method='isotonic', cv=5)
+            best_metrics = (slope, prauc)
+            break # Early stopping! We landed in the desired range!
+            
+        # Adaptive Directional Shift
+        # If slope > 1.1, the model is underconfident (probabilities are too squashed) -> Decrease regularization, increase depth
+        # If slope < 0.9, the model is overconfident (probabilities are too extreme) -> Increase regularization, decrease depth
+        new_params = current_params.copy()
+        if slope > 1.1:
+            new_params['l2_leaf_reg'] = max(1, current_params['l2_leaf_reg'] - 1)
+            new_params['depth'] = min(8, current_params['depth'] + 1)
+        else:
+            new_params['l2_leaf_reg'] = current_params['l2_leaf_reg'] + 2
+            new_params['depth'] = max(3, current_params['depth'] - 1)
+            
+        # Prevent infinite loops if params hit boundaries and stop changing
+        if new_params == current_params:
+            print("    [!] Parameter boundaries reached. Halting adaptive search.")
+            break
+            
+        current_params = new_params
                 
     if best_model is None:
-        print(f"    [!] No configuration perfectly satisfied [0.9, 1.1] bounds. Selecting closest bounded architecture (Slope {closest_actual_slope:.3f}, PR-AUC {closest_prauc:.3f}).")
+        print(f"    [!] Search exhausted. Selecting closest bounded architecture (Slope {closest_actual_slope:.3f}, PR-AUC {closest_prauc:.3f}).")
         best_cb = CatBoostClassifier(iterations=150, **closest_params, verbose=0, random_seed=42)
         best_model = CalibratedClassifierCV(estimator=best_cb, method='isotonic', cv=5)
     else:
@@ -181,13 +250,13 @@ def process_horizon(path, horizon_name):
     
     # Inverse-Probability Weighting Ingest
     if os.path.exists(STAGE_A_PROBS):
-        print("[+] IPW: Ingesting Optimal Stage A Hazard Probabilities (LightGBM 1-Year)...")
-        df_hazard = pd.read_csv(STAGE_A_PROBS, usecols=['standardized_tcad_id', 'year', 'Prob_LGBM_H=4'])
+        print("[+] IPW: Ingesting Optimal Stage A Hazard Probabilities...")
+        df_hazard = pd.read_csv(STAGE_A_PROBS, usecols=['standardized_tcad_id', 'year', 'Prob_Optimal_H=4'])
         if 'standardized_tcad_id' in df.columns:
             df['standardized_tcad_id'] = df['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
             df_hazard['standardized_tcad_id'] = df_hazard['standardized_tcad_id'].astype(str).str.zfill(10)
             df = df.merge(df_hazard, on=['standardized_tcad_id', 'year'], how='left')
-            df['ipw'] = 1.0 / np.clip(df['Prob_LGBM_H=4'].fillna(0.01), 0.0001, 1.0)
+            df['ipw'] = 1.0 / np.clip(df['Prob_Optimal_H=4'].fillna(0.01), 0.0001, 1.0)
             print(f"    Successfully aligned IPW weights. Mean weight: {df['ipw'].mean():.2f}")
         else:
             df['ipw'] = 1.0
@@ -195,7 +264,7 @@ def process_horizon(path, horizon_name):
         df['ipw'] = 1.0
         
     # Strip Explicit Targets, IDs, and weights
-    drop_cols = ['is_protested', 'case_number', 'organized_opposition', 'has_audio_record', 'TCAD ID', 'date', 'application_start_date', 'final_date', 'standardized_tcad_id', 'Prob_H=4', 'Prob_LGBM_H=4', 'ipw', dist_col, 'council_district']
+    drop_cols = ['is_protested', 'case_number', 'organized_opposition', 'has_audio_record', 'TCAD ID', 'date', 'application_start_date', 'final_date', 'standardized_tcad_id', 'Prob_H=4', 'Prob_LGBM_H=4', 'Prob_CB_H=4', 'Prob_Optimal_H=4', 'ipw', dist_col, 'council_district']
     df_clean = df.drop(columns=[c for c in drop_cols if c in df.columns], errors='ignore')
     
     # Strip Temporal Leakage (NLP vectors from public hearings do not belong in H0)
@@ -246,7 +315,7 @@ def process_horizon(path, horizon_name):
     ])
     
     anchor_prep = ColumnTransformer([
-        ('cat', OneHotEncoder(handle_unknown='ignore'), ['council_district', 'year']),
+        ('cat', OneHotEncoder(sparse_output=False, handle_unknown='ignore'), ['council_district', 'year']),
         ('num', SimpleImputer(strategy='median'), X.columns)
     ])
 
@@ -290,14 +359,15 @@ def process_horizon(path, horizon_name):
         splr_cal.fit(X_sp_tr, y_tr, model__sample_weight=w_tr)
         oof_preds_spatial_lr[val_idx] = splr_cal.predict_proba(X_sp_v)[:, 1]
         
-        # Anchor Regression Proxy (Causal Invariance Benchmark)
-        anc = Pipeline([
-            ('prep', anchor_prep),
-            ('model', LogisticRegression(C=0.01, penalty='l2', max_iter=2000, class_weight='balanced'))
-        ])
-        anc_cal = CalibratedClassifierCV(estimator=anc, method='isotonic', cv=3)
-        anc_cal.fit(X_anc_tr, y_tr, model__sample_weight=w_tr)
-        oof_preds_anchor[val_idx] = anc_cal.predict_proba(X_anc_v)[:, 1]
+        # True Anchor Regression (Causal Invariance Benchmark)
+        X_anc_tr_prep = anchor_prep.fit_transform(X_anc_tr)
+        num_anchors = len(anchor_prep.named_transformers_['cat'].get_feature_names_out())
+        
+        anc = AnchorRegressionLPM(gamma=10.0, n_anchors=num_anchors)
+        anc.fit(X_anc_tr_prep, y_tr, sample_weight=w_tr)
+        
+        X_anc_v_prep = anchor_prep.transform(X_anc_v)
+        oof_preds_anchor[val_idx] = anc.predict_proba(X_anc_v_prep)[:, 1]
         
     tbl5_metrics = extract_advanced_metrics(y, oof_preds, districts, name="Table 5 Final")
     print("\n>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<")
@@ -417,6 +487,52 @@ def process_horizon(path, horizon_name):
         
     if spatial_praucs:
         print(f"   Spatial Holdout GroupKFold PR-AUC: {np.mean(spatial_praucs):.3f}")
+
+    # ---------------------------------------------------------
+    # PART D: DEMOGRAPHIC HOLDOUTS (INCOME & RACE)
+    # ---------------------------------------------------------
+    print("\nPART D: DEMOGRAPHIC HOLDOUTS (OOD Fairness Audit)")
+    if 'median_household_income' in df.columns:
+        med_inc = df['median_household_income'].median()
+        tr_mask = df['median_household_income'] >= med_inc # Train exclusively on High-Wealth properties
+        te_mask = df['median_household_income'] < med_inc  # Test strictly on lower-income demographics
+        if te_mask.sum() > 5 and y[te_mask].sum() > 0 and tr_mask.sum() > 5:
+            cb_demo = clone(optimal_model)
+            cb_demo.fit(X[tr_mask], y[tr_mask], sample_weight=weights[tr_mask])
+            preds_demo = cb_demo.predict_proba(X[te_mask])[:, 1]
+            print(f"   Demographic Holdout (High-to-Low Wealth) PR-AUC: {average_precision_score(y[te_mask], preds_demo):.3f}")
+    else:
+        print("   Demographic Holdout skipped: 'median_household_income' scalar absent in explicit projection.")
+
+    # ---------------------------------------------------------
+    # PART E: MORPHOLOGICAL HOLDOUTS (CORE VS PERIPHERY)
+    # ---------------------------------------------------------
+    print("\nPART E: MORPHOLOGICAL HOLDOUTS (CORE VS SUBURBS)")
+    if 'jurisdiction' in df.columns:
+        tr_mask = df['jurisdiction'].str.contains('AUSTIN FULL PURPOSE', na=False)
+        te_mask = df['jurisdiction'].str.contains('ETJ', na=False) | df['jurisdiction'].str.contains('LIMITED', na=False)
+        if te_mask.sum() > 5 and y[te_mask].sum() > 0 and tr_mask.sum() > 5:
+            cb_morph = clone(optimal_model)
+            cb_morph.fit(X[tr_mask], y[tr_mask], sample_weight=weights[tr_mask])
+            preds_morph = cb_morph.predict_proba(X[te_mask])[:, 1]
+            print(f"   Morphological Holdout (Core-to-Suburb) PR-AUC: {average_precision_score(y[te_mask], preds_morph):.3f}")
+    else:
+        print("   Morphological Holdout skipped: 'jurisdiction' string absent.")
+
+    # ---------------------------------------------------------
+    # PART F: ZONING TYPOLOGY HOLDOUTS
+    # ---------------------------------------------------------
+    print("\nPART F: ZONING TYPOLOGY HOLDOUTS (RESIDENTIAL VS COMMERCIAL)")
+    if 'property_category_code' in df.columns:
+        tr_mask = df['property_category_code'].astype(str).str.startswith('A', na=False) # Res
+        te_mask = df['property_category_code'].astype(str).str.startswith('F', na=False) # Comm
+        if te_mask.sum() > 5 and y[te_mask].sum() > 0 and tr_mask.sum() > 5:
+            cb_zone = clone(optimal_model)
+            cb_zone.fit(X[tr_mask], y[tr_mask], sample_weight=weights[tr_mask])
+            preds_zone = cb_zone.predict_proba(X[te_mask])[:, 1]
+            print(f"   Zoning Typology (Residential-to-Commercial) PR-AUC: {average_precision_score(y[te_mask], preds_zone):.3f}")
+    else:
+        print("   Zoning Typology skipped: 'property_category_code' string absent.")
 
 def run_track1():
     print("Initiating Master Multi-Horizon Structural Engine (Aligned)...")

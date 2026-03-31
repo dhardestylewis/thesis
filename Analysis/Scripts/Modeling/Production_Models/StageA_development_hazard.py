@@ -135,34 +135,52 @@ def run_stage_a():
             from catboost import CatBoostClassifier
             cb_base = CatBoostClassifier(iterations=1000, scale_pos_weight=pos_weight, verbose=0, random_seed=42, thread_count=-1)
             cb_base.fit(X_train, y_train, eval_set=(X_val, y_val), early_stopping_rounds=40)
-            merged[f'Prob_{h_tag}'] = cb_base.predict_proba(X)[:, 1]
-            pr_auc = average_precision_score(y, merged[f'Prob_{h_tag}'])
-            print(f"    [+] Operational PR-AUC (CatBoost):          {pr_auc:.4f}")
+            merged[f'Prob_CB_{h_tag}'] = cb_base.predict_proba(X)[:, 1]
+            cb_auc = average_precision_score(y, merged[f'Prob_CB_{h_tag}'])
+            print(f"    [+] Operational PR-AUC (CatBoost):          {cb_auc:.4f}")
+            
+            # --- AUTO-SELECT SUPERIOR MODEL ---
+            if lgbm_auc > cb_auc:
+                print(f"    [*] AUTO-SELECT: LightGBM is superior ({lgbm_auc:.4f} > {cb_auc:.4f}). Routing to Optimal.")
+                merged[f'Prob_Optimal_{h_tag}'] = merged[f'Prob_LGBM_{h_tag}']
+                best_model_name = "LightGBM"
+            else:
+                print(f"    [*] AUTO-SELECT: CatBoost is superior ({cb_auc:.4f} >= {lgbm_auc:.4f}). Routing to Optimal.")
+                merged[f'Prob_Optimal_{h_tag}'] = merged[f'Prob_CB_{h_tag}']
+                best_model_name = "CatBoost"
             
             try:
                 import joblib
                 joblib.dump(lgbm_base, os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_model_lgbm_{h_tag}.joblib'))
                 cb_base.save_model(os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_model_cb_{h_tag}.cbm'))
+                # Save metadata about which won
+                with open(os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_winner_{h_tag}.txt'), 'w') as f:
+                    f.write(best_model_name)
             except Exception as e:
                 print(f"    [-] Failed to export model artifacts for Stage F: {e}")
             
             if h_tag == 'H=4':
                 try:
-                    df_eval = pd.DataFrame({'y': y, 'p': merged[f'Prob_{h_tag}']})
+                    df_eval = pd.DataFrame({'y': y, 'p': merged[f'Prob_Optimal_{h_tag}']})
                     base_rate = df_eval['y'].mean()
                     if base_rate > 0:
                         df_eval = df_eval.sort_values('p', ascending=False)
                         k = max(1, int(len(df_eval) * 0.10))
                         top_decile_hit_rate = df_eval.head(k)['y'].mean()
                         lift = top_decile_hit_rate / base_rate
+                        import sys
+                        module_path = os.path.join('Analysis', 'Scripts', 'Modeling')
+                        if module_path not in sys.path:
+                            sys.path.append(module_path)
                         from Utilities_and_Logs.lib_metrics import update_metric
                         update_metric("metricHazardLift", f"{lift:.2f}\\times")
+                        update_metric("metricHazardModelClass", best_model_name)
                 except Exception as e:
                     print(f"    [!] Macro Telemetry Export Failed: {e}")
 
             
             # Append target columns to output schema
-            output_cols.extend([f'Prob_LR_{h_tag}', f'Prob_LGBM_{h_tag}', f'Prob_{h_tag}'])
+            output_cols.extend([f'Prob_LR_{h_tag}', f'Prob_LGBM_{h_tag}', f'Prob_CB_{h_tag}', f'Prob_Optimal_{h_tag}'])
         
         # Save results
         merged[output_cols].to_csv('Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv', index=False)

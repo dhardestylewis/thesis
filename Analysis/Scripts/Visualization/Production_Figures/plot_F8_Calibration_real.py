@@ -32,18 +32,25 @@ def plot_f8():
         print("[-] Required Stage A predictive data not found.")
         return
         
-    df = pd.read_csv(STAGE_A_OUT, usecols=['event_next_1yr', 'Prob_LR_H=4', 'Prob_H=4'])
+    df = pd.read_csv(STAGE_A_OUT, usecols=['event_next_1yr', 'Prob_LR_H=4', 'Prob_Optimal_H=4'])
     y_true = df['event_next_1yr']
     
+    # Read optimal model name
+    try:
+        with open(os.path.join(ROOT, 'Analysis', 'Output', 'Track0_Predictive', 'stage_a_winner_H=4.txt'), 'r') as f:
+            optimal_name = f.read().strip()
+    except:
+        optimal_name = "Optimal Champion"
+    
     # Calibration Curves
-    prob_true_c, prob_pred_c = calibration_curve(y_true, df['Prob_H=4'], n_bins=10)
+    prob_true_c, prob_pred_c = calibration_curve(y_true, df['Prob_Optimal_H=4'], n_bins=10)
     prob_true_b, prob_pred_b = calibration_curve(y_true, df['Prob_LR_H=4'], n_bins=10)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
     # Panel A: Reliability Diagram
     ax1.plot([0, 1], [0, 1], linestyle='--', color='black', label='Perfect Calibration')
-    ax1.plot(prob_pred_c, prob_true_c, marker='o', linewidth=2, color='darkred', label='CatBoost (V-REx)')
+    ax1.plot(prob_pred_c, prob_true_c, marker='o', linewidth=2, color='darkblue', label=f'{optimal_name} (V-REx)')
     ax1.plot(prob_pred_b, prob_true_b, marker='s', linestyle=':', color='gray', label='Logistic Baseline')
     ax1.set_title("Panel A: Reliability Diagram")
     ax1.set_xlabel("Mean Predicted Probability")
@@ -53,7 +60,7 @@ def plot_f8():
 
     # Panel B: Top-K Capture (Gains)
     # Sort by probability descending
-    df_sorted_c = df.sort_values('Prob_H=4', ascending=False).reset_index(drop=True)
+    df_sorted_c = df.sort_values('Prob_Optimal_H=4', ascending=False).reset_index(drop=True)
     df_sorted_c['cumulative_events'] = df_sorted_c['event_next_1yr'].cumsum()
     
     df_sorted_b = df.sort_values('Prob_LR_H=4', ascending=False).reset_index(drop=True)
@@ -65,7 +72,7 @@ def plot_f8():
     capture_c = (df_sorted_c['cumulative_events'] / total_events) * 100
     capture_b = (df_sorted_b['cumulative_events'] / total_events) * 100
     
-    ax2.plot(percentiles, capture_c, linewidth=2, color='darkred', label='CatBoost Capture')
+    ax2.plot(percentiles, capture_c, linewidth=2, color='darkblue', label=f'{optimal_name} Capture')
     ax2.plot(percentiles, capture_b, linestyle='--', color='gray', label='Logistic Capture')
     ax2.plot([0, 100], [0, 100], linestyle=':', color='black', label='Random Baseline')
     

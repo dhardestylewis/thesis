@@ -82,6 +82,21 @@ def main():
         print_header("THESIS ORCHESTRATOR: END-TO-END EXECUTION")
     
     # ---------------------------------------------------------
+    # PART 0: WAREHOUSE ENGINEERING
+    # ---------------------------------------------------------
+    print_header("PHASE 0: WAREHOUSE ENGINEERING")
+    print("[+] Rebuilding Invariant Causal Prediction (ICP) Data Matrix...")
+    try:
+        if fast_mode:
+            print("    [--fast bypass] Skipping programmatic regeneration of the submission_grade_icp_matrix.csv...")
+        else:
+            icp_gen = os.path.join(ROOT, "Analysis", "Scripts", "Pipeline", "03_Data_Engineering_and_Panel_Builds", "build_submission_demographics.py")
+            os.system(f'python "{icp_gen}" > NUL')
+            print("    Output: Data/Zoning_Cases/Processed_Data/CSV/submission_grade_icp_matrix.csv")
+    except Exception as e:
+        print(f"    [!] Error running ICP Builder: {e}")
+
+    # ---------------------------------------------------------
     # PART 1: PREDICTIVE PIPELINE (Stages A - D)
     # ---------------------------------------------------------
     print_header("PHASE 1: PREDICTIVE PIPELINE")
