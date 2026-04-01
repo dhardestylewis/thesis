@@ -2,12 +2,16 @@ import os
 import re
 import json
 import warnings
+import sys
 warnings.filterwarnings('ignore')
 
-ROOT = r"C:\Users\dhl\data\thesis\thesis"
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import ROOT_DIR, TraceabilityRegistry as AR
+
+ROOT = str(ROOT_DIR)
 TEX_PATH = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Austin_NIMBY_Thesis_Draft.tex")
 METRICS_PATH = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Tables", "metrics_config.tex")
-STATE_PATH = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "ast_state.json")
+STATE_PATH = str(AR.AST_STATE_JSON)
 
 def load_metrics():
     metrics = {}

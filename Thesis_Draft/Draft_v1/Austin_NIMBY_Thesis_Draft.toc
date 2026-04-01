@@ -37,4 +37,4 @@
 \contentsline {subsection}{\numberline {G.1}Variable Dictionary}{37}{subsection.G.1}%
 \contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{37}{subsection.G.2}%
 \contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{38}{subsection.G.3}%
-\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture (Exploratory Text Features)}{38}{subsection.G.4}%
+\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{38}{subsection.G.4}%

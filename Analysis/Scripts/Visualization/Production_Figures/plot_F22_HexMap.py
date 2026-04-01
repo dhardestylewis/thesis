@@ -17,10 +17,16 @@ except Exception:
 import pandas as pd
 import os
 
+import sys
+_scripts_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+if _scripts_dir not in sys.path:
+    sys.path.insert(0, _scripts_dir)
+from artifact_registry import ROOT_DIR, TraceabilityRegistry as AR
+
 def generate_exhibits():
     print("[*] Rendering Authentic F22: Joint Policy Map (Expected Contested Units)...")
-    ROOT = r"C:\Users\dhl\data\thesis\thesis"
-    STAGE_A_OUT = os.path.join(ROOT, "Analysis", "Output", "Track0_Predictive", "stage_a_hazard_results.csv")
+    ROOT = str(ROOT_DIR)
+    STAGE_A_OUT = str(AR.STAGE_A_HAZARD_RESULTS)
     PANEL = os.path.join(ROOT, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
     out_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
     os.makedirs(out_dir, exist_ok=True)

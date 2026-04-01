@@ -18,12 +18,17 @@ import warnings
 warnings.filterwarnings('ignore')
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
-DATA_IN = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
-A_PROBS = os.path.join(ROOT, "Analysis", "Output", "Track0_Predictive", "stage_a_hazard_results.csv")
-B_MODEL = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "stage_b_model.cbm")
-C_MODEL_H0 = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "stage_c_model_H0.joblib")
-C_MODEL_H3 = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "stage_c_model_H3.joblib")
-OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive")
+
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import ROOT_DIR, DATA_WAREHOUSE_DIR, TRACK1_DIR, TraceabilityRegistry as AR
+
+DATA_IN = str(DATA_WAREHOUSE_DIR / "H0_Filing_Master_Enriched.csv")
+A_PROBS = str(AR.STAGE_A_HAZARD_RESULTS)
+B_MODEL = str(AR.STAGE_B_MODEL)
+C_MODEL_H0 = str(AR.STAGE_C_MODEL_H0)
+C_MODEL_H3 = str(AR.STAGE_C_MODEL_H3)
+OUT_DIR = str(TRACK1_DIR)
 
 
 def build_autoregressive_transformers():

@@ -3,10 +3,13 @@ import numpy as np
 from catboost import CatBoostClassifier
 from sklearn.metrics import log_loss, accuracy_score
 import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import ROOT_DIR, DATA_WAREHOUSE_DIR, TRACK1_DIR, TraceabilityRegistry as AR
 
-ROOT = r'C:\Users\dhl\data\thesis\thesis'
-DATA_H0 = os.path.join(ROOT, 'Data', 'Warehouse_As_Of', 'H0_Filing_Master_Enriched.csv')
-OUT_DIR = os.path.join(ROOT, 'Analysis', 'Output', 'Track1_Predictive')
+ROOT = str(ROOT_DIR)
+DATA_H0 = str(DATA_WAREHOUSE_DIR / 'H0_Filing_Master_Enriched.csv')
+OUT_DIR = str(TRACK1_DIR)
 os.makedirs(OUT_DIR, exist_ok=True)
 
 def run_stage_d():

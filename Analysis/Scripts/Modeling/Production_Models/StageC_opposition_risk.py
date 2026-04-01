@@ -62,13 +62,17 @@ class AnchorRegressionLPM(BaseEstimator, ClassifierMixin):
     def predict(self, X_transformed):
         return (self.predict_proba(X_transformed)[:, 1] > 0.5).astype(int)
 
-ROOT = r"C:\Users\dhl\data\thesis\thesis"
-DATA = os.path.join(ROOT, "Data", "Warehouse_As_Of")
-OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive")
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import ROOT_DIR, DATA_WAREHOUSE_DIR, TRACK1_DIR, TraceabilityRegistry as AR
+
+ROOT = str(ROOT_DIR)
+DATA = str(DATA_WAREHOUSE_DIR)
+OUT_DIR = str(TRACK1_DIR)
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # Path to IPW Vectors from Stage A
-STAGE_A_PROBS = os.path.join(ROOT, "Analysis", "Output", "Track0_Predictive", "stage_a_hazard_results.csv")
+STAGE_A_PROBS = str(AR.STAGE_A_HAZARD_RESULTS)
 
 # Ensure reproducibility
 np.random.seed(42)
@@ -110,9 +114,26 @@ def compute_fnr_gap(y_true, y_prob, districts):
     if not fnrs: return 0.0
     return (max(fnrs.values()) - min(fnrs.values())) * 100
 
+def compute_fpr_gap(y_true, y_prob, districts):
+    """Max−Min False Positive Rate gap across council districts (Chouldechova complement to FNR gap)."""
+    df_eval = pd.DataFrame({'y': y_true, 'p': y_prob, 'd': districts})
+    threshold = np.mean(y_true)
+    df_eval['pred_binary'] = (df_eval['p'] > threshold).astype(int)
+    
+    fprs = {}
+    for d in df_eval['d'].unique():
+        sub = df_eval[df_eval['d'] == d]
+        negatives = sub[sub['y'] == 0]
+        if len(negatives) > 0:
+            fpr = negatives['pred_binary'].sum() / len(negatives)
+            fprs[d] = fpr
+            
+    if not fprs: return 0.0
+    return (max(fprs.values()) - min(fprs.values())) * 100
+
 def extract_advanced_metrics(y_true, y_pred, districts=None, name=""):
     if len(np.unique(y_true)) < 2:
-        return {'Model': name, 'PR-AUC': np.nan, 'Top-Decile Lift': np.nan, 'ECE': np.nan, 'Brier': np.nan, 'Calib-Slope': np.nan, 'FNR-Gap%': np.nan, 'FPR%': np.nan, 'Mean Prob (TP)': np.nan, 'Mean Prob (TN)': np.nan}
+        return {'Model': name, 'PR-AUC': np.nan, 'Top-Decile Lift': np.nan, 'ECE': np.nan, 'Brier': np.nan, 'Calib-Slope': np.nan, 'FNR-Gap%': np.nan, 'FPR-Gap%': np.nan, 'FPR%': np.nan, 'Mean Prob (TP)': np.nan, 'Mean Prob (TN)': np.nan}
         
     threshold = np.mean(y_true)
     y_pred_bin = (y_pred > threshold).astype(int)
@@ -135,8 +156,10 @@ def extract_advanced_metrics(y_true, y_pred, districts=None, name=""):
     }
     if districts is not None:
         metrics['FNR-Gap%'] = compute_fnr_gap(y_true, y_pred, districts)
+        metrics['FPR-Gap%'] = compute_fpr_gap(y_true, y_pred, districts)
     else:
         metrics['FNR-Gap%'] = np.nan
+        metrics['FPR-Gap%'] = np.nan
         
     return metrics
 
@@ -390,6 +413,7 @@ def process_horizon(path, horizon_name):
             update_metric("metricECE", f"{tbl5_metrics.get('ECE', 0):.3f}")
             update_metric("metricCalibrationSlope", f"{tbl5_metrics.get('Calib-Slope', 0):.3f}")
             update_metric("metricFNRGap", f"{tbl5_metrics.get('FNR-Gap%', 0):.2f}\\%")
+            update_metric("metricFPRGap", f"{tbl5_metrics.get('FPR-Gap%', 0):.2f}\\%")
             update_metric("metricFPR", f"{tbl5_metrics.get('FPR%', 0):.2f}\\%")
             update_metric("metricMeanProbTP", f"{tbl5_metrics.get('Mean Prob (TP)', 0):.3f}")
             update_metric("metricMeanProbTN", f"{tbl5_metrics.get('Mean Prob (TN)', 0):.3f}")

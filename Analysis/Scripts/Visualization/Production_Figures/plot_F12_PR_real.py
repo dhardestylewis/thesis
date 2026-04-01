@@ -18,13 +18,18 @@ except Exception:
 from sklearn.metrics import precision_recall_curve, average_precision_score
 import os
 
-ROOT = r"C:\Users\dhl\data\thesis\thesis"
+import sys
+_scripts_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+if _scripts_dir not in sys.path:
+    sys.path.insert(0, _scripts_dir)
+from artifact_registry import ROOT_DIR, FIGURES_DIR, TraceabilityRegistry as AR
+
+ROOT = str(ROOT_DIR)
 OUT_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# Try loading empirical output from Stage C or fallback if not fully arrayed to Stage A format
 # Stage C Opposition Results contain the authentic out-of-fold probabilistic outputs
-STAGE_C_OUT = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "stage_c_oof_predictions_H0.csv")
+STAGE_C_OUT = str(AR.STAGE_C_OOF_H0)
 
 def plot_f12():
     print("==============================================")

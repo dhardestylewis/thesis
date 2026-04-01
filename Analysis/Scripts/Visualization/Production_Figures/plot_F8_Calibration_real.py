@@ -18,10 +18,16 @@ except Exception:
 from sklearn.calibration import calibration_curve
 import os
 
-ROOT = r"C:\Users\dhl\data\thesis\thesis"
+import sys
+_scripts_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+if _scripts_dir not in sys.path:
+    sys.path.insert(0, _scripts_dir)
+from artifact_registry import ROOT_DIR, TraceabilityRegistry as AR
+
+ROOT = str(ROOT_DIR)
 OUT_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
 os.makedirs(OUT_DIR, exist_ok=True)
-STAGE_A_OUT = os.path.join(ROOT, "Analysis", "Output", "Track0_Predictive", "stage_a_hazard_results.csv")
+STAGE_A_OUT = str(AR.STAGE_A_HAZARD_RESULTS)
 
 def plot_f8():
     print("==============================================")
@@ -37,7 +43,7 @@ def plot_f8():
     
     # Read optimal model name
     try:
-        with open(os.path.join(ROOT, 'Analysis', 'Output', 'Track0_Predictive', 'stage_a_winner_H=4.txt'), 'r') as f:
+        with open(str(AR.STAGE_A_WINNER_H4), 'r') as f:
             optimal_name = f.read().strip()
     except:
         optimal_name = "Optimal Champion"

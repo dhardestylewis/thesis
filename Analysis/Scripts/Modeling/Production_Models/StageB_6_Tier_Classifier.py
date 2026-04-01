@@ -2,9 +2,12 @@ import pandas as pd
 from catboost import CatBoostClassifier
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import ROOT_DIR, DATA_WAREHOUSE_DIR, TraceabilityRegistry as AR
 
 def run_stage_b():
-    df = pd.read_csv(r'C:\Users\dhl\data\thesis\thesis\Data\Warehouse_As_Of\H0_Filing_Master_Enriched.csv', on_bad_lines='skip', engine='python')
+    df = pd.read_csv(str(DATA_WAREHOUSE_DIR / 'H0_Filing_Master_Enriched.csv'), on_bad_lines='skip', engine='python')
     df = df.dropna(subset=['delta_max_far', 'gross_site_area_acres', 'year'])
 
     def derive_6_tier(row):
@@ -34,7 +37,7 @@ def run_stage_b():
     print("Classification Report:")
     print(classification_report(y, preds, zero_division=0))
 
-    out_path = os.path.join(r'C:\Users\dhl\data\thesis\thesis\Analysis\Output\Track1_Predictive', 'stage_b_model.cbm')
+    out_path = str(AR.STAGE_B_MODEL)
     cb.save_model(out_path)
     print(f"Saved Stage B model to {out_path}")
 
