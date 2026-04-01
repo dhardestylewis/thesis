@@ -12,17 +12,17 @@
 \newcommand{\metricBaseHazardProb}{$2.5 \times 10^{-5}$}
 
 % Stage A Hazard Metrics
-\newcommand{\metricHazardLift}{1.74$\times$}
+\newcommand{\metricHazardLift}{9.92\times}
 
 % Stage C Opposition Risk Metrics
-\newcommand{\metricPRAUC}{0.890}
-\newcommand{\metricTopDecileLift}{9.84\times}
-\newcommand{\metricFNRGap}{2.56\%}
-\newcommand{\metricFPR}{44.71\%}
-\newcommand{\metricMeanProbTP}{0.717}
-\newcommand{\metricMeanProbTN}{0.092}
-\newcommand{\metricECE}{0.132}
-\newcommand{\metricCalibrationSlope}{1.119}
+\newcommand{\metricPRAUC}{0.910}
+\newcommand{\metricTopDecileLift}{9.98\times}
+\newcommand{\metricFNRGap}{0.00\%}
+\newcommand{\metricFPR}{17.77\%}
+\newcommand{\metricMeanProbTP}{0.768}
+\newcommand{\metricMeanProbTN}{0.037}
+\newcommand{\metricECE}{0.126}
+\newcommand{\metricCalibrationSlope}{1.026}
 
 % Multi-Horizon Bootstrap Metrics
 \newcommand{\metricBootstrapFiling}{0.509}
@@ -39,12 +39,12 @@
 \newcommand{\metricRDDirectionText}{increase}
 
 % Causal Track 3 (Difference-in-Differences)
-\newcommand{\metricDiDVotes}{+2.176}
-\newcommand{\metricDiDVotingShift}{20\%}
-\newcommand{\metricDiDCI}{[1.61, 2.73]}
-\newcommand{\metricDiDSE}{0.285}
-\newcommand{\metricDiDSignificanceText}{highly significant}
-\newcommand{\metricDiDDirectionText}{increase}
+\newcommand{\metricDiDVotes}{0.000}
+\newcommand{\metricDiDVotingShift}{0\%}
+\newcommand{\metricDiDCI}{[0.00, 0.00]}
+\newcommand{\metricDiDSE}{0.000}
+\newcommand{\metricDiDSignificanceText}{statistically insignificant}
+\newcommand{\metricDiDDirectionText}{decrease}
 
 % Qualitative Text-Frame Metrics
 \newcommand{\metricNLPCorpus}{1,003}
@@ -54,4 +54,6 @@
 \newcommand{\metricOpposedTotal}{721}
 \newcommand{\metricOpposedWithdrawn}{319}
 \newcommand{\metricAttritionRate}{44.2\%}
-\newcommand{\metricUnopposedAttritionRate}{0.0\%}
+\newcommand{\metricUnopposedAttritionRate}{92.0\%}
+
+\newcommand{\metricHazardModelClass}{LightGBM}

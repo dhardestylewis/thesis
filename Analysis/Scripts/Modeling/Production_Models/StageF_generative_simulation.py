@@ -69,12 +69,16 @@ def run_generative_simulation():
     # 2. Ingest Stage A (Development Hazard)
     if os.path.exists(A_PROBS):
         print("[2] Ingesting Stage A Hazard Probabilities P(D)...")
-        df_hazard = pd.read_csv(A_PROBS, usecols=['standardized_tcad_id', 'year', 'Prob_Optimal_H=4'])
+        df_hazard = pd.read_csv(A_PROBS, usecols=['standardized_tcad_id', 'year', 'Prob_LGBM_H=4'])
         if 'standardized_tcad_id' in df.columns:
             df['standardized_tcad_id'] = df['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
             df_hazard['standardized_tcad_id'] = df_hazard['standardized_tcad_id'].astype(str).str.zfill(10)
-            df = df.merge(df_hazard, on=['standardized_tcad_id', 'year'], how='left')
-            df['simulated_hazard_prob'] = df['Prob_Optimal_H=4'].fillna(0.01)
+            
+            # Use the most recent hazard probability for each parcel to simulate 'today's hazard
+            df_hazard_latest = df_hazard.sort_values('year').groupby('standardized_tcad_id').last().reset_index()
+            
+            df = df.merge(df_hazard_latest[['standardized_tcad_id', 'Prob_LGBM_H=4']], on='standardized_tcad_id', how='left')
+            df['simulated_hazard_prob'] = df['Prob_LGBM_H=4'].fillna(0.01)
         else:
             df['simulated_hazard_prob'] = 0.01
     else:
