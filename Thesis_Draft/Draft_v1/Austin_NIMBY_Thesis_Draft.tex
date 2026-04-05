@@ -406,9 +406,11 @@ The four stages combine into a summary measure: \textbf{expected contested units
 \label{fig:f22_joint_policy}
 \end{figure}
 
-\subsection{Model Evaluation Strategy}
+  \subsection{Model Evaluation Strategy}
 
-Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given substantial class imbalance. Because the baseline opposition frequency is highly skewed, raw gradient boosting probability arrays suffer from persistent overconfidence. To address this, the architecture applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop.
+Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given the substantial class imbalance of the administrative outcome space. Following standard methodological practices in rare-event spatial forecasting, traditional Receiver Operating Characteristic (AUROC) metrics are omitted entirely, as the overwhelming presence of ''true negative'' stability artificially inflates the curve. PR-AUC explicitly isolates the minority class, forcing the architecture to balance recall capabilities against the precision cost of false alarms.
+
+Because the baseline opposition frequency is highly skewed, raw gradient boosting probability arrays suffer from persistent overconfidence. To address this, the architecture applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), this pipeline reports the absolute Brier Score. Brier Scores operate as a critical robust alternative because standard ECE structurally degrades on imbalanced spatial data; fixed-width probability bins at the highest confidence intervals routinely remain empty when predicting rare events, causing aggregate ECE weights to mathematically misrepresent true minority-class calibration.
 
 Evaluation splits are intentionally non-random to test generalization under realistic deployment conditions:
 \begin{itemize}
