@@ -113,6 +113,13 @@ Commercial / Non-Residential & 5\% \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
+    \caption[Validation: Internal Structural Petition Hazard by Project Typology]{\textbf{Context:} Longitudinal validation of the structural petition hazard by internal project typology (2007-2024). Validating the Mercatus Center baseline (Table 1), this timeline tracks the native historical incidence across the full training window used for the pipeline out-of-distribution tracking arrays. Notably, PUDs explicitly suffer from volatile structural headwinds, averaging $\approx$ 15\% to 50\% valid petition incidence annually, compared to stable sub-5\% incidence for missing-middle typologies.}
+    \label{fig:typology_timeline}
+\end{figure}
+
 Because the process is fundamentally asymmetric - empowering opponents of development via an unyielding spatial geometry - it creates a structural bias toward the status quo, dragging contested housing applications into months of procedural delays. The sheer scale of this localized gridlock ultimately forced intervention by the Texas legislature in 2025 via House Bill 24, which reformed the statute by stipulating that valid petitions against \emph{residential upzonings} are strictly ``expressive'' and no longer trigger the 3/4 supermajority vote requirement (though petitions against nonresidential rezonings remain fully intact). Consequently, predicting whether this specific institutional veto will mobilize against an application forms the core empirical challenge of this thesis.
 
 \subsection{The Prediction Policy Problem in Spatial Planning}
@@ -316,7 +323,7 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}
+    \includegraphics[width=\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}
     \caption[Stage A: Predicted Hotspot Density vs. Realized Events]{\textbf{Stage A:} Ex-ante predicted hotspot density vs.\ realized development events. To define hotspots against the highly skewed structural baseline, the map filters exclusively for the top decile (Top 10\%) of parcels with the highest predicted development hazard. Hexbins requiring a minimum point-density count are used to visually suppress isolated singleton sites and isolate genuine spatial clusters.}
     \label{fig:stageA_hotspot}
 \end{figure}
@@ -331,7 +338,7 @@ This stage is critical because a six-unit by-right infill project generates fund
 
 \begin{table}[H]
 \centering
-\caption[Project Type and Scale]{Project Type and Scale: Full Architecture Benchmark (F1-Scores)}
+\caption[Project Type and Scale]{\textbf{Pipeline Engineering:} Project Type and Scale Full Architecture Benchmark. Macro-F1 scores explicitly calculate the unweighted simple average of F1 scores across all six zoning configurations (e.g., PUD, SF-3, MF-4). This parameterization forces the evaluation pipeline to severely penalize the architecture if it sacrifices predictive accuracy on rare, institutionally volatile configurations (PUDs) to maximize accuracy on dense, low-priority baseline configurations.}
 \label{tab:stage_b}
 \begin{tabular}{lcccc}
 \toprule
