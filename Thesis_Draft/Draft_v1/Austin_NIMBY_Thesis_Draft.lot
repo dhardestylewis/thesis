@@ -8,7 +8,7 @@
 \contentsline {table}{\numberline {8}{\ignorespaces Alternative Architectures Benchmark (SMOTE \& TabNet)}}{19}{table.caption.14}%
 \contentsline {table}{\numberline {9}{\ignorespaces Pre-Council Attrition Forecast (Opposed Cases Only)}}{19}{table.caption.15}%
 \contentsline {table}{\numberline {10}{\ignorespaces Opposition Risk Model: Baseline Predictive Capacity}}{21}{table.caption.17}%
-\contentsline {table}{\numberline {11}{\ignorespaces Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}{22}{table.caption.19}%
+\contentsline {table}{\numberline {11}{\ignorespaces Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}{23}{table.caption.19}%
 \contentsline {table}{\numberline {12}{\ignorespaces Pre-Council Attrition: Opposed vs.\ Unopposed Zoning Cases}}{26}{table.caption.23}%
 \contentsline {table}{\numberline {13}{\ignorespaces Consolidated Geographic Causal Estimates}}{31}{table.caption.28}%
 \contentsline {table}{\numberline {14}{\ignorespaces Calibration Method Comparison: ECE and Brier Score Across Architectures}}{38}{table.caption.31}%
