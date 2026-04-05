@@ -149,7 +149,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Archive_Pipelines/fig1_spatial_distribution.png}
-    \caption[Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$)]{Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$).}
+    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$).}
     \label{fig:spatial_dist}
 \end{figure}
 
@@ -176,7 +176,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\textwidth]{Exploratory_EDA/waller_buffer_map.png}
-    \caption[200ft parcel buffer geometries used for formal TCAD appraisal aggregation and generating spatial petition targets]{200ft parcel buffer geometries used for formal TCAD appraisal aggregation and generating spatial petition targets.}
+    \caption[200ft Parcel Buffer Geometries for Spatial Targets]{200ft parcel buffer geometries used for formal TCAD appraisal aggregation and generating spatial petition targets.}
     \label{fig:buffer_map}
 \end{figure}
 
@@ -206,7 +206,7 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
   \draw[arrow, dashed, red, thick] (protest) -- node[right, text=red] {\small Triggers} node[right, yshift=-0.4cm, text=red] {\small 9/11 Supermajority} (council);
 \end{tikzpicture}
 }
-\caption[Austin municipal zoning process]{Austin municipal zoning process. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council.}
+\caption[Austin Municipal Zoning Process Diagram]{Austin municipal zoning process. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council.}
 \label{fig:flowchart}
 \end{figure}
 
@@ -292,7 +292,7 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Chapter4/StageA_Figure3_PR_Curves.png}
-    \caption[Development hazard classification precision-recall curves across evaluation horizons]{Development hazard classification precision-recall curves across evaluation horizons. Note: Out-of-fold evaluations represent aggregate modeling discrimination prior to the structural top-decile spatial concentration filtering.}
+    \caption[Development Hazard Classification Precision-Recall Curves]{Development hazard classification precision-recall curves across evaluation horizons. Note: Out-of-fold evaluations represent aggregate modeling discrimination prior to the structural top-decile spatial concentration filtering.}
     \label{fig:stagea_pr}
 \end{figure}
 
@@ -317,7 +317,7 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}
-    \caption[Ex-ante predicted hotspot density vs.\ realized development events]{Ex-ante predicted hotspot density vs.\ realized development events. To define hotspots against the highly skewed structural baseline, the map filters exclusively for the top decile (Top 10\%) of parcels with the highest predicted development hazard. Hexbins requiring a minimum point-density count are used to visually suppress isolated singleton sites and isolate genuine spatial clusters.}
+    \caption[Predicted Hotspot Density vs. Realized Development Events]{Ex-ante predicted hotspot density vs.\ realized development events. To define hotspots against the highly skewed structural baseline, the map filters exclusively for the top decile (Top 10\%) of parcels with the highest predicted development hazard. Hexbins requiring a minimum point-density count are used to visually suppress isolated singleton sites and isolate genuine spatial clusters.}
     \label{fig:stageA_hotspot}
 \end{figure}
 
@@ -362,7 +362,7 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{Chapter4/F12_Opposition_PR.png}
-    \caption[Opposition risk precision-recall curves by model architecture]{Opposition risk precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
+    \caption[Opposition Risk Precision-Recall Curves by Model Architecture]{Opposition risk precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
     \label{fig:pr_curves}
 \end{figure}
 
@@ -402,7 +402,7 @@ The four stages combine into a summary measure: \textbf{expected contested units
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter4/F22_Joint_Policy_Map.png}
-\caption[Joint expected petition probability]{Joint expected petition probability: geographic distribution of predicted development probability $\times$ ex-ante opposition risk across the 7,074 historical zoning cases. This composite measure is subject to compounding uncertainty from each constituent model stage.}
+\caption[Joint Expected Petition Probability Spatial Distribution]{Joint expected petition probability: geographic distribution of predicted development probability $\times$ ex-ante opposition risk across the 7,074 historical zoning cases. This composite measure is subject to compounding uncertainty from each constituent model stage.}
 \label{fig:f22_joint_policy}
 \end{figure}
 
@@ -460,7 +460,7 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{Chapter4/fig_combined_calibration_reliability.pdf}
-    \caption[{Global Model Calibration:} Parallel evaluation of calibration reliability and capture curves across the Stage]{\textbf{Global Model Calibration:} Parallel evaluation of calibration reliability and capture curves across the Stage A (Development Occurrence) and Stage C (Opposition Risk) modeling architectures. All probabilities are post-Isotonic out-of-fold predictions.}
+    \caption[Global Model Calibration Reliability and Capture Curves]{\textbf{Global Model Calibration:} Parallel evaluation of calibration reliability and capture curves across the Stage A (Development Occurrence) and Stage C (Opposition Risk) modeling architectures. All probabilities are post-Isotonic out-of-fold predictions.}
     \label{fig:global_calibration}
 \end{figure}
 
@@ -475,7 +475,7 @@ The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides 
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Track1_Exhibits/fig_temporal_drift_H0.pdf}
-        \caption[{Stage C:} Temporal performance decay ($T+0$ to $T+3$)]{\textbf{Stage C:} Temporal performance decay ($T+0$ to $T+3$).}
+        \caption[Out-of-Distribution Predictive Performance Decay]{\textbf{Stage C:} Temporal performance decay ($T+0$ to $T+3$).}
         \label{fig:temporal_rot}
     \end{subfigure}
     \hfill
@@ -496,7 +496,7 @@ Standard permutation importance for gradient boosting assesses the drop in predi
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_feature_importance_clustered_H0.pdf}
-    \caption[Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$)]{Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$). Correlated features are merged into a single cluster and their importances are summed to correct for the collinear dilution effect. Red bars indicate multi-feature clusters; blue bars are stand-alone predictors.}
+    \caption[Hierarchical Correlation Clustering of Top Predictors]{Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$). Correlated features are merged into a single cluster and their importances are summed to correct for the collinear dilution effect. Red bars indicate multi-feature clusters; blue bars are stand-alone predictors.}
     \label{fig:feature_importance_clustered}
 \end{figure}
 
@@ -505,7 +505,7 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_shap_beeswarm_H0.pdf}
-    \caption[SHAP beeswarm plot for the opposition model at the filing baseline]{SHAP beeswarm plot for the opposition model at the filing baseline. Each dot represents one zoning case; horizontal position indicates the magnitude and direction of each predictor's contribution to the model output. SHAP values use tree path-dependent conditional expectations, which handle correlated features more reliably than standard permutation importance. However, standard SHAP values can still shift credit between highly correlated predictors across different background samples; full pairwise interaction decomposition would require SHAP interaction values at substantially higher computational cost. The clustered importance in Figure~\ref{fig:feature_importance_clustered} provides the most robust correction for collinearity.}
+    \caption[SHAP Beeswarm Plot for the Opposition Model]{SHAP beeswarm plot for the opposition model at the filing baseline. Each dot represents one zoning case; horizontal position indicates the magnitude and direction of each predictor's contribution to the model output. SHAP values use tree path-dependent conditional expectations, which handle correlated features more reliably than standard permutation importance. However, standard SHAP values can still shift credit between highly correlated predictors across different background samples; full pairwise interaction decomposition would require SHAP interaction values at substantially higher computational cost. The clustered importance in Figure~\ref{fig:feature_importance_clustered} provides the most robust correction for collinearity.}
     \label{fig:shap_beeswarm}
 \end{figure}
 
@@ -586,7 +586,7 @@ Unopposed               & 6,663                & 5,844                       & \
 \draw[dashed_arrow] (U) to[bend right=40] (Y.south);
 \end{tikzpicture}
 
-\caption[Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis]{Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis. \textbf{Panel A} illustrates the Sharp Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$). \textbf{Panel B} illustrates the Difference-in-Differences Event Study, isolating council dissent ($Y$) arising from the intersection of the discrete HOME Phase 1 policy time shock ($t$) and parcel eligibility ($E$).}
+\caption[Methodological Causal Inference Graphs]{Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis. \textbf{Panel A} illustrates the Sharp Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$). \textbf{Panel B} illustrates the Difference-in-Differences Event Study, isolating council dissent ($Y$) arising from the intersection of the discrete HOME Phase 1 policy time shock ($t$) and parcel eligibility ($E$).}
 \label{fig:causal_dag}
 \end{figure}
 
@@ -602,7 +602,7 @@ Design limitations include potential manipulation of the running variable, since
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter5/F16_Petition_RD.png}
-\caption[Regression discontinuity at the 20\% valid petition threshold]{Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time.}
+\caption[Regression Discontinuity at the 20\% Valid Petition Threshold]{Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time.}
 \label{fig:f16_rd}
 \end{figure}
 
@@ -617,7 +617,7 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter5/F17_HOME_EventStudy.png}
-\caption[HOME Phase 1 event-study coefficients relative to the implementation date]{HOME Phase 1 event-study coefficients relative to the implementation date.}
+\caption[HOME Phase 1 Event-Study Coefficients]{HOME Phase 1 event-study coefficients relative to the implementation date.}
 \label{fig:f17_did}
 \end{figure}
 
@@ -635,7 +635,7 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{Chapter5/fig_causal_context_did.png}
-    \caption[2022 Electoral Transition Outcomes]{2022 Electoral Transition Outcomes: Geographic choropleth illustrating the primary empirical outcome of the Difference-in-Differences regression framework. Districts 4 and 9 explicitly map the mathematical treatment effect ($\Delta -0.546$), demonstrating a concentrated institutional decrease in valid petition probability following incumbent turnover, relative to the unshifted control districts.}
+    \caption[2022 Electoral Transition District Outcomes]{2022 Electoral Transition Outcomes: Geographic choropleth illustrating the primary empirical outcome of the Difference-in-Differences regression framework. Districts 4 and 9 explicitly map the mathematical treatment effect ($\Delta -0.546$), demonstrating a concentrated institutional decrease in valid petition probability following incumbent turnover, relative to the unshifted control districts.}
     \label{fig:did_geography}
 \end{figure}
 
@@ -704,7 +704,7 @@ This study has several important limitations.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{Figures/Chapter4/F23_Spatial_Error.png}
-\caption[Geographic distribution of false positive predictions (right) against actual petition filings (left)]{Geographic distribution of false positive predictions (right) against actual petition filings (left). False positives split 49.6\% west of I-35 and 50.4\% east, indicating that the model's over-predictions are geographically symmetric rather than concentrated in historically vulnerable neighborhoods.}
+\caption[Geographic Distribution of False Positive Predictions vs. Actual Filings]{Geographic distribution of false positive predictions (right) against actual petition filings (left). False positives split 49.6\% west of I-35 and 50.4\% east, indicating that the model's over-predictions are geographically symmetric rather than concentrated in historically vulnerable neighborhoods.}
 \label{fig:spatial_error}
 \end{figure}
 
@@ -828,7 +828,7 @@ Selected CatBoost models uniformly converged on Depth=6, Learning Rate $\approx$
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Fig10_Hyperparameter_Sweeps.png}
-\caption[{Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and lear]{\textbf{Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and learning rate parameters for the Development Occurrence and Opposition Risk models.}
+\caption[Grid Search Precision-Recall AUC Optimization Heatmaps]{\textbf{Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and learning rate parameters for the Development Occurrence and Opposition Risk models.}
 \label{fig:hyperparameters}
 \end{figure}
 
@@ -864,14 +864,14 @@ This approach is intentionally lightweight. The seed sample is small, at \metric
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter6/F20_Stakeholder_Heatmap.png}
-\caption[Mean predicted probability of each argument frame by Council District]{Mean predicted probability of each argument frame by Council District. Each of the 10 Austin Council Districts is shown as a row; columns represent the five argument frames classified from hearing transcripts. Darker cells indicate districts where a given frame appears more frequently in hearing testimony. Values are normalized to the maximum cell value for visual comparison.}
+\caption[Mean Predicted Probability of Argument Frames by Council District]{Mean predicted probability of each argument frame by Council District. Each of the 10 Austin Council Districts is shown as a row; columns represent the five argument frames classified from hearing transcripts. Darker cells indicate districts where a given frame appears more frequently in hearing testimony. Values are normalized to the maximum cell value for visual comparison.}
 \label{fig:f20_stakeholder}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter6/F19_TextFrame_Composition.png}
-\caption[Mean predicted argument-frame probability for cases with a valid protest petition filed (Opposed) versus cases withou]{Mean predicted argument-frame probability for cases with a valid protest petition filed (Opposed) versus cases without (Uncontested). Bars compare how frequently each thematic frame appears in hearing testimony across the two groups.}
+\caption[Argument Frame Probabilities: Opposed vs. Unopposed Cases]{Mean predicted argument-frame probability for cases with a valid protest petition filed (Opposed) versus cases without (Uncontested). Bars compare how frequently each thematic frame appears in hearing testimony across the two groups.}
 \label{fig:f19_frames}
 \end{figure}
 

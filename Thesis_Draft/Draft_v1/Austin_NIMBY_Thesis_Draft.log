@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 16:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 16:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1239,6 +1239,9 @@ L3 programming layer <2025-12-24>
 
 
 LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
 Package rerunfilecheck Info: File `Austin_NIMBY_Thesis_Draft.out' has not chang
 ed.
