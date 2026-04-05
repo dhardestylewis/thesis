@@ -612,13 +612,13 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \label{fig:f17_did}
 \end{figure}
 
-\subsection{Electoral Shock Difference-in-Differences}
+\subsection{2022 Electoral Transition (Difference-in-Differences)}
 
 The HOME Initiative models a global legislative shift, but its adoption is citywide and therefore provides no geographic control group. The November 2022 council elections offer a complementary source of variation: a subset of council districts (e.g., Districts 4 and 9) replaced preservationist incumbents with pro-housing representatives, while other districts maintained their political status quo.
 
 Interacting a ``Flipped District'' indicator with a ``Post-2022'' temporal indicator in a standard DiD framework yields a coefficient of \metricFlipDiDCoeff{} ($p=\metricFlipDiDPval{}$) on valid petition filing rates. This suggests that petition filing rates declined more in districts that changed political representation than in those that did not. However, inference should be treated cautiously: the design involves few treated districts, a short post-treatment window, and a small number of petition events per district. The estimate is suggestive rather than definitive.
 
-\subsection{Spatial Friction Design}
+\subsection{Institutional Geographic Overlays}
 Additional analyses evaluate localized institutional overlays---Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 2015 transition to a 10-1 single-member council district system.
 
 The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), failing to reach statistical significance. The NPA overlay yielded a positive but insignificant coefficient of \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlays produced degenerate estimates with zero variance, likely because these zoning suffixes are rarely applied independently of major base-zone changes. These null and degenerate results are reported for transparency. They suggest that while petition risk is predictable in aggregate through spatial contagion and site characteristics, isolating the causal contribution of individual overlay categories is not feasible within this administrative dataset.
@@ -633,7 +633,7 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 \textbf{Design} & \textbf{Dep.\ Var.} & \textbf{Coeff.} & \textbf{SE} & \textbf{$p$} & \textbf{$N$} \\
 \midrule
 \textit{(1) 10-1 Council ITS}       & vote\_no       & \metricTenOneITSCoeff{}   & 0.122  & \metricTenOneITSPval{}  & 20 \\
-\textit{(2) NPA Spatial Friction}   & vote\_no       & \metricNPAFrictionCoeff{} & 0.245  & \metricNPAFrictionPval{}& 20 \\
+\textit{(2) NPA Designation}   & vote\_no       & \metricNPAFrictionCoeff{} & 0.245  & \metricNPAFrictionPval{}& 20 \\
 \textit{(3) HOME Staggered DiD}     & protested      & 0.325                     & 0.310  & 0.296                   & 518 \\
 \textit{(4) Historic District}      & vote\_no       & \metricHDFrictionCoeff{}  & ---    & \metricHDFrictionPval{} & 20 \\
 \textit{(5) TOD Deregulation}       & vote\_no       & \metricTODFrictionCoeff{} & ---    & \metricTODFrictionPval{}& 20 \\

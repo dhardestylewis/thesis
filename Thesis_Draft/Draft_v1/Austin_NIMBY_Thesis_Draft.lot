@@ -9,6 +9,6 @@
 \contentsline {table}{\numberline {9}{\ignorespaces Opposition Risk Model: Baseline Predictive Capacity}}{19}{table.caption.15}%
 \contentsline {table}{\numberline {10}{\ignorespaces Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}{20}{table.caption.17}%
 \contentsline {table}{\numberline {11}{\ignorespaces Alternative Architectures Benchmark (SMOTE \& TabNet)}}{21}{table.caption.18}%
-\contentsline {table}{\numberline {12}{\ignorespaces Pre-Council Attrition: Opposed vs.\ Unopposed Zoning Cases}}{25}{table.caption.22}%
-\contentsline {table}{\numberline {13}{\ignorespaces Consolidated Geographic Causal Estimates}}{29}{table.caption.26}%
-\contentsline {table}{\numberline {14}{\ignorespaces Calibration Method Comparison: ECE and Brier Score Across Architectures}}{33}{table.caption.28}%
+\contentsline {table}{\numberline {12}{\ignorespaces Pre-Council Attrition: Opposed vs.\ Unopposed Zoning Cases}}{24}{table.caption.22}%
+\contentsline {table}{\numberline {13}{\ignorespaces Consolidated Geographic Causal Estimates}}{28}{table.caption.26}%
+\contentsline {table}{\numberline {14}{\ignorespaces Calibration Method Comparison: ECE and Brier Score Across Architectures}}{32}{table.caption.28}%

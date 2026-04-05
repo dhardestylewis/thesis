@@ -3,6 +3,7 @@
 \caption{Alternative Architectures Benchmark (SMOTE \& TabNet)}
 \label{tab:alt_architectures}
 \renewcommand{\arraystretch}{1.2}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{llcccc}
 \toprule
 \textbf{Horizon} & \textbf{Architecture} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{ECE (Raw)} & \textbf{ECE (Cal)} \\
@@ -27,4 +28,5 @@ Pre-Council Horizon & SMOTE + CatBoost & 0.482 & 0.946 & 0.353 & 0.255 \\
 Pre-Council Horizon & TabNet & 0.456 & 0.944 & 0.271 & 0.235 \\
 \bottomrule
 \end{tabular}
+}
 \end{table}

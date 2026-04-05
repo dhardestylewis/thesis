@@ -19,23 +19,23 @@
 \contentsline {section}{\numberline {5}Results}{19}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{19}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{21}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Pre-Council Attrition}{22}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Regression Discontinuity: The 20\% Petition Threshold}{26}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{27}{subsection.5.5}%
-\contentsline {subsection}{\numberline {5.6}Electoral Shock Difference-in-Differences}{28}{subsection.5.6}%
-\contentsline {subsection}{\numberline {5.7}Spatial Friction Design}{28}{subsection.5.7}%
-\contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{29}{subsection.5.8}%
-\contentsline {section}{\numberline {6}Qualitative Planning Context}{29}{section.6}%
-\contentsline {section}{\numberline {7}Limitations}{30}{section.7}%
-\contentsline {section}{\numberline {8}Conclusion}{31}{section.8}%
-\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{33}{appendix.A}%
-\contentsline {section}{\numberline {B}Research Project Overview}{34}{appendix.B}%
-\contentsline {section}{\numberline {C}IRB Protocol Summary}{35}{appendix.C}%
-\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{36}{appendix.D}%
-\contentsline {section}{\numberline {E}Sample Protest Petition}{37}{appendix.E}%
-\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{38}{appendix.F}%
-\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{39}{appendix.G}%
-\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{39}{subsection.G.1}%
-\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{39}{subsection.G.2}%
-\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{40}{subsection.G.3}%
-\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{40}{subsection.G.4}%
+\contentsline {subsection}{\numberline {5.3}Pre-Council Attrition}{23}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Regression Discontinuity: The 20\% Petition Threshold}{25}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{26}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}2022 Electoral Transition (Difference-in-Differences)}{27}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Institutional Geographic Overlays}{27}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{28}{subsection.5.8}%
+\contentsline {section}{\numberline {6}Qualitative Planning Context}{28}{section.6}%
+\contentsline {section}{\numberline {7}Limitations}{29}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{30}{section.8}%
+\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{32}{appendix.A}%
+\contentsline {section}{\numberline {B}Research Project Overview}{33}{appendix.B}%
+\contentsline {section}{\numberline {C}IRB Protocol Summary}{34}{appendix.C}%
+\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{35}{appendix.D}%
+\contentsline {section}{\numberline {E}Sample Protest Petition}{36}{appendix.E}%
+\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{37}{appendix.F}%
+\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{38}{appendix.G}%
+\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{38}{subsection.G.1}%
+\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{38}{subsection.G.2}%
+\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{39}{subsection.G.3}%
+\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{39}{subsection.G.4}%
