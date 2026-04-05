@@ -3,12 +3,12 @@
 \contentsline {table}{\numberline {3}{\ignorespaces Historical Panel Descriptive Statistics}}{12}{table.caption.6}%
 \contentsline {table}{\numberline {4}{\ignorespaces Sample Filtration from Raw Records to Analytic Sample}}{12}{table.caption.7}%
 \contentsline {table}{\numberline {5}{\ignorespaces Development Occurrence: Nested Targets}}{14}{table.caption.8}%
-\contentsline {table}{\numberline {6}{\ignorespaces Development Occurrence: Hazard Model Performance}}{14}{table.caption.9}%
-\contentsline {table}{\numberline {7}{\ignorespaces Project Type and Scale: Full Architecture Benchmark (F1-Scores)}}{16}{table.caption.11}%
-\contentsline {table}{\numberline {8}{\ignorespaces Pre-Council Attrition Forecast (Opposed Cases Only)}}{17}{table.caption.13}%
-\contentsline {table}{\numberline {9}{\ignorespaces Opposition Risk Model: Baseline Predictive Capacity}}{19}{table.caption.15}%
-\contentsline {table}{\numberline {10}{\ignorespaces Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}{20}{table.caption.17}%
-\contentsline {table}{\numberline {11}{\ignorespaces Alternative Architectures Benchmark (SMOTE \& TabNet)}}{21}{table.caption.18}%
-\contentsline {table}{\numberline {12}{\ignorespaces Pre-Council Attrition: Opposed vs.\ Unopposed Zoning Cases}}{24}{table.caption.22}%
-\contentsline {table}{\numberline {13}{\ignorespaces Consolidated Geographic Causal Estimates}}{28}{table.caption.26}%
-\contentsline {table}{\numberline {14}{\ignorespaces Calibration Method Comparison: ECE and Brier Score Across Architectures}}{32}{table.caption.28}%
+\contentsline {table}{\numberline {6}{\ignorespaces Development Occurrence: Hazard Model Performance}}{15}{table.caption.10}%
+\contentsline {table}{\numberline {7}{\ignorespaces Project Type and Scale: Full Architecture Benchmark (F1-Scores)}}{17}{table.caption.12}%
+\contentsline {table}{\numberline {8}{\ignorespaces Alternative Architectures Benchmark (SMOTE \& TabNet)}}{19}{table.caption.14}%
+\contentsline {table}{\numberline {9}{\ignorespaces Pre-Council Attrition Forecast (Opposed Cases Only)}}{19}{table.caption.15}%
+\contentsline {table}{\numberline {10}{\ignorespaces Opposition Risk Model: Baseline Predictive Capacity}}{21}{table.caption.17}%
+\contentsline {table}{\numberline {11}{\ignorespaces Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}{22}{table.caption.19}%
+\contentsline {table}{\numberline {12}{\ignorespaces Pre-Council Attrition: Opposed vs.\ Unopposed Zoning Cases}}{26}{table.caption.23}%
+\contentsline {table}{\numberline {13}{\ignorespaces Consolidated Geographic Causal Estimates}}{30}{table.caption.27}%
+\contentsline {table}{\numberline {14}{\ignorespaces Calibration Method Comparison: ECE and Brier Score Across Architectures}}{34}{table.caption.29}%

@@ -289,6 +289,13 @@ A3 & Net-new housing unit deliveries & Continuous \\
 
 Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{} site-quarter observations, the empirical probability of a development event at any single site-quarter is approximately \metricBaseHazardProb{}---performance must be evaluated by relative lift rather than raw accuracy. Table~\ref{tab:stagea_limits} reports this hazard model performance relative to the baseline probability.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Chapter4/StageA_Figure3_PR_Curves.png}
+    \caption{Development hazard classification precision-recall curves across evaluation horizons. Note: Out-of-fold evaluations represent aggregate modeling discrimination prior to the structural top-decile spatial concentration filtering.}
+    \label{fig:stagea_pr}
+\end{figure}
+
 \begin{table}[H]
 \centering
 \caption{Development Occurrence: Hazard Model Performance}
@@ -358,6 +365,12 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
     \caption{Opposition risk precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
     \label{fig:pr_curves}
 \end{figure}
+
+A comprehensive head-to-head benchmarking of alternative architectures (Random Forest, LightGBM, PyTorch TabNet, with and without SMOTE resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost was retained for the primary architecture because of its native handling of categorical variables without manual encoding and its comparative robustness to calibration drift, though the performance differences across architectures are modest.
+
+\vspace{1em}
+\input{Tables/alternative_architectures.tex}
+\vspace{1em}
 
 \subsection{Political Outcome}
 
@@ -451,12 +464,6 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 
 \input{Tables/multi_horizon_results.tex}
 
-\vspace{1em}
-
-A comprehensive head-to-head benchmarking of alternative architectures (Random Forest, LightGBM, PyTorch TabNet, with and without SMOTE resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost was retained for the primary architecture because of its native handling of categorical variables without manual encoding and its comparative robustness to calibration drift, though the performance differences across architectures are modest.
-
-\vspace{1em}
-\input{Tables/alternative_architectures.tex}
 \vspace{1em}
 
 The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides an optimistic upper bound on predictive capacity. Bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) reveals a more realistic picture. At the initial filing date, the bootstrap PR-AUC is \metricBootstrapFiling{} ($95\%$ CI: $\metricBootstrapFilingCI{}$), indicating substantial early-stage uncertainty. At the notice date and pre-commission horizons, discrimination reaches PR-AUCs of \metricBootstrapNotice{} and \metricBootstrapPreComm{} respectively. By the pre-council horizon, PR-AUC drops slightly to \metricBootstrapPreCouncil{}, possibly reflecting the influence of late-stage informal negotiations that administrative data cannot capture. ECE worsens from \metricBootstrapFilingECE{} at filing to \metricBootstrapPreCouncilECE{} prior to council reading, suggesting that later-horizon models accumulate additional calibration error despite richer information sets. Out-of-distribution tracking across rolling annual windows (Figure~\ref{fig:ood_tracking}a) shows a gradual PR-AUC decay as the test set moves up to three years ($T+3$) beyond the training domain, consistent with the need for periodic retraining. The opposition model retains baseline performance through the 2024 HOME ordinance adoption without catastrophic degradation, though this represents only a short post-policy window (Figure~\ref{fig:ood_tracking}b).
