@@ -101,7 +101,7 @@ In Austin, the protest petition functions identically for land use: crossing the
 
 \begin{table}[H]
 \centering
-\caption{Valid Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}
+\caption{\textbf{Context:} Valid Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}
 \label{tab:mercatus_petitions}
 \begin{tabular}{lc}
 \toprule
@@ -155,7 +155,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 
 \begin{table}[H]
 \centering
-\caption{Annual Distribution of Discretionary Zoning Cases (2007 - 2024)}
+\caption{\textbf{Context:} Annual Distribution of Discretionary Zoning Cases (2007 - 2024)}
 \label{tab:annual_counts}
 \begin{tabular}{lc|lc|lc}
 \toprule
@@ -216,7 +216,7 @@ Table~\ref{tab:attrition} reports the sample filtration from raw administrative 
 
 \begin{table}[H]
 \centering
-\caption{Sample Filtration from Raw Records to Analytic Sample}
+\caption{\textbf{Pipeline Engineering:} Sample Filtration from Raw Records to Analytic Sample}
 \label{tab:attrition}
 \begin{tabular}{p{0.65\linewidth} r}
 \toprule
@@ -274,7 +274,7 @@ The unit of analysis is a candidate site-quarter, drawn from over \metricBaselin
 
 \begin{table}[H]
 \centering
-\caption{Development Occurrence: Nested Targets}
+\caption{\textbf{Stage A:} Development Occurrence Nested Targets}
 \label{tab:stagea_targets}
 \begin{tabular}{p{1.5cm}p{9cm}p{3cm}}
 \toprule
@@ -298,7 +298,7 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 
 \begin{table}[H]
 \centering
-\caption{Development Occurrence: Hazard Model Performance}
+\caption{\textbf{Stage A:} Development Occurrence Hazard Model Performance}
 \label{tab:stagea_limits}
 \begin{tabular}{lccc}
 \toprule
@@ -410,7 +410,7 @@ The four stages combine into a summary measure: \textbf{expected contested units
 
 Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given the substantial class imbalance of the administrative outcome space. Following standard methodological practices in rare-event spatial forecasting, traditional Receiver Operating Characteristic (AUROC) metrics are omitted entirely, as the overwhelming presence of ''true negative'' stability artificially inflates the curve. PR-AUC explicitly isolates the minority class, forcing the architecture to balance recall capabilities against the precision cost of false alarms.
 
-Because the baseline opposition frequency is highly skewed, raw gradient boosting probability arrays suffer from persistent overconfidence. To address this, the architecture applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), this pipeline reports the absolute Brier Score. Brier Scores operate as a critical robust alternative because standard ECE structurally degrades on imbalanced spatial data; fixed-width probability bins at the highest confidence intervals routinely remain empty when predicting rare events, causing aggregate ECE weights to mathematically misrepresent true minority-class calibration.
+Because the baseline opposition frequency is highly skewed, raw gradient boosting probability arrays suffer from persistent overconfidence. To address this, the architecture applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), this pipeline reports the absolute Brier Score and Adaptive Calibration Error (ACE = \metricACE{}). Brier Scores \cite{hegre2019views} and Adaptive Calibration (which evaluates equal-mass rather than equal-width bins) operate as critical robust alternatives because standard ECE structurally degrades on imbalanced spatial data; fixed-width probability bins at the highest confidence intervals routinely remain empty when predicting rare events, causing aggregate ECE weights to mathematically misrepresent true minority-class calibration.
 
 Evaluation splits are intentionally non-random to test generalization under realistic deployment conditions:
 \begin{itemize}

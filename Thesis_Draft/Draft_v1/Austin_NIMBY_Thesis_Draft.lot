@@ -1,9 +1,9 @@
-\contentsline {table}{\numberline {1}{\ignorespaces Valid Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}}{8}{table.caption.1}%
-\contentsline {table}{\numberline {2}{\ignorespaces Annual Distribution of Discretionary Zoning Cases (2007 - 2024)}}{11}{table.caption.3}%
+\contentsline {table}{\numberline {1}{\ignorespaces \textbf {Context:} Valid Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}}{8}{table.caption.1}%
+\contentsline {table}{\numberline {2}{\ignorespaces \textbf {Context:} Annual Distribution of Discretionary Zoning Cases (2007 - 2024)}}{11}{table.caption.3}%
 \contentsline {table}{\numberline {3}{\ignorespaces Historical Panel Descriptive Statistics}}{13}{table.caption.6}%
-\contentsline {table}{\numberline {4}{\ignorespaces Sample Filtration from Raw Records to Analytic Sample}}{13}{table.caption.7}%
-\contentsline {table}{\numberline {5}{\ignorespaces Development Occurrence: Nested Targets}}{15}{table.caption.8}%
-\contentsline {table}{\numberline {6}{\ignorespaces Development Occurrence: Hazard Model Performance}}{16}{table.caption.10}%
+\contentsline {table}{\numberline {4}{\ignorespaces \textbf {Pipeline Engineering:} Sample Filtration from Raw Records to Analytic Sample}}{13}{table.caption.7}%
+\contentsline {table}{\numberline {5}{\ignorespaces \textbf {Stage A:} Development Occurrence Nested Targets}}{15}{table.caption.8}%
+\contentsline {table}{\numberline {6}{\ignorespaces \textbf {Stage A:} Development Occurrence Hazard Model Performance}}{16}{table.caption.10}%
 \contentsline {table}{\numberline {7}{\ignorespaces Project Type and Scale}}{17}{table.caption.12}%
 \contentsline {table}{\numberline {8}{\ignorespaces Alternative Architectures Benchmark (SMOTE \& TabNet)}}{19}{table.caption.14}%
 \contentsline {table}{\numberline {9}{\ignorespaces Pre-Council Attrition Forecast (Opposed Cases Only)}}{19}{table.caption.15}%
