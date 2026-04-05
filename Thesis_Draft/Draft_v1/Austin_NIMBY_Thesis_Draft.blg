@@ -11,45 +11,45 @@ Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Database file #1: references.bib
 Warning--I didn't find a database entry for "cinelli2020making"
-You've used 19 entries,
+You've used 22 entries,
             2943 wiz_defined-function locations,
-            772 strings with 8686 characters,
-and the built_in function-call counts, 9147 in all, are:
-= -- 1015
-> -- 287
+            793 strings with 9362 characters,
+and the built_in function-call counts, 10254 in all, are:
+= -- 1145
+> -- 317
 < -- 2
-+ -- 102
-- -- 80
-* -- 575
-:= -- 1300
-add.period$ -- 72
-call.type$ -- 19
-change.case$ -- 95
++ -- 113
+- -- 88
+* -- 611
+:= -- 1461
+add.period$ -- 85
+call.type$ -- 22
+change.case$ -- 110
 chr.to.int$ -- 0
-cite$ -- 19
-duplicate$ -- 226
-empty$ -- 846
-format.name$ -- 80
-if$ -- 2333
+cite$ -- 22
+duplicate$ -- 255
+empty$ -- 962
+format.name$ -- 88
+if$ -- 2641
 int.to.chr$ -- 0
-int.to.str$ -- 19
+int.to.str$ -- 22
 missing$ -- 21
-newline$ -- 112
-num.names$ -- 38
-pop$ -- 170
+newline$ -- 131
+num.names$ -- 44
+pop$ -- 199
 preamble$ -- 1
-purify$ -- 78
+purify$ -- 88
 quote$ -- 0
-skip$ -- 612
+skip$ -- 703
 stack$ -- 0
-substring$ -- 551
-swap$ -- 59
+substring$ -- 566
+swap$ -- 60
 text.length$ -- 30
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 72
+type$ -- 84
 warning$ -- 0
-while$ -- 73
-width$ -- 21
-write$ -- 239
+while$ -- 79
+width$ -- 24
+write$ -- 280
 (There was 1 warning)

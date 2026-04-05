@@ -37,6 +37,14 @@ Alexandra Chouldechova.
 \newblock \href {https://doi.org/10.1089/big.2016.0047}
   {\path{doi:10.1089/big.2016.0047}}.
 
+\bibitem{pool2023}
+{City of Austin}.
+\newblock Resolution no.\ 20230720-126: Initiating the {HOME} ({Home Options
+  for Mobility and Equity}) initiative.
+\newblock Austin City Council, July 2023.
+\newblock Sponsored by Council Member Leslie Pool. Adopted July 20, 2023.
+\newblock URL: \url{https://www.austintexas.gov/department/home-initiative}.
+
 \bibitem{einstein2019book}
 Katherine~Levine Einstein, David~M. Glick, and Maxwell Palmer.
 \newblock {\em Neighborhood Defenders: Participatory Politics and {America's}
@@ -73,6 +81,14 @@ Joseph Gyourko and Raven Molloy.
   1289--1337. Elsevier, 2015.
 \newblock \href {https://doi.org/10.1016/B978-0-444-59531-7.00019-3}
   {\path{doi:10.1016/B978-0-444-59531-7.00019-3}}.
+
+\bibitem{hamilton2024texas}
+Emily Hamilton and Salim Furth.
+\newblock Texas protest petition primer: How {HB} 24 reforms the supermajority
+  requirement.
+\newblock Policy brief, Mercatus Center at George Mason University, 2024.
+\newblock URL:
+  \url{https://www.mercatus.org/research/policy-briefs/texas-protest-petition-primer}.
 
 \bibitem{hankinson2018}
 Michael Hankinson.
@@ -128,6 +144,13 @@ Galit Shmueli.
 \newblock {\em Statistical Science}, 25(3):289--310, 2010.
 \newblock \href {https://doi.org/10.1214/10-STS330}
   {\path{doi:10.1214/10-STS330}}.
+
+\bibitem{tcclerk2022}
+{Travis County Clerk}.
+\newblock November 2022 election results.
+\newblock Technical report, Travis County, TX, 2022.
+\newblock URL:
+  \url{https://www.traviscountyclerk.org/eclerk/content/election-results}.
 
 \bibitem{whittemore2014racial}
 Andrew~H. Whittemore.

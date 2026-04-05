@@ -417,7 +417,7 @@ Evaluation splits are intentionally non-random to test generalization under real
     \item \textbf{Spatial holdouts:} withholding entire council districts.
 \end{itemize}
 
-The November 2022 council election is the primary regime boundary. The election replaced a preservationist majority with a pro-housing supermajority during the 2023 to 2024 Watson-era council term, possessing the votes (9 of 11) to override valid protest petitions. This decoupled neighborhood petition filing from actual policy veto power during this period, creating a distributional shift that static models trained on pre-2022 data cannot accommodate. Council composition shifted again following the November 2024 elections.
+The November 2022 council election is the primary regime boundary. The election replaced a preservationist majority with a pro-housing supermajority during the 2023 to 2024 Watson-era council term, possessing the votes (9 of 11) to override valid protest petitions \cite{tcclerk2022}. This decoupled neighborhood petition filing from actual policy veto power during this period, creating a distributional shift that static models trained on pre-2022 data cannot accommodate. Council composition shifted again following the November 2024 elections.
 
 
 
@@ -621,7 +621,7 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 
 \subsection{2022 Electoral Transition (Difference-in-Differences)}
 
-The HOME Initiative models a global legislative shift, but its adoption is citywide and therefore provides no geographic control group. The November 2022 council elections offer a complementary source of variation: a subset of council districts (e.g., Districts 4 and 9) replaced preservationist incumbents with pro-housing representatives, while other districts maintained their political status quo.
+The HOME Initiative \cite{pool2023} models a global legislative shift, but its adoption is citywide and therefore provides no geographic control group. The November 2022 council elections offer a complementary source of variation: a subset of council districts (e.g., Districts 4 and 9) replaced preservationist incumbents with pro-housing representatives, while other districts maintained their political status quo.
 
 Interacting a ``Flipped District'' indicator with a ``Post-2022'' temporal indicator in a standard DiD framework yields a coefficient of \metricFlipDiDCoeff{} ($p=\metricFlipDiDPval{}$) on valid petition filing rates. This suggests that petition filing rates declined more in districts that changed political representation than in those that did not. However, inference should be treated cautiously: the design involves few treated districts, a short post-treatment window, and a small number of petition events per district. The estimate is suggestive rather than definitive.
 
@@ -715,7 +715,7 @@ These results suggest that petition filing is partly driven by factors not obser
 
 The stakeholder interviews informed interpretation of these findings by surfacing the informal channels---strategic timing, neighborhood networks, media campaigns---through which petition mobilization operates and which administrative data cannot fully capture. This suggests a ceiling on what prediction from public records alone can achieve.
 
-Future work should extend the observation window to capture HB~24 effects, explore richer text features from pre-hearing public comments, and investigate whether the 2022 regime shift represents a permanent change or a temporary fluctuation.
+Future work should extend the observation window to capture HB~24 effects \cite{hamilton2024texas}, explore richer text features from pre-hearing public comments, and investigate whether the 2022 regime shift represents a permanent change or a temporary fluctuation.
 
 \bibliographystyle{plainurl}
 \bibliography{references}
