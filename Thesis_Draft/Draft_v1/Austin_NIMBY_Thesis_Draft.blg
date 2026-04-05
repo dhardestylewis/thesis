@@ -1,0 +1,55 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Austin_NIMBY_Thesis_Draft.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: plainurl.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: references.bib
+Warning--I didn't find a database entry for "cinelli2020making"
+You've used 19 entries,
+            2943 wiz_defined-function locations,
+            772 strings with 8686 characters,
+and the built_in function-call counts, 9147 in all, are:
+= -- 1015
+> -- 287
+< -- 2
++ -- 102
+- -- 80
+* -- 575
+:= -- 1300
+add.period$ -- 72
+call.type$ -- 19
+change.case$ -- 95
+chr.to.int$ -- 0
+cite$ -- 19
+duplicate$ -- 226
+empty$ -- 846
+format.name$ -- 80
+if$ -- 2333
+int.to.chr$ -- 0
+int.to.str$ -- 19
+missing$ -- 21
+newline$ -- 112
+num.names$ -- 38
+pop$ -- 170
+preamble$ -- 1
+purify$ -- 78
+quote$ -- 0
+skip$ -- 612
+stack$ -- 0
+substring$ -- 551
+swap$ -- 59
+text.length$ -- 30
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 72
+warning$ -- 0
+while$ -- 73
+width$ -- 21
+write$ -- 239
+(There was 1 warning)
