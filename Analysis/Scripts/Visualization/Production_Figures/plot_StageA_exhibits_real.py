@@ -69,7 +69,7 @@ def generate_exhibits():
     latex_table_rows = []
 
     for h, (y_yr, y_col) in horizons_map.items():
-        prob_col = f'Prob_LGBM_H={h}'
+        prob_col = f'Prob_Optimal_H={h}'
         if prob_col in full.columns:
             proba_arr = full[prob_col].values
             
@@ -122,40 +122,48 @@ def generate_exhibits():
     plt.close()
     print(f"    [+] Saved Figure 4 (Stage A PR Curves) to {fig_path}")
 
-    # FIGURE 4: Ex-Ante Hotspot Density vs. Realized Events
-    print("[*] Plotting Figure 4: Spatial Hexbin Map (1-Year Hazard, Top Decile)...")
-    map_data = full.groupby('standardized_tcad_id')[['latitude', 'longitude', 'Prob_LGBM_H=4', 'y_1yr']].max().reset_index()
-
-    map_data = map_data.dropna(subset=['latitude', 'longitude', 'Prob_LGBM_H=4'])
-    map_data = map_data[(map_data.longitude > -98.1) & (map_data.longitude < -97.5) & 
-                        (map_data.latitude > 30.0) & (map_data.latitude < 30.6)]
-
-    import contextily as cx
-    threshold_90 = np.percentile(map_data['Prob_LGBM_H=4'], 90)
-    significant_hotspots = map_data[map_data['Prob_LGBM_H=4'] >= threshold_90]
-
-    fig, ax = plt.subplots(figsize=(10, 10))
-    hb = ax.hexbin(significant_hotspots['longitude'], significant_hotspots['latitude'], 
-                   C=significant_hotspots['Prob_LGBM_H=4'], gridsize=100, cmap='YlOrRd', reduce_C_function=np.mean, mincnt=15, alpha=0.85)
-    plt.colorbar(hb, ax=ax, label='Average Predicted Development Probability (Top 10% Sites)')
+    # FIGURE 4: Ex-Ante Hotspot Density vs. Realized Events (Multi-Horizon)
+    print("[*] Plotting Figure 4: Spatial Hexbin Maps (4, 8, 12-Quarter Hazard, Top Decile)...")
     
-    # Add basemap using contextily (assuming coordinates are WGS84)
-    cx.add_basemap(ax, crs="EPSG:4326", source=cx.providers.CartoDB.Positron)
+    fig, axes = plt.subplots(1, 3, figsize=(24, 8))
+    import contextily as cx
+    
+    horizons = [(4, 'y_1yr'), (8, 'y_2yr'), (12, 'y_3yr')]
+    
+    for idx, (h, y_col) in enumerate(horizons):
+        prob_col = f'Prob_Optimal_H={h}'
+        ax = axes[idx]
+        
+        map_data = full.groupby('standardized_tcad_id')[['latitude', 'longitude', prob_col, y_col]].max().reset_index()
+        map_data = map_data.dropna(subset=['latitude', 'longitude', prob_col])
+        map_data = map_data[(map_data.longitude > -98.1) & (map_data.longitude < -97.5) & 
+                            (map_data.latitude > 30.0) & (map_data.latitude < 30.6)]
+        
+        threshold_90 = np.percentile(map_data[prob_col], 90)
+        significant_hotspots = map_data[map_data[prob_col] >= threshold_90]
+        
+        hb = ax.hexbin(significant_hotspots['longitude'], significant_hotspots['latitude'], 
+                       C=significant_hotspots[prob_col], gridsize=100, cmap='YlOrRd', reduce_C_function=np.mean, mincnt=15, alpha=0.85)
+        
+        if idx == 2:
+            fig.colorbar(hb, ax=axes, label='Average Predicted Development Probability (Top 10% Sites)', fraction=0.02, pad=0.04)
+            
+        cx.add_basemap(ax, crs="EPSG:4326", source=cx.providers.CartoDB.Positron)
+        
+        events = map_data[map_data[y_col] == 1]
+        ax.scatter(events['longitude'], events['latitude'], c='cyan', s=3, alpha=0.5, label='Observed Dev Event')
+        
+        ax.set_title(f'H={h} Quarters Ex-ante Hotspots')
+        ax.set_xticks([])
+        ax.set_yticks([])
+        if idx == 0:
+            ax.legend(loc='lower left')
 
-    events = map_data[map_data['y_1yr'] == 1]
-    ax.scatter(events['longitude'], events['latitude'], c='cyan', s=3, alpha=0.5, label='Observed Dev Event')
-
-    ax.set_title('Ex-ante predicted hotspot density vs. realized development events')
-    ax.set_xlabel('City of Austin')
-    ax.set_ylabel('')
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.legend()
-    plt.tight_layout()
+    fig.suptitle('Multi-Horizon Hotspot Density vs. Realized Development Events', fontsize=18, fontweight='bold', y=1.02)
     hotspot_path = str(AR.TRACK0_FIGURES / 'StageA_Figure4_Hotspot.png')
-    plt.savefig(hotspot_path, dpi=300)
+    plt.savefig(hotspot_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"    [+] Saved Figure 4 (Hotspot Map) to {hotspot_path}")
+    print(f"    [+] Saved Figure 4 (Hotspot Map Grid) to {hotspot_path}")
 
     print("[+] Done! Exhibits saved to Analysis/Output/Track0_Predictive/")
 

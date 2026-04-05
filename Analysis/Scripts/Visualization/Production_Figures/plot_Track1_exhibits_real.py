@@ -312,14 +312,37 @@ def _plot_clustered_importance(hz, hz_name, titles):
                 top_name = _rename_feature(top_feature)
                 label = f"{top_name} Cluster ({n} features)"
                 
-            rows.append({'Cluster': label, 'Importance': total_imp, 'N': n})
+            rows.append({'Cluster': label, 'Importance': total_imp, 'N': n, 'Members': members})
 
         df_cl = pd.DataFrame(rows).sort_values('Importance', ascending=False).head(10)
         df_cl = df_cl.sort_values('Importance', ascending=True)
 
-        plt.figure(figsize=(10, 8))
-        colors = ['#1b4965' if row.N == 1 else '#e63946' for _, row in df_cl.iterrows()]
-        plt.barh(df_cl['Cluster'], df_cl['Importance'], color=colors, alpha=0.85)
+        plt.figure(figsize=(11, 8))
+        stacked_colors = ['#e63946', '#f4a261', '#e9c46a', '#e76f51', '#2a9d8f', '#264653']
+        
+        for idx, row in df_cl.reset_index(drop=True).iterrows():
+            cluster_name = row['Cluster']
+            members = row['Members']
+            
+            if row['N'] == 1:
+                # Stand-alone predictor (Blue)
+                plt.barh(cluster_name, row['Importance'], color='#1b4965', alpha=0.85)
+            else:
+                # Multi-feature cluster: stacked bar
+                left_val = 0
+                for c_idx, (feat_name, feat_imp) in enumerate(members):
+                    color = stacked_colors[c_idx % len(stacked_colors)]
+                    plt.barh(cluster_name, feat_imp, left=left_val, color=color, alpha=0.9, edgecolor='white', linewidth=0.5)
+                    
+                    # Optional internal annotation for very large sub-features
+                    if feat_imp > 2.0:
+                        short_name = _rename_feature(feat_name).replace("Share", "").replace("Metrics", "").strip()
+                        # Shorten for tight clusters
+                        if len(short_name) > 18: short_name = short_name[:15] + "..."
+                        plt.text(left_val + (feat_imp/2), idx, short_name, ha='center', va='center', color='white', fontsize=7, fontweight='bold', clip_on=True)
+                        
+                    left_val += feat_imp
+                    
         plt.title(titles.get("stage_c_feature_importance_clustered",
                   "Top 10 Predictor Groups After Correlation Clustering ({hz})").format(hz=hz_name),
                   fontsize=14)
@@ -387,12 +410,60 @@ def _plot_shap_beeswarm(hz, hz_name, titles):
         explainer = shap.TreeExplainer(base_cb)
         shap_values = explainer.shap_values(X_sample)
 
-        # Rename columns to plain English AFTER computing SHAP but BEFORE plotting
-        X_display = X_sample.rename(columns=_rename_feature)
+        # Repaired collinearity: hierarchical cluster SHAP
+        from scipy.cluster.hierarchy import linkage, fcluster
+        from scipy.spatial.distance import squareform
+        corr = X.corr(method='spearman').abs().clip(0, 1).fillna(0)
+        corr_vals = corr.values.copy()
+        np.fill_diagonal(corr_vals, 1.0)
+        dist = np.clip((1.0 - corr_vals + (1.0 - corr_vals).T)/2, 0, None)
+        np.fill_diagonal(dist, 0.0)
+        Z = linkage(squareform(dist, checks=False), method='average')
+        labels = fcluster(Z, t=0.30, criterion='distance')
+        
+        SEMANTIC_CLUSTERS = {
+            'acs_owner_occupied_units': 'Housing Tenure',
+            'acs_race_white': 'Demographic Composition',
+            'acs_race_hispanic': 'Demographic Composition',
+            'acs_race_black': 'Demographic Composition',
+            'acs_median_gross_rent': 'Neighborhood Income & Rent',
+            'acs_median_household_income': 'Neighborhood Income & Rent',
+            'ldb_appraised_val': 'Property Valuation Metrics',
+            'ldb_market_val': 'Property Valuation Metrics',
+            'ldb_yr_built': 'Structure Age / Vintage',
+            'year': 'Filing Timeline',
+            'ldb_land_acres': 'Parcel Land Area',
+            'gross_site_area_acres': 'Parcel Land Area',
+            'ldb_land_use': 'Land Use Classification',
+            'lui_land_use': 'Land Use Classification',
+            'protest': 'Historical Protest Activity',
+        }
+        features = list(X.columns)
+        new_cols = {}
+        new_shap = []
+        for cid in np.unique(labels):
+            idx = np.where(labels == cid)[0]
+            cluster_feats = [features[i] for i in idx]
+            # Use the feature with highest max absolute SHAP as top_feature for naming
+            cluster_shap_sums = np.abs(shap_values[:, idx]).max(axis=0)
+            top_feature = cluster_feats[np.argmax(cluster_shap_sums)]
+            n = len(cluster_feats)
+            
+            if n == 1:
+                label = _rename_feature(top_feature)
+            elif top_feature in SEMANTIC_CLUSTERS:
+                label = f"{SEMANTIC_CLUSTERS[top_feature]} ({n} features)"
+            else:
+                label = f"{_rename_feature(top_feature)} Cluster ({n} features)"
+                
+            new_cols[label] = X_sample[cluster_feats].mean(axis=1) # average feature magnitude for coloring
+            new_shap.append(shap_values[:, idx].sum(axis=1))       # mathematically aggregate collinear SHAP attributions
+
+        X_display = pd.DataFrame(new_cols, index=X_sample.index)
+        shap_matrix = np.column_stack(new_shap)
 
         plt.figure(figsize=(10, 8))
-        shap.summary_plot(shap_values, X_display, max_display=15, show=False,
-                          plot_size=None)
+        shap.summary_plot(shap_matrix, X_display, max_display=15, show=False, plot_size=None)
         plt.title(titles.get("stage_c_shap_beeswarm",
                   "SHAP Feature Attribution ({hz})").format(hz=hz_name),
                   fontsize=14)

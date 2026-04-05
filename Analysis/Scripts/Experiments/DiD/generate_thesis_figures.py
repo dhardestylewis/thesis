@@ -43,7 +43,7 @@ def main():
     if 'latitude' in df.columns and 'longitude' in df.columns:
         print("  -> Drawing Geodesic Mapping using strict H0 coordinates...")
         years_to_plot = sorted(df['Year'].dropna().unique())
-        years_to_plot = [y for y in years_to_plot if y not in [2025, 2026]]
+        years_to_plot = [y for y in years_to_plot if y not in [2025, 2026] and y >= 2007]
         
         # Calculate grid dynamically
         n_years = len(years_to_plot)
@@ -71,16 +71,16 @@ def main():
             if not pro.empty:
                 pro.plot(ax=ax, color='crimson', marker='X', markersize=80, edgecolor='darkred', linewidth=1.0)
                 
-            ax.set_title(f"H0 Master Cases: {yr}", fontsize=14, fontweight='bold')
+            ax.set_title(f"Filing Year: {int(yr)}", fontsize=14, fontweight='bold')
             ax.set_axis_off()
             try: cx.add_basemap(ax, source=cx.providers.CartoDB.Positron)
             except: pass
             
-        plt.suptitle("Multi-Year Temporal Dispersion of Authentic H0 Master Zoning Array", fontsize=24, y=1.02, fontweight='bold')
+        plt.suptitle("Annual Zoning Application Volume (2007-2024)", fontsize=24, y=1.02, fontweight='bold')
         plt.tight_layout()
         import matplotlib.lines as mlines
-        blue_dot = mlines.Line2D([], [], color='blue', marker='o', linestyle='None', markersize=10, label='Unprotested Variance')
-        red_x = mlines.Line2D([], [], color='crimson', marker='X', linestyle='None', markersize=12, markeredgecolor='darkred', label='Valid Opposition')
+        blue_dot = mlines.Line2D([], [], color='blue', marker='o', linestyle='None', markersize=10, label='Zoning Cases')
+        red_x = mlines.Line2D([], [], color='crimson', marker='X', linestyle='None', markersize=12, markeredgecolor='darkred', label='Valid Protest Petitions')
         fig1.legend(handles=[blue_dot, red_x], loc='lower center', bbox_to_anchor=(0.5, -0.02), ncol=2, fontsize=16)
         
         fig1.savefig(os.path.join(IMG_DIR, "fig1_spatial_distribution.png"), dpi=300, bbox_inches='tight')

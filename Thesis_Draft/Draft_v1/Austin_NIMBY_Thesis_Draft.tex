@@ -135,11 +135,11 @@ The empirical foundation is a time-stamped relational data warehouse that recons
 
 The core analytics rely on the enriched filing-date master table, a consolidated structural matrix used by the predictive orchestrator that merges spatial and demographic variables into single parcel-year observations:
 \begin{enumerate}
-    \item \textbf{case\_master:} Case ID, milestone dates (filing, notice, petition deadline, planning commission hearing, council reading, withdrawal), requested zoning changes, unit limits, target FAR, and disposition status.
-    \item \textbf{site\_geometry:} Parcel IDs, geometries, acreage, frontage, and 200ft buffers used to aggregate nearby properties (council districts and overlapping geometries).
-    \item \textbf{parcel\_buffer\_snapshot:} Annually indexed TCAD appraisal variables for parcels computing attributes within the 200ft threshold: land value, structure age, homestead exemption rates, and owner-occupancy shares.
-    \item \textbf{neighborhood\_snapshot:} Tract and block group ACS variables constrained to their historical 5-year release dates: rent burdens, tenure splits, demographic composition, and displacement vulnerability indicators.
-    \item \textbf{policy\_calendar:} The 2022 council regime change; HOME (Home Options for Mobility and Equity) Phase 1\footnote{Ordinance No. 20231207-001, adopted December 7, 2023; applications accepted February 5, 2024.} and HOME Phase 2\footnote{Ordinance No. 20240516-006, adopted May 16, 2024; applications accepted August 16, 2024, with Wildland-Urban Interface and Uprooted-designated areas delayed to November 16, 2024.}; and the HB 24 effective date (September 1, 2025).
+    \item \textbf{Zoning Application Records:} Case ID, milestone dates (filing, notice, petition deadline, planning commission hearing, council reading, withdrawal), requested zoning changes, unit limits, target FAR, and disposition status.
+    \item \textbf{Spatial Geometries:} Parcel IDs, geometries, acreage, frontage, and 200ft buffers used to aggregate nearby properties (council districts and overlapping geometries).
+    \item \textbf{Parcel Appraisals:} Annually indexed TCAD appraisal variables for parcels computing attributes within the 200ft threshold: land value, structure age, homestead exemption rates, and owner-occupancy shares.
+    \item \textbf{Neighborhood Demographics:} Tract and block group ACS variables constrained to their historical 5-year release dates: rent burdens, tenure splits, demographic composition, and displacement vulnerability indicators.
+    \item \textbf{Institutional Calendar:} The 2022 council regime change; HOME Phase 1\footnote{Ordinance No. 20231207-001, adopted December 7, 2023; applications accepted February 5, 2024.} and HOME Phase 2\footnote{Ordinance No. 20240516-006, adopted May 16, 2024; applications accepted August 16, 2024, with Wildland-Urban Interface and Uprooted-designated areas delayed to November 16, 2024.}; and the HB 24 effective date (September 1, 2025).
 \end{enumerate}
 
 Because municipal databases frequently overwrite preliminary timestamps with final disposition dates, precise milestone dates are reconstructed through two methods. First, explicit dates are parsed from scraped historical council agendas and PDF case files. Second, where explicit text is unavailable, dates are imputed by back-calculating from end-dates using the minimum procedural constraints mandated by Texas Local Government Code and Austin municipal zoning ordinances, such as statutory 11-day mail notice minimums.
@@ -188,7 +188,7 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
+\resizebox{\linewidth}{!}{ \begin{tikzpicture}[
   node distance=1.2cm,
   box/.style={rectangle, draw=black, thick, fill=gray!10, text width=3.5cm, align=center, rounded corners, minimum height=1.2cm},
   arrow/.style={thick,->,>=stealth}
@@ -205,6 +205,7 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 
   \draw[arrow, dashed, red, thick] (protest) -- node[right, text=red] {\small Triggers} node[right, yshift=-0.4cm, text=red] {\small 9/11 Supermajority} (council);
 \end{tikzpicture}
+}
 \caption{Austin municipal zoning process. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council.}
 \label{fig:flowchart}
 \end{figure}
@@ -230,7 +231,7 @@ Exclude cases lacking valid initial year/timeframes & 7,074 \\
 \end{tabular}
 \end{table}
 
-Unlike pipelines that require complete-case geometric intersections, this pipeline uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This data-retention approach reduces artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
+Unlike approaches that require complete-case geometric intersections, this methodology uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This data-retention approach reduces artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
 
 \subsection{Primary Outcome Definition}
 \label{sec:outcome}
@@ -305,12 +306,6 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Track0_Predictive/Figures/StageA_Figure3_PR_Curves.png}
-    \caption{Multi-horizon precision-recall curves for the Development Occurrence hazard model ($H \in \{4,8,12\}$ quarters).}
-    \label{fig:stageA_pr}
-\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -325,7 +320,7 @@ Conditional on a predicted development event ($D=1$), the Project Type and Scale
 \begin{equation}
 E(\text{net new units}_{i,t,H} \mid D=1, X_{i,t})
 \end{equation}
-This stage is critical because a six-unit by-right infill project generates fundamentally different institutional responses and petition likelihoods compared to a 300-unit Planned Unit Development (PUD). The taxonomy classifies proposals into six categories defined by approval pathway and building form: PUD/Large Negotiated, Discretionary Rezoning, By-Right Infill, Missing-Middle, Mixed-Use, and Multifamily. By segmenting proposals by type, the pipeline isolates these heterogeneous risks. Table~\ref{tab:stage_b} reports classification performance.
+This stage is critical because a six-unit by-right infill project generates fundamentally different institutional responses and petition likelihoods compared to a 300-unit Planned Unit Development (PUD). The taxonomy classifies proposals into six categories defined by approval pathway and building form: PUD/Large Negotiated, Discretionary Rezoning, By-Right Infill, Missing-Middle, Mixed-Use, and Multifamily. By segmenting proposals by type, the framework isolates these heterogeneous risks. Table~\ref{tab:stage_b} reports classification performance.
 
 \begin{table}[H]
 \centering
@@ -338,12 +333,12 @@ This stage is critical because a six-unit by-right infill project generates fund
 \textit{Macro-F1 Baseline} & \metricStageBLgbMacroFOne{} & \metricStageBRfMacroFOne{} & \metricStageBMacroFOne{} & \metricStageBLogMacroFOne{} \\
 \midrule
 \multicolumn{5}{l}{\textit{Class-Level Typology Performance (F1)}} \\
-$\hookrightarrow$ PUD / Large Negotiated & \metricStageBLgbPUDFOne{} & \metricStageBRfPUDFOne{} & \metricStageBCbPUDFOne{} & \metricStageBLogPUDFOne{} \\
-$\hookrightarrow$ Discretionary Rezoning & \metricStageBLgbRezoningFOne{} & \metricStageBRfRezoningFOne{} & \metricStageBCbRezoningFOne{} & \metricStageBLogRezoningFOne{} \\
-$\hookrightarrow$ By-Right Infill & \metricStageBLgbByRightFOne{} & \metricStageBRfByRightFOne{} & \metricStageBCbByRightFOne{} & \metricStageBLogByRightFOne{} \\
-$\hookrightarrow$ Missing-Middle & \metricStageBLgbMissingMiddleFOne{} & \metricStageBRfMissingMiddleFOne{} & \metricStageBCbMissingMiddleFOne{} & \metricStageBLogMissingMiddleFOne{} \\
-$\hookrightarrow$ Mixed-Use & \metricStageBLgbMixedUseFOne{} & \metricStageBRfMixedUseFOne{} & \metricStageBCbMixedUseFOne{} & \metricStageBLogMixedUseFOne{} \\
-$\hookrightarrow$ Multifamily & \metricStageBLgbMultifamilyFOne{} & \metricStageBRfMultifamilyFOne{} & \metricStageBCbMultifamilyFOne{} & \metricStageBLogMultifamilyFOne{} \\
+$\hookrightarrow$ PUD / Large Negotiated & \textbf{\metricStageBLgbPUDFOne{}} & \textbf{\metricStageBRfPUDFOne{}} & \textbf{\metricStageBCbPUDFOne{}} & \metricStageBLogPUDFOne{} \\
+$\hookrightarrow$ Discretionary Rezoning & \metricStageBLgbRezoningFOne{} & \textbf{\metricStageBRfRezoningFOne{}} & \metricStageBCbRezoningFOne{} & \metricStageBLogRezoningFOne{} \\
+$\hookrightarrow$ By-Right Infill & \metricStageBLgbByRightFOne{} & \textbf{\metricStageBRfByRightFOne{}} & \metricStageBCbByRightFOne{} & \metricStageBLogByRightFOne{} \\
+$\hookrightarrow$ Missing-Middle & \textbf{\metricStageBLgbMissingMiddleFOne{}} & \metricStageBRfMissingMiddleFOne{} & \metricStageBCbMissingMiddleFOne{} & \metricStageBLogMissingMiddleFOne{} \\
+$\hookrightarrow$ Mixed-Use & \textbf{\metricStageBLgbMixedUseFOne{}} & \metricStageBRfMixedUseFOne{} & \metricStageBCbMixedUseFOne{} & \metricStageBLogMixedUseFOne{} \\
+$\hookrightarrow$ Multifamily & \metricStageBLgbMultifamilyFOne{} & \textbf{\metricStageBRfMultifamilyFOne{}} & \metricStageBCbMultifamilyFOne{} & \metricStageBLogMultifamilyFOne{} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -355,7 +350,14 @@ The Opposition Risk forecast is the core of the thesis: conditional on a project
 P(y_0 = 1 \mid D=1, X_{i,t}, Z)
 \end{equation}
 
-At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. To adjust for selection on observables---given that the analytic sample naturally contains only neighborhoods that actually receive development proposals---the model applies inverse-probability weighting derived from the Development Occurrence hazard ($Z$). While this weighting corrects for spatial baseline probabilities, it remains inherently limited because it cannot completely resolve unobserved political or social factors that simultaneously influence both proposal location and opposition likelihood. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx architectures are reported in Appendix~\ref{app:pr_curves}.
+At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. To adjust for selection on observables---given that the analytic sample naturally contains only neighborhoods that actually receive development proposals---the model applies inverse-probability weighting derived from the Development Occurrence hazard ($Z$). While this weighting corrects for spatial baseline probabilities, it remains inherently limited because it cannot completely resolve unobserved political or social factors that simultaneously influence both proposal location and opposition likelihood. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx architectures are reported in Figure~\ref{fig:pr_curves}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Chapter4/F12_Opposition_PR.png}
+    \caption{Opposition risk precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
+    \label{fig:pr_curves}
+\end{figure}
 
 \subsection{Political Outcome}
 
@@ -363,20 +365,20 @@ Conditional on both a development proposal and the presence of a valid petition,
 
 \begin{table}[H]
 \centering
-\caption{Political Outcome Forecast (Opposed Cases Only)}
+\caption{Pre-Council Attrition Forecast (Opposed Cases Only)}
 \label{tab:stage_d}
 \begin{tabular}{lcc}
 \toprule
 \textbf{Model Architecture} & \textbf{Log Loss} & \textbf{Accuracy} \\
 \midrule
-LightGBM & \metricStageDLgbLogLoss{} & \metricStageDLgbAccuracy{} \\
+LightGBM & \textbf{\metricStageDLgbLogLoss{}} & \textbf{\metricStageDLgbAccuracy{}} \\
 CatBoost & \metricStageDLogLoss{} & \metricStageDAccuracy{} \\
 Random Forest & \metricStageDRfLogLoss{} & \metricStageDRfAccuracy{} \\
 Penalized Logistic (L2) & \metricStageDLogLogLoss{} & \metricStageDLogAccuracy{} \\
 \bottomrule
-\multicolumn{3}{l}{\footnotesize Accuracy and log loss are reported for this stage because the outcome (council approval) is}\\
-\multicolumn{3}{l}{\footnotesize near-deterministic among surviving cases (see \S~\ref{sec:governance}), making PR-AUC uninformative.}\\
-\multicolumn{3}{l}{\footnotesize Extreme accuracy (e.g., 0.9976) likely reflects a small test sample combined with a trivial majority-class decision boundary.} \\
+\multicolumn{3}{l}{\footnotesize Accuracy and log loss are reported for this stage because the outcome (pre-council attrition/withdrawal)}\\
+\multicolumn{3}{l}{\footnotesize is highly imbalanced among opposed cases (77.6\% attrition rate), making macro PR-AUC less informative as a single}\\
+\multicolumn{3}{l}{\footnotesize metric than threshold-independent probability scoring (Log Loss).} \\
 \end{tabular}
 \end{table}
 
@@ -427,7 +429,7 @@ Calibration      & Expected Calibration Error (ECE)   & \textbf{\metricECE{}} \\
 Calibration      & Calibration Slope      & \textbf{\metricCalibrationSlope{}} \\ \midrule
 Equity     & FNR Gap across council districts$^{\dagger}$ & \textbf{\metricFNRGap{}} \\ \bottomrule
 \multicolumn{3}{l}{\footnotesize $^{\dagger}$Given sparse positive cases per subgroup, this metric likely reflects insufficient statistical power.} \\
-\multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}074$ cases, CatBoost (Primary Pipeline Backbone) with 5-fold cross-validation.} \\
+\multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}074$ cases, CatBoost (Primary Architecture) with 5-fold cross-validation.} \\
 \end{tabular}
 }
 \end{table}
@@ -451,7 +453,11 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 
 \vspace{1em}
 
-A comprehensive evaluation of alternative architectures (Random Forest, LightGBM, PyTorch TabNet, with and without SMOTE resampling) is provided in Appendix~\ref{app:alt_architectures}. CatBoost was retained for the primary pipeline because of its native handling of categorical variables without manual encoding and its comparative robustness to calibration drift, though the performance differences across architectures are modest.
+A comprehensive head-to-head benchmarking of alternative architectures (Random Forest, LightGBM, PyTorch TabNet, with and without SMOTE resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost was retained for the primary architecture because of its native handling of categorical variables without manual encoding and its comparative robustness to calibration drift, though the performance differences across architectures are modest.
+
+\vspace{1em}
+\input{Tables/alternative_architectures.tex}
+\vspace{1em}
 
 The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides an optimistic upper bound on predictive capacity. Bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) reveals a more realistic picture. At the initial filing date, the bootstrap PR-AUC is \metricBootstrapFiling{} ($95\%$ CI: $\metricBootstrapFilingCI{}$), indicating substantial early-stage uncertainty. At the notice date and pre-commission horizons, discrimination reaches PR-AUCs of \metricBootstrapNotice{} and \metricBootstrapPreComm{} respectively. By the pre-council horizon, PR-AUC drops slightly to \metricBootstrapPreCouncil{}, possibly reflecting the influence of late-stage informal negotiations that administrative data cannot capture. ECE worsens from \metricBootstrapFilingECE{} at filing to \metricBootstrapPreCouncilECE{} prior to council reading, suggesting that later-horizon models accumulate additional calibration error despite richer information sets. Out-of-distribution tracking across rolling annual windows (Figure~\ref{fig:ood_tracking}a) shows a gradual PR-AUC decay as the test set moves up to three years ($T+3$) beyond the training domain, consistent with the need for periodic retraining. The opposition model retains baseline performance through the 2024 HOME ordinance adoption without catastrophic degradation, though this represents only a short post-policy window (Figure~\ref{fig:ood_tracking}b).
 
@@ -498,7 +504,7 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 
 Pre-council attrition---withdrawal, stalling, or cancellation before a final council vote---is pervasive across the full analytic sample. Of the 7,074 cases filed, 6,163 (87.1\%) never reached a council reading. Among the \metricOpposedTotal{} cases that faced a valid protest petition, \metricOpposedWithdrawn{} (\metricAttritionRate{}) were withdrawn or stalled. Among the 6,663 unopposed cases, 5,844 (\metricUnopposedAttritionRate{}) dropped out. The opposed attrition rate is therefore \emph{lower} than the unopposed rate, suggesting that cases which attract formal petitions tend to be larger or more committed developments that persist further through the approval process, rather than being uniquely ``chilled'' by opposition. Attrition is the dominant mode of case resolution regardless of petition status.
 
-Because attrition is so prevalent, predictive algorithms targeting terminal council votes suffer from severe survivorship bias: virtually all cases that reach a final vote are approved. The pipeline therefore models attrition itself---whether a case survives to council reading---rather than the near-deterministic terminal approval decision. By predicting pre-council dropout, Stage~D captures the institutional friction through which the approval process most often resolves.
+Because attrition is so prevalent, predictive algorithms targeting terminal council votes suffer from severe survivorship bias: virtually all cases that reach a final vote are approved. The predictive architecture therefore models attrition itself---whether a case survives to council reading---rather than the near-deterministic terminal approval decision. By predicting pre-council dropout, Stage~D captures the institutional friction through which the approval process most often resolves.
 
 \begin{table}[H]
 \centering
@@ -667,7 +673,7 @@ A model that identifies areas of low opposition probability could function as a 
     \item \textbf{Advisory Use Only.} Until the model meets pre-specified calibration and fairness benchmarks, outputs are restricted to internal planning analysis. The current ECE of \metricECE{} exceeds the deployment threshold; predicted probabilities are not reliable enough for direct use in regulatory or investment decisions.
     \item \textbf{Mandatory Vulnerability Overlays.} Any spatial output must distinguish between opposition from well-resourced neighborhoods seeking to preserve exclusionary zoning and opposition from vulnerable communities organizing against displacement. Presenting raw petition-risk scores without this context risks conflating structurally different dynamics.
     \item \textbf{Predictions Reflect History, Not Prescription.} The model's outputs summarize past patterns of administrative friction. High predicted petition risk in a neighborhood describes what has historically happened, not what should happen. Users must interpret outputs accordingly.
-    \item \textbf{Audit-Only Use of Demographic Variables.} Racial and ethnic composition variables are excluded from the predictive model and used only in post-hoc fairness audits. This partition is maintained throughout the pipeline. The audit features enable measurement of disparate impacts but do not enter the prediction function.
+    \item \textbf{Audit-Only Use of Demographic Variables.} Racial and ethnic composition variables are excluded from the predictive model and used only in post-hoc fairness audits. This partition is maintained throughout the empirical framework. The audit features enable measurement of disparate impacts but do not enter the prediction function.
 \end{itemize}
 
 \section{Limitations}
@@ -722,13 +728,10 @@ Future work should extend the observation window to capture HB~24 effects, explo
 \section{Alternative Machine Learning Architectures}
 \label{app:alt_architectures}
 
-\noindent The following table documents an expanded permutation benchmark evaluating baseline mathematical classifiers and PyTorch deep learning networks against the primary CatBoost architecture. Each model class was formally cross-validated against SMOTE (Synthetic Minority Over-sampling Technique) distributions to assess the structural trade-off between artificial class balancing and geographic probability calibration (ECE). 
+\noindent The following section formally documents an expanded permutation benchmark evaluating baseline mathematical classifiers and PyTorch deep learning networks. (These tabular benchmarks have been transplanted inline to Section~\ref{sec:results} for direct performance evaluation). Each model class was formally cross-validated against SMOTE (Synthetic Minority Over-sampling Technique) distributions to assess the structural trade-off between artificial class balancing and geographic probability calibration (ECE). 
 
 \vspace{1em}
-\input{Tables/alternative_architectures.tex}
-
-\vspace{1em}
-\noindent Additionally, this appendix documents a systematic calibration method comparison evaluating Platt Scaling (sigmoid) against Isotonic Regression across base model architectures: CatBoost, LightGBM, and Random Forest. For CatBoost, Platt Scaling achieved modestly lower ECE (0.186 vs.\ 0.211); however, Isotonic Regression was retained for the production pipeline because its non-parametric monotonic mapping provides stronger guarantees against non-monotone probability distortions under class imbalance.
+\noindent Additionally, this appendix documents a systematic calibration method comparison evaluating Platt Scaling (sigmoid) against Isotonic Regression across base model architectures: CatBoost, LightGBM, and Random Forest. For CatBoost, Platt Scaling achieved modestly lower ECE (0.186 vs.\ 0.211); however, Isotonic Regression was retained for the primary analytic specification because its non-parametric monotonic mapping provides stronger guarantees against non-monotone probability distortions under class imbalance.
 
 \vspace{1em}
 \input{Tables/calibration_benchmark.tex}
@@ -776,15 +779,6 @@ Future work should extend the observation window to capture HB~24 effects, explo
 \end{center}
 
 \newpage
-\section{Opposition Model Precision-Recall Curves}
-\label{app:pr_curves}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{Chapter4/F12_Opposition_PR.png}
-\caption{Opposition risk precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
-\label{fig:pr_curves}
-\end{figure}
 
 \newpage
 \section{Temporal Panel Data Structure}
@@ -845,7 +839,7 @@ To calculate the False Negative Rate (FNR) gaps:
 
 Text signals from public hearings post-date the initial filing date prediction horizon and are therefore explored only at later administrative stages. Because these features are unavailable at the time of filing, they are treated as exploratory supplements rather than inputs to the primary opposition model.
 
-The pipeline proceeds in three stages:
+The methodology proceeds in three stages:
 
 \begin{enumerate}
     \item \textbf{Transcription.} Audio recordings of City Council and Planning Commission hearings are transcribed locally using Whisper (faster-whisper). Each transcript is linked to its originating zoning case number, producing a corpus of \metricNLPCorpus{} case-level text documents.
@@ -860,7 +854,7 @@ The pipeline proceeds in three stages:
     \item \textbf{Supervised expansion across the full corpus.} Using the \metricNLPSeed{} seed labels as training data, six logistic regression classifiers are trained---one for stance and one for each of the five argument frames---with TF-IDF unigram features (1,000-term vocabulary, English stop words removed) as inputs. Each classifier then predicts a continuous probability for every case in the full \metricNLPCorpus{} transcript corpus. The result is a case-level matrix of six predicted probabilities: the likelihood that the hearing testimony is oppositional, and the likelihood that each argument frame is present.
 \end{enumerate}
 
-This approach is intentionally lightweight. The seed sample is small, at \metricNLPSeed{} cases, and the classifiers use simple linear models over bag-of-words features. Consequently, the predicted probabilities should be interpreted as coarse thematic indicators rather than precise measurements. The goal is to test whether even rough text signals carry discriminative power for opposition prediction at later horizons, not to build a production-grade NLP system.
+This approach is intentionally lightweight. The seed sample is small, at \metricNLPSeed{} cases, and the classifiers use simple linear models over bag-of-words features. Consequently, the predicted probabilities should be interpreted as coarse thematic indicators rather than precise measurements. The goal is to test whether even rough text signals carry discriminative power for opposition prediction at later horizons, not to build an exhaustive foundational NLP model.
 
 \begin{figure}[H]
 \centering

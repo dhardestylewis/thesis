@@ -82,8 +82,32 @@ def generate_exhibits():
     reduce_funcs = [np.mean, np.mean, np.mean, np.mean]
     
     for i, ax in enumerate(axes):
-        hb = ax.hexbin(x, y, C=C_arrays[i], gridsize=45, cmap=cmaps[i], reduce_C_function=reduce_funcs[i], mincnt=1, alpha=0.85, zorder=2)
-        fig.colorbar(hb, ax=ax, fraction=0.046, pad=0.04)
+        c_vals = C_arrays[i]
+        
+        # Threshold to reduce clutter (user requested)
+        mask = np.ones(len(c_vals), dtype=bool)
+        if i == 0:
+            mask = c_vals > np.percentile(c_vals, 50) # Top 50% expected dev
+        elif i == 1:
+            mask = c_vals > 0.10 # >10% opposition risk
+        elif i == 2:
+            mask = c_vals > np.percentile(c_vals, 50) # Top 50% joint probability
+        elif i == 3:
+            mask = np.abs(c_vals) > 0.15 # Hide near-perfect predictions
+            
+        x_filtered = x[mask]
+        y_filtered = y[mask]
+        c_filtered = c_vals[mask]
+        
+        if len(x_filtered) > 0:
+            hb = ax.hexbin(x_filtered, y_filtered, C=c_filtered, gridsize=45, cmap=cmaps[i], reduce_C_function=reduce_funcs[i], mincnt=1, alpha=0.85, zorder=2)
+            fig.colorbar(hb, ax=ax, fraction=0.046, pad=0.04)
+        
+        # Display Ground Truths
+        if i in [1, 2]:
+            events = merged[merged['y_true'] == 1]
+            ax.scatter(events['longitude'], events['latitude'], c='cyan', s=15, alpha=0.8, edgecolors='black', linewidths=0.5, label='Actual Valid Petition', zorder=3)
+            ax.legend(loc='lower right', fontsize=10)
         
         # Adding Authentic Contextily Basemap
         try:
