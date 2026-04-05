@@ -6,12 +6,12 @@
 \contentsline {subsection}{\numberline {2.4}Evaluative Constraints on Predictive Governance}{9}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Data and Methods}{9}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Analytical Panel Structure}{9}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Filtration}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Filtration}{12}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{13}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{13}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{14}{subsection.3.4}%
 \contentsline {section}{\numberline {4}Predictive Architecture}{14}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Development Occurrence}{14}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Project Type and Scale}{16}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.2}Project Type and Scale}{17}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Opposition Risk}{17}{subsection.4.3}%
 \contentsline {subsection}{\numberline {4.4}Political Outcome}{18}{subsection.4.4}%
 \contentsline {subsection}{\numberline {4.5}Expected Contested Units}{19}{subsection.4.5}%
@@ -23,7 +23,7 @@
 \contentsline {subsection}{\numberline {5.4}Regression Discontinuity: The 20\% Petition Threshold}{27}{subsection.5.4}%
 \contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{28}{subsection.5.5}%
 \contentsline {subsection}{\numberline {5.6}2022 Electoral Transition (Difference-in-Differences)}{29}{subsection.5.6}%
-\contentsline {subsection}{\numberline {5.7}Institutional Geographic Overlays}{29}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.7}Institutional Geographic Overlays}{30}{subsection.5.7}%
 \contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{31}{subsection.5.8}%
 \contentsline {section}{\numberline {6}Qualitative Planning Context}{31}{section.6}%
 \contentsline {section}{\numberline {7}Limitations}{32}{section.7}%

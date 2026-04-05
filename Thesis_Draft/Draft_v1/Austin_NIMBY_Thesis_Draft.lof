@@ -1,19 +1,19 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Spatial Distribution of Zoning Cases (2007-2024)}}{10}{figure.caption.2}%
-\contentsline {figure}{\numberline {2}{\ignorespaces 200ft Parcel Buffer Geometries for Spatial Targets}}{11}{figure.caption.4}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Austin Municipal Zoning Process Diagram}}{12}{figure.caption.5}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Development Hazard Classification Precision-Recall Curves}}{15}{figure.caption.9}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Predicted Hotspot Density vs. Realized Development Events}}{16}{figure.caption.11}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Opposition Risk Precision-Recall Curves by Model Architecture}}{18}{figure.caption.13}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Joint Expected Petition Probability Spatial Distribution}}{20}{figure.caption.16}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Global Model Calibration Reliability and Capture Curves}}{22}{figure.caption.18}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Context: Spatial Distribution of Zoning Cases (2007-2024)}}{11}{figure.caption.2}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Context: 200ft Parcel Buffer Geometries for Spatial Targets}}{12}{figure.caption.4}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Context: Austin Municipal Zoning Process Diagram}}{13}{figure.caption.5}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Stage A: Development Hazard Classification PR Curves}}{15}{figure.caption.9}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Stage A: Predicted Hotspot Density vs. Realized Events}}{16}{figure.caption.11}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Stage C: Opposition Risk PR Curves by Model Architecture}}{18}{figure.caption.13}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Stage F: Joint Expected Petition Probability Spatial Distribution}}{20}{figure.caption.16}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Stage C: Global Model Calibration Reliability and Capture Curves}}{22}{figure.caption.18}%
 \contentsline {figure}{\numberline {9}{\ignorespaces {Out-of-Distribution Model Degradation:} (a) Predictive performance decay across temporal offsets}}{23}{figure.caption.20}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Hierarchical Correlation Clustering of Top Predictors}}{24}{figure.caption.21}%
-\contentsline {figure}{\numberline {11}{\ignorespaces SHAP Beeswarm Plot for the Opposition Model}}{25}{figure.caption.22}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Methodological Causal Inference Graphs}}{27}{figure.caption.24}%
-\contentsline {figure}{\numberline {13}{\ignorespaces Regression Discontinuity at the 20\% Valid Petition Threshold}}{28}{figure.caption.25}%
-\contentsline {figure}{\numberline {14}{\ignorespaces HOME Phase 1 Event-Study Coefficients}}{29}{figure.caption.26}%
-\contentsline {figure}{\numberline {15}{\ignorespaces 2022 Electoral Transition District Outcomes}}{30}{figure.caption.27}%
-\contentsline {figure}{\numberline {16}{\ignorespaces Geographic Distribution of False Positive Predictions vs. Actual Filings}}{33}{figure.caption.29}%
-\contentsline {figure}{\numberline {17}{\ignorespaces Grid Search Precision-Recall AUC Optimization Heatmaps}}{44}{figure.caption.32}%
-\contentsline {figure}{\numberline {18}{\ignorespaces Mean Predicted Probability of Argument Frames by Council District}}{46}{figure.caption.33}%
-\contentsline {figure}{\numberline {19}{\ignorespaces Argument Frame Probabilities: Opposed vs. Unopposed Cases}}{47}{figure.caption.34}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Pipeline Engineering: Hierarchical Correlation Clustering of Top Predictors}}{24}{figure.caption.21}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Stage C: SHAP Beeswarm Plot for the Opposition Model}}{25}{figure.caption.22}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Causal Identification: Methodological Causal Graphs}}{27}{figure.caption.24}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Causal Identification: Regression Discontinuity at the 20\% Threshold}}{28}{figure.caption.25}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Causal Identification: HOME Phase 1 Event-Study Coefficients}}{29}{figure.caption.26}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Causal Identification: 2022 Electoral Transition District Outcomes}}{30}{figure.caption.27}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Stage C: Geographic Distribution of False Positives vs. Actual Filings}}{33}{figure.caption.29}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Pipeline Engineering: Grid Search PR-AUC Optimization Heatmaps}}{44}{figure.caption.32}%
+\contentsline {figure}{\numberline {18}{\ignorespaces NLP Framing: Mean Predicted Probability of Argument Frames by District}}{46}{figure.caption.33}%
+\contentsline {figure}{\numberline {19}{\ignorespaces NLP Framing: Argument Frame Probabilities: Opposed vs. Unopposed Cases}}{47}{figure.caption.34}%

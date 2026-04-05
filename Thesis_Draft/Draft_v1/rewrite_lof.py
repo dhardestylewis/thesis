@@ -7,38 +7,27 @@ with open(filepath, 'r', encoding='utf-8') as f:
 
 # Define the optimal short titles mapped sequentially to the figures
 optimal_titles = [
-    "Spatial Distribution of Zoning Cases (2007-2024)",
-    "200ft Parcel Buffer Geometries for Spatial Targets",
-    "Austin Municipal Zoning Process Diagram",
-    "Development Hazard Classification Precision-Recall Curves",
-    "Predicted Hotspot Density vs. Realized Development Events",
-    "Opposition Risk Precision-Recall Curves by Model Architecture",
-    "Joint Expected Petition Probability Spatial Distribution",
-    "Global Model Calibration Reliability and Capture Curves",
-    "Out-of-Distribution Predictive Performance Decay",
-    "Hierarchical Correlation Clustering of Top Predictors",
-    "SHAP Beeswarm Plot for the Opposition Model",
-    "Methodological Causal Inference Graphs",
-    "Regression Discontinuity at the 20\\% Valid Petition Threshold",
-    "HOME Phase 1 Event-Study Coefficients",
-    "2022 Electoral Transition District Outcomes",
-    "Geographic Distribution of False Positive Predictions vs. Actual Filings",
-    "Grid Search Precision-Recall AUC Optimization Heatmaps",
-    "Mean Predicted Probability of Argument Frames by Council District",
-    "Argument Frame Probabilities: Opposed vs. Unopposed Cases"
+    "Context: Spatial Distribution of Zoning Cases (2007-2024)",
+    "Context: 200ft Parcel Buffer Geometries for Spatial Targets",
+    "Context: Austin Municipal Zoning Process Diagram",
+    "Stage A: Development Hazard Classification PR Curves",
+    "Stage A: Predicted Hotspot Density vs. Realized Events",
+    "Stage C: Opposition Risk PR Curves by Model Architecture",
+    "Stage F: Joint Expected Petition Probability Spatial Distribution",
+    "Stage C: Global Model Calibration Reliability and Capture Curves",
+    "Stage C: Out-of-Distribution Predictive Performance Decay",
+    "Pipeline Engineering: Hierarchical Correlation Clustering of Top Predictors",
+    "Stage C: SHAP Beeswarm Plot for the Opposition Model",
+    "Causal Identification: Methodological Causal Graphs",
+    "Causal Identification: Regression Discontinuity at the 20\\% Threshold",
+    "Causal Identification: HOME Phase 1 Event-Study Coefficients",
+    "Causal Identification: 2022 Electoral Transition District Outcomes",
+    "Stage C: Geographic Distribution of False Positives vs. Actual Filings",
+    "Pipeline Engineering: Grid Search PR-AUC Optimization Heatmaps",
+    "NLP Framing: Mean Predicted Probability of Argument Frames by District",
+    "NLP Framing: Argument Frame Probabilities: Opposed vs. Unopposed Cases"
 ]
 
-# We will find all \caption[...]{...} and replace the bracketed part iteratively
-def replace_caption(match):
-    global caption_index
-    long_caption = match.group(2)
-    
-    # Tables also use \caption. We need to make sure we are only doing this for figures.
-    # Actually, the regex might catch tables. Let's just stick to figures.
-    # Wait! Tables have captions too. But Table captions usually don't have the truncation issue.
-    pass
-
-# Better approach: find \begin{figure} ... \end{figure} blocks and replace their captions.
 def replace_figure_caption(match):
     global caption_index
     block = match.group(0)
@@ -48,7 +37,21 @@ def replace_figure_caption(match):
         new_short = optimal_titles[caption_index]
         long_cap = caption_match.group(2)
         
-        new_caption = f"\\caption[{new_short}]{{{long_cap}}}"
+        # We also want to prepend the Long Caption so it matches the Short Title visually in the body!
+        # Wait, if we prepend it, it will show up boldly in the text.
+        # Yes, let's make the long caption start with the bolded stage tag.
+        # Actually, let's just make the long caption match the structure: \textbf{Stage X:} Long Caption.
+        
+        # First, strip existing bold tags at the very beginning of long caption to prevent duplicating them.
+        stripped_long = re.sub(r'^\\textbf\{.*?\}:\s*', '', long_cap).strip()
+        
+        # Split the new short title to extract the tag (e.g. "Stage C:")
+        parts = new_short.split(":", 1)
+        tag = parts[0] + ":"
+        
+        final_long = f"\\textbf{{{tag}}} {stripped_long}"
+        
+        new_caption = f"\\caption[{new_short}]{{{final_long}}}"
         block = block.replace(caption_match.group(0), new_caption)
         caption_index += 1
         

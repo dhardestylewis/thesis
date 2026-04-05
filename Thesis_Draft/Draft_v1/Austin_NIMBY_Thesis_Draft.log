@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 16:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 16:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -976,25 +976,25 @@ e png)
 Package pdftex.def Info: Figures/Archive_Pipelines/fig1_spatial_distribution.pn
 g  used on input line 151.
 (pdftex.def)             Requested size: 469.75502pt x 371.41548pt.
- [10 <./Figures/Archive_Pipelines/fig1_spatial_distribution.png>]
-<Figures/Exploratory_EDA/waller_buffer_map.png, id=388, 491.436pt x 720.291pt>
+ [10]
+<Figures/Exploratory_EDA/waller_buffer_map.png, id=387, 491.436pt x 720.291pt>
 File: Figures/Exploratory_EDA/waller_buffer_map.png Graphic file (type png)
 <use Figures/Exploratory_EDA/waller_buffer_map.png>
 Package pdftex.def Info: Figures/Exploratory_EDA/waller_buffer_map.png  used on
  input line 178.
 (pdftex.def)             Requested size: 258.36668pt x 378.69698pt.
- [11 <./Figures/Exploratory_EDA/waller_buffer_map.png>] (summary_stats_table.te
-x) [12]
-[13]
-<Figures/Chapter4/StageA_Figure3_PR_Curves.png, id=411, 578.16pt x 433.62pt>
+ [11 <./Figures/Archive_Pipelines/fig1_spatial_distribution.png>]
+[12 <./Figures/Exploratory_EDA/waller_buffer_map.png>] (summary_stats_table.tex
+) [13] [14]
+<Figures/Chapter4/StageA_Figure3_PR_Curves.png, id=417, 578.16pt x 433.62pt>
 File: Figures/Chapter4/StageA_Figure3_PR_Curves.png Graphic file (type png)
 <use Figures/Chapter4/StageA_Figure3_PR_Curves.png>
 Package pdftex.def Info: Figures/Chapter4/StageA_Figure3_PR_Curves.png  used on
  input line 294.
 (pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
- [14]
+ [15 <./Figures/Chapter4/StageA_Figure3_PR_Curves.png>]
 <../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png, id
-=419, 862.6629pt x 874.467pt>
+=424, 862.6629pt x 874.467pt>
 File: ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.pn
 g Graphic file (type png)
 <use ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png
@@ -1002,9 +1002,9 @@ g Graphic file (type png)
 Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/Figures/StageA
 _Figure4_Hotspot.png  used on input line 319.
 (pdftex.def)             Requested size: 375.80544pt x 380.93715pt.
- [15 <./Figures/Chapter4/StageA_Figure3_PR_Curves.png>] [16 <../../Analysis/Out
-put/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png>]
-<Figures/Chapter4/F12_Opposition_PR.png, id=438, 638.8668pt x 494.3268pt>
+ [16 <../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.pn
+g>]
+<Figures/Chapter4/F12_Opposition_PR.png, id=437, 638.8668pt x 494.3268pt>
 File: Figures/Chapter4/F12_Opposition_PR.png Graphic file (type png)
 <use Figures/Chapter4/F12_Opposition_PR.png>
 Package pdftex.def Info: Figures/Chapter4/F12_Opposition_PR.png  used on input 
@@ -1253,11 +1253,11 @@ ed.
 (rerunfilecheck)             Checksum: 5824B76014D2746B2FF8A0EA70F99C9A;8981.
  ) 
 Here is how much of TeX's memory you used:
- 26733 strings out of 467871
- 502602 string characters out of 5419344
+ 26737 strings out of 467871
+ 502650 string characters out of 5419344
  905125 words of memory out of 5000000
  54732 multiletter control sequences out of 15000+600000
- 729990 words of font info for 230 fonts, out of 8000000 for 9000
+ 730178 words of font info for 232 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,104p,2618b,846s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
@@ -1295,7 +1295,7 @@ eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (47 pages, 40345789 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (47 pages, 40346309 bytes).
 PDF statistics:
  1786 PDF objects out of 2073 (max. 8388607)
  166 named destinations out of 1000 (max. 500000)
