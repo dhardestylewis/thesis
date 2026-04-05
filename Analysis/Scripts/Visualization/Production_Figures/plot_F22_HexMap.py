@@ -27,42 +27,38 @@ def generate_exhibits():
     print("[*] Rendering Authentic F22: Joint Policy Map (Expected Contested Units)...")
     ROOT = str(ROOT_DIR)
     STAGE_A_OUT = str(AR.STAGE_A_HAZARD_RESULTS)
+    STAGE_C_OUT = str(AR.stage_c_oof("H0"))
     PANEL = os.path.join(ROOT, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
     out_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
     os.makedirs(out_dir, exist_ok=True)
 
-    if not os.path.exists(STAGE_A_OUT):
-        print(f"[!] F22 Failure: Requires completed Stage A Hazard pipeline at {STAGE_A_OUT}")
+    if not os.path.exists(STAGE_A_OUT) or not os.path.exists(STAGE_C_OUT):
+        print(f"[!] F22 Failure: Requires completed Stage A and C Hazard pipelines at {STAGE_A_OUT} and {STAGE_C_OUT}")
         return
 
     # Extract mathematically authentic coordinates mapped to explicit model hazard distributions
-    probs = pd.read_csv(STAGE_A_OUT, usecols=['standardized_tcad_id', 'Prob_H=4'])
+    probs_a = pd.read_csv(STAGE_A_OUT, usecols=['standardized_tcad_id', 'Prob_Optimal_H=4'])
+    probs_c = pd.read_csv(STAGE_C_OUT, usecols=['standardized_tcad_id', 'y_true', 'y_prob'])
     geo = pd.read_csv(PANEL, usecols=['standardized_tcad_id', 'latitude', 'longitude']).drop_duplicates(subset=['standardized_tcad_id'])
     
-    probs['standardized_tcad_id'] = probs['standardized_tcad_id'].astype(str).str.zfill(10)
+    probs_a['standardized_tcad_id'] = probs_a['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
+    probs_c['standardized_tcad_id'] = probs_c['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
     geo['standardized_tcad_id'] = geo['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
     
-    merged = probs.merge(geo, on='standardized_tcad_id', how='inner')
-    merged = merged.dropna(subset=['latitude', 'longitude', 'Prob_H=4'])
+    merged = probs_c.merge(probs_a, on='standardized_tcad_id', how='inner')
+    merged = merged.merge(geo, on='standardized_tcad_id', how='inner')
+    merged = merged.dropna(subset=['latitude', 'longitude', 'Prob_Optimal_H=4', 'y_prob'])
+    
     if merged.empty:
+        print("[!] Merged spatial evaluation frame is empty.")
         return
         
     x = merged['longitude'].values
     y = merged['latitude'].values
     
-    # Using Empirical Prediction Distributions instead of constant proxies
-    # We substitute the max available predicted values dynamically to avoid the flat 20.0 proxy.
-    
-    # Check if we have the actual dynamic unit features in the panel, otherwise use empirical median 
-    if 'expected_units' in merged.columns and 'expected_opp_prob' in merged.columns:
-        base_units = merged['expected_units'].values
-        base_opp_prob = merged['expected_opp_prob'].values
-    else:
-        # Provide authentic empirical baseline averages instead of perfect geometric variance proxies
-        base_units = np.full(len(x), 18.5) # Based on empirical multi-family median
-        base_opp_prob = np.full(len(x), 0.22) # Based on genuine historical petition rate map
-    
-    expected_contested_units = merged['Prob_H=4'].values * base_units * base_opp_prob
+    # Calculate pure Joint Protest Event Probability and the Direct Spatial Residual
+    joint_protest_prob = merged['Prob_Optimal_H=4'].values * merged['y_prob'].values
+    residual_error = merged['y_true'].values - merged['y_prob'].values
 
     import contextily as cx
     fig, axes = plt.subplots(2, 2, figsize=(16, 16))
@@ -70,20 +66,20 @@ def generate_exhibits():
 
     titles = [
         "1. Predicted Development Probability $P(D)$",
-        "2. Expected Unit Count (Empirical Scaled)",
-        "3. Opposition Probability (Historical Base)",
-        "4. Expected Contested Units (Total)"
+        "2. Ex-Ante Opposition Risk $P(O)$",
+        "3. Joint Expected Protest Probability $P(D) \\times P(O)$",
+        "4. Opposition Mapping Residual ($Y_{True} - P(O)$)"
     ]
     
     C_arrays = [
-        merged['Prob_H=4'].values,
-        base_units,
-        base_opp_prob,
-        expected_contested_units
+        merged['Prob_Optimal_H=4'].values,
+        merged['y_prob'].values,
+        joint_protest_prob,
+        residual_error
     ]
 
-    cmaps = ['viridis', 'Blues', 'Reds', 'magma']
-    reduce_funcs = [np.mean, np.sum, np.mean, np.sum]
+    cmaps = ['viridis', 'viridis', 'viridis', 'coolwarm']
+    reduce_funcs = [np.mean, np.mean, np.mean, np.mean]
     
     for i, ax in enumerate(axes):
         hb = ax.hexbin(x, y, C=C_arrays[i], gridsize=45, cmap=cmaps[i], reduce_C_function=reduce_funcs[i], mincnt=1, alpha=0.85, zorder=2)

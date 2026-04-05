@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score, roc_auc_score, brier_score_loss
-from sklearn.calibration import calibration_curve
+from sklearn.calibration import calibration_curve, CalibratedClassifierCV
 
 try:
     from catboost import CatBoostClassifier
@@ -18,6 +18,15 @@ except ImportError:
     print("[!] CatBoost not available, using LogisticRegression only")
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
+import sys
+_scripts_dir = os.path.join(ROOT, "Analysis", "Scripts")
+if _scripts_dir not in sys.path:
+    sys.path.insert(0, _scripts_dir)
+try:
+    from Modeling.Utilities_and_Logs import lib_metrics
+except ImportError:
+    lib_metrics = None
+
 DATA = os.path.join(ROOT, "Data", "Warehouse_As_Of")
 OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive")
 os.makedirs(OUT_DIR, exist_ok=True)
@@ -134,22 +143,37 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
     
     # Model: CatBoost if available, else Logistic
     if HAS_CATBOOST:
-        model = CatBoostClassifier(iterations=200, depth=6, learning_rate=0.05, 
+        base_model = CatBoostClassifier(iterations=200, depth=6, learning_rate=0.05, 
                                     verbose=0, auto_class_weights='Balanced')
-        model.fit(X_train, y_train, eval_set=(X_test, y_test), early_stopping_rounds=40)
-        preds = model.predict_proba(X_test)[:, 1]
+        base_model.fit(X_train, y_train, eval_set=(X_test, y_test), early_stopping_rounds=40)
+        preds_uncalibrated = base_model.predict_proba(X_test)[:, 1]
+        
+        calibrated_model = CalibratedClassifierCV(
+            estimator=CatBoostClassifier(iterations=100, depth=6, learning_rate=0.05, verbose=0, auto_class_weights='Balanced', random_seed=42),
+            method='sigmoid', cv=3
+        )
+        calibrated_model.fit(X_train, y_train)
+        preds_calibrated = calibrated_model.predict_proba(X_test)[:, 1]
         model_name = "CatBoost"
     else:
-        model = LogisticRegression(max_iter=1000, class_weight='balanced', C=1.0)
-        model.fit(X_train, y_train)
-        preds = model.predict_proba(X_test)[:, 1]
+        base_model = LogisticRegression(max_iter=1000, class_weight='balanced', C=1.0)
+        base_model.fit(X_train, y_train)
+        preds_uncalibrated = base_model.predict_proba(X_test)[:, 1]
+        
+        calibrated_model = CalibratedClassifierCV(
+            estimator=LogisticRegression(max_iter=1000, class_weight='balanced', C=1.0),
+            method='sigmoid', cv=3
+        )
+        calibrated_model.fit(X_train, y_train)
+        preds_calibrated = calibrated_model.predict_proba(X_test)[:, 1]
         model_name = "ElasticNet"
     
-    # Compute metrics with bootstrap CIs
-    pr_auc, pr_lo, pr_hi = bootstrap_metric(y_test, preds, average_precision_score)
-    roc_auc, roc_lo, roc_hi = bootstrap_metric(y_test, preds, roc_auc_score)
-    brier, brier_lo, brier_hi = bootstrap_metric(y_test, preds, brier_score_loss)
-    ece = compute_ece(y_test, preds)
+    # Compute metrics with bootstrap CIs on Calibrated output
+    pr_auc, pr_lo, pr_hi = bootstrap_metric(y_test, preds_calibrated, average_precision_score)
+    roc_auc, roc_lo, roc_hi = bootstrap_metric(y_test, preds_calibrated, roc_auc_score)
+    brier, brier_lo, brier_hi = bootstrap_metric(y_test, preds_calibrated, brier_score_loss)
+    ece_pre = compute_ece(y_test, preds_uncalibrated)
+    ece_post = compute_ece(y_test, preds_calibrated)
     
     result = {
         'horizon': horizon_name,
@@ -162,7 +186,8 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
         'ROC-AUC': round(roc_auc, 4) if not np.isnan(roc_auc) else None,
         'ROC-AUC_CI': f"[{roc_lo:.4f}, {roc_hi:.4f}]" if not np.isnan(roc_lo) else None,
         'Brier': round(brier, 4) if not np.isnan(brier) else None,
-        'ECE': round(ece, 4) if not np.isnan(ece) else None,
+        'ECE_Pre': round(ece_pre, 4) if not np.isnan(ece_pre) else None,
+        'ECE_Post': round(ece_post, 4) if not np.isnan(ece_post) else None,
     }
     
     results_collector.append(result)
@@ -171,7 +196,8 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
     print(f"  PR-AUC:  {result['PR-AUC']}  {result['PR-AUC_CI']}")
     print(f"  ROC-AUC: {result['ROC-AUC']}  {result['ROC-AUC_CI']}")
     print(f"  Brier:   {result['Brier']}")
-    print(f"  ECE:     {result['ECE']}")
+    print(f"  ECE(Pre):{result['ECE_Pre']}")
+    print(f"  ECE(Pos):{result['ECE_Post']}")
 
 def main():
     horizons = {
@@ -209,9 +235,9 @@ def main():
     tex_lines.append(r"\caption{Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}")
     tex_lines.append(r"\label{tab:multi_horizon}")
     tex_lines.append(r"\renewcommand{\arraystretch}{1.2}")
-    tex_lines.append(r"\begin{tabular}{lcccc}")
+    tex_lines.append(r"\begin{tabular}{lccccc}")
     tex_lines.append(r"\toprule")
-    tex_lines.append(r"\textbf{Horizon} & \textbf{PR-AUC [95\% CI]} & \textbf{ROC-AUC} & \textbf{Brier} & \textbf{ECE} \\")
+    tex_lines.append(r"\textbf{Horizon} & \textbf{PR-AUC [95\% CI]} & \textbf{ROC-AUC} & \textbf{Brier} & \textbf{ECE (Pre)} & \textbf{ECE (Post)} \\")
     tex_lines.append(r"\midrule")
     
     for r in results:
@@ -221,8 +247,23 @@ def main():
             pr_str = "---"
         roc_str = f"{r['ROC-AUC']:.3f}" if r['ROC-AUC'] else "---"
         brier_str = f"{r['Brier']:.3f}" if r['Brier'] else "---"
-        ece_str = f"{r['ECE']:.3f}" if r['ECE'] else "---"
-        tex_lines.append(f"{r['horizon']} & {pr_str} & {roc_str} & {brier_str} & {ece_str} \\\\")
+        ece_pre_str = f"{r['ECE_Pre']:.3f}" if r['ECE_Pre'] is not None else "---"
+        ece_post_str = f"{r['ECE_Post']:.3f}" if r['ECE_Post'] is not None else "---"
+        tex_lines.append(f"{r['horizon']} & {pr_str} & {roc_str} & {brier_str} & {ece_pre_str} & {ece_post_str} \\\\")
+        
+        # Export inline macro variables for text integration
+        if lib_metrics and r['PR-AUC'] is not None:
+            if 'Filing' in r['horizon']:
+                lib_metrics.update_metric('metricBootstrapFiling', f"{r['PR-AUC']:.3f}")
+                lib_metrics.update_metric('metricBootstrapFilingCI', f"[{r['PR-AUC_CI'].replace('[','').replace(']','')}]")
+                lib_metrics.update_metric('metricBootstrapFilingECE', f"{r['ECE_Pre']:.3f}")
+            elif 'Notice' in r['horizon']:
+                lib_metrics.update_metric('metricBootstrapNotice', f"{r['PR-AUC']:.3f}")
+            elif 'Commission' in r['horizon']:
+                lib_metrics.update_metric('metricBootstrapPreComm', f"{r['PR-AUC']:.3f}")
+            elif 'Council' in r['horizon']:
+                lib_metrics.update_metric('metricBootstrapPreCouncil', f"{r['PR-AUC']:.3f}")
+                lib_metrics.update_metric('metricBootstrapPreCouncilECE', f"{r['ECE_Pre']:.3f}")
     
     tex_lines.append(r"\bottomrule")
     tex_lines.append(r"\end{tabular}")
@@ -230,7 +271,7 @@ def main():
     
     tex_path = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Tables", "multi_horizon_results.tex")
     os.makedirs(os.path.dirname(tex_path), exist_ok=True)
-    with open(tex_path, 'w') as f:
+    with open(tex_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(tex_lines))
     print(f"LaTeX table saved to {tex_path}")
 

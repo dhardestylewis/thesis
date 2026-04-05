@@ -33,9 +33,70 @@ def run_stage_b():
 
     preds = cb.predict(X).flatten()
     f1 = f1_score(y, preds, average='macro', zero_division=0)
+    report = classification_report(y, preds, zero_division=0, output_dict=True)
+    
     print(f"Macro-F1 (6-Tier): {f1:.4f}")
     print("Classification Report:")
     print(classification_report(y, preds, zero_division=0))
+
+    # --- ALTERNATIVE ARCHITECTURES BENCHMARKS ---
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.linear_model import LogisticRegression
+    import warnings
+    warnings.filterwarnings('ignore')
+
+    # Random Forest
+    rf = RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42, class_weight='balanced')
+    rf.fit(X_train, y_train)
+    preds_rf = rf.predict(X).flatten()
+    f1_rf = f1_score(y, preds_rf, average='macro', zero_division=0)
+    print(f"Random Forest Macro-F1: {f1_rf:.4f}")
+
+    # Logistic Regression
+    lr = LogisticRegression(max_iter=500, class_weight='balanced', random_state=42)
+    lr.fit(X_train, y_train)
+    preds_lr = lr.predict(X).flatten()
+    f1_lr = f1_score(y, preds_lr, average='macro', zero_division=0)
+    print(f"Logistic Regression Macro-F1: {f1_lr:.4f}")
+
+    # LightGBM
+    from lightgbm import LGBMClassifier
+    lgb = LGBMClassifier(n_estimators=100, max_depth=6, class_weight='balanced', random_state=42)
+    lgb.fit(X_train, y_train)
+    preds_lgb = lgb.predict(X).flatten()
+    f1_lgb = f1_score(y, preds_lgb, average='macro', zero_division=0)
+    print(f"LightGBM Macro-F1: {f1_lgb:.4f}")
+
+    report_rf = classification_report(y, preds_rf, zero_division=0, output_dict=True)
+    report_lr = classification_report(y, preds_lr, zero_division=0, output_dict=True)
+    report_lgb = classification_report(y, preds_lgb, zero_division=0, output_dict=True)
+
+    try:
+        import sys
+        module_path = os.path.join(os.path.dirname(__file__), '..')
+        if module_path not in sys.path:
+            sys.path.append(module_path)
+            
+        from Utilities_and_Logs.lib_metrics import update_metric
+        update_metric("metricStageBMacroFOne", f"{f1:.3f}")
+        update_metric("metricStageBRfMacroFOne", f"{f1_rf:.3f}")
+        update_metric("metricStageBLogMacroFOne", f"{f1_lr:.3f}")
+        update_metric("metricStageBLgbMacroFOne", f"{f1_lgb:.3f}")
+
+        for label, metric_name in [
+            ("PUD / large negotiated project", "PUD"),
+            ("discretionary rezoning", "Rezoning"),
+            ("by-right infill", "ByRight"),
+            ("missing-middle", "MissingMiddle"),
+            ("mixed-use", "MixedUse"),
+            ("multifamily", "Multifamily")
+        ]:
+            update_metric(f"metricStageBCb{metric_name}FOne", f"{report.get(label, {}).get('f1-score', 0):.3f}")
+            update_metric(f"metricStageBRf{metric_name}FOne", f"{report_rf.get(label, {}).get('f1-score', 0):.3f}")
+            update_metric(f"metricStageBLgb{metric_name}FOne", f"{report_lgb.get(label, {}).get('f1-score', 0):.3f}")
+            update_metric(f"metricStageBLog{metric_name}FOne", f"{report_lr.get(label, {}).get('f1-score', 0):.3f}")
+    except Exception as e:
+        print(f"    [!] Macro Telemetry Export Failed: {e}")
 
     out_path = str(AR.STAGE_B_MODEL)
     cb.save_model(out_path)

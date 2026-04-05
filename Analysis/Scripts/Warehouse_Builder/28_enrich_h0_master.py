@@ -6,7 +6,7 @@ ROOT = r"C:\Users\dhl\data\thesis\thesis"
 DATA = os.path.join(ROOT, "Data")
 
 H0_BASE = os.path.join(DATA, "Warehouse_As_Of", "H0_Filing_Complete.csv")
-ZONING_CAUSAL = os.path.join(DATA, "Zoning_Cases", "Processed_Data", "CSV", "enriched_zoning_data_causal.csv")
+ZONING_CROSSWALK = os.path.join(DATA, "CoA_Open_Data", "Zoning", "ZC_current_edir-dcnf.csv")
 ENRICHED_PANEL = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 OUT_FILE = os.path.join(DATA, "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
 
@@ -14,15 +14,16 @@ def run():
     print("Loading H0 Structural Geometries...")
     h0 = pd.read_csv(H0_BASE)
     
-    print("Loading ZONING_CAUSAL to map TCAD IDs...")
-    crosswalk = pd.read_csv(ZONING_CAUSAL, usecols=['Case Number', 'TCAD ID'])
+    print("Loading ZONING_CROSSWALK to map TCAD IDs...")
+    crosswalk = pd.read_csv(ZONING_CROSSWALK, usecols=['CASE_NUMBER', 'TCAD_ID', 'LATITUDE', 'LONGITUDE'], low_memory=False)
+    crosswalk = crosswalk.rename(columns={'CASE_NUMBER': 'Case Number', 'TCAD_ID': 'TCAD ID', 'LATITUDE': 'latitude', 'LONGITUDE': 'longitude'})
     
     # Clean strings
     crosswalk['case_number'] = crosswalk['Case Number'].astype(str).str.strip().str.upper()
     crosswalk = crosswalk.drop_duplicates(subset=['case_number']).copy()
     
     # Clean TCAD ID
-    crosswalk['TCAD ID'] = crosswalk['TCAD ID'].astype(str).str.replace(r'[- ]', '', regex=True).str.lstrip('0')
+    crosswalk['TCAD ID'] = crosswalk['TCAD ID'].astype(str).str.replace(r'\.0$', '', regex=True).str.replace(r'[- ]', '', regex=True).str.lstrip('0')
     
     # Extrapolate calendar year securely using physical RegEx on the C14-YYYY strings
     crosswalk['year'] = pd.to_numeric(crosswalk['case_number'].str.extract(r'C\d+[A-Z]*-(\d{4})')[0], errors='coerce')
@@ -32,18 +33,31 @@ def run():
 
     
     # Join crosswalk onto H0
-    df = h0.merge(crosswalk[['case_number', 'TCAD ID']], on='case_number', how='left')
+    df = h0.merge(crosswalk[['case_number', 'TCAD ID', 'latitude', 'longitude']].drop_duplicates(subset=['case_number']), on='case_number', how='left')
     
     print("Loading the massive Enriched Master Panel...")
     panel = pd.read_csv(ENRICHED_PANEL, low_memory=False)
     
+    # Drop corrupted TCAD coordinates to prevent overlapping native EPSG:4326 footprints
+    if 'latitude' in panel.columns:
+        panel = panel.drop(columns=['latitude', 'longitude'])
+    
     # We only care about joining onto properties that exist in H0, so standardizing panel:
-    panel['standardized_tcad_id'] = panel['standardized_tcad_id'].astype(str).str.replace(r'[- ]', '', regex=True).str.lstrip('0')
+    panel['standardized_tcad_id'] = panel['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.replace(r'[- ]', '', regex=True).str.lstrip('0')
     panel['year'] = pd.to_numeric(panel['year'], errors='coerce')
     
     # Merge Enriched Panel features to df using TCAD ID and YEAR (the proven 'As-Of' engine)
     print("Executing Time-Stamped As-Of Empirical Joins...")
     final = df.merge(panel, left_on=['TCAD ID', 'year'], right_on=['standardized_tcad_id', 'year'], how='left')
+    
+    # -------------------------------------------------------------------------
+    # RESTORATIVE HOTFIX: Preserve Native TCAD IDs for Un-Protested Parcels
+    # Because `panel` is a ~52k subset built specifically from protested tracts,
+    # the 6,800 cases that don't exactly match are assigned `NaN` for `standardized_tcad_id`.
+    # We must explicitly backfill them with our native `TCAD ID` to ensure downstream
+    # models (Stage A-F) do not suffer an artificial 98% spatial geometry loss!
+    # -------------------------------------------------------------------------
+    final['standardized_tcad_id'] = final['standardized_tcad_id'].fillna(final['TCAD ID'])
     
     print(f"Final Enriched Matrix dynamically expanded to {final.shape[1]} columns for {len(final)} unique Zoning Cases.")
     

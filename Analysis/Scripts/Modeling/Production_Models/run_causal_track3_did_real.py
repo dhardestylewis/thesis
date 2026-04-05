@@ -3,11 +3,14 @@ import numpy as np
 import os
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import ROOT_DIR, TraceabilityRegistry as AR
 
-ROOT = r"C:\Users\dhl\data\thesis\thesis"
+ROOT = str(ROOT_DIR)
 DATA_H0 = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
 VOTE_DATA = os.path.join(ROOT, "Data", "Zoning_Cases", "Processed_Data", "CSV", "submission_grade_goldmine_tensor.csv")
-OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track3_Causal")
+OUT_DIR = str(AR.TRACK3_METRICS)
 os.makedirs(OUT_DIR, exist_ok=True)
 
 def run_track3():
@@ -22,6 +25,8 @@ def run_track3():
     df_h0 = pd.read_csv(DATA_H0, low_memory=False)
     # Merge available actual voting outcome variables
     df_votes = pd.read_csv(VOTE_DATA, usecols=['CASE_NUMBER', 'vote_no', 'vote_yes'])
+    # Deduplicate: aggregate per-member votes to one row per case
+    df_votes = df_votes.groupby('CASE_NUMBER', as_index=False).agg({'vote_no': 'sum', 'vote_yes': 'sum'})
     df = df_h0.merge(df_votes, left_on='case_number', right_on='CASE_NUMBER', how='inner')
     
     if df.empty or 'vote_no' not in df.columns:

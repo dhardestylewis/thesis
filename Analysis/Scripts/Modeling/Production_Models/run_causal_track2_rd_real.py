@@ -3,12 +3,15 @@ import numpy as np
 import os
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import ROOT_DIR, TraceabilityRegistry as AR
 
-ROOT = r"C:\Users\dhl\data\thesis\thesis"
+ROOT = str(ROOT_DIR)
 DATA_H0 = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
 DATA_PETITION = os.path.join(ROOT, "Data", "Protest_Petitions", "petition_summary_from_pdf.csv")
 COA_RAW = os.path.join(ROOT, "Data", "CoA_Open_Data", "Zoning", "ZC_current_edir-dcnf.csv")
-OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track2_Causal")
+OUT_DIR = str(AR.TRACK2_METRICS)
 os.makedirs(OUT_DIR, exist_ok=True)
 
 def run_rd(df, bw, threshold=0.20, exclude_donut=None):

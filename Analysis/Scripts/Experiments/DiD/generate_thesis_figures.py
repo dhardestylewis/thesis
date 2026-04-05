@@ -43,11 +43,11 @@ def main():
     if 'latitude' in df.columns and 'longitude' in df.columns:
         print("  -> Drawing Geodesic Mapping using strict H0 coordinates...")
         years_to_plot = sorted(df['Year'].dropna().unique())
-        if len(years_to_plot) > 16: years_to_plot = years_to_plot[-16:] # cap at 16 grids
+        years_to_plot = [y for y in years_to_plot if y not in [2025, 2026]]
         
         # Calculate grid dynamically
         n_years = len(years_to_plot)
-        cols = 4 if n_years >= 4 else n_years
+        cols = 6 if n_years >= 6 else n_years
         rows = (n_years + cols - 1) // cols
         
         fig1, axes = plt.subplots(rows, cols, figsize=(20, 5 * rows))
@@ -56,7 +56,8 @@ def main():
         else:
             axes = axes.flatten()
         
-        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326").dropna(subset=['Year'])
+        df_geo = df.dropna(subset=['latitude', 'longitude', 'Year']).copy()
+        gdf = gpd.GeoDataFrame(df_geo, geometry=gpd.points_from_xy(df_geo.longitude, df_geo.latitude), crs="EPSG:4326")
         
         for idx, yr in enumerate(years_to_plot):
             ax = axes[idx]

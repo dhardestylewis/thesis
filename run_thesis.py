@@ -38,19 +38,24 @@ sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Visualization", "Prod
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments"))
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "DiD"))
 sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Warehouse_Builder"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts"))
+from artifact_registry import TraceabilityRegistry as AR
 
 # Import pipeline stages (Real Data Versions)
 import StageA_development_hazard as stage_a
 import StageB_6_Tier_Classifier as stage_b
 import StageC_opposition_risk as stage_c
+import evaluate_fairness_thresholds as fairness_audit
 import StageD_institutional_outcome_real as stage_d
 import StageF_generative_simulation as stage_f
 import run_causal_track2_rd_real as track2
 import run_causal_track3_did_real as track3
 import run_multi_horizon as multi_horizon_table
+import run_alternative_architectures as alt_arch
 
 # Import Visualizations & Tables (Real Data Versions)
 import plot_F8_Calibration_real as f8
+import plot_combined_calibration_real as combined_cal
 import plot_F12_PR_real as f12
 import plot_F16_RD_real as f16
 import plot_F17_DiD_real as f17
@@ -61,6 +66,10 @@ import plot_F22_HexMap as f22
 import generate_stageA_exhibits as stage_a_exhibits
 import generate_thesis_figures as fig1_and_more
 import importlib
+try:
+    geographic_causal = importlib.import_module("34_geographic_causal_designs")
+except Exception as e:
+    geographic_causal = None
 try:
     sweeps = importlib.import_module("18_real_model_sweeps")
 except Exception as e:
@@ -102,7 +111,7 @@ def main():
     print_header("PHASE 1: PREDICTIVE PIPELINE")
     
     print("[+] Stage A: Development Hazard (Computed via StageA_development_hazard.py)")
-    stage_a_path = os.path.join(ROOT, "Analysis", "Output", "Track0_Predictive", "stage_a_hazard_results.csv")
+    stage_a_path = str(AR.STAGE_A_HAZARD_RESULTS)
     try:
         if fast_mode and os.path.exists(stage_a_path):
             print(f"    [--fast bypass] Found cached Stage A hazard probabilities ({os.path.getsize(stage_a_path) / 1e6:.1f} MB). Skipping heavy CatBoost 5M-row training!")
@@ -123,6 +132,19 @@ def main():
         stage_c.run_track1()
     except Exception as e:
         print(f"    [!] Error running Stage C: {e}")
+        
+    print("\n[+] Stage C.2: Fairness Sensitivity Audit")
+    try:
+        fairness_audit.run_experiment()
+    except Exception as e:
+        print(f"    [!] Error running Fairness Audit: {e}")
+
+    print("\n[+] Stage C.3: Supplemental Point-7 Metrics (Brier, Subgroup Ns, ECE CI)")
+    try:
+        supp_metrics_path = os.path.join(ROOT, "Analysis", "Scripts", "supplemental_metrics.py")
+        exec(open(supp_metrics_path, encoding='utf-8').read())
+    except Exception as e:
+        print(f"    [!] Error running Supplemental Metrics: {e}")
         
     print("\n[+] Stage D: Institutional Outcome")
     try:
@@ -151,6 +173,12 @@ def main():
     except Exception as e:
         print(f"    [!] Error running Track 3: {e}")
 
+    try:
+        if geographic_causal:
+            geographic_causal.execute_designs()
+    except Exception as e:
+        print(f"    [!] Error running Geographic Causal Designs: {e}")
+
     # ---------------------------------------------------------
     # PART 3: TABLES & VISUALIZATIONS
     # ---------------------------------------------------------
@@ -167,9 +195,19 @@ def main():
         print(f"    [!] Error generating Table 8 (Multi-Horizon): {e}")
 
     try:
+        alt_arch.main()
+    except Exception as e:
+        print(f"    [!] Error generating Alternative Architectures Benchmark: {e}")
+
+    try:
         f8.plot_f8()
     except Exception as e:
         print(f"    [!] Error generating Figure 8 (Calibration): {e}")
+
+    try:
+        combined_cal.plot_combined_calibration()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 8/12 Combined (Calibration): {e}")
 
     try:
         f12.plot_f12()

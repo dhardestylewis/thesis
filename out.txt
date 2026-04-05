@@ -1,0 +1,2 @@
+Total rows: 7153
+Valid latitudes: 515

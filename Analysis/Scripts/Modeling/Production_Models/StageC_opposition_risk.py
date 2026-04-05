@@ -24,6 +24,8 @@ class AnchorRegressionLPM(BaseEstimator, ClassifierMixin):
     X_anc = X + (sqrt(gamma) - 1) * P_A X
     y_anc = y + (sqrt(gamma) - 1) * P_A y
     """
+    _estimator_type = "classifier"
+    
     def __init__(self, gamma=10.0, n_anchors=None):
         self.gamma = gamma
         self.n_anchors = n_anchors
@@ -193,7 +195,7 @@ def run_bounded_optimization(X, y, sample_weights):
             X_va, y_va = X.iloc[val_idx], y.iloc[val_idx]
             
             cb = CatBoostClassifier(iterations=100, **current_params, verbose=0, random_seed=42)
-            calibrated_cb = CalibratedClassifierCV(estimator=cb, method='isotonic', cv=3)
+            calibrated_cb = CalibratedClassifierCV(estimator=cb, method='sigmoid', cv=3)
             calibrated_cb.fit(X_tr, y_tr, sample_weight=w_tr)
             oof_preds[val_idx] = calibrated_cb.predict_proba(X_va)[:, 1]
             
@@ -214,7 +216,7 @@ def run_bounded_optimization(X, y, sample_weights):
             print(f"    [+] Strict calibration bound satisfied at step {step_count}!")
             best_prauc = prauc
             best_cb = CatBoostClassifier(iterations=150, **current_params, verbose=0, random_seed=42)
-            best_model = CalibratedClassifierCV(estimator=best_cb, method='isotonic', cv=5)
+            best_model = CalibratedClassifierCV(estimator=best_cb, method='sigmoid', cv=5)
             best_metrics = (slope, prauc)
             break # Early stopping! We landed in the desired range!
             
@@ -239,7 +241,7 @@ def run_bounded_optimization(X, y, sample_weights):
     if best_model is None:
         print(f"    [!] Search exhausted. Selecting closest bounded architecture (Slope {closest_actual_slope:.3f}, PR-AUC {closest_prauc:.3f}).")
         best_cb = CatBoostClassifier(iterations=150, **closest_params, verbose=0, random_seed=42)
-        best_model = CalibratedClassifierCV(estimator=best_cb, method='isotonic', cv=5)
+        best_model = CalibratedClassifierCV(estimator=best_cb, method='sigmoid', cv=5)
     else:
         print(f"    [+] Selected strictly bounded model: Slope {best_metrics[0]:.3f}, PR-AUC {best_metrics[1]:.3f}")
         
@@ -312,6 +314,7 @@ def process_horizon(path, horizon_name):
     # Generate OOF Preds for full Table 5 extraction (and multiple architectures for Fig 17)
     from sklearn.linear_model import LogisticRegression
     from sklearn.ensemble import RandomForestClassifier
+    from lightgbm import LGBMClassifier
     from sklearn.impute import SimpleImputer
     from sklearn.pipeline import Pipeline
     from sklearn.compose import ColumnTransformer
@@ -321,6 +324,7 @@ def process_horizon(path, horizon_name):
     oof_preds = np.zeros(len(y))
     oof_preds_lr = np.zeros(len(y))
     oof_preds_rf = np.zeros(len(y))
+    oof_preds_lgbm = np.zeros(len(y))
     oof_preds_spatial_lr = np.zeros(len(y))
     oof_preds_anchor = np.zeros(len(y))
     
@@ -360,7 +364,7 @@ def process_horizon(path, horizon_name):
             ('imputer', SimpleImputer(strategy='median')),
             ('model', LogisticRegression(max_iter=1000, class_weight='balanced'))
         ])
-        lr_cal = CalibratedClassifierCV(estimator=lr, method='isotonic', cv=3)
+        lr_cal = CalibratedClassifierCV(estimator=lr, method='sigmoid', cv=3)
         lr_cal.fit(X_tr, y_tr, model__sample_weight=w_tr)
         oof_preds_lr[val_idx] = lr_cal.predict_proba(X_v)[:, 1]
         
@@ -369,28 +373,46 @@ def process_horizon(path, horizon_name):
             ('imputer', SimpleImputer(strategy='median')),
             ('model', RandomForestClassifier(n_estimators=100, max_depth=6, class_weight='balanced', random_state=42))
         ])
-        rf_cal = CalibratedClassifierCV(estimator=rf, method='isotonic', cv=3)
+        rf_cal = CalibratedClassifierCV(estimator=rf, method='sigmoid', cv=3)
         rf_cal.fit(X_tr, y_tr, model__sample_weight=w_tr)
         oof_preds_rf[val_idx] = rf_cal.predict_proba(X_v)[:, 1]
+        
+        # LightGBM Baseline (Requires Imputation)
+        lgbm = Pipeline([
+            ('imputer', SimpleImputer(strategy='median')),
+            ('model', LGBMClassifier(n_estimators=100, class_weight='balanced', random_state=42, verbose=-1, n_jobs=-1))
+        ])
+        lgbm_cal = CalibratedClassifierCV(estimator=lgbm, method='sigmoid', cv=3)
+        lgbm_cal.fit(X_tr, y_tr, model__sample_weight=w_tr)
+        oof_preds_lgbm[val_idx] = lgbm_cal.predict_proba(X_v)[:, 1]
         
         # Spatial Fixed-Effects Logistic (Domain Benchmark)
         splr = Pipeline([
             ('prep', spatial_prep),
             ('model', LogisticRegression(max_iter=1000, class_weight='balanced'))
         ])
-        splr_cal = CalibratedClassifierCV(estimator=splr, method='isotonic', cv=3)
+        splr_cal = CalibratedClassifierCV(estimator=splr, method='sigmoid', cv=3)
         splr_cal.fit(X_sp_tr, y_tr, model__sample_weight=w_tr)
         oof_preds_spatial_lr[val_idx] = splr_cal.predict_proba(X_sp_v)[:, 1]
         
         # True Anchor Regression (Causal Invariance Benchmark)
+        # Manual Isotonic calibration because CalibratedClassifierCV
+        # cannot introspect the internal LinearRegression estimator type.
+        from sklearn.isotonic import IsotonicRegression
         X_anc_tr_prep = anchor_prep.fit_transform(X_anc_tr)
         num_anchors = len(anchor_prep.named_transformers_['cat'].get_feature_names_out())
         
         anc = AnchorRegressionLPM(gamma=10.0, n_anchors=num_anchors)
         anc.fit(X_anc_tr_prep, y_tr, sample_weight=w_tr)
         
+        # Get raw LPM predictions on training fold for isotonic fit
+        raw_train_preds = anc.predict_proba(X_anc_tr_prep)[:, 1]
+        iso_anc = IsotonicRegression(y_min=0, y_max=1, out_of_bounds='clip')
+        iso_anc.fit(raw_train_preds, y_tr)
+        
         X_anc_v_prep = anchor_prep.transform(X_anc_v)
-        oof_preds_anchor[val_idx] = anc.predict_proba(X_anc_v_prep)[:, 1]
+        raw_val_preds = anc.predict_proba(X_anc_v_prep)[:, 1]
+        oof_preds_anchor[val_idx] = iso_anc.predict(raw_val_preds)
         
     tbl5_metrics = extract_advanced_metrics(y, oof_preds, districts, name="Table 5 Final")
     print("\n>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<")
@@ -409,7 +431,7 @@ def process_horizon(path, horizon_name):
         from Utilities_and_Logs.lib_metrics import update_metric
         if "H0" in horizon_name:
             update_metric("metricPRAUC", f"{tbl5_metrics.get('PR-AUC', 0):.3f}")
-            update_metric("metricTopDecileLift", f"{tbl5_metrics.get('Top-Decile Lift', 0):.2f}\\times")
+            update_metric("metricTopDecileLift", f"{tbl5_metrics.get('Top-Decile Lift', 0):.2f}$\\times$")
             update_metric("metricECE", f"{tbl5_metrics.get('ECE', 0):.3f}")
             update_metric("metricCalibrationSlope", f"{tbl5_metrics.get('Calib-Slope', 0):.3f}")
             update_metric("metricFNRGap", f"{tbl5_metrics.get('FNR-Gap%', 0):.2f}\\%")
@@ -422,22 +444,24 @@ def process_horizon(path, horizon_name):
             
     # Save OOF Preds for Visualizations to pick up
     df_oof = pd.DataFrame({
+        'standardized_tcad_id': df.get('standardized_tcad_id', None),
         'y_true': y, 
         'y_prob': oof_preds, 
         'y_prob_lr': oof_preds_lr,
         'y_prob_rf': oof_preds_rf,
+        'y_prob_lgbm': oof_preds_lgbm,
         'y_prob_spatial_lr': oof_preds_spatial_lr,
         'y_prob_anchor': oof_preds_anchor,
         'year': df['year'], 
         'district': districts
     })
-    df_oof.to_csv(os.path.join(OUT_DIR, f"stage_c_oof_predictions_{safe_hz}.csv"), index=False)
+    df_oof.to_csv(str(AR.stage_c_oof(safe_hz)), index=False)
             
     # Retrain on full for subsequent holdouts
     optimal_model.fit(X, y, sample_weight=weights)
     
     import joblib
-    out_joblib = os.path.join(OUT_DIR, f"stage_c_model_{safe_hz}.joblib")
+    out_joblib = str(AR.stage_c_model(safe_hz))
     try:
         joblib.dump(optimal_model, out_joblib)
         print(f"    [+] Saved fully trained model artifact to {out_joblib}")
@@ -455,7 +479,7 @@ def process_horizon(path, horizon_name):
             importance = optimal_model.estimator.get_feature_importance()
             
     fi_df = pd.DataFrame({'Feature': X.columns, 'Importance': importance}).sort_values('Importance', ascending=False)
-    fi_df.to_csv(os.path.join(OUT_DIR, f"stage_c_feature_importance_{safe_hz}.csv"), index=False)
+    fi_df.to_csv(str(AR.stage_c_feature_importance(safe_hz)), index=False)
 
     # ---------------------------------------------------------
     # PART A: TEMPORAL DRIFT MULTI-HORIZON (Rolling-Origin)
@@ -473,7 +497,7 @@ def process_horizon(path, horizon_name):
             preds = cb.predict_proba(X[te_mask])[:, 1]
             drift_res.append({'Anchor': anchor, 'Offset': offset, 'PR-AUC': average_precision_score(y[te_mask], preds)})
             
-    pd.DataFrame(drift_res).to_csv(os.path.join(OUT_DIR, f"stage_c_drift_{safe_hz}.csv"), index=False)
+    pd.DataFrame(drift_res).to_csv(str(AR.stage_c_drift(safe_hz)), index=False)
 
     # ---------------------------------------------------------
     # PART B: POLICY REGIMES
@@ -494,7 +518,7 @@ def process_horizon(path, horizon_name):
         preds = cb.predict_proba(X[te_mask])[:, 1]
         regime_results.append({'Regime': reg['name'], 'PR-AUC': average_precision_score(y[te_mask], preds)})
         
-    pd.DataFrame(regime_results).to_csv(os.path.join(OUT_DIR, f"stage_c_regimes_{safe_hz}.csv"), index=False)
+    pd.DataFrame(regime_results).to_csv(str(AR.stage_c_regimes(safe_hz)), index=False)
 
     # ---------------------------------------------------------
     # PART C: SPATIAL HOLDOUTS (Council Districts)
@@ -516,32 +540,35 @@ def process_horizon(path, horizon_name):
     # PART D: DEMOGRAPHIC HOLDOUTS (INCOME & RACE)
     # ---------------------------------------------------------
     print("\nPART D: DEMOGRAPHIC HOLDOUTS (OOD Fairness Audit)")
-    if 'median_household_income' in df.columns:
-        med_inc = df['median_household_income'].median()
-        tr_mask = df['median_household_income'] >= med_inc # Train exclusively on High-Wealth properties
-        te_mask = df['median_household_income'] < med_inc  # Test strictly on lower-income demographics
+    if 'acs_median_household_income' in df.columns:
+        med_inc = df['acs_median_household_income'].median()
+        tr_mask = df['acs_median_household_income'] >= med_inc # Train exclusively on High-Wealth properties
+        te_mask = df['acs_median_household_income'] < med_inc  # Test strictly on lower-income demographics
         if te_mask.sum() > 5 and y[te_mask].sum() > 0 and tr_mask.sum() > 5:
             cb_demo = clone(optimal_model)
             cb_demo.fit(X[tr_mask], y[tr_mask], sample_weight=weights[tr_mask])
             preds_demo = cb_demo.predict_proba(X[te_mask])[:, 1]
             print(f"   Demographic Holdout (High-to-Low Wealth) PR-AUC: {average_precision_score(y[te_mask], preds_demo):.3f}")
     else:
-        print("   Demographic Holdout skipped: 'median_household_income' scalar absent in explicit projection.")
+        print("   Demographic Holdout skipped: 'acs_median_household_income' scalar absent in explicit projection.")
 
     # ---------------------------------------------------------
     # PART E: MORPHOLOGICAL HOLDOUTS (CORE VS PERIPHERY)
     # ---------------------------------------------------------
     print("\nPART E: MORPHOLOGICAL HOLDOUTS (CORE VS SUBURBS)")
-    if 'jurisdiction' in df.columns:
-        tr_mask = df['jurisdiction'].str.contains('AUSTIN FULL PURPOSE', na=False)
-        te_mask = df['jurisdiction'].str.contains('ETJ', na=False) | df['jurisdiction'].str.contains('LIMITED', na=False)
+    if 'council_district' in df.columns:
+        # Use District 9 (Downtown/Central) as Core, remaining as Suburbs
+        tr_mask = df['council_district'] == 9  
+        te_mask = df['council_district'] != 9  
         if te_mask.sum() > 5 and y[te_mask].sum() > 0 and tr_mask.sum() > 5:
             cb_morph = clone(optimal_model)
             cb_morph.fit(X[tr_mask], y[tr_mask], sample_weight=weights[tr_mask])
             preds_morph = cb_morph.predict_proba(X[te_mask])[:, 1]
             print(f"   Morphological Holdout (Core-to-Suburb) PR-AUC: {average_precision_score(y[te_mask], preds_morph):.3f}")
+        else:
+            print("   Morphological Holdout skipped: Insufficient target density.")
     else:
-        print("   Morphological Holdout skipped: 'jurisdiction' string absent.")
+        print("   Morphological Holdout skipped: 'council_district' absent.")
 
     # ---------------------------------------------------------
     # PART F: ZONING TYPOLOGY HOLDOUTS

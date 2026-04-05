@@ -1,0 +1,30 @@
+\begin{table}[htbp]
+\centering
+\caption{Alternative Architectures Benchmark (SMOTE \& TabNet)}
+\label{tab:alt_architectures}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Horizon} & \textbf{Architecture} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{ECE (Raw)} & \textbf{ECE (Cal)} \\
+\midrule
+H0 (Filing) & Logistic Regression (L2) (Base) & 0.064 & 0.731 & 0.586 & 0.149 \\
+H0 (Filing) & SMOTE + Logistic Regression (L2) & 0.060 & 0.751 & 0.552 & 0.417 \\
+H0 (Filing) & Random Forest (Base) & 0.422 & 0.967 & 0.298 & 0.399 \\
+H0 (Filing) & SMOTE + Random Forest & 0.418 & 0.967 & 0.356 & 0.219 \\
+H0 (Filing) & LightGBM (Base) & 0.489 & 0.962 & 0.375 & 0.225 \\
+H0 (Filing) & SMOTE + LightGBM & 0.416 & 0.933 & 0.346 & 0.276 \\
+H0 (Filing) & CatBoost (Base) & 0.492 & 0.962 & 0.251 & 0.285 \\
+H0 (Filing) & SMOTE + CatBoost & 0.459 & 0.961 & 0.301 & 0.312 \\
+H0 (Filing) & TabNet & 0.410 & 0.972 & 0.268 & 0.250 \\
+H3 (Pre-Council) & Logistic Regression (L2) (Base) & 0.419 & 0.926 & 0.479 & 0.264 \\
+H3 (Pre-Council) & SMOTE + Logistic Regression (L2) & 0.412 & 0.926 & 0.479 & 0.423 \\
+H3 (Pre-Council) & Random Forest (Base) & 0.500 & 0.963 & 0.222 & 0.127 \\
+H3 (Pre-Council) & SMOTE + Random Forest & 0.536 & 0.946 & 0.171 & 0.191 \\
+H3 (Pre-Council) & LightGBM (Base) & 0.558 & 0.932 & 0.384 & 0.205 \\
+H3 (Pre-Council) & SMOTE + LightGBM & 0.479 & 0.914 & 0.410 & 0.346 \\
+H3 (Pre-Council) & CatBoost (Base) & 0.492 & 0.926 & 0.404 & 0.241 \\
+H3 (Pre-Council) & SMOTE + CatBoost & 0.482 & 0.946 & 0.353 & 0.255 \\
+H3 (Pre-Council) & TabNet & 0.456 & 0.944 & 0.271 & 0.235 \\
+\bottomrule
+\end{tabular}
+\end{table}

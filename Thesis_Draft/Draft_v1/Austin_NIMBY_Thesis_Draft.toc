@@ -1,40 +1,44 @@
-\contentsline {section}{\numberline {1}Introduction}{6}{section.1}%
-\contentsline {section}{\numberline {2}Literature Review}{6}{section.2}%
-\contentsline {subsection}{\numberline {2.1}The Political Economy of Zoning Friction and Participatory Distortion}{7}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Discretionary Review and Institutional Vetoes}{7}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}The Prediction Policy Problem in Spatial Planning}{8}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Evaluative Constraints on Predictive Governance}{8}{subsection.2.4}%
-\contentsline {section}{\numberline {3}Data and Methods}{9}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Data Warehouse Structure}{9}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Filtration}{11}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{12}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{13}{subsection.3.4}%
-\contentsline {section}{\numberline {4}Predictive Architecture}{13}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Development Occurrence}{13}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Project Type and Scale}{16}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Opposition Mobilization}{17}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Political Outcome}{17}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Expected Contested Units}{17}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Model Evaluation Strategy}{18}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Results}{19}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{19}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}The Chilling Effect: Pre-Council Attrition}{22}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Regression Discontinuity: The 20\% Petition Threshold}{24}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Event Studies: HOME Initiative and HB~24}{25}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Data-Driven Causal Discovery (ICP)}{26}{subsection.5.5}%
-\contentsline {section}{\numberline {6}Policy Implications and Governance}{27}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Stakeholder Interviews}{27}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Governance Framework}{27}{subsection.6.2}%
-\contentsline {section}{\numberline {7}Limitations}{28}{section.7}%
-\contentsline {section}{\numberline {8}Conclusion}{28}{section.8}%
-\contentsline {section}{\numberline {A}Research Project Overview}{31}{appendix.A}%
-\contentsline {section}{\numberline {B}IRB Protocol Summary}{32}{appendix.B}%
-\contentsline {section}{\numberline {C}Semi-Structured Interview Guide}{33}{appendix.C}%
-\contentsline {section}{\numberline {D}Sample Protest Petition}{34}{appendix.D}%
-\contentsline {section}{\numberline {E}Opposition Model Precision-Recall Curves}{35}{appendix.E}%
-\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{36}{appendix.F}%
-\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{37}{appendix.G}%
-\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{37}{subsection.G.1}%
-\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{37}{subsection.G.2}%
-\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{38}{subsection.G.3}%
-\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{38}{subsection.G.4}%
+\contentsline {section}{\numberline {1}Introduction}{7}{section.1}%
+\contentsline {section}{\numberline {2}Literature Review}{8}{section.2}%
+\contentsline {subsection}{\numberline {2.1}The Political Economy of Zoning Friction and Participatory Distortion}{8}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Discretionary Review and Institutional Vetoes}{8}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}The Prediction Policy Problem in Spatial Planning}{9}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Evaluative Constraints on Predictive Governance}{10}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Data and Methods}{10}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Data Warehouse Structure}{10}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Filtration}{13}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{15}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{15}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Predictive Architecture}{16}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Development Occurrence}{16}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Project Type and Scale}{18}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Opposition Risk}{19}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Political Outcome}{19}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Expected Contested Units}{20}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Model Evaluation Strategy}{20}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Results}{21}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{21}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{23}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Pre-Council Attrition}{26}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Regression Discontinuity: The 20\% Petition Threshold}{27}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{28}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Geographic Distribution of Electoral Shocks (Difference-in-Differences)}{29}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Auxiliary Spatial Friction Overlays}{29}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{30}{subsection.5.8}%
+\contentsline {section}{\numberline {6}Policy Implications and Governance}{30}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Stakeholder Interviews}{30}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Governance Framework}{31}{subsection.6.2}%
+\contentsline {section}{\numberline {7}Limitations}{31}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{32}{section.8}%
+\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{34}{appendix.A}%
+\contentsline {section}{\numberline {B}Research Project Overview}{35}{appendix.B}%
+\contentsline {section}{\numberline {C}IRB Protocol Summary}{37}{appendix.C}%
+\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{38}{appendix.D}%
+\contentsline {section}{\numberline {E}Sample Protest Petition}{39}{appendix.E}%
+\contentsline {section}{\numberline {F}Opposition Model Precision-Recall Curves}{40}{appendix.F}%
+\contentsline {section}{\numberline {G}Temporal Panel Data Structure}{41}{appendix.G}%
+\contentsline {section}{\numberline {H}Methodological Appendix: Expanded Details}{42}{appendix.H}%
+\contentsline {subsection}{\numberline {H.1}Variable Dictionary}{42}{subsection.H.1}%
+\contentsline {subsection}{\numberline {H.2}Hyperparameter Search Grids}{42}{subsection.H.2}%
+\contentsline {subsection}{\numberline {H.3}Subgroup Definitions \& Fairness Testing}{43}{subsection.H.3}%
+\contentsline {subsection}{\numberline {H.4}Natural Language Processing Architecture: Exploratory Text Features}{43}{subsection.H.4}%

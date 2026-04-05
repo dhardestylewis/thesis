@@ -27,6 +27,8 @@ def run_stage_d():
     VOTE_DATA = os.path.join(ROOT, 'Data', 'Zoning_Cases', 'Processed_Data', 'CSV', 'submission_grade_goldmine_tensor.csv')
     if os.path.exists(VOTE_DATA):
         votes = pd.read_csv(VOTE_DATA, usecols=['CASE_NUMBER', 'vote_yes', 'vote_no'])
+        # Deduplicate: aggregate per-member votes to one row per case
+        votes = votes.groupby('CASE_NUMBER', as_index=False).agg({'vote_yes': 'sum', 'vote_no': 'sum'})
         
         # Structural Attrition Diagnosis (Censorship Bias)
         df_left = df.merge(votes, left_on='case_number', right_on='CASE_NUMBER', how='left')
@@ -96,12 +98,42 @@ def run_stage_d():
     loss = log_loss(y, preds_proba)
     acc = accuracy_score(y, preds_class)
 
+    # --- ALTERNATIVE ARCHITECTURES BENCHMARKS ---
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.linear_model import LogisticRegression
+    import warnings
+    warnings.filterwarnings('ignore')
+
+    rf = RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42, class_weight='balanced')
+    rf.fit(X_train, y_train)
+    rf_proba = rf.predict_proba(X)[:, 1]
+    rf_class = rf.predict(X)
+    rf_loss = log_loss(y, rf_proba)
+    rf_acc = accuracy_score(y, rf_class)
+
+    lr = LogisticRegression(max_iter=500, class_weight='balanced', random_state=42)
+    lr.fit(X_train, y_train)
+    lr_proba = lr.predict_proba(X)[:, 1]
+    lr_class = lr.predict(X)
+    lr_loss = log_loss(y, lr_proba)
+    lr_acc = accuracy_score(y, lr_class)
+
+    from lightgbm import LGBMClassifier
+    lgb = LGBMClassifier(n_estimators=100, max_depth=4, random_state=42)
+    lgb.fit(X_train, y_train)
+    lgb_proba = lgb.predict_proba(X)[:, 1]
+    lgb_class = lgb.predict(X)
+    lgb_loss = log_loss(y, lgb_proba)
+    lgb_acc = accuracy_score(y, lgb_class)
+
     with open(os.path.join(OUT_DIR, 'stage_d_results.txt'), 'w') as f:
         f.write("Stage D: Institutional Outcome Forecast (Attrition Risk)\n")
         f.write("========================================================\n")
         f.write(f"Sample Size (Opposed Cases Only): {len(df_opposed)}\n")
-        f.write(f"Log Loss: {loss:.4f}\n")
-        f.write(f"Accuracy: {acc:.4f}\n")
+        f.write(f"CatBoost Log Loss: {loss:.4f} | Accuracy: {acc:.4f}\n")
+        f.write(f"Random Forest Log Loss: {rf_loss:.4f} | Accuracy: {rf_acc:.4f}\n")
+        f.write(f"Logistic Log Loss: {lr_loss:.4f} | Accuracy: {lr_acc:.4f}\n")
+        f.write(f"LightGBM Log Loss: {lgb_loss:.4f} | Accuracy: {lgb_acc:.4f}\n")
         
     try:
         import sys
@@ -114,6 +146,16 @@ def run_stage_d():
         update_metric("metricOpposedWithdrawn", f"{opposed_withdrawn}")
         update_metric("metricAttritionRate", f"{pct_opposed:.1f}\\%")
         update_metric("metricUnopposedAttritionRate", f"{pct_unopposed:.1f}\\%")
+        
+        # New tabular export for Stage D structural performance
+        update_metric("metricStageDLogLoss", f"{loss:.4f}")
+        update_metric("metricStageDAccuracy", f"{acc:.4f}")
+        update_metric("metricStageDRfLogLoss", f"{rf_loss:.4f}")
+        update_metric("metricStageDRfAccuracy", f"{rf_acc:.4f}")
+        update_metric("metricStageDLogLogLoss", f"{lr_loss:.4f}")
+        update_metric("metricStageDLogAccuracy", f"{lr_acc:.4f}")
+        update_metric("metricStageDLgbLogLoss", f"{lgb_loss:.4f}")
+        update_metric("metricStageDLgbAccuracy", f"{lgb_acc:.4f}")
     except Exception as e:
         print(f"    [!] Macro Telemetry Export Failed: {e}")
 

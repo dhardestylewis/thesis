@@ -33,6 +33,8 @@ def plot_f17():
         
     df_h0 = pd.read_csv(DATA_H0, low_memory=False)
     df_votes = pd.read_csv(VOTE_DATA, usecols=['CASE_NUMBER', 'vote_no'])
+    # Deduplicate: aggregate per-member votes to one row per case
+    df_votes = df_votes.groupby('CASE_NUMBER', as_index=False).agg({'vote_no': 'sum'})
     df = df_h0.merge(df_votes, left_on='case_number', right_on='CASE_NUMBER', how='inner')
     
     if df.empty or 'vote_no' not in df.columns:

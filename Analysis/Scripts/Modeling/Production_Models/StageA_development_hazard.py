@@ -2,8 +2,12 @@ import pandas as pd
 import numpy as np
 from catboost import CatBoostClassifier
 from sklearn.metrics import average_precision_score
+from sklearn.calibration import CalibratedClassifierCV
 import gc
 import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from artifact_registry import TraceabilityRegistry as AR
 
 def run_stage_a():
     print("==============================================")
@@ -103,39 +107,103 @@ def run_stage_a():
             ilr_auc = average_precision_score(y, merged['Heuristic_ILR'])
             print(f"    [+] Domain Heuristic (ILR < 1.0) PR-AUC:   {ilr_auc:.4f}")
 
-            # 2. Logistic Regression (Econometric Baseline)
+            # 2. Logistic Regression (Econometric Baseline) — Isotonic Calibrated
             try:
-                print("    [+] Training Logistic Regression Econometric Baseline...")
+                print("    [+] Training Logistic Regression Econometric Baseline (Isotonic)...")
                 lr = LogisticRegression(max_iter=500, class_weight='balanced')
-                lr.fit(X_econ_scaled, y)
-                merged[f'Prob_LR_{h_tag}'] = lr.predict_proba(X_econ_scaled)[:, 1]
+                lr_cal = CalibratedClassifierCV(estimator=lr, method='sigmoid', cv=5)
+                lr_cal.fit(X_econ_scaled, y)
+                merged[f'Prob_LR_{h_tag}'] = lr_cal.predict_proba(X_econ_scaled)[:, 1]
                 lr_auc = average_precision_score(y, merged[f'Prob_LR_{h_tag}'])
                 print(f"    [+] Econometric Baseline (Logistic) PR-AUC: {lr_auc:.4f}")
             except Exception as e:
                 print(f"    [-] Logistic baseline failed: {e}")
                 merged[f'Prob_LR_{h_tag}'] = 0.0
                 
+            # 2.5 Spatial Autoregressive Proxy (SAR-Logistic)
+            try:
+                print("    [+] Training Spatial Autoregressive (SAR) Logistic Baseline...")
+                from scipy.spatial import cKDTree
+                coords = merged[['latitude', 'longitude']].values
+                # Impute missing coordinates identically to prevent KDTree finite crash
+                coords = np.nan_to_num(coords, nan=np.nanmedian(coords))
+                tree = cKDTree(coords)
+                # Query 6 nearest neighbors (1st is self)
+                distances, indices = tree.query(coords, k=6)
+                neighbor_events = merged['event'].values[indices[:, 1:]]
+                spatial_lag = neighbor_events.mean(axis=1)
+                
+                # Combine Econ Features with Spatial Lag
+                X_sar_scaled = np.hstack([X_econ_scaled, spatial_lag.reshape(-1, 1)])
+                
+                lr_sar = LogisticRegression(max_iter=500, class_weight='balanced')
+                lr_sar_cal = CalibratedClassifierCV(estimator=lr_sar, method='sigmoid', cv=5)
+                lr_sar_cal.fit(X_sar_scaled, y)
+                merged[f'Prob_SAR_{h_tag}'] = lr_sar_cal.predict_proba(X_sar_scaled)[:, 1]
+                sar_auc = average_precision_score(y, merged[f'Prob_SAR_{h_tag}'])
+                print(f"    [+] SAR Logistic (Spatial Lag) PR-AUC:      {sar_auc:.4f}")
+            except Exception as e:
+                print(f"    [-] SAR baseline failed: {e}")
+                merged[f'Prob_SAR_{h_tag}'] = 0.0
+                
             # Create explicit 10% Evaluation Set for algorithmic Early Stopping to prevent CPU burn!
             X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, random_state=42, stratify=y)
             
-            # 3. LightGBM Challenger (Mathematically Optimal for IPW Propensity)
-            print(f"    [+] Initializing Unconstrained Global LightGBM...")
+            # 2.6 Deep Learning / MLP Challenger
+            try:
+                print("    [+] Training Deep Learning (MLP) Challenger...")
+                from sklearn.neural_network import MLPClassifier
+                from sklearn.model_selection import train_test_split
+                
+                # Subsample to 50k observations to prevent massive CPU burn
+                if len(X_train) > 50000:
+                    X_train_dl, _, y_train_dl, _ = train_test_split(X_train, y_train, train_size=50000, stratify=y_train, random_state=42)
+                else:
+                    X_train_dl, y_train_dl = X_train, y_train
+                    
+                mlp = MLPClassifier(hidden_layer_sizes=(128, 64), max_iter=20, random_state=42, early_stopping=True)
+                scaler_all = StandardScaler()
+                X_train_dl_scaled = scaler_all.fit_transform(X_train_dl)
+                
+                # Fit the base model
+                mlp.fit(X_train_dl_scaled, y_train_dl)
+                
+                X_scaled = scaler_all.transform(X)
+                # Use raw predict_proba since PR-AUC rank-evaluates monotonically
+                merged[f'Prob_DL_{h_tag}'] = mlp.predict_proba(X_scaled)[:, 1]
+                dl_auc = average_precision_score(y, merged[f'Prob_DL_{h_tag}'])
+                print(f"    [+] Operational PR-AUC (Deep Learning):     {dl_auc:.4f}")
+            except Exception as e:
+                print(f"    [-] Deep Learning failure: {e}")
+                merged[f'Prob_DL_{h_tag}'] = 0.0
+
+            
+            # 3. LightGBM Challenger — Platt Calibrated
+            print(f"    [+] Initializing Unconstrained Global LightGBM (Platt Scaling)...")
             try:
                 lgbm_base = LGBMClassifier(class_weight='balanced', random_state=42, n_jobs=-1, verbose=-1, n_estimators=600)
                 lgbm_base.fit(X_train, y_train, eval_set=[(X_val, y_val)], callbacks=[early_stopping(30, verbose=False)])
-                merged[f'Prob_LGBM_{h_tag}'] = lgbm_base.predict_proba(X)[:, 1]
+                
+                platt_lgbm = CalibratedClassifierCV(lgbm_base, method='sigmoid', cv='prefit')
+                platt_lgbm.fit(X_val, y_val)
+                
+                merged[f'Prob_LGBM_{h_tag}'] = platt_lgbm.predict_proba(X)[:, 1]
                 lgbm_auc = average_precision_score(y, merged[f'Prob_LGBM_{h_tag}'])
                 print(f"    [+] Operational PR-AUC (LightGBM):          {lgbm_auc:.4f}")
             except Exception as e:
                 print(f"    [-] LightGBM constraint failure: {e}")
                 merged[f'Prob_LGBM_{h_tag}'] = 0.0
 
-            # 4. CatBoost Challenger (Unconstrained Library Auto-Heuristics)
-            print(f"    [+] Initializing Unconstrained Global CatBoost...")
+            # 4. CatBoost Challenger — Platt Calibrated
+            print(f"    [+] Initializing Unconstrained Global CatBoost (Platt Scaling)...")
             from catboost import CatBoostClassifier
             cb_base = CatBoostClassifier(iterations=1000, scale_pos_weight=pos_weight, verbose=0, random_seed=42, thread_count=-1)
             cb_base.fit(X_train, y_train, eval_set=(X_val, y_val), early_stopping_rounds=40)
-            merged[f'Prob_CB_{h_tag}'] = cb_base.predict_proba(X)[:, 1]
+            
+            platt_cb = CalibratedClassifierCV(cb_base, method='sigmoid', cv='prefit')
+            platt_cb.fit(X_val, y_val)
+            
+            merged[f'Prob_CB_{h_tag}'] = platt_cb.predict_proba(X)[:, 1]
             cb_auc = average_precision_score(y, merged[f'Prob_CB_{h_tag}'])
             print(f"    [+] Operational PR-AUC (CatBoost):          {cb_auc:.4f}")
             
@@ -151,10 +219,10 @@ def run_stage_a():
             
             try:
                 import joblib
-                joblib.dump(lgbm_base, os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_model_lgbm_{h_tag}.joblib'))
-                cb_base.save_model(os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_model_cb_{h_tag}.cbm'))
+                joblib.dump(lgbm_base, str(AR.stage_a_model_lgbm(h_tag)))
+                cb_base.save_model(str(AR.stage_a_model_cb(h_tag)))
                 # Save metadata about which won
-                with open(os.path.join('Analysis', 'Output', 'Track0_Predictive', f'stage_a_winner_{h_tag}.txt'), 'w') as f:
+                with open(str(AR.stage_a_winner(h_tag)), 'w') as f:
                     f.write(best_model_name)
             except Exception as e:
                 print(f"    [-] Failed to export model artifacts for Stage F: {e}")
@@ -173,18 +241,18 @@ def run_stage_a():
                         if module_path not in sys.path:
                             sys.path.append(module_path)
                         from Utilities_and_Logs.lib_metrics import update_metric
-                        update_metric("metricHazardLift", f"{lift:.2f}\\times")
+                        update_metric("metricHazardLift", f"{lift:.2f}$\\times$")
                         update_metric("metricHazardModelClass", best_model_name)
                 except Exception as e:
                     print(f"    [!] Macro Telemetry Export Failed: {e}")
 
             
             # Append target columns to output schema
-            output_cols.extend([f'Prob_LR_{h_tag}', f'Prob_LGBM_{h_tag}', f'Prob_CB_{h_tag}', f'Prob_Optimal_{h_tag}'])
+            output_cols.extend([f'Prob_LR_{h_tag}', f'Prob_SAR_{h_tag}', f'Prob_DL_{h_tag}', f'Prob_LGBM_{h_tag}', f'Prob_CB_{h_tag}', f'Prob_Optimal_{h_tag}'])
         
         # Save results
-        merged[output_cols].to_csv('Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv', index=False)
-        print("\n[+] Saved multi-horizon multi-model probabilities to: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv")
+        merged[output_cols].to_csv(str(AR.STAGE_A_HAZARD_RESULTS), index=False)
+        print(f"\n[+] Saved multi-horizon multi-model probabilities to: {AR.STAGE_A_HAZARD_RESULTS}")
         
     except Exception as e:
         import traceback

@@ -1,0 +1,2 @@
+Columns: ['CASE_NUMBER', 'gross_site_area_acres', 'council_district', 'acreage', 'frontage', 'corner_lot_flag']
+Rows: 516

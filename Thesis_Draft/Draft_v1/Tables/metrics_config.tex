@@ -12,24 +12,30 @@
 \newcommand{\metricBaseHazardProb}{$2.5 \times 10^{-5}$}
 
 % Stage A Hazard Metrics
-\newcommand{\metricHazardLift}{$9.92\times$}
+\newcommand{\metricHazardLift}{9.92$\times$}
 
 % Stage C Opposition Risk Metrics
-\newcommand{\metricPRAUC}{0.910}
-\newcommand{\metricTopDecileLift}{$9.98\times$}
-\newcommand{\metricFNRGap}{0.00\%}
-\newcommand{\metricFPRGap}{--\%}
-\newcommand{\metricFPR}{17.77\%}
-\newcommand{\metricMeanProbTP}{0.768}
-\newcommand{\metricMeanProbTN}{0.037}
-\newcommand{\metricECE}{0.126}
-\newcommand{\metricCalibrationSlope}{1.026}
+\newcommand{\metricPRAUC}{0.712}
+\newcommand{\metricTopDecileLift}{9.01$\times$}
+\newcommand{\metricFNRGap}{7.69\%}
+\newcommand{\metricFPRGap}{44.93\%}
+\newcommand{\metricFPR}{55.77\%}
+\newcommand{\metricMeanProbTP}{0.598}
+\newcommand{\metricMeanProbTN}{0.143}
+\newcommand{\metricECE}{0.108}
+\newcommand{\metricCalibrationSlope}{1.199}
+
+% Fairness Sensitivity Audit Metrics
+\newcommand{\metricSensitivityFprBaseline}{83.58\%}
+\newcommand{\metricSensitivityFnrBaseline}{0.00\%}
+\newcommand{\metricSensitivityFprKNN}{33.33\%}
+\newcommand{\metricSensitivityFnrKNN}{83.33\%}
 
 % Multi-Horizon Bootstrap Metrics
-\newcommand{\metricBootstrapFiling}{0.509}
-\newcommand{\metricBootstrapFilingCI}{[0.333, 0.791]}
-\newcommand{\metricBootstrapNotice}{0.633}
-\newcommand{\metricBootstrapPreComm}{0.628}
+\newcommand{\metricBootstrapFiling}{0.629}
+\newcommand{\metricBootstrapFilingCI}{[0.4403, 0.8142]}
+\newcommand{\metricBootstrapNotice}{0.569}
+\newcommand{\metricBootstrapPreComm}{0.569}
 
 % Causal Track 2 (Regression Discontinuity)
 \newcommand{\metricRDDelay}{+52.1}
@@ -52,9 +58,154 @@
 \newcommand{\metricNLPSeed}{50}
 
 % Stage D Attrition and Chilling Effect Metrics
-\newcommand{\metricOpposedTotal}{721}
+\newcommand{\metricOpposedTotal}{411}
 \newcommand{\metricOpposedWithdrawn}{319}
-\newcommand{\metricAttritionRate}{44.2\%}
-\newcommand{\metricUnopposedAttritionRate}{92.0\%}
+\newcommand{\metricAttritionRate}{77.6\%}
+\newcommand{\metricUnopposedAttritionRate}{87.7\%}
 
 \newcommand{\metricHazardModelClass}{LightGBM}
+
+% Geographic Causal Design Macros
+\newcommand{\metricTenOneITSCoeff}{0.119}
+\newcommand{\metricTenOneITSPval}{0.344}
+\newcommand{\metricNPAFrictionCoeff}{0.239}
+\newcommand{\metricNPAFrictionPval}{0.344}
+\newcommand{\metricHDFrictionCoeff}{0.000}
+\newcommand{\metricHDFrictionPval}{nan}
+\newcommand{\metricTODFrictionCoeff}{0.000}
+\newcommand{\metricTODFrictionPval}{nan}
+\newcommand{\metricFlipDiDCoeff}{-0.546}
+\newcommand{\metricFlipDiDPval}{0.041}
+
+\newcommand{\metricBootstrapFilingECE}{0.301}
+
+\newcommand{\metricBootstrapPreCouncil}{0.524}
+
+\newcommand{\metricBootstrapPreCouncilECE}{0.360}
+
+\newcommand{\metricStageDLogLoss}{0.1752}
+
+\newcommand{\metricStageDAccuracy}{0.9440}
+
+\newcommand{\metricStageBMacroFOne}{0.548}
+
+\newcommand{\metricStageBPUDPrecision}{1.000}
+
+\newcommand{\metricStageBPUDRecall}{1.000}
+
+\newcommand{\metricStageBPUDFOne}{1.000}
+
+\newcommand{\metricStageBRezoningPrecision}{0.787}
+
+\newcommand{\metricStageBRezoningRecall}{0.670}
+
+\newcommand{\metricStageBRezoningFOne}{0.724}
+
+\newcommand{\metricStageBByRightPrecision}{0.569}
+
+\newcommand{\metricStageBByRightRecall}{0.926}
+
+\newcommand{\metricStageBByRightFOne}{0.704}
+
+\newcommand{\metricStageBMissingMiddlePrecision}{0.613}
+
+\newcommand{\metricStageBMissingMiddleRecall}{0.288}
+
+\newcommand{\metricStageBMissingMiddleFOne}{0.392}
+
+\newcommand{\metricStageBMixedUsePrecision}{0.727}
+
+\newcommand{\metricStageBMixedUseRecall}{0.190}
+
+\newcommand{\metricStageBMixedUseFOne}{0.302}
+
+\newcommand{\metricStageBMultifamilyPrecision}{0.467}
+
+\newcommand{\metricStageBMultifamilyRecall}{0.100}
+
+\newcommand{\metricStageBMultifamilyFOne}{0.165}
+
+\newcommand{\metricStageDRfLogLoss}{0.2294}
+
+\newcommand{\metricStageDRfAccuracy}{0.9854}
+
+\newcommand{\metricStageDLogLogLoss}{0.5951}
+
+\newcommand{\metricStageDLogAccuracy}{0.3577}
+
+\newcommand{\metricStageBRfMacroFOne}{0.739}
+
+\newcommand{\metricStageBLogMacroFOne}{0.177}
+
+\newcommand{\metricStageDLgbLogLoss}{0.0255}
+
+\newcommand{\metricStageDLgbAccuracy}{0.9976}
+
+\newcommand{\metricStageBLgbMacroFOne}{0.748}
+
+\newcommand{\metricStageBCbPUDFOne}{1.000}
+
+\newcommand{\metricStageBRfPUDFOne}{1.000}
+
+\newcommand{\metricStageBLgbPUDFOne}{1.000}
+
+\newcommand{\metricStageBLogPUDFOne}{0.097}
+
+\newcommand{\metricStageBCbRezoningFOne}{0.724}
+
+\newcommand{\metricStageBRfRezoningFOne}{0.863}
+
+\newcommand{\metricStageBLgbRezoningFOne}{0.850}
+
+\newcommand{\metricStageBLogRezoningFOne}{0.455}
+
+\newcommand{\metricStageBCbByRightFOne}{0.704}
+
+\newcommand{\metricStageBRfByRightFOne}{0.757}
+
+\newcommand{\metricStageBLgbByRightFOne}{0.751}
+
+\newcommand{\metricStageBLogByRightFOne}{0.045}
+
+\newcommand{\metricStageBCbMissingMiddleFOne}{0.392}
+
+\newcommand{\metricStageBRfMissingMiddleFOne}{0.507}
+
+\newcommand{\metricStageBLgbMissingMiddleFOne}{0.519}
+
+\newcommand{\metricStageBLogMissingMiddleFOne}{0.257}
+
+\newcommand{\metricStageBCbMixedUseFOne}{0.302}
+
+\newcommand{\metricStageBRfMixedUseFOne}{0.718}
+
+\newcommand{\metricStageBLgbMixedUseFOne}{0.789}
+
+\newcommand{\metricStageBLogMixedUseFOne}{0.066}
+
+\newcommand{\metricStageBCbMultifamilyFOne}{0.165}
+
+\newcommand{\metricStageBRfMultifamilyFOne}{0.590}
+
+\newcommand{\metricStageBLgbMultifamilyFOne}{0.579}
+
+\newcommand{\metricStageBLogMultifamilyFOne}{0.140}
+
+% Supplemental Point-7 Metrics (computed by supplemental_metrics.py)
+\newcommand{\metricBrierScore}{0.0156}
+\newcommand{\metricTopDecilePrecision}{58.0\%}
+\newcommand{\metricTopDecileTP}{410}
+\newcommand{\metricTopDecileN}{707}
+\newcommand{\metricRecallAtFifty}{93.2\%}
+\newcommand{\metricPrecisionAtFifty}{80.0\%}
+\newcommand{\metricNFlaggedAtFifty}{479}
+\newcommand{\metricRecallAtThirty}{99.0\%}
+\newcommand{\metricPrecisionAtThirty}{78.3\%}
+\newcommand{\metricNFlaggedAtThirty}{520}
+\newcommand{\metricBaseRate}{5.8\%}
+\newcommand{\metricBaseRateN}{411/7,074}
+\newcommand{\metricNDistricts}{11}
+\newcommand{\metricMinDistrictPositives}{3}
+\newcommand{\metricMedianDistrictPositives}{37}
+\newcommand{\metricMaxDistrictPositives}{110}
+\newcommand{\metricECEBootCI}{[0.026, 0.031]}

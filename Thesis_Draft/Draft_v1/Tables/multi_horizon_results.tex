@@ -3,14 +3,15 @@
 \caption{Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}
 \label{tab:multi_horizon}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{Horizon} & \textbf{PR-AUC [95\% CI]} & \textbf{ROC-AUC} & \textbf{Brier} & \textbf{ECE} \\
+\textbf{Horizon} & \textbf{PR-AUC [95\% CI]} & \textbf{ROC-AUC} & \textbf{Brier} & \textbf{ECE (Pre)} & \textbf{ECE (Post)} \\
 \midrule
-H0 (Filing) & 0.533 [0.3404, 0.8080] & 0.939 & 0.024 & 0.283 \\
-H1 (Notice) & 0.529 [0.3455, 0.8063] & 0.942 & 0.023 & 0.298 \\
-H2 (Pre-Commission) & 0.676 [0.4761, 0.8738] & 0.992 & 0.021 & 0.402 \\
-H3 (Pre-Council) & 0.556 [0.3538, 0.8037] & 0.940 & 0.023 & 0.360 \\
+H0 (Filing) & 0.629 [0.4403, 0.8142] & 0.990 & 0.015 & 0.301 & 0.215 \\
+H1 (Notice) & 0.569 [0.3783, 0.8176] & 0.989 & 0.016 & 0.373 & 0.259 \\
+H2 (Pre-Commission) & 0.569 [0.3698, 0.7809] & 0.988 & 0.015 & 0.434 & 0.219 \\
+H3 (Pre-Council) & 0.524 [0.3221, 0.7833] & 0.938 & 0.016 & 0.360 & 0.194 \\
 \bottomrule
+\multicolumn{6}{l}{\footnotesize \textit{Note:} All horizons evaluated using the primary CatBoost architecture.} \\
 \end{tabular}
 \end{table}
