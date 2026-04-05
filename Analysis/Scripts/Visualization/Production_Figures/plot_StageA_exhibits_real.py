@@ -125,14 +125,15 @@ def generate_exhibits():
     # FIGURE 4: Ex-Ante Hotspot Density vs. Realized Events (Multi-Horizon)
     print("[*] Plotting Figure 4: Spatial Hexbin Maps (4, 8, 12-Quarter Hazard, Top Decile)...")
     
-    fig, axes = plt.subplots(1, 3, figsize=(24, 8))
+    fig, axes = plt.subplots(2, 2, figsize=(14, 14))
+    axes_flat = axes.flatten()
     import contextily as cx
     
     horizons = [(4, 'y_1yr'), (8, 'y_2yr'), (12, 'y_3yr')]
     
     for idx, (h, y_col) in enumerate(horizons):
         prob_col = f'Prob_Optimal_H={h}'
-        ax = axes[idx]
+        ax = axes_flat[idx]
         
         map_data = full.groupby('standardized_tcad_id')[['latitude', 'longitude', prob_col, y_col]].max().reset_index()
         map_data = map_data.dropna(subset=['latitude', 'longitude', prob_col])
@@ -146,7 +147,7 @@ def generate_exhibits():
                        C=significant_hotspots[prob_col], gridsize=100, cmap='YlOrRd', reduce_C_function=np.mean, mincnt=15, alpha=0.85)
         
         if idx == 2:
-            fig.colorbar(hb, ax=axes, label='Average Predicted Development Probability (Top 10% Sites)', fraction=0.02, pad=0.04)
+            fig.colorbar(hb, ax=axes.ravel().tolist(), label='Average Predicted Development Probability (Top 10% Sites)', fraction=0.04, pad=0.04)
             
         cx.add_basemap(ax, crs="EPSG:4326", source=cx.providers.CartoDB.Positron)
         
@@ -159,7 +160,10 @@ def generate_exhibits():
         if idx == 0:
             ax.legend(loc='lower left')
 
-    fig.suptitle('Multi-Horizon Hotspot Density vs. Realized Development Events', fontsize=18, fontweight='bold', y=1.02)
+    # Turn off the empty bottom-right subplot
+    axes_flat[3].axis('off')
+
+    fig.suptitle('Multi-Horizon Hotspot Density vs. Realized Development Events', fontsize=18, fontweight='bold', y=0.96)
     hotspot_path = str(AR.TRACK0_FIGURES / 'StageA_Figure4_Hotspot.png')
     plt.savefig(hotspot_path, dpi=300, bbox_inches='tight')
     plt.close()

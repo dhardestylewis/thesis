@@ -334,12 +334,7 @@ def _plot_clustered_importance(hz, hz_name, titles):
                     color = stacked_colors[c_idx % len(stacked_colors)]
                     plt.barh(cluster_name, feat_imp, left=left_val, color=color, alpha=0.9, edgecolor='white', linewidth=0.5)
                     
-                    # Optional internal annotation for very large sub-features
-                    if feat_imp > 2.0:
-                        short_name = _rename_feature(feat_name).replace("Share", "").replace("Metrics", "").strip()
-                        # Shorten for tight clusters
-                        if len(short_name) > 18: short_name = short_name[:15] + "..."
-                        plt.text(left_val + (feat_imp/2), idx, short_name, ha='center', va='center', color='white', fontsize=7, fontweight='bold', clip_on=True)
+                    # Internal annotations removed due to visual overflow risk
                         
                     left_val += feat_imp
                     
