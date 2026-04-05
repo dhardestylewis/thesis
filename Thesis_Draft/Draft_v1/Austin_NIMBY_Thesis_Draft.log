@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 15:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 15:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1042,8 +1042,8 @@ Overfull \hbox (20.46599pt too wide) in paragraph at lines 6--17
  [][] 
  []
 
-)
-<Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf, id=492, 505.89pt x 361.35pt
+) [22 <./Figures/Chapter4/fig_combined_calibration_reliability.pdf>]
+<Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf, id=586, 505.89pt x 361.35pt
 >
 File: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
 
@@ -1051,7 +1051,7 @@ File: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf  use
 d on input line 475.
 (pdftex.def)             Requested size: 225.4804pt x 161.05663pt.
-<Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf, id=493, 578.16pt x 361.35pt
+<Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf, id=587, 578.16pt x 361.35pt
 >
 File: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
 
@@ -1059,7 +1059,6 @@ File: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf  use
 d on input line 482.
 (pdftex.def)             Requested size: 225.4804pt x 140.92041pt.
- [22 <./Figures/Chapter4/fig_combined_calibration_reliability.pdf>]
 <Figures/Track1_Exhibits/fig_feature_importance_clustered_H0.pdf, id=589, 794.9
 7pt x 578.16pt>
 File: Figures/Track1_Exhibits/fig_feature_importance_clustered_H0.pdf Graphic f
@@ -1288,7 +1287,7 @@ eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (47 pages, 40346363 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (47 pages, 40346739 bytes).
 PDF statistics:
  1792 PDF objects out of 2073 (max. 8388607)
  166 named destinations out of 1000 (max. 500000)
