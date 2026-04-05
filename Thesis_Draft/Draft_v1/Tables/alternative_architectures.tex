@@ -8,6 +8,7 @@
 \toprule
 \textbf{Horizon} & \textbf{Architecture} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{ECE (Raw)} & \textbf{ECE (Cal)} \\
 \midrule
+Filing Horizon & Random Baseline (Empirical) & 0.058 & --- & --- & --- \\
 Filing Horizon & Logistic Regression (L2) (Base) & 0.064 & 0.731 & 0.586 & \textbf{0.149} \\
 Filing Horizon & SMOTE + Logistic Regression (L2) & 0.060 & 0.751 & 0.552 & 0.417 \\
 Filing Horizon & Random Forest (Base) & 0.422 & 0.967 & 0.298 & 0.399 \\
@@ -17,6 +18,8 @@ Filing Horizon & SMOTE + LightGBM & 0.416 & 0.933 & 0.346 & 0.276 \\
 Filing Horizon & CatBoost (Base) & \textbf{0.492} & 0.962 & \textbf{0.251} & 0.285 \\
 Filing Horizon & SMOTE + CatBoost & 0.459 & 0.961 & 0.301 & 0.312 \\
 Filing Horizon & TabNet & 0.410 & \textbf{0.972} & 0.268 & 0.250 \\
+\midrule
+Pre-Council Horizon & Random Baseline (Empirical) & 0.058 & --- & --- & --- \\
 Pre-Council Horizon & Logistic Regression (L2) (Base) & 0.419 & 0.926 & 0.479 & 0.264 \\
 Pre-Council Horizon & SMOTE + Logistic Regression (L2) & 0.412 & 0.926 & 0.479 & 0.423 \\
 Pre-Council Horizon & Random Forest (Base) & 0.500 & \textbf{0.963} & 0.222 & \textbf{0.127} \\
