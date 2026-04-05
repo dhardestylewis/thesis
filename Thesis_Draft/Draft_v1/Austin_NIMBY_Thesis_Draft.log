@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 13:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 13:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1178,9 +1178,6 @@ t line 610.
 LaTeX Warning: Citation `peters2016causal' on page 29 undefined on input line 6
 49.
 
-
-LaTeX Warning: Reference `app:icp' on page 29 undefined on input line 649.
-
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 6
 49.
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
@@ -1191,18 +1188,35 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [29]
-[30]
-<Figures/Chapter4/F23_Spatial_Error.png, id=844, 1146.9249pt x 568.7649pt>
+! Undefined control sequence.
+l.659 ...ons (ECE increasing from \metricECEFiling
+                                                  {} at filing to \metricECE...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.659 ...iling{} at filing to \metricECEPreCouncil
+                                                  {} pre-council) aligns wit...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+<Figures/Chapter4/F23_Spatial_Error.png, id=840, 1146.9249pt x 568.7649pt>
 File: Figures/Chapter4/F23_Spatial_Error.png Graphic file (type png)
 <use Figures/Chapter4/F23_Spatial_Error.png>
 Package pdftex.def Info: Figures/Chapter4/F23_Spatial_Error.png  used on input 
-line 702.
+line 687.
 (pdftex.def)             Requested size: 446.26582pt x 221.30537pt.
- [31 <./Figures/Chapter4/F23_Spatial_Error.png>]
+[30] [31 <./Figures/Chapter4/F23_Spatial_Error.png>]
 No file Austin_NIMBY_Thesis_Draft.bbl.
 [32]
 
-LaTeX Warning: Reference `sec:results' on page 33 undefined on input line 731.
+LaTeX Warning: Reference `sec:results' on page 33 undefined on input line 714.
 
 (Tables/calibration_benchmark.tex) [33]
 <Figures/Qualitative_Appendix/project_overview.pdf, id=859, page=1, 614.295pt x
@@ -1211,7 +1225,7 @@ File: Figures/Qualitative_Appendix/project_overview.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/project_overview.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/project_overview.pdf , pa
-ge1 used on input line 746.
+ge1 used on input line 729.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
  [34 <./Figures/Qualitative_Appendix/project_overview.pdf>]
 <Figures/Qualitative_Appendix/protocol_summary.pdf, id=1105, page=1, 614.295pt 
@@ -1220,7 +1234,7 @@ File: Figures/Qualitative_Appendix/protocol_summary.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/protocol_summary.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/protocol_summary.pdf , pa
-ge1 used on input line 758.
+ge1 used on input line 741.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
  [35 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
 <Figures/Qualitative_Appendix/interview_guide.pdf, id=1351, page=1, 614.295pt x
@@ -1228,7 +1242,7 @@ ge1 used on input line 758.
 File: Figures/Qualitative_Appendix/interview_guide.pdf Graphic file (type pdf)
 <use Figures/Qualitative_Appendix/interview_guide.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/interview_guide.pdf , pag
-e1 used on input line 768.
+e1 used on input line 751.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
 
 [36 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
@@ -1242,10 +1256,10 @@ File: Figures/Qualitative_Appendix/sample_protest_petition.pdf Graphic file (ty
 pe pdf)
 <use Figures/Qualitative_Appendix/sample_protest_petition.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/sample_protest_petition.p
-df , page1 used on input line 778.
+df , page1 used on input line 761.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
 [37 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 799--799
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 782--782
 []\T1/lmtt/m/n/10 parcel_id     year  protest_buffer  owner_exempt  tract_wealt
 h_gap  prop_med_rent  case_white_pct[] 
  []
@@ -1255,7 +1269,7 @@ h_gap  prop_med_rent  case_white_pct[]
 File: Figures/Fig10_Hyperparameter_Sweeps.png Graphic file (type png)
 <use Figures/Fig10_Hyperparameter_Sweeps.png>
 Package pdftex.def Info: Figures/Fig10_Hyperparameter_Sweeps.png  used on input
- line 825.
+ line 808.
 (pdftex.def)             Requested size: 469.75502pt x 194.21404pt.
  [39 <./Figures/Fig10_Hyperparameter_Sweeps.png>] [40]
 <Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1576, 792.0792pt x 566.5968pt
@@ -1263,14 +1277,14 @@ Package pdftex.def Info: Figures/Fig10_Hyperparameter_Sweeps.png  used on input
 File: Figures/Chapter6/F20_Stakeholder_Heatmap.png Graphic file (type png)
 <use Figures/Chapter6/F20_Stakeholder_Heatmap.png>
 Package pdftex.def Info: Figures/Chapter6/F20_Stakeholder_Heatmap.png  used on 
-input line 861.
+input line 844.
 (pdftex.def)             Requested size: 399.29463pt x 285.632pt.
 <Figures/Chapter6/F19_TextFrame_Composition.png, id=1577, 711.1368pt x 422.0568
 pt>
 File: Figures/Chapter6/F19_TextFrame_Composition.png Graphic file (type png)
 <use Figures/Chapter6/F19_TextFrame_Composition.png>
 Package pdftex.def Info: Figures/Chapter6/F19_TextFrame_Composition.png  used o
-n input line 868.
+n input line 851.
 (pdftex.def)             Requested size: 399.29463pt x 236.98131pt.
  [41 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [42 <./Figures/Chapter6/
 F19_TextFrame_Composition.png>] (Austin_NIMBY_Thesis_Draft.aux)
@@ -1283,21 +1297,24 @@ L3 programming layer <2025-12-24>
 LaTeX Warning: There were undefined references.
 
 
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
 Package rerunfilecheck Warning: File `Austin_NIMBY_Thesis_Draft.out' has change
 d.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `Austin_NIMBY_Thesis_Draft.out':
-(rerunfilecheck)             Before: 6794D016B5A27A45B582FE3123E2A3AF;9349
-(rerunfilecheck)             After:  5EB99C2A41D4AEF0F3057FB0036DD02B;9359.
+(rerunfilecheck)             Before: 5EB99C2A41D4AEF0F3057FB0036DD02B;9359
+(rerunfilecheck)             After:  726A90BE3CC974191E8CFF4126FB0C5A;8766.
  ) 
 Here is how much of TeX's memory you used:
- 26642 strings out of 467871
- 500258 string characters out of 5419344
+ 26638 strings out of 467871
+ 500215 string characters out of 5419344
  909577 words of memory out of 5000000
  54682 multiletter control sequences out of 15000+600000
- 729600 words of font info for 228 fonts, out of 8000000 for 9000
+ 729412 words of font info for 226 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,104p,2381b,846s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
@@ -1315,6 +1332,14 @@ pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
 
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
 , replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.6.2} has been referenced but does not ex
+ist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.6.1} has been referenced but does not ex
+ist, replaced by a fixed one
 
 <C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C
 :/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/
@@ -1335,7 +1360,7 @@ eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (42 pages, 39867965 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (42 pages, 39866903 bytes).
 PDF statistics:
  1712 PDF objects out of 1728 (max. 8388607)
  132 named destinations out of 1000 (max. 500000)

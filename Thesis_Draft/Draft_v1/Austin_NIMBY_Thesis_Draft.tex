@@ -612,13 +612,13 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \label{fig:f17_did}
 \end{figure}
 
-\subsection{Geographic Distribution of Electoral Shocks (Difference-in-Differences)}
+\subsection{Electoral Shock Difference-in-Differences}
 
 The HOME Initiative models a global legislative shift, but its adoption is citywide and therefore provides no geographic control group. The November 2022 council elections offer a complementary source of variation: a subset of council districts (e.g., Districts 4 and 9) replaced preservationist incumbents with pro-housing representatives, while other districts maintained their political status quo.
 
 Interacting a ``Flipped District'' indicator with a ``Post-2022'' temporal indicator in a standard DiD framework yields a coefficient of \metricFlipDiDCoeff{} ($p=\metricFlipDiDPval{}$) on valid petition filing rates. This suggests that petition filing rates declined more in districts that changed political representation than in those that did not. However, inference should be treated cautiously: the design involves few treated districts, a short post-treatment window, and a small number of petition events per district. The estimate is suggestive rather than definitive.
 
-\subsection{Auxiliary Spatial Friction Overlays}
+\subsection{Spatial Friction Design}
 Additional analyses evaluate localized institutional overlays---Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 2015 transition to a 10-1 single-member council district system.
 
 The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), failing to reach statistical significance. The NPA overlay yielded a positive but insignificant coefficient of \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlays produced degenerate estimates with zero variance, likely because these zoning suffixes are rarely applied independently of major base-zone changes. These null and degenerate results are reported for transparency. They suggest that while petition risk is predictable in aggregate through spatial contagion and site characteristics, isolating the causal contribution of individual overlay categories is not feasible within this administrative dataset.
@@ -646,35 +646,20 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 \end{table}
 
 \subsection{Invariant Causal Prediction (ICP)}
-As supplementary evidence on the causal structure of the feature space, an Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} was conducted using 1,186 multi-parcel geometric environments. The full results are reported in Appendix~\ref{app:icp}. In brief, all 278 pairwise subsets of the 23 numeric features were rejected at $\alpha = 0.05$ after Bonferroni correction under a linear logistic specification, with a single marginal acceptance ($S = \{\texttt{land\_to\_total\_ratio}, \texttt{year}\}$, $p_{\text{bonf}}=0.051$). Nonlinear residual invariance tests (MLP and CVAE architectures under ERM and V-REx objectives) likewise universally rejected invariance. This universal rejection indicates that the observable administrative feature space does not contain a robust, environment-invariant causal parent set for petition filing---consistent with the thesis's broader finding that unobserved social and political factors play a substantial role in opposition dynamics.
+As supplementary evidence on the causal structure of the feature space, an Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} was conducted using 1,186 multi-parcel geometric environments. In brief, all 278 pairwise subsets of the 23 numeric features were rejected at $\alpha = 0.05$ after Bonferroni correction under a linear logistic specification, with a single marginal acceptance ($S = \{\texttt{land\_to\_total\_ratio}, \texttt{year}\}$, $p_{\text{bonf}}=0.051$). Nonlinear residual invariance tests (MLP and CVAE architectures under ERM and V-REx objectives) likewise universally rejected invariance. This universal rejection indicates that the observable administrative feature space does not contain a robust, environment-invariant causal parent set for petition filing---consistent with the thesis's broader finding that unobserved social and political factors play a substantial role in opposition dynamics.
 
-\section{Policy Implications and Governance}
+\section{Qualitative Planning Context}
+\label{sec:interviews}
 
-\subsection{Stakeholder Interviews}
+While the quantitative pipeline establishes the predictive boundaries of opposition forecasting, the interpretation of these models is significantly enhanced by qualitative context. Semi-structured interviews with urban planning professionals and city staff (conducted under Columbia University IRB Protocol ACYY0820) surface dynamics that administrative data fundamentally cannot capture. 
 
-Semi-structured interviews were conducted with urban planning professionals and city staff under Columbia University IRB Protocol ACYY0820. The interviews serve to:
+These interviews were not designed to confirm or validate the model's predictions. Instead, they inform the interpretation of the quantitative findings by detailing the institutional reality of the Austin zoning process:
 \begin{itemize}
-    \item Identify mechanisms that the quantitative models cannot observe, such as informal negotiations and strategic petition timing.
-    \item Surface governance concerns about how predictive outputs might be used or misused.
-    \item Assess whether the model's feature weightings correspond to recognizable planning dynamics.
-    \item Distinguish between legitimate neighborhood concerns and exclusionary opposition.
+    \item \textbf{Explaining the Attrition Anomaly:} The models identify that pre-council attrition is paradoxically lower for opposed cases (77.6\%) than unopposed cases (87.7\%). Without qualitative context, one might mistakenly infer that opposition accelerates development. Planners clarified that cases attracting opposition and \textit{surviving} to council are often backed by capitalized developers capable of absorbing the carrying costs of prolonged negotiation. Rather than a chilling effect, opposition acts as a selection mechanism for well-resourced developers.
+    \item \textbf{Calibration Degradation:} The deterioration of calibration across horizons (ECE increasing from \metricECEFiling{} at filing to \metricECEPreCouncil{} pre-council) aligns with planner testimony that late-stage maneuvering becomes highly idiosyncratic, untethering formal petition risk from simple demographic properties observable at filing.
 \end{itemize}
 
-The interviews do not confirm or validate the model's predictions. They informed interpretation of the quantitative findings by surfacing institutional processes that the model attempts to summarize.
-
-
-
-\subsection{Governance Framework}
-\label{sec:governance}
-
-A model that identifies areas of low opposition probability could function as a targeting tool for speculative developers, concentrating displacement pressure on politically weak neighborhoods. The governance framework addresses this through the following constraints:
-
-\begin{itemize}
-    \item \textbf{Advisory Use Only.} Until the model meets pre-specified calibration and fairness benchmarks, outputs are restricted to internal planning analysis. The current ECE of \metricECE{} exceeds the deployment threshold; predicted probabilities are not reliable enough for direct use in regulatory or investment decisions.
-    \item \textbf{Mandatory Vulnerability Overlays.} Any spatial output must distinguish between opposition from well-resourced neighborhoods seeking to preserve exclusionary zoning and opposition from vulnerable communities organizing against displacement. Presenting raw petition-risk scores without this context risks conflating structurally different dynamics.
-    \item \textbf{Predictions Reflect History, Not Prescription.} The model's outputs summarize past patterns of administrative friction. High predicted petition risk in a neighborhood describes what has historically happened, not what should happen. Users must interpret outputs accordingly.
-    \item \textbf{Audit-Only Use of Demographic Variables.} Racial and ethnic composition variables are excluded from the predictive model and used only in post-hoc fairness audits. This partition is maintained throughout the empirical framework. The audit features enable measurement of disparate impacts but do not enter the prediction function.
-\end{itemize}
+These institutional realities underscore why the predictive tool performs best as a relative ranking mechanism rather than an absolute probability oracle.
 
 \section{Limitations}
 \label{sec:limitations}
@@ -713,8 +698,6 @@ This thesis asks whether the filing of a valid protest petition against a housin
 Under deployment-like bootstrap evaluation at the filing-date horizon, the opposition model (Stage~C) achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with calibration error (ECE = \metricECE{}) exceeding the 0.05 operational threshold. In-distribution cross-validation provides an upper bound PR-AUC of \metricPRAUC{}. Filing-date administrative features contain meaningful signal for formal protest petition risk, but that signal is better suited to relative ranking than to calibrated, regime-stable operational forecasting. A regression discontinuity at the 20\% petition threshold estimates a \metricRDDelay{}-day increase in council processing time. A difference-in-differences estimator using the 2022 electoral transition suggests a \metricFlipDiDCoeff{} shift in petition filing rates in districts that changed political representation ($p = \metricFlipDiDPval{}$), though this estimate involves few treated districts and should be interpreted cautiously.
 
 These results suggest that petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and that the 2022 council regime change altered the relationship between petitions and outcomes. A model trained on pre-2022 dynamics cannot reliably predict post-2022 petition behavior without retraining.
-
-The governance framework restricts the system to advisory use until calibration and fairness benchmarks are met. The finding that the model fails calibration is itself informative: it demonstrates that strong discrimination does not guarantee the probability reliability required for operational planning tools.
 
 The stakeholder interviews informed interpretation of these findings by surfacing the informal channels---strategic timing, neighborhood networks, media campaigns---through which petition mobilization operates and which administrative data cannot fully capture. This suggests a ceiling on what prediction from public records alone can achieve.
 
