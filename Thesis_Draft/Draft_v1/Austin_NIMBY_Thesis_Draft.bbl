@@ -1,5 +1,11 @@
 \begin{thebibliography}{10}
 
+\bibitem{arik2021tabnet}
+Sercan~O. Arik and Tomas Pfister.
+\newblock {TabNet}: Attentive interpretable tabular learning.
+\newblock In {\em Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~35, pages 6679--6687, 2021.
+
 \bibitem{athey2019ml}
 Susan Athey and Guido~W. Imbens.
 \newblock Machine learning methods that economists should know about.
@@ -28,6 +34,13 @@ Stephanie~Riegg Cellini, Fernando Ferreira, and Jesse Rothstein.
 \newblock {\em The Quarterly Journal of Economics}, 125(1):215--261, 2010.
 \newblock \href {https://doi.org/10.1162/qjec.2010.125.1.215}
   {\path{doi:10.1162/qjec.2010.125.1.215}}.
+
+\bibitem{chawla2002smote}
+Nitesh~V. Chawla, Kevin~W. Bowyer, Lawrence~O. Hall, and W.~Philip Kegelmeyer.
+\newblock {SMOTE}: Synthetic minority over-sampling technique.
+\newblock {\em Journal of Artificial Intelligence Research}, 16:321--357, 2002.
+\newblock \href {https://doi.org/10.1613/jair.953}
+  {\path{doi:10.1613/jair.953}}.
 
 \bibitem{chouldechova2017fair}
 Alexandra Chouldechova.
@@ -103,6 +116,13 @@ Roderick~M. Hills, Jr. and David Schleicher.
 \newblock Balancing the ``zoning budget''.
 \newblock {\em Case Western Reserve Law Review}, 62(1):81--133, 2011.
 
+\bibitem{ke2017lightgbm}
+Guolin Ke, Qi~Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei
+  Ye, and Tie-Yan Liu.
+\newblock {LightGBM}: A highly efficient gradient boosting decision tree.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~30, pages 3146--3154, 2017.
+
 \bibitem{kleinberg2015prediction}
 Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer.
 \newblock Prediction policy problems.
@@ -123,6 +143,17 @@ Sendhil Mullainathan and Jann Spiess.
 \newblock \href {https://doi.org/10.1257/jep.31.2.87}
   {\path{doi:10.1257/jep.31.2.87}}.
 
+\bibitem{paszke2019pytorch}
+Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory
+  Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Alban
+  Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito, Martin Raison, Alykhan
+  Tejani, Sasank Chilamkurthy, Benoit Steiner, Lu~Fang, Junjie Bai, and Soumith
+  Chintala.
+\newblock {PyTorch}: An imperative style, high-performance deep learning
+  library.
+\newblock In {\em Advances in Neural Information Processing Systems 32}, pages
+  8024--8035. Curran Associates, Inc., 2019.
+
 \bibitem{peters2016causal}
 Jonas Peters, Peter B{\"u}hlmann, and Nicolai Meinshausen.
 \newblock Causal inference by using invariant prediction: Identification and
@@ -131,6 +162,13 @@ Jonas Peters, Peter B{\"u}hlmann, and Nicolai Meinshausen.
   Methodology}, 78(5):947--1012, 2016.
 \newblock \href {https://doi.org/10.1111/rssb.12167}
   {\path{doi:10.1111/rssb.12167}}.
+
+\bibitem{prokhorenkova2018catboost}
+Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna~Veronika Dorogush,
+  and Andrey Gulin.
+\newblock {CatBoost}: Unbiased boosting with categorical features.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~31, pages 6639--6649, 2018.
 
 \bibitem{richardson2019dirty}
 Rashida Richardson, Jason~M. Schultz, and Kate Crawford.
@@ -144,6 +182,12 @@ Galit Shmueli.
 \newblock {\em Statistical Science}, 25(3):289--310, 2010.
 \newblock \href {https://doi.org/10.1214/10-STS330}
   {\path{doi:10.1214/10-STS330}}.
+
+\bibitem{texas211006}
+{Texas State Legislature}.
+\newblock Texas local government code \s~211.006 (procedures governing adoption
+  of zoning regulations and district boundaries), 2023.
+\newblock URL: \url{https://statutes.capitol.texas.gov/Docs/LG/htm/LG.211.htm}.
 
 \bibitem{tcclerk2022}
 {Travis County Clerk}.

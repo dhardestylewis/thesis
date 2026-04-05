@@ -11,45 +11,46 @@ Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Database file #1: references.bib
 Warning--I didn't find a database entry for "cinelli2020making"
-You've used 22 entries,
+Warning--can't use both volume and number fields in arik2021tabnet
+You've used 28 entries,
             2943 wiz_defined-function locations,
-            793 strings with 9362 characters,
-and the built_in function-call counts, 10254 in all, are:
-= -- 1145
-> -- 317
-< -- 2
-+ -- 113
-- -- 88
-* -- 611
-:= -- 1461
-add.period$ -- 85
-call.type$ -- 22
-change.case$ -- 110
+            828 strings with 10988 characters,
+and the built_in function-call counts, 14479 in all, are:
+= -- 1570
+> -- 546
+< -- 9
++ -- 201
+- -- 170
+* -- 891
+:= -- 2050
+add.period$ -- 105
+call.type$ -- 28
+change.case$ -- 169
 chr.to.int$ -- 0
-cite$ -- 22
-duplicate$ -- 255
-empty$ -- 962
-format.name$ -- 88
-if$ -- 2641
+cite$ -- 29
+duplicate$ -- 376
+empty$ -- 1291
+format.name$ -- 170
+if$ -- 3676
 int.to.chr$ -- 0
-int.to.str$ -- 22
-missing$ -- 21
-newline$ -- 131
-num.names$ -- 44
-pop$ -- 199
+int.to.str$ -- 28
+missing$ -- 26
+newline$ -- 162
+num.names$ -- 56
+pop$ -- 299
 preamble$ -- 1
-purify$ -- 88
+purify$ -- 141
 quote$ -- 0
-skip$ -- 703
+skip$ -- 949
 stack$ -- 0
-substring$ -- 566
-swap$ -- 60
-text.length$ -- 30
+substring$ -- 783
+swap$ -- 119
+text.length$ -- 39
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 84
-warning$ -- 0
-while$ -- 79
-width$ -- 24
-write$ -- 280
-(There was 1 warning)
+type$ -- 108
+warning$ -- 1
+while$ -- 105
+width$ -- 30
+write$ -- 351
+(There were 2 warnings)

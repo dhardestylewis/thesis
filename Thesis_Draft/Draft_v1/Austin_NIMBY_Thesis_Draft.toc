@@ -28,14 +28,14 @@
 \contentsline {section}{\numberline {6}Qualitative Planning Context}{32}{section.6}%
 \contentsline {section}{\numberline {7}Limitations}{33}{section.7}%
 \contentsline {section}{\numberline {8}Conclusion}{34}{section.8}%
-\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{37}{appendix.A}%
-\contentsline {section}{\numberline {B}Research Project Overview}{38}{appendix.B}%
-\contentsline {section}{\numberline {C}IRB Protocol Summary}{39}{appendix.C}%
-\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{40}{appendix.D}%
-\contentsline {section}{\numberline {E}Sample Protest Petition}{41}{appendix.E}%
-\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{42}{appendix.F}%
-\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{43}{appendix.G}%
-\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{43}{subsection.G.1}%
-\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{43}{subsection.G.2}%
-\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{44}{subsection.G.3}%
-\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{44}{subsection.G.4}%
+\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{38}{appendix.A}%
+\contentsline {section}{\numberline {B}Research Project Overview}{39}{appendix.B}%
+\contentsline {section}{\numberline {C}IRB Protocol Summary}{40}{appendix.C}%
+\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{41}{appendix.D}%
+\contentsline {section}{\numberline {E}Sample Protest Petition}{42}{appendix.E}%
+\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{43}{appendix.F}%
+\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{44}{appendix.G}%
+\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{44}{subsection.G.1}%
+\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{44}{subsection.G.2}%
+\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{45}{subsection.G.3}%
+\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{45}{subsection.G.4}%

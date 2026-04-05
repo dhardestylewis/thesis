@@ -64,7 +64,7 @@ As the United States confronts a persistent housing affordability crisis, unders
 
 Against this backdrop, the central empirical question is: \textbf{can the filing of a valid protest petition against a housing development proposal be predicted before the project enters formal public hearings, using only information available at the time of filing?}
 
-The outcome under study is specific. Under Texas Local Government Code \S~211.006, adjacent property owners may file a protest petition; if signatures representing 20\% of the area of lots within 200 feet of the proposed change are collected, the petition triggers a three-quarters supermajority requirement for City Council approval. This is one institutionalized form of neighborhood opposition---the most consequential and best-measured one in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
+The outcome under study is specific. Under Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the area of lots within 200 feet of the proposed change are collected, the petition triggers a three-quarters supermajority requirement for City Council approval. This is one institutionalized form of neighborhood opposition---the most consequential and best-measured one in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
 
 To answer this question, the research constructs a sequential predictive architecture organized around four stages:
 
@@ -366,7 +366,7 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
     \label{fig:pr_curves}
 \end{figure}
 
-A comprehensive head-to-head benchmarking of alternative architectures (Random Forest, LightGBM, PyTorch TabNet, with and without SMOTE resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost was retained for the primary architecture because of its native handling of categorical variables without manual encoding and its comparative robustness to calibration drift, though the performance differences across architectures are modest.
+A comprehensive head-to-head benchmarking of alternative architectures (Random Forest, LightGBM \cite{ke2017lightgbm}, PyTorch \cite{paszke2019pytorch} TabNet \cite{arik2021tabnet}, with and without SMOTE \cite{chawla2002smote} resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost \cite{prokhorenkova2018catboost} was retained for the primary architecture because of its native handling of categorical variables without manual encoding and its comparative robustness to calibration drift, though the performance differences across architectures are modest.
 
 \vspace{1em}
 \input{Tables/alternative_architectures.tex}
