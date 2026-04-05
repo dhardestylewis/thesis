@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 13:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 13:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1057,40 +1057,39 @@ Package pdftex.def Info: Figures/Exploratory_EDA/waller_buffer_map.png  used on
 x) [12]
 [13]
 <../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png, id
-=419, 1418.1783pt x 540.5796pt>
+=419, 862.6629pt x 874.467pt>
 File: ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.pn
 g Graphic file (type png)
 <use ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png
 >
 Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/Figures/StageA
 _Figure4_Hotspot.png  used on input line 312.
-(pdftex.def)             Requested size: 375.80544pt x 143.24466pt.
+(pdftex.def)             Requested size: 375.80544pt x 380.93715pt.
  [14] [15 <../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotsp
 ot.png>]
-<Figures/Chapter4/F12_Opposition_PR.png, id=441, 638.8668pt x 494.3268pt>
+<Figures/Chapter4/F12_Opposition_PR.png, id=440, 638.8668pt x 494.3268pt>
 File: Figures/Chapter4/F12_Opposition_PR.png Graphic file (type png)
 <use Figures/Chapter4/F12_Opposition_PR.png>
 Package pdftex.def Info: Figures/Chapter4/F12_Opposition_PR.png  used on input 
 line 357.
 (pdftex.def)             Requested size: 422.77664pt x 327.13165pt.
-
+ [16]
 Overfull \hbox (17.84671pt too wide) in paragraph at lines 370--383
  [][] 
  []
 
-[16 <./Figures/Chapter4/F12_Opposition_PR.png>]
-<Figures/Chapter4/F22_Joint_Policy_Map.png, id=449, 1149.093pt x 1147.8885pt>
+[17 <./Figures/Chapter4/F12_Opposition_PR.png>]
+<Figures/Chapter4/F22_Joint_Policy_Map.png, id=453, 1149.093pt x 1147.8885pt>
 File: Figures/Chapter4/F22_Joint_Policy_Map.png Graphic file (type png)
 <use Figures/Chapter4/F22_Joint_Policy_Map.png>
 Package pdftex.def Info: Figures/Chapter4/F22_Joint_Policy_Map.png  used on inp
 ut line 391.
 (pdftex.def)             Requested size: 399.29463pt x 398.87697pt.
- [17] [18 <./Figures/Chapter4/F22_Joint_Policy_Map.png>]
+ [18 <./Figures/Chapter4/F22_Joint_Policy_Map.png>] [19]
 
-LaTeX Warning: Citation `chouldechova2017fair' on page 19 undefined on input li
+LaTeX Warning: Citation `chouldechova2017fair' on page 20 undefined on input li
 ne 441.
 
-[19]
 <Figures/Chapter4/fig_combined_calibration_reliability.pdf, id=466, 1289.03212p
 t x 385.39355pt>
 File: Figures/Chapter4/fig_combined_calibration_reliability.pdf Graphic file (t
@@ -1099,7 +1098,7 @@ ype pdf)
 Package pdftex.def Info: Figures/Chapter4/fig_combined_calibration_reliability.
 pdf  used on input line 447.
 (pdftex.def)             Requested size: 469.75502pt x 140.44695pt.
- (Tables/multi_horizon_results.tex
+(Tables/multi_horizon_results.tex
 Overfull \hbox (20.46599pt too wide) in paragraph at lines 6--17
  [][] 
  []
@@ -1109,8 +1108,8 @@ Overfull \hbox (104.45471pt too wide) in paragraph at lines 6--30
  [][] 
  []
 
-) [20 <./Figures/Chapter4/fig_combined_calibration_reliability.pdf>] [21]
-<Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf, id=570, 505.89pt x 361.35pt
+[20 <./Figures/Chapter4/fig_combined_calibration_reliability.pdf>])
+<Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf, id=566, 505.89pt x 361.35pt
 >
 File: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
 
@@ -1118,7 +1117,7 @@ File: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf  use
 d on input line 468.
 (pdftex.def)             Requested size: 225.4804pt x 161.05663pt.
-<Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf, id=571, 578.16pt x 361.35pt
+<Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf, id=567, 578.16pt x 361.35pt
 >
 File: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
 
@@ -1126,6 +1125,7 @@ File: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf  use
 d on input line 475.
 (pdftex.def)             Requested size: 225.4804pt x 140.92041pt.
+ [21]
 <Figures/Track1_Exhibits/fig_feature_importance_clustered_H0.pdf, id=573, 794.9
 7pt x 578.16pt>
 File: Figures/Track1_Exhibits/fig_feature_importance_clustered_H0.pdf Graphic f
@@ -1282,6 +1282,9 @@ L3 programming layer <2025-12-24>
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `Austin_NIMBY_Thesis_Draft.out' has not chang
 ed.
 (rerunfilecheck)             Checksum: 6794D016B5A27A45B582FE3123E2A3AF;9349.
@@ -1289,7 +1292,7 @@ ed.
 Here is how much of TeX's memory you used:
  26642 strings out of 467871
  500258 string characters out of 5419344
- 909123 words of memory out of 5000000
+ 909577 words of memory out of 5000000
  54682 multiletter control sequences out of 15000+600000
  729600 words of font info for 228 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1329,7 +1332,7 @@ eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (42 pages, 41265372 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (42 pages, 39877109 bytes).
 PDF statistics:
  1741 PDF objects out of 2073 (max. 8388607)
  132 named destinations out of 1000 (max. 500000)

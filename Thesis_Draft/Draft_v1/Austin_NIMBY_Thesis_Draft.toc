@@ -12,13 +12,13 @@
 \contentsline {section}{\numberline {4}Predictive Architecture}{14}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Development Occurrence}{14}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Project Type and Scale}{15}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Opposition Risk}{15}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Political Outcome}{16}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Expected Contested Units}{17}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.3}Opposition Risk}{16}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Political Outcome}{17}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Expected Contested Units}{18}{subsection.4.5}%
 \contentsline {subsection}{\numberline {4.6}Model Evaluation Strategy}{18}{subsection.4.6}%
 \contentsline {section}{\numberline {5}Results}{19}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{19}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{22}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{21}{subsection.5.2}%
 \contentsline {subsection}{\numberline {5.3}Pre-Council Attrition}{22}{subsection.5.3}%
 \contentsline {subsection}{\numberline {5.4}Regression Discontinuity: The 20\% Petition Threshold}{26}{subsection.5.4}%
 \contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{27}{subsection.5.5}%
