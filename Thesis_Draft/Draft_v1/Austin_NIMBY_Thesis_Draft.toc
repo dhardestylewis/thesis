@@ -14,29 +14,29 @@
 \contentsline {subsection}{\numberline {4.2}Project Type and Scale}{17}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Opposition Risk}{17}{subsection.4.3}%
 \contentsline {subsection}{\numberline {4.4}Political Outcome}{18}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Expected Contested Units}{19}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Model Evaluation Strategy}{20}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Results}{21}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{21}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{23}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Pre-Council Attrition}{24}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Regression Discontinuity: The 20\% Petition Threshold}{27}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{28}{subsection.5.5}%
-\contentsline {subsection}{\numberline {5.6}2022 Electoral Transition (Difference-in-Differences)}{29}{subsection.5.6}%
-\contentsline {subsection}{\numberline {5.7}Institutional Geographic Overlays}{30}{subsection.5.7}%
-\contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{31}{subsection.5.8}%
-\contentsline {section}{\numberline {6}Qualitative Planning Context}{31}{section.6}%
-\contentsline {section}{\numberline {7}Limitations}{32}{section.7}%
-\contentsline {section}{\numberline {8}Conclusion}{33}{section.8}%
-\contentsline {section}{References}{35}{section*.30}%
-\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{38}{appendix.A}%
-\contentsline {section}{\numberline {B}Research Project Overview}{39}{appendix.B}%
-\contentsline {section}{\numberline {C}IRB Protocol Summary}{40}{appendix.C}%
-\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{41}{appendix.D}%
-\contentsline {section}{\numberline {E}Sample Protest Petition}{42}{appendix.E}%
-\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{43}{appendix.F}%
-\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{44}{appendix.G}%
-\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{44}{subsection.G.1}%
-\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{44}{subsection.G.2}%
-\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{45}{subsection.G.3}%
-\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{45}{subsection.G.4}%
+\contentsline {subsection}{\numberline {4.5}Expected Contested Units}{20}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Model Evaluation Strategy}{21}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Results}{22}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{22}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{24}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Pre-Council Attrition}{25}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Regression Discontinuity: The 20\% Petition Threshold}{28}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{29}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}2022 Electoral Transition (Difference-in-Differences)}{30}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Institutional Geographic Overlays}{31}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{32}{subsection.5.8}%
+\contentsline {section}{\numberline {6}Qualitative Planning Context}{32}{section.6}%
+\contentsline {section}{\numberline {7}Limitations}{33}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{34}{section.8}%
+\contentsline {section}{References}{36}{section*.30}%
+\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{39}{appendix.A}%
+\contentsline {section}{\numberline {B}Research Project Overview}{40}{appendix.B}%
+\contentsline {section}{\numberline {C}IRB Protocol Summary}{41}{appendix.C}%
+\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{42}{appendix.D}%
+\contentsline {section}{\numberline {E}Sample Protest Petition}{43}{appendix.E}%
+\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{44}{appendix.F}%
+\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{45}{appendix.G}%
+\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{45}{subsection.G.1}%
+\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{45}{subsection.G.2}%
+\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{46}{subsection.G.3}%
+\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{46}{subsection.G.4}%
