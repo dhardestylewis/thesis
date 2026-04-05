@@ -5,7 +5,7 @@
 \contentsline {subsection}{\numberline {2.3}The Prediction Policy Problem in Spatial Planning}{8}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Evaluative Constraints on Predictive Governance}{9}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Data and Methods}{9}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Data Warehouse Structure}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.1}Analytical Panel Structure}{9}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Case Universe and Sample Filtration}{11}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{13}{subsection.3.3}%
 \contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{13}{subsection.3.4}%

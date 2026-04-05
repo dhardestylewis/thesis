@@ -27,9 +27,9 @@ The application of machine learning to predict political behavior raises questio
 To separate correlation from causality, this thesis draws from the event-study literature to rigorously test legislative shocks \cite{callaway2021difference}. Rather than relying on simple difference-in-differences, explicit date-driven staggered adoption parameters are applied. Additionally, to test extrapolation stability against concept drift over time, Out-of-Distribution methods such as Variance Risk Extrapolation (V-REx) \cite{krueger2021} and Bayesian Invariant Prediction \cite{wu2025bayesian} are implemented. However, they are treated strictly as predictive robustness checks rather than mechanisms for deriving absolute causal mechanisms from purely associative data.
 
 \section*{3. Mixed-Methods Data and Methodology}
-Instead of relying on an unstructured cross-sectional panel that permits implicit chronological overlap, the empirical foundation necessitates a clean, time-stamped data warehouse. Every record across all integrated sources automatically anchors to an explicit "as-of" timestamp, allowing the system to historically reconstruct exactly what data was mathematically knowable at each discrete forecast point. This prevents temporal leakage, ensuring that backtests utilize exclusively the Census or county appraisal limits released prior to the historical prediction application date.
+Instead of relying on an unstructured cross-sectional panel that permits implicit chronological overlap, the empirical foundation necessitates a clean, time-stamped spatial panel dataset. Every record across all integrated sources automatically anchors to an explicit "as-of" timestamp, allowing the system to historically reconstruct exactly what data was mathematically knowable at each discrete forecast point. This prevents temporal leakage, ensuring that backtests utilize exclusively the Census or county appraisal limits released prior to the historical prediction application date.
 
-\subsection*{3.1 Data Warehouse Structure}
+\subsection*{3.1 Analytical Panel Structure}
 The core tables comprising the central relational warehouse include:
 \begin{enumerate}
     \item \textbf{case\_master:} Case ID, nested dates (filing, notice, petition deadline, planning commission, council, withdrawal), requested zoning changes, unit limits, target FAR, status disposition.

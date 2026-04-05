@@ -129,9 +129,9 @@ Consequently, the viability of algorithmic prediction in spatial planning is con
 
 \section{Data and Methods}
 
-The empirical foundation is a time-stamped relational data warehouse that reconstructs what information was available at each historical prediction point. Every record anchors to an explicit as-of date, ensuring that backtests use only Census releases, appraisal rolls, and case documents published before the prediction date.
+The empirical foundation is a time-stamped spatial panel dataset that reconstructs what information was available at each historical prediction point. Every record anchors to an explicit as-of date, ensuring that backtests use only Census releases, appraisal rolls, and case documents published before the prediction date.
 
-\subsection{Data Warehouse Structure}
+\subsection{Analytical Panel Structure}
 
 The core analytics rely on the enriched filing-date master table, a consolidated structural matrix used by the predictive orchestrator that merges spatial and demographic variables into single parcel-year observations:
 \begin{enumerate}

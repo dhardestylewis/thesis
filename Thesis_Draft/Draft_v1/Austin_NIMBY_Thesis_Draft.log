@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 13:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 13:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1151,7 +1151,7 @@ Overfull \hbox (51.21436pt too wide) in paragraph at lines 578--579
  []
 
 [25] [26]
-<Figures/Chapter5/F16_Petition_RD.png, id=850, 566.5968pt x 422.0568pt>
+<Figures/Chapter5/F16_Petition_RD.png, id=821, 566.5968pt x 422.0568pt>
 File: Figures/Chapter5/F16_Petition_RD.png Graphic file (type png)
 <use Figures/Chapter5/F16_Petition_RD.png>
 Package pdftex.def Info: Figures/Chapter5/F16_Petition_RD.png  used on input li
@@ -1167,7 +1167,7 @@ LaTeX Warning: Citation `cinelli2020making' on page 27 undefined on input line
 604.
 
 [27 <./Figures/Chapter5/F16_Petition_RD.png>]
-<Figures/Chapter5/F17_HOME_EventStudy.png, id=856, 722.7pt x 433.62pt>
+<Figures/Chapter5/F17_HOME_EventStudy.png, id=827, 722.7pt x 433.62pt>
 File: Figures/Chapter5/F17_HOME_EventStudy.png Graphic file (type png)
 <use Figures/Chapter5/F17_HOME_EventStudy.png>
 Package pdftex.def Info: Figures/Chapter5/F17_HOME_EventStudy.png  used on inpu
@@ -1192,7 +1192,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
  [29]
 [30]
-<Figures/Chapter4/F23_Spatial_Error.png, id=873, 1146.9249pt x 568.7649pt>
+<Figures/Chapter4/F23_Spatial_Error.png, id=844, 1146.9249pt x 568.7649pt>
 File: Figures/Chapter4/F23_Spatial_Error.png Graphic file (type png)
 <use Figures/Chapter4/F23_Spatial_Error.png>
 Package pdftex.def Info: Figures/Chapter4/F23_Spatial_Error.png  used on input 
@@ -1205,7 +1205,7 @@ No file Austin_NIMBY_Thesis_Draft.bbl.
 LaTeX Warning: Reference `sec:results' on page 33 undefined on input line 731.
 
 (Tables/calibration_benchmark.tex) [33]
-<Figures/Qualitative_Appendix/project_overview.pdf, id=888, page=1, 614.295pt x
+<Figures/Qualitative_Appendix/project_overview.pdf, id=859, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/project_overview.pdf Graphic file (type pdf)
 
@@ -1214,7 +1214,7 @@ Package pdftex.def Info: Figures/Qualitative_Appendix/project_overview.pdf , pa
 ge1 used on input line 746.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
  [34 <./Figures/Qualitative_Appendix/project_overview.pdf>]
-<Figures/Qualitative_Appendix/protocol_summary.pdf, id=1134, page=1, 614.295pt 
+<Figures/Qualitative_Appendix/protocol_summary.pdf, id=1105, page=1, 614.295pt 
 x 794.97pt>
 File: Figures/Qualitative_Appendix/protocol_summary.pdf Graphic file (type pdf)
 
@@ -1223,7 +1223,7 @@ Package pdftex.def Info: Figures/Qualitative_Appendix/protocol_summary.pdf , pa
 ge1 used on input line 758.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
  [35 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
-<Figures/Qualitative_Appendix/interview_guide.pdf, id=1380, page=1, 614.295pt x
+<Figures/Qualitative_Appendix/interview_guide.pdf, id=1351, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/interview_guide.pdf Graphic file (type pdf)
 <use Figures/Qualitative_Appendix/interview_guide.pdf, page 1>
@@ -1236,7 +1236,7 @@ e1 used on input line 768.
 pdfTeX warning: pdflatex.exe (file ./Figures/Qualitative_Appendix/sample_protes
 t_petition.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1
 .5> allowed
-<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1574, page=1, 614
+<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1545, page=1, 614
 .295pt x 794.97pt>
 File: Figures/Qualitative_Appendix/sample_protest_petition.pdf Graphic file (ty
 pe pdf)
@@ -1251,21 +1251,21 @@ h_gap  prop_med_rent  case_white_pct[]
  []
 
 [38]
-<Figures/Fig10_Hyperparameter_Sweeps.png, id=1590, 846.0408pt x 349.7868pt>
+<Figures/Fig10_Hyperparameter_Sweeps.png, id=1561, 846.0408pt x 349.7868pt>
 File: Figures/Fig10_Hyperparameter_Sweeps.png Graphic file (type png)
 <use Figures/Fig10_Hyperparameter_Sweeps.png>
 Package pdftex.def Info: Figures/Fig10_Hyperparameter_Sweeps.png  used on input
  line 825.
 (pdftex.def)             Requested size: 469.75502pt x 194.21404pt.
  [39 <./Figures/Fig10_Hyperparameter_Sweeps.png>] [40]
-<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1605, 792.0792pt x 566.5968pt
+<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1576, 792.0792pt x 566.5968pt
 >
 File: Figures/Chapter6/F20_Stakeholder_Heatmap.png Graphic file (type png)
 <use Figures/Chapter6/F20_Stakeholder_Heatmap.png>
 Package pdftex.def Info: Figures/Chapter6/F20_Stakeholder_Heatmap.png  used on 
 input line 861.
 (pdftex.def)             Requested size: 399.29463pt x 285.632pt.
-<Figures/Chapter6/F19_TextFrame_Composition.png, id=1606, 711.1368pt x 422.0568
+<Figures/Chapter6/F19_TextFrame_Composition.png, id=1577, 711.1368pt x 422.0568
 pt>
 File: Figures/Chapter6/F19_TextFrame_Composition.png Graphic file (type png)
 <use Figures/Chapter6/F19_TextFrame_Composition.png>
@@ -1283,11 +1283,14 @@ L3 programming layer <2025-12-24>
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+Package rerunfilecheck Warning: File `Austin_NIMBY_Thesis_Draft.out' has change
+d.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
 
-Package rerunfilecheck Info: File `Austin_NIMBY_Thesis_Draft.out' has not chang
-ed.
-(rerunfilecheck)             Checksum: 6794D016B5A27A45B582FE3123E2A3AF;9349.
+Package rerunfilecheck Info: Checksums for `Austin_NIMBY_Thesis_Draft.out':
+(rerunfilecheck)             Before: 6794D016B5A27A45B582FE3123E2A3AF;9349
+(rerunfilecheck)             After:  5EB99C2A41D4AEF0F3057FB0036DD02B;9359.
  ) 
 Here is how much of TeX's memory you used:
  26642 strings out of 467871
@@ -1332,9 +1335,9 @@ eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (42 pages, 39877109 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (42 pages, 39867965 bytes).
 PDF statistics:
- 1741 PDF objects out of 2073 (max. 8388607)
+ 1712 PDF objects out of 1728 (max. 8388607)
  132 named destinations out of 1000 (max. 500000)
  55753 words of extra memory for PDF output out of 61914 (max. 10000000)
 
