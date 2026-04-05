@@ -1,19 +1,19 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$).}}{10}{figure.caption.2}%
-\contentsline {figure}{\numberline {2}{\ignorespaces 200ft parcel buffer geometries used for formal TCAD appraisal aggregation and generating spatial petition targets.}}{11}{figure.caption.4}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Austin municipal zoning process.}}{12}{figure.caption.5}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Development hazard classification precision-recall curves across evaluation horizons.}}{15}{figure.caption.9}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Ex-ante predicted hotspot density vs.\ realized development events.}}{16}{figure.caption.11}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Opposition risk precision-recall curves by model architecture:}}{18}{figure.caption.13}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Joint expected petition probability:}}{20}{figure.caption.16}%
-\contentsline {figure}{\numberline {8}{\ignorespaces textbf{Global Model Calibration:} Parallel evaluation of calibration reliability and capture curves across the Stage ...}}{22}{figure.caption.18}%
-\contentsline {figure}{\numberline {9}{\ignorespaces textbf{Out-of-Distribution Model Degradation:} (a) Predictive performance decay across temporal offsets.}}{23}{figure.caption.20}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$).}}{24}{figure.caption.21}%
-\contentsline {figure}{\numberline {11}{\ignorespaces SHAP beeswarm plot for the opposition model at the filing baseline.}}{25}{figure.caption.22}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis.}}{27}{figure.caption.24}%
-\contentsline {figure}{\numberline {13}{\ignorespaces Regression discontinuity at the 20\% valid petition threshold.}}{28}{figure.caption.25}%
-\contentsline {figure}{\numberline {14}{\ignorespaces HOME Phase 1 event-study coefficients relative to the implementation date.}}{29}{figure.caption.26}%
-\contentsline {figure}{\numberline {15}{\ignorespaces 2022 Electoral Transition Outcomes:}}{30}{figure.caption.27}%
-\contentsline {figure}{\numberline {16}{\ignorespaces Geographic distribution of false positive predictions (right) against actual petition filings (left).}}{33}{figure.caption.29}%
-\contentsline {figure}{\numberline {17}{\ignorespaces textbf{Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and lear...}}{44}{figure.caption.32}%
-\contentsline {figure}{\numberline {18}{\ignorespaces Mean predicted probability of each argument frame by Council District.}}{46}{figure.caption.33}%
-\contentsline {figure}{\numberline {19}{\ignorespaces Mean predicted argument-frame probability for cases with a valid protest petition filed (Opposed) versus cases withou...}}{47}{figure.caption.34}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$)}}{10}{figure.caption.2}%
+\contentsline {figure}{\numberline {2}{\ignorespaces 200ft parcel buffer geometries used for formal TCAD appraisal aggregation and generating spatial petition targets}}{11}{figure.caption.4}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Austin municipal zoning process}}{12}{figure.caption.5}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Development hazard classification precision-recall curves across evaluation horizons}}{15}{figure.caption.9}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Ex-ante predicted hotspot density vs.\ realized development events}}{16}{figure.caption.11}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Opposition risk precision-recall curves by model architecture}}{18}{figure.caption.13}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Joint expected petition probability}}{20}{figure.caption.16}%
+\contentsline {figure}{\numberline {8}{\ignorespaces {Global Model Calibration:} Parallel evaluation of calibration reliability and capture curves across the Stage}}{22}{figure.caption.18}%
+\contentsline {figure}{\numberline {9}{\ignorespaces {Out-of-Distribution Model Degradation:} (a) Predictive performance decay across temporal offsets}}{23}{figure.caption.20}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$)}}{24}{figure.caption.21}%
+\contentsline {figure}{\numberline {11}{\ignorespaces SHAP beeswarm plot for the opposition model at the filing baseline}}{25}{figure.caption.22}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis}}{27}{figure.caption.24}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Regression discontinuity at the 20\% valid petition threshold}}{28}{figure.caption.25}%
+\contentsline {figure}{\numberline {14}{\ignorespaces HOME Phase 1 event-study coefficients relative to the implementation date}}{29}{figure.caption.26}%
+\contentsline {figure}{\numberline {15}{\ignorespaces 2022 Electoral Transition Outcomes}}{30}{figure.caption.27}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Geographic distribution of false positive predictions (right) against actual petition filings (left)}}{33}{figure.caption.29}%
+\contentsline {figure}{\numberline {17}{\ignorespaces {Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and lear}}{44}{figure.caption.32}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Mean predicted probability of each argument frame by Council District}}{46}{figure.caption.33}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Mean predicted argument-frame probability for cases with a valid protest petition filed (Opposed) versus cases withou}}{47}{figure.caption.34}%
