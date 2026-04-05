@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 14:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  5 APR 2026 14:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1107,8 +1107,15 @@ Package pdftex.def Info: Figures/Chapter5/F17_HOME_EventStudy.png  used on inpu
 t line 617.
 (pdftex.def)             Requested size: 399.29463pt x 239.57684pt.
  [30 <./Figures/Chapter5/F17_HOME_EventStudy.png>]
+<Figures/Chapter5/fig_causal_context_did.png, id=875, 417.9615pt x 485.8953pt>
+File: Figures/Chapter5/fig_causal_context_did.png Graphic file (type png)
+<use Figures/Chapter5/fig_causal_context_did.png>
+Package pdftex.def Info: Figures/Chapter5/fig_causal_context_did.png  used on i
+nput line 635.
+(pdftex.def)             Requested size: 352.31625pt x 409.60243pt.
+ [31 <./Figures/Chapter5/fig_causal_context_did.png>]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 6
-56.
+63.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -1117,9 +1124,9 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [31]
+
 ! Undefined control sequence.
-l.666 ...ons (ECE increasing from \metricECEFiling
+l.673 ...ons (ECE increasing from \metricECEFiling
                                                   {} at filing to \metricECE...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1128,7 +1135,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.666 ...iling{} at filing to \metricECEPreCouncil
+l.673 ...iling{} at filing to \metricECEPreCouncil
                                                   {} pre-council) aligns wit...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1136,92 +1143,93 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-<Figures/Chapter4/F23_Spatial_Error.png, id=885, 1146.9249pt x 568.7649pt>
+[32]
+<Figures/Chapter4/F23_Spatial_Error.png, id=893, 1146.9249pt x 568.7649pt>
 File: Figures/Chapter4/F23_Spatial_Error.png Graphic file (type png)
 <use Figures/Chapter4/F23_Spatial_Error.png>
 Package pdftex.def Info: Figures/Chapter4/F23_Spatial_Error.png  used on input 
-line 694.
+line 701.
 (pdftex.def)             Requested size: 446.26582pt x 221.30537pt.
-[32] [33 <./Figures/Chapter4/F23_Spatial_Error.png>]
+ [33] [34 <./Figures/Chapter4/F23_Spatial_Error.png>]
 (Austin_NIMBY_Thesis_Draft.bbl
 Underfull \hbox (badness 1681) in paragraph at lines 4--9
 []\T1/lmr/m/n/10.95 (+20) Susan Athey and Guido W. Im-bens.  Ma-chine learn-ing
  meth-ods that economists
  []
 
-[34]) [35]
+[35]) [36]
 
-LaTeX Warning: Reference `sec:results' on page 36 undefined on input line 721.
+LaTeX Warning: Reference `sec:results' on page 37 undefined on input line 728.
 
-(Tables/calibration_benchmark.tex) [36]
-<Figures/Qualitative_Appendix/project_overview.pdf, id=927, page=1, 614.295pt x
+(Tables/calibration_benchmark.tex) [37]
+<Figures/Qualitative_Appendix/project_overview.pdf, id=938, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/project_overview.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/project_overview.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/project_overview.pdf , pa
-ge1 used on input line 736.
+ge1 used on input line 743.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [37 <./Figures/Qualitative_Appendix/project_overview.pdf>]
-<Figures/Qualitative_Appendix/protocol_summary.pdf, id=1174, page=1, 614.295pt 
+ [38 <./Figures/Qualitative_Appendix/project_overview.pdf>]
+<Figures/Qualitative_Appendix/protocol_summary.pdf, id=1184, page=1, 614.295pt 
 x 794.97pt>
 File: Figures/Qualitative_Appendix/protocol_summary.pdf Graphic file (type pdf)
 
 <use Figures/Qualitative_Appendix/protocol_summary.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/protocol_summary.pdf , pa
-ge1 used on input line 748.
+ge1 used on input line 755.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [38 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
-<Figures/Qualitative_Appendix/interview_guide.pdf, id=1420, page=1, 614.295pt x
+ [39 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
+<Figures/Qualitative_Appendix/interview_guide.pdf, id=1430, page=1, 614.295pt x
  794.97pt>
 File: Figures/Qualitative_Appendix/interview_guide.pdf Graphic file (type pdf)
 <use Figures/Qualitative_Appendix/interview_guide.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/interview_guide.pdf , pag
-e1 used on input line 758.
+e1 used on input line 765.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
 
-[39 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
+[40 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./Figures/Qualitative_Appendix/sample_protes
 t_petition.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1
 .5> allowed
-<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1614, page=1, 614
+<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=1624, page=1, 614
 .295pt x 794.97pt>
 File: Figures/Qualitative_Appendix/sample_protest_petition.pdf Graphic file (ty
 pe pdf)
 <use Figures/Qualitative_Appendix/sample_protest_petition.pdf, page 1>
 Package pdftex.def Info: Figures/Qualitative_Appendix/sample_protest_petition.p
-df , page1 used on input line 768.
+df , page1 used on input line 775.
 (pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
-[40 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
-Overfull \hbox (39.4935pt too wide) in paragraph at lines 789--789
+[41 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
+Overfull \hbox (39.4935pt too wide) in paragraph at lines 796--796
 []\T1/lmtt/m/n/10 parcel_id     year  protest_buffer  owner_exempt  tract_wealt
 h_gap  prop_med_rent  case_white_pct[] 
  []
 
-[41]
-<Figures/Fig10_Hyperparameter_Sweeps.png, id=1629, 846.0408pt x 349.7868pt>
+[42]
+<Figures/Fig10_Hyperparameter_Sweeps.png, id=1639, 846.0408pt x 349.7868pt>
 File: Figures/Fig10_Hyperparameter_Sweeps.png Graphic file (type png)
 <use Figures/Fig10_Hyperparameter_Sweeps.png>
 Package pdftex.def Info: Figures/Fig10_Hyperparameter_Sweeps.png  used on input
- line 815.
+ line 822.
 (pdftex.def)             Requested size: 469.75502pt x 194.21404pt.
- [42 <./Figures/Fig10_Hyperparameter_Sweeps.png>] [43]
-<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1645, 792.0792pt x 566.5968pt
+ [43 <./Figures/Fig10_Hyperparameter_Sweeps.png>] [44]
+<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=1655, 792.0792pt x 566.5968pt
 >
 File: Figures/Chapter6/F20_Stakeholder_Heatmap.png Graphic file (type png)
 <use Figures/Chapter6/F20_Stakeholder_Heatmap.png>
 Package pdftex.def Info: Figures/Chapter6/F20_Stakeholder_Heatmap.png  used on 
-input line 851.
+input line 858.
 (pdftex.def)             Requested size: 399.29463pt x 285.632pt.
-<Figures/Chapter6/F19_TextFrame_Composition.png, id=1646, 711.1368pt x 422.0568
+<Figures/Chapter6/F19_TextFrame_Composition.png, id=1656, 711.1368pt x 422.0568
 pt>
 File: Figures/Chapter6/F19_TextFrame_Composition.png Graphic file (type png)
 <use Figures/Chapter6/F19_TextFrame_Composition.png>
 Package pdftex.def Info: Figures/Chapter6/F19_TextFrame_Composition.png  used o
-n input line 858.
+n input line 865.
 (pdftex.def)             Requested size: 399.29463pt x 236.98131pt.
- [44 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [45 <./Figures/Chapter6/
+ [45 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [46 <./Figures/Chapter6/
 F19_TextFrame_Composition.png>] (Austin_NIMBY_Thesis_Draft.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -1231,15 +1239,18 @@ L3 programming layer <2025-12-24>
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `Austin_NIMBY_Thesis_Draft.out' has not chang
 ed.
 (rerunfilecheck)             Checksum: F5A73D9A77E5858DA25141EE882BF2EF;8885.
  ) 
 Here is how much of TeX's memory you used:
- 26698 strings out of 467871
- 501746 string characters out of 5419344
+ 26714 strings out of 467871
+ 502286 string characters out of 5419344
  913799 words of memory out of 5000000
- 54712 multiletter control sequences out of 15000+600000
+ 54722 multiletter control sequences out of 15000+600000
  729802 words of font info for 229 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,104p,2381b,846s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1258,6 +1269,22 @@ pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
 
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
 , replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.29} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.27} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.30} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.28} has been referenced but does not
+ exist, replaced by a fixed one
 
 <C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C
 :/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/
@@ -1278,9 +1305,9 @@ eX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (45 pages, 40056553 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (46 pages, 40245672 bytes).
 PDF statistics:
- 1786 PDF objects out of 2073 (max. 8388607)
- 153 named destinations out of 1000 (max. 500000)
- 55742 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 1798 PDF objects out of 2073 (max. 8388607)
+ 159 named destinations out of 1000 (max. 500000)
+ 55747 words of extra memory for PDF output out of 61914 (max. 10000000)
 

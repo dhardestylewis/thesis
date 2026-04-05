@@ -24,18 +24,18 @@
 \contentsline {subsection}{\numberline {5.5}Event Studies: HOME Initiative and HB~24}{29}{subsection.5.5}%
 \contentsline {subsection}{\numberline {5.6}2022 Electoral Transition (Difference-in-Differences)}{30}{subsection.5.6}%
 \contentsline {subsection}{\numberline {5.7}Institutional Geographic Overlays}{30}{subsection.5.7}%
-\contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{31}{subsection.5.8}%
-\contentsline {section}{\numberline {6}Qualitative Planning Context}{31}{section.6}%
-\contentsline {section}{\numberline {7}Limitations}{32}{section.7}%
-\contentsline {section}{\numberline {8}Conclusion}{33}{section.8}%
-\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{36}{appendix.A}%
-\contentsline {section}{\numberline {B}Research Project Overview}{37}{appendix.B}%
-\contentsline {section}{\numberline {C}IRB Protocol Summary}{38}{appendix.C}%
-\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{39}{appendix.D}%
-\contentsline {section}{\numberline {E}Sample Protest Petition}{40}{appendix.E}%
-\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{41}{appendix.F}%
-\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{42}{appendix.G}%
-\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{42}{subsection.G.1}%
-\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{42}{subsection.G.2}%
-\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{43}{subsection.G.3}%
-\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{43}{subsection.G.4}%
+\contentsline {subsection}{\numberline {5.8}Invariant Causal Prediction (ICP)}{32}{subsection.5.8}%
+\contentsline {section}{\numberline {6}Qualitative Planning Context}{32}{section.6}%
+\contentsline {section}{\numberline {7}Limitations}{33}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{34}{section.8}%
+\contentsline {section}{\numberline {A}Alternative Machine Learning Architectures}{37}{appendix.A}%
+\contentsline {section}{\numberline {B}Research Project Overview}{38}{appendix.B}%
+\contentsline {section}{\numberline {C}IRB Protocol Summary}{39}{appendix.C}%
+\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{40}{appendix.D}%
+\contentsline {section}{\numberline {E}Sample Protest Petition}{41}{appendix.E}%
+\contentsline {section}{\numberline {F}Temporal Panel Data Structure}{42}{appendix.F}%
+\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{43}{appendix.G}%
+\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{43}{subsection.G.1}%
+\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{43}{subsection.G.2}%
+\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{44}{subsection.G.3}%
+\contentsline {subsection}{\numberline {G.4}Natural Language Processing Architecture: Exploratory Text Features}{44}{subsection.G.4}%
