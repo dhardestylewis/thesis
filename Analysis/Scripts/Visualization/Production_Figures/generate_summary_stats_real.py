@@ -25,7 +25,7 @@ def generate_summary_stats():
         'Requested FAR Delta': 'delta_max_far',
         'Requested Bldg Cov Delta (\\%)': 'delta_max_bldg_cov_pct',
         'Filing Year': 'year',
-        'Organized Opposition (Binary)': 'is_protested'
+        'Petition Filing (Binary)': 'is_protested'
     }
 
     results = []
@@ -45,7 +45,7 @@ def generate_summary_stats():
             # Dynamically select significant digits based on metric class
             if label == 'Filing Year':
                 fmt = f"{label} & {fmt_count} & {mean:.1f} & {std:.2f} & {int(min_val)} & {int(median)} & {int(max_val)} \\\\"
-            elif label == 'Organized Opposition (Binary)':
+            elif label == 'Petition Filing (Binary)':
                 fmt = f"{label} & {fmt_count} & {mean:.2f} & {std:.2f} & {int(min_val)} & {int(median)} & {int(max_val)} \\\\"
             elif label == 'Requested Height Delta (ft)':
                 fmt = f"{label} & {fmt_count} & {mean:.1f} & {std:.1f} & {int(min_val)} & {int(median)} & {int(max_val)} \\\\"

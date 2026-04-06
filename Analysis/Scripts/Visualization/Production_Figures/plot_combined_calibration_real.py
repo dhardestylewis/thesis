@@ -35,7 +35,7 @@ def plot_combined_calibration():
         print("[-] Required predictive data not found.")
         return
 
-    # ── Load Stage A ──────────────────────────────────────────────────
+    # ── Load Development-Proposal Model ──────────────────────────────────────────────────
     df_a = pd.read_csv(STAGE_A_OUT,
                        usecols=['event_next_1yr', 'Prob_LR_H=4', 'Prob_Optimal_H=4'])
     y_true_a = df_a['event_next_1yr']
@@ -79,19 +79,19 @@ def plot_combined_calibration():
     # ── Build 1×3 grid ────────────────────────────────────────────────
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5.5))
 
-    # Panel (a): Stage A Reliability Diagram
+    # Panel (a): Development-Proposal Model Reliability Diagram
     ax1.plot([0, 1], [0, 1], 'k--', label='Perfect Calibration')
     ax1.plot(prob_pred_opt, prob_true_opt, marker='o', lw=2,
              color='darkblue', label=f'{optimal_name_a} (V-REx)')
     ax1.plot(prob_pred_lr_a, prob_true_lr_a, marker='s', linestyle=':',
              color='gray', label='Logistic Baseline')
-    ax1.set_title("(a) Stage A: Calibration Reliability")
+    ax1.set_title("(a)  Calibration Reliability")
     ax1.set_xlabel("Mean Predicted Probability")
     ax1.set_ylabel("Fraction of Positives")
     ax1.legend(fontsize=9)
     ax1.grid(True, alpha=0.3)
 
-    # Panel (b): Stage A Capture Curve (Gains)
+    # Panel (b): Development-Proposal Model Capture Curve (Gains)
     df_sort_opt = df_a.sort_values('Prob_Optimal_H=4', ascending=False).reset_index(drop=True)
     df_sort_opt['cum'] = df_sort_opt['event_next_1yr'].cumsum()
     df_sort_lr = df_a.sort_values('Prob_LR_H=4', ascending=False).reset_index(drop=True)
@@ -105,7 +105,7 @@ def plot_combined_calibration():
     ax2.plot(pcts, (df_sort_lr['cum'] / total_ev) * 100,
              linestyle='--', color='gray', label='Logistic Capture')
     ax2.plot([0, 100], [0, 100], linestyle=':', color='black', label='Random Baseline')
-    ax2.set_title("(b) Stage A: Capture Curve (Gains Rate)")
+    ax2.set_title("(b)  Capture Curve (Gains Rate)")
     ax2.set_xlabel("Top Percentile of Ranked Sites")
     ax2.set_ylabel("% of Realized Events Captured")
     ax2.legend(fontsize=9)
@@ -116,7 +116,7 @@ def plot_combined_calibration():
     for label, (pt, pp) in cal_c.items():
         s = STYLE_C[label]
         ax3.plot(pp, pt, label=label, **s)
-    ax3.set_title("(c) Stage C: Opposition Reliability (H0)")
+    ax3.set_title("(c)  Petition-Filing Reliability")
     ax3.set_xlabel("Mean Predicted Probability")
     ax3.set_ylabel("Fraction of Positives")
     ax3.legend(fontsize=8, loc='upper left')

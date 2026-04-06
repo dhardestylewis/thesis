@@ -7,10 +7,10 @@ import contextily as cx
 
 sys.path.insert(0, os.path.join(r"C:\Users\dhl\data\thesis\thesis", "Analysis", "Scripts"))
 from artifact_registry import TraceabilityRegistry as AR
-from thesis_style import apply_thesis_style, OKABE_ITO
+from thesis_style import set_thesis_style, OKABE_ITO
 
 def generate_spatial_error_map():
-    apply_thesis_style()
+    set_thesis_style()
     
     PREDS_FILE = str(AR.STAGE_C_OOF_H0)
     DATA_FILE = os.path.join(r"C:\Users\dhl\data\thesis\thesis\Data\Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
@@ -51,7 +51,7 @@ def generate_spatial_error_map():
     # Panel 1: True Positives (Where organized opposition actually happens)
     ax1 = axes[0]
     tp = df[df['error_type'] == 'True Positive']
-    ax1.scatter(tp['longitude'], tp['latitude'], c=OKABE_ITO['blue'], alpha=0.6, s=25, zorder=2, label='Actual Localized Protests')
+    ax1.scatter(tp['longitude'], tp['latitude'], c=OKABE_ITO[4], alpha=0.6, s=25, zorder=2, label='Actual Localized Protests')
     
     try:
         cx.add_basemap(ax1, crs="EPSG:4326", source=cx.providers.CartoDB.PositronNoLabels, zorder=1)
@@ -67,10 +67,12 @@ def generate_spatial_error_map():
     # Panel 2: False Positives (Where the model legally overpenalizes)
     ax2 = axes[1]
     fp = df[df['error_type'] == 'False Positive']
-    ax2.scatter(fp['longitude'], fp['latitude'], c=OKABE_ITO['red'], alpha=0.7, s=25, zorder=2, label='Algorithmic False Positives')
+    ax2.scatter(fp['longitude'], fp['latitude'], c=OKABE_ITO[5], alpha=0.7, s=25, zorder=2, label='Algorithmic False Positives')
     
     # Draw I-35 roughly
-    ax2.plot([-97.7431, -97.7431], [30.10, 30.60], 'k--', alpha=0.5, zorder=3, label="I-35 Historical Crescent Divide")
+    i35_lons = [-97.790, -97.750, -97.735, -97.730, -97.715, -97.695, -97.670]
+    i35_lats = [30.160, 30.210, 30.240, 30.275, 30.300, 30.335, 30.380]
+    ax2.plot(i35_lons, i35_lats, 'k--', alpha=0.5, zorder=3, label="I-35 Historical Crescent Divide")
     
     try:
         cx.add_basemap(ax2, crs="EPSG:4326", source=cx.providers.CartoDB.PositronNoLabels, zorder=1)

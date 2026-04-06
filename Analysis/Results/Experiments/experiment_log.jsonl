@@ -1,7 +1,0 @@
-{"experiment": "exp01_platt", "status": "success", "elapsed_s": 26.9, "timestamp": "2026-02-26T12:27:13.122608"}
-{"experiment": "exp02_isotonic", "status": "success", "elapsed_s": 8.1, "timestamp": "2026-02-26T12:27:21.206916"}
-{"experiment": "exp06_adaptive", "status": "success", "elapsed_s": 72.6, "timestamp": "2026-02-26T12:28:33.814143"}
-{"experiment": "exp03_focal", "status": "failed", "error": "too many indices for array: array is 1-dimensional, but 2 were indexed", "elapsed_s": 1167.0, "timestamp": "2026-02-26T12:48:35.314177"}
-{"experiment": "exp04_larger_clf", "status": "failed", "error": "too many indices for array: array is 1-dimensional, but 2 were indexed", "elapsed_s": 1793.4, "timestamp": "2026-02-26T13:18:36.894722"}
-{"experiment": "exp03_focal", "status": "failed", "error": "too many indices for array: array is 1-dimensional, but 2 were indexed", "elapsed_s": 1685.8, "timestamp": "2026-02-26T18:02:56.357414"}
-{"experiment": "exp03_focal", "status": "failed", "error": "too many indices for array: array is 1-dimensional, but 2 were indexed", "elapsed_s": 2979.8, "timestamp": "2026-02-26T19:03:19.980285"}

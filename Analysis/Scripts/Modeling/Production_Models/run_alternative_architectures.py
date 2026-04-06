@@ -34,6 +34,24 @@ def compute_ece(y_true, y_prob, n_bins=10):
     except:
         return np.nan
 
+def compute_ace(y_true, y_prob, n_bins=10):
+    try:
+        sorted_idx = np.argsort(y_prob)
+        y_prob_sorted = y_prob[sorted_idx]
+        y_true_sorted = y_true[sorted_idx]
+        bin_size = max(1, len(y_prob) // n_bins)
+        ace = 0.0
+        for i in range(n_bins):
+            start = i * bin_size
+            end = (i + 1) * bin_size if i < n_bins - 1 else len(y_prob)
+            bin_prob = y_prob_sorted[start:end]
+            bin_true = y_true_sorted[start:end]
+            if len(bin_prob) > 0:
+                ace += (len(bin_prob) / len(y_prob)) * abs(bin_prob.mean() - bin_true.mean())
+        return float(ace)
+    except:
+        return np.nan
+
 def benchmark_horizon(path, horizon_name, master_df=None):
     if not os.path.exists(path):
         return []
@@ -104,12 +122,14 @@ def benchmark_horizon(path, horizon_name, master_df=None):
             iso.fit(cal_preds, y_tr_cal)
             preds_cal = iso.predict(preds_raw)
             ece_post = compute_ece(y_test, preds_cal)
+            ace_post = compute_ace(y_test, preds_cal)
             results.append({
                 'Horizon': horizon_name, 'Architecture': f"{model_name} (Base)",
                 'PR-AUC': average_precision_score(y_test, preds_cal),
                 'ROC-AUC': roc_auc_score(y_test, preds_cal),
                 'ECE (Raw)': ece_pre,
-                'ECE (Cal)': ece_post
+                'ECE (Cal)': ece_post,
+                'ACE (Cal)': ace_post
             })
         except Exception as e: print(f"{model_name} Base failed: {e}")
         
@@ -135,12 +155,14 @@ def benchmark_horizon(path, horizon_name, master_df=None):
             iso_sm.fit(cal_preds_sm, y_sm_cal)
             preds_smote_cal = iso_sm.predict(preds_smote_raw)
             ece_post_sm = compute_ece(y_test, preds_smote_cal)
+            ace_post_sm = compute_ace(y_test, preds_smote_cal)
             results.append({
                 'Horizon': horizon_name, 'Architecture': f"SMOTE + {model_name}",
                 'PR-AUC': average_precision_score(y_test, preds_smote_cal),
                 'ROC-AUC': roc_auc_score(y_test, preds_smote_cal),
                 'ECE (Raw)': ece_pre_sm,
-                'ECE (Cal)': ece_post_sm
+                'ECE (Cal)': ece_post_sm,
+                'ACE (Cal)': ace_post_sm
             })
         except Exception as e: print(f"SMOTE + {model_name} failed: {e}")
 
@@ -156,12 +178,14 @@ def benchmark_horizon(path, horizon_name, master_df=None):
         iso_tab.fit(cal_preds_tab, y_tr_cal)
         preds_tabnet_cal = iso_tab.predict(preds_tabnet_raw)
         ece_post_tab = compute_ece(y_test, preds_tabnet_cal)
+        ace_post_tab = compute_ace(y_test, preds_tabnet_cal)
         results.append({
             'Horizon': horizon_name, 'Architecture': 'TabNet',
             'PR-AUC': average_precision_score(y_test, preds_tabnet_cal),
             'ROC-AUC': roc_auc_score(y_test, preds_tabnet_cal),
             'ECE (Raw)': ece_pre_tab,
-            'ECE (Cal)': ece_post_tab
+            'ECE (Cal)': ece_post_tab,
+            'ACE (Cal)': ace_post_tab
         })
     except Exception as e: print(f"TabNet failed: {e}")
 
@@ -190,27 +214,50 @@ def main():
     tex_lines = [
         r"\begin{table}[htbp]",
         r"\centering",
-        r"\caption{Alternative Architectures Benchmark (SMOTE \& TabNet)}",
+        r"\caption{Stage A \& Stage C Evaluated at Filing: Raw vs. Calibrated Candidate Architectures}",
         r"\label{tab:alt_architectures}",
         r"\renewcommand{\arraystretch}{1.2}",
-        r"\begin{tabular}{llcccc}",
+        r"\resizebox{\columnwidth}{!}{%",
+        r"\begin{tabular}{llccccc}",
         r"\toprule",
-        r"\textbf{Horizon} & \textbf{Architecture} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{ECE (Raw)} & \textbf{ECE (Cal)} \\",
+        r"\textbf{Horizon} & \textbf{Architecture} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{ECE (Raw)} & \textbf{ECE (Cal)} & \textbf{ACE (Cal)} \\",
         r"\midrule"
     ]
     
+    # Calculate best metrics per horizon
+    best_metrics = {}
+    for h in df_res['Horizon'].unique():
+        h_df = df_res[df_res['Horizon'] == h]
+        best_metrics[h] = {
+            'PR-AUC': h_df['PR-AUC'].max(),
+            'ROC-AUC': h_df['ROC-AUC'].max(),
+            'ECE (Raw)': h_df['ECE (Raw)'].min(),
+            'ECE (Cal)': h_df['ECE (Cal)'].min(),
+            'ACE (Cal)': h_df['ACE (Cal)'].min()
+        }
+
     for _, row in df_res.iterrows():
         horizon_clean = row['Horizon']
         arch_clean = row['Architecture']
-        pr = f"{row['PR-AUC']:.3f}" if pd.notna(row['PR-AUC']) else "---"
-        roc = f"{row['ROC-AUC']:.3f}" if pd.notna(row['ROC-AUC']) else "---"
-        ece_raw = f"{row['ECE (Raw)']:.3f}" if pd.notna(row.get('ECE (Raw)')) else "---"
-        ece_cal = f"{row['ECE (Cal)']:.3f}" if pd.notna(row.get('ECE (Cal)')) else "---"
-        tex_lines.append(f"{horizon_clean} & {arch_clean} & {pr} & {roc} & {ece_raw} & {ece_cal} \\\\")
+        
+        def fmt(val, col, is_max=True):
+            if pd.isna(val) or val == "---": return "---"
+            s = f"{val:.3f}"
+            if best_metrics[horizon_clean][col] == val:
+                return f"\\textbf{{{s}}}"
+            return s
+
+        pr = fmt(row['PR-AUC'], 'PR-AUC', True)
+        roc = fmt(row['ROC-AUC'], 'ROC-AUC', True)
+        ece_raw = fmt(row.get('ECE (Raw)'), 'ECE (Raw)', False)
+        ece_cal = fmt(row.get('ECE (Cal)'), 'ECE (Cal)', False)
+        ace_cal = fmt(row.get('ACE (Cal)'), 'ACE (Cal)', False)
+        tex_lines.append(f"{horizon_clean} & {arch_clean} & {pr} & {roc} & {ece_raw} & {ece_cal} & {ace_cal} \\\\")
         
     tex_lines.extend([
         r"\bottomrule",
-        r"\end{tabular}",
+        r"\end{tabular}%",
+        r"}",
         r"\end{table}"
     ])
     

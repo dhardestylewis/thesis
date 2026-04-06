@@ -25,7 +25,7 @@ from artifact_registry import ROOT_DIR, TraceabilityRegistry as AR
 ROOT = str(ROOT_DIR)
 
 def generate_exhibits():
-    print("[*] Generating Stage A Exhibits (Figures 3 & 4 and Table 6)...")
+    print("[*] Generating Development-Proposal Model Exhibits (Figures 3 & 4 and Table 6)...")
 
     # 1. Load probabilities
     probs_path = str(AR.STAGE_A_HAZARD_RESULTS)
@@ -61,13 +61,14 @@ def generate_exhibits():
     # FIGURE 3 & TABLE 6: Multi-Horizon Precision-Recall Curves (Combined)
     horizons_map = {4: (1, 'y_1yr'), 8: (2, 'y_2yr'), 12: (3, 'y_3yr')}
 
-    print("[*] Plotting Figure 3: Multi-Horizon PR Curves...")
-    plt.figure(figsize=(9, 6))
+    print("[*] Plotting Figure 3: Multi-Horizon & Multi-Algorithm PR Curves...")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
     
     colors = {4: '#1f77b4', 8: '#9467bd', 12: '#e377c2'}
 
     latex_table_rows = []
 
+    # Panel A: Multi-Horizon
     for h, (y_yr, y_col) in horizons_map.items():
         prob_col = f'Prob_Optimal_H={h}'
         if prob_col in full.columns:
@@ -76,7 +77,7 @@ def generate_exhibits():
             # Calculate PR AUC
             precision, recall, _ = precision_recall_curve(full[y_col], proba_arr)
             auc_score = average_precision_score(full[y_col], proba_arr)
-            plt.plot(recall, precision, label=f"LightGBM (H={h} Qtrs) AUC={auc_score:.4f}", color=colors[h], lw=2)
+            ax1.plot(recall, precision, label=f"LightGBM (H={h} Qtrs) AUC={auc_score:.4f}", color=colors[h], lw=2)
             
             # Calculate Top-10% Lift
             top_10_thresh = np.percentile(proba_arr, 90)
@@ -85,13 +86,11 @@ def generate_exhibits():
             base_rate = full[y_col].mean()
             
             lift = top_10_rate / base_rate if base_rate > 0 else 0
-            # dynamically format: if lift is large (e.g > 100), round to ints, else preserve decimals
             if lift > 100:
                 lift_str = f"$\\sim${int(lift):,}\\times$"
             else:
                 lift_str = f"{lift:.2f}$\\times$"
             
-            # Add row to latex table
             latex_table_rows.append(f"{h}-Quarter & {auc_score:.4f} & LightGBM & {lift_str} \\\\")
 
     # Write Latex Table
@@ -107,23 +106,48 @@ def generate_exhibits():
         f.write("\\end{tabular}\n")
     print(f"    [+] Saved dynamic Table 6 to {table_path}")
 
-    # Only one baseline for aesthetic purposes
+    # Panel A layout
     baseline_val = full['y_1yr'].mean()
-    plt.axhline(baseline_val, color='red', linestyle='--', alpha=0.5, label=f"Null Base Rate (AUC={baseline_val:.4f})")
+    ax1.axhline(baseline_val, color='red', linestyle='--', alpha=0.5, label=f"Null Base Rate (AUC={baseline_val:.4f})")
 
-    plt.xlabel('Recall (Fraction of True Events Captured)')
-    plt.ylabel('Precision (Fraction of Predictions that are Events)')
-    plt.title('Multi-Horizon Hazard PR Curves (LightGBM)')
-    plt.legend(loc='upper right', fontsize=9)
-    plt.grid(alpha=0.3)
+    ax1.set_xlabel('Recall (Fraction of True Events Captured)')
+    ax1.set_ylabel('Precision (Fraction of Predictions that are Events)')
+    ax1.set_title('A: Multi-Horizon Hazard (Optimal Model)')
+    ax1.legend(loc='upper right', fontsize=9)
+    ax1.grid(alpha=0.3)
+
+    # Panel B: Algorithm Comparison (H=4)
+    model_types = {
+        'Prob_LGBM_H=4': ('LightGBM', '#1f77b4'),
+        'Prob_CB_H=4': ('CatBoost', '#ff7f0e'),
+        'Prob_DL_H=4': ('Deep Learning (MLP)', '#2ca02c'),
+        'Prob_SAR_H=4': ('SAR-Logistic', '#d62728'),
+        'Prob_LR_H=4': ('Logistic Base', '#9467bd')
+    }
+    
+    y_col = 'y_1yr'
+    for model_col, (label, color) in model_types.items():
+        if model_col in full.columns:
+            proba_arr = full[model_col].values
+            precision, recall, _ = precision_recall_curve(full[y_col], proba_arr)
+            auc_score = average_precision_score(full[y_col], proba_arr)
+            ax2.plot(recall, precision, label=f"{label} (AUC={auc_score:.4f})", color=color, lw=2)
+            
+    ax2.axhline(baseline_val, color='red', linestyle='--', alpha=0.5, label=f"Null Base Rate (AUC={baseline_val:.4f})")
+    ax2.set_xlabel('Recall')
+    ax2.set_ylabel('Precision')
+    ax2.set_title('B: Multi-Algorithm Validation (1-Year Horizon)')
+    ax2.legend(loc='upper right', fontsize=9)
+    ax2.grid(alpha=0.3)
+
     plt.tight_layout()
     fig_path = str(AR.TRACK0_FIGURES / 'StageA_Figure3_PR_Curves.png')
     plt.savefig(fig_path, dpi=300)
     plt.close()
-    print(f"    [+] Saved Figure 4 (Stage A PR Curves) to {fig_path}")
+    print(f"    [+] Saved Figure 4 (Development-Proposal Model PR Curves) to {fig_path}")
 
-    # FIGURE 4: Ex-Ante Hotspot Density vs. Realized Events (Multi-Horizon)
-    print("[*] Plotting Figure 4: Spatial Hexbin Maps (4, 8, 12-Quarter Hazard, Top Decile)...")
+    # FIGURE 4: Predicted High-Probability Areas vs. Realized Events (Multi-Horizon)
+    print("[*] Plotting Figure 4: Spatial Hexbin Maps (4, 8, 12-Quarter Hazard, Top-N Equivalent)...")
     
     fig, axes = plt.subplots(2, 2, figsize=(14, 14))
     axes_flat = axes.flatten()
@@ -140,19 +164,21 @@ def generate_exhibits():
         map_data = map_data[(map_data.longitude > -98.1) & (map_data.longitude < -97.5) & 
                             (map_data.latitude > 30.0) & (map_data.latitude < 30.6)]
         
-        threshold_90 = np.percentile(map_data[prob_col], 90)
-        significant_hotspots = map_data[map_data[prob_col] >= threshold_90]
+        events = map_data[map_data[y_col] == 1]
+        num_events = len(events)
+        
+        # Select Equivalent N hotspots instead of generic Top 10% Decile
+        significant_hotspots = map_data.nlargest(num_events, prob_col)
         
         hb = ax.hexbin(significant_hotspots['longitude'], significant_hotspots['latitude'], 
-                       C=significant_hotspots[prob_col], gridsize=100, cmap='YlOrRd', reduce_C_function=np.mean, mincnt=15, alpha=0.85)
+                       C=significant_hotspots[prob_col], gridsize=100, cmap='YlOrRd', reduce_C_function=np.mean, mincnt=1, alpha=0.85)
         
         if idx == 2:
-            fig.colorbar(hb, ax=axes.ravel().tolist(), label='Average Predicted Development Probability (Top 10% Sites)', fraction=0.04, pad=0.04)
+            fig.colorbar(hb, ax=axes.ravel().tolist(), label=f'Predicted Density (Top N={num_events:,} Sites)', fraction=0.04, pad=0.04)
             
         cx.add_basemap(ax, crs="EPSG:4326", source=cx.providers.CartoDB.Positron)
         
-        events = map_data[map_data[y_col] == 1]
-        ax.scatter(events['longitude'], events['latitude'], c='cyan', s=3, alpha=0.5, label='Observed Dev Event')
+        ax.scatter(events['longitude'], events['latitude'], c='#00FFFF', s=0.7, alpha=0.35, linewidths=0, label='Observed Dev Event')
         
         ax.set_title(f'H={h} Quarters Ex-ante Hotspots')
         ax.set_xticks([])
@@ -163,7 +189,8 @@ def generate_exhibits():
     # Turn off the empty bottom-right subplot
     axes_flat[3].axis('off')
 
-    fig.suptitle('Multi-Horizon Hotspot Density vs. Realized Development Events', fontsize=18, fontweight='bold', y=0.96)
+    fig.suptitle('Multi-Horizon High-Probability Areas vs. Realized Development Events', fontsize=18, fontweight='bold', y=0.96)
+    plt.subplots_adjust(wspace=0.05, hspace=0.1)
     hotspot_path = str(AR.TRACK0_FIGURES / 'StageA_Figure4_Hotspot.png')
     plt.savefig(hotspot_path, dpi=300, bbox_inches='tight')
     plt.close()

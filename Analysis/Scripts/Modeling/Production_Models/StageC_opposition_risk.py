@@ -486,7 +486,7 @@ def process_horizon(path, horizon_name):
     # ---------------------------------------------------------
     print("\nPART A: TEMPORAL DRIFT (ROLLING-ORIGIN)")
     drift_res = []
-    for anchor in [2019, 2020, 2021, 2022]:
+    for anchor in [2019, 2020, 2021, 2022, 2023]:
         tr_mask = df['year'] < anchor
         if tr_mask.sum() < 20: continue
         cb = clone(optimal_model)

@@ -63,6 +63,32 @@ def plot_f12():
     
     baseline = y_true.sum() / len(y_true)
 
+    # Automatically generate LaTeX table summarizing these results
+    table_path = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Tables", "Table7_StageC_PR.tex")
+    os.makedirs(os.path.dirname(table_path), exist_ok=True)
+    with open(table_path, "w") as f:
+        f.write("\\begin{tabular}{lcc}\n")
+        f.write("\\toprule\n")
+        f.write("\\textbf{Model} & \\textbf{PR-AUC} & \\textbf{Lift over Baseline} \\\\\n")
+        f.write("\\midrule\n")
+        
+        models_table = [
+            ("CatBoost Primary (V-REx)", auc_cb),
+            ("RandomForest (ERM)", auc_rf),
+            ("Anchor Regression (Causal)", auc_anc),
+            ("Spatial-FE Logistic (Domain)", auc_sp),
+            ("Standard Logistic (ERM)", auc_lr)
+        ]
+        
+        for name, auc in models_table:
+            lift = auc / baseline if baseline > 0 else 0
+            lift_str = f"$\\sim${int(lift):,}\\times$" if lift > 100 else f"{lift:.2f}$\\times$"
+            f.write(f"{name} & {auc:.4f} & {lift_str} \\\\\n")
+            
+        f.write("\\bottomrule\n")
+        f.write("\\end{tabular}\n")
+    print(f"[*] Generated Table 7 (StageC PR) at {table_path}")
+
     plt.figure(figsize=(9, 7))
     plt.plot([0, 1], [baseline, baseline], label=f'Baseline Prevalence (PR-AUC {baseline:.2f})', linestyle=':', color='gray')
     plt.plot(r_lr, p_lr, label=f'Standard Logistic (ERM) (PR-AUC {auc_lr:.2f})', linestyle=':', color='coral')
@@ -71,7 +97,7 @@ def plot_f12():
     plt.plot(r_anc, p_anc, label=f'Anchor Regression (Causal) (PR-AUC {auc_anc:.2f})', linestyle='-.', color='teal', linewidth=1.5)
     plt.plot(r_cb, p_cb, label=f'CatBoost Primary (V-REx) (PR-AUC {auc_cb:.2f})', linewidth=2.5, color='darkred')
 
-    plt.title('Precision-Recall Curves (1-Year Horizon)', fontsize=14, pad=15)
+    plt.title('Precision-Recall Curves (Filing-Date Horizon)', fontsize=14, pad=15)
     plt.xlabel('Recall (Sensitivity)', fontsize=12)
     plt.ylabel('Precision (Positive Predictive Value)', fontsize=12)
     plt.legend(loc='lower left', fontsize=11, frameon=True)

@@ -33,7 +33,7 @@ def generate_exhibits():
     os.makedirs(out_dir, exist_ok=True)
 
     if not os.path.exists(STAGE_A_OUT) or not os.path.exists(STAGE_C_OUT):
-        print(f"[!] F22 Failure: Requires completed Stage A and C Hazard pipelines at {STAGE_A_OUT} and {STAGE_C_OUT}")
+        print(f"[!] F22 Failure: Requires completed Development-Proposal Model and C Hazard pipelines at {STAGE_A_OUT} and {STAGE_C_OUT}")
         return
 
     # Extract mathematically authentic coordinates mapped to explicit model hazard distributions
@@ -66,7 +66,7 @@ def generate_exhibits():
 
     titles = [
         "1. Predicted Development Probability $P(D)$",
-        "2. Ex-Ante Opposition Risk $P(O)$",
+        "2. Ex-Ante Petition Filing $P(O)$",
         "3. Joint Expected Protest Probability $P(D) \\times P(O)$",
         "4. Opposition Mapping Residual ($Y_{True} - P(O)$)"
     ]
@@ -104,7 +104,11 @@ def generate_exhibits():
             fig.colorbar(hb, ax=ax, fraction=0.046, pad=0.04)
         
         # Display Ground Truths
-        if i in [1, 2]:
+        if i == 0:
+            # For Panel 1, all points in this sample are historical development cases
+            ax.scatter(x_filtered, y_filtered, c='cyan', s=10, alpha=0.3, edgecolors='none', label='Observed Dev Event', zorder=3)
+            ax.legend(loc='lower right', fontsize=10)
+        elif i in [1, 2]:
             events = merged[merged['y_true'] == 1]
             ax.scatter(events['longitude'], events['latitude'], c='cyan', s=15, alpha=0.8, edgecolors='black', linewidths=0.5, label='Actual Valid Petition', zorder=3)
             ax.legend(loc='lower right', fontsize=10)
@@ -118,6 +122,8 @@ def generate_exhibits():
         ax.set_title(titles[i], fontsize=14, pad=15)
         ax.set_xticks([])
         ax.set_yticks([])
+
+    fig.suptitle("Expected Petition Probability (Development Hazard \u00d7 Filing-Date Prediction)", fontsize=18, fontweight='bold', y=0.96)
 
     plt.tight_layout()
 

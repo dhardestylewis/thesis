@@ -39,6 +39,24 @@ def compute_ece(y_true, y_prob, n_bins=10):
     except:
         return np.nan
 
+def compute_ace(y_true, y_prob, n_bins=10):
+    try:
+        sorted_idx = np.argsort(y_prob)
+        y_prob_sorted = y_prob[sorted_idx]
+        y_true_sorted = y_true[sorted_idx]
+        bin_size = max(1, len(y_prob) // n_bins)
+        ace = 0.0
+        for i in range(n_bins):
+            start = i * bin_size
+            end = (i + 1) * bin_size if i < n_bins - 1 else len(y_prob)
+            bin_prob = y_prob_sorted[start:end]
+            bin_true = y_true_sorted[start:end]
+            if len(bin_prob) > 0:
+                ace += (len(bin_prob) / len(y_prob)) * abs(bin_prob.mean() - bin_true.mean())
+        return float(ace)
+    except:
+        return np.nan
+
 def bootstrap_metric(y_true, y_pred, metric_fn, n_boot=500, seed=42):
     """Compute metric with 95% bootstrap CI."""
     rng = np.random.RandomState(seed)
@@ -173,7 +191,9 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
     roc_auc, roc_lo, roc_hi = bootstrap_metric(y_test, preds_calibrated, roc_auc_score)
     brier, brier_lo, brier_hi = bootstrap_metric(y_test, preds_calibrated, brier_score_loss)
     ece_pre = compute_ece(y_test, preds_uncalibrated)
+    ace_pre = compute_ace(y_test, preds_uncalibrated)
     ece_post = compute_ece(y_test, preds_calibrated)
+    ace_post = compute_ace(y_test, preds_calibrated)
     
     result = {
         'horizon': horizon_name,
@@ -187,7 +207,9 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
         'ROC-AUC_CI': f"[{roc_lo:.4f}, {roc_hi:.4f}]" if not np.isnan(roc_lo) else None,
         'Brier': round(brier, 4) if not np.isnan(brier) else None,
         'ECE_Pre': round(ece_pre, 4) if not np.isnan(ece_pre) else None,
+        'ACE_Pre': round(ace_pre, 4) if not np.isnan(ace_pre) else None,
         'ECE_Post': round(ece_post, 4) if not np.isnan(ece_post) else None,
+        'ACE_Post': round(ace_post, 4) if not np.isnan(ace_post) else None,
     }
     
     results_collector.append(result)
@@ -228,28 +250,66 @@ def main():
         json.dump(results, f, indent=2)
     print(f"\n\nResults saved to {out_path}")
     
-    # Generate LaTeX table
+    # Identify maximums and minimums for bolding
+    valid_pr = [r['PR-AUC'] for r in results if r['PR-AUC'] is not None]
+    max_pr = max(valid_pr) if valid_pr else None
+    
+    valid_roc = [r['ROC-AUC'] for r in results if r['ROC-AUC'] is not None]
+    max_roc = max(valid_roc) if valid_roc else None
+    
+    valid_brier = [r['Brier'] for r in results if r['Brier'] is not None]
+    min_brier = min(valid_brier) if valid_brier else None
+    
+    valid_ece_pre = [r['ECE_Pre'] for r in results if r['ECE_Pre'] is not None]
+    min_ece_pre = min(valid_ece_pre) if valid_ece_pre else None
+    
+    valid_ece_post = [r['ECE_Post'] for r in results if r['ECE_Post'] is not None]
+    min_ece_post = min(valid_ece_post) if valid_ece_post else None
+    
+    valid_ace = [r.get('ACE_Post') for r in results if r.get('ACE_Post') is not None]
+    min_ace = min(valid_ace) if valid_ace else None
+
     tex_lines = []
     tex_lines.append(r"\begin{table}[htbp]")
     tex_lines.append(r"\centering")
-    tex_lines.append(r"\caption{Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}")
+    tex_lines.append(r"\caption{\textbf{Stage C: Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}")
     tex_lines.append(r"\label{tab:multi_horizon}")
     tex_lines.append(r"\renewcommand{\arraystretch}{1.2}")
-    tex_lines.append(r"\begin{tabular}{lccccc}")
+    tex_lines.append(r"\resizebox{\columnwidth}{!}{%")
+    tex_lines.append(r"\begin{tabular}{lcccccc}")
     tex_lines.append(r"\toprule")
-    tex_lines.append(r"\textbf{Horizon} & \textbf{PR-AUC [95\% CI]} & \textbf{ROC-AUC} & \textbf{Brier} & \textbf{ECE (Pre)} & \textbf{ECE (Post)} \\")
+    tex_lines.append(r"\textbf{Horizon} & \textbf{PR-AUC [95\% CI]} & \textbf{ROC-AUC} & \textbf{Brier} & \textbf{ECE (Pre)} & \textbf{ECE (Post)} & \textbf{ACE (Post)} \\")
     tex_lines.append(r"\midrule")
     
     for r in results:
         if r['PR-AUC'] is not None:
-            pr_str = f"{r['PR-AUC']:.3f} {r['PR-AUC_CI']}"
+            raw_pr = f"{r['PR-AUC']:.3f}"
+            if r['PR-AUC'] == max_pr: raw_pr = f"\\textbf{{{raw_pr}}}"
+            pr_str = f"{raw_pr} {r['PR-AUC_CI']}"
         else:
             pr_str = "---"
-        roc_str = f"{r['ROC-AUC']:.3f}" if r['ROC-AUC'] else "---"
-        brier_str = f"{r['Brier']:.3f}" if r['Brier'] else "---"
-        ece_pre_str = f"{r['ECE_Pre']:.3f}" if r['ECE_Pre'] is not None else "---"
-        ece_post_str = f"{r['ECE_Post']:.3f}" if r['ECE_Post'] is not None else "---"
-        tex_lines.append(f"{r['horizon']} & {pr_str} & {roc_str} & {brier_str} & {ece_pre_str} & {ece_post_str} \\\\")
+            
+        roc_str = "---"
+        if r['ROC-AUC']:
+            roc_str = f"\\textbf{{{r['ROC-AUC']:.3f}}}" if r['ROC-AUC'] == max_roc else f"{r['ROC-AUC']:.3f}"
+            
+        brier_str = "---"
+        if r['Brier']:
+            brier_str = f"\\textbf{{{r['Brier']:.3f}}}" if r['Brier'] == min_brier else f"{r['Brier']:.3f}"
+            
+        ece_pre_str = "---"
+        if r['ECE_Pre'] is not None:
+            ece_pre_str = f"\\textbf{{{r['ECE_Pre']:.3f}}}" if r['ECE_Pre'] == min_ece_pre else f"{r['ECE_Pre']:.3f}"
+            
+        ece_post_str = "---"
+        if r['ECE_Post'] is not None:
+            ece_post_str = f"\\textbf{{{r['ECE_Post']:.3f}}}" if r['ECE_Post'] == min_ece_post else f"{r['ECE_Post']:.3f}"
+            
+        ace_post_str = "---"
+        if r.get('ACE_Post') is not None:
+            ace_post_str = f"\\textbf{{{r['ACE_Post']:.3f}}}" if r['ACE_Post'] == min_ace else f"{r['ACE_Post']:.3f}"
+            
+        tex_lines.append(f"{r['horizon']} & {pr_str} & {roc_str} & {brier_str} & {ece_pre_str} & {ece_post_str} & {ace_post_str} \\\\")
         
         # Export inline macro variables for text integration
         if lib_metrics and r['PR-AUC'] is not None:
@@ -267,6 +327,7 @@ def main():
     
     tex_lines.append(r"\bottomrule")
     tex_lines.append(r"\end{tabular}")
+    tex_lines.append(r"}")
     tex_lines.append(r"\end{table}")
     
     tex_path = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Tables", "multi_horizon_results.tex")

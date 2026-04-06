@@ -1,0 +1,24 @@
+L67: Missing citation for 211.006? -> The outcome under study is specific. Under Texas Local Government Code \S~211.00
+L234: Missing citation for CatBoost? -> Unlike approaches that require complete-case geometric intersections, this metho
+L273: Missing citation for CatBoost? -> The unit of analysis is a candidate site-quarter, drawn from over \metricBaselin
+L307: Missing citation for LightGBM? -> 4-Quarter & 0.1917 & LightGBM & $\sim$7,600$\times$ \\
+L308: Missing citation for LightGBM? -> 8-Quarter & 0.1201 & LightGBM & $\sim$4,800$\times$ \\
+L309: Missing citation for LightGBM? -> 12-Quarter & 0.1127 & LightGBM & $\sim$4,500$\times$ \\
+L338: Missing citation for LightGBM? -> \textbf{Component} & \textbf{LightGBM} & \textbf{Random Forest} & \textbf{CatBoo
+L338: Missing citation for CatBoost? -> \textbf{Component} & \textbf{LightGBM} & \textbf{Random Forest} & \textbf{CatBoo
+L360: Missing citation for CatBoost? -> At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
+L365: Missing citation for CatBoost? -> \caption{Opposition risk precision-recall curves by model architecture: CatBoost
+L369: Missing citation for LightGBM? -> A comprehensive head-to-head benchmarking of alternative architectures (Random F
+L369: Missing citation for CatBoost? -> A comprehensive head-to-head benchmarking of alternative architectures (Random F
+L369: Missing citation for SMOTE? -> A comprehensive head-to-head benchmarking of alternative architectures (Random F
+L369: Missing citation for TabNet? -> A comprehensive head-to-head benchmarking of alternative architectures (Random F
+L369: Missing citation for PyTorch? -> A comprehensive head-to-head benchmarking of alternative architectures (Random F
+L387: Missing citation for LightGBM? -> LightGBM & \textbf{\metricStageDLgbLogLoss{}} & \textbf{\metricStageDLgbAccuracy
+L388: Missing citation for CatBoost? -> CatBoost & \metricStageDLogLoss{} & \metricStageDAccuracy{} \\
+L445: Missing citation for CatBoost? -> \multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}07
+L728: Missing citation for SMOTE? -> \noindent The following section formally documents an expanded permutation bench
+L728: Missing citation for PyTorch? -> \noindent The following section formally documents an expanded permutation bench
+L731: Missing citation for LightGBM? -> \noindent Additionally, this appendix documents a systematic calibration method 
+L731: Missing citation for CatBoost? -> \noindent Additionally, this appendix documents a systematic calibration method 
+L811: Missing citation for CatBoost? -> Tree-based models, such as CatBoost and Random Forest, utilized the following ra
+L818: Missing citation for CatBoost? -> Selected CatBoost models uniformly converged on Depth=6, Learning Rate $\approx$

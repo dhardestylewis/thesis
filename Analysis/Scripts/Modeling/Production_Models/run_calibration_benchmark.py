@@ -27,6 +27,24 @@ def compute_ece(y_true, y_prob, n_bins=10):
     except:
         return np.nan
 
+def compute_ace(y_true, y_prob, n_bins=10):
+    try:
+        sorted_idx = np.argsort(y_prob)
+        y_prob_sorted = y_prob[sorted_idx]
+        y_true_sorted = y_true[sorted_idx]
+        bin_size = max(1, len(y_prob) // n_bins)
+        ace = 0.0
+        for i in range(n_bins):
+            start = i * bin_size
+            end = (i + 1) * bin_size if i < n_bins - 1 else len(y_prob)
+            bin_prob = y_prob_sorted[start:end]
+            bin_true = y_true_sorted[start:end]
+            if len(bin_prob) > 0:
+                ace += (len(bin_prob) / len(y_prob)) * abs(bin_prob.mean() - bin_true.mean())
+        return float(ace)
+    except:
+        return np.nan
+
 def main():
     print("=" * 60)
     print(" CALIBRATION METHOD BENCHMARK")
@@ -80,10 +98,11 @@ def main():
         preds_raw = base_model.predict_proba(X_test)[:, 1]
         pr_raw = average_precision_score(y_test, preds_raw)
         ece_raw = compute_ece(y_test, preds_raw)
+        ace_raw = compute_ace(y_test, preds_raw)
         brier_raw = brier_score_loss(y_test, preds_raw)
-        print(f"  Uncalibrated:  PR-AUC={pr_raw:.4f}  ECE={ece_raw:.4f}  Brier={brier_raw:.4f}")
+        print(f"  Uncalibrated:  PR-AUC={pr_raw:.4f}  ECE={ece_raw:.4f}  ACE={ace_raw:.4f}  Brier={brier_raw:.4f}")
         results.append({'Model': model_name, 'Calibrator': 'Uncalibrated',
-                        'PR-AUC': pr_raw, 'ECE': ece_raw, 'Brier': brier_raw})
+                        'PR-AUC': pr_raw, 'ECE': ece_raw, 'ACE': ace_raw, 'Brier': brier_raw})
         
         # 1. Isotonic Regression
         try:
@@ -93,10 +112,11 @@ def main():
             preds_iso = iso_model.predict_proba(X_test)[:, 1]
             pr_iso = average_precision_score(y_test, preds_iso)
             ece_iso = compute_ece(y_test, preds_iso)
+            ace_iso = compute_ace(y_test, preds_iso)
             brier_iso = brier_score_loss(y_test, preds_iso)
-            print(f"  Isotonic:      PR-AUC={pr_iso:.4f}  ECE={ece_iso:.4f}  Brier={brier_iso:.4f}")
+            print(f"  Isotonic:      PR-AUC={pr_iso:.4f}  ECE={ece_iso:.4f}  ACE={ace_iso:.4f}  Brier={brier_iso:.4f}")
             results.append({'Model': model_name, 'Calibrator': 'Isotonic',
-                            'PR-AUC': pr_iso, 'ECE': ece_iso, 'Brier': brier_iso})
+                            'PR-AUC': pr_iso, 'ECE': ece_iso, 'ACE': ace_iso, 'Brier': brier_iso})
         except Exception as e:
             print(f"  Isotonic failed: {e}")
         
@@ -108,10 +128,11 @@ def main():
             preds_platt = platt_model.predict_proba(X_test)[:, 1]
             pr_platt = average_precision_score(y_test, preds_platt)
             ece_platt = compute_ece(y_test, preds_platt)
+            ace_platt = compute_ace(y_test, preds_platt)
             brier_platt = brier_score_loss(y_test, preds_platt)
-            print(f"  Platt:         PR-AUC={pr_platt:.4f}  ECE={ece_platt:.4f}  Brier={brier_platt:.4f}")
+            print(f"  Platt:         PR-AUC={pr_platt:.4f}  ECE={ece_platt:.4f}  ACE={ace_platt:.4f}  Brier={brier_platt:.4f}")
             results.append({'Model': model_name, 'Calibrator': 'Platt (Sigmoid)',
-                            'PR-AUC': pr_platt, 'ECE': ece_platt, 'Brier': brier_platt})
+                            'PR-AUC': pr_platt, 'ECE': ece_platt, 'ACE': ace_platt, 'Brier': brier_platt})
         except Exception as e:
             print(f"  Platt failed: {e}")
         
@@ -128,10 +149,11 @@ def main():
                 preds_va = (p0 + p1) / 2  # midpoint estimate
                 pr_va = average_precision_score(y_test, preds_va)
                 ece_va = compute_ece(y_test, preds_va)
+                ace_va = compute_ace(y_test, preds_va)
                 brier_va = brier_score_loss(y_test, preds_va)
-                print(f"  Venn-Abers:    PR-AUC={pr_va:.4f}  ECE={ece_va:.4f}  Brier={brier_va:.4f}")
+                print(f"  Venn-Abers:    PR-AUC={pr_va:.4f}  ECE={ece_va:.4f}  ACE={ace_va:.4f}  Brier={brier_va:.4f}")
                 results.append({'Model': model_name, 'Calibrator': 'Venn-Abers',
-                                'PR-AUC': pr_va, 'ECE': ece_va, 'Brier': brier_va})
+                                'PR-AUC': pr_va, 'ECE': ece_va, 'ACE': ace_va, 'Brier': brier_va})
             except Exception as e:
                 print(f"  Venn-Abers failed: {e}")
     
@@ -149,17 +171,18 @@ def main():
         r"\caption{Calibration Method Comparison: ECE and Brier Score Across Architectures}",
         r"\label{tab:calibration_benchmark}",
         r"\renewcommand{\arraystretch}{1.2}",
-        r"\begin{tabular}{llccc}",
+        r"\begin{tabular}{llcccc}",
         r"\toprule",
-        r"\textbf{Base Model} & \textbf{Calibrator} & \textbf{PR-AUC} & \textbf{ECE $\downarrow$} & \textbf{Brier $\downarrow$} \\",
+        r"\textbf{Base Model} & \textbf{Calibrator} & \textbf{PR-AUC} & \textbf{ECE $\downarrow$} & \textbf{ACE $\downarrow$} & \textbf{Brier $\downarrow$} \\",
         r"\midrule",
     ]
     
     for _, row in df_res.iterrows():
         pr = f"{row['PR-AUC']:.3f}"
         ece = f"{row['ECE']:.3f}"
+        ace = f"{row['ACE']:.3f}" if row.get('ACE') is not None else "---"
         brier = f"{row['Brier']:.4f}"
-        tex_lines.append(f"{row['Model']} & {row['Calibrator']} & {pr} & {ece} & {brier} \\\\")
+        tex_lines.append(f"{row['Model']} & {row['Calibrator']} & {pr} & {ece} & {ace} & {brier} \\\\")
     
     tex_lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}"])
     

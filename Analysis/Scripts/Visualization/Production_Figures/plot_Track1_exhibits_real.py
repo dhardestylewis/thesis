@@ -183,28 +183,41 @@ def plot_all_track1_exhibits():
             plt.savefig(os.path.join(FIG_DIR, f"fig_calibration_ece_{hz}.pdf"))
             print(f"  [+] Saved fig_calibration_ece_{hz}.pdf")
             
-        # 2. Temporal Drift
+                # 2. Temporal Drift
         drift_file = str(AR.stage_c_drift(hz))
         if os.path.exists(drift_file):
             plt.figure(figsize=(7, 5))
             try:
                 df_drift = pd.read_csv(drift_file)
+                # Compute baselines dynamically
+                df_gt = pd.read_csv(os.path.join(ROOT, "Data", "Warehouse_As_Of", f"{hz}_Filing_Master_Enriched.csv"), low_memory=False)
+                df_gt['year'] = pd.to_numeric(df_gt['year'], errors='coerce')
+                target = 'is_protested' if 'is_protested' in df_gt.columns else 'protest'
+                df_gt[target] = pd.to_numeric(df_gt[target], errors='coerce').fillna(0).astype(int)
+                
                 if not df_drift.empty:
                     for anchor in df_drift['Anchor'].unique():
                         sub = df_drift[df_drift['Anchor'] == anchor]
                         plt.plot(sub['Offset'], sub['PR-AUC'], marker='o', label=f'Anchor < {anchor}')
-                    plt.title(titles["stage_c_drift"].format(hz=hz_name), fontsize=14)
+                        # True baseline for this anchor is the mean of the training set
+                        anchor_baseline = df_gt[df_gt['year'] < anchor][target].mean()
+                        plt.axhline(anchor_baseline, color='gray', linestyle=':', alpha=0.5)
+
+                    overall_baseline = df_gt[target].mean()
+                    plt.axhline(y=overall_baseline, color='red', linestyle='--', alpha=0.7, label=f'Pooled Baseline ({overall_baseline:.3f})')
+                    
+                    plt.title(titles.get("stage_c_drift", "Temporal Drift").format(hz=hz_name), fontsize=14)
                     plt.xlabel('Years Out-of-Distribution (T + offset)', fontsize=12)
                     plt.ylabel('PR-AUC', fontsize=12)
                     plt.xticks([0, 1, 2, 3])
-                    plt.legend()
+                    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
                     plt.grid(True, alpha=0.3)
-            except:
-                pass
+            except Exception as e:
+                print('Drift plot error:', e)
             plt.tight_layout()
             plt.savefig(os.path.join(FIG_DIR, f"fig_temporal_drift_{hz}.pdf"))
             print(f"  [+] Saved fig_temporal_drift_{hz}.pdf")
-            
+
         # 3. Policy Regimes
         regimes_file = str(AR.stage_c_regimes(hz))
         if os.path.exists(regimes_file):
@@ -212,26 +225,44 @@ def plot_all_track1_exhibits():
             try:
                 df_reg = pd.read_csv(regimes_file)
                 if not df_reg.empty:
-                    plt.bar(df_reg['Regime'], df_reg['PR-AUC'], color=['navy', 'orange', 'darkred'])
-                    plt.title(titles["stage_c_policy_regimes"].format(hz=hz_name), fontsize=14)
+                    bars = plt.bar(df_reg['Regime'], df_reg['PR-AUC'], color=['navy', 'orange', 'darkred'])
+                    
+                    # Custom baselines per bar
+                    df_gt = pd.read_csv(os.path.join(ROOT, "Data", "Warehouse_As_Of", f"{hz}_Filing_Master_Enriched.csv"), low_memory=False)
+                    df_gt['year'] = pd.to_numeric(df_gt['year'], errors='coerce')
+                    target = 'is_protested' if 'is_protested' in df_gt.columns else 'protest'
+                    df_gt[target] = pd.to_numeric(df_gt[target], errors='coerce').fillna(0).astype(int)
+                    
+                    # Pre-2022 Validation -> year < 2022
+                    b1 = df_gt[df_gt['year'] < 2022][target].mean()
+                    b2 = df_gt[df_gt['year'] == 2022][target].mean()
+                    b3 = df_gt[df_gt['year'] >= 2023][target].mean()
+                    baselines = [b1, b2, b3]
+                    
+                    for i, bar in enumerate(bars):
+                        plt.hlines(baselines[i], bar.get_x(), bar.get_x() + bar.get_width(), color='red', linestyle='--', alpha=0.9, linewidth=2)
+                        if i == 0:
+                            plt.plot([], [], color='red', linestyle='--', label='True Slice Incidence (Baseline)')
+                            
+                    plt.legend(loc='upper right', fontsize=9)
+                    plt.title(titles.get("stage_c_policy_regimes", "Policy Regimes").format(hz=hz_name), fontsize=14)
                     plt.ylabel('PR-AUC', fontsize=12)
                     plt.ylim(0, max(0.5, df_reg['PR-AUC'].max() * 1.2))
                     plt.grid(axis='y', alpha=0.3)
-            except:
-                pass
+            except Exception as e:
+                print('Regime baseline error:', e)
             plt.tight_layout()
             plt.savefig(os.path.join(FIG_DIR, f"fig_policy_regimes_{hz}.pdf"))
             print(f"  [+] Saved fig_policy_regimes_{hz}.pdf")
 
-        # 4b. Clustered Feature Importance (Collinearity-Corrected)
-        _plot_clustered_importance(hz, hz_name, titles)
-
-        # 4c. SHAP Beeswarm
-        _plot_shap_beeswarm(hz, hz_name, titles)
+        # 4. Temporal Iteration over Importance and SHAP
+        for period in ['Full', 'Pre-2022', 'Post-2022', '2019', '2020', '2021', '2023', '2024']:
+            _plot_clustered_importance(hz, hz_name, titles, period)
+            _plot_shap_beeswarm(hz, hz_name, titles, period)
 
 
 # ─── Helper: Clustered Feature Importance ───────────────────────────
-def _plot_clustered_importance(hz, hz_name, titles):
+def _plot_clustered_importance(hz, hz_name, titles, period="Full"):
     """
     Group features by pairwise Spearman correlation using hierarchical
     clustering (|r| > 0.7). Sum native importances within each cluster
@@ -252,6 +283,14 @@ def _plot_clustered_importance(hz, hz_name, titles):
     try:
         df_fi = pd.read_csv(fi_file)
         df_data = pd.read_csv(data_file, low_memory=False)
+        
+        df_data['year'] = pd.to_numeric(df_data['year'], errors='coerce')
+        if period == 'Pre-2022':
+            df_data = df_data[df_data['year'] < 2022]
+        elif period == 'Post-2022':
+            df_data = df_data[df_data['year'] >= 2022]
+        elif period.isdigit():
+            df_data = df_data[df_data['year'] == int(period)]
         X_num = df_data.select_dtypes(include=[np.number])
 
         common = [f for f in df_fi['Feature'] if f in X_num.columns]
@@ -344,7 +383,7 @@ def _plot_clustered_importance(hz, hz_name, titles):
         plt.xlabel('Summed Relative Importance (%)', fontsize=12)
         plt.grid(axis='x', alpha=0.3)
         plt.tight_layout()
-        out = os.path.join(FIG_DIR, f"fig_feature_importance_clustered_{hz}.pdf")
+        out = os.path.join(FIG_DIR, f"fig_feature_importance_clustered_{hz}_{period}.pdf")
         plt.savefig(out)
         plt.close()
         print(f"  [+] Saved fig_feature_importance_clustered_{hz}.pdf")
@@ -355,7 +394,7 @@ def _plot_clustered_importance(hz, hz_name, titles):
 
 
 # ─── Helper: SHAP Beeswarm ─────────────────────────────────────────
-def _plot_shap_beeswarm(hz, hz_name, titles):
+def _plot_shap_beeswarm(hz, hz_name, titles, period="Full"):
     """
     Load the saved CalibratedClassifierCV model, extract the base
     CatBoost estimator, and compute TreeSHAP values on a subsample.
@@ -375,17 +414,28 @@ def _plot_shap_beeswarm(hz, hz_name, titles):
     try:
         import shap
 
-        cal_model = joblib.load(model_file)
+        base_cb = joblib.load(model_file)
 
-        if hasattr(cal_model, 'calibrated_classifiers_'):
-            base_cb = cal_model.calibrated_classifiers_[0].estimator
-        elif hasattr(cal_model, 'estimator'):
-            base_cb = cal_model.estimator
+        if hasattr(base_cb, 'calibrated_classifiers_'):
+            base_cb = base_cb.calibrated_classifiers_[0].estimator
+        elif hasattr(base_cb, 'base_estimator'):
+            base_cb = base_cb.base_estimator
+        elif hasattr(base_cb, 'estimator'):
+            base_cb = base_cb.estimator
         else:
-            print(f"  [!] Cannot extract base CatBoost from {type(cal_model)}")
+            print(f"  [!] Cannot extract base CatBoost from {type(base_cb)}")
             return
 
         df_data = pd.read_csv(data_file, low_memory=False)
+
+        df_data['year'] = pd.to_numeric(df_data['year'], errors='coerce')
+        if period == 'Pre-2022':
+            df_data = df_data[df_data['year'] < 2022]
+        elif period == 'Post-2022':
+            df_data = df_data[df_data['year'] >= 2022]
+        elif period.isdigit():
+            df_data = df_data[df_data['year'] == int(period)]
+            
         drop_cols = ['is_protested', 'case_number', 'organized_opposition',
                      'has_audio_record', 'TCAD ID', 'date',
                      'application_start_date', 'final_date',
@@ -404,6 +454,14 @@ def _plot_shap_beeswarm(hz, hz_name, titles):
 
         explainer = shap.TreeExplainer(base_cb)
         shap_values = explainer.shap_values(X_sample)
+        
+        # Handle CatBoost base value offset
+        if isinstance(shap_values, list):
+            shap_values = shap_values[1] if len(shap_values) > 1 else shap_values[0]
+        if hasattr(shap_values, 'values'):
+            shap_values = shap_values.values
+        if len(shap_values.shape) > 1 and shap_values.shape[1] == X_sample.shape[1] + 1:
+            shap_values = shap_values[:, :-1]
 
         # Repaired collinearity: hierarchical cluster SHAP
         from scipy.cluster.hierarchy import linkage, fcluster
@@ -451,11 +509,19 @@ def _plot_shap_beeswarm(hz, hz_name, titles):
             else:
                 label = f"{_rename_feature(top_feature)} Cluster ({n} features)"
                 
+            original_label = label
+            counter = 1
+            while label in new_cols:
+                label = f"{original_label} ({counter})"
+                counter += 1
             new_cols[label] = X_sample[cluster_feats].mean(axis=1) # average feature magnitude for coloring
             new_shap.append(shap_values[:, idx].sum(axis=1))       # mathematically aggregate collinear SHAP attributions
 
         X_display = pd.DataFrame(new_cols, index=X_sample.index)
         shap_matrix = np.column_stack(new_shap)
+        print(f"X_display.shape: {X_display.shape}")
+        print(f"shap_matrix.shape: {shap_matrix.shape}")
+        print(f"shap_values.shape: {shap_values.shape}, X_sample.shape: {X_sample.shape}")
 
         plt.figure(figsize=(10, 8))
         shap.summary_plot(shap_matrix, X_display, max_display=15, show=False, plot_size=None)
@@ -463,7 +529,7 @@ def _plot_shap_beeswarm(hz, hz_name, titles):
                   "SHAP Feature Attribution ({hz})").format(hz=hz_name),
                   fontsize=14)
         plt.tight_layout()
-        out = os.path.join(FIG_DIR, f"fig_shap_beeswarm_{hz}.pdf")
+        out = os.path.join(FIG_DIR, f"fig_shap_beeswarm_{hz}_{period}.pdf")
         plt.savefig(out, bbox_inches='tight')
         plt.close()
         print(f"  [+] Saved fig_shap_beeswarm_{hz}.pdf")

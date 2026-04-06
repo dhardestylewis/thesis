@@ -225,6 +225,12 @@ def main():
         print(f"    [!] Error generating Figure 17 (DiD): {e}")
 
     try:
+        placebo_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "DiD", "electoral_placebo_did.py")
+        os.system(f'python "{placebo_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Electoral Placebo DiD matrix: {e}")
+
+    try:
         t1_ex.plot_all_track1_exhibits()
     except Exception as e:
         print(f"    [!] Error generating Track 1 exhibits: {e}")
@@ -238,6 +244,12 @@ def main():
         f22.generate_exhibits()
     except Exception as e:
         print(f"    [!] Error generating Figure 22 (HexMap): {e}")
+
+    try:
+        f23_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "plot_F23_Spatial_Error.py")
+        os.system(f'python "{f23_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Figure 23 (Spatial Error Map): {e}")
 
     try:
         stage_a_exhibits.generate_exhibits()

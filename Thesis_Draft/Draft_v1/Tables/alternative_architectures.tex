@@ -1,30 +1,32 @@
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Pipeline Engineering:} Stage A \& Stage C Evaluated at Filing: Raw vs. Calibrated Candidate Architectures}
+\caption{Development-proposal and petition-filing models evaluated at filing: Raw vs. calibrated candidate models}
 \label{tab:alt_architectures}
 \renewcommand{\arraystretch}{1.2}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccccc}
 \toprule
-\textbf{Horizon} & \textbf{Architecture} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{ECE (Raw)} & \textbf{ECE (Cal)} & \textbf{ACE (Cal)} \\
+\textbf{Horizon} & \textbf{Model} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{ECE (Raw)} & \textbf{ECE (Cal)} & \textbf{ACE (Cal)} \\
 \midrule
-H0 (Filing) & Logistic Regression (L2) (Base) & 0.064 & 0.731 & 0.586 & 0.149 & 0.022 \\
+H0 (Filing) & Logistic Regression (L2) (Base) & 0.064 & 0.731 & 0.586 & \textbf{0.149} & 0.022 \\\\
 H0 (Filing) & SMOTE + Logistic Regression (L2) & 0.060 & 0.751 & 0.552 & 0.417 & 0.280 \\
-H0 (Filing) & Random Forest (Base) & 0.422 & 0.967 & 0.298 & 0.399 & 0.004 \\
+H0 (Filing) & Random Forest (Base) & 0.422 & 0.967 & 0.298 & 0.399 & \textbf{0.004} \\\\
 H0 (Filing) & SMOTE + Random Forest & 0.418 & 0.966 & 0.356 & 0.219 & 0.036 \\
 H0 (Filing) & LightGBM (Base) & 0.489 & 0.962 & 0.375 & 0.225 & 0.012 \\
 H0 (Filing) & SMOTE + LightGBM & 0.416 & 0.933 & 0.346 & 0.276 & 0.013 \\
-H0 (Filing) & CatBoost (Base) & 0.492 & 0.962 & 0.251 & 0.285 & 0.009 \\
+H0 (Filing) & CatBoost (Base) & \textbf{0.492} & 0.962 & \textbf{0.251} & 0.285 & 0.009 \\\\
 H0 (Filing) & SMOTE + CatBoost & 0.459 & 0.961 & 0.301 & 0.312 & 0.023 \\
-H0 (Filing) & TabNet & 0.410 & 0.972 & 0.268 & 0.250 & 0.023 \\
+H0 (Filing) & TabNet & 0.410 & \textbf{0.972} & 0.268 & 0.250 & 0.023 \\\\
 H3 (Pre-Council) & Logistic Regression (L2) (Base) & 0.419 & 0.926 & 0.479 & 0.264 & 0.032 \\
 H3 (Pre-Council) & SMOTE + Logistic Regression (L2) & 0.412 & 0.926 & 0.479 & 0.423 & 0.209 \\
-H3 (Pre-Council) & Random Forest (Base) & 0.500 & 0.963 & 0.222 & 0.127 & 0.010 \\
-H3 (Pre-Council) & SMOTE + Random Forest & 0.536 & 0.946 & 0.171 & 0.191 & 0.031 \\
-H3 (Pre-Council) & LightGBM (Base) & 0.558 & 0.932 & 0.384 & 0.205 & 0.011 \\
+H3 (Pre-Council) & Random Forest (Base) & 0.500 & \textbf{0.963} & 0.222 & \textbf{0.127} & \textbf{0.010} \\\\
+H3 (Pre-Council) & SMOTE + Random Forest & 0.536 & 0.946 & \textbf{0.171} & 0.191 & 0.031 \\\\
+H3 (Pre-Council) & LightGBM (Base) & \textbf{0.558} & 0.932 & 0.384 & 0.205 & 0.011 \\\\
 H3 (Pre-Council) & SMOTE + LightGBM & 0.479 & 0.914 & 0.410 & 0.346 & 0.036 \\
 H3 (Pre-Council) & CatBoost (Base) & 0.492 & 0.926 & 0.404 & 0.241 & 0.012 \\
 H3 (Pre-Council) & SMOTE + CatBoost & 0.482 & 0.946 & 0.353 & 0.255 & 0.038 \\
 H3 (Pre-Council) & TabNet & 0.456 & 0.944 & 0.271 & 0.235 & 0.017 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}

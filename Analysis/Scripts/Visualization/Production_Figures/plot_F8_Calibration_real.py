@@ -35,7 +35,7 @@ def plot_f8():
     print("==============================================")
     
     if not os.path.exists(STAGE_A_OUT):
-        print("[-] Required Stage A predictive data not found.")
+        print("[-] Required Development-Proposal Model predictive data not found.")
         return
         
     df = pd.read_csv(STAGE_A_OUT, usecols=['event_next_1yr', 'Prob_LR_H=4', 'Prob_Optimal_H=4'])

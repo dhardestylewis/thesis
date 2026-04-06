@@ -37,7 +37,7 @@ Columbia University}
 \maketitle
 
 \begin{abstract}
-This thesis asks whether the filing of a valid protest petition against a housing development proposal in Austin, Texas can be predicted before the project enters formal public hearings, using only information available at the time of filing. The primary outcome is a legally defined, directly observable event: whether adjacent property owners file a petition meeting the 20\% area threshold specified by Texas Local Government Code Chapter~211, thereby triggering a supermajority requirement at City Council. Working from an analytic sample of 7,074 discretionary zoning cases filed between 2007 and 2024, the core opposition model is evaluated under deployment-like conditions: out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold required for operational use. In-distribution 5-fold cross-validation provides an upper bound PR-AUC of \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over the baseline petition rate. Filing-date administrative features contain meaningful signal for formal protest petition risk, but that signal is better suited to relative ranking than to calibrated, regime-stable operational forecasting. The false negative rate gap across council districts is \metricFNRGap{}, but given the sparsity of positive cases within individual subgroups, this figure likely reflects insufficient statistical power rather than genuine equalization of error rates. Supporting analyses include a regression discontinuity design at the 20\% petition threshold, which estimates a \metricRDDelay{}-day increase in council processing time (SE~$=$~\metricRDSE{}, 95\% CI: \metricRDCI{}), and a difference-in-differences estimator for the 2022 council electoral transition, which identifies a \metricFlipDiDCoeff{} shift in petition filing rates in districts that changed political representation ($p = \metricFlipDiDPval{}$). Semi-structured interviews with planning professionals contextualized these findings, highlighting the pre-2022 institutional degradation of the petition mechanism and the bifurcated social motivations driving public testimony. This thesis ultimately demonstrates that while administrative features contain strong predictive signal, the complex institutional realities of the zoning process are fundamentally difficult to capture through static, algorithmically calibrated probabilities.
+This thesis asks whether the filing of a valid protest petition against a housing development proposal in Austin, Texas can be predicted before the project enters formal public hearings, using only information available at the time of filing. The primary outcome is an operationalized petition-based measure intended to capture whether a case met the study-period petition threshold in reconstructed public records. Working from an analytic sample of 7,074 discretionary zoning cases filed between 2007 and 2024, the formal protest petition model is evaluated under out-of-sample conditions: out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold required for practical application. In-distribution 5-fold cross-validation provides an upper bound PR-AUC of \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over the baseline petition rate. Filing-date administrative features contain meaningful signal for formal protest petition occurrence, but that signal is better suited to relative ranking than to forecasting that remains calibrated across policy periods. The false negative rate gap across council districts is \metricFNRGap{}, but given the sparsity of positive cases within individual subgroups, this figure likely reflects insufficient statistical power rather than genuine equalization of error rates. Supporting analyses include a regression discontinuity design at the 20\% petition threshold, which estimates a \metricRDDelay{}-day increase in council processing time (SE~$=$~\metricRDSE{}, 95\% CI: \metricRDCI{}), and a difference-in-differences estimator for the 2022 council electoral transition, which identifies a \metricFlipDiDCoeff{} shift in petition filing rates in districts that changed political representation ($p = \metricFlipDiDPval{}$). Semi-structured interviews with planning professionals contextualized these findings, highlighting the pre-2022 declining practical influence of the petition mechanism and the two distinct motivations driving public testimony. This thesis demonstrates that while administrative features contain strong predictive signal, the complex institutional realities of the zoning process are fundamentally difficult to capture through static model-based probabilities.
 \end{abstract}
 
 \newpage
@@ -60,48 +60,48 @@ Finally, I thank my colleagues, peers, and the broader Columbia community for th
 
 \section{Introduction}
 
-As the United States confronts a persistent housing affordability crisis, understanding local barriers to new housing supply remains an important empirical challenge. Traditional accounts emphasize the role of municipal zoning laws, but a substantial share of the friction occurs through discretionary political processes---public hearings, protest petitions, and council negotiations---that collectively slow or block individual projects. This thesis uses Austin, Texas as a case study. Between 2010 and 2024, rapid employment growth drove severe housing supply constraints, inflating property values and generating sustained conflict between neighborhood preservation and regional development goals.
+As the United States confronts a persistent housing affordability crisis, understanding local barriers to new housing supply remains an important empirical challenge. Traditional accounts emphasize the role of municipal zoning laws, but a substantial share of delay and blockage occurs through discretionary political processes---public hearings, protest petitions, and council negotiations---that collectively slow or block individual projects. This thesis uses Austin, Texas as a case study. Between 2010 and 2024, rapid employment growth drove severe housing supply constraints, inflating property values and generating sustained conflict between neighborhood preservation and regional development goals.
 
-Against this backdrop, the central empirical question is: \textbf{can the filing of a valid protest petition against a housing development proposal be predicted before the project enters formal public hearings, using only information available at the time of filing?}
+Against this backdrop, the central research question is whether a valid protest petition filing can be predicted before formal public hearings begin.
 
-The outcome under study is specific. Under Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the area of lots within 200 feet of the proposed change are collected, the petition triggers a three-quarters supermajority requirement for City Council approval. This is one institutionalized form of neighborhood opposition---the most consequential and best-measured one in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
+The outcome under study is specific. Under the pre-2025 framework of Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the relevant adjoining land area were collected and the municipal clerk certified the petition as valid, the petition historically required a three-fourths supermajority for City Council approval. (Effective September 1, 2025, House Bill 24 repealed and replaced this mechanism with a differentiated, multi-tier system under \S~211.0061.) This is one institutionalized form of neighborhood opposition---the most consequential and best-observed form in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
 
-To answer this question, the research constructs a sequential predictive architecture organized around four stages:
+To answer this question, the research constructs a sequential predictive methodology organized around four stages:
 
 \begin{itemize}
-    \item \textbf{Stage A -- Development Occurrence:} Where housing development proposals are likely to emerge, modeled as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels.
-    \item \textbf{Stage B -- Project Type and Scale:} Conditional on a development event, the expected project form and unit count.
-    \item \textbf{Stage C -- Opposition Risk:} Conditional on a project entering the formal public process, the probability that a valid protest petition is filed. \textit{This is the core of the thesis.}
-    \item \textbf{Stage D -- Political Outcome:} Conditional on project characteristics and opposition status, the likelihood of pre-council withdrawal or final disposition.
+    \item \textbf{Stage A---Development Occurrence:} Where housing development proposals are likely to emerge, modeled as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels.
+    \item \textbf{Stage B---Project Type and Scale:} Conditional on a development event, the expected project form and unit count.
+    \item \textbf{Stage C---Formal Protest Petition:} Conditional on a project entering the formal public process, the probability that a valid protest petition is filed. \textit{This is the core of the thesis.}
+    \item \textbf{Stage D---Political Outcome:} Conditional on project characteristics and opposition status, the likelihood of pre-council withdrawal or final disposition.
 \end{itemize}
 
-Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and equity to support responsible use.
+Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and equity to support high-confidence administrative use.
 
-The thesis supplements its predictive framework with two causal analyses that examine the institutional mechanisms through which petitions affect outcomes. A regression discontinuity design at the 20\% petition threshold estimates the processing-time penalty imposed by crossing the statutory margin. A difference-in-differences estimator exploits the geographic heterogeneity of the November 2022 council elections, in which specific districts replaced preservationist incumbents with pro-housing representatives, to test whether political turnover reduced petition filing rates in treated districts.
+The thesis also includes two exploratory quasi-experimental analyses of downstream institutional dynamics. A regression discontinuity design at the 20\% petition threshold estimates the processing-time penalty imposed by crossing the statutory margin. A difference-in-differences estimator exploits the geographic heterogeneity of the November 2022 council elections, in which specific districts replaced preservationist incumbents with pro-housing representatives, to test whether political turnover reduced petition filing rates in treated districts.
 
 Finally, semi-structured interviews with planning professionals, conducted under IRB Protocol ACYY0820, informed the interpretation of quantitative findings by surfacing institutional dynamics---informal negotiations, strategic petition timing, neighborhood network mobilization---that administrative data cannot directly observe. The interviews do not validate the model; they contextualize findings within professional planning practice and surface governance concerns about potential misuse of predictive outputs.
 
 \section{Literature Review}
 
-This literature review synthesizes scholarship across three core themes to directly motivate the thesis's methodological architecture. It first establishes the political economy of homeowner opposition and participatory distortion. Second, it isolates the specific institutional mechanism of the discretionary veto. Finally, it provides the intellectual justification for treating zoning conflict as a strictly predictive policy problem while acknowledging the inherent evaluative constraints required for algorithmic governance in spatial planning.
+This literature review synthesizes scholarship across three core themes to directly motivate the thesis's methodological architecture. It first establishes the political economy of homeowner opposition and participatory distortion. Second, it isolates the specific institutional mechanism of the protest petition. Finally, it provides the intellectual justification for treating zoning conflict as primarily a predictive policy problem while acknowledging the inherent evaluative constraints required for administrative use of predictive models in spatial planning.
 
 \subsection{The Political Economy of Zoning Friction and Participatory Distortion}
 
-The foundational context for this research rests on the consensus that land-use regulation functions as a binding constraint on housing supply, driving a wedge between fundamental construction costs and market prices \cite{glaeser2005manhattan, glaeser2003zoning}. While macro-economic literature definitively establishes the downstream effects of this regulatory tax---including suppressed economic growth and diminished housing affordability---urban planning scholarship points to the hyper-local political economy to explain why such constraints persist despite citywide needs \cite{gyourko2015regulation}. 
+The foundational context for this research rests on the consensus that land-use regulation functions as a binding constraint on housing supply, driving a wedge between fundamental construction costs and market prices \cite{glaeser2005manhattan, glaeser2003zoning}. While macro-economic literature establishes the downstream effects of this regulatory tax---including suppressed economic growth and diminished housing affordability---urban planning scholarship points to the local political economy to explain why such constraints persist despite citywide needs \cite{gyourko2015regulation}. 
 
-The theoretical centerpiece for understanding this localized resistance is Fischel's \cite{fischel2001homevoter} homevoter hypothesis. Fischel posits that homeowners engage in local politics primarily to protect their homes' use- and exchange-values, rationally utilizing zoning restrictions to preserve neighborhood exclusivity and mitigate perceived financial risks. However, recent empirical work has demonstrated that this protective impulse translates into a highly asymmetric political arena. Einstein, Palmer, and Glick \cite{einstein2019book} document the phenomenon of ``participatory distortion,'' demonstrating that the participants who dominate planning and zoning board meetings are overwhelmingly older, disproportionately white, longtime homeowners who are united in opposing new housing. These ``neighborhood defenders'' possess the time, resources, and localized knowledge to effectively block individual projects. Furthermore, Hankinson \cite{hankinson2018} complicates the pure asset-protection motive by revealing that renters in high-cost cities exhibit spatial NIMBYism on par with homeowners due to localized displacement anxiety, cementing the reality that spatial proximity to development triggers mobilization regardless of tenure.
+The theoretical centerpiece for understanding this localized resistance is Fischel's \cite{fischel2001homevoter} homevoter hypothesis. Fischel posits that homeowners engage in local politics primarily to protect both the use value and exchange value of their homes, rationally utilizing zoning restrictions to preserve neighborhood exclusivity and mitigate perceived financial risks. However, recent empirical work has demonstrated that this protective impulse translates into a highly asymmetric political arena. Einstein, Palmer, and Glick \cite{einstein2019book} document the phenomenon of ``participatory distortion,'' demonstrating that the participants who dominate planning and zoning board meetings are overwhelmingly older, disproportionately white, longtime homeowners who are united in opposing new housing. These ``neighborhood defenders'' possess the time, resources, and localized knowledge to effectively block individual projects. Furthermore, Hankinson \cite{hankinson2018} complicates the pure asset-protection motive by revealing that renters in high-cost cities exhibit spatial NIMBYism on par with homeowners due to localized displacement anxiety, cementing the reality that spatial proximity to development triggers mobilization regardless of tenure.
 
 \subsection{Discretionary Review and Institutional Vetoes}
 
-The theoretical reality of participatory distortion only affects housing supply when it intersects with municipal institutions capable of stalling development. Manville and Monkkonen \cite{manville2016unpermitted} highlight that discretionary review processes - where development relies on site-specific municipal approvals rather than by-right administrative clearance - serve as the primary vehicle through which local opposition exerts leverage. In a discretionary regime, citywide consensus for housing growth is continuously subjugated by seriatim, parcel-by-parcel political fights \cite{hills2011zoning}.
+Participatory distortion matters for housing supply when it operates through institutions that can delay or block projects. Manville and Monkkonen \cite{manville2016unpermitted} highlight that discretionary review processes---where development relies on site-specific municipal approvals rather than by-right administrative clearance---serve as the primary vehicle through which local opposition exerts leverage. In a discretionary regime, citywide housing goals are repeatedly displaced by parcel-level political conflict \cite{hills2011zoning}.
 
-In Texas, this leverage is explicitly codified through the protest petition mechanism (Local Government Code \S~211.006). The statute legally empowers adjacent property owners to force supermajority city council voting requirements if owners representing 20\% of the \emph{area of lots} immediately adjoining the proposed change and extending 200 feet from that area sign a valid petition.\footnote{Note that \S~211.006(d) and (f) were repealed effective September 1, 2025 by HB 24 (89th Texas Legislature). The operative provisions now reside in new \S~211.0061, which establishes a three-tier protest system.} This mechanism formalizes the discretionary veto, transforming localized, diffuse neighborhood anger into a highly structured institutional hurdle. Cellini, Ferreira, and Rothstein \cite{cellini2010schools}, in their analysis of California school bond referenda, demonstrate how supermajority thresholds inherently distort political outcomes to favor the status quo. 
+In Texas, this leverage is explicitly codified through the protest petition mechanism (Local Government Code \S~211.006). The statute legally empowers adjacent property owners to force supermajority city council voting requirements if owners representing 20\% of the \emph{area of lots} immediately adjoining the proposed change and extending 200 feet from that area sign a valid petition.\footnote{Note that \S~211.006(d) and (f) were repealed effective September 1, 2025 by HB 24 (89th Texas Legislature). The operative provisions now reside in new \S~211.0061, which establishes a three-tier protest system.} This mechanism empowers localized opposition, transforming protest into a formal institutional hurdle. Cellini, Ferreira, and Rothstein \cite{cellini2010schools}, in their analysis of California school bond referenda, demonstrate how supermajority thresholds inherently distort political outcomes to favor the status quo. 
 
-In Austin, the protest petition functions identically for land use: crossing the legal 20\% threshold triggers immediate voting friction and structural delay. Recent empirical research by the Mercatus Center at George Mason University confirms the severity and asymmetry of this mechanism specifically within the Austin political geography. Their analysis demonstrates that valid petitions are disproportionately filed against residential density: historically, 25\% of rezonings to multifamily use in Austin faced a valid petition, compared to only 5\% for commercial rezonings. 
+In Austin, the protest petition creates institutional friction for land use: cases exceeding the measured petition threshold appear to face additional voting requirements and longer processing times. Recent empirical research by the Mercatus Center at George Mason University confirms the severity and asymmetry of this mechanism specifically within the Austin political geography. Their analysis demonstrates that valid petitions are more common for rezonings that increase residential density: historically, 25\% of rezonings to multifamily use in Austin faced a valid petition, compared to only 5\% for commercial rezonings. 
 
 \begin{table}[H]
 \centering
-\caption{\textbf{Context:} Valid Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}
+\caption{Valid Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}
 \label{tab:mercatus_petitions}
 \begin{tabular}{lc}
 \toprule
@@ -116,23 +116,23 @@ Commercial / Non-Residential & 5\% \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
-    \caption[Validation: Internal Structural Petition Hazard by Project Typology]{\textbf{Context:} Longitudinal validation of the structural petition hazard by internal project typology (2007-2024). Validating the Mercatus Center baseline (Table 1), this timeline tracks the native historical incidence across the full training window used for the pipeline out-of-distribution tracking arrays. Notably, PUDs explicitly suffer from volatile structural headwinds, averaging $\approx$ 15\% to 50\% valid petition incidence annually, compared to stable sub-5\% incidence for missing-middle typologies.}
+    \caption[Annual Valid Protest Petition Rate by Project Type]{Annual petition filing rates by project type, 2007--2024. Consistent with the Mercatus Center pattern (Table~1), this timeline tracks the observed historical petition frequency within each development category over the study period. While high-density or specialized use categories historically experience greater petition volatility, missing-middle and standard residential rezonings---which comprise the vast majority of all discretionary cases---maintain a consistently low baseline filing rate throughout the dataset.}
     \label{fig:typology_timeline}
 \end{figure}
 
-Because the process is fundamentally asymmetric - empowering opponents of development via an unyielding spatial geometry - it creates a structural bias toward the status quo, dragging contested housing applications into months of procedural delays. The sheer scale of this localized gridlock ultimately forced intervention by the Texas legislature in 2025 via House Bill 24, which reformed the statute by stipulating that valid petitions against \emph{residential upzonings} are strictly ``expressive'' and no longer trigger the 3/4 supermajority vote requirement (though petitions against nonresidential rezonings remain fully intact). Consequently, predicting whether this specific institutional veto will mobilize against an application forms the core empirical challenge of this thesis.
+Because the process is fundamentally asymmetric---empowering opponents of development through a fixed statutory buffer geometry---it creates a bias toward the status quo, dragging contested housing applications into months of procedural delays. The Texas Legislature structurally altered this framework in 2025; under House Bill 24, the state established new \S~211.0061, replacing the uniform 20\% trigger with differentiated standards based on project type and requiring a two-thirds rather than three-fourths council vote for certain residential rezonings (while largely preserving the prior framework for nonresidential cases). Consequently, predicting whether a qualifying formal protest petition will be filed against an application forms the core empirical challenge of this thesis.
 
 \subsection{The Prediction Policy Problem in Spatial Planning}
 
-Traditional econometric scholarship in urban planning almost exclusively evaluates the causal effect of zoning - for instance, whether upzoning increases land values or whether a protest petition causes delay. However, addressing the localized gridlock of discretionary review requires anticipating \emph{where} opposition will emerge before political capital is expended. This intellectual justification builds on Shmueli's \cite{shmueli2010} foundational distinction between explanatory modeling (testing causal hypotheses) and predictive modeling (generating accurate forecasts of new observations), and on Mullainathan and Spiess \cite{mullainathan2017ml}, who argue that machine learning solves a fundamentally different problem than traditional econometrics: prediction ($\hat{y}$) rather than parameter estimation ($\hat{\beta}$).
+Traditional econometric scholarship in urban planning almost exclusively evaluates the causal effect of zoning---for instance, whether upzoning increases land values or whether a protest petition causes delay. However, addressing the localized gridlock of discretionary review requires anticipating \emph{where} opposition will emerge before political capital is expended. This intellectual justification builds on Shmueli's \cite{shmueli2010} foundational distinction between explanatory modeling (testing causal hypotheses) and predictive modeling (generating accurate forecasts of new observations), and on Mullainathan and Spiess \cite{mullainathan2017ml}, who argue that machine learning solves a fundamentally different problem than traditional econometrics: prediction ($\hat{y}$) rather than parameter estimation ($\hat{\beta}$).
 
-Kleinberg, Ludwig, Mullainathan, and Obermeyer \cite{kleinberg2015prediction} formalize this distinction by defining the ``prediction policy problem,'' cases where optimal policy decisions depend not on understanding the causal mechanism of an outcome, but on accurately forecasting its occurrence. Predicting which housing developments will face organized protest petitions is precisely such a problem. Planners and pro-housing policymakers need to know which projects will trigger supermajority vetoes to efficiently allocate political capital, engage in proactive community mediation, or design comprehensive reforms that bypass parcel-level friction \cite{athey2019ml}. By applying algorithmic forecasting to administrative municipal data, this research transitions the study of NIMBYism from a retrospective causal analysis into a proactive predictive tool, testing whether administrative spatial characteristics carry sufficient signal to anticipate participatory distortion weeks or months before a public hearing takes place.
+Kleinberg, Ludwig, Mullainathan, and Obermeyer \cite{kleinberg2015prediction} formalize this distinction by defining the ``predictive policy question,'' cases where optimal policy decisions depend not on understanding the causal mechanism of an outcome, but on accurately forecasting its occurrence. Predicting which zoning cases will meet the petition threshold can be framed as a predictive policy question. Planners and policymakers need to know which projects will trigger supermajority voting requirements to efficiently allocate political capital, engage in proactive community mediation, or design comprehensive reforms that bypass parcel-level friction \cite{athey2019ml}. By applying algorithmic forecasting to administrative municipal data, this research transitions the study of NIMBYism from a retrospective causal analysis into a proactive predictive model, testing whether administrative spatial characteristics carry sufficient signal to anticipate formal protest petitions in formal proceedings weeks or months before a public hearing takes place.
 
 \subsection{Evaluative Constraints on Predictive Governance}
 
-While transitioning to a predictive architecture offers potential operational value for municipal planning, it introduces serious ethical risks. Barocas and Selbst \cite{barocas2016} demonstrate that predictive algorithms inevitably inherit the prejudices embedded in their training data. Because historical zoning data in American cities is inextricably linked to legacies of redlining, racial covenants, and exclusionary zoning \cite{whittemore2014racial}, the underlying spatial features, such as lot geometry, single-family zoning, and historic property values, function as proxies for race and class. If an algorithm learns that wealthy, historically white neighborhoods successfully file protest petitions, using that prediction to guide development decisions risks encoding a feedback loop that shields those neighborhoods from densification while concentrating development pressure on politically vulnerable communities \cite{richardson2019dirty}.
+While transitioning to a predictive methodology offers potential analytical value for municipal planning, it introduces serious ethical risks. Barocas and Selbst \cite{barocas2016} demonstrate that predictive algorithms inevitably inherit the prejudices embedded in their training data. Because historical zoning data in American cities is inextricably linked to legacies of redlining, racial covenants, and exclusionary zoning \cite{whittemore2014racial}, the underlying spatial features, such as lot geometry, single-family zoning, and historic property values, function as proxies for race and class. If an algorithm learns that wealthy, historically white neighborhoods successfully file protest petitions, using that prediction to guide development decisions risks encoding a feedback loop that shields those neighborhoods from densification while concentrating development pressure on politically vulnerable communities \cite{richardson2019dirty}.
 
-Consequently, the viability of algorithmic prediction in spatial planning is constrained by mathematical limits on fairness. Chouldechova \cite{chouldechova2017fair} proves that when base rates of an outcome differ across groups, no imperfect predictor can simultaneously satisfy both predictive parity and classification parity. Recognizing these fixed mathematical constraints, modern predictive systems intended for public-sector use must be bounded by strict decision-support thresholds. Rather than attempting to maximize pure predictive lift, the deployment of such models must be contingent on explicit calibration accuracy and the equalization of False Negative Rates across geographic boundaries, ensuring that predictive efficiency does not come at the cost of democratic equity.
+Consequently, the viability of algorithmic prediction in spatial planning is constrained by mathematical limits on fairness. Chouldechova \cite{chouldechova2017fair} proves that when base rates of an outcome differ across groups, no imperfect predictor can simultaneously satisfy both predictive parity and classification parity. Recognizing these fixed mathematical constraints, modern predictive models intended for public-sector use must be evaluated against explicit calibration and error-rate thresholds. Rather than attempting to maximize pure predictive lift, the administrative application of such models should consider explicit calibration accuracy and the equalization of False Negative Rates across geographic groups, ensuring that predictive efficiency does not come at the cost of democratic equity.
 
 \section{Data and Methods}
 
@@ -140,13 +140,13 @@ The empirical foundation is a time-stamped spatial panel dataset that reconstruc
 
 \subsection{Analytical Panel Structure}
 
-The core analytics rely on the enriched filing-date master table, a consolidated structural matrix used by the predictive orchestrator that merges spatial and demographic variables into single parcel-year observations:
+The core analytics rely on the filing-date analytic dataset, which merges spatial and demographic variables into single case-level observations (with temporally matched covariates):
 \begin{enumerate}
     \item \textbf{Zoning Application Records:} Case ID, milestone dates (filing, notice, petition deadline, planning commission hearing, council reading, withdrawal), requested zoning changes, unit limits, target FAR, and disposition status.
     \item \textbf{Spatial Geometries:} Parcel IDs, geometries, acreage, frontage, and 200ft buffers used to aggregate nearby properties (council districts and overlapping geometries).
-    \item \textbf{Parcel Appraisals:} Annually indexed TCAD appraisal variables for parcels computing attributes within the 200ft threshold: land value, structure age, homestead exemption rates, and owner-occupancy shares.
+    \item \textbf{Parcel Appraisals:} Annually indexed TCAD appraisal variables for parcels used to compute variables within the 200-foot buffer: land value, structure age, homestead exemption rates, and owner-occupancy shares.
     \item \textbf{Neighborhood Demographics:} Tract and block group ACS variables constrained to their historical 5-year release dates: rent burdens, tenure splits, demographic composition, and displacement vulnerability indicators.
-    \item \textbf{Institutional Calendar:} The 2022 council regime change; HOME Phase 1\footnote{Ordinance No. 20231207-001, adopted December 7, 2023; applications accepted February 5, 2024.} and HOME Phase 2\footnote{Ordinance No. 20240516-006, adopted May 16, 2024; applications accepted August 16, 2024, with Wildland-Urban Interface and Uprooted-designated areas delayed to November 16, 2024.}; and the HB 24 effective date (September 1, 2025).
+    \item \textbf{Institutional Calendar:} The 2022 council regime change; the HB 24 effective date (September 1, 2025).
 \end{enumerate}
 
 Because municipal databases frequently overwrite preliminary timestamps with final disposition dates, precise milestone dates are reconstructed through two methods. First, explicit dates are parsed from scraped historical council agendas and PDF case files. Second, where explicit text is unavailable, dates are imputed by back-calculating from end-dates using the minimum procedural constraints mandated by Texas Local Government Code and Austin municipal zoning ordinances, such as statutory 11-day mail notice minimums.
@@ -156,13 +156,13 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Archive_Pipelines/fig1_spatial_distribution.png}
-    \caption[Context: Spatial Distribution of Zoning Cases (2007-2024)]{\textbf{Context:} Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$).}
+    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$).}
     \label{fig:spatial_dist}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{\textbf{Context:} Annual Distribution of Discretionary Zoning Cases (2007 - 2024)}
+\caption{Annual Distribution of Discretionary Zoning Cases (2007---2024)}
 \label{tab:annual_counts}
 \begin{tabular}{lc|lc|lc}
 \toprule
@@ -175,7 +175,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 2011 & 369 & 2017 & 483 & 2023 & 625 \\
 2012 & 335 & 2018 & 492 & 2024 & 284 \\
 \midrule
-\multicolumn{6}{l}{\textbf{Total (2007 - 2024):} 7,074 cases} \\
+\multicolumn{6}{l}{\textbf{Total (2007---2024):} 7,074 cases} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -183,13 +183,13 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\textwidth]{Exploratory_EDA/waller_buffer_map.png}
-    \caption[Context: 200ft Parcel Buffer Geometries for Spatial Targets]{\textbf{Context:} 200ft parcel buffer geometries used for formal TCAD appraisal aggregation and generating spatial petition targets.}
+    \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer.}
     \label{fig:buffer_map}
 \end{figure}
 
-\subsection{Case Universe and Sample Filtration}
+\subsection{Case Universe and Sample Selection}
 
-The Austin Open Data Portal (data.austintexas.gov), accessed via the Socrata Open Data API (SODA), records all administrative zoning activity, including both substantive rezoning proposals and minor administrative variances, such as 5-foot setback adjustments. Because the organized opposition mechanisms under study - formal protest petitions under Texas LGC Chapter 211 - do not apply to minor variances, and because extraterritorial jurisdiction (ETJ) properties lack the institutional channels for formal protest, these cases are excluded.
+The Austin Open Data Portal (data.austintexas.gov), accessed via the Socrata Open Data API (SODA), records all administrative zoning activity, including both substantive rezoning proposals and minor administrative variances, such as 5-foot setback adjustments. Because the petition mechanism under study---formal protest petitions under Texas LGC Chapter 211---does not apply to minor variances, and because extraterritorial jurisdiction (ETJ) properties lack the legal protest-petition mechanism, these cases are excluded.
 
 Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlighting where the 20\% protest petition threshold creates a potential supermajority requirement at City Council.
 
@@ -210,40 +210,42 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
   \draw[arrow] (staff) -- (zapco);
   \draw[arrow] (zapco) -- (council);
 
-  \draw[arrow, dashed, red, thick] (protest) -- node[right, text=red] {\small Triggers} node[right, yshift=-0.4cm, text=red] {\small 9/11 Supermajority} (council);
+  \draw[arrow, dashed, red, thick] (protest) -- node[right, text=red] {\small May Require} node[right, yshift=-0.4cm, text=red] {\small Supermajority} (council);
 \end{tikzpicture}
 }
-\caption[Context: Austin Municipal Zoning Process Diagram]{\textbf{Context:} Austin municipal zoning process. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council.}
+\caption[Schematic of the Austin Zoning Process]{Austin municipal zoning process. The figure schematically shows where a qualifying protest petition could make a three-fourths council vote relevant under the study-period framework. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change would require, under the applicable legal framework, a supermajority vote of the City Council for approval, though recusal or absence of council members can alter the exact number of affirmative votes needed.}
 \label{fig:flowchart}
 \end{figure}
 
 \input{summary_stats_table.tex}
 
-Table~\ref{tab:attrition} reports the sample filtration from raw administrative records to the analytic sample.
+Table~\ref{tab:attrition} reports the sample selection from raw administrative records to the analytic sample.
 
 \begin{table}[H]
 \centering
-\caption{\textbf{Pipeline Engineering:} Sample Filtration from Raw Records to Analytic Sample}
+\caption{Sample Selection from Raw Records to Analytic Sample}
 \label{tab:attrition}
 \begin{tabular}{p{0.65\linewidth} r}
 \toprule
-\textbf{Filtration Step} & \textbf{Cases Remaining} \\
+\textbf{Selection Step} & \textbf{Cases Remaining} \\
 \midrule
 Raw Austin open data portal zoning records (2007 to 2024) & 15,238 \\
-Target discretionary classification (rezonings, PUDs, NPAs) & 7,153 \\
-Exclude cases lacking valid initial year/timeframes & 7,074 \\
+Restrict to discretionary cases (rezonings, PUDs, NPAs) & 7,153 \\
+Exclude cases with unusable or missing initial filing-year information & 7,074 \\
 \midrule
 \textbf{Final Analytic Sample (Stages C/D)} & \textbf{7,074} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Unlike approaches that require complete-case geometric intersections, this methodology uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This data-retention approach reduces artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
+The analytical samples vary by analytical goal. The primary predictive evaluation (Stage C) uses the full sample of 7,074 discretionary geographic cases. In contrast, the causal quasi-experiments are restricted sub-samples designed to isolate specific mechanisms. The 2022 Difference-in-Differences and the Event Study evaluations utilize $N=518$ because they are restricted to active single-member districts immediately surrounding the 2022 election cycle. The Invariant Causal Prediction (ICP) analysis utilizes $N=1,186$ multi-parcel geometric environments to represent cohesive spatial clusters. Finally, the institutional geographic overlay regressions evaluate policy flags aggregated at the council-term level across periods, resulting in $N=20$ macro-observations.
+
+Unlike approaches that require complete-case geometric intersections, this methodology uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This approach retains cases with partially missing covariates, reducing artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
 
 \subsection{Primary Outcome Definition}
 \label{sec:outcome}
 
-The primary predictive outcome ($y_0$) is whether a valid protest petition is filed under the 20\% statutory threshold defined by Texas Local Government Code Chapter~211 and Austin LDC \S~25-2-284. This is a directly observable, legally defined event recorded through public petition filings.
+The primary predictive outcome ($y_0$) is whether a valid protest petition is filed under the 20\% statutory threshold defined by Texas Local Government Code Chapter~211 and Austin LDC \S~25-2-284. This is an operationalized outcome derived from petition filings and measured petition-share calculations recorded through public petition filings.
 
 Secondary outcomes are analyzed separately:
 \begin{itemize}
@@ -254,21 +256,21 @@ Secondary outcomes are analyzed separately:
     \item $y_5$: Petition signature count (continuous)
 \end{itemize}
 
-All primary results report $y_0$. Sensitivity analyses replicate key findings using individual secondary outcomes. This separation is important because staff recommendations, commission votes, and council outcomes reflect different institutional mechanisms than neighborhood mobilization through petitions, and collapsing them into a single binary would obscure meaningful distinctions. Cases withdrawn before public notice are excluded, rather than zero-classified, because no opportunity for opposition existed. ETJ cases and routine variances are excluded because the formal petition mechanism does not apply to them.
+All primary results report $y_0$. Sensitivity analyses replicate key findings using individual secondary outcomes. This separation is important because staff recommendations, commission votes, and council outcomes reflect different institutional mechanisms than neighborhood mobilization through petitions, and collapsing them into a single binary would obscure meaningful distinctions. Cases withdrawn before public notice are excluded, rather than coded as zero, because no opportunity for opposition existed. ETJ cases and routine variances are excluded because the formal petition mechanism does not apply to them.
 
 Note on stage-specific samples: the Stage C filing-date model uses the full 7,074-case analytic sample regardless of whether a hearing transcript exists, since transcripts post-date the filing horizon and are not used as predictive features at that stage. Cases missing hearing transcripts or petition-database coverage are omitted only from later-horizon evaluations and secondary-outcome analyses where those records serve as inputs or outcome sources.
 
 \subsection{Feature Libraries: Policy Forecasting vs.\ Explanatory Research}
 
-The feature set is bifurcated to prevent predictive models from leveraging sensitive attributes:
+The feature set is separated to prevent predictive models from leveraging sensitive attributes:
 
 \textbf{Policy-forecasting features} include physical site characteristics (lot area, unit count changes, PUD/TOD flags), statutory eligibility flags (HB 24 status, owner-vs.-city-initiated), aggregated buffer economics (homestead shares, land-to-improvement ratios), broad demographic indicators (median income, renter share), historical petition rates within the council district, and macroeconomic variables (mortgage rates, vacancy rates). These elements are selected strictly based on their availability in public administrative and appraisal databases prior to the initial filing date, ensuring the algorithm's decisions replicate constraints faced by municipal planning staff in real time.
 
-\textbf{Explanatory research features} are restricted to normative auditing and equity analysis. These include tract-level racial and ethnic composition, segregation indices, and probabilistic surname-based racial classification. These features are strictly partitioned from the predictive system to reduce the risk of encoding disparate impacts, though proxy correlation through permitted features remains a concern (see Section~\ref{sec:limitations}). By sequestering these vectors exclusively for post-hoc fairness evaluations, the architecture avoids assigning penalty scores based on protected class attributes while maintaining the capability to measure intersectional disparities across geographic subgroups.
+\textbf{Explanatory research features} are restricted to equity analysis. These include tract-level racial and ethnic composition, segregation indices, and probabilistic surname-based racial classification. These features are strictly partitioned from the predictive model to reduce the risk of encoding disparate impacts, though proxy correlation through permitted features remains a concern (see Section~\ref{sec:limitations}). By reserving these variables exclusively for post-hoc fairness evaluations, the architecture avoids generating predictions based on protected class attributes while maintaining the capability to measure intersectional disparities across geographic subgroups.
 
 
 
-\section{Predictive Architecture}
+\section{Modeling Strategy}
 
 \subsection{Development Occurrence}
 
@@ -281,7 +283,7 @@ The unit of analysis is a candidate site-quarter, drawn from over \metricBaselin
 
 \begin{table}[H]
 \centering
-\caption{\textbf{Stage A:} Development Occurrence Nested Targets}
+\caption{Stage A Target Definitions}
 \label{tab:stagea_targets}
 \begin{tabular}{p{1.5cm}p{9cm}p{3cm}}
 \toprule
@@ -299,13 +301,13 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Chapter4/StageA_Figure3_PR_Curves.png}
-    \caption[Stage A: Development Hazard Classification PR Curves]{\textbf{Stage A:} Development hazard classification precision-recall curves across evaluation horizons. Note: Out-of-fold evaluations represent aggregate modeling discrimination prior to the structural top-decile spatial concentration filtering.}
+    \caption[Development Hazard Classification PR Curves]{Precision--recall curves for the filing-date petition model across evaluation horizons. Note: Out-of-fold evaluations represent aggregate discrimination prior to restricting maps to the top decile of predicted risk.}
     \label{fig:stagea_pr}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{\textbf{Stage A:} Development Occurrence Hazard Model Performance}
+\caption{Development Occurrence Hazard Model Performance}
 \label{tab:stagea_limits}
 \begin{tabular}{lccc}
 \toprule
@@ -324,8 +326,8 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}
-    \caption[Stage A: Predicted Hotspot Density vs. Realized Events]{\textbf{Stage A:} Ex-ante predicted hotspot density vs.\ realized development events. To define hotspots against the highly skewed structural baseline, the map filters exclusively for the top decile (Top 10\%) of parcels with the highest predicted development hazard. Hexbins requiring a minimum point-density count are used to visually suppress isolated singleton sites and isolate genuine spatial clusters.}
-    \label{fig:stageA_hotspot}
+    \caption[Predicted Geographic Occurrence vs. Realized Events]{Ex-ante predicted areas of high predicted incidence density vs.\ realized development events. To define areas of high predicted incidence against the very low base rate, the map filters exclusively for the top decile (Top 10\%) of parcels with the highest predicted development hazard, while displaying all realized zoning cases over the period. This disparity contributes to the visual imbalance where the number of realized cases outnumbers the parcels retained after restricting to the top decile of predicted risk. Hexbins requiring a minimum point-density count are used to visually suppress isolated sites and isolate clusters.}
+    \label{fig:stageA_areas of high predicted incidence}
 \end{figure}
 
 \subsection{Project Type and Scale}
@@ -338,7 +340,7 @@ This stage is critical because a six-unit by-right infill project generates fund
 
 \begin{table}[H]
 \centering
-\caption[Project Type and Scale]{\textbf{Pipeline Engineering:} Project Type and Scale Full Architecture Benchmark. Macro-F1 scores explicitly calculate the unweighted simple average of F1 scores across all six zoning configurations (e.g., PUD, SF-3, MF-4). This parameterization forces the evaluation pipeline to severely penalize the architecture if it sacrifices predictive accuracy on rare, institutionally volatile configurations (PUDs) to maximize accuracy on dense, low-priority baseline configurations.}
+\caption[Project Type and Scale]{Project Type Classification Performance. Macro-F1 scores calculate the unweighted simple average of F1 scores computed individually for each of the six project types ($C$). Defined as $Macro\textnormal{-}F_1 = \frac{1}{|C|} \sum_{c \in C} F_{1,c}$, macro-F1 penalizes poor performance on minority classes (e.g., PUDs) rather than rewarding accuracy only on more common classes.}
 \label{tab:stage_b}
 \begin{tabular}{lcccc}
 \toprule
@@ -357,23 +359,31 @@ $\hookrightarrow$ Multifamily & \metricStageBLgbMultifamilyFOne{} & \textbf{\met
 \end{tabular}
 \end{table}
 
-\subsection{Opposition Risk}
+\subsection{Formal Protest Petition}
 
-The Opposition Risk forecast is the core of the thesis: conditional on a project entering the formal public process, predicting the probability of a valid protest petition ($y_0 = 1$):
+The Formal Protest Petition forecast is the core of the thesis: conditional on a project entering the formal public process, predicting the probability of a valid protest petition ($y_0 = 1$):
 \begin{equation}
 P(y_0 = 1 \mid D=1, X_{i,t}, Z)
 \end{equation}
 
-At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. To adjust for selection on observables---given that the analytic sample naturally contains only neighborhoods that actually receive development proposals---the model applies inverse-probability weighting derived from the Development Occurrence hazard ($Z$). While this weighting corrects for spatial baseline probabilities, it remains inherently limited because it cannot completely resolve unobserved political or social factors that simultaneously influence both proposal location and opposition likelihood. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx architectures are reported in Figure~\ref{fig:pr_curves}.
+At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. To adjust for selection on observables---given that the analytic sample naturally contains only neighborhoods that actually receive development proposals---the model applies inverse-probability weighting derived from the Development Occurrence hazard ($Z$). While this weighting corrects for spatial baseline probabilities, it remains inherently limited because it cannot completely resolve unobserved political or social factors that simultaneously influence both proposal location and opposition likelihood. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{Chapter4/F12_Opposition_PR.png}
-    \caption[Stage C: Opposition Risk PR Curves by Model Architecture]{\textbf{Stage C:} Opposition risk precision-recall curves by model architecture: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
+    \caption[Formal Protest Petition PR Curves by Model]{Precision--recall curves for the filing-date petition model: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
     \label{fig:pr_curves}
 \end{figure}
 
-A comprehensive head-to-head benchmarking of alternative architectures (Random Forest, LightGBM \cite{ke2017lightgbm}, PyTorch \cite{paszke2019pytorch} TabNet \cite{arik2021tabnet}, with and without SMOTE \cite{chawla2002smote} resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost \cite{prokhorenkova2018catboost} was retained for the primary architecture because of its native handling of categorical variables without manual encoding and its comparative robustness to calibration drift, though the performance differences across architectures are modest.
+\begin{table}[H]
+    \centering
+    \caption{Precision-Recall Area Under Curve (PR-AUC) Evaluation}
+    \resizebox{0.75\columnwidth}{!}{%
+    \input{Tables/Table7_StageC_PR.tex}
+    }
+\end{table}
+
+A comprehensive benchmark comparison of alternative models (Random Forest, LightGBM \cite{ke2017lightgbm}, PyTorch \cite{paszke2019pytorch} TabNet \cite{arik2021tabnet}, with and without SMOTE \cite{chawla2002smote} resampling) is provided in Table~\ref{tab:alt_models}. CatBoost \cite{prokhorenkova2018catboost} was retained for the primary architecture because of its native handling of categorical variables without manual encoding and its more stable calibration across evaluation settings, though the performance differences across models are modest.
 
 \vspace{1em}
 \input{Tables/alternative_architectures.tex}
@@ -381,7 +391,7 @@ A comprehensive head-to-head benchmarking of alternative architectures (Random F
 
 \subsection{Political Outcome}
 
-Conditional on both a development proposal and the presence of a valid petition, Stage~D estimates the probability that a case survives to a final council reading rather than being withdrawn, stalled, or canceled before a vote occurs. Because virtually all cases that reach a final vote are approved (see Section~\ref{sec:governance}), terminal council approval is near-deterministic and uninformative as a predictive target. Modeling pre-council attrition instead captures the institutional friction through which opposition most often affects outcomes.
+Conditional on both a development proposal and the presence of a valid petition, Stage~D estimates the probability that a case survives to a final council reading rather than being withdrawn, stalled, or canceled before a vote occurs. Because virtually all cases that reach a final vote are approved (see Section~\ref{sec:interviews}), terminal council approval is near-deterministic and uninformative as a predictive target. Modeling pre-council attrition instead captures the institutional friction through which opposition most often affects outcomes.
 
 \begin{table}[H]
 \centering
@@ -389,7 +399,7 @@ Conditional on both a development proposal and the presence of a valid petition,
 \label{tab:stage_d}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Model Architecture} & \textbf{Log Loss} & \textbf{Accuracy} \\
+\textbf{Model Model} & \textbf{Log Loss} & \textbf{Accuracy} \\
 \midrule
 LightGBM & \textbf{\metricStageDLgbLogLoss{}} & \textbf{\metricStageDLgbAccuracy{}} \\
 CatBoost & \metricStageDLogLoss{} & \metricStageDAccuracy{} \\
@@ -409,38 +419,39 @@ The four stages combine into a summary measure: \textbf{expected contested units
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter4/F22_Joint_Policy_Map.png}
-\caption[Stage F: Joint Expected Petition Probability Spatial Distribution]{\textbf{Stage F:} Joint expected petition probability: geographic distribution of predicted development probability $\times$ ex-ante opposition risk across the 7,074 historical zoning cases. This composite measure is subject to compounding uncertainty from each constituent model stage.}
+\caption[Composite Measure of Expected Petitioned Units]{Expected units in projects facing valid protest petitions (Stage A: H=4 Quarter Hazard $\times$ Stage C: filing-date prediction). Cyan dots in Panel A represent observed historical development zoning cases. Panels B and C highlight actual valid petition events mapped over the composite risk and prediction variance.}
 \label{fig:f22_joint_policy}
 \end{figure}
 
   \subsection{Model Evaluation Strategy}
 
-Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given the substantial class imbalance of the administrative outcome space. Following standard methodological practices in rare-event spatial forecasting, traditional Receiver Operating Characteristic (AUROC) metrics are omitted entirely, as the overwhelming presence of ''true negative'' stability artificially inflates the curve. PR-AUC explicitly isolates the minority class, forcing the architecture to balance recall capabilities against the precision cost of false alarms.
+Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given the substantial class imbalance of the outcome. Following standard methodological practices in rare-event spatial forecasting, traditional Receiver Operating Characteristic (AUROC) metrics are omitted entirely, as the large number of true negatives artificially inflates the curve. PR-AUC explicitly isolates the minority class, forcing the architecture to balance recall capabilities against the precision cost of false alarms.
 
-Because the baseline opposition frequency is highly skewed, raw gradient boosting probability arrays suffer from persistent overconfidence. To address this, the architecture applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), this pipeline reports the absolute Brier Score and Adaptive Calibration Error (ACE = \metricACE{}). At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}, flagging \metricNFlaggedAtFifty{} of 7,074 cases. The Brier score is \metricBrierScore{}. 
+Because the baseline opposition frequency is highly skewed, raw predicted probabilities from gradient boosting models suffer from persistent overconfidence. To address this, the architecture applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), the evaluation also reports the Brier Score and Adaptive Calibration Error (ACE = \metricACE{}). At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}, flagging \metricNFlaggedAtFifty{} of 7,074 cases. The Brier score is \metricBrierScore{}. 
 
-Strictly proper scoring rules like the absolute Brier Score \cite{brier1950verification} and Adaptive Calibration (which evaluates equal-mass rather than equal-width bins) operate as critical robust alternatives across statistical and machine learning literature; standard ECE structurally degrades on imbalanced spatial data because fixed-width probability bins at the highest confidence intervals routinely remain empty when predicting rare events, causing aggregate ECE weights to mathematically misrepresent true minority-class calibration.
+Strictly proper scoring rules like the Brier Score \cite{brier1950verification} and Adaptive Calibration (which evaluates equal-mass rather than equal-width bins) are useful complementary calibration measures; standard ECE can be unstable under severe class imbalance because fixed-width probability bins at the highest confidence intervals routinely remain empty when predicting rare events, causing aggregate ECE weights to understate miscalibration for rare positive cases.
 
-The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. Evaluation splits are intentionally non-random to test generalization under realistic deployment conditions:
+The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. Evaluation splits are intentionally non-random to test generalization under realistic administrative application conditions:
 \begin{itemize}
     \item \textbf{Rolling-origin temporal splits:} training on data before time $t$, evaluating after.
     \item \textbf{Policy-regime holdouts:} training on pre-2022 data, evaluating on post-2022 data to test robustness to the council regime change.
     \item \textbf{Spatial holdouts:} withholding entire council districts.
 \end{itemize}
 
-The November 2022 council election is the primary regime boundary. The election replaced a preservationist majority with a pro-housing supermajority during the 2023 to 2024 Watson-era council term, possessing the votes (9 of 11) to override valid protest petitions \cite{tcclerk2022}. This decoupled neighborhood petition filing from actual policy veto power during this period, creating a distributional shift that static models trained on pre-2022 data cannot accommodate. Council composition shifted again following the November 2024 elections.
+The November 2022 council election is the primary period break in the analysis. The election produced a more pro-housing council majority during the 2023--2024 term, possessing the supermajority (typically 9 votes, though fewer may be required if a council member is recused or absent) to override valid protest petitions \cite{tcclerk2022}. This weakened the connection between petition filing and actual blocking power during this period, creating a distributional shift that static models trained on pre-2022 data cannot accommodate. Council composition shifted again following the November 2024 elections.
 
 
 
 \section{Results}
+\label{sec:results}
 
 \subsection{Predictive Performance Across All Horizons}
 
-Table~\ref{tab:metrics_summary} reports the pre-specified operational fairness and calibration metrics for the Stage C opposition model evaluated at the initial filing date horizon.
+Table~\ref{tab:metrics_summary} reports the pre-specified fairness and calibration metrics for the Stage C opposition model evaluated at the initial filing date horizon.
 
 \begin{table}[H]
 \centering
-\caption{Opposition Risk Model: Baseline Predictive Capacity}
+\caption{Filing-Date Predictive Performance for the Petition Model}
 \label{tab:metrics_summary}
 \renewcommand{\arraystretch}{1.3}
 \resizebox{0.8\textwidth}{!}{%
@@ -453,23 +464,23 @@ Calibration      & Expected Calibration Error (ECE)   & \textbf{\metricECE{}} \\
 Calibration      & Calibration Slope      & \textbf{\metricCalibrationSlope{}} \\ \midrule
 Equity     & FNR Gap across council districts$^{\dagger}$ & \textbf{\metricFNRGap{}} \\ \bottomrule
 \multicolumn{3}{l}{\footnotesize $^{\dagger}$Given sparse positive cases per subgroup, this metric likely reflects insufficient statistical power.} \\
-\multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}074$ cases, CatBoost (Primary Architecture) with 5-fold cross-validation.} \\
+\multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}074$ cases, CatBoost (Primary Model) with 5-fold cross-validation.} \\
 \end{tabular}
 }
 \end{table}
 
-The Development Occurrence hazard model achieves a top-10\% lift of \metricHazardLift{} over the base probability rate, indicating that spatial features carry meaningful predictive signal for development occurrence. The Opposition Risk model evaluated at the filing date uses trailing 3-year localized spatial contagion---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates.
+The Development Occurrence hazard model achieves a top-10\% lift of \metricHazardLift{} over the base probability rate, indicating that spatial features carry meaningful predictive signal for development occurrence. The filing-date petition model uses trailing 3-year count of localized protests within one year---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates.
 
-Under deployment-like bootstrap evaluation at the filing-date horizon, the opposition model achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). To contextualize this magnitude within the broader universe of spatial social science---where state-of-the-art stochastic rare-event models projecting conflict or civic unrest typically encounter structural PR-AUC ceilings between 0.30 and 0.45 due to fundamental spatial sparsity \cite{hegre2019views}---this \metricBootstrapFiling{} metric represents profound isolation of the behavioral contagion signal over baseline incidence. The pipeline simultaneously exhibits an Expected Calibration Error (ECE = \metricECE{}) above the 0.05 operational deployment threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---substantial separation, but far from deterministic. At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}, flagging \metricNFlaggedAtFifty{} of 7,074 cases. The Brier score is \metricBrierScore{}.
+Under simulated bootstrap evaluation at the filing-date horizon, the opposition model achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). To contextualize this magnitude within the broader universe of spatial social science---where state-of-the-art stochastic rare-event models projecting conflict or civic unrest often achieve PR-AUC values in the 0.30--0.45 range due to fundamental spatial sparsity \cite{hegre2019views}---this \metricBootstrapFiling{} metric represents meaningful discrimination relative to the low base rate. The model simultaneously exhibits an Expected Calibration Error (ECE = \metricECE{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---substantial separation, but far from deterministic. At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}, flagging \metricNFlaggedAtFifty{} of 7,074 cases. The Brier score is \metricBrierScore{}.
 
-The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. The false negative rate (FNR) gap across \metricNDistricts{} council districts is \metricFNRGap{}; however, this metric should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), and Chouldechova \cite{chouldechova2017fair} proves that an imperfect classifier cannot simultaneously satisfy equalized false positive rates, false negative rates, and predictive parity across groups unless base rates are identical. With such sparse and unbalanced subgroups, the \metricFNRGap{} gap is a statistical artifact of sample size, not evidence of equalized performance.
+The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. The false negative rate (FNR) gap across \metricNDistricts{} council districts is \metricFNRGap{}; however, this metric should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), and Chouldechova \cite{chouldechova2017fair} proves that an imperfect classifier cannot simultaneously satisfy equalized false positive rates, false negative rates, and predictive parity across groups unless base rates are identical. With such sparse and unbalanced subgroups, the \metricFNRGap{} gap is likely driven by sparse subgroup counts, not evidence of equalized performance.
 
-After Isotonic Regression calibration, the model reports an Expected Calibration Error (ECE) of \metricECE{} (95\% bootstrap CI: \metricECEBootCI{}) and a calibration slope of \metricCalibrationSlope{}. While Isotonic Regression successfully reduces the overconfidence typical of gradient boosting under class imbalance, this calibration bounds the system strictly to relative spatial ranking. This expected error restricts deployment within fully automated routing architectures, signaling that raw probabilities cannot be treated as deterministic.
+After Isotonic Regression calibration, the model reports an Expected Calibration Error (ECE) of \metricECE{} (95\% bootstrap CI: \metricECEBootCI{}) and a calibration slope of \metricCalibrationSlope{}. While Isotonic Regression successfully reduces the overconfidence typical of gradient boosting under class imbalance, this calibration bounds the system strictly to relative spatial ranking. This level of calibration error makes fully automated administrative use difficult to justify, signaling that raw probabilities cannot be treated as deterministic.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{Chapter4/fig_combined_calibration_reliability.pdf}
-    \caption[Stage C: Global Model Calibration Reliability and Capture Curves]{\textbf{Stage C:} \textbf{Global Model Calibration:} Parallel evaluation of calibration reliability and capture curves across the Stage A (Development Occurrence) and Stage C (Opposition Risk) modeling architectures. All probabilities are post-Isotonic out-of-fold predictions.}
+    \caption[Calibration of the Stage A and Stage C Models]{\textbf{Calibration of the Stage A and Stage C Models:} Parallel evaluation of calibration reliability and capture curves across the Stage A (Development Occurrence) and Stage C (Formal Protest Petition) models. All probabilities are post-Isotonic out-of-fold predictions.}
     \label{fig:global_calibration}
 \end{figure}
 
@@ -477,24 +488,24 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 
 \vspace{1em}
 
-The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides an optimistic upper bound on predictive capacity. Bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) reveals a more realistic picture. At the initial filing date, the bootstrap PR-AUC is \metricBootstrapFiling{} ($95\%$ CI: $\metricBootstrapFilingCI{}$), indicating substantial early-stage uncertainty. At the notice date and pre-commission horizons, discrimination reaches PR-AUCs of \metricBootstrapNotice{} and \metricBootstrapPreComm{} respectively. By the pre-council horizon, PR-AUC drops slightly to \metricBootstrapPreCouncil{}, possibly reflecting the influence of late-stage informal negotiations that administrative data cannot capture. ECE worsens from \metricBootstrapFilingECE{} at filing to \metricBootstrapPreCouncilECE{} prior to council reading, suggesting that later-horizon models accumulate additional calibration error despite richer information sets. Out-of-distribution tracking across rolling annual windows (Figure~\ref{fig:ood_tracking}a) shows a gradual PR-AUC decay as the test set moves up to three years ($T+3$) beyond the training domain, consistent with the need for periodic retraining. The opposition model retains baseline performance through the 2024 HOME ordinance adoption without catastrophic degradation, though this represents only a short post-policy window (Figure~\ref{fig:ood_tracking}b).
+The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides an optimistic upper bound on predictive capacity. Bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) reveals a more realistic picture. At the initial filing date, the bootstrap PR-AUC is \metricBootstrapFiling{} ($95\%$ CI: $\metricBootstrapFilingCI{}$), indicating substantial early-stage uncertainty. At the notice date and pre-commission horizons, discrimination reaches PR-AUCs of \metricBootstrapNotice{} and \metricBootstrapPreComm{} respectively. By the pre-council horizon, PR-AUC drops slightly to \metricBootstrapPreCouncil{}, possibly reflecting the influence of late-stage informal negotiations that administrative data cannot capture. ECE worsens from \metricBootstrapFilingECE{} at filing to \metricBootstrapPreCouncilECE{} prior to council reading, suggesting that later-horizon models accumulate additional calibration error despite richer information sets. Out-of-distribution tracking across rolling annual windows (Figure~\ref{fig:ood_tracking}a) shows a gradual PR-AUC decay as the test set moves up to three years ($T+3$) beyond the training domain, consistent with the need for periodic retraining. The opposition model retains baseline performance through the 2024 HOME ordinance adoption without substantial decline, though this represents only a short post-policy window (Figure~\ref{fig:ood_tracking}b).
 
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Track1_Exhibits/fig_temporal_drift_H0.pdf}
-        \caption[Stage C: Out-of-Distribution Predictive Performance Decay]{\textbf{Stage C:} \textbf{Stage C:} Temporal performance decay ($T+0$ to $T+3$).}
+        \caption[Performance Across Temporal Holdouts]{Temporal performance decay ($T+0$ to $T+3$).}
         \label{fig:temporal_rot}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Track1_Exhibits/fig_policy_regimes_H0.pdf}
-        \caption[{Stage C:} Policy regime out-of-distribution tracking]{\textbf{Stage C:} Policy regime out-of-distribution tracking.}
+        \caption[Policy regime evaluating temporal holdouts]{Policy regime evaluating temporal holdouts.}
         \label{fig:policy_regimes}
     \end{subfigure}
-    \caption[{Out-of-Distribution Model Degradation:} (a) Predictive performance decay across temporal offsets]{\textbf{Out-of-Distribution Model Degradation:} (a) Predictive performance decay across temporal offsets. (b) Predictive tracking across shifting regulatory council environments.}
+    \caption[Performance Across Temporal Holdouts]{(a) Predictive performance decay across temporal offsets. Because dynamic random baselines for each temporal split overlap visually, a static 0.058 random baseline is shown for reference. Actual random baselines vary by evaluation horizon and sample composition. (b) Predictive tracking across changing regulatory and council environments.}
     \label{fig:ood_tracking}
 \end{figure}
 
@@ -504,8 +515,8 @@ Standard permutation importance for gradient boosting assesses the drop in predi
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_feature_importance_clustered_H0.pdf}
-    \caption[Pipeline Engineering: Hierarchical Correlation Clustering of Top Predictors]{\textbf{Pipeline Engineering:} Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$). Correlated features are merged into a single cluster and their importances are summed to correct for the collinear dilution effect. Red bars indicate multi-feature clusters; blue bars are stand-alone predictors.}
+    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf}
+    \caption[Top Predictor Groups After Hierarchical Clustering]{Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$) for the CatBoost Opposition model evaluated at the initial filing date. Correlated features are merged to correct for collinear dilution.}
     \label{fig:feature_importance_clustered}
 \end{figure}
 
@@ -513,33 +524,10 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_shap_beeswarm_H0.pdf}
-    \caption[Stage C: SHAP Beeswarm Plot for the Opposition Model]{\textbf{Stage C:} SHAP beeswarm plot for the opposition model at the filing baseline. Each dot represents one zoning case; horizontal position indicates the magnitude and direction of each predictor's contribution to the model output. SHAP values use tree path-dependent conditional expectations, which handle correlated features more reliably than standard permutation importance. However, standard SHAP values can still shift credit between highly correlated predictors across different background samples; full pairwise interaction decomposition would require SHAP interaction values at substantially higher computational cost. The clustered importance in Figure~\ref{fig:feature_importance_clustered} provides the most robust correction for collinearity.}
+    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf}
+    \caption[SHAP Beeswarm Plot for the Opposition Model]{SHAP beeswarm plot for the opposition model at the filing baseline. Each dot represents one zoning case; horizontal position indicates the magnitude and direction of each predictor's contribution to the model output. The clustered importance in Figure~\ref{fig:feature_importance_clustered} provides the most robust correction for collinearity.}
     \label{fig:shap_beeswarm}
 \end{figure}
-
-\subsection{Pre-Council Attrition}
-
-Pre-council attrition---withdrawal, stalling, or cancellation before a final council vote---is pervasive across the full analytic sample. Of the 7,074 cases filed, 6,163 (87.1\%) never reached a council reading. Among the \metricOpposedTotal{} cases that faced a valid protest petition, \metricOpposedWithdrawn{} (\metricAttritionRate{}) were withdrawn or stalled. Among the 6,663 unopposed cases, 5,844 (\metricUnopposedAttritionRate{}) dropped out. The opposed attrition rate is therefore \emph{lower} than the unopposed rate, suggesting that cases which attract formal petitions tend to be larger or more committed developments that persist further through the approval process, rather than being uniquely ``chilled'' by opposition. Attrition is the dominant mode of case resolution regardless of petition status.
-
-Because attrition is so prevalent, predictive algorithms targeting terminal council votes suffer from severe survivorship bias: virtually all cases that reach a final vote are approved. The predictive architecture therefore models attrition itself---whether a case survives to council reading---rather than the near-deterministic terminal approval decision. By predicting pre-council dropout, Stage~D captures the institutional friction through which the approval process most often resolves.
-
-\begin{table}[H]
-\centering
-\caption{Pre-Council Attrition: Opposed vs.\ Unopposed Zoning Cases}
-\label{tab:chilling_effect}
-\begin{tabular}{lrrr}
-\toprule
-\textbf{Category} & \textbf{Total Filed} & \textbf{Withdrawn / Stalled} & \textbf{Attrition Rate} \\
-\midrule
-Opposed (Valid Petition) & \metricOpposedTotal{} & \metricOpposedWithdrawn{} & \metricAttritionRate{} \\
-Unopposed               & 6,663                & 5,844                       & \metricUnopposedAttritionRate{} \\
-\midrule
-\textbf{Full Sample}    & \textbf{7,074}       & \textbf{6,163}              & \textbf{87.1\%} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 
 
 \subsection{Regression Discontinuity: The 20\% Petition Threshold}
@@ -548,7 +536,7 @@ Unopposed               & 6,663                & 5,844                       & \
 \centering
 
 \vspace{0.2cm}
-\textbf{\small Panel A: Protest Petition Sharp Regression Discontinuity (RD)}\par\vspace{0.3cm}
+\textbf{\small Panel A: Threshold-Based Discontinuity at the Measured 20\% Petition Share (RD)}\par\vspace{0.3cm}
 \begin{tikzpicture}[
     node distance=1.5cm and 2.5cm,
     var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
@@ -571,86 +559,59 @@ Unopposed               & 6,663                & 5,844                       & \
 \draw[arrow] (X) to[bend right=15] (Y.south);
 \end{tikzpicture}
 
-\vspace{0.6cm}
-\textbf{\small Panel B: HOME Initiative Event Study (Difference-in-Differences)}\par\vspace{0.3cm}
-\begin{tikzpicture}[
-    node distance=1.5cm and 3cm,
-    var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
-    unobs/.style={rectangle, draw, dashed, fill=gray!10, minimum height=0.8cm, align=center, rounded corners},
-    arrow/.style={thick,->,>=stealth},
-    dashed_arrow/.style={thick,dashed,->,>=stealth}
-]
-\node[var] (Post) {Time Shock $t$ \\ \footnotesize (Post-HOME Phase 1)};
-\node[var, below=1.5cm of Post] (Treated) {Eligibility $E$ \\ \footnotesize (Treated Parcel)};
-\node[var, right=2cm of Post, yshift=-1.15cm, very thick] (D) {Treatment $D$ \\ \footnotesize ($E \times t$)};
-\node[var, right=2cm of D] (Y) {$Y$ \\ \footnotesize (Council Dissent / No Votes)};
-\node[unobs, left=1cm of Treated] (U) {$U$ \\ \footnotesize (Unobserved Factors)};
 
-\draw[arrow] (Post) -- (D);
-\draw[arrow] (Treated) -- (D);
-\draw[arrow] (D) -- node[above] {$\tau$} (Y);
-\draw[arrow] (Post) to[bend left=15] (Y.north west);
-\draw[arrow] (Treated) to[bend right=15] (Y.south west);
-\draw[dashed_arrow] (U) -- (Treated);
-\draw[dashed_arrow] (U) to[bend right=40] (Y.south);
-\end{tikzpicture}
 
-\caption[Causal Identification: Methodological Causal Graphs]{\textbf{Causal Identification:} Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis. \textbf{Panel A} illustrates the Sharp Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$). \textbf{Panel B} illustrates the Difference-in-Differences Event Study, isolating council dissent ($Y$) arising from the intersection of the discrete HOME Phase 1 policy time shock ($t$) and parcel eligibility ($E$).}
+\caption[Identification Diagram for the Threshold Analysis]{Methodological causal inference graph mapping the specific institutional mechanism modeled in the thesis. \textbf{Panel A} illustrates the Threshold-Based Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$).}
 \label{fig:causal_dag}
 \end{figure}
 
 
 To estimate the causal effect of crossing the formal protest threshold, a regression discontinuity (RD) design exploits the 20\% statutory petition threshold under Texas LGC Chapter~211. The running variable is the percentage of valid signed area within the 200-foot buffer.
 
-A triangular-kernel weighted least squares estimator yields an estimated shift of $\metricRDDelay{}$ days in council processing time at the threshold ($p < 0.001$, SE $= \metricRDSE{}$, 95\% CI: $\metricRDCI{}$). This corresponds to approximately \metricRDDelayWeeks{} weeks of additional delay attributable to crossing the statutory margin.
+A triangular-kernel weighted least squares estimator yields an estimated shift of $\metricRDDelay{}$ days in council processing time at the threshold ($p < 0.001$, SE $= \metricRDSE{}$, 95\% CI: $\metricRDCI{}$). This corresponds to approximately \metricRDDelayWeeks{} weeks of additional delay associated with crossing the statutory margin.
 
-This estimate should be interpreted as an Intent-to-Treat (ITT) effect rather than a local average treatment effect. The specification treats the 20\% threshold as sharp---that is, it assumes deterministic compliance whereby crossing the statutory margin automatically triggers the supermajority requirement. In practice, the dataset does not record whether the City Clerk formally certified each threshold breach, so some degree of administrative non-compliance may attenuate the true effect. The sharp RD label is appropriate for the statistical specification but overstates the institutional certainty of compliance.
+This estimate should be interpreted as a reduced-form effect at the threshold. Because the dataset does not record whether the City Clerk formally certified each petition as legally compliant, the analysis relies on an unverified calculated area share. Rather than assuming the exact threshold acts as a deterministic sharp trigger, the specification simply estimates the shift in average processing time associated with crossing the statutory 20\% margin. Consequently, this is a threshold-based reduced-form model where institutional compliance remains unobserved.
 
 Design limitations include potential manipulation of the running variable, since petition organizers may strategically target just above 20\%, and instability in the post-2022 council environment where the supermajority was routinely available. Robustness checks---a McCrary (2008) density test for running-variable manipulation ($p > 0.05$), symmetric donut exclusions, and covariate continuity checks---support the validity of the design at the threshold.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter5/F16_Petition_RD.png}
-\caption[Causal Identification: Regression Discontinuity at the 20\% Threshold]{\textbf{Causal Identification:} Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time.}
+\caption[Threshold-Based Discontinuity at the Measured 20\% Petition Share]{Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time. Bin widths were selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure.}
 \label{fig:f16_rd}
 \end{figure}
 
-\subsection{Event Studies: HOME Initiative and HB~24}
 
-Event-study models evaluate the short-run effects of the HOME Initiative on opposition dynamics. HOME Phase~1 and Phase~2 are treated as independent policy shocks, with treatment defined at the case level by parcel eligibility and timing anchored to application-acceptance start dates \cite{callaway2021did}.
-
-The Difference-in-Differences (DiD) event-study estimate for council dissent, operationalized as the total number of ``no'' votes recorded per zoning case at the final council reading, is $\metricDiDVotes{}$ (SE $= \metricDiDSE{}$, 95\% CI: $\metricDiDCI{}$). This estimate is non-informative: the coefficient, standard error, and confidence interval are all identically zero, indicating insufficient variation in the outcome within the estimation window to identify a treatment effect. The specification uses a Two-Way Fixed Effects (TWFE) model with case-level and time fixed effects, excluding post-treatment covariates to avoid ``bad control'' bias \cite{cinelli2020making}. Given the short post-treatment window available for HOME Phase~1, these results should not be interpreted substantively.
-
-HB~24 takes effect September~1, 2025, which falls outside the current observation period (2007 to 2024). Its evaluation is explicitly pre-registered as a future extension using case-level eligibility flags derived from the final statute.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{Chapter5/F17_HOME_EventStudy.png}
-\caption[Causal Identification: HOME Phase 1 Event-Study Coefficients]{\textbf{Causal Identification:} HOME Phase 1 event-study coefficients relative to the implementation date.}
-\label{fig:f17_did}
-\end{figure}
 
 \subsection{2022 Electoral Transition (Difference-in-Differences)}
 
-The HOME Initiative \cite{pool2023} models a global legislative shift, but its adoption is citywide and therefore provides no geographic control group. The November 2022 council elections offer a complementary source of variation: a subset of council districts (e.g., Districts 4 and 9) replaced preservationist incumbents with pro-housing representatives, while other districts maintained their political status quo.
+The November 2022 council elections offer a source of geographic variation: a subset of council districts (e.g., Districts 4 and 9) replaced preservationist incumbents with pro-housing representatives, while other districts maintained their political status quo. Crucially, we restrict this quasi-experiment exclusively to the 2022 election cycle rather than constructing a generalized multi-period panel across all historical municipal elections (e.g., 2014-2020). Standard electoral turnover does not inherently constitute an institutional shock to zoning policy. The 2022 election was empirically unique because it represented an explicit, clear ideological shift from entrenched preservationist incumbents (who operated in a political environment where petitions had more practical influence) to vocal pro-housing candidates, isolating the treatment as a discrete ideological shift rather than routine electoral turnover.
 
 Interacting a ``Flipped District'' indicator with a ``Post-2022'' temporal indicator in a standard DiD framework yields a coefficient of \metricFlipDiDCoeff{} ($p=\metricFlipDiDPval{}$) on valid petition filing rates. This suggests that petition filing rates declined more in districts that changed political representation than in those that did not. However, inference should be treated cautiously: the design involves few treated districts, a short post-treatment window, and a small number of petition events per district. The estimate is suggestive rather than definitive.
 
 \subsection{Institutional Geographic Overlays}
-Additional analyses evaluate localized institutional overlays---Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 2015 transition to a 10-1 single-member council district system.
-
-The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), failing to reach statistical significance. The NPA overlay yielded a positive but insignificant coefficient of \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlays produced degenerate estimates with zero variance, likely because these zoning suffixes are rarely applied independently of major base-zone changes. These null and degenerate results are reported for transparency. They suggest that while petition risk is predictable in aggregate through spatial contagion and site characteristics, isolating the causal contribution of individual overlay categories is not feasible within this administrative dataset.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{Chapter5/fig_causal_context_did.png}
-    \caption[Causal Identification: 2022 Electoral Transition District Outcomes]{\textbf{Causal Identification:} 2022 Electoral Transition Outcomes: Geographic choropleth illustrating the primary empirical outcome of the Difference-in-Differences regression framework. Districts 4 and 9 explicitly map the mathematical treatment effect ($\Delta -0.546$), demonstrating a concentrated institutional decrease in valid petition probability following incumbent turnover, relative to the unshifted control districts.}
+    \caption[Estimated 2022 Electoral-Transition Interaction Effects by District]{\textbf{Estimated 2022 Electoral-Transition Interaction Effects by District.} Geographic choropleth illustrating the primary empirical outcome of the Difference-in-Differences regression framework. Districts 4 and 9 map the estimated treatment effect ($\Delta -0.546$), showing the estimated interaction effect for treated districts following incumbent turnover, relative to districts without comparable turnover.}
     \label{fig:did_geography}
+\end{figure}
+
+Additional analyses evaluate localized institutional overlays---Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 2015 transition to a 10-1 single-member council district system.
+
+The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), failing to reach statistical significance. The NPA overlay yielded a positive but insignificant coefficient of \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlays produced degenerate estimates with zero variance, likely because these zoning suffixes are rarely applied independently of major base-zone changes. These null and degenerate results are reported for transparency. They suggest that while petition risk is predictable in aggregate through nearby historical petition activity and site characteristics, isolating the causal contribution of individual overlay categories is not feasible within this administrative dataset.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Chapter5/Electoral_Placebo_DiD.png}
+    \caption[Placebo Estimates Across Earlier Election Cycles]{\textbf{Placebo evaluation:} Because a comparable historical measure of council ideology over time is unavailable, this placebo design serves as an indirect check. To assess whether the 2022 effect reflects a genuine ideological shift rather than generalized electoral turnover, placebo Difference-in-Differences estimates were computed across all prior municipal electoral cycles for the affected districts (2014, 2016, 2018, 2020). The placebo estimates show no statistically significant variation in petition filing rates during prior electoral transitions. Only the 2022 cycle shows a detectable effect, which is consistent with interpreting 2022 as the relevant shock.}
+    \label{fig:placebo_did_matrix}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Consolidated Geographic Causal Estimates}
+\caption{Summary of Supplementary Quasi-Experimental Estimates}
 \label{tab:geographic_causal}
 \small
 \begin{tabular}{@{}llrrrr@{}}
@@ -659,50 +620,51 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 \midrule
 \textit{(1) 10-1 Council ITS}       & vote\_no       & \metricTenOneITSCoeff{}   & 0.122  & \metricTenOneITSPval{}  & 20 \\
 \textit{(2) NPA Designation}   & vote\_no       & \metricNPAFrictionCoeff{} & 0.245  & \metricNPAFrictionPval{}& 20 \\
-\textit{(3) HOME Staggered DiD}     & protested      & 0.325                     & 0.310  & 0.296                   & 518 \\
+
 \textit{(4) Historic District}      & vote\_no       & \metricHDFrictionCoeff{}  & ---    & \metricHDFrictionPval{} & 20 \\
 \textit{(5) TOD Deregulation}       & vote\_no       & \metricTODFrictionCoeff{} & ---    & \metricTODFrictionPval{}& 20 \\
-\textit{(6) 2022 Flipped District DiD}& protested    & \metricFlipDiDCoeff{}     & 0.266  & \metricFlipDiDPval{}    & 518 \\
+\textit{(6) 2022 Flipped District DiD}& protested    & \textbf{\metricFlipDiDCoeff{}}     & 0.266  & \textbf{\metricFlipDiDPval{}}    & 518 \\
 \bottomrule
-\multicolumn{6}{l}{\footnotesize OLS with robust standard errors. Designs (3)--(5) are non-informative due to limited variation}\\
+\multicolumn{6}{l}{\footnotesize OLS with robust standard errors. Designs (4)--(5) are non-informative due to limited variation}\\
 \multicolumn{6}{l}{\footnotesize or zero-variance outcomes; they are reported for transparency rather than substantive interpretation.} \\
 \multicolumn{6}{l}{\footnotesize Design (6) reports the $\text{Flipped} \times \text{Post-2022}$ interaction coefficient.} \\
 \end{tabular}
 \end{table}
 
 \subsection{Invariant Causal Prediction (ICP)}
-As supplementary evidence on the causal structure of the feature space, an Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} was conducted using 1,186 multi-parcel geometric environments. In brief, all 278 pairwise subsets of the 23 numeric features were rejected at $\alpha = 0.05$ after Bonferroni correction under a linear logistic specification, with a single marginal acceptance ($S = \{\texttt{land\_to\_total\_ratio}, \texttt{year}\}$, $p_{\text{bonf}}=0.051$). Nonlinear residual invariance tests (MLP and CVAE architectures under ERM and V-REx objectives) likewise universally rejected invariance. This universal rejection indicates that the observable administrative feature space does not contain a robust, environment-invariant causal parent set for petition filing---consistent with the thesis's broader finding that unobserved social and political factors play a substantial role in opposition dynamics.
+As supplementary evidence on the causal structure of the feature space, an Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} was conducted using 1,186 multi-parcel geometric environments. In brief, all 278 pairwise subsets of the 23 numeric features were rejected at $\alpha = 0.05$ after Bonferroni correction under a linear logistic specification, with a single marginal acceptance ($S = \{\texttt{land\_to\_total\_ratio}, \texttt{year}\}$, $p_{\text{bonf}}=0.051$). Nonlinear residual invariance tests (MLP and CVAE models under ERM and V-REx objectives) likewise universally rejected invariance. The tests consistently reject invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved social and political factors play a substantial role in opposition dynamics.
 
 \section{Qualitative Planning Context}
 \label{sec:interviews}
 
-While the quantitative pipeline establishes the predictive boundaries of opposition forecasting, the interpretation of these models is significantly enhanced by qualitative context. Semi-structured interviews with urban planning professionals and city staff (conducted under Columbia University IRB Protocol ACYY0820) surface dynamics that administrative data fundamentally cannot capture. 
+While the quantitative analysis establishes the predictive boundaries of opposition forecasting, the interpretation of these models is clarified by qualitative evidence. Semi-structured interviews with urban planning professionals and city staff (conducted under Columbia University IRB Protocol ACYY0820) surface dynamics that administrative data cannot capture. 
 
-These interviews inform the interpretation of the quantitative findings by detailing the institutional timelines and bifurcated civic motivations within the Austin zoning process:
+These interviews inform the interpretation of the quantitative findings by detailing the institutional timelines and two distinct motivations within the Austin zoning process:
 
 \begin{itemize}
-    \item \textbf{The Pre-2022 Degradation of Petition Leverage:} Quantitative models strictly bound the ``regime shift'' to the November 2022 supermajority election. Annick Beaudet (former zoning planner) noted the institutional tide actually began shifting systematically around 2019 during the Land Development Code revision: ``While people still scream and yell, they don't get as much traction... Necessity is the mother of invention.'' This was corroborated by Alina Carnahan, who pointed to the Hancock neighborhood rezoning as the specific 2022 turning point that solidified the 9-2 pro-housing supermajority. Together, these testimonies confirm that while the 2022 election formalized the political bypass of the petition mechanism, the petition had already culturally depreciated as an absolute veto long before formal state legislation (HB 24) dismantled it.
-    \item \textbf{Explaining the Attrition Anomaly:} The models identify that pre-council attrition is paradoxically lower for opposed cases (77.6\%) than unopposed cases (87.7\%). Planners clarified that cases attracting opposition and \textit{surviving} to council are often backed by capitalized developers capable of absorbing the carrying costs of prolonged negotiation. Rather than a chilling effect, opposition acts as a selection mechanism for well-resourced developers.
-    \item \textbf{Asymmetric Transparency and Silent Supporters:} Jonathan Tomko (Principal Planner) emphasized that the municipal feedback infrastructure structurally lacks any avenue for \textit{anonymous} public testimony against a zoning case. Because neighborhood social dynamics often penalize residents who deviate from their neighborhood association's preservationist stance, Tomko noted that the formal opposition data is not strictly representative of the entire community. This aligns with Beaudet's observation that ``haters are overrepresented and silent supporters are underrepresented,'' heavily skewing the outcome distribution algorithmically.
-    \item \textbf{Bifurcated Motivations and Geography:} Marla T. (Displacement Prevention Division) stressed that opposition mechanisms capture completely bifurcated motivations. While the ``vocal opposition'' on the affluent West side leverage environmental overlays, the Eastern crescent utilizes opposition precisely to counter historic displacement. This context reinforces the severity of the model's failed operational calibration constraint (ECE = \metricECE{}): deploying fundamentally arbitrary statistical boundaries on displacement thresholds hazards failing ``to identify where people that are in actual need actually are'' because the algorithm cannot separate affluent NIMBYism from existential displacement defense.
+    \item \textbf{Declining petition leverage before 2022:} Quantitative models strictly bound the regime shift to the November 2022 supermajority election. Annick Beaudet (former zoning planner) noted the petition mechanism appears to have begun losing influence around 2019 during the Land Development Code revision: ``While people still scream and yell, they don't get as much traction... Necessity is the mother of invention.'' This was corroborated by Alina Carnahan, who pointed to the Hancock neighborhood rezoning as the specific 2022 turning point that solidified the 9-2 pro-housing supermajority. Together, these testimonies confirm that while the 2022 election made the petition mechanism less consequential in practice, the petition had already lost practical force as a veto point long before formal state legislation (HB 24) dismantled it.
+
+    \item \textbf{The Function of Opposition:} Highlighting the nuanced motivations driving public testimony, AURA board member Felicity Maxwell observed: ``We're not talking about suppressing opposition, but understanding it better to have more productive conversations.'' Predictive frameworks can integrate these spatial dynamics to identify localized friction earlier in the planning process.
+    \item \textbf{Asymmetric Transparency and Silent Supporters:} Jonathan Tomko (Principal Planner) emphasized that the municipal public comment process lacks any mechanism for \textit{anonymous} public testimony against a zoning case. Because neighborhood social dynamics often penalize residents who deviate from their neighborhood association's preservationist stance, Tomko noted that the formal opposition data is not strictly representative of the entire community. This aligns with Beaudet's observation that ``haters are overrepresented and silent supporters are underrepresented,'' which likely makes the observed opposition data an incomplete measure of community sentiment.
+    \item \textbf{Two distinct motivations and geography:} Marla Torrado (Displacement Prevention Division) stressed that opposition mechanisms may be driven by differing underlying concerns. While the ``vocal opposition'' on the affluent West side leverage environmental overlays, East Austin neighborhoods frequently mobilize opposition mechanisms in response to rapid gentrification pressures. This context reinforces the severity of model miscalibration (ECE = \metricECE{}): using rigid probability thresholds could miss communities facing real displacement risk, failing ``to identify where people that are in actual need actually are'' because the algorithm cannot separate affluent NIMBYism from neighborhood preservation efforts.
 \end{itemize}
 
-These institutional realities underscore why the predictive tool performs best as a relative localized ranking mechanism rather than an absolute deployment-ready oracle.
+These institutional realities underscore why the predictive model performs best as a relative ranking mechanism rather than a precise forecasting system.
 
 \section{Limitations}
 \label{sec:limitations}
 
 This study has several important limitations.
 
-\textbf{Small NLP sample.} The \metricNLPCorpus{} cases used for text-frame classification are small relative to the 7,074-case analytic sample, raising overfitting concerns for the NLP components. The number of model architectures explored should be viewed as a sensitivity exercise rather than a competitive selection process.
+\textbf{Small NLP sample.} The \metricNLPCorpus{} cases used for text-frame classification are small relative to the 7,074-case analytic sample, raising overfitting concerns for the NLP components. The number of model models explored should be viewed as a sensitivity exercise rather than a competitive selection process.
 
 \textbf{Measurement error in reconstructed dates.} Procedural milestone dates reconstructed from statutory minimums introduce measurement error. Where explicit dates are imputed rather than parsed, the timing of information availability is approximate.
 
 \textbf{Selection into observed cases.} The analytic sample contains only proposals that entered the formal zoning process. Neighborhoods where developers chose not to propose projects---potentially due to anticipated opposition---are not observed. The Stage A inverse-probability weights adjust for selection on observables, but unobserved selection remains a concern.
 
-\textbf{Limited post-policy windows.} HOME Phase~2 yields degenerate estimates due to insufficient post-treatment observations. HB~24 falls entirely outside the observation period. The event-study results should be interpreted as preliminary.
+\textbf{Limited post-policy windows.} HB~24 falls entirely outside the observation period. The event-study results should be interpreted as preliminary.
 
-\textbf{Calibration error context.} The opposition model produces an Expected Calibration Error of \metricECE{}. Because this expected error restricts fully automated operational deployment (which typically demands tighter calibration tolerances), the statistical pipeline must be treated mathematically as an aggregate risk classifier rather than a generator of deterministic, localized probabilities. Regardless, the features generate strong spatial discrimination (top-decile lift of \metricTopDecileLift{}).
+\textbf{Calibration error context.} The opposition model produces an Expected Calibration Error of \metricECE{}. Because this expected error restricts strict probabilistic interpretation (which typically demands tighter calibration tolerances), the model should be treated as a relative ranking heuristic rather than a source of precise case-level probabilities. Regardless, the features generate strong spatial discrimination (top-decile lift of \metricTopDecileLift{}).
 
 \textbf{Proxy concerns.} Although racial and ethnic variables are excluded from the predictive model, permitted features such as homeownership rates, property values, and neighborhood composition may correlate with protected characteristics. Proxy discrimination through permitted variables remains a concern.
 
@@ -713,17 +675,17 @@ This study has several important limitations.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{Figures/Chapter4/F23_Spatial_Error.png}
-\caption[Stage C: Geographic Distribution of False Positives vs. Actual Filings]{\textbf{Stage C:} Geographic distribution of false positive predictions (right) against actual petition filings (left). False positives split 49.6\% west of I-35 and 50.4\% east, indicating that the model's over-predictions are geographically symmetric rather than concentrated in historically vulnerable neighborhoods.}
+\caption[Geographic Distribution of False Positives vs. Actual Filings]{Geographic distribution of false positive predictions (right) against actual petition filings (left). False positives split 49.6\% west of I-35 and 50.4\% east, indicating that the model's over-predictions are geographically symmetric rather than concentrated in historically vulnerable neighborhoods.}
 \label{fig:spatial_error}
 \end{figure}
 
-\textbf{External validity.} Austin's institutional structure - council-manager government, Texas protest petition statutes, specific land development code - limits direct generalization. The methodological framework, including time-stamped features, sequential architecture, and decision-support benchmarks, is portable, but the specific results are Austin-specific.
+\textbf{External validity.} Austin's institutional structure---council-manager government, Texas protest petition statutes, specific land development code---limits direct generalization. The methodological framework, including time-stamped features, sequential architecture, and evaluative benchmarks, is portable, but the specific results are Austin-specific.
 
 \section{Conclusion}
 
-This thesis asks whether the filing of a valid protest petition against a housing development proposal can be predicted before the project enters formal public hearings. The answer is qualified: spatial, economic, and site characteristics carry real predictive signal for petition risk, but the current model does not meet the calibration and fairness benchmarks required for responsible deployment.
+This thesis asks whether the filing of a valid protest petition against a housing development proposal can be predicted before the project enters formal public hearings. The answer is qualified: spatial, economic, and site characteristics carry real predictive signal for petition risk, but the current model does not meet the calibration and fairness benchmarks required for responsible administrative application.
 
-Under deployment-like bootstrap evaluation at the filing-date horizon, the opposition model (Stage~C) achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with calibration error (ECE = \metricECE{}) exceeding the 0.05 operational threshold. In-distribution cross-validation provides an upper bound PR-AUC of \metricPRAUC{}. Filing-date administrative features contain meaningful signal for formal protest petition risk, but that signal is better suited to relative ranking than to calibrated, regime-stable operational forecasting. A regression discontinuity at the 20\% petition threshold estimates a \metricRDDelay{}-day increase in council processing time. A difference-in-differences estimator using the 2022 electoral transition suggests a \metricFlipDiDCoeff{} shift in petition filing rates in districts that changed political representation ($p = \metricFlipDiDPval{}$), though this estimate involves few treated districts and should be interpreted cautiously.
+Under simulated bootstrap evaluation at the filing-date horizon, the opposition model (Stage~C) achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with calibration error (ECE = \metricECE{}) exceeding the 0.05 calibration threshold. In-distribution cross-validation provides an upper bound PR-AUC of \metricPRAUC{}. Filing-date administrative features contain meaningful signal for formal protest petition occurrence, but that signal is better suited to relative ranking than to forecasting that remains stable across policy periods. A regression discontinuity at the 20\% petition threshold estimates a \metricRDDelay{}-day increase in council processing time. A difference-in-differences estimator using the 2022 electoral transition suggests a \metricFlipDiDCoeff{} shift in petition filing rates in districts that changed political representation ($p = \metricFlipDiDPval{}$), though this estimate involves few treated districts and should be interpreted cautiously.
 
 These results suggest that petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and that the 2022 council regime change altered the relationship between petitions and outcomes. A model trained on pre-2022 dynamics cannot reliably predict post-2022 petition behavior without retraining.
 
@@ -739,27 +701,25 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 \appendix
 
 \newpage
-\section{Alternative Machine Learning Architectures}
-\label{app:alt_architectures}
+\section{Supplementary Calibration Comparison}
+\label{app:alt_models}
 
-\noindent The following section formally documents an expanded permutation benchmark evaluating baseline mathematical classifiers and PyTorch deep learning networks. (These tabular benchmarks have been transplanted inline to Section~\ref{sec:results} for direct performance evaluation). Each model class was formally cross-validated against SMOTE (Synthetic Minority Over-sampling Technique) distributions to assess the structural trade-off between artificial class balancing and geographic probability calibration (ECE). 
+\noindent The following section documents an expanded benchmark comparing baseline statistical and machine-learning models and PyTorch deep learning networks. (These tabular benchmarks have been moved into the main text in Section~\ref{sec:results} for direct performance evaluation). Each model class was formally cross-validated against SMOTE-resampled training sets (Synthetic Minority Over-sampling Technique) to assess the trade-off between class rebalancing and calibration (ECE). 
 
 \vspace{1em}
-\noindent Additionally, this appendix documents a systematic calibration method comparison evaluating Platt Scaling (sigmoid) against Isotonic Regression across base model architectures: CatBoost, LightGBM, and Random Forest. For CatBoost, Platt Scaling achieved modestly lower ECE (0.186 vs.\ 0.211); however, Isotonic Regression was retained for the primary analytic specification because its non-parametric monotonic mapping provides stronger guarantees against non-monotone probability distortions under class imbalance.
+\noindent Additionally, this appendix documents a systematic calibration method comparison evaluating Platt Scaling (sigmoid) against Isotonic Regression across base model models: CatBoost, LightGBM, and Random Forest. For CatBoost, Platt Scaling achieved modestly lower ECE (0.186 vs.\ 0.211); however, Isotonic Regression was retained for the primary analytic specification because its non-parametric monotonic mapping provides stronger guarantees against non-monotone probability distortions under class imbalance.
 
 \vspace{1em}
 \input{Tables/calibration_benchmark.tex}
 
 \newpage
-\section{Research Project Overview}
+\section{Interview Recruitment Overview}
 \label{app:overview}
 
 \noindent The following one-page project overview was provided to all interview participants prior to scheduling.
 
 \begin{center}
 \includegraphics[width=0.85\textwidth,page=1]{Qualitative_Appendix/project_overview.pdf}
-\vspace{0.5em}
-{\footnotesize \textit{Note:} The embedded overview PDF lists the author as ``Ph.D.\ Candidate''; the correct designation is ``M.S.\ Candidate.''}
 \end{center}
 
 \newpage
@@ -795,21 +755,21 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 \newpage
 
 \newpage
-\section{Temporal Panel Data Structure}
+\section{Illustrative Support-Layer Panel Structure}
 \label{app:panel}
 
-\noindent The following table illustrates a representative cross-section of the panel dataset constructed for this thesis. Each parcel-year constitutes a unique observation, enriched with demographic variables (interpolated ACS), spatial protest indicators, and property tax valuations (TCAD EARS).
+\noindent The following table illustrates a representative cross-section of the panel dataset constructed for this thesis. Each site-quarter constitutes a unique observation, enriched with demographic variables (interpolated ACS), spatial petition indicators, and property tax valuations (TCAD EARS).
 
 \vspace{1em}
 {\small
 \begin{verbatim}
-parcel_id     year  protest_buffer  owner_exempt  tract_wealth_gap  prop_med_rent  case_white_pct
-0209060502    2008  True            True          12500             1600           0.58
-0209060503    2008  True            True          11200             1600           0.58
-0209060506    2008  True            True          14000             1650           0.58
-0209060901    2008  True            False         13400             1450           0.58
-1911420101    2008  False           True          -8000             1150           0.42
-1911420102    2008  False           False         -6500             1150           0.42
+parcel_id     year  gross_site_area_acres  ldb_appraised_val  acs_owner_occupied_units  acs_race_white
+0209060502    2008  1.42                   450000             345                       0.58
+0209060503    2008  0.85                   310000             345                       0.58
+0209060506    2008  2.10                   620000             290                       0.45
+0209060901    2008  5.00                   1250000            120                       0.45
+1911420101    2008  0.25                   180000             410                       0.82
+1911420102    2008  0.30                   210000             410                       0.82
 \end{verbatim}
 }
 \newpage
@@ -827,17 +787,17 @@ This thesis constructs features from multiple municipal and state sources:
 \subsection{Hyperparameter Search Grids}
 Tree-based models, such as CatBoost and Random Forest, utilized the following randomized search bounds across 5-fold temporal cross validation:
 \begin{itemize}
-    \item \textbf{learning\_rate:} Log-uniform [0.01, 0.3]
-    \item \textbf{depth:} [4, 6, 8, 10]
-    \item \textbf{l2\_leaf\_reg:} Uniform [1, 10]
-    \item \textbf{auto\_class\_weights:} [None, Balanced, SqrtBalanced]
+    \item \textbf{Learning Rate:} Log-uniform [0.01, 0.3]
+    \item \textbf{Maximum Tree Depth:} [4, 6, 8, 10]
+    \item \textbf{L2 Regularization Base (Leaf Rate):} Uniform [1, 10]
+    \item \textbf{Class Imbalance Weighting:} [None, Balanced, SqrtBalanced]
 \end{itemize}
 Selected CatBoost models uniformly converged on Depth=6, Learning Rate $\approx$ 0.05, and 'Balanced' class weighting.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Fig10_Hyperparameter_Sweeps.png}
-\caption[Pipeline Engineering: Grid Search PR-AUC Optimization Heatmaps]{\textbf{Pipeline Engineering:} \textbf{Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and learning rate parameters for the Development Occurrence and Opposition Risk models.}
+\caption[Supplementary Hyperparameter Search Results]{\textbf{Stage A \& Stage C:} Grid search precision-recall AUC optimization heatmaps across maximum tree depth and learning rate parameters for the Development Occurrence and Formal Protest Petition models.}
 \label{fig:hyperparameters}
 \end{figure}
 
@@ -846,10 +806,10 @@ To calculate the False Negative Rate (FNR) gaps:
 \begin{itemize}
     \item \textbf{Geography:} Subgroups defined by the 10 Austin City Council Districts.
     \item \textbf{Socioeconomic Vulnerability:} Subgroups defined by the UT-Austin Uprooted Displacement Risk index (Vulnerable, Active, Chronic).\footnote{Categories follow the 2024 City of Austin update. The original 2018 Uprooted report used a six-category gentrification typology (Susceptible, Early Type 1, Early Type 2, Dynamic, Late, Continued Loss) based on Bates (2013).}
-    \item \textbf{Classification Threshold:} To empirically ground the spatial error analysis and prevent structural illusions caused by severe class imbalance, the binary prediction threshold for FNR evaluation is strictly anchored to the empirical background protest rate ($\mu_{y}$). Any localized zoning project with a predicted opposition probability exceeding the citywide historical baseline is classified as a positive threat, ensuring the algorithm's errors are evaluated against genuine physical prevalence rather than arbitrary percentiles.
+    \item \textbf{Classification Threshold:} To empirically ground the spatial error analysis and prevent misleading impressions caused by severe class imbalance, the binary prediction threshold for FNR evaluation is strictly anchored to the empirical background protest rate ($\mu_{y}$). Any localized zoning project with a predicted opposition probability exceeding the citywide historical baseline is classified as a predicted positive case, ensuring the algorithm's errors are evaluated against actual class incidence rather than arbitrary percentiles.
 \end{itemize}
 
-\subsection{Natural Language Processing Architecture: Exploratory Text Features}
+\subsection{Natural Language Processing Model: Exploratory Text Features}
 
 Text signals from public hearings post-date the initial filing date prediction horizon and are therefore explored only at later administrative stages. Because these features are unavailable at the time of filing, they are treated as exploratory supplements rather than inputs to the primary opposition model.
 
@@ -868,20 +828,21 @@ The methodology proceeds in three stages:
     \item \textbf{Supervised expansion across the full corpus.} Using the \metricNLPSeed{} seed labels as training data, six logistic regression classifiers are trained---one for stance and one for each of the five argument frames---with TF-IDF unigram features (1,000-term vocabulary, English stop words removed) as inputs. Each classifier then predicts a continuous probability for every case in the full \metricNLPCorpus{} transcript corpus. The result is a case-level matrix of six predicted probabilities: the likelihood that the hearing testimony is oppositional, and the likelihood that each argument frame is present.
 \end{enumerate}
 
-This approach is intentionally lightweight. The seed sample is small, at \metricNLPSeed{} cases, and the classifiers use simple linear models over bag-of-words features. Consequently, the predicted probabilities should be interpreted as coarse thematic indicators rather than precise measurements. The goal is to test whether even rough text signals carry discriminative power for opposition prediction at later horizons, not to build an exhaustive foundational NLP model.
+This approach is intentionally lightweight. The seed sample is small, at \metricNLPSeed{} cases, and the classifiers use simple linear models over bag-of-words features. Consequently, the predicted probabilities should be interpreted as coarse thematic indicators rather than precise measurements. The goal is to test whether even rough text signals carry discriminative power for opposition prediction at later horizons, not to build a comprehensive NLP model.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter6/F20_Stakeholder_Heatmap.png}
-\caption[NLP Framing: Mean Predicted Probability of Argument Frames by District]{\textbf{NLP Framing:} Mean predicted probability of each argument frame by Council District. Each of the 10 Austin Council Districts is shown as a row; columns represent the five argument frames classified from hearing transcripts. Darker cells indicate districts where a given frame appears more frequently in hearing testimony. Values are normalized to the maximum cell value for visual comparison.}
+\caption[Mean Predicted Probability of Argument Frames by District]{Mean predicted probability of each argument frame by Council District. Each of the 10 Austin Council Districts is shown as a row; columns represent the five argument frames classified from hearing transcripts. Darker cells indicate districts where a given frame appears more frequently in hearing testimony. Values are normalized to the maximum cell value for visual comparison.}
 \label{fig:f20_stakeholder}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter6/F19_TextFrame_Composition.png}
-\caption[NLP Framing: Argument Frame Probabilities: Opposed vs. Unopposed Cases]{\textbf{NLP Framing:} Mean predicted argument-frame probability for cases with a valid protest petition filed (Opposed) versus cases without (Uncontested). Bars compare how frequently each thematic frame appears in hearing testimony across the two groups.}
+\caption[Argument Frame Probabilities: Opposed vs. Unopposed Cases]{Mean predicted argument-frame probability for cases with a valid protest petition filed (Opposed) versus cases without (Unopposed). Bars compare how frequently each thematic frame appears in hearing testimony across the two groups.}
 \label{fig:f19_frames}
 \end{figure}
 
 \end{document}
+
