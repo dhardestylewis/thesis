@@ -1,1 +1,0 @@
-Cases in causal: 252 | Valid lat in causal: 233

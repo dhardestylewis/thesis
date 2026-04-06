@@ -1,0 +1,82 @@
+﻿MM Analysis/Scripts/Modeling/Production_Models/run_causal_track3_did_real.py
+MM Analysis/Scripts/Visualization/Production_Figures/plot_F17_DiD_real.py
+ M Analysis/Scripts/Warehouse_Builder/28_enrich_h0_master.py
+ M Data/Warehouse_As_Of/H0_Filing_Master_Enriched.csv
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.aux
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.lof
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.log
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.lot
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.out
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.pdf
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.tex
+ D Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.tex.bak
+ M Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.toc
+ M Thesis_Draft/Draft_v1/Figures/Archive_Pipelines/fig1_spatial_distribution.png
+ M Thesis_Draft/Draft_v1/Figures/Chapter4/F22_Joint_Policy_Map.png
+ M Thesis_Draft/Draft_v1/Figures/Chapter4/F23_Spatial_Error.png
+ M Thesis_Draft/Draft_v1/Figures/Chapter5/F17_DiD_EventStudy.png
+ M Thesis_Draft/Draft_v1/Figures/Chapter6/F20_Stakeholder_Spatial_Multiples.png
+ M Thesis_Draft/Draft_v1/Tables/metrics_config.tex
+ M Thesis_Draft/Draft_v1/Tables/summary_stats_table.tex
+ D Thesis_Draft/Draft_v1/compile_errors.txt
+ D Thesis_Draft/Draft_v1/fix_captions.py
+ D Thesis_Draft/Draft_v1/fix_thesis.py
+ D Thesis_Draft/Draft_v1/replace_thesis.py
+ D Thesis_Draft/Draft_v1/rewrite_lof.py
+ D Thesis_Draft/Draft_v1/summary_stats_table.tex
+ D Thesis_Draft/Draft_v1/temp_figures.txt
+ D Thesis_Draft/Draft_v1/update_subsections.py
+ D audit_indices.py
+ D check_lat.txt
+ D check_sizes.py
+ D col_counts.txt
+ D columns.txt
+ D compute_ace.py
+ D debug_tcad.py
+ D diag.py
+ D largest.txt
+ D largest_files.txt
+ D out.txt
+ D out2.txt
+ D out3.txt
+ D out4.txt
+ D out5.txt
+ D out6.txt
+ D out8.txt
+ D patch_orchestrator.py
+ D search_output.txt
+ D search_output2.txt
+ D search_output2_utf8.txt
+ D search_output_utf8.txt
+ D tag_generated_tables.py
+ D temp_did_output.txt
+ D update_tables.py
+?? Admin/Thesis_Capstone_Reader_Form.pdf
+?? Admin/Thesis_Reader_Form_Adam_Vosburgh.pdf
+?? Admin/Thesis_Reader_Form_James_Piacentini.pdf
+?? Admin/Thesis_Reader_Form_Josh_Begley.pdf
+?? Admin/Thesis_Reader_Form_Matthew_Bauer.pdf
+?? Admin/Thesis_Reader_Form_Stijn_Van_Nieuwerburgh.pdf
+?? Analysis/Scripts/Modeling/Utilities_and_Logs/empirical_run_20260405_233951.log
+?? Blei-Invariance_Causality-2026Spring/Final_Project/
+?? HardestyLewis_Daniel_Thesis_Draft_April2026.pdf
+?? Thesis_Draft/Draft_v1/Archive/Austin_NIMBY_Thesis_Draft.tex.bak
+?? Thesis_Draft/Draft_v1/Figures/Chapter5/F17_DiD_EventStudy_Old.png
+?? Thesis_Draft/Draft_v1/Figures_backup_hires/
+?? Thesis_Draft/Draft_v1/logs/
+?? Thesis_Draft/Draft_v1/scripts/
+?? git_status_output.txt
+?? scripts/audit_indices.py
+?? scripts/check_sizes.py
+?? scripts/compute_ace.py
+?? scripts/debug_tcad.py
+?? scripts/diag.py
+?? scripts/dump_did_table.py
+?? scripts/old_causal.py
+?? scripts/old_causal_utf8.py
+?? scripts/patch_orchestrator.py
+?? scripts/tag_generated_tables.py
+?? scripts/update_tables.py
+?? tex_files.txt
+?? thesis_tex.txt
+?? top_tex.txt

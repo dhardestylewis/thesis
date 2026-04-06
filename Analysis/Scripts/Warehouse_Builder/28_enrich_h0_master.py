@@ -14,9 +14,9 @@ def run():
     print("Loading H0 Structural Geometries...")
     h0 = pd.read_csv(H0_BASE)
     
-    print("Loading ZONING_CROSSWALK to map TCAD IDs...")
-    crosswalk = pd.read_csv(ZONING_CROSSWALK, usecols=['CASE_NUMBER', 'TCAD_ID', 'LATITUDE', 'LONGITUDE'], low_memory=False)
-    crosswalk = crosswalk.rename(columns={'CASE_NUMBER': 'Case Number', 'TCAD_ID': 'TCAD ID', 'LATITUDE': 'latitude', 'LONGITUDE': 'longitude'})
+    print("Loading ZONING_CROSSWALK to map TCAD IDs and Zoning Strings...")
+    crosswalk = pd.read_csv(ZONING_CROSSWALK, usecols=['CASE_NUMBER', 'TCAD_ID', 'LATITUDE', 'LONGITUDE', 'EXISTING_ZONING'], low_memory=False)
+    crosswalk = crosswalk.rename(columns={'CASE_NUMBER': 'Case Number', 'TCAD_ID': 'TCAD ID', 'LATITUDE': 'latitude', 'LONGITUDE': 'longitude', 'EXISTING_ZONING': 'zoning_code'})
     
     # Clean strings
     crosswalk['case_number'] = crosswalk['Case Number'].astype(str).str.strip().str.upper()
@@ -33,7 +33,9 @@ def run():
 
     
     # Join crosswalk onto H0
-    df = h0.merge(crosswalk[['case_number', 'TCAD ID', 'latitude', 'longitude']].drop_duplicates(subset=['case_number']), on='case_number', how='left')
+    if 'zoning_code' in h0.columns:
+        h0 = h0.drop(columns=['zoning_code'])
+    df = h0.merge(crosswalk[['case_number', 'TCAD ID', 'latitude', 'longitude', 'zoning_code']].drop_duplicates(subset=['case_number']), on='case_number', how='left')
     
     print("Loading the massive Enriched Master Panel...")
     panel = pd.read_csv(ENRICHED_PANEL, low_memory=False)
@@ -45,6 +47,9 @@ def run():
     # We only care about joining onto properties that exist in H0, so standardizing panel:
     panel['standardized_tcad_id'] = panel['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.replace(r'[- ]', '', regex=True).str.lstrip('0')
     panel['year'] = pd.to_numeric(panel['year'], errors='coerce')
+    
+    if 'zoning_code' in panel.columns:
+        panel = panel.drop(columns=['zoning_code'])
     
     # Merge Enriched Panel features to df using TCAD ID and YEAR (the proven 'As-Of' engine)
     print("Executing Time-Stamped As-Of Empirical Joins...")

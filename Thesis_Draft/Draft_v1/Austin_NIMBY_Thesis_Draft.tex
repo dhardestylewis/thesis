@@ -44,7 +44,7 @@ This thesis asks whether the filing of a valid protest petition against a housin
 \section*{Acknowledgments}
 I would like to express my deepest gratitude to my thesis advisor, Dory Kornfeld, for her guidance, support, and expertise throughout this research. Her insights into urban planning and policy were invaluable in shaping this work.
 
-I am profoundly grateful to my thesis readers for their time, expertise, and thoughtful feedback: Matthew Bauer, Adjunct Associate Professor; Josh Begley, Adjunct Assistant Professor; Stijn Van Nieuwerburgh, Earle W.\ Kazis and Benjamin Schore Professor of Real Estate and Co-Director of the Paul Milstein Center for Real Estate at Columbia Business School; and Adam Vosburgh, Associate Director and Adjunct Assistant Professor. Their interdisciplinary perspectives spanning computational design, real estate finance, and urban planning enriched this research immeasurably.
+I am profoundly grateful to my thesis readers for their time, expertise, and thoughtful feedback: Matthew Bauer, Adjunct Associate Professor; Josh Begley, Adjunct Assistant Professor; James Piacentini, Adjunct Assistant Professor; Stijn Van Nieuwerburgh, Earle W.\ Kazis and Benjamin Schore Professor of Real Estate and Co-Director of the Paul Milstein Center for Real Estate at Columbia Business School; and Adam Vosburgh, Associate Director and Adjunct Assistant Professor. Their interdisciplinary perspectives spanning computational design, real estate finance, and urban planning enriched this research immeasurably.
 
 I would like to thank Professor Weiping Wu, Vice Provost for Academic Programs and Director of the Urban Planning Program at Columbia University, for her leadership of the program and support of my academic journey.
 
@@ -54,7 +54,9 @@ Finally, I thank my colleagues, peers, and the broader Columbia community for th
 
 \newpage
 \tableofcontents
+\newpage
 \listoffigures
+\newpage
 \listoftables
 \newpage
 
@@ -559,9 +561,31 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 \draw[arrow] (X) to[bend right=15] (Y.south);
 \end{tikzpicture}
 
+\vspace{0.6cm}
+\textbf{\small Panel B: HOME Initiative Event Study (Difference-in-Differences)}\par\vspace{0.3cm}
+\begin{tikzpicture}[
+    node distance=1.5cm and 3cm,
+    var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
+    unobs/.style={rectangle, draw, dashed, fill=gray!10, minimum height=0.8cm, align=center, rounded corners},
+    arrow/.style={thick,->,>=stealth},
+    dashed_arrow/.style={thick,dashed,->,>=stealth}
+]
+\node[var] (Post) {Time Shock $t$ \\ \footnotesize (Post-HOME Phase 1)};
+\node[var, below=1.5cm of Post] (Treated) {Eligibility $E$ \\ \footnotesize (Treated Parcel)};
+\node[var, right=2cm of Post, yshift=-1.15cm, very thick] (D) {Treatment $D$ \\ \footnotesize ($E \times t$)};
+\node[var, right=2cm of D] (Y) {$Y$ \\ \footnotesize (Organized Opposition)};
+\node[unobs, left=1cm of Treated] (U) {$U$ \\ \footnotesize (Unobserved Factors)};
 
+\draw[arrow] (Post) -- (D);
+\draw[arrow] (Treated) -- (D);
+\draw[arrow] (D) -- node[above] {$\tau$} (Y);
+\draw[arrow] (Post) to[bend left=15] (Y.north west);
+\draw[arrow] (Treated) to[bend right=15] (Y.south west);
+\draw[dashed_arrow] (U) -- (Treated);
+\draw[dashed_arrow] (U) to[bend right=40] (Y.south);
+\end{tikzpicture}
 
-\caption[Identification Diagram for the Threshold Analysis]{Methodological causal inference graph mapping the specific institutional mechanism modeled in the thesis. \textbf{Panel A} illustrates the Threshold-Based Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$).}
+\caption[Causal Identification: Methodological Causal Graphs]{\textbf{Causal Identification:} Methodological causal inference graphs mapping the specific institutional mechanisms modeled in the thesis. \textbf{Panel A} illustrates the Threshold-Based Regression Discontinuity (RD), isolating council delay ($Y$) via the statutory 20\% protest petition threshold running variable ($R$). \textbf{Panel B} illustrates the Difference-in-Differences Event Study, isolating organized opposition ($Y$) arising from the intersection of the discrete HOME Phase 1 policy time shock ($t$) and parcel eligibility ($E$).}
 \label{fig:causal_dag}
 \end{figure}
 
@@ -630,6 +654,21 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 \multicolumn{6}{l}{\footnotesize Design (6) reports the $\text{Flipped} \times \text{Post-2022}$ interaction coefficient.} \\
 \end{tabular}
 \end{table}
+
+\subsection{Exploratory Policy-Change Analyses: HOME and HB 24}
+
+Event-study models evaluate the short-run effects of the HOME Initiative on opposition dynamics. HOME Phase~1 and Phase~2 are treated as independent policy shocks, with treatment defined at the case level by parcel eligibility and timing anchored to application-acceptance start dates \cite{callaway2021did}.
+
+The Difference-in-Differences (DiD) event-study estimate for organized opposition, operationalized as the filing of a valid protest petition per zoning case, is $\metricDiDVotes{}$ (SE $= \metricDiDSE{}$, 95\% CI: $\metricDiDCI{}$). This estimate suggests a \metricDiDDirectionText{} in organized opposition, and the effect is \metricDiDSignificanceText{}. The specification uses a Two-Way Fixed Effects (TWFE) model with case-level and time fixed effects, excluding post-treatment covariates to avoid ``bad control'' bias \cite{cinelli2020making}.
+
+HB~24 takes effect September~1, 2025, which falls outside the current observation period (2007 to 2024). Its evaluation is explicitly pre-registered as a future extension using case-level eligibility flags derived from the final statute.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Chapter5/F17_DiD_EventStudy.png}
+\caption[HOME Phase 1 Event-Study Coefficients]{HOME Phase 1 event-study coefficients relative to the implementation date. Because HOME Phase 1 preemptively blanketed the entire city across all generic single-family residential base zones, establishing an un-treated spatial cohort within the implementation timeframe is intractable. The absence of spatial control necessitates purely temporal event-tracking without contiguous geographic maps.}
+\label{fig:f17_did}
+\end{figure}
 
 \subsection{Invariant Causal Prediction (ICP)}
 As supplementary evidence on the causal structure of the feature space, an Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} was conducted using 1,186 multi-parcel geometric environments. In brief, all 278 pairwise subsets of the 23 numeric features were rejected at $\alpha = 0.05$ after Bonferroni correction under a linear logistic specification, with a single marginal acceptance ($S = \{\texttt{land\_to\_total\_ratio}, \texttt{year}\}$, $p_{\text{bonf}}=0.051$). Nonlinear residual invariance tests (MLP and CVAE models under ERM and V-REx objectives) likewise universally rejected invariance. The tests consistently reject invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved social and political factors play a substantial role in opposition dynamics.

@@ -1,0 +1,17 @@
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Austin_NIMBY_Thesis_Draft.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Sections\data_section.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Sections\new_latex_body.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\alternative_architectures.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\calibration_benchmark.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\lib_ast.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\metrics_config.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\multi_horizon_results.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\summary_stats_table.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\Table12_Attrition_Timeline.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\Table7_StageC_PR.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\Table_1_Summary_Stats.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Draft_v1\Tables\Table_2_OLS_Results.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Outlines\thesis_outline.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Project_One_Pager\Lewis_Thesis_Interview_Guide.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Project_One_Pager\Lewis_Thesis_Project_Overview.tex
+C:/Users/dhl/data/thesis/thesis/Thesis_Draft\Project_One_Pager\Lewis_Thesis_Protocol_Summary.tex
