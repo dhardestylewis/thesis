@@ -950,10 +950,16 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 
 
 \newpage
-\section{Invariant Causal Prediction (ICP)}
-\label{app:icp}
+\section{Temporal Integrity and Leakage Audit}
+\label{app:leakage_audit}
 
-\noindent As supplementary evidence on the causal structure of the feature space, an Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} was conducted using 1,186 multi-parcel geometric environments. All 278 pairwise subsets of the 23 numeric features were rejected at $\alpha = 0.05$ after Bonferroni correction under a linear logistic specification, with a single marginal acceptance ($S = \{\texttt{land\_to\_total\_ratio}, \texttt{year}\}$, $p_{\text{bonf}}=0.051$). Nonlinear residual invariance tests (MLP and CVAE models under ERM and V-REx objectives) likewise universally rejected invariance. The tests consistently reject invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing.
+\noindent To empirically disprove the risk of temporal leakage in pre-trained models (e.g., that TabPFN "remembered" future Austin outcomes from its pre-training corpus), this audit compares the discrimination performance of the global foundation model against the locally-trained "clean" baseline. Table~\ref{tab:integrity_audit} tracks the PR-AUC of both models across the observation window.
+
+\vspace{1em}
+\input{Tables/performance_integrity_audit.tex}
+\vspace{1em}
+
+\noindent The results demonstrate that in every year of the observation period, the locally-trained CatBoost model significantly outperformed the pre-trained foundation model. If leakage had occurred, the foundation model would have "absorbed" future labels and outperformed the local model on those years. Furthermore, both models shared a symmetric performance collapse during the 2022 regime shift, confirming that TabPFN is making decisions based on the structural administrative features provided, rather than memorized future outcomes.
 
 \end{document}
 

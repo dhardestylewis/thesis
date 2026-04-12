@@ -43,4 +43,4 @@
 \contentsline {section}{\numberline {L}Expected Contested Units (Composite Measure)}{53}{appendix.L}%
 \contentsline {section}{\numberline {M}Institutional Geographic Overlay Analyses}{54}{appendix.M}%
 \contentsline {section}{\numberline {N}HOME Initiative Event Study}{56}{appendix.N}%
-\contentsline {section}{\numberline {O}Invariant Causal Prediction (ICP)}{57}{appendix.O}%
+\contentsline {section}{\numberline {O}Temporal Integrity and Leakage Audit}{57}{appendix.O}%
