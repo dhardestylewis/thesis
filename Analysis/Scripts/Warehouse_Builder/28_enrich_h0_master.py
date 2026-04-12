@@ -105,8 +105,22 @@ def run():
     else:
         print("[!] Warning: Missing latitude/longitude. Spatial contagion failed.")
     # ----------------------------------------------------
-    
-    # Validate missing merges
+    # NEW FEATURE: REAL Neighbor Aggregates (200ft Buffer)
+    # ----------------------------------------------------
+    print("Folding REAL 200ft Neighbor Aggregates into Case Matrix...")
+    buffer_path = os.path.join(DATA, "Warehouse_As_Of", "Build", "parcel_buffer_snapshot.csv")
+    if os.path.exists(buffer_path):
+        buffer_df = pd.read_csv(buffer_path)
+        buffer_df.rename(columns={'CASE_NUMBER': 'case_number'}, inplace=True)
+        # Drop duplicates just in case
+        buffer_df = buffer_df.drop_duplicates(subset=['case_number']).copy()
+        
+        # Merge onto final
+        final = final.merge(buffer_df, on='case_number', how='left')
+        print(f"    Injected {len(buffer_df.columns)-1} neighbor context features for {len(buffer_df)} cases.")
+    else:
+        print("[!] Warning: parcel_buffer_snapshot.csv not found. Bypassing neighbor aggregates.")
+    # ----------------------------------------------------
     missing = final['standardized_tcad_id'].isna().sum()
     print(f"Warning: {missing} cases failed to match to the background Enriched Panel.")
     

@@ -101,6 +101,7 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
         
         # Left-join ensures we preserve all 7k rows and 141 columns from the Master
         df = master_df.merge(stub_clean, on='case_number', how='left')
+        print(f"    -> Reintegrated {len(new_cols)} new columns: {new_cols}")
         
         # Fill missing downstream event characteristics (e.g., cases w/o petitions get 0 signers)
         for col in new_cols:
@@ -139,7 +140,31 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
     drop_cols = [target_col, 'case_number', 'organized_opposition', 'is_protested',
                  'has_audio_record', 'TCAD ID', 'date', 'application_start_date', 
                  'final_date', 'year', 'signers', 'signer_pct']
-    X = df.drop(columns=[c for c in drop_cols if c in df.columns], errors='ignore')
+    
+    # -------------------------------------------------------------------------
+    # TEMPORAL FEATURE GUARD: ENFORCE STAGE-C SEQUENCE (Filing -> Notice -> Comm -> Council)
+    # This ensures that early horizons cannot 'cheat' by using downstream features.
+    # -------------------------------------------------------------------------
+    future_features = []
+    if 'Filing' in horizon_name:
+        # Filing has ZERO neighbor context (H1), zero staff feedback (H2), zero text (H3)
+        future_features = [
+            'median_appraised_value', 'mean_appraised_value', 'std_appraised_value',
+            'median_sqft', 'median_structure_age', 'median_neighbor_acreage',
+            'median_neighbor_far', 'owner_occupancy_share', 'senior_share',
+            'neighbor_sf_share', 'neighbor_mf_share', 'neighbor_comm_share',
+            'renter_share', 'median_household_income', 'staff_recommendation_cat',
+            'agenda_text_raw', 'spatial_contagion_1yr', 'spatial_contagion_3yr'
+        ]
+    elif 'Notice' in horizon_name:
+        # Notice has Neighbor context (H1), but zero staff feedback (H2) or text (H3)
+        future_features = ['staff_recommendation_cat', 'agenda_text_raw']
+    elif 'Commission' in horizon_name:
+        # Commission has staff feedback (H2), but zero text (H3)
+        future_features = ['agenda_text_raw']
+        
+    X = df.drop(columns=[c for c in (drop_cols + future_features) if c in df.columns], errors='ignore')
+    print(f"    [Guard] Stripped {len([c for c in future_features if c in df.columns])} future columns to enforce {horizon_name} temporal closure.")
     
     # Pluck out text column for separate dynamic rolling processing before coercion
     has_text = 'agenda_text_raw' in X.columns

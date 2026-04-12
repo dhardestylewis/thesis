@@ -104,19 +104,15 @@ def build_policy_calendar(case_master):
     # Initialize policy calendar mapped to cases
     policy_df = pd.DataFrame({'CASE_NUMBER': case_master['CASE_NUMBER']})
     
-    # Policy: 2022 Council Regime Change (assuming council_date mapping)
-    policy_df['council_regime_2022'] = 0 # To be updated with exact date logic
+    # Policy: 2022 Council Regime Change (Post-Jan 2023 transition)
+    # Using the year extracted from the CASE_NUMBER as a proxy if explicit council dates are missing
+    case_master['year'] = case_master['CASE_NUMBER'].str.extract(r'-(\d{4})')[0].astype(float)
+    policy_df['council_regime_2022'] = (case_master['year'] >= 2023).astype(int)
     
-    # Policy: HOME Phase 1 (Feb 5, 2024 Application-Acceptance Start)
-    home1_date = pd.to_datetime('2024-02-05')
+    # Policy: HOME Phase 1 / 2 benchmarks
+    policy_df['post_home_policy'] = (case_master['year'] >= 2024).astype(int)
     
-    # Policy: HOME Phase 2 (Aug 16, 2024 Application-Acceptance Start)
-    home2_date = pd.to_datetime('2024-08-16')
-    
-    # Policy: HB 24 (Sept 1, 2025 Effective Date)
-    hb24_date = pd.to_datetime('2025-09-01')
-    
-    print("Policy Calendar flags staged. Temporal merges require scraped 'as-of' dates.")
+    print(f"Policy Calendar populated with {policy_df['council_regime_2022'].sum()} cases in the new regime.")
     policy_df.to_csv(os.path.join(OUT_DIR, "policy_calendar.csv"), index=False)
     
     return policy_df

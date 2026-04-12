@@ -48,14 +48,15 @@ def execute_designs():
                                   "DESIGN 2: Neighborhood Plan Area (NPA) Spatial Friction")
     all_output += res_str
 
-    # DESIGN 3: HOME Geographic Eligibility | Staggered DiD
-    print(f"\n{'='*70}\nDESIGN 3: HOME Initiative Geographic Eligibility Staggered DiD\n{'='*70}")
+    # DESIGN 3: HOME Geographic Response (Central vs Peripheral)
+    print(f"\n{'='*70}\nDESIGN 3: HOME Initiative Central District (D9) Response DiD\n{'='*70}")
     home_df = h0_df.copy()
-    np.random.seed(42)
-    home_df['is_wui_uprooted'] = np.random.choice([0, 1], size=len(home_df), p=[0.7, 0.3]) 
-    home_df['post_aug2024'] = (home_df['year'] == 2024).astype(int)
-    res_str, m3 = safe_regression("is_protested_binary ~ is_wui_uprooted * post_aug2024", home_df, 
-                                  "DESIGN 3: HOME Staggered Adoption (Early vs Late Geographies on Protest Risk)")
+    # District 9 is the urban core/protest epicenter in your dataset
+    home_df['is_central_treatment'] = (home_df['council_district'] == 9).astype(int)
+    # HOME window: Jan 2024 onwards
+    home_df['post_home_window'] = (home_df['year'] >= 2024).astype(int)
+    res_str, m3 = safe_regression("is_protested_binary ~ is_central_treatment * post_home_window", home_df, 
+                                  "DESIGN 3: HOME Contextual Response (Central District 9 vs Rest of Austin)")
     all_output += res_str
 
     # DESIGN 4: Historic District Overlays (HD)
@@ -108,6 +109,10 @@ def execute_designs():
             if m5 is not None:
                 f.write(r"\newcommand{\metricTODFrictionCoeff}{" f"{m5.params['is_tod']:.3f}" "}\n")
                 f.write(r"\newcommand{\metricTODFrictionPval}{" f"{m5.pvalues['is_tod']:.3f}" "}\n")
+            # Design 3: HOME
+            if m3 is not None:
+                f.write(r"\newcommand{\metricHOMEDiDCoeff}{" f"{m3.params['is_central_treatment:post_home_window']:.3f}" "}\n")
+                f.write(r"\newcommand{\metricHOMEDiDPval}{" f"{m3.pvalues['is_central_treatment:post_home_window']:.3f}" "}\n")
             # Design 6: 2022 Flip
             if m6 is not None:
                 f.write(r"\newcommand{\metricFlipDiDCoeff}{" f"{m6.params['is_flipped_district:post_2022']:.3f}" "}\n")

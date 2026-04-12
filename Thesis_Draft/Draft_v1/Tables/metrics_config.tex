@@ -15,27 +15,27 @@
 \newcommand{\metricHazardLift}{9.92$\times$}
 
 % Stage C Opposition Risk Metrics
-\newcommand{\metricPRAUC}{0.734}
-\newcommand{\metricTopDecileLift}{8.76$\times$}
-\newcommand{\metricFNRGap}{7.69\%}
-\newcommand{\metricFPRGap}{39.78\%}
-\newcommand{\metricFPR}{60.84\%}
-\newcommand{\metricMeanProbTP}{0.600}
-\newcommand{\metricMeanProbTN}{0.160}
-\newcommand{\metricECE}{0.123}
-\newcommand{\metricCalibrationSlope}{1.261}
+\newcommand{\metricPRAUC}{0.862}
+\newcommand{\metricTopDecileLift}{10.01$\times$}
+\newcommand{\metricFNRGap}{0.00\%}
+\newcommand{\metricFPRGap}{99.79\%}
+\newcommand{\metricFPR}{1.85\%}
+\newcommand{\metricMeanProbTP}{0.827}
+\newcommand{\metricMeanProbTN}{0.016}
+\newcommand{\metricECE}{0.201}
+\newcommand{\metricCalibrationSlope}{0.637}
 
 % Fairness Sensitivity Audit Metrics
-\newcommand{\metricSensitivityFprBaseline}{83.58\%}
+\newcommand{\metricSensitivityFprBaseline}{99.79\%}
 \newcommand{\metricSensitivityFnrBaseline}{0.00\%}
-\newcommand{\metricSensitivityFprKNN}{33.33\%}
-\newcommand{\metricSensitivityFnrKNN}{83.33\%}
+\newcommand{\metricSensitivityFprKNN}{99.75\%}
+\newcommand{\metricSensitivityFnrKNN}{0.00\%}
 
 % Multi-Horizon Bootstrap Metrics
-\newcommand{\metricBootstrapFiling}{0.592}
-\newcommand{\metricBootstrapFilingCI}{[0.3891, 0.7971]}
-\newcommand{\metricBootstrapNotice}{0.536}
-\newcommand{\metricBootstrapPreComm}{0.536}
+\newcommand{\metricBootstrapFiling}{0.582}
+\newcommand{\metricBootstrapFilingCI}{[0.3769, 0.7798]}
+\newcommand{\metricBootstrapNotice}{0.520}
+\newcommand{\metricBootstrapPreComm}{0.520}
 
 % Causal Track 2 (Regression Discontinuity)
 \newcommand{\metricRDDelay}{+52.1}
@@ -66,26 +66,16 @@
 \newcommand{\metricHazardModelClass}{LightGBM}
 
 % Geographic Causal Design Macros
-\newcommand{\metricTenOneITSCoeff}{0.119}
-\newcommand{\metricTenOneITSPval}{0.344}
-\newcommand{\metricNPAFrictionCoeff}{0.239}
-\newcommand{\metricNPAFrictionPval}{0.344}
-\newcommand{\metricHDFrictionCoeff}{0.000}
-\newcommand{\metricHDFrictionPval}{nan}
-\newcommand{\metricTODFrictionCoeff}{0.000}
-\newcommand{\metricTODFrictionPval}{nan}
-\newcommand{\metricFlipDiDCoeff}{-0.546}
-\newcommand{\metricFlipDiDPval}{0.041}
 
-\newcommand{\metricBootstrapFilingECE}{0.267}
+\newcommand{\metricBootstrapFilingECE}{0.245}
 
-\newcommand{\metricBootstrapPreCouncil}{0.536}
+\newcommand{\metricBootstrapPreCouncil}{0.520}
 
-\newcommand{\metricBootstrapPreCouncilECE}{0.343}
+\newcommand{\metricBootstrapPreCouncilECE}{0.231}
 
-\newcommand{\metricStageDLogLoss}{0.1752}
+\newcommand{\metricStageDLogLoss}{0.1642}
 
-\newcommand{\metricStageDAccuracy}{0.9440}
+\newcommand{\metricStageDAccuracy}{0.9684}
 
 \newcommand{\metricStageBMacroFOne}{0.548}
 
@@ -125,21 +115,21 @@
 
 \newcommand{\metricStageBMultifamilyFOne}{0.165}
 
-\newcommand{\metricStageDRfLogLoss}{0.2208}
+\newcommand{\metricStageDRfLogLoss}{0.2126}
 
-\newcommand{\metricStageDRfAccuracy}{0.9854}
+\newcommand{\metricStageDRfAccuracy}{0.9708}
 
-\newcommand{\metricStageDLogLogLoss}{0.5951}
+\newcommand{\metricStageDLogLogLoss}{0.6085}
 
-\newcommand{\metricStageDLogAccuracy}{0.3577}
+\newcommand{\metricStageDLogAccuracy}{0.5109}
 
 \newcommand{\metricStageBRfMacroFOne}{0.739}
 
 \newcommand{\metricStageBLogMacroFOne}{0.177}
 
-\newcommand{\metricStageDLgbLogLoss}{0.0255}
+\newcommand{\metricStageDLgbLogLoss}{0.0211}
 
-\newcommand{\metricStageDLgbAccuracy}{0.9976}
+\newcommand{\metricStageDLgbAccuracy}{1.0000}
 
 \newcommand{\metricStageBLgbMacroFOne}{0.748}
 
@@ -214,3 +204,29 @@
 \newcommand{\metricACE}{0.1113}
 \newcommand{\metricACEBootCI}{[0.107, 0.115]}
 
+
+% Geographic Causal Design Macros
+\newcommand{\metricHOMEDiDCoeff}{0.000}
+\newcommand{\metricHOMEDiDPval}{nan}
+
+% Geographic Causal Design Macros
+\newcommand{\metricHOMEDiDCoeff}{0.000}
+\newcommand{\metricHOMEDiDPval}{nan}
+
+% Geographic Causal Design Macros
+\newcommand{\metricHOMEDiDCoeff}{0.000}
+\newcommand{\metricHOMEDiDPval}{nan}
+
+% Geographic Causal Design Macros
+\newcommand{\metricTenOneITSCoeff}{0.119}
+\newcommand{\metricTenOneITSPval}{0.344}
+\newcommand{\metricNPAFrictionCoeff}{0.239}
+\newcommand{\metricNPAFrictionPval}{0.344}
+\newcommand{\metricHDFrictionCoeff}{0.000}
+\newcommand{\metricHDFrictionPval}{nan}
+\newcommand{\metricTODFrictionCoeff}{0.000}
+\newcommand{\metricTODFrictionPval}{nan}
+\newcommand{\metricHOMEDiDCoeff}{0.000}
+\newcommand{\metricHOMEDiDPval}{nan}
+\newcommand{\metricFlipDiDCoeff}{-0.457}
+\newcommand{\metricFlipDiDPval}{0.116}

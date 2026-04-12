@@ -38,7 +38,7 @@ def execute_track1():
     print("Constructing full H0 Design Matrix...")
     df = tl.merge(geo, on="CASE_NUMBER")\
            .merge(buffer, on="CASE_NUMBER")\
-           .merge(nb, on="CASE_NUMBER")\
+           .merge(nb.drop(columns=['renter_share', 'median_household_income']), on="CASE_NUMBER")\
            .merge(poly, on="CASE_NUMBER")
            
     # INJECT REAL HISTORICAL DATA
@@ -52,9 +52,14 @@ def execute_track1():
     
     features = [
         'acreage', 'frontage', 'corner_lot_flag', 'council_district',
-        'median_appraised_value', 'median_land_to_total_ratio',
-        'homestead_exemption_share', 'owner_occupancy_share', 'median_structure_age',
-        'renter_share', 'median_household_income', 'rent_burden', 'vacancy_rate'
+        'median_appraised_value', 'mean_appraised_value', 'std_appraised_value',
+        'median_sqft', 'owner_occupancy_share', 'median_structure_age',
+        'renter_share', 'median_household_income', 'senior_share',
+        'neighbor_sf_share', 'neighbor_mf_share', 'neighbor_comm_share',
+        'neighbor_large_lot_sf_share', 'neighbor_mobile_home_share',
+        'neighbor_undeveloped_share', 'neighbor_mixed_use_share',
+        'median_neighbor_acreage', 'median_neighbor_far',
+        'median_neighbor_frontage', 'neighbor_corner_lot_share'
     ]
     
     X = df[features]

@@ -17,9 +17,9 @@ class TimeAwareTextEmbedder:
         self.max_features = max_features
         self.max_components = max_components
         self.random_state = random_state
-        self.tfidf = TfidfVectorizer(stop_words='english', max_features=self.max_features)
+        self.tfidf = TfidfVectorizer(stop_words='english', max_features=self.max_features, min_df=2)
         self.svd = None
-        self.n_components = None
+        self.n_components = 0
         
     def fit(self, train_texts):
         """Fits vocabulary and latent space strictly on the training window."""
