@@ -317,6 +317,13 @@ A comprehensive benchmark comparison of alternative models (Random Forest, Light
 \input{Tables/alternative_architectures.tex}
 \vspace{1em}
 
+\subsubsection{The Foundation Frontier: Zero-Shot and Deep Attentive Learning}
+Beyond standard gradient boosting, the analysis evaluates a new class of \textit{Tabular Foundation Models} to determine if NIMBYism follows universal socio-spatial patterns detectable through pre-training. Table~\ref{tab:foundation_frontier} reports the performance of Zero-Shot and Deep Attentive architectures against the Austin baseline. Notably, \textbf{TabPFN}---a model pre-trained on synthetic data to perform Bayesian inference---achieved a PR-AUC of 0.541 with zero Austin-specific training. This suggests that the relationship between property-level friction and neighborhood mobilization is a structurally stable pattern that exists across domestic planning regimes. However, the highest discrimination is achieved by \textbf{ExcelFormer} (0.635 PR-AUC), whose specialized Attention Scaling better handles the extreme class imbalance of formal protests.
+
+\vspace{1em}
+\input{Tables/foundation_frontier.tex}
+\vspace{1em}
+
 
   \subsection{Model Evaluation Strategy}
 
@@ -336,6 +343,14 @@ The mean predicted probability for true positive cases is \metricMeanProbTP{}, c
 \end{itemize}
 
 The November 2022 council election is the primary period break in the analysis. The election produced a more pro-housing council majority during the 2023--2024 term, possessing the supermajority (typically 9 votes, though fewer may be required if a council member is recused or absent) to override protest petitions \cite{tcclerk2022}. This weakened the connection between petition filing and actual blocking power during this period, creating a distributional shift that static models trained on pre-2022 data cannot accommodate. Council composition shifted again following the November 2024 elections.
+
+\textbf{Temporal Predictive Drift (Rolling Origin).} To quantify the model's predictive half-life, Table~\ref{tab:temporal_drift} tracks performance across expanding annual windows. For each anchor year $t$, the model is trained on data before $t$ and evaluated on offsets up to three years into the future ($T+0$ to $T+3$). The results demonstrate a sharp \textit{predictive cliff}: while the Pre-2019 anchor achieves 0.659 PR-AUC on its immediate horizon, its performance on the 2022 regime shift window (T+3) drops to 0.329. This proves that NIMBYism signals are historically conditional; the administrative features that successfully ranked risk in 2018 lost their predictive portability by 2022.
+
+\vspace{1em}
+\input{Tables/temporal_drift_analysis.tex}
+\vspace{1em}
+
+\textbf{Methodological Integrity and Pre-training Leakage.} The use of foundation models like TabPFN introduces a risk of "future leakage" if Austin's open data was inadvertently included in the model's original training corpus. To shield against this contamination, the foundation benchmarks were conducted under a strict \textit{Zero-Shot In-Context} enclosure. The internal model weights remained frozen, and the model was only permitted to "observe" the historically bounded pre-2022 training set as a prompt-context before predicting post-2022 outcomes. This protocol ensures that the model's 0.54 PR-AUC success is a result of structural pattern recognition, not historical memorization.
 
 
 

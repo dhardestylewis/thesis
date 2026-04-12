@@ -100,7 +100,8 @@ def benchmark_horizon(path, horizon_name, master_df=None):
         'Logistic Regression (L2)': LogisticRegression(penalty='l2', max_iter=1000, class_weight='balanced', random_state=42),
         'Random Forest': RandomForestClassifier(n_estimators=100, max_depth=6, class_weight='balanced', random_state=42, n_jobs=-1),
         'LightGBM': LGBMClassifier(n_estimators=100, max_depth=6, class_weight='balanced', random_state=42, verbose=-1, n_jobs=-1),
-        'CatBoost': CatBoostClassifier(iterations=100, depth=6, learning_rate=0.05, verbose=0, auto_class_weights='Balanced', random_seed=42)
+        'CatBoost': CatBoostClassifier(iterations=100, depth=6, learning_rate=0.05, verbose=0, auto_class_weights='Balanced', random_seed=42),
+        'XGBoost': XGBClassifier(n_estimators=100, max_depth=6, scale_pos_weight=15, random_state=42, eval_metric='logloss', n_jobs=-1)
     }
 
     # Create a calibration holdout from training data for Isotonic fitting

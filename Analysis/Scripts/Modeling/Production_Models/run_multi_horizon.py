@@ -15,7 +15,16 @@ try:
     HAS_CATBOOST = True
 except ImportError:
     HAS_CATBOOST = False
-    print("[!] CatBoost not available, using LogisticRegression only")
+    print("[!] CatBoost not available")
+
+try:
+    from xgboost import XGBClassifier
+    HAS_XGB = True
+except ImportError:
+    HAS_XGB = False
+
+from pytorch_tabnet.tab_model import TabNetClassifier
+import torch
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 import sys
