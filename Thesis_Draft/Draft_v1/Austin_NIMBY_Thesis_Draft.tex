@@ -303,25 +303,13 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
     \label{fig:pr_curves}
 \end{figure}
 
-\begin{table}[H]
-    \centering
-    \caption{Precision-Recall Area Under Curve (PR-AUC) Evaluation}
-    \resizebox{0.75\columnwidth}{!}{%
-    \input{Tables/Table7_StageC_PR.tex}
-    }
-\end{table}
+\subsubsection{Unified Predictive Frontier: Standard, Deep, and Foundation Models}
+To provide a consolidated view of predictive capacity, the modeling framework evaluates standard statistical models against traditional machine learning (Gradient Boosting) and state-of-the-art architectures (Neural Tabular learning and Foundation Models). Table~\ref{tab:comprehensive_benchmark} presents this unified performance matrix, tracking discrimination both in-distribution and in the out-of-distribution (post-regime shift) environment.
 
-A comprehensive benchmark comparison of alternative models (Random Forest, LightGBM \cite{ke2017lightgbm}, PyTorch \cite{paszke2019pytorch} TabNet \cite{arik2021tabnet}, with and without SMOTE \cite{chawla2002smote} resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost \cite{prokhorenkova2018catboost} was retained because of its native handling of categorical variables without manual encoding and its more stable calibration across evaluation settings, though the performance differences across models are modest.
+While \textbf{CatBoost} \cite{prokhorenkova2018catboost} serves as the primary operational baseline due to its stable calibration (ECE = 0.211) and native handling of categorical features, the highest raw discrimination is achieved by \textbf{ExcelFormer} (0.635 PR-AUC). Crucially, the matrix also evaluates \textbf{TabPFN}, a zero-shot foundation model pre-trained to perform Bayesian inference without any Austin-specific data. Its achievement of 0.541 PR-AUC provides empirical confirmation that property-level friction and neighborhood mobilization constitute a structurally stable socio-spatial pattern.
 
 \vspace{1em}
-\input{Tables/alternative_architectures.tex}
-\vspace{1em}
-
-\subsubsection{The Foundation Frontier: Zero-Shot and Deep Attentive Learning}
-Beyond standard gradient boosting, the analysis evaluates a new class of \textit{Tabular Foundation Models} to determine if NIMBYism follows universal socio-spatial patterns detectable through pre-training. Table~\ref{tab:foundation_frontier} reports the performance of Zero-Shot and Deep Attentive architectures against the Austin baseline. Notably, \textbf{TabPFN}---a model pre-trained on synthetic data to perform Bayesian inference---achieved a PR-AUC of 0.541 with zero Austin-specific training. This suggests that the relationship between property-level friction and neighborhood mobilization is a structurally stable pattern that exists across domestic planning regimes. However, the highest discrimination is achieved by \textbf{ExcelFormer} (0.635 PR-AUC), whose specialized Attention Scaling better handles the extreme class imbalance of formal protests.
-
-\vspace{1em}
-\input{Tables/foundation_frontier.tex}
+\input{Tables/comprehensive_benchmark.tex}
 \vspace{1em}
 
 
