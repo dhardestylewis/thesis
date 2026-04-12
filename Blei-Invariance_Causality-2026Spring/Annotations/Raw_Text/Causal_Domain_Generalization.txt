@@ -1,0 +1,2100 @@
+Anti-causal domain generalization: Leveraging unlabeled data
+Sorawit Saengkyongam 1 Juan L. Gamella Andrew C. Miller 1 Jonas Peters 2 Nicolai Meinshausen 2
+Christina Heinze-Deml 1
+Abstract
+The problem of domain generalization concerns
+learning predictive models that are robust to distri-
+bution shifts when deployed in new, previously un-
+seen environments. Existing methods typically re-
+quire labeled data from multiple training environ-
+ments, limiting their applicability when labeled
+data are scarce. In this work, we study domain
+generalization in an anti-causal setting, where the
+outcome causes the observed covariates. Under
+this structure, environment perturbations that af-
+fect the covariates do not propagate to the out-
+come, which motivates regularizing the model’s
+sensitivity to these perturbations. Crucially, es-
+timating these perturbation directions does not
+require labels, enabling us to leverage unlabeled
+data from multiple environments. We propose
+two methods that penalize the model’s sensitivity
+to variations in the mean and covariance of the
+covariates across environments, respectively, and
+prove that these methods have worst-case opti-
+mality guarantees under certain classes of envi-
+ronments. Finally, we demonstrate the empirical
+performance of our approach on a controlled phys-
+ical system and a physiological signal dataset.
+1. Introduction
+Machine learning models are often trained on data from a
+limited set of environments and subsequently deployed in
+new, previously unseen environments. A central challenge
+in this setting is domain generalization: learning predictive
+models that perform well not only on the training environ-
+ments but also on novel test environments that may differ
+from those seen during training (Blanchard et al., 2011;
+Muandet et al., 2013). This challenge is particularly acute
+in high-stakes applications, such as healthcare, where dis-
+tribution shifts between hospitals, patient populations, or
+measurement devices can significantly impact model perfor-
+1Apple 2ETH Zürich. Correspondence to: Sorawit Saengky-
+ongam <s.saengkyongam@apple.com>.
+Preprint. February 20, 2026.
+mance (Subbaswamy & Saria, 2020; DeGrave et al., 2021).
+One prominent approach to domain generalization leverages
+the framework of structural causal models (SCMs; Pearl,
+2009; Peters et al., 2016) to characterize the mechanisms
+by which distributions shift across environments. Under
+this framework, one can identify predictors that remain in-
+variant, and hence robust, across a class of environments
+implied by the underlying structural causal model. This
+perspective has led to a variety of methods that exploit in-
+variance for robust prediction (Rojas-Carulla et al., 2018;
+Magliacane et al., 2018; Arjovsky et al., 2019; Heinze-Deml
+& Meinshausen, 2021; Rothenhäusler et al., 2021; Pfister
+et al., 2021; Saengkyongam et al., 2022; Shen et al., 2026).
+However, existing methods typically require labeled data
+from multiple environments to estimate invariance proper-
+ties, which limits their applicability when labeled data are
+scarce or expensive to obtain.
+In many practical settings, unlabeled data are more abun-
+dant than labeled data. This motivates studying domain
+generalization in a type of semi-supervised setting: learning
+robust models using labeled data from only a small number
+of environments while leveraging unlabeled data from many
+others. A key question we address is under which assump-
+tions unlabeled data can provide useful information about
+the structure of distribution shifts, even without outcome
+labels. This work demonstrates that this is possible under
+an anti-causal learning setting, where the outcome Y causes
+the observed predictors X. Anti-causal structures arise
+naturally in many applications. In healthcare, a patient’s
+underlying physiological state (the outcome) often causes
+the observable measurements (the predictors). In speech
+recognition, the spoken content (the outcome) causes the
+observed audio signal (the predictors).
+In an anti-causal setting, environment perturbations that
+only affect the predictors X do not propagate to the out-
+come Y . Nevertheless, such perturbations can induce both
+covariate and concept shifts (see Section 3), harming predic-
+tive performance in unseen environments. To mitigate these
+distributional shifts, we develop regularization strategies
+that penalize sensitivity to environment perturbations. Cru-
+cially, the perturbation directions can be estimated solely
+from the marginal distribution of X, without requiring la-
+1
+arXiv:2602.17187v1  [stat.ML]  19 Feb 2026
+Anti-causal domain generalization: Leveraging unlabeled data
+bels. We provide theoretical guarantees showing that our
+regularized estimators are optimal for worst-case risk over a
+class of environments characterized by the directions of vari-
+ation in the unlabeled data, with the degree of extrapolation
+controlled by the regularization strength.
+Contributions.Our main contributions are as follows.
+1. We formalize an anti-causal domain generalization
+framework in a semi-supervised setting, where labeled
+data are available from a few environments, and unla-
+beled data are available from many others (Section 3).
+2. We propose two regularization strategies, Mean-based
+Invariant Regularization (MIR) and Variance-based
+Invariant Regularization (VIR), that exploit distribu-
+tional variations in the unlabeled data to encourage
+robustness. We provide theoretical guarantees, show-
+ing that the regularized estimators are optimal in terms
+of worst-case risk over certain classes of environments
+(Section 4).
+3. We evaluate our methods on two real-world datasets
+that naturally exhibit an anti-causal structure: a con-
+trolled physical system and a physiological signal
+dataset (Section 7).
+2. Related Work
+Our work builds on the literature that exploits invariance in
+heterogeneous data to address domain generalization; see
+Bühlmann (2020) for an overview. The concept of invari-
+ant prediction (Peters et al., 2016) has been employed to
+identify robust (or stable) predictors across various settings
+(Rojas-Carulla et al., 2018; Heinze-Deml et al., 2018; Magli-
+acane et al., 2018; Pfister et al., 2021; Heinze-Deml & Mein-
+shausen, 2021; Saengkyongam et al., 2023; 2024a). Several
+works have extended this idea from selecting invariant pre-
+dictors to incorporating invariance as a regularization term
+(Arjovsky et al., 2019; Heinze-Deml & Meinshausen, 2021;
+Rothenhäusler et al., 2021; Saengkyongam et al., 2022; Shen
+et al., 2026). These methods leverage causal frameworks to
+establish theoretical guarantees for distributional robustness
+within certain classes of distributions implied by SCMs.
+To the best of our knowledge, none of the aforementioned
+works considers extracting invariance from unlabeled data.
+Our work utilizes assumptions from anti-causal structures,
+which allow us to define an invariance regularization that
+depends solely on unlabeled observations. While Schölkopf
+et al. (2012) discuss the implications of anti-causal learning
+in a single-domain semi-supervised setting, we extend these
+ideas to semi-supervised domain generalization. Anti-causal
+structures were also considered in Heinze-Deml & Mein-
+shausen (2021); Veitch et al. (2021); Makar et al. (2022);
+Jiang & Veitch (2022) for domain generalization, but not
+within a semi-supervised setting. Our theoretical guarantees
+are closely related to those in Rothenhäusler et al. (2021) and
+Shen et al. (2026); however, ours differ by explicitly lever-
+aging anti-causal assumptions to derive guarantees from
+invariance regularization that uses only unlabeled data.
+Another line of research focuses on explicitly optimizing
+worst-case group performance (Meinshausen & Bühlmann,
+2015; Bühlmann & Meinshausen, 2015; Hu et al., 2018;
+Sagawa et al., 2020; Freni et al., 2025), a framework of-
+ten known as Group Distributionally Robust Optimization
+(GroupDRO). In GroupDRO, robustness is typically defined
+with respect to test distributions that are convex combi-
+nations of training distributions, which limits the model’s
+ability to extrapolate beyond the training support. In con-
+trast, our method considers test distributions that may lie
+outside the convex hull of the training distributions. Specifi-
+cally, we define plausible directions of extrapolation based
+on the directions of variation observed in the unlabeled data.
+While Krueger et al. (2021) consider extrapolation beyond
+convex combinations by optimizing the worst-case affine
+combination of training risks, the directions along which the
+model can extrapolate from the training distributions are, to
+our knowledge, less well-characterized.
+3. Anti-causal domain generalization in a
+semi-supervised setting
+This section formalizes the setting and goal of our work.
+Setting 3.1(Multi-environment anti-causal learning).Let E
+be a collection of environments, we consider the following
+class of structural causal models indexed bye∈ E:
+S(e) :
+
+
+
+U :=ε U
+Y :=g 0(U, εY )
+X :=f 0(Y, U, εX) +ε e,
+(1)
+e
+X Y
+U
+f0
+where X∈R d denotes the predictors, U∈R q denotes
+the unobserved confounders, Y∈R denotes the outcome,
+(εU , εY , εX) are jointly independent noise variables, and
+for each e∈ E, the environment perturbation εe ∼P e
+ε
+satisfies εe ⊥ ⊥(εU , εY , εX). Without loss of generality, we
+assume thatf 0(Y, U, εX)andg 0(U, εY )have zero mean.
+Remark3.2.(i) Although the SCM (1) imposes certain
+restrictions, such as the absence of a direct effect frometo
+Y , this model class can still capture non-trivial distribution
+shifts. In particular, it allows for both covariate shift and
+concept shift simultaneously: for some e1, e2 ∈ E, we
+may have both Pe1
+X ̸=P e2
+X and Pe1
+Y|X ̸=P e2
+Y|X . (ii) The
+unobserved confounders U do not play a significant role
+in this model class in that removing U from the SCM (1)
+would not introduce any conditional independencies that
+could be exploited for domain generalization.
+2
+Anti-causal domain generalization: Leveraging unlabeled data
+Notation.For each environment e∈ E, we denote by
+Pe
+X,Y the distribution induced by S(e), and by Ee and Vare
+the corresponding expectation and variance.
+3.1. Learning setting
+We are given observations from p training environments
+Etr :={e 1, . . . , ep} ⊆ E, where we have
+• Labeled data from a small set of environments:
+Dtr
+X,Y ={(X i, Yi, Ei)}k
+i=1 such that (Xi, Yi)∼
+PEi
+X,Y , where Ei ∈ L ⊂ Etr, with L denoting the set
+of labeled environments, and k is the total number of
+labeled observations. We assume{E 1, . . . , Ek}=L.
+• Unlabeled data from all training environments: Dtr
+X =
+{(Xj, Ej)}n
+j=1 such that Xj ∼P Ej
+X , where Ej ∈ Etr
+and n is the total number of unlabeled observations,
+with n≥k (the first k observations are the Xi and Ei
+inD tr
+X,Y ). We assume1 {E1, . . . , En}=E tr.
+Let F be a function class of interest. Our goal is to learn a
+predictive function ftr ∈ Fusing Dtr
+X,Y and Dtr
+X such that
+it generalizes well to an unseen test environment etst ∈ E.
+Since we do not have additional information on the test
+environment etst, it can be any environment inE, so possibly
+etst /∈ Etr. We consider the worst-case risk as the objective:
+sup
+e∈E
+Ee[ℓ(ftr(X), Y)],(2)
+whereℓ:R×R→Ris a given loss function.
+As discussed in Section 2, the objective (2) depends cru-
+cially on the class of environments E under consideration.
+Our approach characterizes the class E using the directions
+of variation observed in the unlabeled data. This allows the
+model to extrapolate along such directions, with the degree
+of extrapolation controlled by a regularization parameter.
+We now introduce our approach and formalize these ideas.
+4. Data-driven robust regression
+The key idea of our approach is to leverage the invariance
+encoded in the assumed SCM (1): the environment pertur-
+bationsε e are independent of the outcomeY, i.e.,
+∀e∈ E:ε e ⊥ ⊥Y.(3)
+Intuitively, if we can characterize the structure of the vari-
+ations in εe across environments, we can penalize models
+along these directions, since (i) under Setting 3.1, such vari-
+ations are the source of distributional shifts across environ-
+ments, and (ii), by (3), these variations carry no information
+about the outcome. Although εe is not directly observable,
+we show in Theorems 4.1 and 4.2 that it is possible to learn
+1This assumption ensures that we observe at least one observa-
+tion from each environment inE tr.
+provably robust models by exploiting distributional shifts
+estimated from unlabeled data. To this end, we develop reg-
+ularization strategies that penalize models according to their
+sensitivity to these inferred shifts to promote robustness to
+environment shifts.
+In this section, we focus on the setting where F consists of
+linear functions and the loss ℓ is the squared error. However,
+these are not fundamental limitations; we discuss extensions
+to other loss functions and nonlinear models in Section 6.
+For the remainder of this section, let E be a collection of
+environments such that {Pe
+ε}e∈E contains all probability dis-
+tributions over Rd. We define Etr[·] := 1
+|L|
+P
+e∈L Ee[·] as
+the average expectation over labeled training environments.
+4.1. Mean-based Invariant Regularization (MIR)
+Our first regularization strategy targets variations in the
+means of εe across environments. Define the matrix of
+environment-specific covariate means as
+K :=
+Ee1 [X]···E ep[X]
+∈R d×p,
+which can be estimated solely from the unlabeled data. We
+consider the following regularized regression coefficients:
+βMIR
+γ = argmin
+β∈Rd
+Etr[(Y−β ⊤X)2] +γβ ⊤Var(K)β,(4)
+where Var(K) := 1
+p KK⊤ −
+ 1
+p K1p
+ 1
+p K1p
+⊤
+denotes
+the covariance matrix of the environment means and 1p is
+the vector of ones.
+In Setting 3.1, f0(Y, U, εX) has zero mean, and hence
+Ee[X] =E e[εe] for all environments e∈ E. The matrix K
+therefore equals
+K=µ tr
+ε :=
+E[εe1 ]···E[ε ep]
+.
+Thus, the MIR regularization term β⊤Var(K)β penalizes
+sensitivity to mean shifts in environment perturbationsε e.
+In Theorem 4.1 below, we establish a dual characterization
+of (4) in terms of distributional robustness: the model coef-
+ficients that minimize the regularized objective (4) are also
+optimal for the worst-case risk under a class of mean-shift
+perturbations, with the size of this class controlled by the
+regularization parameter γ. (All proofs are in Appendix A.)
+Theorem 4.1(MIR Robustness).Define
+∆⋄
+γ :=
+
+A∈R d×d : 0⪯A⪯γVar(µ tr
+ε )
+	
+.
+Under Setting 3.1, we have
+βMIR
+γ ∈argmin
+β∈Rd
+sup
+e∈E⋄γ
+Ee[(Y−β ⊤X)2],where
+E⋄
+γ :={e tst ∈ E:∃A∈∆ ⋄
+γ s.t.
+Eetst [εeε⊤
+e ] =E tr[εeε⊤
+e ] +A}.
+3
+Anti-causal domain generalization: Leveraging unlabeled data
+4
+ 2
+ 0 2 4
+X1
+2.0
+1.5
+1.0
+0.5
+0.0
+0.5
+1.0
+1.5
+2.0
+X2
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+e9
+etest
+OLS
+MIR( =10)
+MIR( =1)
+ *
+test
+Training environment means: [ ei]
+Test environment mean: [ etest]
+Var(K) (2 std)
+Figure 1.Illustration of MIR. Blue points represent the training
+environment perturbation means E[εei], and the green star repre-
+sents the test environment mean. The red ellipse represents the
+covariance structure of the regularization matrix Var(K), with red
+arrows indicating its (scaled) eigenvectors. The annotated arrows
+show the directions of the OLS and MIR solutions with different
+regularization strengths γ, as well as the optimal solution β∗
+test for
+the test environmente tst.
+Figure 1 illustrates MIR using a simulated example with
+p= 10 environments and 2-dimensional covariates, where
+one environment is held out as the test environment. The
+environment perturbation means {E[εei]}10
+i=1 are generated
+from a Gaussian distribution with a covariance structure
+such that one eigenvalue is much larger than the other. The
+figure shows the direction of the ordinary least squares
+(OLS) solution, the MIR solutions for two regularization
+strengths γ∈ {1,10}, and the optimal solution β∗
+test for the
+test environment etst. The regularization strength γ con-
+trols the tradeoff between the OLS solution ( γ= 0 ) and
+the direction of least variability. The optimal choice of γ
+for a given test environment depends on how far the test
+environment mean is from the training centroid: guarding
+against larger shifts requires stronger regularization. In this
+example, Var(K) is full rank, so as γ increases, the so-
+lution rotates away from the direction of high variability
+(the first eigenvector) toward the direction of least variance
+(the second eigenvector), and then shrinks toward zero as
+γ→ ∞. More generally, when Var(K) is not full rank, the
+solution shrinks toward a vector in the null space ofVar(K)
+as γ→ ∞; this null space corresponds to the subspace of
+directions that are invariant across training environments.
+4.2. Variance-based Invariant Regularization (VIR)
+Our second strategy targets variations in the covariances of
+εe across environments. For each e∈ E, define the covari-
+ance matrix Ge
+X := Vare(X) and the average covariance
+¯GX := 1
+p
+Pp
+j=1 Gej
+X . We consider the following objective:
+βVIR
+γ = argmin
+β∈Rd
+Etr[(Y−β ⊤X)2]
++γβ ⊤
+ 
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2
+!
+β.(5)
+This regularization penalizes models that are sensitive to
+variations in the covariances observed in the unlabeled data.
+Analogously to the MIR case, this objective admits a distri-
+butionally robust interpretation: robustness is defined with
+respect to shifts in the covariances of εe, with the size of the
+perturbation set controlled byγ.
+Theorem 4.2(VIR Robustness).For each e∈ E, let Ge
+ε :=
+Vare(εe)and ¯Gε := 1
+p
+Pp
+j=1 Gej
+ε . Define
+∆†
+γ :=
+(
+A∈R d×d : 0⪯A⪯γ 1
+p
+pX
+i=1
+(Gei
+ε − ¯Gε)2
+)
+.
+Under Setting 3.1, we have
+βVIR
+γ ∈argmin
+β∈Rd
+sup
+e∈E†
+γ
+Ee[(Y−β ⊤X)2],where
+E†
+γ :={e tst ∈ E:∃A∈∆ †
+γ s.t.
+Eetst [εeε⊤
+e ] =E tr[εeε⊤
+e ] +A}.
+To provide further intuition for VIR, consider the case
+where the covariance matrices of the environment per-
+turbations, {Gei
+ε }p
+i=1, share a common eigenbasis, i.e.,
+there exists an orthogonal matrix Q∈R d×d such that,
+for all i∈ {1, . . . , p}: Gei
+ε =QΛ eiQ⊤, where Λei =
+diag(λei
+1 , . . . , λei
+d ) is the diagonal matrix of eigenvalues
+of Gei
+ε . Define the per-coordinate variance of eigenvalues
+across environments as
+σ2
+j := 1
+p
+pX
+i=1
+ 
+λei
+j − ¯λj
+2
+,where ¯λj := 1
+p
+pX
+i=1
+λei
+j .
+In Appendix B, we show that the VIR regularization term
+simplifies to
+β⊤
+ 
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2
+!
+β=
+dX
+j=1
+σ2
+j (˜βj)2,(6)
+where ˜β=Q ⊤β denotes the model coefficients projected
+onto the shared eigenspace. Recall that the eigenvalues λei
+j
+represent the variance along the j-th eigenvector direction
+in environment ei. This simplification provides a clear inter-
+pretation: VIR applies stronger regularization to directions
+along which the variances differ more across environments,
+thereby encouraging the model to rely on directions that are
+more stable.
+Remark4.3.(i) Appendix C discusses an alternative formu-
+lation of VIR that directly penalizes changes in the variance
+of predictions Var(β⊤X) across environments. Although
+this may sound intuitive, it is vulnerable to a cancellation
+issue: there may exist directions β that cancel out the ob-
+served training shifts, yielding zero penalty even though the
+direction is sensitive to unseen shifts. Our VIR avoids this
+issue; see the appendix for such an example. (ii) In practice,
+environment perturbations may affect both the means and
+covariances. We can combine both regularization terms in
+4
+Anti-causal domain generalization: Leveraging unlabeled data
+a single objective, as discussed in Appendix D. (iii) Under
+a linear model class with mean squared error loss, only the
+first two moments of the environment perturbation εetst af-
+fect the test loss. For nonlinear models and other losses (see
+Section 6), higher-moment shifts may also affect the test
+loss, and extending our framework to account for these (e.g.,
+via a distributional metric) is a direction for future work.
+5. Finite-sample estimators
+In this section, we discuss finite-sample estimators for the
+regularized regressions introduced in Section 4. We first
+present the population-level solutions and introduce plug-in
+estimators based on sample quantities. We then discuss
+consistency of the resulting estimators.
+5.1. Population-level solutions
+Consider the MIR and VIR objectives (4) and (5) with
+squared error loss. Both objectives are quadratic inβ and ad-
+mit closed-form solutions. The population-level minimizer
+takes the form
+βγ =
+ 
+Etr[XX ⊤] +γH
+−1
+Etr[XY],(7)
+where H∈R d×d is a positive semi-definite matrix that
+encodes the directions of variation of environment perturba-
+tions εe. Specifically, for MIR, we have HMIR = Var(K),
+and for VIR,H VIR = 1
+p
+Pp
+i=1
+ 
+Gei
+X − ¯GX
+2
+.
+5.2. Plug-in estimators
+Given labeled dataDtr
+X,Y and unlabeled dataDtr
+X (as defined
+in Section 3.1), we construct plug-in estimators by replacing
+population quantities with their sample counterparts. Let
+X∈R k×d denote the design matrix with rows X⊤
+i and
+Y∈R k denote the outcome vector, both constructed from
+the labeled dataD tr
+X,Y . The plug-in estimator is
+ˆβγ =
+1
+k X⊤X+γ ˆH
+−1 1
+k X⊤Y,(8)
+where ˆH∈R d×d is estimated from the unlabeled data Dtr
+X.
+For MIR, we use
+ˆHMIR := 1
+p
+ˆK ˆK⊤ −
+ 1
+p
+ˆK1p
+ 1
+p
+ˆK1p
+⊤
+,(9)
+where ˆK :=
+
+ˆµe1
+X ···ˆµ ep
+X
+
+∈R d×p and ˆµei
+X :=
+1
+ni
+P
+j∈Ni Xj is the sample mean of covariates in envi-
+ronment ei, with Ni :={j∈ {1, . . . , n}|Ej =e i} and
+ni :=|N i|.
+For VIR, we use
+ˆHVIR := 1
+p
+pX
+i=1
+
+ˆGei
+X − ˆ¯GX
+2
+,(10)
+where ˆGei
+X := 1
+ni
+P
+j∈Ni(Xj −ˆµei
+X)(Xj −ˆµei
+X)⊤ is the
+sample covariance matrix in environment ei and ˆ¯GX :=
+1
+p
+Pp
+i=1 ˆGei
+X is the average sample covariance across envi-
+ronments.
+The following proposition establishes that the plug-in esti-
+mators are consistent for the population-level solutions.
+Proposition 5.1(Consistency).Assume that Ee[∥X∥2
+2]<
+∞ for all e∈ Etr and Ee[Y 2]<∞ for all e∈ L, and that
+Etr[XX ⊤] +γH is non-singular. If k→ ∞and, for all
+i∈ {1, . . . , p},ni → ∞, we have
+ˆβγ
+p
+− →βγ.(11)
+6. Extension: Different loss functions and
+nonlinear models
+In the previous sections, we considered the setting where F
+is the class of linear functions and the loss ℓ is the squared
+error. This section discusses extensions of our approach to
+other loss functions and to nonlinear models.
+6.1. Other loss functions
+It is straight-forward to apply the proposed methods to other
+loss functions: the regularization terms (both MIR and VIR)
+depend solely on the unlabeled data, so the only change to
+the optimization problem for learning is the addition of a
+quadratic term. For example, for the MIR objective we get
+argmin
+β∈Rd
+Etr[ℓ(β⊤X, Y)] +γ1
+pβ⊤Var(K)β,(12)
+where K=
+Ee1 [X]···E ep[X]
+is defined as before.
+Although the precise robustness guarantee differs from The-
+orem 4.1, the intuition remains the same: we penalize β
+in directions that are sensitive to variation in the means of
+εe. VIR can be applied analogously by replacing the MIR
+regularization term with that of VIR defined in (5).
+We view this flexibility as another advantage of our approach
+compared to methods that rely on residual invariance, such
+as Anchor regression (Rothenhäusler et al., 2021). In partic-
+ular, extending Anchor regression to other losses requires
+defining new notions of residuals with more involved regu-
+larization terms (Kook et al., 2022).
+6.2. Nonlinear models
+To apply our approach to high-dimensional and/or unstruc-
+tured data, we adopt a representation learning perspective:
+we first transform X via a nonlinear map ϕ and then apply
+a linear predictor on top of the learned representation ϕ(X).
+The regularization is then applied to the linear predictor.
+This corresponds to modeling environment perturbations in
+a latent space rather than in the observed covariate space,
+5
+Anti-causal domain generalization: Leveraging unlabeled data
+which is particularly relevant when X consists of unstruc-
+tured data such as sensors, images, or text, where environ-
+ment perturbations may be more meaningfully captured in
+a learned representation. Similar considerations have been
+discussed in, e.g., Rosenfeld et al. (2022); Saengkyongam
+et al. (2024b); Šola et al. (2025); von Kügelgen et al. (2025).
+Concretely, for a function class Φ, we consider the MIR
+objective
+argmin
+ϕ∈Φ,β∈Rd′
+Etr[ℓ(β⊤ϕ(X), Y)] +γ 1
+pβ⊤Var(Kϕ)β,(13)
+where Kϕ :=
+Ee1 [ϕ(X)]···E ep[ϕ(X)]
+∈R d′×p and
+d′ is the dimension of the representation. Here, the regular-
+ization encourages the linear predictor β to be insensitive to
+environment perturbations in the representation space. VIR
+can be extended analogously by computing the variance of
+covariances in the representation space, as in (5).
+In many applications, the representation ϕ may be learned
+separately from the objective (13) rather than through joint
+optimization. Given the recent advancements in founda-
+tion models that provide meaningful representations across
+various data modalities, our regularization strategy can be
+naturally combined with these pretrained representations by
+fine-tuning the linear head β using the objective (13) while
+keeping the representation ϕ fixed. We adopt this approach
+in our real-world experiments (see Section 7.2).
+7. Experiments
+We evaluate our methods on two complementary real-world
+datasets that naturally exhibit anti-causal structure: a con-
+trolled physical system and a real-world biomedical appli-
+cation. Full details on experimental setups are provided in
+Appendix E and F.
+7.1. Causal Chamber: The Light Tunnel
+The Light Tunnel (Gamella et al., 2025) is a real, control-
+lable, optical experiment designed for benchmarking ma-
+chine learning methods. The tunnel consists of different
+light sources, polarizers and sensors that allow to measure
+and manipulate the physical variables of the system, while
+providing a causal ground truth of the effects between them.
+For our experiments, we focus on the main RGB light source
+and its effect on the different light-intensity sensors placed
+throughout the tunnel (Figure 2). We select the brightness
+setting of one of the three color channels (red, green or blue)
+as the outcome Y∈R and use the measurements produced
+by the sensors as the predictorsX∈R 6.
+We create six environments e∈ E by performing inter-
+ventions on another color channel by shifting the uniform
+distribution from which their brightness settings are sam-
+Light source Light sensor Light sensor
+Light sensor
+red
+green
+blue
+ir_1
+vis_1
+ir_2
+vis_2
+ir_3
+vis_3
+M
+M
+M
+MM
+M
+I
+I
+I
+Figure 2.Diagram of the light tunnel and the subset of variables
+used in our experiment: the outcomes or intervention targets red,
+green and blue, and the light-intensity measurements ir_1,
+vis_1, . . . , vis_3 used as predictors. Figure adapted from
+Gamella et al. (2025), licensed under CC BY 4.0.
+pled. By construction, these interventions induce only mean
+shifts in the covariate distribution, making this a suitable
+setting to evaluate MIR (VIR is evaluated in another experi-
+ment, see Section 7.2). We repeat the overall experiment six
+times by considering each outcome-intervention pair (e.g.,
+outcome red with intervention on blue), resulting in a total
+of six experiments with six distinct environments each.
+Baselines.We compare the following methods: (i)
+Pooled-Ridge: Ridge regression pooling data across
+all training environments. (ii) MIR: Our mean-based in-
+variant regularization, with the regularization parameter
+selected via leave-one-environment-out cross-validation on
+the training environments. (iii) MIR-Oracle: Our method
+with the regularization parameter tuned on the test envi-
+ronment, serving as an upper bound on MIR performance.
+(iv) AnchorReg: Anchor regression (Rothenhäusler et al.,
+2021). (v) GroupDRO: Group distributionally robust opti-
+mization (Sagawa et al., 2020).
+Evaluation setup.For each outcome-intervention pair,
+we adopt a leave-one-environment-out evaluation protocol:
+one environment is held out for testing while models are
+trained on the remaining five environments. To evaluate
+the semi-supervised setting, we vary the number of training
+environments that have labeled data from 3 to 5, while
+using unlabeled data from all training environments forMIR.
+Predictive performance is assessed using root mean squared
+error (RMSE) on the held-out environment (Figure 3).
+Results.Figure 3 shows the results across all outcome-
+intervention pairs. Pooled-Ridge performs poorly when
+generalizing to unseen environments, particularly when few
+labeled environments are available. This indicates that, in
+this experiment, standard empirical risk minimization is
+not sufficient to generalize to unseen environments. MIR
+achieves lower or comparable error to all baselines across
+all settings. The improvement over baselines is most pro-
+6
+Anti-causal domain generalization: Leveraging unlabeled data
+16
+18
+20
+22
+24
+26
+28RMSE
+Y: red, Intervention: blue
+20.0
+22.5
+25.0
+27.5
+30.0
+32.5RMSE
+Y: red, Intervention: green
+12.5
+15.0
+17.5
+20.0
+22.5
+25.0RMSE
+Y: blue, Intervention: red
+17.5
+20.0
+22.5
+25.0
+27.5
+30.0
+32.5RMSE
+Y: blue, Intervention: green
+3 4 5
+Number of labeled environments
+24
+26
+28
+30
+32RMSE
+Y: green, Intervention: red
+3 4 5
+Number of labeled environments
+24
+26
+28
+30
+32RMSE
+Y: green, Intervention: blue
+MIR MIR-Oracle Pooled-Ridge AnchorReg GroupDRO
+Figure 3.Performance on the Light Tunnel dataset. We show
+average RMSE (with standard errors) for leave-one-environment-
+out cross-validation across all outcome-intervention combinations.
+The x-axis indicates the number of environments with labeled ob-
+servations; MIR uses unlabeled data from all training environments
+regardless of this number.
+nounced when the number of labeled environments is small;
+this is the regime where leveraging unlabeled data is most
+valuable. Comparing MIR and MIR-Oracle suggests that
+leave-one-environment-out cross-validation often yields reg-
+ularization parameters that are close to being optimal but
+also that there are settings which carry potential for im-
+proved ways of choosing the regularization parameter.
+7.2. VitalDB: Stroke Volume Prediction from Arterial
+Waveforms
+As a real-world application in the healthcare domain, we
+apply our approach to predicting stroke volume from arte-
+rial pressure waveform (APW) signals using data from the
+VitalDB dataset (Lee et al., 2022). Predicting stroke vol-
+ume for unseen subjects is challenging due to pronounced
+between-subject variability that induces distribution shifts.
+This task exhibits a natural anti-causal structure: the stroke
+volume Y causally influences the observed arterial pressure
+waveform X, while unobserved physiological factors U
+may affect both.
+Preprocessing.Absolute prediction of hemodynamic pa-
+rameters from arterial waveforms typically requires subject-
+specific calibration, such as thermodilution, to establish
+a baseline reference point (Saugel et al., 2021; Manduchi
+et al., 2024). Without such calibration, differences in base-
+line physiology across subjects (e.g., due to age, vascular
+stiffness, or body composition) may confound the relation-
+ship between waveform features and absolute hemodynamic
+values. In the context of Setting 3.1, these baseline differ-
+ences correspond to direct shifts from E to U (or Y ), which
+would violate the assumption that the environment does not
+affect Y (through U). We therefore focus on predicting
+variations in stroke volume rather than absolute values. Con-
+cretely, we consider a subject-centered approach where both
+predictors and outcomes are mean-centered within each sub-
+ject. To obtain absolute predictions, one can combine our
+predictions with a baseline reference point from standard
+calibration procedures (Saugel et al., 2021). In this subject-
+centered setting, mean shifts are removed by construction,
+making our Variance-based Invariant Regularization (VIR)
+the appropriate method to address the remaining covariance
+shifts inXacross subjects.
+Feature representation.Following the formulation in
+Section 6.2, we extract 140-dimensional embeddings from
+arterial pressure waveforms using a pretrained convolu-
+tional neural network developed by Manduchi et al. (2024);
+Palumbo et al. (2025). This model was trained using a neural
+posterior estimator (Lueckmann et al., 2017) on synthetic
+data generated from the OpenBF cardiovascular simula-
+tor (Benemerito et al., 2024), which models hemodynamics
+based on physiological parameters. The learned embeddings
+capture physiologically relevant features of the arterial pres-
+sure waveform without requiring labeled clinical data for
+training (Manduchi et al., 2024; Palumbo et al., 2025). This
+pretrained representation serves as the fixed nonlinear map
+ϕ, and we apply all considered methods to the linear head
+on top of these embeddings. Concretely, we have:
+•X∈R 140: APW embeddings (subject-centered)
+•Y∈R: Stroke volume variations (subject-centered)
+•e∈ E: Individual subjects (n= 128subjects)
+Baselines.We consider the same baselines as in Sec-
+tion 7.1, with the exception of AnchorReg. Since the
+subject-centered preprocessing removes all mean shifts by
+construction, the Anchor regression regularization term is
+zero by design.
+Evaluation setup.We treat each subject as a distinct en-
+vironment and adopt a leave-one-subject-out evaluation pro-
+tocol: one subject is held out for testing while models are
+trained on the remaining subjects. To evaluate the semi-
+supervised setting, we vary the number of training subjects
+with labeled observations from 20 to 127, while using un-
+labeled data from all training subjects for VIR. Predictive
+7
+Anti-causal domain generalization: Leveraging unlabeled data
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Quantile
+2
+4
+6
+8nMSE Above Quantile
+VIR
+VIR-Oracle
+Pooled-Ridge
+GroupDRO
+(a)Robustness analysis
+VIR VIR-Oracle Pooled-Ridge GroupDRO
+0.4
+0.2
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Spearman Correlation
+(b)Tracking performance
+Figure 4.Performance on VitalDB dataset when all 128 training
+subjects have labeled data. (a) CVaR (average nMSE for subjects
+whose errors are above a given quantile) as a function of quantile
+threshold. (b) Distribution of per-subject Spearman’s correlations
+between predicted and true stroke volume variations.VIR achieves
+improved robustness, especially on worse-performing subjects,
+while maintaining tracking performance comparable to baselines.
+performance is assessed on the held-out subject using nor-
+malized mean squared error (nMSE), defined as the mean
+squared error divided by the variance of the subject’s out-
+come. This normalization ensures that subjects with differ-
+ent outcome variability contribute equally to the evaluation;
+otherwise, subjects with larger stroke volume variations
+would dominate the aggregate error. To assess robustness,
+we report the conditional value at risk (CVaR), computed
+as the average nMSE for subjects above a given quantile
+threshold of the nMSE distribution, where higher quantiles
+correspond to worse-performing subjects. Additionally, we
+report Spearman’s correlation between predicted and true
+stroke volume variations to evaluate tracking performance
+(i.e., how well predictions follow the temporal variations
+within a subject regardless of magnitude).
+Results.Figure 4a shows the robustness analysis when
+all 128 training subjects have labeled data, where each
+point represents the CVaR at a given quantile threshold.
+The Pooled-Ridge baseline exhibits poor robustness;
+its error increases substantially for more difficult sub-
+jects. GroupDRO improves over Pooled-Ridge but still
+shows relatively poor performance on difficult subjects. In
+contrast, VIR achieves lower nMSE across all quantiles.
+20 50 80 127
+Number of labeled environments
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0Average nMSE
+VIR VIR-Oracle Pooled-Ridge GroupDRO
+Figure 5.Performance on VitalDB dataset as a function of the
+number of labeled environments. VIR improves over baselines
+across all settings. The improvement is most pronounced when
+few labeled environments are available.
+Since difficult subjects correspond to those with larger dis-
+tributional shifts, this is consistent with VIR’s objective of
+penalizing sensitivity to such shifts.
+A natural follow-up question is whether these robustness
+gains compromise tracking performance. Regularization
+could improve worst-case nMSE simply by shrinking pre-
+dictions toward zero rather than by learning robust structure.
+Figure 4b shows the distribution of per-subject Spearman
+correlations. VIR achieves median correlation comparable
+to Pooled-Ridge, with both methods centered around
+0.8. The robustness improvements therefore do not come at
+the cost of tracking accuracy.
+Lastly, Figure 5 shows average nMSE as a function of the
+number of labeled environments. VIR yields lower errors
+than Pooled-Ridge and GroupDRO in all settings. The
+improvement is most pronounced when the number of la-
+beled environments is small: in this regime, the regulariza-
+tion matrix estimated from unlabeled data provides informa-
+tion on environment perturbations that may not be possible
+to infer from labeled data alone. When all training subjects
+have labeled data, VIR still shows improvements over the
+baselines, which suggests that our approach yields benefits
+beyond the semi-supervised setting. However, how to best
+tune the hyperparameter γ remains an open problem, as the
+gap betweenVIRandVIR-Oracleremains significant.
+8. Conclusion
+We presented a framework for anti-causal learning that lever-
+ages unlabeled multi-environment data to improve domain
+generalization. Our proposed methods have worst-case op-
+timality guarantees and admit closed-form estimators. Ex-
+periments on a real-world physical system and a biomedical
+application demonstrate the effectiveness of our approach.
+This work opens avenues for improving domain general-
+ization in settings where obtaining labels from multiple
+environments is difficult but unlabeled data are abundant.
+8
+Anti-causal domain generalization: Leveraging unlabeled data
+Impact Statement
+This paper presents work towards making machine learning
+models more robust and safe for deployment under distribu-
+tion shift. By developing methods that leverage unlabeled
+data to improve worst-case performance in unseen envi-
+ronments, our contributions have potential positive societal
+impact in applications where reliability is critical.
+We do not foresee ethical concerns with this work. The
+methods are general-purpose tools for robust prediction, the
+datasets used in all experiments have been peer-reviewed
+and are publicly available, and the computational require-
+ments are minimal.
+References
+Arjovsky, M., Bottou, L., Gulrajani, I., and Lopez-
+Paz, D. Invariant risk minimization.arXiv preprint
+arXiv:1907.02893, 2019.
+Benemerito, I., Melis, A., Wehenkel, A., and Marzo, A.
+openbf: an open-source finite volume 1d blood flow
+solver.Physiological Measurement, 2024.
+Blanchard, G., Lee, G., and Scott, C. Generalizing from
+several related classification tasks to a new unlabeled
+sample. InAdvances in neural information processing
+systems, volume 24, 2011.
+Bühlmann, P. Invariance, causality and robustness.Statisti-
+cal Science, 35(3):404–426, 2020.
+Bühlmann, P. and Meinshausen, N. Magging: maximin
+aggregation for inhomogeneous large-scale data.Pro-
+ceedings of the IEEE, 104(1):126–135, 2015.
+DeGrave, A. J., Janizek, J. D., and Lee, S.-I. Ai for radio-
+graphic covid-19 detection selects shortcuts over signal.
+Nature Machine Intelligence, 3(7):610–619, 2021.
+Freni, F., Fries, A., Kühne, L., Reichstein, M., and Peters, J.
+Maximum risk minimization with random forests.arXiv
+preprint arXiv:2512.10445, 2025.
+Gamella, J. L., Peters, J., and Bühlmann, P. Causal cham-
+bers as a real-world physical testbed for ai methodology.
+Nature Machine Intelligence, 7(1):107–118, 2025.
+Heinze-Deml, C. and Meinshausen, N. Conditional variance
+penalties and domain shift robustness.Machine Learning,
+110(2):303–348, 2021.
+Heinze-Deml, C., Peters, J., and Meinshausen, N. Invariant
+causal prediction for nonlinear models.Journal of Causal
+Inference, 6(2):1–35, 2018.
+Hu, W., Niu, G., Sato, I., and Sugiyama, M. Does distribu-
+tionally robust supervised learning give robust classifiers?
+InInternational Conference on Machine Learning, pp.
+2029–2037. PMLR, 2018.
+Jiang, Y . and Veitch, V . Invariant and transportable represen-
+tations for anti-causal domain shifts.Advances in Neural
+Information Processing Systems, 35:20782–20794, 2022.
+Kook, L., Sick, B., and Bühlmann, P. Distributional anchor
+regression.Statistics and Computing, 32(3):39, 2022.
+Krueger, D., Caballero, E., Jacobsen, J.-H., Zhang, A., Bi-
+nas, J., Zhang, D., Le Priol, R., and Courville, A. Out-of-
+distribution generalization via risk extrapolation (rex). In
+International conference on machine learning, pp. 5815–
+5826. PMLR, 2021.
+Lee, H.-C., Park, Y ., Yoon, S. B., Yang, S. M., Park, D., and
+Jung, C.-W. Vitaldb, a high-fidelity multi-parameter vital
+signs database in surgical patients.Scientific Data, 9(1):
+279, 2022.
+Lueckmann, J.-M., Goncalves, P. J., Bassetto, G., Öcal, K.,
+Nonnenmacher, M., and Macke, J. H. Flexible statistical
+inference for mechanistic models of neural dynamics.
+Advances in neural information processing systems, 30,
+2017.
+Magliacane, S., Van Ommen, T., Claassen, T., Bongers, S.,
+Versteeg, P., and Mooij, J. M. Domain adaptation by
+using causal inference to predict invariant conditional
+distributions.Advances in neural information processing
+systems, 31, 2018.
+Makar, M., Packer, B., Moldovan, D., Blalock, D., Halpern,
+Y ., and D’Amour, A. Causally motivated shortcut removal
+using auxiliary labels. InInternational Conference on
+Artificial Intelligence and Statistics, pp. 739–766. PMLR,
+2022.
+Manduchi, L., Wehenkel, A., Behrmann, J., Pegolotti, L.,
+Miller, A. C., Sener, O., Cuturi, M., Sapiro, G., and
+Jacobsen, J.-H. Leveraging cardiovascular simulations for
+in-vivo prediction of cardiac biomarkers.arXiv preprint
+arXiv:2412.17542, 2024.
+Meinshausen, N. and Bühlmann, P. Maximin effects in
+inhomogeneous large-scale data.Annals of Statistics, 43
+(4):1801–1830, 2015.
+Muandet, K., Balduzzi, D., and Schölkopf, B. Domain
+generalization via invariant feature representation. In
+Proceedings of the 30th International Conference on Ma-
+chine Learning, pp. 10–18. PMLR, 2013.
+9
+Anti-causal domain generalization: Leveraging unlabeled data
+Palumbo, E., Saengkyongam, S., Cervera, M. R., Behrmann,
+J., Miller, A. C., Sapiro, G., Heinze-Deml, C., and We-
+henkel, A. Hybrid modeling of photoplethysmography
+for non-invasive monitoring of cardiovascular parameters.
+arXiv preprint arXiv:2511.14452, 2025.
+Pearl, J.Causality: Models, Reasoning, and Inference. Cam-
+bridge University Press, New York, USA, 2nd edition,
+2009.
+Peters, J., Bühlmann, P., and Meinshausen, N. Causal in-
+ference by using invariant prediction: identification and
+confidence intervals.Journal of the Royal Statistical So-
+ciety. Series B (Statistical Methodology), pp. 947–1012,
+2016.
+Pfister, N., Williams, E. G., Peters, J., Aebersold, R., and
+Bühlmann, P. Stabilizing variable selection and regres-
+sion.The Annals of Applied Statistics, 15(3):1220–1246,
+2021.
+Rojas-Carulla, M., Schölkopf, B., Turner, R., and Peters, J.
+Invariant models for causal transfer learning.The Journal
+of Machine Learning Research, 19(1):1309–1342, 2018.
+Rosenfeld, E., Ravikumar, P., and Risteski, A. Domain-
+adjusted regression or: Erm may already learn features
+sufficient for out-of-distribution generalization.arXiv
+preprint arXiv:2202.06856, 2022.
+Rothenhäusler, D., Meinshausen, N., Bühlmann, P., and
+Peters, J. Anchor regression: Heterogeneous data meet
+causality.Journal of the Royal Statistical Society: Series
+B (Statistical Methodology), 83(2):215–246, 2021.
+Saengkyongam, S., Henckel, L., Pfister, N., and Peters, J.
+Exploiting independent instruments: Identification and
+distribution generalization. InInternational Conference
+on Machine Learning, pp. 18935–18958. PMLR, 2022.
+Saengkyongam, S., Thams, N., Peters, J., and Pfister, N.
+Invariant policy learning: A causal perspective.IEEE
+transactions on pattern analysis and machine intelligence,
+45(7):8606–8620, 2023.
+Saengkyongam, S., Pfister, N., Klasnja, P., Murphy, S.,
+and Peters, J. Effect-invariant mechanisms for policy
+generalization.Journal of Machine Learning Research,
+25(34):1–36, 2024a.
+Saengkyongam, S., Rosenfeld, E., Ravikumar, P. K., Pfister,
+N., and Peters, J. Identifying representations for inter-
+vention extrapolation. InInternational Conference on
+Learning Representations, 2024b.
+Sagawa, S., Koh, P. W., Hashimoto, T. B., and Liang, P.
+Distributionally robust neural networks for group shifts:
+On the importance of regularization for worst-case gen-
+eralization. InInternational Conference on Learning
+Representations, 2020.
+Saugel, B., Kouz, K., Scheeren, T. W., Greiwe, G., Hoppe,
+P., Romagnoli, S., and de Backer, D. Cardiac output
+estimation using pulse wave analysis—physiology, al-
+gorithms, and technologies: a narrative review.British
+journal of anaesthesia, 126(1):67–76, 2021.
+Schölkopf, B., Janzing, D., Peters, J., Sgouritsa, E., Zhang,
+K., and Mooij, J. On causal and anticausal learning.
+Proceedings of the 29th International Conference on Ma-
+chine Learning, pp. 459–466, 2012.
+Shen, X., Bühlmann, P., and Taeb, A. Causality-oriented
+robustness: exploiting general noise interventions in lin-
+ear structural causal models.Journal of the American
+Statistical Association (to appear), pp. 1–20, 2026.
+Šola, M., Bühlmann, P., and Shen, X. Causality-inspired ro-
+bustness for nonlinear models via representation learning.
+arXiv preprint arXiv:2505.12868, 2025.
+Subbaswamy, A. and Saria, S. From development to deploy-
+ment: dataset shift, causality, and shift-stable models in
+health ai.Biostatistics, 21(2):345–352, 2020.
+Veitch, V ., D’Amour, A., Yadlowsky, S., and Eisenstein, J.
+Counterfactual invariance to spurious correlations in text
+classification.Advances in neural information processing
+systems, 34:16196–16208, 2021.
+von Kügelgen, J., Ketterer, J., Shen, X., Meinshausen,
+N., and Peters, J. Representation learning for dis-
+tributional perturbation extrapolation.arXiv preprint
+arXiv:2504.18522, 2025.
+10
+Anti-causal domain generalization: Leveraging unlabeled data
+A. Proofs
+Throughout this section, we work under Setting 3.1. We use the notation introduced in Section 4.
+For the proofs, we additionally define for any environmente∈ E:
+•M e
+ε :=E[ε eε⊤
+e ], the second moment matrix of the perturbation,
+• ¯Mε := 1
+|L|
+P
+e∈L Me
+ε , the average second moment across labeled environments.
+A.1. Preliminary Lemma
+The following lemma provides a decomposition of the mean squared error that separates environment-invariant and
+environment-specific components.
+Lemma A.1(MSE Decomposition).Under Setting 3.1, for anyβ∈R d and any environmente∈ E,
+Ee[(Y−β ⊤X)2] =R 0(β) +β ⊤Me
+ε β,
+whereR 0(β) :=E[(Y−β ⊤f0(Y, U, εX))2]does not depend on the environmente.
+Proof.Under Setting 3.1, we haveX=f 0(Y, U, εX) +ε e. DefineZ :=f 0(Y, U, εX). Expanding the squared error:
+Ee[(Y−β ⊤X)2] =E[(Y−β ⊤Z−β ⊤εe)2]
+=E[(Y−β ⊤Z)2]| {z }
+(I)
+−2E[(Y−β ⊤Z)·β ⊤εe]| {z }
+(II)
++E[(β ⊤εe)2]| {z }
+(III)
+.
+We analyze each term separately.
+Term (I):This equals R0(β) by definition. It depends only on the joint distribution of (εY , εU , εX), which is invariant across
+environments by Setting 3.1.
+Term (II):By the independence ofε e from(ε Y , εU , εX)stated in Setting 3.1, we can factorize the expectation:
+E[(Y−β ⊤Z)·β ⊤εe] =E[Y−β ⊤Z]·E[β ⊤εe].
+By Setting 3.1, E[Z] =E[f 0(Y, U, εX)] = 0 and E[Y] =E[g 0(U, εY )] = 0. Therefore, E[Y−β ⊤Z] = 0, and Term (II)
+vanishes.
+Term (III):This equalsE[(β ⊤εe)2] =β ⊤ E[εeε⊤
+e ]β=β ⊤Me
+ε β.
+Combining these results:
+Ee[(Y−β ⊤X)2] =R 0(β) +β ⊤Me
+ε β.□
+A.2. Proof of Theorem 4.1
+Recall that µtr
+ε :=
+E[εe1 ]···E[ε ep]
+∈R d×p denotes the matrix of perturbation means across all training environments
+Etr ={e 1, . . . , ep}.
+Proof.The proof proceeds in three steps.
+Step 1: Express the MSE for environments inE ⋄
+γ .
+By Lemma A.1, for any environmente∈ E,
+Ee[(Y−β ⊤X)2] =R 0(β) +β ⊤Me
+ε β.
+Step 2: Compute the supremum overE ⋄
+γ .
+We claim that
+sup
+e∈E⋄γ
+β⊤Me
+ε β=β ⊤ ¯Mεβ+ sup
+A∈∆⋄γ
+β⊤Aβ.(14)
+11
+Anti-causal domain generalization: Leveraging unlabeled data
+To establish (14), we show that{M e
+ε − ¯Mε :e∈ E⋄
+γ }= ∆ ⋄
+γ:
+• By definition ofE ⋄
+γ , for everye∈ E⋄
+γ , we haveM e
+ε − ¯Mε ∈∆ ⋄
+γ.
+• Conversely, for everyA∈∆ ⋄
+γ, the matrix ¯Mε +A is positive semi-definite (as the sum of two positive semi-definite
+matrices). Since E contains all environments whose perturbation distribution ranges over all probability distributions on
+Rd, there exists e∈ Ewith Me
+ε = ¯Mε +A . This e belongs to E⋄
+γ by definition, and hence A∈ {Me
+ε − ¯Mε :e∈ E⋄
+γ }.
+This set equality implies:
+sup
+e∈E⋄γ
+β⊤Me
+ε β= sup
+e∈E⋄γ
+β⊤( ¯Mε + (Me
+ε − ¯Mε))β
+=β ⊤ ¯Mεβ+ sup
+e∈E⋄γ
+β⊤(Me
+ε − ¯Mε)β
+=β ⊤ ¯Mεβ+ sup
+A∈∆⋄γ
+β⊤Aβ,
+where the last equality uses{M e
+ε − ¯Mε :e∈ E⋄
+γ }= ∆ ⋄
+γ.
+Therefore,
+sup
+e∈E⋄γ
+Ee[(Y−β ⊤X)2] =R 0(β) + sup
+e∈E⋄γ
+β⊤Me
+ε β=R 0(β) +β ⊤ ¯Mεβ+ sup
+A∈∆⋄γ
+β⊤Aβ.
+We now evaluatesupA∈∆⋄γ
+β⊤Aβ.
+Upper bound:For anyA∈∆ ⋄
+γ, the constraint0⪯A⪯γVar(µ tr
+ε )implies
+β⊤Aβ≤γβ ⊤Var(µtr
+ε )β.
+Attainability:DefineA ∗ :=γVar(µ tr
+ε ). We verify thatA ∗ ∈∆ ⋄
+γ:
+•A ∗ is symmetric sinceVar(µ tr
+ε )is a covariance matrix.
+•A ∗ is positive semi-definite sinceVar(µtr
+ε )is positive semi-definite.
+•A ∗ ⪯γVar(µ tr
+ε )holds with equality.
+Therefore,A ∗ ∈∆ ⋄
+γ, and the upper bound is achieved:
+sup
+A∈∆⋄
+γ
+β⊤Aβ=γβ ⊤Var(µtr
+ε )β.(15)
+Combining the above,
+sup
+e∈E⋄γ
+Ee[(Y−β ⊤X)2] =R 0(β) +β ⊤ ¯Mεβ+γβ ⊤Var(µtr
+ε )β.(16)
+Step 3: Relate to the MIR objective.
+We compute the average training MSE over labeled environments. By Lemma A.1,
+Etr[(Y−β ⊤X)2] = 1
+|L|
+X
+e∈L
+Ee[(Y−β ⊤X)2]
+= 1
+|L|
+X
+e∈L
+ 
+R0(β) +β ⊤Me
+ε β
+
+=R 0(β) +β ⊤ ¯Mεβ.(17)
+Substituting (17) into (16),
+sup
+e∈E⋄γ
+Ee[(Y−β ⊤X)2] =E tr[(Y−β ⊤X)2] +γβ ⊤Var(µtr
+ε )β.(18)
+12
+Anti-causal domain generalization: Leveraging unlabeled data
+Finally, we show thatK=µ tr
+ε . Under Setting 3.1, for each training environmente i,
+Eei[X] =E[f 0(Y, U, εX) +ε ei] =E[f 0(Y, U, εX)] +E[ε ei].
+SinceE[f 0(Y, U, εX)] = 0by Setting 3.1, we haveE ei[X] =E[ε ei]. Therefore,
+K=
+Ee1 [X]···E ep[X]
+=
+E[εe1 ]···E[ε ep]
+=µ tr
+ε .
+SinceK=µ tr
+ε , we haveVar(K) = Var(µtr
+ε ). Substituting into (18),
+sup
+e∈E⋄γ
+Ee[(Y−β ⊤X)2] =E tr[(Y−β ⊤X)2] +γ β⊤Var(K)β.
+The right-hand side is precisely the MIR objective (4). Since the equality holds for all β∈R d, minimizing over β on both
+sides yields
+βMIR
+γ = argmin
+β∈Rd
+
+Etr[(Y−β ⊤X)2] +γ β⊤Var(K)β
+	
+= argmin
+β∈Rd
+sup
+e∈E⋄γ
+Ee[(Y−β ⊤X)2].
+□
+A.3. Proof of Theorem 4.2
+Recall the notation from Section 4: for each environment ei ∈ Etr, Gei
+X denotes the covariance matrix of X, Gei
+ε denotes
+the covariance matrix of εei, and ¯GX := 1
+p
+Pp
+i=1 Gei
+X and ¯Gε := 1
+p
+Pp
+i=1 Gei
+ε denote their averages across all training
+environments.
+Lemma A.2.The matrixV ε := 1
+p
+Pp
+i=1(Gei
+X − ¯GX)2 is symmetric and positive semi-definite.
+Proof. Each Gei
+X − ¯GX is symmetric (as a difference of covariance matrices). The square of a symmetric matrix is symmetric
+and positive semi-definite. The sum of positive semi-definite matrices is positive semi-definite.□
+Proof of Theorem 4.2.The proof follows the same structure as the proof of Theorem 4.1.
+Step 1: Express the MSE for environments inE †
+γ.
+By Lemma A.1, for any environmente∈ E,
+Ee[(Y−β ⊤X)2] =R 0(β) +β ⊤Me
+ε β.
+Step 2: Compute the supremum overE †
+γ.
+We claim that
+sup
+e∈E†
+γ
+β⊤Me
+ε β=β ⊤ ¯Mεβ+ sup
+A∈∆†
+γ
+β⊤Aβ.(19)
+To establish (19), we show that{M e
+ε − ¯Mε :e∈ E†
+γ}= ∆ †
+γ:
+• By definition ofE †
+γ, for everye∈ E†
+γ, we haveM e
+ε − ¯Mε ∈∆ †
+γ.
+• Conversely, for everyA∈∆ †
+γ, the matrix ¯Mε +A is positive semi-definite (as the sum of two positive semi-definite
+matrices). Since E contains all environments whose perturbation distribution ranges over all probability distributions on
+Rd, there exists e∈ Ewith Me
+ε = ¯Mε +A . This e belongs to E†
+γ by definition, and hence A∈ {Me
+ε − ¯Mε :e∈ E†
+γ}.
+This set equality implies:
+sup
+e∈E†
+γ
+β⊤Me
+ε β= sup
+e∈E†
+γ
+β⊤( ¯Mε + (Me
+ε − ¯Mε))β
+=β ⊤ ¯Mεβ+ sup
+e∈E†
+γ
+β⊤(Me
+ε − ¯Mε)β
+=β ⊤ ¯Mεβ+ sup
+A∈∆†
+γ
+β⊤Aβ,
+13
+Anti-causal domain generalization: Leveraging unlabeled data
+where the last equality uses{M e
+ε − ¯Mε :e∈ E†
+γ}= ∆ †
+γ.
+Therefore,
+sup
+e∈E†
+γ
+Ee[(Y−β ⊤X)2] =R 0(β) + sup
+e∈E†
+γ
+β⊤Me
+ε β=R 0(β) +β ⊤ ¯Mεβ+ sup
+A∈∆†
+γ
+β⊤Aβ.
+We now evaluatesupA∈∆†
+γ
+β⊤Aβ.
+Upper bound:For anyA∈∆ †
+γ, the constraint0⪯A⪯γV ε implies
+β⊤Aβ≤γβ ⊤Vεβ.
+Attainability:Define A∗ :=γV ε. By Lemma A.2, Vε is symmetric and positive semi-definite, so A∗ is as well. The
+constraintA ∗ ⪯γV ε holds with equality. Therefore,A ∗ ∈∆ †
+γ, and the upper bound is achieved:
+sup
+A∈∆†
+γ
+β⊤Aβ=γβ ⊤Vεβ.(20)
+Combining the above,
+sup
+e∈E†
+γ
+Ee[(Y−β ⊤X)2] =R 0(β) +β ⊤ ¯Mεβ+γβ ⊤Vεβ.(21)
+Step 3: Relate to the VIR objective.
+By the same calculation as in (17),
+Etr[(Y−β ⊤X)2] = 1
+|L|
+X
+e∈L
+Ee[(Y−β ⊤X)2] =R 0(β) +β ⊤ ¯Mεβ.(22)
+Substituting (22) into (21),
+sup
+e∈E†
+γ
+Ee[(Y−β ⊤X)2] =E tr[(Y−β ⊤X)2] +γβ ⊤Vεβ.(23)
+It remains to show thatV ε = 1
+p
+Pp
+i=1(Gei
+X − ¯GX)2.
+Under Setting 3.1, we have X=Z+ε e where Z :=f 0(Y, U, εX). Since εe is independent of (εY , εU , εX), the covariance
+ofXin environmente i decomposes as:
+Gei
+X =G Z +G ei
+ε ,(24)
+whereG Z := Var(Z)denotes the covariance ofZ, which does not depend on the environment.
+Taking the average across all training environments,
+¯GX = 1
+p
+pX
+i=1
+Gei
+X =G Z + ¯Gε.
+Therefore, for each training environmente i,
+Gei
+X − ¯GX =G ei
+ε − ¯Gε.(25)
+Consequently,
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2 = 1
+p
+pX
+i=1
+(Gei
+ε − ¯Gε)2 =V ε.(26)
+14
+Anti-causal domain generalization: Leveraging unlabeled data
+Substituting into (23),
+sup
+e∈E†
+γ
+Ee[(Y−β ⊤X)2] =E tr[(Y−β ⊤X)2] +γβ ⊤
+ 
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2
+!
+β.
+The right-hand side is precisely the VIR objective (5). Since the equality holds for all β∈R d, minimizing over β on both
+sides yields
+βVIR
+γ = argmin
+β∈Rd
+(
+Etr[(Y−β ⊤X)2] +γβ ⊤
+ 
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2
+!
+β
+)
+= argmin
+β∈Rd
+sup
+e∈E†
+γ
+Ee[(Y−β ⊤X)2].
+□
+A.4. Proof of Proposition 5.1
+Proof.Recall the assumptions of Proposition 5.1:
+(i)E e[∥X∥2
+2]<∞for alle∈ E tr,
+(ii)E e[Y 2]<∞for alle∈ L,
+(iii)E tr[XX ⊤] +γHis non-singular.
+For each labeled environment e∈ L, let ke denote the number of samples from environment e, so that k= P
+e∈L ke. We
+assume balanced sampling, i.e., ke/k→1/|L| for each e∈ L(the proof for unbalanced sampling follows analogously with
+Etr[·]defined as the corresponding weighted average). The finite-sample estimator admits the closed-form solution:
+ˆβγ =
+1
+k X⊤X+γ ˆH
+−1 1
+k X⊤Y
+
+.
+We establish the convergence in probability of each component.
+1.Labeled data convergence:The sample second moment from the labeled data can be written as:
+1
+k X⊤X=
+X
+e∈L
+ke
+k
+ 
+1
+ke
+X
+i:Ei=e
+XiX⊤
+i
+!
+.
+By assumption (i), Ee[∥X∥2
+2]<∞ for all e∈ L ⊆ Etr, which implies Ee[XX ⊤] has finite entries. The Weak Law of
+Large Numbers then implies that for eache∈ L,
+1
+ke
+X
+i:Ei=e
+XiX⊤
+i
+p
+− →Ee[XX ⊤]ask e → ∞.
+Sincek e/k→1/|L|by the balanced sampling assumption, it follows that:
+1
+k X⊤X
+p
+− →1
+|L|
+X
+e∈L
+Ee[XX ⊤] =E tr[XX ⊤].
+Similarly, by assumptions (i) and (ii), the Weak Law of Large Numbers then yields:
+1
+k X⊤Y
+p
+− →Etr[XY].
+2. Unlabeled data convergence:By assumption (i), Ee[∥X∥2
+2]<∞ for all e∈ Etr, which ensures that the first and
+second moments of X are finite in each training environment. The Weak Law of Large Numbers implies that for each
+environmente i ∈ Etr, asn i → ∞:
+• For MIR:ˆµei
+X
+p
+− →Eei[X], and hence ˆK
+p
+− →K.
+15
+Anti-causal domain generalization: Leveraging unlabeled data
+• For VIR: ˆGei
+X
+p
+− →Gei
+X, and hence ˆ¯GX
+p
+− →¯GX.
+The matrix ˆH is a continuous function of these environment-specific moments: for MIR, ˆH= Var( ˆK), and for VIR,
+ˆH= 1
+p
+Pp
+i=1( ˆGei
+X − ˆ¯GX)2. By the Continuous Mapping Theorem, ˆH
+p
+− →H.
+3. Combined convergence:By the properties of convergence in probability (specifically, that convergence in probability
+is preserved under addition),
+1
+k X⊤X+γ ˆH
+p
+− →Etr[XX ⊤] +γH.
+By assumption (iii), Etr[XX ⊤] +γH is non-singular. Since matrix inversion is continuous at non-singular matrices, a
+final application of the Continuous Mapping Theorem yields:
+ˆβγ
+p
+− →(Etr[XX ⊤] +γH) −1 Etr[XY] =β γ.
+This concludes the proof. □
+B. Derivation of VIR under shared eigenbasis
+We derive the simplification of the VIR regularization term under the assumption that the perturbation covariance matrices
+{Gei
+ε }p
+i=1 share a common eigenbasis.
+Suppose there exists an orthogonal matrixQ∈R d×d such that for alli∈ {1, . . . , p},
+Gei
+ε =QΛ eiQ⊤,
+whereΛ ei = diag(λei
+1 , . . . , λei
+d )withλ ei
+j ≥0for allj.
+Under Setting 3.1, we have X=Z+ε e where Z:=f 0(Y, U, εX). Since εe is independent of (Y, U, εX), the covariance of
+Xin environmente i decomposes as
+Gei
+X =G Z +G ei
+ε ,
+whereG Z := Var(Z)does not depend on the environment (see the proof of Theorem 4.2). Therefore,
+Gei
+X − ¯GX =G ei
+ε − ¯Gε.
+The average perturbation covariance matrix is
+¯Gε = 1
+p
+pX
+i=1
+Gei
+ε = 1
+p
+pX
+i=1
+QΛeiQ⊤ =Q
+ 
+1
+p
+pX
+i=1
+Λei
+!
+Q⊤ =Q ¯ΛQ⊤,
+where ¯Λ = diag(¯λ1, . . . ,¯λd)and ¯λj = 1
+p
+Pp
+i=1 λei
+j .
+The deviation from the average is
+Gei
+ε − ¯Gε =QΛ eiQ⊤ −Q ¯ΛQ⊤ =Q(Λ ei − ¯Λ)Q⊤.
+SinceΛ ei − ¯Λ = diag(λei
+1 − ¯λ1, . . . , λei
+d − ¯λd)is diagonal, its square is
+(Λei − ¯Λ)2 = diag
+ 
+(λei
+1 − ¯λ1)2, . . . ,(λei
+d − ¯λd)2
+.
+Therefore,
+(Gei
+ε − ¯Gε)2 =Q(Λ ei − ¯Λ)Q⊤Q(Λei − ¯Λ)Q⊤ =Q(Λ ei − ¯Λ)2Q⊤,
+where we used the orthogonality ofQ, i.e.,Q ⊤Q=I.
+16
+Anti-causal domain generalization: Leveraging unlabeled data
+Averaging over environments,
+1
+p
+pX
+i=1
+(Gei
+ε − ¯Gε)2 = 1
+p
+pX
+i=1
+Q(Λei − ¯Λ)2Q⊤
+=Q
+ 
+1
+p
+pX
+i=1
+(Λei − ¯Λ)2
+!
+Q⊤
+=Qdiag(σ 2
+1, . . . , σ2
+d)Q⊤,
+where
+σ2
+j = 1
+p
+pX
+i=1
+(λei
+j − ¯λj)2
+is the variance of thej-th eigenvalue across environments.
+SinceG ei
+X − ¯GX =G ei
+ε − ¯Gε, we have
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2 = 1
+p
+pX
+i=1
+(Gei
+ε − ¯Gε)2 =Qdiag(σ 2
+1, . . . , σ2
+d)Q⊤.
+The VIR regularization term is therefore
+β⊤
+ 
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2
+!
+β=β ⊤Qdiag(σ 2
+1, . . . , σ2
+d)Q⊤β
+= ˜β⊤ diag(σ2
+1, . . . , σ2
+d)˜β
+=
+dX
+j=1
+σ2
+j (˜βj)2,
+where ˜β=Q ⊤βdenotes the coefficients in the shared eigenbasis.
+This shows that VIR applies regularization proportional to σ2
+j along the j-th eigenvector direction. Directions with larger
+variance in eigenvalues across environments receive stronger regularization, encouraging the model to rely on directions
+where the covariance structure is more stable.
+C. Comparison of VIR formulations
+We compare two formulations of the VIR regularization. Let Ai :=G ei
+X − ¯GX for i∈ {1, . . . , p}denote the deviation of
+the covariance matrix in environmente i from the average. Note that eachA i is symmetric.
+Current VIR as in Section 4.2:
+Rcurrent(β) :=β ⊤
+ 
+1
+p
+pX
+i=1
+A2
+i
+!
+β= 1
+p
+pX
+i=1
+β⊤A2
+i β= 1
+p
+pX
+i=1
+∥Aiβ∥2
+2,
+where the last equality follows from the symmetry ofA i.
+Alternative VIR:
+Ralt(β) := 1
+p
+pX
+i=1
+ 
+Varei(β⊤X)− 1
+p
+pX
+i=1
+Varei(β⊤X)
+!2
+= 1
+p
+pX
+i=1
+ 
+β⊤Aiβ
+2
+.
+The key difference is that Rcurrent penalizes the norm of Aiβ, while Ralt penalizes the square of the quadratic form β⊤Aiβ.
+Since Ai is typically indefinite (having both positive and negative eigenvalues), there may exist directions β for which
+the positive and negative contributions cancel, yielding β⊤Aiβ= 0 even though Aiβ̸= 0 . Such directions receive no
+regularization underR alt but are regularized underR current.
+17
+Anti-causal domain generalization: Leveraging unlabeled data
+Example: The risk of alternative VIR.Consider d= 2 covariates and p= 2 environments with the following covariance
+matrices:
+Ge1
+X =
+
+2 0
+0 1
+
+, G e2
+X =
+
+1 0
+0 2
+
+.
+The average is:
+¯GX = 1
+2(Ge1
+X +G e2
+X ) =
+
+1.5 0
+0 1.5
+
+,
+and the deviations are:
+A1 =G e1
+X − ¯GX =
+0.5 0
+0−0.5
+
+, A 2 =G e2
+X − ¯GX =
+−0.5 0
+0 0.5
+
+.
+Alternative VIR.Considerβ= (1,1) ⊤. We compute:
+β⊤A1β=
+ 1 1 0.5 0
+0−0.5
+1
+1
+
+=
+ 1 1  0.5
+−0.5
+
+= 0.5−0.5 = 0.
+Similarly,β ⊤A2β=−0.5 + 0.5 = 0. Thus:
+Ralt(β) = 1
+2
+ 
+02 + 02
+= 0,
+andβ= (1,1) ⊤ receives no regularization under the alternative VIR.
+Current VIR.For the sameβ= (1,1) ⊤, we compute:
+A1β=
+0.5 0
+0−0.5
+1
+1
+
+=
+ 0.5
+−0.5
+
+,∥A 1β∥2
+2 = 0.52 + (−0.5)2 = 0.5.
+Similarly,A 2β= (−0.5,0.5) ⊤ and∥A 2β∥2
+2 = 0.5. Thus:
+Rcurrent(β) = 1
+2(0.5 + 0.5) = 0.5>0,
+andβ= (1,1) ⊤ is regularized under the current VIR.
+Test environment.Now consider a test environment with:
+Getest
+X =
+3 0
+0 1
+
+, A test =G etest
+X − ¯GX =
+1.5 0
+0−0.5
+
+.
+Forβ= (1,1) ⊤:
+β⊤Atestβ=
+ 
+1 1
+ 1.5
+−0.5
+
+= 1.5−0.5 = 1̸= 0.
+The predictor β= (1,1) ⊤ that was unpenalized by the alternative VIR is sensitive to the test environment shift. In contrast,
+the current VIR regularizes thisβ, encouraging robustness to such shifts.
+Summary.The current VIR imposes a strictly stronger invariance condition than the alternative VIR in the sense that
+Rcurrent(β) = 0 implies Ralt(β) = 0, but not vice versa. The alternative VIR is vulnerable to cancellation effects when Ai
+is indefinite, allowing directions β with β⊤Aiβ= 0 but Aiβ̸= 0 to escape regularization. The current VIR avoids this
+issue by penalizing ∥Aiβ∥2
+2, which is non-negative for each environment. This ensures that no cancellation can occur across
+environments: the only way to achieveR current(β) = 0is to haveA iβ= 0for alli.
+18
+Anti-causal domain generalization: Leveraging unlabeled data
+D. Combined MIR-VIR
+In practice, environment perturbations may affect both the means and covariances. We can combine both regularization
+terms in a single objective:
+βMIR-VIR
+γ1,γ2 = argmin
+β∈Rd
+Etr[(Y−β ⊤X)2] +γ 1β⊤Var(K)β
++γ 2β⊤
+ 
+1
+p
+pX
+i=1
+(Gei
+X − ¯GX)2
+!
+β.
+(27)
+The separate regularization parameters γ1 and γ2 allow for different degrees of robustness to mean and covariance shifts,
+respectively.
+E. Light Tunnel: Further experimental details
+We use the Light Tunnel dataset (Gamella et al., 2025), a controlled optical system designed for benchmarking machine
+learning methods. The system consists of RGB light sources and light-intensity sensors placed along a tunnel. The brightness
+settings of the light sources causally influence the sensor readings, providing a known causal ground truth.
+E.1. Data Description
+Predictors.Each data point consists of 6 sensor readings:
+• Three infrared sensors:ir_1,ir_2,ir_3
+• Three visible light sensors:vis_1,vis_2,vis_3
+These sensor readings serve as predictorsX∈R 6.
+Outcomes.We consider three prediction tasks corresponding to the brightness settings of the three color channels:red,
+green, andblue. For each task, the outcomeY∈Ris the brightness setting of the corresponding color channel.
+E.2. Experimental Design
+Outcome-Intervention Configurations.For each outcome variable, we use data from the dataset’s reference environment
+and intervention environments where the outcome is not directly intervened upon.
+We test 6 configurations combining 3 outcome variables with 2 intervention variables each:
+• Outcomered: Use data from reference + blue/green intervention environments
+• Outcomeblue: Use data from reference + red/green intervention environments
+• Outcomegreen: Use data from reference + red/blue intervention environments
+This yields configurations: (red, blue), (red, green), (blue, red), (blue, green), (green, red), (green, blue), where the first
+element is the outcome and the second is the intervention variable used for environment discretization.
+Environment Construction.For each configuration, we construct 6 discrete environments as follows:
+1. Pool data from the reference environment and the corresponding intervention environments.
+2. Partition the pooled data into 6 bins based on the value of the intervention variable using uniform binning (equal-width
+intervals).
+3. Assign each data point to one of 6 environmentse 1, . . . , e6 based on its bin.
+By construction, these environments differ in the mean of the intervention variable, which induces mean shifts in the
+predictor distribution.
+Evaluation Protocol.We use leave-one-environment-out evaluation:
+1. Hold out one environment as the test set.
+2. From the remaining 5 training environments, randomly select nlabeled ∈ {3,4,5}environments to have labeled data
+(bothXandY).
+19
+Anti-causal domain generalization: Leveraging unlabeled data
+3. The remaining training environments have only unlabeled data (Xonly).
+4. Train models using labeled data from the selected environments; for MIR, additionally use unlabeled data from all
+training environments to estimate the regularization matrix.
+5. Evaluate on the held-out test environment using RMSE.
+6. Repeat steps 2–5 for 20 random selections of labeled environments.
+Whenn labeled = 5, all training environments have labels, so no repeated trials are needed.
+E.3. Methods and Hyperparameters
+We compare the following methods:
+•MIR: Our Mean-based Invariant Regularization (Section 4.1).
+•MIR-Oracle : MIR with the robustness parameter selected using the test environment (upper bound on MIR perfor-
+mance).
+•Pooled-Ridge: Ridge regression pooling data across all labeled training environments.
+•AnchorReg: Anchor regression (Rothenhäusler et al., 2021).
+•GroupDRO: Group distributionally robust optimization (Sagawa et al., 2020).
+Hyperparameter Grids.We search over the following values:
+•MIR/MIR-Oracle: Robustness parameterγ∈ {10 −2,10 −1,10 0,10 1,10 2,10 3,10 4,10 5}.
+•Pooled-Ridge: Ridge parameterα∈ {10 −2,10 −1,10 0,10 1,10 2,10 3,10 4,10 5}.
+•AnchorReg: Robustness parameterγ∈ {10 −2,10 −1,10 0,10 1,10 2,10 3,10 4,10 5}.
+•GroupDRO:η∈ {10 −2,10 −1,10 0,10 1,10 2,10 3}.
+Hyperparameter Selection.For all methods except MIR-Oracle, we select hyperparameters using leave-one-
+environment-out cross-validation over the labeled training environments:
+1. For each hyperparameter value, perform leave-one-environment-out cross-validation over thenlabeled labeled training
+environments.
+2. Compute the average MSE across folds.
+3. Select the hyperparameter with the lowest average MSE.
+4. Train the final model on all labeled training environments using the selected hyperparameter.
+ForMIR-Oracle, the robustness parameter is selected based on performance on the held-out test environment.
+F. VitalDB: Further experimental details
+We use the VitalDB dataset (Lee et al., 2022), a collection of physiological time series recorded from surgical patients. The
+dataset contains vital sign measurements and hemodynamic parameters recorded during surgery.
+F.1. Data Description
+For each subject, we have a time series of arterial pressure waveform (APW) and stroke volume pairs. Each observation
+represents 8 seconds of APW signal and the corresponding average stroke volume over that interval. Different subjects have
+different total numbers of time steps, with an average of 362 time steps per subject.
+Predictors.For each subject, we extract embeddings from the APW signals using the pretrained CNN model described in
+Section 7.2. Each 8-second APW segment is mapped to an embedding inR 140.
+Outcomes.For each subject, the outcomes are stroke volume measurements, each corresponding to the average stroke
+volume over the corresponding 8-second interval.
+20
+Anti-causal domain generalization: Leveraging unlabeled data
+Subject-centering.We center both predictors and outcomes within each subject:
+Xi ←X i − ¯Xi,
+Yi ←Y i − ¯Yi,
+where ¯Xi and ¯Yi denote the within-subject means computed over time steps.
+F.2. Experimental Design
+Environment Definition.Each subject defines one environment. With 128 subjects in total, we have 128 environments
+e1, . . . , e128.
+Evaluation Protocol.We use leave-one-subject-out evaluation:
+1. Hold out one subject as the test environment.
+2. From the remaining 127 training subjects, randomly select nlabeled ∈ {20,50,80,127}subjects to have labeled data
+(bothXandY).
+3. The remaining training subjects have only unlabeled data (Xonly).
+4. Train models using labeled data from the selected subjects; forVIR, additionally use unlabeled data from all training
+subjects to estimate the regularization matrix.
+5. Evaluate on the held-out test subject.
+6. Repeat steps 2–5 for 20 random selections of labeled subjects.
+When nlabeled = 127, all training subjects have labels, so standard leave-one-subject-out cross-validation is performed
+without repeated trials.
+F.3. Methods and Hyperparameters
+We compare the following methods:
+•VIR: Our Variance-based Invariant Regularization (Section 4.2).
+•VIR-Oracle : VIR with the robustness parameter selected using the test subject (upper bound on VIR performance).
+•Pooled-Ridge: Ridge regression pooling data across all labeled training subjects.
+•GroupDRO: Group distributionally robust optimization (Sagawa et al., 2020).
+Hyperparameter Grids.We search over the following values:
+•VIR/VIR-Oracle: Robustness parameterγ∈ {10 2,10 3,10 4,10 5}.
+•Pooled-Ridge: Ridge parameterα∈ {10 2,10 3, . . . ,1010}.
+•GroupDRO:η∈ {10 −2,10 −1,10 0,10 1,10 2,10 3}.
+Hyperparameter Selection.For all methods except VIR-Oracle, we select hyperparameters using leave-one-subject-
+out cross-validation over the labeled training subjects:
+1. For each hyperparameter configuration, perform leave-one-subject-out cross-validation over all nlabeled labeled training
+subjects.
+2. Compute the average MSE across folds.
+3. Select the hyperparameter configuration with the lowest average MSE.
+4. Train the final model on all labeled training subjects using the selected hyperparameters.
+ForVIR-Oracle, the robustness parameter is selected based on performance on the held-out test subject.
+Prediction Post-Processing.For all methods, we apply moving average smoothing with a window size of 4 minutes to
+both predictions and ground truth outcomes.
+21

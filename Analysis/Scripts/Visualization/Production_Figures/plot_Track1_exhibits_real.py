@@ -183,7 +183,7 @@ def plot_all_track1_exhibits():
             plt.savefig(os.path.join(FIG_DIR, f"fig_calibration_ece_{hz}.pdf"))
             print(f"  [+] Saved fig_calibration_ece_{hz}.pdf")
             
-                # 2. Temporal Drift
+                        # 2. Temporal Drift
         drift_file = str(AR.stage_c_drift(hz))
         if os.path.exists(drift_file):
             plt.figure(figsize=(7, 5))
@@ -218,7 +218,7 @@ def plot_all_track1_exhibits():
             plt.savefig(os.path.join(FIG_DIR, f"fig_temporal_drift_{hz}.pdf"))
             print(f"  [+] Saved fig_temporal_drift_{hz}.pdf")
 
-        # 3. Policy Regimes
+# 3. Policy Regimes
         regimes_file = str(AR.stage_c_regimes(hz))
         if os.path.exists(regimes_file):
             plt.figure(figsize=(8, 5))
@@ -291,6 +291,12 @@ def _plot_clustered_importance(hz, hz_name, titles, period="Full"):
             df_data = df_data[df_data['year'] >= 2022]
         elif period.isdigit():
             df_data = df_data[df_data['year'] == int(period)]
+        
+        df_data['year'] = pd.to_numeric(df_data['year'], errors='coerce')
+        if period == 'Pre-2022':
+            df_data = df_data[df_data['year'] < 2022]
+        elif period == 'Post-2022':
+            df_data = df_data[df_data['year'] >= 2022]
         X_num = df_data.select_dtypes(include=[np.number])
 
         common = [f for f in df_fi['Feature'] if f in X_num.columns]
@@ -321,37 +327,65 @@ def _plot_clustered_importance(hz, hz_name, titles, period="Full"):
 
         SEMANTIC_CLUSTERS = {
             'acs_owner_occupied_units': 'Housing Tenure',
+            'acs_renter_occupied_units': 'Housing Tenure',
+            'acs_total_housing_units': 'Housing Tenure',
             'acs_race_white': 'Demographic Composition',
             'acs_race_hispanic': 'Demographic Composition',
             'acs_race_black': 'Demographic Composition',
+            'acs_race_asian': 'Demographic Composition',
             'acs_median_gross_rent': 'Neighborhood Income & Rent',
             'acs_median_household_income': 'Neighborhood Income & Rent',
-            'ldb_appraised_val': 'Property Valuation Metrics',
-            'ldb_market_val': 'Property Valuation Metrics',
-            'ldb_yr_built': 'Structure Age / Vintage',
+            'acs_poverty_count': 'Neighborhood Income & Rent',
+            'acs_median_home_value': 'Neighborhood Income & Rent',
+            'ldb_appraised_val': 'Property Valuation',
+            'ldb_market_val': 'Property Valuation',
+            'land_market_value': 'Property Valuation',
+            'total_market_value': 'Property Valuation',
+            'ldb_yr_built': 'Structure Age',
+            'year_built': 'Structure Age',
             'year': 'Filing Timeline',
-            'ldb_land_acres': 'Parcel Land Area',
-            'gross_site_area_acres': 'Parcel Land Area',
+            'ldb_land_acres': 'Parcel Scale',
+            'gross_site_area_acres': 'Parcel Scale',
+            'deed_acreage': 'Parcel Scale',
+            'ldb_lotsize': 'Parcel Scale',
             'ldb_land_use': 'Land Use Classification',
             'lui_land_use': 'Land Use Classification',
+            'lui_general_land_use': 'Land Use Classification',
             'protest': 'Historical Protest Activity',
+            'spatial_contagion_3yr': 'Historical Protest Activity',
+            'spatial_contagion_1yr': 'Historical Protest Activity',
+            'ldb_far': 'Zoning Density',
+            'ldb_units': 'Zoning Density',
+            'ldb_imprv_sqft': 'Improvement Scale',
         }
 
-        rows = []
+        # Step 1: Assign to Semantic Buckets
+        unmerged_rows = []
         for cid, total_imp in cluster_imp.items():
             members = sorted(cluster_members[cid], key=lambda x: x[1], reverse=True)
             top_feature = members[0][0]
             n = len(members)
             
-            if n == 1:
+            if top_feature in SEMANTIC_CLUSTERS:
+                label = SEMANTIC_CLUSTERS[top_feature]
+            elif n == 1:
                 label = _rename_feature(top_feature)
-            elif top_feature in SEMANTIC_CLUSTERS:
-                label = f"{SEMANTIC_CLUSTERS[top_feature]} ({n} features)"
             else:
-                top_name = _rename_feature(top_feature)
-                label = f"{top_name} Cluster ({n} features)"
+                label = f"{_rename_feature(top_feature)} Cluster"
                 
-            rows.append({'Cluster': label, 'Importance': total_imp, 'N': n, 'Members': members})
+            unmerged_rows.append({'Cluster': label, 'Importance': total_imp, 'N': n, 'Members': members})
+
+        # Step 2: Merge buckets that share the same semantic label
+        from collections import defaultdict
+        merged_imp = defaultdict(float)
+        merged_n = defaultdict(int)
+        merged_members = defaultdict(list)
+        for r in unmerged_rows:
+            merged_imp[r['Cluster']] += r['Importance']
+            merged_n[r['Cluster']] += r['N']
+            merged_members[r['Cluster']].extend(r['Members'])
+        
+        rows = [{'Cluster': c, 'Importance': merged_imp[c], 'N': merged_n[c], 'Members': merged_members[c]} for c in merged_imp.keys()]
 
         df_cl = pd.DataFrame(rows).sort_values('Importance', ascending=False).head(10)
         df_cl = df_cl.sort_values('Importance', ascending=True)
@@ -476,46 +510,67 @@ def _plot_shap_beeswarm(hz, hz_name, titles, period="Full"):
         
         SEMANTIC_CLUSTERS = {
             'acs_owner_occupied_units': 'Housing Tenure',
+            'acs_renter_occupied_units': 'Housing Tenure',
+            'acs_total_housing_units': 'Housing Tenure',
             'acs_race_white': 'Demographic Composition',
             'acs_race_hispanic': 'Demographic Composition',
             'acs_race_black': 'Demographic Composition',
+            'acs_race_asian': 'Demographic Composition',
             'acs_median_gross_rent': 'Neighborhood Income & Rent',
             'acs_median_household_income': 'Neighborhood Income & Rent',
-            'ldb_appraised_val': 'Property Valuation Metrics',
-            'ldb_market_val': 'Property Valuation Metrics',
-            'ldb_yr_built': 'Structure Age / Vintage',
+            'acs_poverty_count': 'Neighborhood Income & Rent',
+            'acs_median_home_value': 'Neighborhood Income & Rent',
+            'ldb_appraised_val': 'Property Valuation',
+            'ldb_market_val': 'Property Valuation',
+            'land_market_value': 'Property Valuation',
+            'total_market_value': 'Property Valuation',
+            'ldb_yr_built': 'Structure Age',
+            'year_built': 'Structure Age',
             'year': 'Filing Timeline',
-            'ldb_land_acres': 'Parcel Land Area',
-            'gross_site_area_acres': 'Parcel Land Area',
+            'ldb_land_acres': 'Parcel Scale',
+            'gross_site_area_acres': 'Parcel Scale',
+            'deed_acreage': 'Parcel Scale',
+            'ldb_lotsize': 'Parcel Scale',
             'ldb_land_use': 'Land Use Classification',
             'lui_land_use': 'Land Use Classification',
+            'lui_general_land_use': 'Land Use Classification',
             'protest': 'Historical Protest Activity',
+            'spatial_contagion_3yr': 'Historical Protest Activity',
+            'spatial_contagion_1yr': 'Historical Protest Activity',
+            'ldb_far': 'Zoning Density',
+            'ldb_units': 'Zoning Density',
+            'ldb_imprv_sqft': 'Improvement Scale',
         }
         features = list(X.columns)
-        new_cols = {}
-        new_shap = []
+        
+        from collections import defaultdict
+        new_cols_dict = defaultdict(list)
+        new_shap_dict = defaultdict(list)
+        
         for cid in np.unique(labels):
             idx = np.where(labels == cid)[0]
             cluster_feats = [features[i] for i in idx]
-            # Use the feature with highest max absolute SHAP as top_feature for naming
             cluster_shap_sums = np.abs(shap_values[:, idx]).max(axis=0)
             top_feature = cluster_feats[np.argmax(cluster_shap_sums)]
             n = len(cluster_feats)
             
-            if n == 1:
+            if top_feature in SEMANTIC_CLUSTERS:
+                label = SEMANTIC_CLUSTERS[top_feature]
+            elif n == 1:
                 label = _rename_feature(top_feature)
-            elif top_feature in SEMANTIC_CLUSTERS:
-                label = f"{SEMANTIC_CLUSTERS[top_feature]} ({n} features)"
             else:
-                label = f"{_rename_feature(top_feature)} Cluster ({n} features)"
+                label = f"{_rename_feature(top_feature)} Cluster"
                 
-            original_label = label
-            counter = 1
-            while label in new_cols:
-                label = f"{original_label} ({counter})"
-                counter += 1
-            new_cols[label] = X_sample[cluster_feats].mean(axis=1) # average feature magnitude for coloring
-            new_shap.append(shap_values[:, idx].sum(axis=1))       # mathematically aggregate collinear SHAP attributions
+            new_cols_dict[label].append(X_sample[cluster_feats].mean(axis=1))
+            new_shap_dict[label].append(shap_values[:, idx].sum(axis=1))
+            
+        new_cols = {}
+        new_shap = []
+        # Merge dictionaries
+        for label in new_cols_dict:
+            new_cols[label] = pd.concat(new_cols_dict[label], axis=1).mean(axis=1) # average of averages for coloring
+            new_shap.append(np.sum(new_shap_dict[label], axis=0)) # sum of attributions
+
 
         X_display = pd.DataFrame(new_cols, index=X_sample.index)
         shap_matrix = np.column_stack(new_shap)

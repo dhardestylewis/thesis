@@ -10,32 +10,36 @@
 \contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{16}{subsection.3.3}%
 \contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{16}{subsection.3.4}%
 \contentsline {section}{\numberline {4}Modeling Strategy}{17}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Development Occurrence}{17}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Project Type and Scale}{20}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Formal Protest Petition}{20}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Political Outcome}{23}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Expected Contested Units}{23}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Model Evaluation Strategy}{24}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Results}{25}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{25}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{27}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Regression Discontinuity: The 20\% Petition Threshold}{30}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}2022 Electoral Transition (Difference-in-Differences)}{31}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Institutional Geographic Overlays}{32}{subsection.5.5}%
-\contentsline {subsection}{\numberline {5.6}Exploratory Policy-Change Analyses: HOME and HB 24}{34}{subsection.5.6}%
-\contentsline {subsection}{\numberline {5.7}Invariant Causal Prediction (ICP)}{35}{subsection.5.7}%
-\contentsline {section}{\numberline {6}Qualitative Planning Context}{35}{section.6}%
-\contentsline {section}{\numberline {7}Limitations}{36}{section.7}%
-\contentsline {section}{\numberline {8}Conclusion}{38}{section.8}%
-\contentsline {section}{References}{39}{section*.32}%
-\contentsline {section}{\numberline {A}Supplementary Calibration Comparison}{42}{appendix.A}%
-\contentsline {section}{\numberline {B}Interview Recruitment Overview}{43}{appendix.B}%
-\contentsline {section}{\numberline {C}IRB Protocol Summary}{44}{appendix.C}%
-\contentsline {section}{\numberline {D}Semi-Structured Interview Guide}{45}{appendix.D}%
-\contentsline {section}{\numberline {E}Sample Protest Petition}{46}{appendix.E}%
-\contentsline {section}{\numberline {F}Illustrative Support-Layer Panel Structure}{47}{appendix.F}%
-\contentsline {section}{\numberline {G}Methodological Appendix: Expanded Details}{48}{appendix.G}%
-\contentsline {subsection}{\numberline {G.1}Variable Dictionary}{48}{subsection.G.1}%
-\contentsline {subsection}{\numberline {G.2}Hyperparameter Search Grids}{48}{subsection.G.2}%
-\contentsline {subsection}{\numberline {G.3}Subgroup Definitions \& Fairness Testing}{49}{subsection.G.3}%
-\contentsline {subsection}{\numberline {G.4}Natural Language Processing Model: Exploratory Text Features}{49}{subsection.G.4}%
+\contentsline {subsection}{\numberline {4.1}Supporting Stages: Development Occurrence, Project Type, and Political Outcome}{17}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Formal Protest Petition}{17}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Model Evaluation Strategy}{19}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Results}{20}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{20}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{22}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Attribution Stability Across Temporal Windows}{24}{subsubsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.3}Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}{25}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Descriptive Evidence from the 2022 Electoral Transition}{28}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Supplementary Institutional Analyses}{28}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Qualitative Planning Context}{29}{section.6}%
+\contentsline {section}{\numberline {7}Limitations}{30}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{31}{section.8}%
+\contentsline {section}{References}{33}{section*.23}%
+\contentsline {section}{\numberline {A}Supplementary Calibration Comparison}{36}{appendix.A}%
+\contentsline {section}{\numberline {B}Semantic Feature Mapping}{37}{appendix.B}%
+\contentsline {section}{\numberline {C}Interview Recruitment Overview}{38}{appendix.C}%
+\contentsline {section}{\numberline {D}IRB Protocol Summary}{39}{appendix.D}%
+\contentsline {section}{\numberline {E}Semi-Structured Interview Guide}{40}{appendix.E}%
+\contentsline {section}{\numberline {F}Sample Protest Petition}{41}{appendix.F}%
+\contentsline {section}{\numberline {G}Illustrative Support-Layer Panel Structure}{42}{appendix.G}%
+\contentsline {section}{\numberline {H}Methodological Appendix: Expanded Details}{43}{appendix.H}%
+\contentsline {subsection}{\numberline {H.1}Variable Dictionary}{43}{subsection.H.1}%
+\contentsline {subsection}{\numberline {H.2}Hyperparameter Search Grids}{43}{subsection.H.2}%
+\contentsline {subsection}{\numberline {H.3}Subgroup Definitions \& Fairness Testing}{44}{subsection.H.3}%
+\contentsline {subsection}{\numberline {H.4}Natural Language Processing Model: Exploratory Text Features}{44}{subsection.H.4}%
+\contentsline {section}{\numberline {I}Development Occurrence Model (Stage A)}{47}{appendix.I}%
+\contentsline {section}{\numberline {J}Project Type and Scale Model (Stage B)}{50}{appendix.J}%
+\contentsline {section}{\numberline {K}Political Outcome Model (Stage D)}{51}{appendix.K}%
+\contentsline {section}{\numberline {L}Expected Contested Units (Composite Measure)}{52}{appendix.L}%
+\contentsline {section}{\numberline {M}Institutional Geographic Overlay Analyses}{53}{appendix.M}%
+\contentsline {section}{\numberline {N}HOME Initiative Event Study}{55}{appendix.N}%
+\contentsline {section}{\numberline {O}Invariant Causal Prediction (ICP)}{56}{appendix.O}%

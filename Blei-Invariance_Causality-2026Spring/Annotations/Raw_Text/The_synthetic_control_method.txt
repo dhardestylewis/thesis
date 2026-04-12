@@ -1,0 +1,2606 @@
+Journal of Machine Learning Research 24 (2023) 1-39 Submitted 9/22; Revised 2/23; Published 3/23
+Deep Linear Networks can Benignly Overﬁt
+when Shallow Ones Do
+Niladri S. Chatterji niladri@cs.stanford.edu
+Computer Science Department, Stanford University, 353 Jane Stanford Way, Stanford, CA 94305.
+Philip M. Long plong@google.com
+Google, 1600 Amphitheatre Parkway, Mountain View, CA, 94043.
+Editor: Ohad Shamir
+Abstract
+We bound the excess risk of interpolating deep linear networks trained using gradient ﬂow.
+In a setting previously used to establish risk bounds for the minimum ℓ2-norm interpolant,
+we show that randomly initialized deep linear networks can closely approximate or even
+match known bounds for the minimum ℓ2-norm interpolant. Our analysis also reveals that
+interpolating deep linear models have exactly the same conditional variance as the minimum
+ℓ2-norm solution. Since the noise aﬀects the excess risk only through the conditional
+variance, this implies that depth does not improve the algorithm’s ability to “hide the
+noise”. Our simulations verify that aspects of our bounds reﬂect typical behavior for
+simple data distributions. We also ﬁnd that similar phenomena are seen in simulations
+with ReLU networks, although the situation there is more nuanced.
+Keywords: generalization, benign overﬁtting, implicit bias, interpolation, neural net-
+works, regression
+1. Introduction
+Recent empirical studies (Zhang et al., 2017; Belkin et al., 2019a) have brought to light the
+surprising phenomenon that overparameterized neural network models trained with variants
+of gradient descent generalize well despite perfectly ﬁtting noisy data. This seemingly
+violates the once widely accepted principle that learning algorithms should trade oﬀ between
+some measure of the regularity of a model, and its ﬁt to the data. To understand this, a
+rich line of research has emerged to establish conditions under which extreme overﬁtting—
+ﬁtting the data perfectly—is benign in simple models (see Belkin et al., 2018; Hastie et al.,
+2022; Bartlett et al., 2020). Another closely connected thread of research to understand
+generalization leverages the recognition that training by gradient descent engenders an
+implicit bias (see Neyshabur et al., 2015; Soudry et al., 2018; Ji and Telgarsky, 2019). These
+results can be paraphrased as follows: training until the loss is driven to zero will produce
+a model that, among models that interpolate the data, minimizes some data-independent
+regularity criterion.
+Our paper continues this study of benign overﬁtting but with a more complex model
+class, deep linear networks. Deep linear networks are often studied theoretically (see, e.g.,
+Saxe et al., 2014; Arora et al., 2018), because some of the relevant characteristics of deep
+learning in the presence of nonlinearities are also present in linear networks but in a setting
+c⃝2023 Niladri S. Chatterji and Philip M. Long.
+License: CC-BY 4.0, see https://creativecommons.org/licenses/by/4.0/. Attribution requirements are provided
+at http://jmlr.org/papers/v24/22-1065.html.
+Chatterji and Long
+that is more amenable to analysis. The analyses of linear networks have included a number
+of results on implicit bias (see, e.g., Azulay et al., 2021; Min et al., 2021). Recently, one
+of these analyses (Azulay et al., 2021), of two-layer networks trained by gradient ﬂow with
+a “balanced” initialization, was leveraged in an analysis of benign overﬁtting (Chatterji
+et al., 2022). (For a mapping x→xWv parameterized by a hidden layer W ∈Rd×m and an
+output layer v∈Rm×1, initial values of v and W are balanced if vv⊤= W⊤W.) Min et al.
+(2021) analyzed implicit bias in two-layer linear networks under more general conditions
+including the unbalanced case.
+In this paper, we analyze benign overﬁtting in deep linear networks of arbitrary depth
+trained by gradient ﬂow. Our ﬁrst main result is a bound on the excess risk. The bound is
+in terms of some characteristics of the joint distribution of the training data previously used
+to analyze linear regression with the standard parameterization, including notions of the
+eﬀective rank of the covariance matrix, and it holds under similar conditions on the data
+distribution. Another key quantity used in the bound concerns the linear map Θ computed
+by the network after training—it is the norm of the projection of this map onto the subspace
+orthogonal to the span of the training examples. This norm can further be bounded in terms
+of its value at initialization, and a quantity that reﬂects how rapidly training converged. In
+contrast with previous analyses on two-layer networks (Chatterji et al., 2022), this analysis
+holds whether this initialization is balanced or not.
+Our second main result is a high-probably risk bound that holds for networks in which
+the ﬁrst and last layers are initialized randomly, and the middle layers are all initialized
+to the identity. Our bound holds whenever the scale of the initialization of the ﬁrst layer
+is small enough, and the scale of the initialization of the last layer is large enough. This
+includes the extreme case where the ﬁrst layer is initialized to zero. As the scale of the
+initialization of the ﬁrst layer goes to zero, our bound approaches the known bound for
+the minimum ℓ2-norm interpolator with the standard parameterization. Our ﬁnal main
+theoretical result illustrates our bounds using a simple covariance matrix used in previous
+work (Bartlett et al., 2020; Chatterji and Long, 2022) which might be viewed as a canonical
+case where overﬁtting is benign for linear regression with the standard parameterization.
+These bounds were obtained in the absence of a precise characterization of the implicit
+bias of gradient ﬂow for deep linear networks, or a closed-form formula for the model
+produced.
+A key point of our analysis is that the projection of the linear map Θ computed by the
+interpolating network onto the span of the rows of the design matrix X is exactly equal to
+minimum ℓ2-norm interpolant Θℓ2. The risk of Θ naturally decomposes into contributions
+from this projection and Θ X⊥ = Θ −Θℓ2. We can use previous analyses of Θ ℓ2 to bound
+the former.
+Figure 1 contains plots from simulation experiments where the excess risk of a deep
+linear model increases with the scale of the initialization of the ﬁrst layer, as in the upper
+bounds of our analysis. A similar eﬀect is also seen when the ﬁrst layer is initialized at a unit
+scale, and the scale of the initialization of the last layer varies. In both cases, we also see
+that as the function computed by the network at initialization approaches the zero function,
+the trained model approaches the minimum ℓ2-norm interpolant. Figure 2 includes plots of
+analogous experiments with networks with ReLU nonlinearities. As in the linear case the
+excess risk increases with the scale of the initialization of the ﬁrst layer, but we do not see a
+2
+Benign Overfitting in Deep Linear Networks
+Figure 1: Three-layer linear networks trained by gradient descent on data generated by an
+underlying linear model. The model is trained on n = 100 points drawn from
+the generative model y = xΘ⋆ + ω, where x ∼N(0,Σ) and ω ∼N(0,1). The
+excess risk is deﬁned as Ex
+[
+∥xΘ −xΘ⋆∥2]
+. We empirically ﬁnd that when the
+initialization variance of either the ﬁrst layer (α2) or the last layer (β2) is close to
+zero, the ﬁnal solution is close to the minimum ℓ2-norm interpolator and suﬀers
+small excess risk. While when the initialization variance is large, that is, when
+the network is initialized away from the origin, the excess risk is larger due to the
+component of the ﬁnal solution outside the span of the data. Additional details
+in Section 7.
+signiﬁcant increase in excess risk with the scale of the initialization of the last layer. More
+details of the experiments are described in Section 7.
+Intuitively, the harm from overﬁtting arises from ﬁtting the noise, and the eﬀect of ﬁtting
+the noise is analyzed in the conditional variance of the estimator. In the setting studied
+here, as in linear regression with the standard parameterization, the conditional variance
+is entirely determined by the projection of Θ onto the span of the rows of the data matrix
+X which is equal to Θ ℓ2. Thus, when learning deep linear networks with quadratic loss,
+aspects of training that aﬀect the inductive bias, such as the initialization, architecture,
+3
+Chatterji and Long
+Figure 2: Three-layer ReLU networks trained by gradient descent on data generated by an
+underlying two-layer ReLU teacher network. The model is trained on n = 500
+points drawn from the generative model y = f⋆(x) + ω, where f⋆ is a two-layer
+ReLU network with width 50, x∼N(0,I10×10) and ω ∼N(0,1). The excess risk
+is deﬁned as Ex
+[
+∥f(x) −f⋆(x)∥2]
+. In ReLU models we ﬁnd that the risk scales
+diﬀerently as we scale the initialization variance of the ﬁrst layer (α2) and that of
+the last layer (β2). When we scale α2, similar to deep linear models we ﬁnd that
+risk is smaller for smaller values ofα2. However, this is not the case when we scale
+β2. This highlights a surprising asymmetry in the role played by the initialization
+scales of the diﬀerent layers in ReLU networks. For additional details about the
+experiment see Section 7.
+etc., do not aﬀect this variance term—no matter how they are chosen, the distribution of
+the variance term is determined by Θ ℓ2. To see an eﬀect of implicit bias in deep linear
+networks on the consequence of ﬁtting the noise, we must analyze a loss function other than
+the quadratic loss.
+Our upper bounds reveal no beneﬁt in representing linear transformations by deep net-
+works, and, in our simulations, we see no beneﬁt with random initialization. This is because
+non-zero random initialization usually contributes additional error to the bias as the ran-
+dom initialization is typically a poor guess for the regression function. (In rare cases it
+could reduce the bias, though, if by chance it approximates the regression function.)
+Our analysis also leverages the eﬀect of imbalanced initialization on implicit bias—our
+treatment partially extends the results by Min et al. (2021) from the two-layer case to the
+deep case, and then combines them with our general risk bound.
+Organization. In Section 2 we describe our problem setting and our assumptions. Then
+in Section 3 we present our main results and in Sections 4, 5 and 6 we prove these results.
+We provide additional simulations and simulation details in Section 7. We conclude with a
+discussion in Section 8. In Appendix A we highlight other related work on benign overﬁtting,
+implicit bias, and on linear networks. Finally, in Appendix B we present omitted technical
+details.
+4
+Benign Overfitting in Deep Linear Networks
+2. Preliminaries
+This section includes notational conventions and a description of the setting.
+2.1 Notation
+Given a vector v, let ∥v∥denote its Euclidean norm. Given a matrix M, let ∥M∥denote
+its Frobenius norm and let ∥M∥op denote its operator norm. For any j ∈N, we denote the
+set {1,...,j }by [j]. We will use c,c′,c1,cx,... to denote positive absolute constants, which
+may take diﬀerent values in diﬀerent contexts.
+2.2 Setting
+We analyze linear regression with dinputs and qoutputs from nexamples. Throughout the
+paper we assume that d>n . Although we assume throughout that the input dimension d
+is ﬁnite, it is straightforward to extend our results to inﬁnite d.
+Let X ∈Rn×d be the data matrix, and Y ∈Rn×q be the response matrix, and let
+x1,...,x n ∈R1×d be the rows of X and y1,...,y n ∈R1×q be the rows of Y.
+For random (x,y) ∈R1×d ×R1×q, let
+Θ⋆ ∈arg min
+Θ∈Rd×q
+E(x,y)
+[
+∥y−xΘ∥2]
+be an arbitrary optimal linear regressor. We let Ω = Y −XΘ⋆ ∈Rn×q be the noise matrix.
+Deﬁne the excess risk of an estimate Θ ∈Rd×q to be
+Risk(Θ) := Ex,y
+[
+∥y−xΘ∥2 −∥y−xΘ⋆∥2]
+,
+where x,y are test samples that are independent of Θ.
+Denote the second moment matrix of the covariates by Σ := E[x⊤x] ∈ Rd×d with
+eigenvalues λ1 ≥... ≥λd ≥0. We will use the following deﬁnitions of the “eﬀective rank”
+that Bartlett et al. (2020) previously used in the analysis of the excess risk of the minimum
+ℓ2-norm interpolant.
+Deﬁnition 1. Given any j ∈[d], deﬁne sj := ∑
+i>j λi and
+rj := sj
+λj+1
+and Rj :=
+s2
+j∑
+i>j λ2
+i
+.
+We deﬁne the index k below. The value of k shall help determine what we consider the
+“tail” of the covariance matrix.
+Deﬁnition 2. For a large enough constant b (that will be ﬁxed henceforth), deﬁne
+k:= min{j ≥0 : rj ≥bn},
+where the minimum of the empty set is deﬁned as ∞.
+We are now ready to introduce the assumptions of our paper.
+5
+Chatterji and Long
+Assumptions. Let cx and cy denote absolute constants.
+(A.1) The samples ( x1,y1),..., (xn,yn) are drawn i.i.d.
+(A.2) The covariates x and responses y are mean-zero.
+(A.3) The covariates xsatisfy x= Σ1/2u, where uis isotropic and has components that
+are independent cx-sub-Gaussian random variables, that is, for all φ∈Rd
+E
+[
+exp
+(
+φ⊤u
+)]
+≤exp
+(
+cx∥φ∥2/2
+)
+.
+(A.4) The diﬀerence y −xΘ⋆ is cy-sub-Gaussian, conditionally on x; that is, for all
+φ∈Rq
+Ey
+[
+exp
+(
+φ⊤(y−xΘ⋆)
+) ⏐⏐x
+]
+≤exp
+(
+cy∥φ∥2/2
+)
+(note that this implies that E[y|x] = xΘ⋆ and E
+[
+∥y−xΘ⋆∥2]
+≤cq).
+(A.5) Almost surely, the projection of the data X on the space orthogonal to any eigen-
+vector of Σ spans a space of dimension n.
+All the constants going forward may depend on the values of cx and cy. The assump-
+tions made here are standard in the benign overﬁtting literature (see Bartlett et al., 2020;
+Chatterji et al., 2022). They are satisﬁed for example in the case where x is a mean-zero
+Gaussian whose covariance Σ has full rank, d > n, and the noise y−xΘ⋆ is independent
+and Gaussian.
+2.3 Deep Linear Models
+We analyze linear models represented by deep linear networks with mhidden units at each
+layer. We denote the weight matrices by W1,...,W L, where W1 ∈Rm×d, W2,...,W L−1 ∈
+Rm×m, and WL ∈Rq×m. The standard representation of the network’s linear transforma-
+tion, denoted by Θ ∈Rd×q, is
+Θ = (WL···W1)⊤∈Rd×q.
+Deﬁne PX to be the projection onto the row span of X, that is, PX := X⊤(XX⊤)−1X. Let
+ΘX := PXΘ and Θ X⊥ := (I−PX)Θ.
+For ndatapoints (x1,y1),..., (xn,yn), where xi ∈R1×d and yi ∈R1×q, the training loss
+is given by
+L(Θ) :=
+n∑
+i=1
+∥yi −xiΘ∥2 = ∥Y −XΘ∥2.
+We will analyze the generalization properties of deep linear models trained with gradient
+ﬂow, that is, for all j ∈[L],
+dW(t)
+j
+dt = −∇W(t)
+j
+L(Θ(t)).
+We study the following random initialization scheme in our paper.
+6
+Benign Overfitting in Deep Linear Networks
+Deﬁnition 3. (Random initialization) Given α,β >0, the entries of the ﬁrst layer W(0)
+1
+and the last layer W(0)
+L are initialized using i.i.d. draws from N(0,α2) and N(0,β2) respec-
+tively. The remaining layers W(0)
+2 ,...,W (0)
+L−1 are initialized to the identity Im.
+A similar initialization scheme has been studied previously (Zou et al., 2020). Our
+analysis will show that starting from random initialization the scale of the network grows
+in a controlled manner which is captured by the following deﬁnition.
+Deﬁnition 4. We say that training is perpetually Λ bounded if, for all t ≥0 and all
+S ⊆[L], ∏
+j∈S
+W(t)
+j
+
+op
+≤Λ.
+In our subsequent analysis, this notion of perpetually Λ bounded shall allow us to control
+the behavior of the network in the null space of the data matrix X.
+2.4 The Minimum ℓ2-norm Interpolant
+It will be helpful to compare the generalization of the deep linear model with the result of
+applying the minimum ℓ2-norm interpolant resulting from the standard parameterization.
+Deﬁnition 5. For any X ∈Rn×d and Y ∈Rn×q, deﬁne Θℓ2 = X⊤(XX⊤)−1Y.
+Under Assumption (A.5), the matrix XX⊤is full rank and therefore Θℓ2 is well deﬁned.
+As previously noted, the excess risk of this canonical interpolator has been studied in prior
+work (see Bartlett et al., 2020; Tsigler and Bartlett, 2020).
+3. Main Results
+In this section, we present our excess risk bounds. Our ﬁrst result applies to any deep linear
+model trained until interpolation. Second, we shall specialize this result to the case where
+the model is randomly initialized. Lastly, we present an excess risk bound for a randomly
+initialized network in a setting with a spiked covariance matrix.
+3.1 Excess Risk bound for Deep Linear Models
+The following theorem is an excess risk bound for any deep linear model trained until it
+interpolates in terms of the rate of convergence of its training, along with the eﬀective ranks
+of the covariance matrix.
+Theorem 6. Under Assumptions (A.1)-(A.5), there is an absolute constant c> 0 such that,
+for all δ <1/2 and all depths L> 1, the following holds. With probability at least 1 −cδ, if
+Θ = limt→∞Θ(t) for a perpetually Λ-bounded training process for whichlimt→∞L(Θ(t)) = 0,
+and n≥cmax{r0,k, log(1/δ)}, then
+Risk(Θ) = Bias(Θℓ2) + Variance(Θℓ2) + Ξ,
+7
+Chatterji and Long
+where
+Bias(Θℓ2) ≤csk
+n ∥Θ⋆∥2,
+Variance(Θℓ2) ≤cqlog(q/δ)
+(k
+n + n
+Rk
+)
+,
+and
+Ξ = csk
+n ∥ΘX⊥∥2 ≤csk
+n
+[
+∥Θ(0)
+X⊥∥+ LΛ2√
+λ1n
+∫ ∞
+t=0
+√
+L(Θ(t)) dt
+]2
+.
+This bound shows that the conditional bias of the estimator Θ is upper bounded by
+the conditional bias of the minimum ℓ2-norm interpolant Bias(Θℓ2) plus Ξ, which is the
+additional bias incurred by the component of Θ outside the row span of X. This additional
+term Ξ depends not only on the eigenvalues of the covariance matrix but also on the speciﬁcs
+of the optimization procedure such as the initial linear model (Θ (0)), the size of the weights
+throughout training (Λ) and the rate of decay of the loss.
+Interestingly, the conditional variance of the interpolator Θ, is in fact identical to the
+conditional variance of the minimum ℓ2-norm interpolant. This follows because, as we will
+show in the proof, the component of the interpolator Θ in the row span of X is in fact equal
+to Θℓ2, and the conditional variance depends only on this component within the row span
+of X. The variance captures the eﬀect of perfectly ﬁtting the noise in the data, and our
+analysis shows that the harm incurred by ﬁtting the noise is unaﬀected by parameterizing
+a linear model as a deep linear model.
+Essentially matching lower bounds (up to constants) on the variance term are known
+(Bartlett et al., 2020).
+3.2 Excess Risk Bound under Random Initialization
+Our next main result establishes a high-probability bound on the excess risk, and in par-
+ticular on Ξ, when the network is trained after a random initialization (see Deﬁnition 3).
+Theorem 7. Under Assumptions (A.1)-(A.5), there is an absolute constant c >0 such
+that, for all δ <1/2, if
+•the initialization scales β and α satisfy β ≥cmax
+{
+1,
+λ1/4
+1
+√
+Ln
+(√
+∥Θ⋆∥λ1/4+q1/4
+)
+√sk
+}
+and
+α≤1;
+•the width m≥cmax
+{
+d+ q+ log(1/δ),L2α2λ1s0n2qlog(n/δ)
+β2s2
+k
+}
+;
+•the network is trained using random initialization as described in Deﬁnition 2.3;
+•the number of samples satisﬁes n≥cmax{r0,k, log(1/δ)},
+then, with probability at least 1 −cδ,
+Risk(Θ) ≤Bias(Θℓ2 ) + Variance(Θℓ2 ) + Ξ,
+8
+Benign Overfitting in Deep Linear Networks
+where
+Bias(Θℓ2 ) ≤csk
+n ∥Θ⋆∥2,
+Variance(Θℓ2 ) ≤cqlog(q/δ)
+(k
+n + n
+Rk
+)
+,
+Ξ ≤cα2sk
+n
+[
+qβ2 + L2(α+ 1/L)4λ1n2
+s2
+k
+(
+λ1∥Θ⋆∥2 + q+ α2β2s0qlog(n/δ)
+m
+)]
+.
+Note that the bound on Ξ of Theorem 7 can be made arbitrarily small by decreasing α
+while keeping the other parameters ﬁxed. When α = 0, our bound shows that the model
+has the same risk as the minimum ℓ2-norm interpolant.
+Recall from the simulation in Figure 1 that as the initialization of the last layer β
+approaches 0, the model produced by gradient descent gets closer to the minimum ℓ2-norm
+interpolant. Our bound on Ξ does not approach 0 as β →0, and we do not know how to
+prove that this happens in general with high probability.
+Regarding the role of overparameterization, we ﬁnd that one component of our bound
+on Ξ gets smaller as the width mis increased. However, our bound gets larger as we increase
+depth L.
+As mentioned earlier, the bound on the conditional variance, which captures the eﬀect
+of ﬁtting the noise, is sharp up to constants, however we do not know whether the upper
+bound on the conditional bias, and speciﬁcally Ξ in Theorem 7, can be improved. It is also
+unclear whether conditions on β and m can be relaxed.
+Next, to facilitate the interpretation of our bounds, we apply Theorem 7 in a canonical
+setting where benign overﬁtting occurs for the minimum ℓ2-norm interpolant.
+Deﬁnition 8 ((k,ε)-spike model) . For 0 < ε <1 and k ∈N, a (k,ε)-spike model is a
+setting where the eigenvalues of Σ are λ1 = ... = λk = 1 and λk+1 = ... = λd = ε.
+The (k,ε)-spike model is a setting where there are k high variance directions, and many
+(d−k) low variance directions that can be used to “hide” the energy of the noise. Note
+that, in this model, if d≥cn and n≥ck for a large enough constant c, then k satisﬁes the
+requirement of Deﬁnition 2, since rk = ε(d−k)/ε= d−k≥bn. Since this covariance matrix
+has full rank, it may be used in one of the concrete settings where all of our assumptions
+are satisﬁed described at the end of Section 2.2.
+Corollary 9. Under Assumptions (A.1)-(A.5), there is an absolute constant c >0, such
+that, for any 0 < ε <1 and k ∈N, if Σ is an instance of the (k,ε)-spike model, for any
+input dimension d, output dimension q, depth L >1, and number of samples n, there are
+initialization scales α> 0 and β >0 such that the following holds. For all δ <1/2, if
+•the width m≥c(d+ q+ log(1/δ));
+•the network is trained as described in Section 2.3;
+•the input dimension d≥cn;
+•the number of samples n≥cmax {k+ εd,log(1/δ)},
+9
+Chatterji and Long
+then, with probability at least 1 −cδ,
+Risk(Θ) ≤c
+(
+εd∥Θ⋆∥2 + qklog(q/δ)
+n + nqlog(q/δ)
+d
+)
+. (1)
+Corollary 9 gives the simple bound obtained by a choice of parameters that includes a
+suﬃciently small value of α. For larger values of α the bound of Theorem 7 may behave
+diﬀerently in the case of the ( k,ε)-spike model. We ﬁnd that if we regard ∥Θ⋆∥2 as a
+constant then, the excess risk approaches zero if
+εd
+n →0, qklog(q/δ)
+n →0 and nq
+d →0,
+which recovers the known suﬃcient conditions for the minimum ℓ2-norm interpolant to
+benignly overﬁt in this setting. One example is where
+q= 5,k = 5,δ = 1/100,d = n2,ε = 1/n2,
+and n→∞.
+4. Proof of Theorem 6
+The proof of Theorem 6 needs some lemmas, which we prove ﬁrst. Throughout this section
+the assumptions of Theorem 6 are in force.
+A key point is that the projection of any interpolator onto the row span of X, including
+the model output by training a deep linear network, is the minimum ℓ2-norm interpolant.
+Lemma 10. For any interpolator Θ, ΘX = PXΘ = Θℓ2.
+Proof. Since Θ interpolates the data
+Y = XΘ = X(ΘX + ΘX⊥) = XΘX. (2)
+Recall that Θ X = X⊤(XX⊤)−1XΘ = PXΘ, where PX projects onto the row span of X.
+Continuing, we get that
+Θℓ2 = X⊤(XX⊤)−1Y
+= X⊤(XX⊤)−1XΘX
+= PXΘX = PXPXΘ = PXΘ = ΘX.
+■
+Using the formula for the minimum ℓ2-norm interpolant, we can now write down an
+expression for the excess risk.
+Lemma 11. The excess risk of any interpolator Θ of the data satisﬁes
+Risk(Θ) ≤cTr
+(
+(Θ⋆ −ΘX⊥)⊤B(Θ⋆ −ΘX⊥)
+)
++ cqlog(q/δ)Tr(C)
+10
+Benign Overfitting in Deep Linear Networks
+with probability at least 1 −δ over the noise matrix Ω = Y −XΘ⋆, where
+B :=
+(
+I−X⊤(XX⊤)−1X
+)
+Σ
+(
+I−X⊤(XX⊤)−1X
+)
+and
+C := (XX⊤)−1XΣX⊤(XX⊤)−1.
+Proof. We have y−xΘ⋆ is conditionally mean-zero given x, thus
+Risk(Θ) = Ex,y
+[
+∥y−xΘ∥2]
+−Ex,y
+[
+∥y−xΘ⋆∥2]
+= Ex,y
+[
+∥y−xΘ⋆ + x(Θ⋆ −Θ)∥2]
+−Ex,y
+[
+∥y−xΘ⋆∥2]
+= Ex
+[
+∥x(Θ⋆ −Θ)∥2]
+. (3)
+Since Θ interpolates the data, by Lemma 10 we know that
+Θ = Θℓ2 + ΘX⊥ = X⊤(XX⊤)−1Y + ΘX⊥.
+Now because Y = XΘ⋆ + Ω we ﬁnd that
+Risk(Θ)
+= Ex
+[x
+(
+I−X⊤(XX⊤)−1X
+)
+(Θ⋆ −ΘX⊥) −xX⊤(XX⊤)−1Ω
+
+2]
+≤2Ex
+[x
+(
+I−X⊤(XX⊤)−1X
+)
+(Θ⋆ −ΘX⊥)
+
+2]
++ 2Ex
+[xX⊤(XX⊤)−1Ω
+
+2]
+≤2Ex
+[
+x
+(
+I−X⊤(XX⊤)−1X
+)
+(Θ⋆ −ΘX⊥)(Θ⋆ −ΘX⊥)⊤
+(
+I−X⊤(XX⊤)−1X
+)
+x⊤
+]
++ 2Ex
+[
+xX⊤(XX⊤)−1ΩΩ⊤(XX⊤)−1Xx⊤
+]
+(i)
+= 2Tr
+(
+(Θ⋆−ΘX⊥)⊤
+(
+I−X⊤(XX⊤)−1X
+)
+Ex
+[
+x⊤x
+](
+I−X⊤(XX⊤)−1X
+)
+(Θ⋆−ΘX⊥)
+)
++ 2Tr
+(
+Ω⊤(XX⊤)−1XEx[x⊤x]X⊤(XX⊤)−1Ω
+)
+(ii)
+= 2Tr
+(
+(Θ⋆ −ΘX⊥)⊤B(Θ⋆ −ΘX⊥)
+)
++ 2Tr
+(
+Ω⊤CΩ
+)
+.
+where (i) follows by using the cyclic property of the trace, and ( ii) follows by the deﬁnition
+of the matrices B and C.
+Let ω1,...,ω q denote the columns of the error matrix Ω. Then
+Tr(Ω⊤CΩ) =
+q∑
+i=1
+ω⊤
+i Cωi.
+Invoking (Bartlett et al., 2020, Lemma S.2) bounds each term in the sum bycqlog(q/δ)Tr(C)
+with probability at least 1 −δ/q. A union bound completes the proof. ■
+To work on the ﬁrst term in the upper bound of the excess risk, we would like an upper
+bound on ∥Θ(t)
+X⊥∥. Toward this end, we ﬁrst establish a high-probability bound on ∥X∥op.
+11
+Chatterji and Long
+Lemma 12. There is a constant c> 0 such that for any δ∈(0,1), if n≥cmax{r0,log
+(1
+δ
+)
+},
+with probability at least 1 −δ, ∥X∥op ≤c√λ1n.
+Proof. By (Koltchinskii and Lounici, 2017, Lemma 9), with probability at least 1 −δ
+∥X∥op =
+√
+∥X⊤X∥op
+≤
+√n
+(
+∥Σ∥op +
+
+1
+nX⊤X−Σ
+
+op
+)
+≤
+√n
+(
+∥Σ∥op + ∥Σ∥opmax
+{√r0
+n,
+√
+log(1/δ)
+n ,r0
+n,log(1/δ)
+n
+})
+.
+Recalling that n ≥cmax{r0,log(1/δ)}, this implies that, with probability at least 1 −δ,
+∥X∥op ≤c
+√
+n∥Σ∥op. ■
+Next, we will calculate a formula for the time derivative of Θ(t). Its deﬁnition will make
+use of products of matrices before and after a given layer.
+Deﬁnition 13. For j ∈[L] deﬁne Aj = ∏j+1
+k=LW(t)
+k and Bj = ∏1
+k=j−1 W(t)
+k .
+Now we are ready for our lemma giving the time derivative of Θ (t).
+Lemma 14. At any time t≥0,
+dΘ(t)
+dt = −
+L∑
+j=1
+B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j .
+Proof. Let us suppress the superscript ( t) to ease notation. The gradient ﬂow dynamics is
+deﬁned as
+dWj
+dt = −∇Wj L(Θ),
+where
+∇Wj L(Θ) = (WL···Wj+1)⊤(XΘ −Y)⊤
+(
+Wj−1 ···W1X⊤
+)⊤
+. (4)
+12
+Benign Overfitting in Deep Linear Networks
+So by the chain rule of diﬀerentiation,
+dΘ
+dt = d
+(
+W⊤
+1 ···W⊤
+L
+)
+dt
+=
+L∑
+j=1
+(
+W⊤
+1 ···W⊤
+j−1
+)dW⊤
+j
+dt
+(
+W⊤
+j+1 ···W⊤
+L
+)
+=
+L∑
+j=1
+(
+W⊤
+1 ···W⊤
+j−1
+)(
+−∇Wj L(Θ)
+)⊤(
+W⊤
+j+1 ···W⊤
+L
+)
+= −
+L∑
+j=1
+(
+W⊤
+1 ···W⊤
+j−1
+)(
+Wj−1 ···W1X⊤
+)
+(XΘ −Y)(WL···Wj+1)
+(
+W⊤
+j+1 ···W⊤
+L
+)
+= −
+L∑
+j=1
+B⊤
+j BjX⊤(XΘ −Y)AjA⊤
+j .
+■
+Toward the goal of proving a high-probability bound on ∥Θ(t)
+X⊥∥, we next bound its rate
+of growth.
+Lemma 15. There is a constant c> 0 such that, if n≥cmax{r0,log(1/δ)}, with probability
+at least 1 −δ, if training is perpetually Λ bounded, then, for all t≥0,
+1
+2
+d∥Θ(t)
+X⊥∥2
+dt ≤
+L∑
+j=2
+Tr
+(
+Θ(t)⊤PX⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+.
+Proof. Given matrices Aand B, we let A·B = Tr(A⊤B) denote the matrix inner product.
+By the chain rule,
+1
+2
+d∥Θ(t)
+X⊥∥2
+dt = Θ(t)
+X⊥·dΘ(t)
+X⊥
+dt
+= Θ(t)
+X⊥·PX⊥
+dΘ(t)
+dt
+(i)
+= Θ(t)
+X⊥·PX⊥
+(
+−
+L∑
+j=1
+B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+= −
+L∑
+j=1
+Θ(t)
+X⊥·PX⊥
+(
+B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+, (5)
+where (i) follows by the formula derived in Lemma 14.
+13
+Chatterji and Long
+Let us consider a particular term in the sum above,
+Θ(t)
+X⊥·PX⊥
+(
+B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+= Tr
+(
+Θ(t)⊤
+X⊥PX⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+= Tr
+(
+Θ(t)⊤P⊤
+X⊥PX⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+= Tr
+(
+Θ(t)⊤PX⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+. (6)
+In the case where j = 1, the RHS is equal to
+Tr
+
+Θ(t)⊤PX⊥X⊤(XΘ(t) −Y)
+( 2∏
+k=L
+W(t)
+k
+)( 2∏
+k=L
+W(t)
+k
+)⊤
+= 0,
+since PX⊥X⊤= 0.
+In the case j >1, we have
+Θ(t)
+X⊥·PX⊥
+(
+B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+= Tr
+(
+Θ(t)⊤PX⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+completing the proof. ■
+Lemma 16. There is a constant c> 0 such that, if n≥cmax{r0,log(1/δ)}, with probability
+at least 1 −δ, if training is perpetually Λ bounded, then, for all t≥0,
+∥Θ(t)
+X⊥∥≤∥ Θ(0)
+X⊥∥+ c(L−1)Λ2√
+λ1n
+∫ t
+s=0
+√
+L(Θ(s)) ds.
+Proof. Let us consider one of the terms in the RHS of Lemma 15. We have
+Tr
+(
+Θ(t)⊤PX⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+= Tr
+(
+Θ(t)⊤
+X⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+≤∥Θ(t)
+X⊥∥
+B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+
+(i)
+≤∥Θ(t)
+X⊥∥
+B⊤
+j Bj
+
+op
+AjA⊤
+j
+
+op
+∥X∥op
+XΘ(t) −Y
+
+≤∥Θ(t)
+X⊥∥
+(j−1∏
+k=1
+∥W(t)
+k ∥2
+op
+)
+
+L∏
+k=j+1
+∥W(t)
+k ∥2
+op
+
+∥X∥op
+XΘ(t) −Y
+
+= ∥Θ(t)
+X⊥∥
+
+∏
+k̸=j
+∥W(t)
+k ∥op
+
+
+2
+∥X∥op
+XΘ(t) −Y
+
+(ii)
+≤∥Θ(t)
+X⊥∥∥X∥opΛ2
+√
+L(Θ(t)),
+14
+Benign Overfitting in Deep Linear Networks
+where (i) follows since for any matrices ∥AB∥≤∥ A∥op∥B∥, and ( ii) follows since training
+is perpetually Λ bounded.
+Summing over layers j = 2,...,L , we get that,
+1
+2
+d∥Θ(t)
+X⊥∥2
+dt ≤(L−1)∥Θ(t)
+X⊥∥∥X∥opΛ2
+√
+L(Θ(t)).
+Now note that,
+1
+2
+d∥Θ(t)
+X⊥∥2
+dt = ∥Θ(t)
+X⊥∥d∥Θ(t)
+X⊥∥
+dt ≤(L−1)∥Θ(t)
+X⊥∥∥X∥opΛ2
+√
+L(Θ(t)),
+which in turn implies that, when ∥Θ(t)
+X⊥∥>0, we have
+d∥Θ(t)
+X⊥∥
+dt ≤(L−1) ∥X∥opΛ2
+√
+L(Θ(t)).
+If, for all s∈[0,t], we have ∥Θ(t)
+X⊥∦= 0, then by integrating this diﬀerential inequality we
+conclude that
+∥Θ(t)
+X⊥∥−∥Θ(0)
+X⊥∥≤ (L−1) ∥X∥opΛ2
+∫ t
+s=0
+√
+L(Θ(s)) ds. (7)
+Otherwise, if T = sup{s: ∥Θ(s)
+X⊥∥= 0},
+∥Θ(t)
+X⊥∥≤ (L−1) ∥X∥opΛ2
+∫ t
+s=T
+√
+L(Θ(s)) ds,
+which implies (7).
+Applying Lemma 12 which is a high probability upper bound on ∥X∥op completes the
+proof. ■
+Armed with these lemmas, we are now ready to prove the ﬁrst of our main results.
+Proof of Theorem 6. Combining Lemma 11 with Lemmas 6 and 11 by Bartlett et al.
+(2020) to bound Tr(C) we get, with probability at least 1 −cδ,
+Risk(Θ) ≤Tr
+(
+(Θ⋆ −ΘX⊥)⊤B(Θ⋆ −ΘX⊥)
+)
++ cqlog(q/δ)
+(k
+n + n
+Rk
+)
+  
+=:Variance(Θℓ2)
+.
+We begin by bounding the ﬁrst term in the RHS above. Let θ⋆
+1,...,θ ⋆
+q be the columns of
+Θ⋆ and θX⊥,1,...,θ X⊥,q be the columns of ΘX⊥. By invoking (Chatterji et al., 2022, Eq. 54)
+for each of the q outputs, and applying a union bound, we ﬁnd that with probability at
+15
+Chatterji and Long
+least 1 −cq(δ/q) = 1 −cδ,
+Tr
+(
+(Θ⋆ −ΘX⊥)⊤B(Θ⋆ −ΘX⊥)
+)
+=
+q∑
+i=1
+(θ⋆
+i −θX⊥,i)⊤B(θ⋆
+i −θX⊥,i)
+≤csk
+n
+q∑
+i=1
+∥θ⋆
+i −θX⊥,i∥2
+= csk
+n ∥Θ⋆ −ΘX⊥∥2
+≤2csk
+n
+(
+∥Θ⋆∥2 + ∥ΘX⊥∥2)
+.
+Deﬁne Bias(Θℓ2 ) := 2csk
+n ∥Θ⋆∥2 and let Ξ := 2csk
+n ∥ΘX⊥∥2. The bound on Ξ follows by
+invoking Lemma 16. ■
+5. Proof of Theorem 7
+The assumptions of Theorem 7 are in force throughout this section. Before starting its
+proof, we establish some lemmas.
+Deﬁnition 17. For a large enough absolute constant c, we say that the network enjoys a
+δ-good initialization if
+α/c<σ min(W(0)
+1 ) ≤σmax(W(0)
+1 ) <cα,
+β/c<σ min(W(0)
+L ) ≤σmax(W(0)
+L ) <cβ,
+and
+L(Θ(0)) <c
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+.
+The following proposition is proved in Appendix B. It guarantees that for wide networks,
+optimization is successful starting from random initialization.
+Proposition 18. There is a constant c such that, given any δ∈(0,1), if the initialization
+scales α and β, along with the network width m, satisfy
+m≥cmax
+{
+d+ q+ log(1/δ),L2α2∥X∥2
+op∥X∥2qlog(n/δ)
+β2σ4
+min(X)
+}
+,
+β ≥cmax
+{
+1,
+√
+L∥X∥op∥Y∥
+σ2
+min(X)
+}
+,
+α≤1,
+then with probability at least 1 −δ:
+1. the initialization is δ-good;
+2. training is perpetually c(α+ 1/L)β bounded;
+16
+Benign Overfitting in Deep Linear Networks
+3. for all t> 0, we have that
+L(Θ(t)) <L(Θ(0)) exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+≤c
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+.
+The reader may notice that the roles of α and β in Proposition 18 are asymmetric. We
+focused on that case that α is small because the updates of W1 are in the span of the rows
+of X, which is not necessarily the case for the other layers, including WL. This means that
+the scale of W1 in the null space of X remains the same as it was at initialization, so that
+a small scale at initialization pays dividends throughout training.
+The next lemma shows that the projection of the model computed by the network onto
+the null space of X is the same as the model obtained by projecting the ﬁrst layer weights,
+and combining them with the other layers.
+Lemma 19. For all t≥0,
+Θ(t)
+X⊥ =
+(
+W(t)
+L ···W(t)
+2 W(t)
+1,X⊥
+)⊤
+,
+where
+W(t)
+1,X⊥ := W(t)
+1 (I−PX).
+Proof. By deﬁnition
+Θ(t) = (W(t)
+L ···W(t)
+1 )⊤=
+(
+W(t)
+1
+)⊤
+···
+(
+W(t)
+L
+)⊤
+∈Rd×q.
+Therefore,
+Θ(t)
+X⊥ = (I−PX)Θ(t) = (I−PX)(W(t)
+1 )⊤···(W(t)
+L )⊤= (W(t)
+1,X⊥)⊤···(W(t)
+L )⊤.
+■
+The subsequent lemma shows that the projection of the ﬁrst layer onto the null space
+of X does not change during training.
+Lemma 20. For all t≥0, W(t)
+1,X⊥ = W(0)
+1,X⊥.
+Proof. We have
+dW(t)
+1,X⊥
+dt = dW(t)
+1 (I−PX)
+dt
+=
+(
+dW(t)
+1
+dt
+)
+(I−PX)
+= −
+(
+(WL···W2)⊤(XΘ −Y)⊤X
+)
+(I−PX) (by using Eq. (4))
+= −
+(
+(WL···W2)⊤(XΘ −Y)⊤
+)
+(X(I−PX))
+= −
+(
+(WL···W2)⊤(XΘ −Y)⊤
+)
+(0)
+= 0.
+■
+17
+Chatterji and Long
+By using the previous two lemmas regarding the ﬁrst layer weights W1 we can now
+prove an alternate bound on ∥Θ(t)
+X⊥∥. In contrast to the previous bound that we derived in
+Lemma 16, here the initial scale of W1 plays a role in controlling the growth in ∥Θ(t)
+X⊥∥.
+Lemma 21. There is constant c> 0 such that, if training is perpetually Λ bounded, then,
+for all t≥0,
+∥Θ(t)
+X⊥∥≤∥ Θ(0)
+X⊥∥+ cL∥W(0)
+1 ∥op∥X∥opΛ2
+∫ t
+s=0
+√
+L(Θ(s)) ds.
+Proof. Let us once again consider one of the terms in the RHS of Lemma 15. We have
+Tr
+(
+Θ(t)⊤
+X⊥PX⊥B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+= Tr
+
+Θ(t)⊤PX⊥(W(t)
+1 )⊤
+
+
+2∏
+k=j−1
+W(t)
+k
+
+
+⊤
+BjX⊤(XΘ(t) −Y)AjA⊤
+j
+
+
+= Tr
+
+Θ(t)⊤
+X⊥W⊤(t)
+1,X⊥
+
+
+2∏
+k=j−1
+W(t)
+k
+
+
+⊤
+BjX⊤(XΘ(t) −Y)AjA⊤
+j
+
+.
+Continuing by using the fact that for any matrices ∥AB∥≤∥ A∥op∥B∥, we get that
+Θ(t)
+X⊥·PX⊥
+(
+B⊤
+j BjX⊤(XΘ(t) −Y)AjA⊤
+j
+)
+≤∥Θ(t)
+X⊥∥∥W(t)
+1,X⊥∥op
+
+
+
+2∏
+k=j−1
+W(t)
+k
+
+
+⊤
+Bj
+
+op
+AjA⊤
+j
+
+op
+∥X∥op
+XΘ(t) −Y
+
+(i)
+≤∥Θ(t)
+X⊥∥∥W(t)
+1,X⊥∥op∥X∥opΛ2
+√
+L(Θ(t))
+(ii)
+≤∥Θ(t)
+X⊥∥∥W(0)
+1,X⊥∥op∥X∥opΛ2
+√
+L(Θ(t))
+≤∥Θ(t)
+X⊥∥∥W(0)
+1 ∥op∥X∥opΛ2
+√
+L(Θ(t)),
+since ∥W(0)
+1,X⊥∥op ≤∥W(0)
+1 ∥op, where (i) follows since training is Λ perpetually bounded and
+so
+
+
+
+2∏
+k=j−1
+W(t)
+k
+
+
+⊤
+Bj
+
+op
+AjA⊤
+j
+
+op
+≤
+
+ ∏
+k̸={1,j}
+∥W(t)
+k ∥op
+
+
+
+ ∏
+k̸={j}
+∥W(t)
+k ∥op
+
+≤Λ2
+and (ii) follows since by Lemma 20, W(t)
+1,X⊥ = W(0)
+1,X⊥.
+Summing over layers j = 2,...,L , we get that,
+1
+2
+d∥Θ(t)
+X⊥∥2
+dt ≤(L−1)∥Θ(t)
+X⊥∥∥W(0)
+1 ∥op∥X∥opΛ2
+√
+L(Θ(t)).
+18
+Benign Overfitting in Deep Linear Networks
+Thus, we have that
+1
+2
+d∥Θ(t)
+X⊥∥2
+dt = ∥Θ(t)
+X⊥∥d∥Θ(t)
+X⊥∥
+dt ≤(L−1)∥Θ(t)
+X⊥∥∥W(0)
+1 ∥op∥X∥opΛ2
+√
+L(Θ(t))
+which in turn implies that, when ∥Θ(t)
+X⊥∦= 0, we have
+d∥Θ(t)
+X⊥∥
+dt ≤(L−1)∥W(0)
+1 ∥op∥X∥opΛ2
+√
+L(Θ(t)).
+Therefore, by integrating this diﬀerential inequality as in the proof of Lemma 16, we con-
+clude that
+∥Θ(t)
+X⊥∥−∥Θ(0)
+X⊥∥≤ (L−1)∥W(0)
+1 ∥op∥X∥opΛ2
+∫ t
+s=0
+√
+L(Θ(s)) ds.
+■
+We also need a lemma that bounds the Frobenius norm of the data matrix X.
+Lemma 22. There is a constant c> 0 such that for any δ ∈(0,1), if n≥clog(1/δ), then
+with probability at least 1 −δ, ∥X∥≤ c√ns0.
+Proof. The rows of X are n i.i.d. draws from a distribution, where each sample can be
+written as xi = Σ 1/2ui, where ui has components that are independent cx-sub-Gaussian
+random variables. Deﬁne ustacked := ( u1,u2,...,u n) ∈ Rdn to be concatenation of the
+vectors u1,...,u n and deﬁne Σ 1/2
+stacked ∈Rdn×dn to be a block diagonal matrix with Σ 1/2 ∈
+Rd×d repeated n times along its diagonal. Then,
+∥X∥2 =
+n∑
+i=1
+∥xi∥2 =
+n∑
+i=1
+∥Σ1/2ui∥2 =
+Σ1/2
+stackedustacked
+
+2
+.
+Now, ustacked is an isotropic, cx-sub-Gaussian random vector. Therefore, by applying (Ver-
+shynin, 2018, Theorem 6.3.2) we know that the sub-Gaussian norm (Vershynin, 2018, Def-
+inition 2.5.3) of ∥X∥= ∥Σ1/2
+stackedustacked∥is
+∥Σ1/2
+stackedustacked∥−c1
+√
+nTr(Σ)
+
+ψ2
+= ∥∥X∥−c1
+√ns0∥ψ2 ≤c2
+√
+λ1.
+Therefore, by Hoeﬀding’s bound (Vershynin, 2018, Proposition 2.5.2) we get that
+P[∥X∥−c1
+√ns0 ≥η] ≤2 exp(−c3η2/λ1).
+Setting η2 = ns0/λ1 = nr0 and noting that n ≥log(1/δ) ≥log(1/δ)/r0 completes the
+proof. ■
+Finally, we have a simple lemma that bounds the Frobenius norm of the responses Y.
+Lemma 23. There is a constant c> 0 such that for any δ ∈(0,1), if n≥clog(1/δ), then
+with probability at least 1 −δ, ∥Y∥≤ c(∥X∥op∥Θ⋆∥+ √qn).
+19
+Chatterji and Long
+Proof. Note that Y = XΘ⋆ + Ω, and therefore
+∥Y∥≤∥ XΘ⋆∥+ ∥Ω∥≤∥ X∥op∥Θ⋆∥+ ∥Ω∥, (8)
+where the last inequality follows since for any matrices ∥AB∥≤∥ A∥op∥B∥. Now each entry
+in Ω ∈Rn×q is a zero-mean and cy-sub-Gaussian. Therefore, by Bernstein’s bound (Ver-
+shynin, 2018, Theorem 2.8.1),
+P
+[
+∥Ω∥2 −E
+[
+∥Ω∥2]
+≥qn
+]
+≤2 exp(−c1qn).
+Now E
+[
+∥Ω∥2]
+= nE
+[
+∥y−xΘ⋆∥2]
+≤c2qn, by Assumption (A.4), and 2 exp( −qn) ≤δ since
+n≥clog(1/δ) ≥clog(1/δ)/q. Thus, with probability at least 1 −δ
+∥Ω∥2 ≤c3qn.
+Combining this with Eq. (8) completes the proof. ■
+With all of the pieces in place we are now ready to prove the theorem.
+Proof of Theorem 7. Deﬁne a “good event” Eas the intersection of the following events:
+• E1, the excess risk bound stated in Theorem 6 holds.
+• E2, the bounds stated in Proposition 18 hold.
+• E3, ∥X∥op ≤c√λ1n.
+• E4, ∥X∥≤ c√s0n.
+• E5, σmin(X) ≥
+√sk
+c .
+• E6, ∥Y∥≤ c
+(
+∥X∥op∥Θ⋆∥+ √qn
+)
+.
+Now, Theorem 6 and Proposition 18 each hold with probability at least 1 −cδ. Lemma 12
+implies that the event E3 holds with probability at least 1 −δ. By Lemma 22, the event E4
+holds with probability at least 1 −δ. For E5, notice that
+σmin(X) =
+√
+σmin(XX⊤) =
+√
+σmin(X:kX⊤
+:k + Xk:X⊤
+k:) ≥
+√
+σmin(Xk:X⊤
+k:) = σmin(Xk:),
+where X:k are the ﬁrst k columns of X and Xk: are the last d−k columns of X. Since
+n≥clog(1/δ), by (Bartlett et al., 2020, Lemma 9) we know that with probability at least
+1 −δ
+σmin(X) ≥σmin(Xk:) ≥
+√
+sk
+c1
+(
+1 −c1n
+rk
+)
+≥
+√sk
+c (since rk ≥bn by Deﬁnition 2).
+Finally, by Lemma 23 event E6 holds with probability at least 1 −δ. Therefore, by a union
+bound the good event Eholds with probability at least 1 −c′δ. Let us assume that this
+event occurs going forward in the proof.
+20
+Benign Overfitting in Deep Linear Networks
+Proposition 18 guarantees that the training process isc2(α+1/L)β-perpetually bounded
+and the loss converges to zero. Therefore, by applying Theorem 6, the risk is bounded by
+Risk(Θ) ≤Bias(Θℓ2 ) + Variance(Θℓ2 ) + Ξ,
+where
+Bias(Θℓ2 ) ≤csk
+n ∥Θ⋆∥2,
+Variance(Θℓ2 ) ≤cqlog(q/δ)
+(k
+n + n
+Rk
+)
+,
+Ξ ≤csk
+n
+[
+∥Θ(0)
+X⊥∥+ Lα(α+ 1/L)2β
+√
+λ1n
+∫ ∞
+t=0
+√
+L(Θ(t)) dt
+]2
+. (9)
+In the rest of the proof we shall bound the term Ξ.
+For this, we would like to apply Proposition 18, which we can, since α≤1,
+β ≥c3 max
+
+
+1,
+λ1/4
+1
+√
+Ln
+(√
+∥Θ⋆∥λ1/4 + q1/4
+)
+√sk
+
+
+
+≥c4 max
+{
+1,
+√
+L∥X∥op∥Y∥
+σ2
+min(X)
+}
+(by events E3, E5 and E6),
+and
+m≥c5 max
+{
+d+ q+ log(1/δ),L2α2λ1s0n2qlog(n/δ)
+β2s2
+k
+}
+≥c6 max
+{
+d+ q+ log(1/δ),L2α2∥X∥2
+op∥X∥2qlog(n/δ)
+β2σ4
+min(X)
+}
+(by events E3 and E4).
+Thus, by Proposition 18 we know that for all t> 0,
+L(Θ(t)) <c7
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+<c8
+(
+λ1n∥Θ⋆∥2 + qn+ α2β2qs0nlog(n/δ)
+m
+)
+exp
+(
+−c9β2sk ·t
+)
+(by events E3-E6).
+Integrating the RHS above we get that
+∫ ∞
+t=0
+√
+L(Θ(t)) dt≤c10
+√
+(λ1∥Θ⋆∥2 + q)n+ αβ
+√
+s0qnlog(n/δ)
+m
+β2sk
+. (10)
+21
+Chatterji and Long
+Proposition 18 also guarantees that the initialization isδ-good. That is, ∥W(0)
+1 ∥op ≤c11α
+and ∥W(0)
+L ∥≤ c11β. So,
+∥Θ(0)
+X⊥∥= ∥(I−PX)Θ(0)∥≤∥ (I−PX)∥op∥Θ(0)∥
+≤∥Θ(0)∥
+= ∥W(0)
+L W(0)
+L−1 ···W(0)
+1 ∥
+= ∥W(0)
+L W(0)
+1 ∥ (since W(0)
+2 = ... = W(0)
+L−1 = I)
+≤min
+{
+∥W(0)
+1 ∥op∥W(0)
+L ∥,∥W(0)
+1 ∥∥W(0)
+L ∥op
+}
+(i)
+≤c12
+√
+min {q,d}αβ
+≤c12
+√qαβ, (11)
+where ( i) follows since the initialization was good, and the ranks of W(0)
+1 and W(0)
+L are
+bounded by d and q respectively.
+Plugging the bounds obtained in Eqs. (10) and (11) into Eq. (9) we have that
+Ξ ≤c13sk
+n
+
+√qαβ+ Lα(α+ 1/L)2β2√
+λ1n
+
+
+√
+(λ1∥Θ⋆∥2 + q)n+ αβ
+√
+s0qnlog(n/δ)
+m
+β2sk
+
+
+
+
+2
+≤c13sk
+n
+
+
+√qαβ+
+Lα(α+ 1/L)2√λ1n
+(√
+(λ1∥Θ⋆∥2 + q)n+ αβ
+√
+s0qnlog(n/δ)
+m
+)
+sk
+
+
+2
+≤c14α2sk
+n
+
+qβ2 +
+L2(α+ 1/L)4λ1n
+(
+(λ1∥Θ⋆∥2 + q)n+ α2β2s0qnlog(n/δ)
+m
+)
+s2
+k
+
+
+≤c14α2sk
+n
+[
+qβ2 + L2(α+ 1/L)4λ1n2
+s2
+k
+(
+λ1∥Θ⋆∥2 + q+ α2β2s0qlog(n/δ)
+m
+)]
+.
+This completes our proof. ■
+6. Proof of Corollary 9
+When Σ is an instance of the ( k,ε)-spike model we ﬁnd that
+r0 = s0/λ1 = k+ ε(d−k), s k = ε(d−k) and Rk = (d−k). (12)
+First, for a large enough c1, we set
+β = c1 max
+
+
+
+1,
+λ1/4
+1
+√
+Ln
+(√
+∥Θ⋆∥λ1/4
+1 + q1/4
+)
+√sk
+
+
+
+= c1 max
+
+
+1,
+√
+Ln
+(√
+∥Θ⋆∥+ q1/4
+)
+√
+ε(d−k)
+
+
+.
+22
+Benign Overfitting in Deep Linear Networks
+Given this choice of β, for any q,n,k,d,L, if α> 0 is chosen to be small enough then,
+m≥c1(d+ q+ log(1/δ)) = c1 max
+{
+d+ q+ log(1/δ),L2α2λ1s0n2qlog(n/δ)
+β2s2
+k
+}
+.
+Also by the assumption on the number of samples,
+n≥c2 max {k+ εd,log(1/δ)}≥ c2 max {r0,k, log(1/δ)}.
+We are now in position to invoke Theorem 7. By this theorem we get that,
+Risk(Θ) ≤c3ε(d−k)
+n ∥Θ⋆∥2 + c3qlog(q/δ)
+(k
+n + n
+d−k
+)
++ Ξ
+≤cεd
+n ∥Θ⋆∥2 + cqlog(q/δ)
+(k
+n + n
+d
+)
++ Ξ (since d≥c4k).
+Recall from above that the upper bound on Ξ scales with α2. Thus, for small enough α it
+is a lower order term.
+7. Additional Simulations and Details
+Figure 3: Excess risk and distance from the minimum ℓ2-norm interpolator of three-layer
+linear networks trained by gradient descent on data generated by an underlying
+linear model as the input dimension varies. The model is trained on n = 100
+points drawn from the generative model y = xΘ⋆ + ω, where x ∼N(0,Σ) and
+ω ∼N(0,1). The excess risk is deﬁned as Ex
+[
+∥xΘ −xΘ⋆∥2]
+. In line with our
+theory, we ﬁnd that when the initialization scale is small, ﬁnal solution is close
+to the minimum ℓ2-norm interpolator and the resulting excess risk is small.
+Inspired by our theory, we ran simulations to study the excess risk of several linear networks
+and ReLU networks as a function of both the initialization scale and dimension. 1 In line
+1. Code athttps://github.com/niladri-chatterji/Benign-Deep-Linear
+23
+Chatterji and Long
+with our theoretical upper bounds, we ﬁnd that for deep linear networks as the initialization
+scale of either the ﬁrst layer (α) or the last layer (β) is large, the excess risk of the model is
+larger (see Figure 1). In deep ReLU networks (see Figure 2), we ﬁnd an asymmetry in the
+roles of αand β. The excess risk increases when we increase α, but is largely unaﬀected by
+the scale of the initialization of the ﬁnal layer β.
+In all of our ﬁgures we report the average over 20 runs. We also report the 95% conﬁdence
+interval assuming that the statistic of interest follows a Gaussian distribution.
+Setup for deep linear models. For Figures 1 and 3 the generative model for the un-
+derlying data was y= xΘ⋆ + ω, where
+1. Θ ⋆ ∈Rd×3 is drawn uniformly over the set of matrices with unit Frobenius norm. The
+output dimension q= 3;
+2. the covariates x ∼N(0,Σ), where the eigenvalues of Σ are as follows: λ1 = ... =
+λ10 = 1 and λ11 = ... = λd = 0.01;
+3. the noise ω is drawn independently from N(0,1).
+For these ﬁgures the number of samples n= 100 across all experiments. All of the models
+are trained on the squared loss with full-batch gradient descent with step-size 10 −4, until
+the training loss is smaller than 10 −7.
+We train models that have 2 hidden layers ( L= 3). The width of the middle layers m
+is set to be 10( d+ q), where d is the input dimension and q is the output dimension.
+For the top half of Figure 1 and Figure 3 when we vary the initialization scale of the
+ﬁrst layer α, we initialize all of the middle layers to the identity, and initialize entries of the
+last layer with i.i.d. draws from N(0,1).
+For the bottom half of Figure 1 when we vary the initialization scale of the last layer α,
+we initialize all of the middle layers to the identity, and initialize entries of the ﬁrst layer
+with i.i.d. draws from N(0,1).
+Setup for deep ReLU models. For Figure 2 the generative model for the underlying
+data was y= f⋆(x) + ω, where
+1. f⋆(x) is a two-layer feedforward ReLU network with width 10 and output dimension
+3 which was randomly initialized according to LeCun initialization;
+2. the covariates x∼N(0,I10×10);
+3. the noise ω is drawn independently from N(0,1).
+The networks are trained on n= 500 samples. Again, all of the models are trained on the
+squared loss with full-batch gradient descent with step-size 10 −4, until the training loss is
+smaller than 10−7.
+We train models that have L = 3 layers. The width of the middle layers ( m) is set to
+be 50.
+For left half of Figure 2 when we vary the initialization scale of the ﬁrst layer α, we
+initialize all of the middle layers to the identity, and initialize entries of the last layer with
+i.i.d. draws from N(0,1).
+24
+Benign Overfitting in Deep Linear Networks
+For the right half of Figure 2 when we vary the initialization scale of the last layer α,
+we initialize all of the middle layers to the identity, and initialize entries of the ﬁrst layer
+with i.i.d. draws from N(0,1).
+8. Discussion
+We have provided upper bounds on the excess risk for deep linear networks that interpolate
+the data with respect to the quadratic loss, and presented simulation studies that verify
+that the some aspects of our bounds reﬂect typical behavior.
+As mentioned in the introduction, our analysis describes a variety of conditions under
+which the generalization behavior of interpolating deep linear networks is similar, or the
+same, as the behavior of the minimum ℓ2-norm interpolant with the standard parameteri-
+zation. Among other things, this motivates study of loss functions other than the quadratic
+loss used in this work. The softmax loss would be a natural choice.
+Looking at our proofs, it appears that the only way that a deep linear parameterization
+can promote benign overﬁtting is for the function computed by the network at initialization
+to approximate the regression function. (Formalizing this with a lower bound, possibly in
+the case of random initialization, or with an arbitrary initialization and a randomly chosen
+regression function Θ ⋆, is a potential topic for further research.) The beneﬁts of a good
+approximation to the regression function at initialization has been explored in the case of
+two-layer linear networks (Chatterji et al., 2022). Extending this analysis to deep networks
+is a potential subject for further study.
+We focused on a particular random initialization scheme in this paper, it is possible
+to study other initialization schemes as well. For example, we believe that, if the width
+m of the network is somewhat larger, a similar analysis should go through without our
+simplifying assumption that W2,...,W L−1 are initialized exactly to the identity, and instead
+are initialized randomly.
+Recently, Mallinar et al. (2022) established conditions under which interpolation with
+the minimum ℓ2-norm intepolator is “tempered”, achieving risk within a constant factor of
+the Bayes risk. Here we show that the risk of interpolating deep linear networks is (nearly)
+equal to the risk of the minimum ℓ2-norm interpolator, this implies that when the minimum
+ℓ2-norm interpolator is tempered, so is the output of the deep linear model. We hope that
+our techniques lay the groundwork for other results about tempered overﬁtting.
+While here we analyzed the network obtained by the continuous-time gradient ﬂow it
+is straightforward to use our techniques to obtain similar results for gradient descent with
+small enough step-size at the expense of a more involved analysis.
+As mentioned after the statement of Theorem 7, its bounds could potentially be im-
+proved. (We have not attempted to prove any lower bounds in this work.)
+In Figure 1 we found that when the scale of the random initialization of either the ﬁrst
+(α) or the last layer ( β) goes to zero the trained model approach the minimum ℓ2-norm
+interpolator. Understanding why and when this happens is an avenue for future research.
+Finally, examining the extent to which the eﬀects described here carry over when non-
+linearities are present is a natural next step.
+25
+Chatterji and Long
+Acknowledgments
+We thank anonymous reviewers for their careful reading of an earlier version of this paper
+and their valuable feedback.
+26
+Benign Overfitting in Deep Linear Networks
+Appendix A. Additional Related Work
+In this appendix, we describe a wider variety of related work.
+A.1 Benign Overﬁtting and Double Descent
+This subsection includes descriptions of some of the most closely related work that we know.
+For a wider sample, we point the interested reader to a couple of surveys (Bartlett et al.,
+2021; Belkin, 2021).
+Papers have studied the excess risk of the minimum ℓ2-norm interpolant (Bartlett et al.,
+2020; Hastie et al., 2022; Muthukumar et al., 2020; Bartlett and Long, 2021), which is
+obtained as a result of minimizing the squared loss using gradient descent with no explicit
+regularization. While these previous papers directly analyzed the closed form expression of
+the minimum ℓ2-norm interpolant, followup work (Negrea et al., 2020; Koehler et al., 2021;
+Chinot and Lerasle, 2020; Chinot et al., 2022) employed tools from uniform convergence
+to analyze its excess risk. Prior work (Kobak et al., 2020; Wu and Xu, 2020; Tsigler and
+Bartlett, 2020) analyzed ridge regression with small or even negative regularization, and
+identiﬁed settings where using zero or even negative regularization can be optimal.
+Techniques have also been developed to upper bound the excess risk of the sparsity-
+inducing minimum ℓ1-norm interpolant (Koehler et al., 2021; Li and Wei, 2021; Wang
+et al., 2022; Donhauser et al., 2022). Furthermore, lower bounds on the excess risk that
+show that sparsity can be incompatible with benign overﬁtting, and that the excess risk of
+sparse interpolators maybe exponentially larger than that of dense interpolators have also
+been derived (Chatterji and Long, 2022).
+Kernel ridgeless regression has been actively studied (Liang and Rakhlin, 2020; Mei and
+Montanari, 2019). Careful theoretical analysis and simulations have revealed that kernel
+“ridgeless” regression can lead to multiple descent curves (Liang et al., 2020). A handful
+of papers have analyzed the risk of random features models (Mei and Montanari, 2019; Li
+et al., 2021b).
+Several papers have also studied benign overﬁtting in linear classiﬁcation of the canonical
+maximum ℓ2-margin classiﬁer (Montanari et al., 2019; Deng et al., 2022; Chatterji and Long,
+2021; Hsu et al., 2021; Muthukumar et al., 2021; Wang and Thrampoulidis, 2021; Cao et al.,
+2021), the maximum ℓ1-margin classiﬁer (Liang and Sur, 2022), and classiﬁers obtained by
+minimizing polynomially-tailed classiﬁcation losses (Wang et al., 2021b). Results have also
+been obtained on data that is linearly separable with two-layer leaky ReLU networks (Frei
+et al., 2022), and with two-layer convolutional networks with smooth nonlinearities (Cao
+et al., 2022).
+Furthermore, this phenomenon has been studied in nearest neighbor models (Belkin
+et al., 2018), latent factor models (Bunea et al., 2022) and the Nadaraya-Watson estima-
+tor (Belkin et al., 2019b) with a singular kernel.
+Shamir (2022) highlighted the importance of the choice of the loss function, since an
+interpolator that benignly overﬁts with respect one loss function may not with respect to
+another one.
+27
+Chatterji and Long
+A.2 Implicit Bias
+In the closely related problem of matrix factorization, several papers (Gunasekar et al., 2017;
+Arora et al., 2019) established conditions under which the solution of gradient ﬂow converges
+to the minimum nuclear norm solution. This rank minimization behavior of gradient ﬂow
+was also shown to approximately hold for ReLU networks (Timor et al., 2023).
+Papers have also studied the implicit bias of gradient descent fordiagonal linear networks
+and found that it depends on the scale of the initialization and step-size (Woodworth et al.,
+2020; Yun et al., 2021; Nacson et al., 2022). They found that depending on the scale of
+the initialization and step-size the network converges to the minimum ℓ2-norm solution
+(kernel regime), or to the minimum ℓ1-norm solution (rich regime) or to a solution that
+interpolates between these two norms. Gunasekar et al. (2018b); Jagadeesan et al. (2022)
+studied linear convolutional networks and found that under this parameterization of a linear
+model, gradient descent implicitly minimizes norms of the Fourier transform of the predictor.
+Techniques have also been developed to study the implicit bias of mirror descent (Gunasekar
+et al., 2018a; Li et al., 2022).
+For linear classiﬁers, minimizing exponentially-tailed losses including the logistic loss
+leads to the maximum ℓ2-margin classiﬁer (Soudry et al., 2018; Ji and Telgarsky, 2019;
+Nacson et al., 2019). Ji and Telgarsky (2018) found that this is also the case when the
+linear classiﬁer is parameterized as a deep linear classiﬁer.
+As a counterpoint to this line of research, Arora et al. (2019) and Razin and Cohen
+(2020) raised the possibility that the implicit bias of deep networks may be unexplainable
+by a simple function such as a norm. Li et al. (2021a) showed that under certain conditions
+gradient ﬂow with inﬁnitesimal initialization is equivalent to a simple heuristic rank mini-
+mization algorithm. Vardi and Shamir (2021) showed that it might be impossible altogether
+to capture the implicit bias of even two-layer ReLU networks using any functional form.
+A.3 Optimization of Deep Linear Networks
+Several papers have studied deep linear networks as a means to understand the beneﬁt
+of overparameterization while optimizing nonlinear networks. Arora et al. (2018) argued
+that depth promotes a form of implicit acceleration when performing gradient descent on
+deep linear networks. While other papers (Du and Hu, 2019) showed that for wide enough
+networks that are randomly initialized by Gaussians the loss converges at a linear rate.
+Other papers have analyzed the convergence rate under other initialization schemes such
+as orthogonal initialization (Hu et al., 2020) and near-identity initialization (Bartlett et al.,
+2019; Zou et al., 2020). Rates of convergence for accelerated methods such as Polyak’s
+heavy ball method have also been established (Wang et al., 2021a).
+Saxe et al. (2014) analyzed the eﬀect of initialization and step-size in training deep linear
+networks. Kawaguchi (2016) identiﬁed a number of properties of the loss landscape of deep
+linear networks, including the absence of suboptimal local minima; Achour et al. (2021)
+characterized global minima, strict saddles, and non-strict saddles for these landscapes.
+28
+Benign Overfitting in Deep Linear Networks
+Appendix B. Proof of Proposition 18
+In this appendix, we prove Proposition 18. Its proof uses some technical lemmas, which we
+derive ﬁrst.
+It is useful to recall the deﬁnition of a δ-good initialization from above.
+Deﬁnition 17. For a large enough absolute constant c, we say that the network enjoys a
+δ-good initialization if
+α/c<σ min(W(0)
+1 ) ≤σmax(W(0)
+1 ) <cα,
+β/c<σ min(W(0)
+L ) ≤σmax(W(0)
+L ) <cβ,
+and
+L(Θ(0)) <c
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+.
+The next two lemmas shall be useful in showing that our initialization scheme leads
+to a δ-good initialization. First, to bound the singular values of the weight matrices at
+initialization we apply the following result from Vershynin (2010).
+Lemma 24. There exists a constant c such that given any δ ∈(0,1) if m ≥c(d+ q+
+log(1/δ)), then with probability at least 1 −δ/2
+α/2 <σmin(W(0)
+1 ) ≤σmax(W(0)
+1 ) <2α and
+β/2 <σmin(W(0)
+L ) ≤σmax(W(0)
+L ) <2β.
+Proof. By (Vershynin, 2010, Corollary 5.35) we have that with probability at least 1 −
+4e−η2/2
+α√m
+(√m−
+√
+d−η
+)
+≤σmin(W(0)
+1 ) ≤σmax(W(0)
+1 ) ≤ α√m
+(√m+
+√
+d+ η
+)
+and
+β√m
+(√m−√q−η
+)
+≤σmin(W(0)
+L ) ≤σmax(W(0)
+L ) ≤ β√m
+(√m+ √q+ η
+)
+.
+So since m≥c(d+ q+ log(1/δ)), where cis a large enough constant, by picking η= √m/8
+we get that with probability at least 1 −δ/2
+α
+2 <σmin(W(0)
+1 ) ≤σmax(W(0)
+1 ) <2α
+β
+2 <σmin(W(0)
+L ) ≤σmax(W(0)
+L ) <2β,
+completing the proof. ■
+The next lemma shows that the loss is controlled at initialization.
+Lemma 25. There is a positive constant c such that, for any δ ∈(0,1), provided that
+m≥c(d+ q+ log(1/δ)), with probability at least 1 −δ/2
+L(Θ(0)) <c
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+.
+29
+Chatterji and Long
+Proof. The lemma directly follows by invoking (Zou et al., 2020, Proposition 3.3). ■
+The next lemma shows that if the weights remain close to their initial values then the
+loss decreases at a certain rate.
+Lemma 26. If β ≥2 and there was a good initialization (see Deﬁnition 17), at any time
+t> 0 if, for all j ∈[L]
+∥W(t)
+j −W(0)
+j ∥op < 1
+2L
+then
+dL(Θ(t))
+dt <−β2σ2
+min(X)
+4e L(Θ(t)).
+Proof. By the chain rule, we have that
+dL(Θ(t))
+dt = ∇ΘL(Θ(t)) ·dΘ
+dt = −∇ΘL(Θ(t)) ·∇ΘL(Θ(t)) = −∥∇ΘL(Θ(t))∥2.
+Further, observe that
+∇ΘL(Θ(t))
+
+2
+=
+L∑
+j=1
+∇Wj L(Θ(t))
+
+2
+≥
+∇W1L(Θ(t))
+
+2
+=
+(W(t)
+L ···W(t)
+2 )⊤(XΘ −Y)⊤X
+
+2
+.
+Continuing by applying (Zou et al., 2020, Lemma B.3) to the RHS of the inequality above
+we get that,
+∇ΘL(Θ(t))
+
+2
+≥σ2
+min(X) ∥XΘ −Y∥2
+
+∏
+k̸=1
+σ2
+min(W(t)
+k )
+
+
+= σ2
+min(X)L(Θ(t))
+
+∏
+k̸=1
+σ2
+min(W(t)
+k )
+
+
+(i)
+≥σ2
+min(X)L(Θ(t))
+
+∏
+k̸=1
+(
+σmin(W(0)
+k ) −∥W(t)
+k −W(0)
+k ∥op
+)2
+
+
+(ii)
+> σ2
+min(X)L(Θ(t))
+(β
+2 − 1
+2L
+)2 (
+1 − 1
+2L
+)2(L−2)
+= β2
+4 σ2
+min(X)L(Θ(t))
+(
+1 − 1
+βL
+)2 (
+1 − 1
+2L
+)2(L−2)
+≥β2
+4 σ2
+min(X)L(Θ(t))
+(
+1 − 1
+2L
+)2L−2
+≥β2σ2
+min(X)
+4e L(Θ(t)),
+30
+Benign Overfitting in Deep Linear Networks
+where (i) follows since on a good initialization for all j ∈[L], σmin(W(0)
+j ) ≥min{β/2,1}≥ 1
+and by assumption ∥W(t)
+j −W(0)
+j ∥op <1/(2L). Inequality (ii) follows since β ≥2, and there
+was a good initialization (which implies that the event in Lemma 24 occurs). ■
+The next lemma shows that if the weight matrices remain close throughout the path of
+gradient ﬂow then the loss decreases.
+Lemma 27. If β ≥2 and there was a good initialization (see Deﬁnition 17), given any
+t> 0 if for all 0 ≤s<t and for all j ∈[L]
+∥W(s)
+j −W(0)
+j ∥op < 1
+2L
+then,
+L(Θ(t)) <L(Θ(0)) exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+.
+Proof. By assumption ∥W(s)
+j −W(0)
+j ∥op < 1/(2L) for all 0 ≤s < t. Thus, by invoking
+Lemma 26 we know that for all 0 ≤s<t ,
+dL(θ(s))
+ds <−β2σ2
+min(X)
+4e L(Θ(s)).
+which implies
+∫ t
+0
+1
+L(Θ(s))
+dL(θ(s))
+ds ds< −
+∫ t
+0
+β2σ2
+min(X)
+4e ds.
+Integrating both sides we get that
+L(Θ(t)) <L(Θ(0)) exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+.
+■
+We also need the lemma that controls the growth of the operator norm of W(t)
+j .
+Lemma 28. There is a positive absolute constant c such that if
+•β ≥cmax
+{
+1,
+√
+L∥X∥op∥Y∥
+σ2
+min(X)
+}
+and
+•m≥c
+L2α2∥X∥2
+op∥X∥2qlog(n/δ)
+β2σ4
+min(X) ,
+then on a good initialization, given any t> 0 if for all 0 ≤s<t
+∥W(s)
+j −W(0)
+j ∥op < 1
+2L
+then
+∥W(t)
+j −W(0)
+j ∥op < 1
+2L.
+31
+Chatterji and Long
+Proof. Applying (Zou et al., 2020, Lemma A.1) with A= B = I we have, for all s≥0,
+∇Wj L(Θ(s))
+
+2
+≤2e∥X∥2
+opL(Θ(s)).
+By the deﬁnition of gradient ﬂow,
+W(t)
+j −W(0)
+j = −
+∫ t
+0
+∇LWj (Θ(s)) ds,
+which implies that,
+∥W(t)
+j −W(0)
+j ∥op ≤
+∫ t
+0
+∥∇LWj (Θ(s))∥op ds
+≤
+∫ t
+0
+√
+2e∥X∥op
+√
+L(Θ(s)) ds
+(i)
+<
+√
+2e∥X∥op
+∫ t
+0
+√
+L(Θ(0)) exp
+(
+−β2σ2
+min(X)
+4e ·s
+)
+ds
+=
+√
+2e∥X∥op
+√
+L(Θ(0))
+∫ t
+0
+exp
+(
+−β2σ2
+min(X)
+4e ·s
+)
+ds
+= 4e
+√
+2e∥X∥op
+√
+L(Θ(0))
+β2σ2
+min(X)
+[
+1 −exp
+(
+−β2σ2
+min(X)t
+4e
+)]
+< 30∥X∥op
+√
+L(Θ(0))
+β2σ2
+min(X) ,
+where (i) follows by applying Lemma 27.
+On a good initialization we have that
+L(Θ(0)) <c1
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+.
+Plugging this into the previous inequality we ﬁnd that
+∥W(t)
+j −W(0)
+j ∥op < 30∥X∥op
+β2σ2
+min(X)
+√
+c1
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+≤c2
+(
+∥X∥op∥Y∥
+β2σ2
+min(X) + α∥X∥op∥X∥
+βσ2
+min(X)
+√
+qlog(n/δ)
+m
+)
+.
+So for our lemma to be satisﬁed it suﬃces if
+c2
+α∥X∥op∥X∥
+βσ2
+min(X)
+√
+qlog(n/δ)
+m < 1
+4L ⇔m>c 3
+L2α2∥X∥2
+op∥X∥2qlog(n/δ)
+β2σ4
+min(X)
+and
+c2
+∥X∥op∥Y∥
+β2σ2
+min(X) < 1
+4L ⇔β >c4
+√
+L∥X∥op∥Y∥
+σ2
+min(X)
+■
+32
+Benign Overfitting in Deep Linear Networks
+Armed with these lemmas, we are now ready to prove the main result of this appendix.
+Recall its statement from above.
+Proposition 18. There is a constant c such that, given any δ∈(0,1), if the initialization
+scales α and β, along with the network width m, satisfy
+m≥cmax
+{
+d+ q+ log(1/δ),L2α2∥X∥2
+op∥X∥2qlog(n/δ)
+β2σ4
+min(X)
+}
+,
+β ≥cmax
+{
+1,
+√
+L∥X∥op∥Y∥
+σ2
+min(X)
+}
+,
+α≤1,
+then with probability at least 1 −δ:
+1. the initialization is δ-good;
+2. training is perpetually c(α+ 1/L)β bounded;
+3. for all t> 0, we have that
+L(Θ(t)) <L(Θ(0)) exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+≤c
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+.
+Proof. We will ﬁrst prove that Part 1 of the proposition holds with probability 1 −δ and
+then prove the other two parts assuming that the initialization was good.
+Proof of Part 1. By invoking Lemmas 24 and 25 we have that a good initialization holds
+with probability at least 1 −δ.
+Proof of Parts 2 and 3. Assume that the initialization was good. We claim that, for all
+t> 0,
+•for all j ∈[L], ∥W(t)
+j −W(0)
+j ∥op < 1
+2L and
+• L(Θ(t)) <L(Θ(0)) exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+.
+Assume for contradiction that this does not hold. Since ∥W(t)
+j −W(0)
+j ∥op−1
+2L and L(Θ(t))−
+L(Θ(0)) exp
+(
+−β2σ2
+min(X)
+4e ·t
+)
+are continuous functions of t, by the Intermediate Value The-
+orem there is a least value t0 > 0 such that one of these quantities equals zero. But
+Lemmas 27 and 28 contradict this. This proves the ﬁrst bound on the loss in Part 3. For
+the second bound on the loss, we note that on a good initialization
+L(Θ(0)) <c′
+(
+∥Y∥2 + α2β2q∥X∥2 log(n/δ)
+m
+)
+.
+33
+Chatterji and Long
+Finally, we show that the training is perpetually c(α+ 1/L)β bounded. Recall that this
+means that, for all t≥0, for all S ⊆[L],
+∏
+k∈S
+W(t)
+k
+
+op
+≤c(α+ 1/L)β.
+This follows since on a good initialization, ∥W(0)
+1 ∥op ≤ 2α, ∥W(0)
+L ∥op ≤ 2β and for all
+j ∈{2,...,L −1}, ∥W(0)
+j ∥op = 1. Further, by Lemma 28 we know that for all t ≥0,
+∥W(t)
+j −W(0)
+j ∥op ≤1/(2L). Putting these two facts together, proves that the process is
+perpetually c(α+ 1/L)β bounded.
+■
+References
+El Mehdi Achour, Fran¸ cois Malgouyres, and S´ ebastien Gerchinovitz. The loss landscape of
+deep linear neural networks: a second-order analysis. arXiv preprint arXiv:2107.13289 ,
+2021.
+Sanjeev Arora, Nadav Cohen, and Elad Hazan. On the optimization of deep networks:
+implicit acceleration by overparameterization. In International Conference on Machine
+Learning (ICML), 2018.
+Sanjeev Arora, Nadav Cohen, Wei Hu, and Yuping Luo. Implicit regularization in deep
+matrix factorization. In Advances in Neural Information Processing Systems (NeurIPS) ,
+2019.
+Shahar Azulay, Edward Moroshko, Mor Shpigel Nacson, Blake Woodworth, Nathan Srebro,
+Amir Globerson, and Daniel Soudry. On the implicit bias of initialization shape: beyond
+inﬁnitesimal mirror descent. In International Conference on Machine Learning (ICML) ,
+2021.
+Peter Bartlett and Philip Long. Failures of model-dependent generalization bounds for
+least-norm interpolation. Journal of Machine Learning Research (JMLR) , 2021.
+Peter Bartlett, David Helmbold, and Philip Long. Gradient descent with identity initializa-
+tion eﬃciently learns positive-deﬁnite linear transformations by deep residual networks.
+Neural Computation, 2019.
+Peter Bartlett, Philip Long, G´ abor Lugosi, and Alexander Tsigler. Benign overﬁtting in
+linear regression. Proceedings of the National Academy of Sciences (PNAS) , 2020.
+Peter Bartlett, Andrea Montanari, and Alexander Rakhlin. Deep learning: a statistical
+viewpoint. Acta Numerica, 2021.
+Mikhail Belkin. Fit without fear: remarkable mathematical phenomena of deep learning
+through the prism of interpolation. Acta Numerica, 2021.
+34
+Benign Overfitting in Deep Linear Networks
+Mikhail Belkin, Daniel Hsu, and Partha Mitra. Overﬁtting or perfect ﬁtting? Risk bounds
+for classiﬁcation and regression rules that interpolate. In Advances in Neural Information
+Processing Systems (NeurIPS), 2018.
+Mikhail Belkin, Daniel Hsu, Siyuan Ma, and Soumik Mandal. Reconciling modern machine-
+learning practice and the classical bias–variance trade-oﬀ. Proceedings of the National
+Academy of Sciences (PNAS) , 2019a.
+Mikhail Belkin, Alexander Rakhlin, and Alexandre Tsybakov. Does data interpolation
+contradict statistical optimality? In International Conference on Artiﬁcial Intelligence
+and Statistics (AISTATS), 2019b.
+Florentina Bunea, Seth Strimas-Mackey, and Marten Wegkamp. Interpolation under latent
+factor regression models. Journal of Machine Learning Research (JMLR) , 2022.
+Yuan Cao, Quanquan Gu, and Mikhail Belkin. Risk bounds for over-parameterized maxi-
+mum margin classiﬁcation on sub-Gaussian mixtures. In Advances in Neural Information
+Processing Systems (NeurIPS), 2021.
+Yuan Cao, Zixiang Chen, Mikhail Belkin, and Quanquan Gu. Benign overﬁtting in two-layer
+convolutional neural networks. In Advances in Neural Information Processing Systems
+(NeurIPS), 2022.
+Niladri Chatterji and Philip Long. Finite-sample analysis of interpolating linear classiﬁers
+in the overparameterized regime. Journal of Machine Learning Research (JMLR) , 2021.
+Niladri Chatterji and Philip Long. Foolish crowds support benign overﬁtting. Journal of
+Machine Learning Research (JMLR), 2022.
+Niladri Chatterji, Philip Long, and Peter Bartlett. The interplay between implicit bias and
+benign overﬁtting in two-layer linear networks. Journal of Machine Learning Research
+(JMLR), 2022.
+Geoﬀrey Chinot and Matthieu Lerasle. On the robustness of the minimum ℓ2 interpolator.
+arXiv preprint arXiv:2003.05838 , 2020.
+Geoﬀrey Chinot, Matthias L¨ oﬄer, and Sara van de Geer. On the robustness of minimum
+norm interpolators and regularized empirical risk minimizers. Annals of Statistics , 2022.
+Zeyu Deng, Abla Kammoun, and Christos Thrampoulidis. A model of double descent for
+high-dimensional binary linear classiﬁcation. Information and Inference, 2022.
+Konstantin Donhauser, Nicol` o Ruggeri, Stefan Stojanovic, and Fanny Yang. Fast rates
+for noisy interpolation require rethinking the eﬀect of inductive bias. In International
+Conference on Machine Learning (ICML) , 2022.
+Simon Du and Wei Hu. Width provably matters in optimization for deep linear neural
+networks. In International Conference on Machine Learning (ICML) , 2019.
+35
+Chatterji and Long
+Spencer Frei, Niladri Chatterji, and Peter Bartlett. Benign overﬁtting without linearity:
+neural network classiﬁers trained by gradient descent for noisy linear data. In Conference
+on Learning Theory (COLT), 2022.
+Suriya Gunasekar, Blake Woodworth, Srinadh Bhojanapalli, Behnam Neyshabur, and
+Nathna Srebro. Implicit regularization in matrix factorization. In Advances in Neural
+Information Processing Systems (NeurIPS) , 2017.
+Suriya Gunasekar, Jason Lee, Daniel Soudry, and Nathan Srebro. Characterizing implicit
+bias in terms of optimization geometry. InInternational Conference on Machine Learning
+(ICML), 2018a.
+Suriya Gunasekar, Jason Lee, Daniel Soudry, and Nathan Srebro. Implicit bias of gradient
+descent on linear convolutional networks. In Advances in Neural Information Processing
+Systems (NeurIPS), 2018b.
+Trevor Hastie, Andrea Montanari, Saharon Rosset, and Ryan Tibshirani. Surprises in high-
+dimensional ridgeless least squares interpolation. Annals of Statistics , 2022.
+Daniel Hsu, Vidya Muthukumar, and Ji Xu. On the proliferation of support vectors in
+high dimensions. In International Conference on Artiﬁcial Intelligence and Statistics
+(AISTATS), 2021.
+Wei Hu, Lechao Xiao, and Jeﬀrey Pennington. Provable beneﬁt of orthogonal initialization
+in optimizing deep linear networks. In International Conference on Learning Represen-
+tations (ICLR), 2020.
+Meena Jagadeesan, Ilya Razenshteyn, and Suriya Gunasekar. Inductive bias of multi-
+channel linear convolutional networks with bounded weight norm. In Conference on
+Learning Theory (COLT), 2022.
+Ziwei Ji and Matus Telgarsky. Gradient descent aligns the layers of deep linear networks.
+In International Conference on Learning Representations (ICLR) , 2018.
+Ziwei Ji and Matus Telgarsky. The implicit bias of gradient descent on nonseparable data.
+In Conference on Learning Theory (COLT), 2019.
+Kenji Kawaguchi. Deep learning without poor local minima. In Advances in Neural Infor-
+mation Processing Systems (NeurIPS) , 2016.
+Dmitry Kobak, Jonathan Lomond, and Benoit Sanchez. The optimal ridge penalty for
+real-world high-dimensional data can be zero or negative due to the implicit ridge regu-
+larization. Journal of Machine Learning Research (JMLR) , 2020.
+Frederic Koehler, Lijia Zhou, Danica Sutherland, and Nathan Srebro. Uniform convergence
+of interpolators: Gaussian width, norm bounds and benign overﬁtting. In Advances in
+Neural Information Processing Systems (NeurIPS) , 2021.
+Vladimir Koltchinskii and Karim Lounici. Concentration inequalities and moment bounds
+for sample covariance operators. Bernoulli, 2017.
+36
+Benign Overfitting in Deep Linear Networks
+Yue Li and Yuting Wei. Minimum ℓ1-norm interpolators: precise asymptotics and multiple
+descent. arXiv preprint arXiv:2110.09502 , 2021.
+Zhiyuan Li, Yuping Luo, and Kaifeng Lyu. Towards resolving the implicit bias of gradient
+descent for matrix factorization: greedy low-rank learning. In International Conference
+on Learning Representations (ICLR), 2021a.
+Zhiyuan Li, Tianhao Wang, Jason Lee, and Sanjeev Arora. Implicit bias of gradient descent
+on reparametrized models: on equivalence to mirror descent. In Advances in Neural
+Information Processing Systems (NeurIPS) , 2022.
+Zhu Li, Zhi-Hua Zhou, and Arthur Gretton. Towards an understanding of benign overﬁtting
+in neural networks. arXiv preprint arXiv:2106.03212 , 2021b.
+Tengyuan Liang and Alexander Rakhlin. Just interpolate: Kernel “ridgeless” regression
+can generalize. Annals of Statistics , 2020.
+Tengyuan Liang and Pragya Sur. A precise high-dimensional asymptotic theory for boosting
+and min-ℓ1-norm interpolated classiﬁers. Annals of Statistics , 2022.
+Tengyuan Liang, Alexander Rakhlin, and Xiyu Zhai. On the multiple descent of minimum-
+norm interpolants and restricted lower isometry of kernels. In Conference on Learning
+Theory (COLT), 2020.
+Neil Mallinar, James Simon, Amirhesam Abedsoltan, Parthe Pandit, Mikhail Belkin, and
+Preetum Nakkiran. Benign, tempered, or catastrophic: a reﬁned taxonomy of overﬁtting.
+In Advances in Neural Information Processing Systems (NeurIPS) , 2022.
+Song Mei and Andrea Montanari. The generalization error of random features regression:
+precise asymptotics and the double descent curve. Communications on Pure and Applied
+Mathematics, 2019.
+Hancheng Min, Salma Tarmoun, Ren´ e Vidal, and Enrique Mallada. On the explicit role of
+initialization on the convergence and implicit bias of overparametrized linear networks.
+In International Conference on Machine Learning (ICML) , 2021.
+Andrea Montanari, Feng Ruan, Youngtak Sohn, and Jun Yan. The generalization error
+of max-margin linear classiﬁers: high-dimensional asymptotics in the overparametrized
+regime. arXiv preprint arXiv:1911.01544 , 2019.
+Vidya Muthukumar, Kailas Vodrahalli, Vignesh Subramanian, and Anant Sahai. Harmless
+interpolation of noisy data in regression. IEEE Journal on Selected Areas in Information
+Theory, 2020.
+Vidya Muthukumar, Adhyyan Narang, Vignesh Subramanian, Mikhail Belkin, Daniel Hsu,
+and Anant Sahai. Classiﬁcation vs regression in overparameterized regimes: does the loss
+function matter? Journal of Machine Learning Research (JMLR) , 2021.
+Mor Shpigel Nacson, Nathan Srebro, and Daniel Soudry. Stochastic gradient descent on
+separable data: exact convergence with a ﬁxed learning rate. In International Conference
+on Artiﬁcial Intelligence and Statistics (AISTATS) , 2019.
+37
+Chatterji and Long
+Mor Shpigel Nacson, Kavya Ravichandran, Nathan Srebro, and Daniel Soudry. Implicit
+bias of the step size in linear diagonal neural networks. In International Conference on
+Machine Learning (ICML), 2022.
+Jeﬀrey Negrea, Gintare Karolina Dziugaite, and Daniel Roy. In defense of uniform conver-
+gence: generalization via derandomization with an application to interpolating predictors.
+In International Conference on Machine Learning (ICML) , 2020.
+Behnam Neyshabur, Ryota Tomioka, and Nathan Srebro. In search of the real inductive
+bias: on the role of implicit regularization in deep learning. In International Conference
+on Learning Representations (ICLR) Workshop , 2015.
+Noam Razin and Nadav Cohen. Implicit regularization in deep learning may not be ex-
+plainable by norms. In Advances in Neural Information Processing Systems (NeurIPS) ,
+2020.
+Andrew Saxe, James McClelland, and Surya Ganguli. Exact solutions to the nonlinear
+dynamics of learning in deep linear neural networks. In International Conference on
+Learning Representations (ICLR), 2014.
+Ohad Shamir. The implicit bias of benign overﬁtting. In Conference on Learning Theory
+(COLT), 2022.
+Daniel Soudry, Elad Hoﬀer, Mor Shpigel Nacson, Suriya Gunasekar, and Nathan Srebro.
+The implicit bias of gradient descent on separable data. Journal of Machine Learning
+Research (JMLR), 2018.
+Nadav Timor, Gal Vardi, and Ohad Shamir. Implicit regularization towards rank mini-
+mization in ReLU networks. In International Conference on Algorithmic Learning Theory
+(ALT), 2023.
+Alexander Tsigler and Peter Bartlett. Benign overﬁtting in ridge regression. arXiv preprint
+arXiv:2009.14286, 2020.
+Gal Vardi and Ohad Shamir. Implicit regularization in ReLU networks with the square loss.
+In Conference on Learning Theory (COLT), 2021.
+Roman Vershynin. Introduction to the non-asymptotic analysis of random matrices. arXiv
+preprint arXiv:1011.3027, 2010.
+Roman Vershynin. High-dimensional probability: an introduction with applications in data
+science. Cambridge University Press, 2018.
+Guillaume Wang, Konstantin Donhauser, and Fanny Yang. Tight bounds for minimum ℓ1-
+norm interpolation of noisy data. In International Conference on Artiﬁcial Intelligence
+and Statistics (AISTATS), 2022.
+Jun-Kun Wang, Chi-Heng Lin, and Jacob Abernethy. A modular analysis of provable
+acceleration via Polyak’s momentum: training a wide ReLU network and a deep linear
+network. In International Conference on Learning Representations (ICLR) , 2021a.
+38
+Benign Overfitting in Deep Linear Networks
+Ke Wang and Christos Thrampoulidis. Benign overﬁtting in binary classiﬁcation of Gaus-
+sian mixtures. In International Conference on Acoustics, Speech and Signal Processing
+(ICASSP), 2021.
+Ke Alexander Wang, Niladri Chatterji, Saminul Haque, and Tatsunori Hashimoto. Is impor-
+tance weighting incompatible with interpolating classiﬁers? In International Conference
+on Learning Representations (ICLR), 2021b.
+Blake Woodworth, Suriya Gunasekar, Jason Lee, Edward Moroshko, Pedro Savarese, Itay
+Golan, Daniel Soudry, and Nathan Srebro. Kernel and rich regimes in overparametrized
+models. In Conference on Learning Theory (COLT), 2020.
+Denny Wu and Ji Xu. On the optimal weightedℓ2 regularization in overparameterized linear
+regression. In Advances in Neural Information Processing Systems (NeurIPS) , 2020.
+Chulhee Yun, Shankar Krishnan, and Hossein Mobahi. A unifying view on implicit bias in
+training linear neural networks. In International Conference on Learning Representations
+(ICLR), 2021.
+Chiyuan Zhang, Samy Bengio, Moritz Hardt, Benjamin Recht, and Oriol Vinyals. Under-
+standing deep learning requires rethinking generalization. In International Conference on
+Learning Representations (ICLR), 2017.
+Difan Zou, Philip Long, and Quanquan Gu. On the global convergence of training deep
+linear resnets. In International Conference on Learning Representations (ICLR) , 2020.
+39

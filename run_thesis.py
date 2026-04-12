@@ -236,6 +236,18 @@ def main():
         print(f"    [!] Error generating Track 1 exhibits: {e}")
 
     try:
+        stability_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "attribution_stability.py")
+        os.system(f'python "{stability_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Attribution Stability exhibits: {e}")
+
+    try:
+        multi_horizon_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "test_multi_horizon.py")
+        os.system(f'python "{multi_horizon_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Multi-Horizon Attribution exhibits: {e}")
+
+    try:
         f19_f20.generate_exhibits()
     except Exception as e:
         print(f"    [!] Error generating Figure 19/20 (Qualitative): {e}")

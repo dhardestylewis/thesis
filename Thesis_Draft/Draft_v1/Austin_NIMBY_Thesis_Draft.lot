@@ -1,14 +1,15 @@
-\contentsline {table}{\numberline {1}{\ignorespaces Valid Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}}{9}{table.caption.1}%
+\contentsline {table}{\numberline {1}{\ignorespaces Measured Threshold-Crossing Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}}{9}{table.caption.1}%
 \contentsline {table}{\numberline {2}{\ignorespaces Annual Distribution of Discretionary Zoning Cases (2007---2024)}}{13}{table.caption.4}%
 \contentsline {table}{\numberline {3}{\ignorespaces Historical Panel Descriptive Statistics}}{15}{table.caption.7}%
 \contentsline {table}{\numberline {4}{\ignorespaces Sample Selection from Raw Records to Analytic Sample}}{15}{table.caption.8}%
-\contentsline {table}{\numberline {5}{\ignorespaces Stage A Target Definitions}}{17}{table.caption.9}%
-\contentsline {table}{\numberline {6}{\ignorespaces Development Occurrence Hazard Model Performance}}{18}{table.caption.11}%
-\contentsline {table}{\numberline {7}{\ignorespaces Project Type and Scale}}{20}{table.caption.13}%
-\contentsline {table}{\numberline {8}{\ignorespaces Precision-Recall Area Under Curve (PR-AUC) Evaluation}}{21}{table.caption.15}%
-\contentsline {table}{\numberline {9}{\ignorespaces Development-proposal and petition-filing models evaluated at filing: Raw vs. calibrated candidate models}}{22}{table.caption.16}%
-\contentsline {table}{\numberline {10}{\ignorespaces Pre-Council Attrition Forecast (Opposed Cases Only)}}{23}{table.caption.17}%
-\contentsline {table}{\numberline {11}{\ignorespaces Filing-Date Predictive Performance for the Petition Model}}{25}{table.caption.19}%
-\contentsline {table}{\numberline {12}{\ignorespaces Multi-Horizon Petition-Filing Model Performance with 95\% Bootstrap CIs}}{27}{table.caption.21}%
-\contentsline {table}{\numberline {13}{\ignorespaces Summary of Supplementary Quasi-Experimental Estimates}}{34}{table.caption.29}%
-\contentsline {table}{\numberline {14}{\ignorespaces Calibration Method Comparison: ECE, ACE, and Brier Score Across Models}}{42}{table.caption.33}%
+\contentsline {table}{\numberline {5}{\ignorespaces Precision-Recall Area Under Curve (PR-AUC) Evaluation}}{18}{table.caption.10}%
+\contentsline {table}{\numberline {6}{\ignorespaces Development-proposal and petition-filing models evaluated at filing: Raw vs. calibrated candidate models}}{19}{table.caption.11}%
+\contentsline {table}{\numberline {7}{\ignorespaces Filing-Date Predictive Performance for the Petition Model}}{21}{table.caption.12}%
+\contentsline {table}{\numberline {8}{\ignorespaces Multi-Horizon Petition-Filing Model Performance with 95\% Bootstrap CIs}}{22}{table.caption.14}%
+\contentsline {table}{\numberline {9}{\ignorespaces Calibration Method Comparison: ECE, ACE, and Brier Score Across Models}}{36}{table.caption.24}%
+\contentsline {table}{\numberline {10}{\ignorespaces Semantic Feature Aggregation Mapping}}{37}{table.caption.25}%
+\contentsline {table}{\numberline {11}{\ignorespaces Stage A Target Definitions}}{47}{table.caption.29}%
+\contentsline {table}{\numberline {12}{\ignorespaces Development Occurrence Hazard Model Performance}}{48}{table.caption.31}%
+\contentsline {table}{\numberline {13}{\ignorespaces Project Type and Scale}}{50}{table.caption.33}%
+\contentsline {table}{\numberline {14}{\ignorespaces Pre-Council Attrition Forecast (Opposed Cases Only)}}{51}{table.caption.34}%
+\contentsline {table}{\numberline {15}{\ignorespaces Summary of Supplementary Quasi-Experimental Estimates}}{54}{table.caption.38}%

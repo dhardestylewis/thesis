@@ -1,21 +1,23 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Annual Valid Protest Petition Rate by Project Type}}{10}{figure.caption.2}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Annual Petition Filing Rate by Project Type}}{10}{figure.caption.2}%
 \contentsline {figure}{\numberline {2}{\ignorespaces Spatial Distribution of Zoning Cases (2007-2024)}}{13}{figure.caption.3}%
 \contentsline {figure}{\numberline {3}{\ignorespaces 200ft Parcel Buffer Geometries}}{14}{figure.caption.5}%
 \contentsline {figure}{\numberline {4}{\ignorespaces Schematic of the Austin Zoning Process}}{15}{figure.caption.6}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Development Hazard Classification PR Curves}}{18}{figure.caption.10}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Predicted Geographic Occurrence vs. Realized Events}}{19}{figure.caption.12}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Formal Protest Petition PR Curves by Model}}{21}{figure.caption.14}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Composite Measure of Expected Petitioned Units}}{24}{figure.caption.18}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Calibration of the Stage A and Stage C Models}}{26}{figure.caption.20}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Performance Across Temporal Holdouts}}{27}{figure.caption.22}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Top Predictor Groups After Hierarchical Clustering}}{28}{figure.caption.23}%
-\contentsline {figure}{\numberline {12}{\ignorespaces SHAP Beeswarm Plot for the Opposition Model}}{29}{figure.caption.24}%
-\contentsline {figure}{\numberline {13}{\ignorespaces Causal Identification: Methodological Causal Graphs}}{30}{figure.caption.25}%
-\contentsline {figure}{\numberline {14}{\ignorespaces Threshold-Based Discontinuity at the Measured 20\% Petition Share}}{31}{figure.caption.26}%
-\contentsline {figure}{\numberline {15}{\ignorespaces Estimated 2022 Electoral-Transition Interaction Effects by District}}{32}{figure.caption.27}%
-\contentsline {figure}{\numberline {16}{\ignorespaces Placebo Estimates Across Earlier Election Cycles}}{33}{figure.caption.28}%
-\contentsline {figure}{\numberline {17}{\ignorespaces HOME Phase 1 Event-Study Coefficients}}{35}{figure.caption.30}%
-\contentsline {figure}{\numberline {18}{\ignorespaces Geographic Distribution of False Positives vs. Actual Filings}}{37}{figure.caption.31}%
-\contentsline {figure}{\numberline {19}{\ignorespaces Supplementary Hyperparameter Search Results}}{48}{figure.caption.34}%
-\contentsline {figure}{\numberline {20}{\ignorespaces Mean Predicted Probability of Argument Frames by District}}{50}{figure.caption.35}%
-\contentsline {figure}{\numberline {21}{\ignorespaces Argument Frame Probabilities: Opposed vs. Unopposed Cases}}{51}{figure.caption.36}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Formal Protest Petition PR Curves by Model}}{18}{figure.caption.9}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Calibration of the Stage A and Stage C Models}}{22}{figure.caption.13}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Performance Across Temporal Holdouts}}{23}{figure.caption.15}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Top Predictor Groups After Hierarchical Clustering}}{23}{figure.caption.16}%
+\contentsline {figure}{\numberline {9}{\ignorespaces SHAP Beeswarm Plot for the Opposition Model}}{24}{figure.caption.17}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Causal Identification: Regression Discontinuity DAG}}{25}{figure.caption.20}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Expanding-Window Attribution Stability Test}}{26}{figure.caption.18}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Multi-Horizon Attribution Stability}}{27}{figure.caption.19}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Threshold-Based Discontinuity at the Measured 20\% Petition Share}}{28}{figure.caption.21}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Geographic Distribution of False Positives vs. Actual Filings}}{31}{figure.caption.22}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Supplementary Hyperparameter Search Results}}{43}{figure.caption.26}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Mean Predicted Probability of Argument Frames by District}}{45}{figure.caption.27}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Argument Frame Probabilities: Opposed vs. Unopposed Cases}}{46}{figure.caption.28}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Development Hazard Classification PR Curves}}{48}{figure.caption.30}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Predicted Geographic Occurrence vs. Realized Events}}{49}{figure.caption.32}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Composite Measure of Expected Petitioned Units}}{52}{figure.caption.35}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Estimated 2022 Electoral-Transition Interaction Effects by District}}{53}{figure.caption.36}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Placebo Estimates Across Earlier Election Cycles}}{54}{figure.caption.37}%
+\contentsline {figure}{\numberline {23}{\ignorespaces HOME Phase 1 Event-Study Coefficients}}{55}{figure.caption.39}%

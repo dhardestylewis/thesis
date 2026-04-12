@@ -32,6 +32,13 @@ Brantly Callaway and Pedro~H.C. Sant'Anna.
 \newblock \href {https://doi.org/10.1016/j.jeconom.2020.12.001}
   {\path{doi:10.1016/j.jeconom.2020.12.001}}.
 
+\bibitem{cameron2008bootstrap}
+A.~Colin Cameron, Jonah~B. Gelbach, and Douglas~L. Miller.
+\newblock Bootstrap-based improvements for inference with clustered errors.
+\newblock {\em The Review of Economics and Statistics}, 90(3):414--427, 2008.
+\newblock \href {https://doi.org/10.1162/rest.90.3.414}
+  {\path{doi:10.1162/rest.90.3.414}}.
+
 \bibitem{cellini2010schools}
 Stephanie~Riegg Cellini, Fernando Ferreira, and Jesse Rothstein.
 \newblock The value of school facility investments: Evidence from a dynamic
@@ -60,14 +67,6 @@ Carlos Cinelli and Chad Hazlett.
 \newblock Making sense of sensitivity: Extending omitted variable bias.
 \newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
   Methodology)}, 82(1):39--67, 2020.
-
-\bibitem{pool2023}
-{City of Austin}.
-\newblock Resolution no.\ 20230720-126: Initiating the {HOME} ({Home Options
-  for Mobility and Equity}) initiative.
-\newblock Austin City Council, July 2023.
-\newblock Sponsored by Council Member Leslie Pool. Adopted July 20, 2023.
-\newblock URL: \url{https://www.austintexas.gov/department/home-initiative}.
 
 \bibitem{einstein2019book}
 Katherine~Levine Einstein, David~M. Glick, and Maxwell Palmer.
@@ -203,7 +202,7 @@ Galit Shmueli.
 
 \bibitem{texas211006}
 {Texas State Legislature}.
-\newblock Texas local government code {\\S}~211.006 (procedures governing
+\newblock Texas local government code {\S}~211.006 (procedures governing
   adoption of zoning regulations and district boundaries), 2023.
 \newblock URL: \url{https://statutes.capitol.texas.gov/Docs/LG/htm/LG.211.htm}.
 
