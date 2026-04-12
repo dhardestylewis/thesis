@@ -56,7 +56,9 @@ def main():
     if not target_col: 
         print("[!] No target column found"); return
     
-    df[target_col] = pd.to_numeric(df[target_col], errors='coerce').fillna(0).astype(int)
+    df[target_col] = pd.to_numeric(df[target_col], errors='coerce')
+    df = df.dropna(subset=[target_col])
+    df[target_col] = df[target_col].astype(int)
     df['year'] = pd.to_numeric(df['year'], errors='coerce')
     df = df.dropna(subset=['year']).sort_values('year')
     

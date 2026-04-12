@@ -32,7 +32,9 @@ def run_stage_d():
         
         # Structural Attrition Diagnosis (Censorship Bias)
         df_left = df.merge(votes, left_on='case_number', right_on='CASE_NUMBER', how='left')
-        df_left['is_protested'] = df_left['is_protested'].fillna(0).astype(int)
+        df_left['is_protested'] = pd.to_numeric(df_left['is_protested'], errors='coerce')
+        df_left = df_left.dropna(subset=['is_protested'])
+        df_left['is_protested'] = df_left['is_protested'].astype(int)
         df_left['is_withdrawn'] = df_left['vote_yes'].isna().astype(int)
         
         opposed_total = len(df_left[df_left['is_protested'] == 1])
@@ -62,7 +64,9 @@ def run_stage_d():
     # instead of the synthetic df.sample(frac=0.25) proxy
     
     # Ensure boolean
-    df['is_protested'] = df['is_protested'].fillna(0).astype(int)
+    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
+    df = df.dropna(subset=['is_protested'])
+    df['is_protested'] = df['is_protested'].astype(int)
     df_opposed = df[df['is_protested'] == 1].copy()
     
     if len(df_opposed) < 10:

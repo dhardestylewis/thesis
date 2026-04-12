@@ -57,7 +57,7 @@ def benchmark_horizon(path, horizon_name, master_df=None):
         return []
     
     df = pd.read_csv(path, low_memory=False)
-    if master_df is not None and ('Notice' in horizon_name or 'Commission' in horizon_name):
+    if master_df is not None and ('Notice' in horizon_name or 'Commission' in horizon_name or 'Council' in horizon_name):
         df['case_number'] = df['case_number'].astype(str).str.strip().str.upper()
         h0_cols = set(master_df.columns)
         stub_cols = set(df.columns)
@@ -69,7 +69,9 @@ def benchmark_horizon(path, horizon_name, master_df=None):
     target_col = next((col for col in ['is_protested', 'organized_opposition', 'opposition'] if col in df.columns), None)
     if not target_col or 'year' not in df.columns: return []
     
-    df[target_col] = pd.to_numeric(df[target_col], errors='coerce').fillna(0).astype(int)
+    df[target_col] = pd.to_numeric(df[target_col], errors='coerce')
+    df = df.dropna(subset=[target_col])
+    df[target_col] = df[target_col].astype(int)
     df['year'] = pd.to_numeric(df['year'], errors='coerce')
     df = df.dropna(subset=['year']).sort_values('year')
     

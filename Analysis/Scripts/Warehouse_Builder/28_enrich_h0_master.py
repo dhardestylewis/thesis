@@ -29,7 +29,8 @@ def run():
     crosswalk['year'] = pd.to_numeric(crosswalk['case_number'].str.extract(r'C\d+[A-Z]*-(\d{4})')[0], errors='coerce')
     # Fallback to general year regex if C14 format misses
     crosswalk['year'] = crosswalk['year'].fillna(pd.to_numeric(crosswalk['case_number'].str.extract(r'((?:19|20)\d\d)')[0], errors='coerce'))
-    crosswalk['year'] = crosswalk['year'].fillna(2020) # absolute baseline target
+    # Removed manual fillna(2020) substitution to enforce strict temporal bounds
+
 
     
     # Join crosswalk onto H0

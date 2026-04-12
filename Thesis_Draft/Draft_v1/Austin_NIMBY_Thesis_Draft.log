@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  12 APR 2026 17:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  12 APR 2026 17:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1000,7 +1000,7 @@ line 301.
  (Tables/Table7_StageC_PR.tex)
 [18 <./Figures/Chapter4/F12_Opposition_PR.png>]
 (Tables/alternative_architectures.tex) [19] [20]
-<Figures/Chapter4/fig_combined_calibration_reliability.pdf, id=494, 1289.03212p
+<Figures/Chapter4/fig_combined_calibration_reliability.pdf, id=497, 1289.03212p
 t x 385.39355pt>
 File: Figures/Chapter4/fig_combined_calibration_reliability.pdf Graphic file (t
 ype pdf)
@@ -1009,8 +1009,9 @@ Package pdftex.def Info: Figures/Chapter4/fig_combined_calibration_reliability.
 pdf  used on input line 379.
 (pdftex.def)             Requested size: 469.75502pt x 140.44695pt.
 
-(Tables/multi_horizon_results.tex) [21]
-<Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf, id=506, 505.89pt x 361.35pt
+(Tables/multi_horizon_results.tex) [21 <./Figures/Chapter4/fig_combined_calibra
+tion_reliability.pdf>]
+<Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf, id=593, 505.89pt x 361.35pt
 >
 File: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
 
@@ -1022,7 +1023,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10> on input line 395.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 395.
-<Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf, id=507, 578.16pt x 361.35pt
+<Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf, id=594, 578.16pt x 361.35pt
 >
 File: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
 
@@ -1030,7 +1031,9 @@ File: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf  use
 d on input line 401.
 (pdftex.def)             Requested size: 225.4804pt x 140.92041pt.
-<Figures/Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf, id=511, 
+ [22 <./Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf> <./Figures/Track1_Ex
+hibits/fig_policy_regimes_H0.pdf>]
+<Figures/Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf, id=709, 
 794.97pt x 578.16pt>
 File: Figures/Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf Grap
 hic file (type pdf)
@@ -1038,11 +1041,7 @@ hic file (type pdf)
 Package pdftex.def Info: Figures/Track1_Exhibits/fig_feature_importance_cluster
 ed_H0_Full.pdf  used on input line 415.
 (pdftex.def)             Requested size: 399.29463pt x 290.40259pt.
- [22 <./Figures/Chapter4/fig_combined_calibration_reliability.pdf>] [23 <./Figu
-res/Track1_Exhibits/fig_temporal_drift_H0.pdf> <./Figures/Track1_Exhibits/fig_p
-olicy_regimes_H0.pdf> <./Figures/Track1_Exhibits/fig_feature_importance_cluster
-ed_H0_Full.pdf>]
-<Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf, id=767, 697.40677pt x 5
+<Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf, id=711, 697.40677pt x 5
 70.22974pt>
 File: Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf Graphic file (type 
 pdf)
@@ -1050,7 +1049,8 @@ pdf)
 Package pdftex.def Info: Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf 
  used on input line 424.
 (pdftex.def)             Requested size: 399.29463pt x 326.48738pt.
- [24 <./Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf>]
+ [23 <./Figures/Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf>] 
+[24 <./Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf>]
 <Figures/Track1_Exhibits/fig_attribution_stability_H0.pdf, id=837, 684.7307pt x
  494.282pt>
 File: Figures/Track1_Exhibits/fig_attribution_stability_H0.pdf Graphic file (ty
@@ -1224,13 +1224,13 @@ File: Figures/Chapter6/F20_Stakeholder_Heatmap.png Graphic file (type png)
 Package pdftex.def Info: Figures/Chapter6/F20_Stakeholder_Heatmap.png  used on 
 input line 732.
 (pdftex.def)             Requested size: 399.29463pt x 285.632pt.
-<Figures/Chapter6/F19_TextFrame_Composition.png, id=1896, 711.1368pt x 422.0568
-pt>
+<Figures/Chapter6/F19_TextFrame_Composition.png, id=1896, 715.473pt x 426.1521p
+t>
 File: Figures/Chapter6/F19_TextFrame_Composition.png Graphic file (type png)
 <use Figures/Chapter6/F19_TextFrame_Composition.png>
 Package pdftex.def Info: Figures/Chapter6/F19_TextFrame_Composition.png  used o
 n input line 739.
-(pdftex.def)             Requested size: 399.29463pt x 236.98131pt.
+(pdftex.def)             Requested size: 399.29463pt x 237.82422pt.
  [45 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [46 <./Figures/Chapter6/
 F19_TextFrame_Composition.png>]
 <Figures/Chapter4/StageA_Figure3_PR_Curves.png, id=1909, 578.16pt x 433.62pt>
@@ -1293,11 +1293,11 @@ ed.
 (rerunfilecheck)             Checksum: 9F6E55D90EF5526B3A69428A407DF517;10459.
  ) 
 Here is how much of TeX's memory you used:
- 26807 strings out of 467871
- 506180 string characters out of 5419344
- 906102 words of memory out of 5000000
+ 26809 strings out of 467871
+ 506204 string characters out of 5419344
+ 905088 words of memory out of 5000000
  54771 multiletter control sequences out of 15000+600000
- 730492 words of font info for 234 fonts, out of 8000000 for 9000
+ 730586 words of font info for 235 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,104p,1486b,844s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
@@ -1336,7 +1336,7 @@ eX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX
 nts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/ty
 pe1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (56 pages, 15164257 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (56 pages, 15149463 bytes).
 PDF statistics:
  2110 PDF objects out of 2487 (max. 8388607)
  186 named destinations out of 1000 (max. 500000)

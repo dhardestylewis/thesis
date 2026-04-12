@@ -33,8 +33,9 @@ def run_track3():
             f.write("Track 3 aborted: No authentic dependent variables (is_protested) successfully joined.")
         return
 
-    # Impute missing petitions as 0 
-    df['is_protested'] = df['is_protested'].fillna(0)
+    # Isolate strictly to correctly documented petition events; do not assume missing means 0
+    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
+    df = df.dropna(subset=['is_protested'])
     
     # Establish applicability (Treatment group)
     if 'zoning_code' in df.columns:
@@ -67,6 +68,10 @@ def run_track3():
             sig_text = "statistically significant" if p < 0.05 else "statistically insignificant"
             dir_text = "increase" if est > 0 else "decrease"
             
+            import sys
+            module_path = os.path.join(ROOT, 'Analysis', 'Scripts', 'Modeling')
+            if module_path not in sys.path:
+                sys.path.append(module_path)
             from Utilities_and_Logs.lib_metrics import update_metric
             update_metric("metricDiDVotes", f"+{est:.3f}" if est > 0 else f"{est:.3f}")
             update_metric("metricDiDVotingShift", f"{abs(est)/11.0 * 100:.0f}\\%" if est != 0 else "0\\%")

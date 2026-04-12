@@ -262,7 +262,10 @@ def process_horizon(path, horizon_name):
     else:
         return
         
-    df['is_protested'] = df['is_protested'].fillna(0).astype(int)
+    # Safely convert target without coercing true unknown petitions to zero
+    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
+    df = df.dropna(subset=['is_protested'])
+    df['is_protested'] = df['is_protested'].astype(int)
     
     # Locate Council District for Spatial Holdouts
     dist_col = 'council_district' if 'council_district' in df.columns else 'council_district_x'
@@ -300,6 +303,12 @@ def process_horizon(path, horizon_name):
         df_clean = df_clean.drop(columns=leak_cols)
         
     X_raw = df_clean
+    
+    # One-hot encode string categoricals to preserve newly formatted staff index and other text
+    cat_cols = X_raw.select_dtypes(include=['object', 'category']).columns
+    if len(cat_cols) > 0:
+        X_raw = pd.get_dummies(X_raw, columns=cat_cols, drop_first=True)
+        
     X = X_raw.select_dtypes(include=[np.number])
     y = df['is_protested']
     districts = df['council_district']

@@ -189,7 +189,9 @@ def run_stability_for_horizon(hz):
     df = pd.read_csv(data_file, low_memory=False)
     df['year'] = pd.to_numeric(df['year'], errors='coerce')
     df = df.dropna(subset=['year']).sort_values('year').copy()
-    df['is_protested'] = df['is_protested'].fillna(0).astype(int)
+    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
+    df = df.dropna(subset=['is_protested'])
+    df['is_protested'] = df['is_protested'].astype(int)
 
     dist_col = 'council_district' if 'council_district' in df.columns else 'council_district_x'
     if dist_col not in df.columns:

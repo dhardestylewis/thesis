@@ -6,80 +6,37 @@ Columbia University, Graduate School of Architecture, Planning and Preservation
 
 ## Abstract
 
-This thesis develops machine learning models to predict zoning opposition using Austin, Texas rezoning protest petition data from 2007–2025, with out-of-sample validation on 2018–2025 cases. Models include logistic regression and conditional diffusion (DDPM) for per-parcel protest risk forecasting.
+This thesis develops machine learning models and causal inference designs to evaluate the predictability and structural attrition of civic opposition to discretionary zoning. Utilizing a canonical universe of over 7,000 distinct rezoning and zoning map amendment filings in Austin, Texas from 2007 to 2024, the research operationalizes "measured threshold-crossing petitions" as its primary dependent variable. The study is explicitly bounded to the pre-HB24 institutional regime to ensure structural and temporal validity.
 
-## Data
+## The Empirical Universe (Dataset Hierarchy)
 
-- **Protest Petitions**: 2007–2025 (full history, 252 cases, 8,843 parcels from PDF parsing)
-- **Appraisal Rolls (EARS)**: 2018–2025 (detailed property features, 84 AJR fields)
-- **Panel v3**: 282,772 parcels × 6 years (2019–2024), balanced fixed-universe structure
-- **Primary Study Period**: 2019–2025 (EARS coverage for full-feature modeling)
+To prevent scope drift and methodological leakage, this thesis enforces a strict dataset hierarchy:
+
+1. **Canonical Temporal Backbone (The Master Spine)**: A case-level discretionary zoning panel tracking 7,153 chronological cases established consistently from filing (H0) through City Council ordinance (H3), encompassing 2007–2024. 
+2. **Track 1 Predictive Extract (Stage C)**: Engineered explicitly on filing-horizon constraints, stripped of future-leakage, employing rigorous missingness handling (Strict NaN constraint, no zero-imputation).
+3. **Track 2 Text Embeddings (Active Learning NLP)**: Time-aware textual embeddings mapped dynamically over the corpus using expanding-window SVD pipelines to prevent forward-looking vocabulary contamination.
+4. **Track 3 Causal DiD Baseline**: Evaluating structural shifts against the 2024 HOME Initiative via static TWFE models mapping explicitly observed petition outcomes.
+
+*(Note: Earlier exploratory pipelines—such as the 2018-2025 generative parcel panels and diffusion pipelines built specifically for spatial backtesting overlays—are preserved only as auxiliary architectural experiments and do not represent the thesis's core empirical claims).*
 
 ## Directory Structure
 
 | Directory | Purpose |
 |-----------|---------|
-| `Thesis_Draft/` | Active thesis writing (Markdown, HTML, Outreach, Updates) |
-| `Data/` | Research datasets (Appraisal Rolls, Protest Petitions, Zoning Cases, Panel) |
-| `Analysis/` | Scripts, modeling, visualization, and results |
-| `References/` | Supporting materials (Bibliography, Background, Theses, Prompts) |
-| `Submitted/` | Finalized work (Proposal, Assignments, IRB Materials) |
-| `Archive/` | Historical draft versions |
-| `.meta/` | Project management (TODO, GUIDELINES, CHANGELOG) |
+| `Thesis_Draft/` | The active academic manuscript (`Draft_v1`), compiled via standard LaTeX processes (`pdflatex`). Encompasses all generated figures and macro tables. |
+| `Data/` | The raw and assembled tracking warehouse. Contains `Warehouse_As_Of`, `Zoning_Cases`, and legacy `Panel` pipelines. |
+| `Analysis/Scripts/Pipeline/` | Execution scripts governing the temporal build (`build_warehouse_as_of.py`) and rolling NLP generation (`build_tfidf_embeddings.py`) into the Master Spine. |
+| `Analysis/Scripts/Modeling/Production_Models/` | The core thesis modeling suite (`StageC_opposition_risk.py`, `run_causal_track3_did_real.py`). Contains rigorous benchmarks (Calibration & Alternative Architectures). |
+| `Analysis/Scripts/Visualization/Production_Figures/` | Visualization suite strictly mirroring the bounded target definitions utilized in the core thesis execution. ("plot_F17_DiD_real.py") |
+| `Analysis/Scripts/Experiments/SHAP/` | Robust attribution and stability tests over expanding rolling-origin windows (`attribution_stability.py`). |
 
-## Quick Navigation
+## Methodological Defenses
 
-### Active Work
-- **Pipeline**: `Analysis/Scripts/Pipeline/` — Panel build, EARS parsing, centroid extraction
-- **Modeling**: `Analysis/Scripts/Modeling/` — Backtests (naive, generative), benchmarks (CVAE, diffusion)
-- **Visualization**: `Analysis/Scripts/Visualization/` — Heatmaps, timelapse, benchmark dashboard
-- **Results**: `Analysis/Results/` — Backtests, benchmarks, visualizations (HTML)
-- **Data Panel**: `Data/Panel/Output/Property_Year_Panel_v3.csv` — Primary analysis dataset
+Following intensive committee-facing pipeline reviews, the analytical infrastructure enforces:
+- **Strict Leakage Protocols**: Target variables (`signer_pct`, `signers`) are aggressively dropped from upstream (H1/H2) design matrices.
+- **Dynamic NLP Embedding**: Global vocabulary fitting is banned to prevent future-text leakage. Vocabulary is strictly generated inside rolling cross-validation blocks.
+- **Methodological Missingness**: Unobserved petition events (`NaN`) are explicitly dropped instead of defaulted to `0` (False Negatives), ensuring that temporal baseline rates, calibration models, and Causal Inference distributions reflect legitimate empirical measurements.
 
-### Reference & Support
-- **Bibliography**: `References/Bibliography/References.bib`
-- **Background**: `References/Background_Comprehensive/`
-- **Guidelines**: `.meta/GUIDELINES.md`
-- **Tasks**: `.meta/TODO.md`
+## Reproducibility
 
-### Completed
-- **Proposal**: `Submitted/Thesis_Proposal_Submitted/`
-- **IRB**: `Submitted/IRB_Submitted/`
-- **Coursework**: `Submitted/Assignments_Submitted/`
-
-## Key Files
-
-| File | Purpose |
-|------|---------|
-| `Data/Panel/Output/Property_Year_Panel_v3.csv` | Primary panel dataset (282,772 × 6 years) |
-| `Data/Panel/Reference/EARS_Column_Layout.csv` | EARS field definitions with leakage flags |
-| `Data/Panel/Reference/parcel_centroids.csv` | Parcel lat/lon from LUI 2024 geometry |
-| `Analysis/Results/protest_timelapse.html` | Interactive backtest timelapse (LogReg) |
-| `Analysis/Results/generative_timelapse.html` | Generative model timelapse (LogReg + Diffusion) |
-| `.meta/TODO.md` | Prioritized task list |
-
-## Conventions
-
-See `.meta/GUIDELINES.md` for full documentation.
-
-### Directory & File Casing
-- **Directories**: `Title_Case` (e.g., `Appraisal_Rolls`, `Notebooks`)
-- **Data Files**: `EARS_YYYY_Description.ext`
-- **Reference Theses**: `Author_Year_University_Title.pdf`
-
-## Recent Changes
-
-- **2026-02-19**: Panel v3 rebuild with fixed parcel universe (282,772), centroid extraction, diffusion v2 model
-- **2026-02-19**: Updated all modeling/visualization scripts from v1 → v3 panel paths
-- **2026-01-21**: Hybrid directory reorganization
-- **2026-01-21**: Imported protest petitions and zoning data from Google Drive
-
-## Project Status
-
-- ✅ Proposal submitted and approved
-- ✅ IRB approved
-- ✅ Data collection complete (protest petitions 2007–2025)
-- ✅ Panel v3 built (282,772 parcels × 6 years)
-- ✅ Backtest pipeline running (LogReg + Diffusion)
-- 🔄 Thesis drafting in progress
-- 📊 Diffusion v2 model under active development
+The final empirical results utilized within the manuscript can be successfully verified by executing the `Production_Models` suite inside `Analysis/Scripts/Modeling`. All graphical exhibits are generated natively via `Analysis/Scripts/Visualization`. Telemetry flows automatically via Python into `metrics_config.tex` for dynamic `pdflatex` rendering.

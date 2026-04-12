@@ -40,7 +40,8 @@ def plot_f17():
         print("[!] No authentic petition variables found. Halting F17.")
         return
 
-    df['is_protested'] = df['is_protested'].fillna(0)
+    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
+    df = df.dropna(subset=['is_protested'])
     
     if 'zoning_code' in df.columns:
         df['is_residential'] = df['zoning_code'].astype(str).str.contains('SF|MF|PUD|TND', na=False).astype(int)

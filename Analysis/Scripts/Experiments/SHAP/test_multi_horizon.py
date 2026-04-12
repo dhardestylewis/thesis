@@ -95,7 +95,9 @@ def main():
     df = pd.read_csv(os.path.join(DATA, "H0_Filing_Master_Enriched.csv"), low_memory=False)
     df['year'] = pd.to_numeric(df['year'], errors='coerce')
     df = df.dropna(subset=['year']).copy()
-    df['is_protested'] = df['is_protested'].fillna(0).astype(int)
+    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
+    df = df.dropna(subset=['is_protested'])
+    df['is_protested'] = df['is_protested'].astype(int)
 
     drop_cols = ['is_protested', 'case_number', 'organized_opposition', 'has_audio_record', 
                  'TCAD ID', 'date', 'application_start_date', 'final_date', 'standardized_tcad_id', 

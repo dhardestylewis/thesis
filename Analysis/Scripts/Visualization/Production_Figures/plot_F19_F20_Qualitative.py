@@ -30,7 +30,9 @@ def generate_exhibits():
         return
 
     df = pd.read_csv(NLP_DATA, low_memory=False)
-    df['is_protested'] = df['is_protested'].fillna(0).astype(int)
+    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
+    df = df.dropna(subset=['is_protested'])
+    df['is_protested'] = df['is_protested'].astype(int)
     
     # Extract explicit frame probabilities generated via the Active Learning LLM pipeline
     frame_cols = [c for c in df.columns if c.startswith('prob_frame_')]

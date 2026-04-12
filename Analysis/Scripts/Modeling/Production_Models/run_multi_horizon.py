@@ -85,9 +85,9 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
     
     df = pd.read_csv(path, low_memory=False)
     
-    # STUB REINTEGRATION: If this is H1 or H2, it's a lightweight stub. 
+    # STUB REINTEGRATION: If this is H1, H2, or H3, it's a lightweight stub. 
     # We MUST dynamically join it onto the robust 141-col Master baseline to prevent data loss.
-    if master_df is not None and ('Notice' in horizon_name or 'Commission' in horizon_name):
+    if master_df is not None and ('Notice' in horizon_name or 'Commission' in horizon_name or 'Council' in horizon_name):
         print(f"[+] Reintegrating stub '{horizon_name}' (cols={df.shape[1]}) dynamically against Master Spine...")
         df['case_number'] = df['case_number'].astype(str).str.strip().str.upper()
         
@@ -121,7 +121,11 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
         print(f"[!] No target column found. Available: {list(df.columns)}")
         return
     
-    df[target_col] = pd.to_numeric(df[target_col], errors='coerce').fillna(0).astype(int)
+    # Safely convert target, but DO NOT fillna(0) since we built explicit petition_record_found NaNs
+    df[target_col] = pd.to_numeric(df[target_col], errors='coerce')
+    df = df.dropna(subset=[target_col])
+    # Now it is safe to coerce into integers
+    df[target_col] = df[target_col].astype(int)
     
     # Temporal column
     if 'year' in df.columns:
@@ -136,6 +140,18 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
                  'has_audio_record', 'TCAD ID', 'date', 'application_start_date', 
                  'final_date', 'year', 'signers', 'signer_pct']
     X = df.drop(columns=[c for c in drop_cols if c in df.columns], errors='ignore')
+    
+    # Pluck out text column for separate dynamic rolling processing before coercion
+    has_text = 'agenda_text_raw' in X.columns
+    if has_text:
+        text_series = X['agenda_text_raw'].reset_index(drop=True)
+        X = X.drop(columns=['agenda_text_raw'])
+    
+    # One-hot encode string categoricals (like staff_recommendation_cat)
+    cat_cols = X.select_dtypes(include=['object', 'category']).columns
+    if len(cat_cols) > 0:
+        X = pd.get_dummies(X, columns=cat_cols, drop_first=True)
+        
     X = X.select_dtypes(include=[np.number]).fillna(0)
     y = df[target_col].values
     years = df['year'].values
@@ -154,6 +170,29 @@ def run_horizon(path, horizon_name, results_collector, master_df=None):
     
     X_train, y_train = X.values[train_mask], y[train_mask]
     X_test, y_test = X.values[test_mask], y[test_mask]
+    
+    # -------------------------------------------------------------------------
+    # DYNAMIC NLP EMBEDDING
+    # Here, we prevent future leakage by fitting text representation strictly
+    # on the training window and transforming the held-out validation.
+    # -------------------------------------------------------------------------
+    if has_text:
+        print("[+] Integrating rolling Time-Aware NLP...")
+        import importlib.util
+        nlp_path = os.path.join(_scripts_dir, "Pipeline", "02_Transcription_and_NLP", "build_tfidf_embeddings.py")
+        spec = importlib.util.spec_from_file_location("build_tfidf_embeddings", nlp_path)
+        nlp_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(nlp_module)
+        
+        embedder = nlp_module.TimeAwareTextEmbedder()
+        # Ensure we feed the correct subsets since we reindexed earlier
+        train_nlp = embedder.fit_transform(text_series[train_mask])
+        test_nlp = embedder.transform(text_series[test_mask])
+        
+        # Concat numeric
+        X_train = np.hstack([X_train, train_nlp.values])
+        X_test = np.hstack([X_test, test_nlp.values])
+        print(f"    -> Text dynamically encoded: {train_nlp.shape[1]} components added.")
     
     if y_test.sum() < 1 or y_train.sum() < 1:
         print(f"[!] No positive cases in {'test' if y_test.sum() < 1 else 'train'}")
