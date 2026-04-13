@@ -20,12 +20,6 @@
     "metricBootstrapFilingCI": {
         "value": "[0.78, 0.84]"
     },
-    "metricHeadlineECE": {
-        "value": "0.208"
-    },
-    "metricECE": {
-        "value": "0.208"
-    },
     "metricACE": {
         "value": "0.184"
     },
@@ -97,5 +91,26 @@
     },
     "metricSpuriousLogReg": {
         "value": "1.52"
+    },
+    "metricECEOODBootstrapCalibrated": {
+        "value": "0.208",
+        "method": "isotonic",
+        "folding": "ood_bootstrap_temporal_holdout",
+        "binning": "10-bin uniform ECE",
+        "postprocessing": "isotonic_regression"
+    },
+    "metricECEInDistCVCalibrated": {
+        "value": "0.239",
+        "method": "isotonic",
+        "folding": "in_distribution_5fold_cv",
+        "binning": "10-bin uniform ECE",
+        "postprocessing": "isotonic_regression"
+    },
+    "metricECEAltCalibrationSensitivity": {
+        "value": "0.278",
+        "method": "platt_sigmoid",
+        "folding": "in_distribution_5fold_cv",
+        "binning": "10-bin uniform ECE",
+        "postprocessing": "sigmoid_rescaling"
     }
 }

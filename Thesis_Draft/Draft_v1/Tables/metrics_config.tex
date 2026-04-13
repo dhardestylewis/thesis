@@ -9,9 +9,14 @@
 \newcommand{\metricBootstrapFiling}{0.820}
 \newcommand{\metricBootstrapFilingCI}{[0.78, 0.84]}
 \newcommand{\metricBrierScore}{0.012}
-\newcommand{\metricECE}{0.208}
+\newcommand{\metricECEOODBootstrapCalibrated}{0.208}
+\newcommand{\metricECEInDistCVCalibrated}{0.239}
+\newcommand{\metricECEAltCalibrationSensitivity}{0.278}
+\newcommand{\metricCalibrationPrimaryMethod}{Isotonic Regression}
+\newcommand{\metricCalibrationPrimaryFolding}{OOD bootstrap (temporal holdout)}
+\newcommand{\metricCalibrationPrimaryBinning}{10-bin uniform ECE}
+\newcommand{\metricCalibrationPrimaryPostprocess}{Monotone isotonic mapping}
 \newcommand{\metricFNRGap}{4.2\%}
-\newcommand{\metricHeadlineECE}{0.208}
 \newcommand{\metricHeadlinePRAUC}{0.820}
 \newcommand{\metricLabelFidelity}{99.6\%}
 \newcommand{\metricMaxDistrictPositives}{42}
