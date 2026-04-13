@@ -321,17 +321,49 @@ The November 2022 council election is the primary period break in the analysis. 
 
 \textbf{Temporal Predictive Drift (Rolling Origin).} To quantify the model's predictive half-life, Table~\ref{tab:temporal_drift} tracks PR-AUC across expanding annual windows for three architectures: CatBoost, TabNet with structural sparse pruning (\texttt{LS+Pruning}), and TabNet with label smoothing only (\texttt{LS=0.1}). For each anchor year $t$, each model is trained on data before $t$ and evaluated forward across all subsequent evaluation years. Bold denotes the top-performing model for each (anchor, forecast year) pairing; horizontal rules separate the three model blocks to facilitate direct within-anchor comparison.
 
-CatBoost claims \textbf{19 of 28} comparable cells (68\%), and its margin of dominance is structurally consistent: across every anchor, CatBoost maintains discrimination in the 2022 and 2023 evaluation windows that both TabNet variants fail to sustain. TabNet's 9-cell minority is analytically interpretable rather than a sign of competitive parity. Two specific regimes account for virtually all of TabNet's wins. First, the \textit{pandemic trough}: TabNet(LS=0.1) outperforms CatBoost in the 2021--2022 evaluation windows from the Pre-2019 anchor (0.603 vs.\ 0.496 in 2021; 0.570 vs.\ 0.329 in 2022), suggesting that label smoothing confers short-term OOD robustness during acute covariate shift---a period when CatBoost's learned decision boundaries were most disrupted. Second, the \textit{recency-anchored 2024 recovery}: TabNet(LS+Pruning) leads in 2024 from the Pre-2021 and Pre-2022 anchors (0.836 and 0.839), suggesting that when the training window is restricted to the post-transition regime, TabNet's attention mechanism adapts its feature weighting faster than CatBoost. Critically, from older, longer-horizon anchors---where the V-shaped recovery is the primary test---CatBoost dominates the 2024 window by a wide margin (0.885 vs.\ 0.197 from the Pre-2019 anchor).
+CatBoost claims \textbf{19 of 28} comparable cells (68\%), and its margin of dominance is structurally consistent: across every anchor, CatBoost maintains discrimination in the 2022 and 2023 evaluation windows that both TabNet variants fail to sustain. TabNet's 9-cell minority is analytically interpretable rather than a sign of competitive parity. Two specific regimes account for virtually all of TabNet's wins. First, the \textit{pandemic trough}: TabNet(LS=0.1) outperforms CatBoost in the 2021--2022 evaluation windows from the Pre-2019 anchor (0.603 vs.\ 0.496 in 2021; 0.570 vs.\ 0.329 in 2022), suggesting that label smoothing confers short-term OOD robustness during acute covariate shift---a period when CatBoost's learned decision boundaries were most disrupted. Second, the \textit{recency-anchored 2024 recovery}: TabNet(LS+Pruning) leads in 2024 from the Pre-2021 and Pre-2022 anchors (0.836 and 0.839), suggesting that when the training window is restricted to the post-transition regime, TabNet's attention mechanism adapts its feature weighting faster than CatBoost. Critically, from older, longer-horizon anchors---where the V-shaped recovery is the primary descriptive pattern---CatBoost dominates the 2024 window by a wide margin (0.885 vs.\ 0.197 from the Pre-2019 anchor).
 
-One notable descriptive pattern is a decline followed by partial recovery: CatBoost's Pre-2019 anchor decays from 0.659 at the 2019 horizon (T+0) to 0.329 at the 2022 window (T+3), before recovering to 0.885 in 2024 (T+5). The recovery is consistent with, but does not establish, a temporary out-of-distribution covariate shock associated with the 2022 council transition. One possible reading is that 2021--2022 reflects a transient distributional shift; however, this cannot be distinguished from sampling noise or reversion in observable covariates. The longitudinal attribution audit in Appendix~\ref{app:unclustered_dynamic} provides additional context on how feature weights shifted across this period.
+This V-shaped recovery is the central temporal finding: CatBoost's Pre-2019 anchor decays from 0.659 at immediate horizon (2019, T+0) to 0.329 at the 2022 window (T+3)---a sharp predictive cliff---before rebounding to 0.885 in 2024 (T+5). This pattern is \textit{consistent with} a temporary out-of-distribution covariate shock during 2021--2022 rather than a permanent regime severance caused by the 2022 council flip, but this remains a descriptive interpretation rather than a causal identification claim. The evidence is also \textit{consistent with} temporary miscalibration under distributional shift, rather than definitive evidence of unchanged structural petition mechanisms. \textbf{The longitudinal attribution audit in Appendix~\ref{app:unclustered_dynamic} provides additional descriptive context.}
 
 \vspace{1em}
 \input{Tables/temporal_drift_analysis.tex}
 \vspace{1em}
-% [3D Temporal Drift Topology figure removed. Temporal performance across training anchors is summarized in Table~\ref{tab:temporal_drift} and Figure~\ref{fig:ood_tracking} above.]
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_temporal_drift_H0.pdf}
+        \caption{Anchor-year trajectories across holdout years (2D).}
+        \label{fig:temporal_drift_2d_anchor}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_temporal_drift.pdf}
+        \caption{Holdout-year comparison view (2D).}
+        \label{fig:temporal_drift_2d_holdout}
+    \end{subfigure}
+    \caption[Temporal Drift Evidence in 2D]{\textbf{Temporal drift evidence in 2D.} Left panel presents line-based trajectories by anchor year; right panel provides the complementary holdout-year view. Temporal interpretation is descriptive. For uncertainty context at each (anchor, holdout) cell, Table~\ref{tab:temporal_cell_support} reports the corresponding holdout-year support ($n$ and positive-event counts).}
+    \label{fig:temporal_drift_2d}
+\end{figure}
 
-\textbf{Methodological Integrity and Pre-training Leakage.} The use of foundation models like TabPFN introduces a risk of ``future leakage'' if Austin's open data was inadvertently included in the model's original training corpus. To reduce this risk, the foundation benchmarks were conducted under a \textit{Zero-Shot In-Context} enclosure: internal model weights remained frozen, and the model was only permitted to observe the historically bounded pre-2022 training set as a prompt-context before predicting post-2022 outcomes. This protocol reduces, but does not eliminate, the risk that pretraining exposure influenced results. As a further check, the locally-trained CatBoost model outperforms TabPFN in every evaluation year (Appendix~\ref{app:leakage_audit}), which would not be expected if data leakage had dominated.
+\begin{table}[htbp]
+\centering
+\caption{Uncertainty annotation lookup for temporal cells (CatBoost H0 drift view).}
+\label{tab:temporal_cell_support}
+\small
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Holdout year} & 2018 & 2019 & 2020 & 2021 & 2022 & 2023 & 2024 \\
+\midrule
+$n$ (cases) & 197 & 210 & 177 & 214 & 216 & 201 & 215 \\
+Positives ($y=1$) & 30 & 25 & 14 & 14 & 4 & 10 & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
+\textbf{Methodological Integrity and Pre-training Leakage.} The use of foundation models like TabPFN introduces a risk of "future leakage" if Austin's open data was inadvertently included in the model's original training corpus. To shield against this contamination, the foundation benchmarks were conducted under a strict \textit{Zero-Shot In-Context} enclosure. The internal model weights remained frozen, and the model was only permitted to "observe" the historically bounded pre-2022 training set as a prompt-context before predicting post-2022 outcomes. This protocol ensures that the model's 0.54 PR-AUC success is a result of structural pattern recognition, not historical memorization.
+ 
 
 
 \section{Stage C Primary Results}
@@ -1244,3 +1276,4 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
 \noindent The results in Table~\ref{tab:disqualification_matrix} reveal a critical nuance in administrative machine learning. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) is not necessarily a signal of structural truth. When juxtaposed against the Spuriousness Index in Section~\ref{sec:spuriousness}, the audit indicates that Random Forest exhibits \textbf{Reliable Spuriousness}: it consistently and deterministically latches onto the same ungeneralizable noise proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but passed the causal survival tests, indicating that they are actively searching for invariant features rather than settling on stable, though harmful, shortcuts. Consequently, only CatBoost, XGBoost, and the Deep Attentive baselines are considered structurally valid for policy formulation.
 
 \end{document}
+
