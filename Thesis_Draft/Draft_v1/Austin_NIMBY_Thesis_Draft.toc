@@ -47,3 +47,4 @@
 \contentsline {section}{\numberline {O}Temporal Integrity and Leakage Audit}{57}{appendix.O}%
 \contentsline {section}{\numberline {P}Extended Architectural Search and Resampling Strategies}{58}{appendix.P}%
 \contentsline {section}{\numberline {Q}Longitudinal Architecture Attribution Divergence (2019--2023)}{59}{appendix.Q}%
+\contentsline {section}{\numberline {R}Longitudinal Error Topology (FNR/FPR Tracking)}{61}{appendix.R}%

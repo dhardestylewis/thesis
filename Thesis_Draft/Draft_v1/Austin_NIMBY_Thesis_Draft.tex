@@ -990,6 +990,21 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
     \label{fig:attribution_longitudinal}
 \end{figure}
 
+\newpage
+\section{Longitudinal Error Topology (FNR/FPR Tracking)}
+\label{app:fnr_fpr_tracking}
+
+\noindent To further test predictive stability, Figure~\ref{fig:fpr_fnr_longitudinal} plots the continuous, year-by-year error topologies---False Positive Rate (FPR) and False Negative Rate (FNR)---across all primary architectural backbones (CatBoost, Random Forest, Deep Surrogate) over a 16-year validation window (2008--2023). 
+
+While the False Positive Rate (FPR) exhibits stable algorithmic tracking (due to a robust majority negative class), the False Negative Rate (FNR) illustrates extreme longitudinal volatility. This empirical instability is driven strictly by geometric sample sparsity: because true threshold-crossing petitions operate at a single-digit baseline per year, localized time-splits suffer heavily from vanishing denominators. This volatility empirically defends the manuscript's decision to evaluate model performance via aggregated continuous metrics (PR-AUC, Brier) rather than discrete point-error subgroups across council districts or singular origin-years.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Chapter4/fig_fpr_fnr_longitudinal.pdf}
+    \caption[Algorithmic Error Volatility across Time and Horizons]{Algorithmic Error Volatility: Evaluation of FNR and FPR Across Time, Horizons, and Models. Note the stability of the FPR (left column) compared to the severe, sample-induced structural volatility of the FNR (right column).}
+    \label{fig:fpr_fnr_longitudinal}
+\end{figure}
+
 \end{document}
 
 
