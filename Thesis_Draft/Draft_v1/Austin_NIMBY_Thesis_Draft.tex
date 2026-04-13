@@ -434,16 +434,16 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 
 As established in the Unified Predictive Frontier (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) significantly out-discriminate traditional tree-based gradients. This raises a critical interpretability question: do these superior architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
 
-To evaluate this, Figure~\ref{fig:attribution_divergence} maps the semantic SHAP attributions extracted from the traditional Gradient Boosting baseline against an equivalent Deep Neural (V-REx proxy) framework via Surrogate DeepExplainer gradients.
+To rigorously evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against an equivalent Deep Neural (V-REx proxy) framework via Surrogate DeepExplainer gradients. Crucially, this matrix isolates the evaluation across the two dominant axes of the dataset: temporal severity (Pre-2022 vs. Post-2022 Housing Crises) and informational horizons (H0 Filing vs. H3 Pre-Council).
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{Chapter4/fig_attribution_divergence.pdf}
-    \caption[Attribution Divergence: Gradient Boosting vs. Deep Attention]{Comparison of semantic feature attribution between the primary tree-based architecture and a Deep Surrogate (neural embedding) architecture. Identical spatial inputs map to distinctly different structural priors.}
-    \label{fig:attribution_divergence}
+    \includegraphics[width=\textwidth]{Chapter4/fig_attribution_divergence_matrix.pdf}
+    \caption[Attribution Divergence Matrix: Gradient Boosting vs. Deep Attention]{Comparison of semantic feature attribution between traditional tree architectures (Bagging/Boosting) and a Deep Surrogate (neural embedding) architecture. Identical spatial inputs map to distinctly different structural priors, a phenomenon that remains rigidly stable across all development horizons and policy eras.}
+    \label{fig:attribution_divergence_matrix}
 \end{figure}
 
-The divergence is stark. While the tree-based CatBoost model highly indexes on continuous univariate property valuation and basic historical contagion rules, the Deep Attentive model relies substantially more heavily on complex neighborhood geometries—specifically demographic composition, land-use classifications, and the intersection of rent brackets. This confirms that the Deep Models are not merely "better CatBoosts," but are functionally mapping a completely different structural geometry of what causes NIMBY opposition.
+The divergence is stark, yet remarkably stable. Across every quadrant—regardless of the timeline or the horizon—the tree-based CatBoost and Random Forest models overwhelmingly index on contiguous parcel facts (Property Valuation, Parcel Scale, and Structure Age). Conversely, the Deep Attentive framework systematically ignores parcel constraints and directs its learning toward complex neighborhood distributions—specifically Demographic Composition, Housing Tenure, and combinations of Rent characteristics. This confirms that Deep Models do not merely optimize CatBoost's decision boundaries; they map a completely distinct structural geometry of what catalyzes NIMBY opposition, and they maintain that distinct lens consistently through regime shifts.
 
 \subsubsection{Attribution Stability Across Temporal Windows}
 

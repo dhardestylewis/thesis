@@ -18,10 +18,10 @@
 \contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{20}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{23}{subsection.5.2}%
 \contentsline {subsection}{\numberline {5.3}Architecture Attribution Divergence}{23}{subsection.5.3}%
-\contentsline {subsubsection}{\numberline {5.3.1}Attribution Stability Across Temporal Windows}{26}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.1}Attribution Stability Across Temporal Windows}{27}{subsubsection.5.3.1}%
 \contentsline {subsection}{\numberline {5.4}Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}{27}{subsection.5.4}%
 \contentsline {subsection}{\numberline {5.5}Descriptive Evidence from the 2022 Electoral Transition}{30}{subsection.5.5}%
-\contentsline {subsection}{\numberline {5.6}Supplementary Institutional Analyses}{30}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.6}Supplementary Institutional Analyses}{31}{subsection.5.6}%
 \contentsline {section}{\numberline {6}Qualitative Planning Context}{31}{section.6}%
 \contentsline {section}{\numberline {7}Limitations}{32}{section.7}%
 \contentsline {section}{\numberline {8}Conclusion}{33}{section.8}%
