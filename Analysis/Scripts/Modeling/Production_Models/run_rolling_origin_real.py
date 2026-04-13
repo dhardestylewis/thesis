@@ -6,6 +6,9 @@ import warnings
 warnings.filterwarnings('ignore')
 from sklearn.metrics import average_precision_score
 from catboost import CatBoostClassifier
+from pytorch_tabnet.tab_model import TabNetClassifier
+from sklearn.preprocessing import StandardScaler
+import torch
 
 # Environment Setup
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
@@ -39,10 +42,52 @@ def run_rolling_origin_drift():
         if train_mask.sum() < 50: continue
         
         X_train, y_train = X.values[train_mask], y[train_mask]
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+
+        cb_model = CatBoostClassifier(iterations=200, depth=6, learning_rate=0.05, verbose=0, auto_class_weights='Balanced', random_seed=42)
+        cb_model.fit(X_train, y_train)
+
+        tabnet_model = TabNetClassifier(verbose=0)
+        tabnet_sparse = TabNetClassifier(
+            lambda_sparse=0.1,  # Extreme structural feature pruning
+            n_steps=3,
+            gamma=1.5,
+            verbose=0
+        )
+        from torch.nn import CrossEntropyLoss
+        # Split train for eval
+        split_idx = int(len(X_train_scaled)*0.8)
+        X_tr_tab, y_tr_tab = X_train_scaled[:split_idx], y_train[:split_idx]
+        X_val_tab, y_val_tab = X_train_scaled[split_idx:], y_train[split_idx:]
         
-        # Fit once per anchor
-        model = CatBoostClassifier(iterations=200, depth=6, learning_rate=0.05, verbose=0, auto_class_weights='Balanced', random_seed=42)
-        model.fit(X_train, y_train)
+        try:
+            tabnet_model.fit(
+                X_train=X_tr_tab, y_train=y_tr_tab,
+                eval_set=[(X_val_tab, y_val_tab)],
+                patience=5, max_epochs=30,
+                loss_fn=CrossEntropyLoss(label_smoothing=0.1)
+            )
+            tabnet_ok = True
+        except Exception as e:
+            print("TabNet failed to train:", e)
+            tabnet_ok = False
+
+        try:
+            tabnet_sparse.fit(
+                X_train=X_tr_tab, y_train=y_tr_tab,
+                eval_set=[(X_val_tab, y_val_tab)],
+                patience=5, max_epochs=30,
+                loss_fn=CrossEntropyLoss(label_smoothing=0.1)
+            )
+            sparse_ok = True
+        except Exception as e:
+            print("TabNet Sparse failed to train:", e)
+            sparse_ok = False
+
+        models_to_eval = [('CatBoost', cb_model, False)]
+        if tabnet_ok: models_to_eval.append(('TabNet(LS=0.1)', tabnet_model, True))
+        if sparse_ok: models_to_eval.append(('TabNet(LS+Pruning)', tabnet_sparse, True))
         
         for test_year in eval_years:
             if test_year < anchor:
@@ -52,26 +97,31 @@ def run_rolling_origin_drift():
             offset = test_year - anchor
             
             if test_mask.sum() < 5 or y[test_mask].sum() < 1:
-                prauc = np.nan
-            else:
-                X_test, y_test = X.values[test_mask], y[test_mask]
-                preds = model.predict_proba(X_test)[:, 1]
-                prauc = average_precision_score(y_test, preds)
+                continue
+                
+            X_test, y_test = X.values[test_mask], y[test_mask]
+            X_test_scaled = scaler.transform(X_test)
             
-            drift_results.append({
-                'Anchor': f"Pre-{anchor}",
-                'Evaluate_Year': test_year,
-                'Offset': f"T+{offset}",
-                'PR-AUC': round(prauc, 4) if not np.isnan(prauc) else None
-            })
-            if not np.isnan(prauc):
-                print(f"    -> Evaluated on {test_year} (T+{offset}): PR-AUC = {prauc:.4f}")
-            else:
-                print(f"    -> Evaluated on {test_year} (T+{offset}): PR-AUC = NaN")
+            for m_name, m_inst, needs_scale in models_to_eval:
+                try:
+                    preds = m_inst.predict_proba(X_test_scaled if needs_scale else X_test)[:, 1]
+                    prauc = average_precision_score(y_test, preds)
+                except Exception:
+                    prauc = np.nan
+                    
+                drift_results.append({
+                    'Model': m_name,
+                    'Anchor': f"Pre-{anchor}",
+                    'Evaluate_Year': test_year,
+                    'Offset': f"T+{offset}",
+                    'PR-AUC': round(prauc, 4) if not np.isnan(prauc) else None
+                })
+                if not np.isnan(prauc):
+                    print(f"    -> [{m_name}] Evaluated on {test_year} (T+{offset}): PR-AUC = {prauc:.4f}")
 
     # Generate Pivot Table for LaTeX
     results_df = pd.DataFrame(drift_results)
-    pivot = results_df.pivot(index='Anchor', columns='Evaluate_Year', values='PR-AUC')
+    pivot = results_df.pivot_table(index=['Model', 'Anchor'], columns='Evaluate_Year', values='PR-AUC')
     
     # Save to JSON
     results_df.to_json(os.path.join(OUT_DIR, "rolling_origin_drift.json"), orient='records', indent=2)
@@ -89,11 +139,11 @@ def run_rolling_origin_drift():
         r"\midrule"
     ]
     
-    for idx in [f"Pre-{a}" for a in anchors]:
-        if idx not in pivot.index: continue
+    for idx in pivot.index:
         row = pivot.loc[idx]
+        idx_str = f"{idx[0]} {idx[1]}"
         r = [f"{row[y]:.3f}" if (y in row.index and pd.notnull(row[y])) else "---" for y in eval_years]
-        tex_lines.append(f"{idx} & {' & '.join(r)} \\\\")
+        tex_lines.append(f"{idx_str} & {' & '.join(r)} \\\\")
         
     tex_lines.extend([
         r"\bottomrule",

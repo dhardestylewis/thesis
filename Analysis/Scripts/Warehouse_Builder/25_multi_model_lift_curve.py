@@ -38,7 +38,7 @@ def generate_multi_model_lift():
         return
         
     df['organized_opposition'] = df['is_protested'].fillna(0).astype(int)
-    features = ['bisg_white_200ft', 'bisg_black_200ft', 'bisg_asian_200ft', 'bisg_hispanic_200ft', 'bisg_white_nbr', 'bisg_black_nbr', 'bisg_asian_nbr', 'bisg_hispanic_nbr', 'gross_site_area_acres', 'delta_max_height_ft', 'delta_max_far', 'delta_max_bldg_cov_pct']
+    features = ['gross_site_area_acres', 'delta_max_height_ft', 'delta_max_far', 'delta_max_bldg_cov_pct']
     
     X = df[features].fillna(0)
     y = df['organized_opposition']

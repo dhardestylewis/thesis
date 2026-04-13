@@ -1,30 +1,20 @@
 """
 attribution_stability.py — Expanding-Window Attribution Stability Test
 =======================================================================
-Matches the exact rolling-origin anchors [2019, 2020, 2021, 2022, 2023]
-and horizons [H0, H3] from StageC_opposition_risk.py (PART A).
-
-For each anchor:
-  1. Retrain CatBoost on year < anchor (clone of optimal_model spec)
-  2. Extract TreeSHAP on year == anchor (held-out evaluation year)
-  3. Compute clustered coarse-group attribution shares (Spearman |r|>0.7)
-  4. Record per-group mean |SHAP| and share %
-
-Outputs:
-  - CSV: attribution_stability_{hz}.csv
-  - Figure: fig_attribution_stability_{hz}.pdf (heatmap of group shares)
-  - Figure: fig_attribution_rank_stability_{hz}.pdf (rank correlation)
-  - Console: Spearman rank-order correlation across adjacent anchors
+Refactored to include:
+1. Multi-model auditing (CatBoost & LightGBM)
+2. Clustered vs Unclustered feature importance
+3. Dynamic taxonomic drift tracking (Adjusted Rand Index for clusters over expanding windows)
+4. SHAP Interaction Values extraction
 
 Author: Daniel Hardesty Lewis
-Created: 2026-04-12
+Created: 2026-04-13
 """
 import pandas as pd
 import numpy as np
 import os
 import sys
 import warnings
-import json
 warnings.filterwarnings('ignore')
 
 import matplotlib
@@ -33,26 +23,34 @@ import matplotlib.pyplot as plt
 
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.base import clone
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 from scipy.stats import spearmanr
+from sklearn.metrics import adjusted_rand_score
 
 try:
     from catboost import CatBoostClassifier
 except ImportError:
-    raise ImportError("CatBoost required for this script")
+    pass
+
+try:
+    from lightgbm import LGBMClassifier
+except ImportError:
+    pass
 
 try:
     import shap
 except ImportError:
-    raise ImportError("SHAP required for this script")
+    pass
 
 # ---- Path Setup ----
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 _scripts_dir = os.path.join(ROOT, 'Analysis', 'Scripts')
 if _scripts_dir not in sys.path:
     sys.path.insert(0, _scripts_dir)
-from artifact_registry import ROOT_DIR, DATA_WAREHOUSE_DIR, TRACK1_DIR, TraceabilityRegistry as AR
+from artifact_registry import ROOT_DIR, DATA_WAREHOUSE_DIR, TraceabilityRegistry as AR
 
 try:
     from thesis_style import set_thesis_style
@@ -67,10 +65,8 @@ METRICS_DIR = str(AR.TRACK1_METRICS)
 os.makedirs(FIG_DIR, exist_ok=True)
 os.makedirs(METRICS_DIR, exist_ok=True)
 
-# ---- Match StageC anchors exactly ----
 ANCHORS = [2019, 2020, 2021, 2022, 2023]
 
-# ---- Semantic cluster names (from plot_Track1_exhibits_real.py) ----
 SEMANTIC_CLUSTERS = {
     'acs_owner_occupied_units': 'Housing Tenure',
     'acs_renter_occupied_units': 'Housing Tenure',
@@ -105,26 +101,17 @@ SEMANTIC_CLUSTERS = {
     'ldb_imprv_sqft': 'Improvement Scale',
 }
 
-# ---- Feature name cleaner (from plot_Track1_exhibits_real.py) ----
 def _rename_feature(name):
     LABELS = {
-        'gross_site_area_acres': 'Site Area',
-        'ldb_land_acres': 'Land Area',
-        'deed_acreage': 'Deed Acreage',
-        'ldb_yr_built': 'Year Built',
-        'ldb_ilr': 'Improvement Ratio',
-        'ldb_far': 'Floor Area Ratio',
-        'ldb_units': 'Unit Count',
-        'ldb_appraised_val': 'Appraised Value',
-        'ldb_market_val': 'Market Value',
-        'acs_median_household_income': 'Median Income',
-        'acs_owner_occupied_units': 'Owner-Occupied Units',
-        'acs_race_white': 'White Population',
-        'protest': 'Historical Protest',
-        'spatial_contagion_3yr': 'Nearby Protests (3yr)',
+        'gross_site_area_acres': 'Site Area', 'ldb_land_acres': 'Land Area',
+        'deed_acreage': 'Deed Acreage', 'ldb_yr_built': 'Year Built',
+        'ldb_ilr': 'Improvement Ratio', 'ldb_far': 'Floor Area Ratio',
+        'ldb_units': 'Unit Count', 'ldb_appraised_val': 'Appraised Value',
+        'ldb_market_val': 'Market Value', 'acs_median_household_income': 'Median Income',
+        'acs_owner_occupied_units': 'Owner-Occupied Units', 'acs_race_white': 'White Population',
+        'protest': 'Historical Protest', 'spatial_contagion_3yr': 'Nearby Protests (3yr)',
     }
-    if name in LABELS:
-        return LABELS[name]
+    if name in LABELS: return LABELS[name]
     cleaned = name
     for prefix in ('acs_', 'ldb_', 'lui_', 'delta_'):
         if cleaned.startswith(prefix):
@@ -132,9 +119,7 @@ def _rename_feature(name):
             break
     return cleaned.replace('_', ' ').title()
 
-
 def _cluster_features(X, features, threshold=0.30):
-    """Hierarchical clustering by Spearman |r| > 0.7 (distance < 0.30)."""
     corr = X[features].corr(method='spearman').abs().clip(0, 1).fillna(0)
     corr_vals = corr.values.copy()
     np.fill_diagonal(corr_vals, 1.0)
@@ -142,41 +127,22 @@ def _cluster_features(X, features, threshold=0.30):
     np.fill_diagonal(dist, 0.0)
     condensed = squareform(dist, checks=False)
     Z = linkage(condensed, method='average')
-    labels = fcluster(Z, t=threshold, criterion='distance')
-    return labels
-
+    return fcluster(Z, t=threshold, criterion='distance')
 
 def _get_cluster_names(features, labels, shap_matrix):
-    """Assign semantic names to clusters, return {cluster_name: [feature_indices]}."""
     clusters = {}
     for cid in np.unique(labels):
         idx = np.where(labels == cid)[0]
         feats = [features[i] for i in idx]
         cluster_shap = np.abs(shap_matrix[:, idx]).mean(axis=0)
         top_feat = feats[np.argmax(cluster_shap)]
-        n = len(feats)
-
-        if top_feat in SEMANTIC_CLUSTERS:
-            name = SEMANTIC_CLUSTERS[top_feat]
-        elif n == 1:
-            name = _rename_feature(top_feat)
-        else:
-            name = f"{_rename_feature(top_feat)} Cluster"
-
-        # If name already exists (because two distinct clusters share a semantic ID), 
-        # MERGE them to give a single conceptual share to the user.
-        if name in clusters:
-            clusters[name].extend(idx.tolist())
-        else:
-            clusters[name] = idx.tolist()
+        name = SEMANTIC_CLUSTERS.get(top_feat, _rename_feature(top_feat) if len(feats) == 1 else f"{_rename_feature(top_feat)} Cluster")
+        if name in clusters: clusters[name].extend(idx.tolist())
+        else: clusters[name] = idx.tolist()
     return clusters, labels
 
-
 def run_stability_for_horizon(hz):
-    """Run the expanding-window attribution stability test for one horizon."""
-    data_file = os.path.join(DATA,
-        "H0_Filing_Master_Enriched.csv" if hz == "H0" else "H3_Filing_Master_NLP.csv")
-
+    data_file = os.path.join(DATA, "H0_Filing_Master_Enriched.csv" if hz == "H0" else "H3_Filing_Master_NLP.csv")
     if not os.path.exists(data_file):
         print(f"[!] Data file not found: {data_file}")
         return
@@ -185,21 +151,14 @@ def run_stability_for_horizon(hz):
     print(f" ATTRIBUTION STABILITY TEST: {hz}")
     print(f"{'='*70}")
 
-    # ---- Load data ----
     df = pd.read_csv(data_file, low_memory=False)
     df['year'] = pd.to_numeric(df['year'], errors='coerce')
-    df = df.dropna(subset=['year']).sort_values('year').copy()
-    df['is_protested'] = pd.to_numeric(df['is_protested'], errors='coerce')
-    df = df.dropna(subset=['is_protested'])
+    df = df.dropna(subset=['year', 'is_protested']).sort_values('year').copy()
     df['is_protested'] = df['is_protested'].astype(int)
 
     dist_col = 'council_district' if 'council_district' in df.columns else 'council_district_x'
-    if dist_col not in df.columns:
-        df['council_district'] = 1
-    else:
-        df['council_district'] = df[dist_col].fillna(1)
+    df['council_district'] = df[dist_col].fillna(1) if dist_col in df.columns else 1
 
-    # IPW
     STAGE_A_PROBS = str(AR.stage_a_hazard(hz) if hasattr(AR, 'stage_a_hazard') else AR.TRACK0_METRICS / 'stage_a_hazard_results.csv')
     if os.path.exists(STAGE_A_PROBS):
         df_hazard = pd.read_csv(STAGE_A_PROBS, usecols=['standardized_tcad_id', 'year', 'Prob_Optimal_H=4'])
@@ -208,258 +167,164 @@ def run_stability_for_horizon(hz):
             df_hazard['standardized_tcad_id'] = df_hazard['standardized_tcad_id'].astype(str).str.zfill(10)
             df = df.merge(df_hazard, on=['standardized_tcad_id', 'year'], how='left')
             df['ipw'] = 1.0 / np.clip(df['Prob_Optimal_H=4'].fillna(0.01), 0.0001, 1.0)
-        else:
-            df['ipw'] = 1.0
-    else:
-        df['ipw'] = 1.0
+        else: df['ipw'] = 1.0
+    else: df['ipw'] = 1.0
 
-    # Feature selection
-    drop_cols = ['is_protested', 'case_number', 'organized_opposition',
-                 'has_audio_record', 'TCAD ID', 'date', 'application_start_date',
-                 'final_date', 'standardized_tcad_id', 'Prob_H=4', 'Prob_LGBM_H=4',
-                 'Prob_CB_H=4', 'Prob_Optimal_H=4', 'ipw', dist_col, 'council_district']
+    drop_cols = ['is_protested', 'case_number', 'organized_opposition', 'has_audio_record', 'TCAD ID', 'date', 'application_start_date', 'final_date', 'standardized_tcad_id', 'Prob_H=4', 'Prob_LGBM_H=4', 'Prob_CB_H=4', 'Prob_Optimal_H=4', 'ipw', dist_col, 'council_district']
     df_clean = df.drop(columns=[c for c in drop_cols if c in df.columns], errors='ignore')
 
     if hz == 'H0':
         leak_cols = [c for c in df_clean.columns if c.startswith('tfidf_') or c.startswith('speech_')]
-        if leak_cols:
-            df_clean = df_clean.drop(columns=leak_cols)
+        if leak_cols: df_clean = df_clean.drop(columns=leak_cols)
 
     X_all = df_clean.select_dtypes(include=[np.number])
     y_all = df['is_protested']
     weights_all = df['ipw']
     features = list(X_all.columns)
 
-    # ---- 1. LEAKAGE-FREE REFERENCE STRUCTURE (Pre-2019) ----
-    print(f"  [+] Computing Reference Structure (Strictly Pre-2019 Baseline)...")
+    # 1. LEAKAGE-FREE REFERENCE STRUCTURE
     pre_2019_mask = df['year'] < 2019
     X_ref = X_all[pre_2019_mask]
     y_ref = y_all[pre_2019_mask]
-    
-    # Define reference conceptually from the first stable window
     ref_labels = _cluster_features(X_ref, features)
-    
-    # Use a baseline model on the reference set to get group names
     ref_cb = CatBoostClassifier(iterations=100, depth=4, verbose=0, random_seed=42).fit(X_ref, y_ref)
     ref_sv = shap.TreeExplainer(ref_cb).shap_values(X_ref)
     if isinstance(ref_sv, list): ref_sv = ref_sv[1] if len(ref_sv)>1 else ref_sv[0]
-    
     global_cluster_map, _ = _get_cluster_names(features, ref_labels, ref_sv)
-    print(f"  [+] Reference structure fixed with {len(global_cluster_map)} groups (Leakage-Free).")
 
-    # ---- 2. REGIME STRUCTURE AUDIT (Post-2022) ----
-    print(f"  [+] Auditing for Modern Regime Structure Shift (2022+)...")
-    post_2022_mask = df['year'] >= 2022
-    modern_labels = _cluster_features(X_all[post_2022_mask], features)
-    # Check for rank correlation between ref_labels and modern_labels (as proxy for structural drift)
-    struct_stability, _ = spearmanr(ref_labels, modern_labels)
-    print(f"  [!] Global Correlation Structure Stability (Pre vs Post regime): {struct_stability:.3f}")
-
-    # ---- Model spec ----
-    base_model = CalibratedClassifierCV(
-        estimator=CatBoostClassifier(
-            iterations=150, depth=6, l2_leaf_reg=3,
-            learning_rate=0.03, verbose=0, random_seed=42,
-            auto_class_weights='Balanced'
+    MODELS = {
+        'CatBoost': CalibratedClassifierCV(
+            estimator=CatBoostClassifier(iterations=150, depth=6, l2_leaf_reg=3, learning_rate=0.03, verbose=0, random_seed=42, auto_class_weights='Balanced'),
+            method='sigmoid', cv=5
         ),
-        method='sigmoid', cv=5
-    )
+        'LightGBM': CalibratedClassifierCV(
+            estimator=LGBMClassifier(n_estimators=100, class_weight='balanced', random_state=42, verbose=-1, n_jobs=-1),
+            method='sigmoid', cv=5
+        )
+    }
 
-    # ---- Rolling-origin loop ----
-    all_results = []
-    anchor_group_shares = {}  # {anchor: {group_name: share%}}
+    all_results_clustered = []
+    all_results_unclustered = []
+    all_results_interactions = []
 
-    for anchor in ANCHORS:
-        tr_mask = df['year'] < anchor
-        te_mask = df['year'] == anchor
-
-        n_train = tr_mask.sum()
-        n_test = te_mask.sum()
-        n_pos_test = y_all[te_mask].sum()
-
-        if n_train < 20 or n_test < 5 or n_pos_test < 1:
-            print(f"\n  Anchor {anchor}: SKIP (train={n_train}, test={n_test}, pos={n_pos_test})")
-            continue
-
-        print(f"\n  Anchor {anchor}: train year<{anchor} ({n_train}), test year=={anchor} ({n_test}, {n_pos_test} pos)")
-
-        # Retrain
-        cb = clone(base_model)
-        cb.fit(X_all[tr_mask], y_all[tr_mask], sample_weight=weights_all[tr_mask])
-
-        # Extract base CatBoost from CalibratedClassifierCV
-        base_cb = cb.calibrated_classifiers_[0].estimator
-
-        # TreeSHAP on test set
-        X_test = X_all[te_mask]
-        n_shap = min(1000, len(X_test))
-        X_shap = X_test.sample(n=n_shap, random_state=42) if len(X_test) > n_shap else X_test
-
-        explainer = shap.TreeExplainer(base_cb)
-        sv = explainer.shap_values(X_shap)
-        if isinstance(sv, list):
-            sv = sv[1] if len(sv) > 1 else sv[0]
-        if hasattr(sv, 'values'):
-            sv = sv.values
-
-        # Compute group-level attribution shares using the FROZEN global_cluster_map
-        total_abs_shap = np.abs(sv).sum()
-        group_shares = {}
-        for gname, gidx in global_cluster_map.items():
-            group_abs = np.abs(sv[:, gidx]).sum()
-            share = 100.0 * group_abs / total_abs_shap
-            group_shares[gname] = share
-
-        anchor_group_shares[anchor] = group_shares
-
-        # Console output
-        print(f"    {'Group':<35} {'Share':>7}")
-        print(f"    {'-'*44}")
-        for g, s in sorted(group_shares.items(), key=lambda x: -x[1]):
-            if s > 1.0:
-                print(f"    {g:<35} {s:>6.1f}%")
-
-        for gname, share in group_shares.items():
-            all_results.append({
-                'Horizon': hz,
-                'Anchor': anchor,
-                'Group': gname,
-                'Share_Pct': round(share, 2),
-            })
-
-    # ---- Save CSV ----
-    df_results = pd.DataFrame(all_results)
-    csv_path = os.path.join(METRICS_DIR, f"attribution_stability_{hz}.csv")
-    df_results.to_csv(csv_path, index=False)
-    print(f"\n  [+] Saved {csv_path}")
-
-    # ---- Build unified group set (top groups by max share across anchors) ----
-    all_groups = set()
-    for shares in anchor_group_shares.values():
-        all_groups |= set(shares.keys())
-
-    # Rank groups by mean share across anchors
-    group_mean = {}
-    for g in all_groups:
-        vals = [anchor_group_shares[a].get(g, 0) for a in anchor_group_shares]
-        group_mean[g] = np.mean(vals)
-
-    top_groups = sorted(group_mean.keys(), key=lambda g: -group_mean[g])[:12]
-
-    # ---- Heatmap Figure ----
-    anchors_used = sorted(anchor_group_shares.keys())
-    heatmap_data = np.zeros((len(top_groups), len(anchors_used)))
-    for j, anchor in enumerate(anchors_used):
-        for i, g in enumerate(top_groups):
-            heatmap_data[i, j] = anchor_group_shares[anchor].get(g, 0)
-
-    fig, ax = plt.subplots(figsize=(10, 7))
-    im = ax.imshow(heatmap_data, cmap='YlOrRd', aspect='auto')
-
-    ax.set_xticks(range(len(anchors_used)))
-    ax.set_xticklabels([f'Train <{a}\nTest ={a}' for a in anchors_used], fontsize=9)
-    ax.set_yticks(range(len(top_groups)))
-    ax.set_yticklabels(top_groups, fontsize=9)
-
-    # Annotate cells
-    for i in range(len(top_groups)):
-        for j in range(len(anchors_used)):
-            val = heatmap_data[i, j]
-            color = 'white' if val > heatmap_data.max() * 0.6 else 'black'
-            ax.text(j, i, f'{val:.1f}%', ha='center', va='center',
-                    fontsize=8, color=color, fontweight='bold')
-
-    ax.set_title(f'Attribution Stability Across Expanding Windows ({hz})', fontsize=13, pad=12)
-    ax.set_xlabel('Rolling-Origin Anchor', fontsize=11)
-    fig.colorbar(im, ax=ax, label='Attribution Share (%)', shrink=0.8)
-    plt.tight_layout()
-
-    heatmap_path = os.path.join(FIG_DIR, f"fig_attribution_stability_{hz}.pdf")
-    plt.savefig(heatmap_path)
-    plt.close()
-    print(f"  [+] Saved {heatmap_path}")
-
-    # ---- Regime Shift Summary ----
-    print(f"\n{'='*70}")
-    print(f" REGIME SHIFT SUMMARY ({hz})")
-    print(f"{'='*70}")
-    
-    pre_anchors = [a for a in anchors_used if a < 2022]
-    post_anchors = [a for a in anchors_used if a >= 2022]
-    
-    if pre_anchors and post_anchors:
-        def get_avg_shares(anchors):
-            totals = {}
-            for a in anchors:
-                for g, s in anchor_group_shares[a].items():
-                    totals[g] = totals.get(g, 0) + s
-            return {g: v / len(anchors) for g, v in totals.items()}
+    for model_name, base_model in MODELS.items():
+        print(f"\n[{model_name}] EVALUATING ACROSS EXPANDING WINDOWS...")
         
-        pre_avg = get_avg_shares(pre_anchors)
-        post_avg = get_avg_shares(post_anchors)
+        anchor_group_shares = {}
+        unclustered_shares = {}
         
-        print(f"    {'Group':<30} {'Pre-22 Avg%':>12} {'Post-22 Avg%':>12} {'Shift':>8}")
-        print(f"    {'-'*65}")
-        all_groups = sorted(set(pre_avg.keys()) | set(post_avg.keys()))
-        for g in all_groups:
-            s1 = pre_avg.get(g, 0)
-            s2 = post_avg.get(g, 0)
-            if s1 > 2.0 or s2 > 2.0:
-                print(f"    {g:<30} {s1:>12.1f}% {s2:>12.1f}% {s2-s1:>7.1f}%")
+        for anchor in ANCHORS:
+            tr_mask = df['year'] < anchor
+            te_mask = df['year'] == anchor
+            n_train = tr_mask.sum()
+            n_test = te_mask.sum()
+            if n_train < 20 or n_test < 5 or y_all[te_mask].sum() < 1: continue
 
-    # ---- Rank Stability (Spearman rho between adjacent anchors) ----
-    if len(anchors_used) >= 2:
-        print(f"\n  RANK STABILITY (Spearman rho between adjacent anchors):")
-        print(f"    {'Pair':<25} {'rho':>8} {'p-value':>10}")
-        print(f"    {'-'*45}")
+            # Dynamic Taxonomic Drift Tracking
+            current_labels = _cluster_features(X_all[tr_mask], features)
+            ari_score = adjusted_rand_score(ref_labels, current_labels)
+            
+            print(f"\n  Anchor {anchor} | N={n_train} | Taxonomy ARI vs Pre-2019: {ari_score:.3f}")
 
-        rho_values = []
-        for k in range(len(anchors_used) - 1):
-            a1, a2 = anchors_used[k], anchors_used[k + 1]
-            v1 = [anchor_group_shares[a1].get(g, 0) for g in top_groups]
-            v2 = [anchor_group_shares[a2].get(g, 0) for g in top_groups]
-            rho, pval = spearmanr(v1, v2)
-            rho_values.append(rho)
-            print(f"    {a1} -> {a2}{'':>15} {rho:>7.3f} {pval:>10.4f}")
+            model = clone(base_model)
+            model.fit(X_all[tr_mask], y_all[tr_mask])
 
-        mean_rho = np.mean(rho_values)
-        print(f"\n    Mean rho across adjacent anchors: {mean_rho:.3f}")
+            # Extract base estimator for SHAP
+            clf = model.calibrated_classifiers_[0].estimator
+            X_shap = X_all[te_mask].sample(n=min(300, n_test), random_state=42)
+            explainer = shap.TreeExplainer(clf)
+            sv = explainer.shap_values(X_shap)
+            
+            # Try parsing interaction values
+            try:
+                interact_sv = explainer.shap_interaction_values(X_shap)
+            except Exception as e:
+                interact_sv = None
 
-        # Also: full-window correlation (first vs last anchor)
-        v_first = [anchor_group_shares[anchors_used[0]].get(g, 0) for g in top_groups]
-        v_last = [anchor_group_shares[anchors_used[-1]].get(g, 0) for g in top_groups]
-        rho_full, pval_full = spearmanr(v_first, v_last)
-        print(f"    Full-span rho ({anchors_used[0]} vs {anchors_used[-1]}): {rho_full:.3f} (p={pval_full:.4f})")
+            if isinstance(sv, list): sv = sv[1] if len(sv) > 1 else sv[0]
+            if hasattr(sv, 'values'): sv = sv.values
+            if interact_sv is not None and isinstance(interact_sv, list): 
+                interact_sv = interact_sv[1] if len(interact_sv) > 1 else interact_sv[0]
 
-        # ---- Rank stability line plot ----
-        fig2, ax2 = plt.subplots(figsize=(8, 5))
-        pairs = [f'{anchors_used[k]}->{anchors_used[k+1]}' for k in range(len(anchors_used)-1)]
-        ax2.plot(pairs, rho_values, 'o-', color='#1b4965', linewidth=2, markersize=8)
-        ax2.axhline(y=1.0, color='gray', linestyle='--', alpha=0.5, label='Perfect stability')
-        ax2.axhline(y=mean_rho, color='#e63946', linestyle=':', alpha=0.8,
-                    label=f'Mean rho = {mean_rho:.3f}')
-        ax2.set_ylim(0, 1.05)
-        ax2.set_ylabel('Spearman rho (rank correlation)', fontsize=11)
-        ax2.set_xlabel('Adjacent anchor pairs', fontsize=11)
-        ax2.set_title(f'Attribution Rank Stability ({hz})', fontsize=13)
-        ax2.legend(fontsize=9)
-        ax2.grid(True, alpha=0.3)
+            total_abs_shap = np.abs(sv).sum()
+            
+            # --- 1. Clustered Shares (Fixed Mapping) ---
+            g_shares = {}
+            for gname, gidx in global_cluster_map.items():
+                g_shares[gname] = 100.0 * np.abs(sv[:, gidx]).sum() / total_abs_shap
+            anchor_group_shares[anchor] = g_shares
+
+            # --- 2. Unclustered Features ---
+            f_shares = {}
+            for i, fname in enumerate(features):
+                f_shares[_rename_feature(fname)] = 100.0 * np.abs(sv[:, i]).sum() / total_abs_shap
+            unclustered_shares[anchor] = f_shares
+
+            # --- 3. Interactions ---
+            if interact_sv is not None:
+                total_interact_shap = np.abs(interact_sv).sum()
+                # Aggregate symmetric off-diagonals
+                ix_shares = []
+                for i in range(len(features)):
+                    for j in range(i+1, len(features)):
+                        val = np.abs(interact_sv[:, i, j]).sum() + np.abs(interact_sv[:, j, i]).sum()
+                        if val > 0:
+                            p_name = f"{_rename_feature(features[i])} x {_rename_feature(features[j])}"
+                            ix_shares.append((p_name, 100.0 * val / total_interact_shap))
+                
+                ix_shares.sort(key=lambda x: -x[1])
+                for p_name, share in ix_shares[:10]:
+                    all_results_interactions.append({'Model': model_name, 'Horizon': hz, 'Anchor': anchor, 'Interaction': p_name, 'Share_Pct': round(share, 2)})
+
+            # Output logs
+            print(f"    -- Top Unclustered: " + ", ".join([f"{k} {v:.1f}%" for k,v in sorted(f_shares.items(), key=lambda x: -x[1])[:3]]))
+            print(f"    -- Top Clustered:   " + ", ".join([f"{k} {v:.1f}%" for k,v in sorted(g_shares.items(), key=lambda x: -x[1])[:3]]))
+
+            for gname, share in g_shares.items():
+                all_results_clustered.append({'Model': model_name, 'Horizon': hz, 'Anchor': anchor, 'Group': gname, 'Share_Pct': round(share, 2)})
+            for fname, share in f_shares.items():
+                all_results_unclustered.append({'Model': model_name, 'Horizon': hz, 'Anchor': anchor, 'Feature': fname, 'Share_Pct': round(share, 2)})
+
+        # Save model-specific heatmap for clustered
+        all_groups = set()
+        for s in anchor_group_shares.values(): all_groups |= set(s.keys())
+        g_mean = {g: np.mean([anchor_group_shares[a].get(g, 0) for a in anchor_group_shares]) for g in all_groups}
+        top_groups = sorted(g_mean.keys(), key=lambda g: -g_mean[g])[:12]
+
+        anchors_used = sorted(anchor_group_shares.keys())
+        heatmap_data = np.zeros((len(top_groups), len(anchors_used)))
+        for j, a in enumerate(anchors_used):
+            for i, g in enumerate(top_groups):
+                heatmap_data[i, j] = anchor_group_shares[a].get(g, 0)
+
+        fig, ax = plt.subplots(figsize=(10, 7))
+        im = ax.imshow(heatmap_data, cmap='YlOrRd', aspect='auto')
+        ax.set_xticks(range(len(anchors_used)))
+        ax.set_xticklabels([f'Train <{a}\nTest ={a}' for a in anchors_used], fontsize=9)
+        ax.set_yticks(range(len(top_groups)))
+        ax.set_yticklabels(top_groups, fontsize=9)
+        for i in range(len(top_groups)):
+            for j in range(len(anchors_used)):
+                val = heatmap_data[i, j]
+                c = 'white' if val > heatmap_data.max() * 0.6 else 'black'
+                ax.text(j, i, f'{val:.1f}%', ha='center', va='center', fontsize=8, color=c, fontweight='bold')
+        ax.set_title(f'[{model_name}] Clustered Attribution Stability ({hz})', fontsize=13, pad=12)
+        fig.colorbar(im, ax=ax, label='Share (%)', shrink=0.8)
         plt.tight_layout()
-
-        rank_path = os.path.join(FIG_DIR, f"fig_attribution_rank_stability_{hz}.pdf")
-        plt.savefig(rank_path)
+        plt.savefig(os.path.join(FIG_DIR, f"fig_attribution_stability_{hz}_{model_name}.pdf"))
         plt.close()
-        print(f"  [+] Saved {rank_path}")
 
-
+    pd.DataFrame(all_results_clustered).to_csv(os.path.join(METRICS_DIR, f"clustered_stability_{hz}.csv"), index=False)
+    pd.DataFrame(all_results_unclustered).to_csv(os.path.join(METRICS_DIR, f"unclustered_stability_{hz}.csv"), index=False)
+    if all_results_interactions:
+        pd.DataFrame(all_results_interactions).to_csv(os.path.join(METRICS_DIR, f"interaction_stability_{hz}.csv"), index=False)
+    
 def main():
     for hz in ['H0', 'H3']:
         run_stability_for_horizon(hz)
-
     print("\n" + "="*70)
     print(" ATTRIBUTION STABILITY TEST COMPLETE")
     print("="*70)
-
 
 if __name__ == '__main__':
     main()

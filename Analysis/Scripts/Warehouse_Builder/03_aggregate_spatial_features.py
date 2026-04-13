@@ -43,8 +43,8 @@ def build_spatial_snapshots():
     panel['yr_built'] = pd.to_numeric(panel['ldb_yr_built'], errors='coerce').fillna(pd.to_numeric(panel['year_built'], errors='coerce'))
     panel['acres'] = pd.to_numeric(panel['land_acres'], errors='coerce')
     panel['far'] = pd.to_numeric(panel['ldb_far'], errors='coerce')
-    panel['frontage'] = pd.to_numeric(panel['frontage'], errors='coerce')
-    panel['is_corner'] = panel['corner_lot_flag'].map({True: 1, False: 0, 1: 1, 0: 0, 'Y': 1, 'N': 0}).fillna(0).astype(int)
+    panel['frontage'] = pd.to_numeric(panel.get('frontage', pd.Series([np.nan] * len(panel))), errors='coerce')
+    panel['is_corner'] = panel.get('corner_lot_flag', pd.Series([0] * len(panel))).map({True: 1, False: 0, 1: 1, 0: 0, 'Y': 1, 'N': 0}).fillna(0).astype(int)
     
     # 2. Contextual Land Use (Categorical Aggregation)
     land_use = panel['lui_general_land_use_tv'].astype(str)

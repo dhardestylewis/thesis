@@ -1,6 +1,6 @@
 import pandas as pd
-from catboost import CatBoostClassifier
-from sklearn.metrics import classification_report, accuracy_score, f1_score
+from catboost import CatBoostClassifier, CatBoostRegressor
+from sklearn.metrics import classification_report, accuracy_score, f1_score, mean_absolute_error
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -38,6 +38,56 @@ def run_stage_b():
     print(f"Macro-F1 (6-Tier): {f1:.4f}")
     print("Classification Report:")
     print(classification_report(y, preds, zero_division=0))
+
+    # --- CONTINUOUS REGRESSION FOR HUMAN-READABLE METRICS ---
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from pathlib import Path
+
+    df['implied_sqft'] = df['delta_max_far'] * df['gross_site_area_acres'] * 43560
+    y_sqft = df['implied_sqft']
+    
+    seeds = [10, 42, 100, 314, 777, 1234, 2023, 2024, 8080, 9999]
+    mae_sqft_list = []
+    mae_units_list = []
+
+    for seed in seeds:
+        X_train_sqft, X_val_sqft, y_train_sqft, y_val_sqft = train_test_split(X, y_sqft, test_size=0.1, random_state=seed)
+        cbr = CatBoostRegressor(iterations=60, depth=4, learning_rate=0.08, loss_function='MAE', random_seed=seed, verbose=0)
+        cbr.fit(X_train_sqft, y_train_sqft, eval_set=(X_val_sqft, y_val_sqft), early_stopping_rounds=15)
+        
+        preds_sqft = cbr.predict(X)
+        mae_sqft = mean_absolute_error(y_sqft, preds_sqft)
+        mae_sqft_list.append(mae_sqft)
+        mae_units_list.append(mae_sqft / 1000.0)
+    
+    mean_mae_sqft = np.mean(mae_sqft_list)
+    std_mae_sqft = np.std(mae_sqft_list)
+    mean_mae_units = np.mean(mae_units_list)
+    std_mae_units = np.std(mae_units_list)
+
+    print(f"\\n--- Continuous Scale Error (10 Seeds) ---")
+    print(f"Regression MAE: {mean_mae_sqft:,.0f} +/- {std_mae_sqft:,.0f} sqft")
+    print(f"Regression Equivalent Unit MAE: {mean_mae_units:.1f} +/- {std_mae_units:.1f} units\\n")
+
+    try:
+        plt.figure(figsize=(6, 4))
+        sns.boxplot(y=mae_units_list, color='lightblue', width=0.3)
+        sns.swarmplot(y=mae_units_list, color='darkblue', size=8)
+        plt.title('Stage B: Multi-Seed Continuous Regression MAE\\n(10 Random Seeds)')
+        plt.ylabel('Mean Absolute Error (Equivalent Units)')
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.tight_layout()
+        
+        plot_path = Path(str(AR.FIGURES_DIR).replace('Draft_v1\\\\Figures', 'Draft_v1/Figures')) / "Chapter4" / "fig_stage_b_continuous_seed_mae.pdf"
+        os.makedirs(plot_path.parent, exist_ok=True)
+        plt.savefig(plot_path)
+        print(f"Saved Stage B continuous seed plot to {plot_path}")
+        plt.close()
+    except Exception as e:
+        print(f"    [!] Failed to plot multi-seed continuous MAE: {e}")
+
 
     # --- ALTERNATIVE ARCHITECTURES BENCHMARKS ---
     from sklearn.ensemble import RandomForestClassifier
@@ -82,6 +132,8 @@ def run_stage_b():
         update_metric("metricStageBRfMacroFOne", f"{f1_rf:.3f}")
         update_metric("metricStageBLogMacroFOne", f"{f1_lr:.3f}")
         update_metric("metricStageBLgbMacroFOne", f"{f1_lgb:.3f}")
+        update_metric("metricStageBMaeSqft", f"${mean_mae_sqft:,.0f} \\pm {std_mae_sqft:,.0f}$")
+        update_metric("metricStageBMaeUnits", f"${mean_mae_units:.1f} \\pm {std_mae_units:.1f}$")
 
         for label, metric_name in [
             ("PUD / large negotiated project", "PUD"),

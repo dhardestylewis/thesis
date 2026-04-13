@@ -61,6 +61,7 @@ import plot_F12_PR_real as f12
 import plot_F16_RD_real as f16
 import plot_F17_DiD_real as f17
 import plot_Track1_exhibits_real as t1_ex
+import plot_3D_temporal_drift as plot_3d
 import generate_summary_stats_real as stats_table
 import plot_F19_F20_Qualitative as f19_f20
 import plot_F22_HexMap as f22
@@ -139,6 +140,13 @@ def main():
         fairness_audit.run_experiment()
     except Exception as e:
         print(f"    [!] Error running Fairness Audit: {e}")
+
+    print("\n[+] Stage C.3: Deep Temporal Drift Topology")
+    try:
+        from Analysis.Scripts.Modeling.Production_Models import run_rolling_origin_real
+        run_rolling_origin_real.run_rolling_origin_drift()
+    except Exception as e:
+        print(f"    [!] Error running Deep Temporal Drift: {e}")
 
     print("\n[+] Stage C.3: Supplemental Point-7 Metrics (Brier, Subgroup Ns, ECE CI)")
     try:
@@ -240,6 +248,11 @@ def main():
         t1_ex.plot_all_track1_exhibits()
     except Exception as e:
         print(f"    [!] Error generating Track 1 exhibits: {e}")
+
+    try:
+        plot_3d.plot_3d_drift()
+    except Exception as e:
+        print(f"    [!] Error generating 3D Drift exhibits: {e}")
 
     try:
         stability_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "attribution_stability.py")

@@ -76,7 +76,7 @@ def generate_real_horizon_importances():
         ax.set_xlabel("Physical CatBoost Feature Importance")
 
     # H0: Filing (Spatial/Admin)
-    h0_features = ['bisg_white_200ft', 'bisg_black_200ft', 'bisg_asian_200ft', 'bisg_hispanic_200ft', 'bisg_white_nbr', 'bisg_black_nbr', 'bisg_asian_nbr', 'bisg_hispanic_nbr', 'acreage', 'delta_height', 'delta_far', 'delta_bldg_cov']
+    h0_features = ['acreage', 'delta_height', 'delta_far', 'delta_bldg_cov']
     plot_horizon_importance(axes[0,0], h0_features, "H0 (Filing Date): Ex-Ante Geometries", "Blues_r")
     
     # H1: Notice 

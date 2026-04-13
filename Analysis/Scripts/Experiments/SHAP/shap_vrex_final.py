@@ -28,7 +28,7 @@ import re
 
 warnings.filterwarnings('ignore')
 
-EPOCHS = 120; BS = 512; LR = 1e-3; VREX_PEN = 100.0; LATENT = 16
+EPOCHS = 120; BS = 512; LR = 1e-3; VREX_PEN = 100.0; LATENT = 8
 MIN_ENV = 5; N_SAMPLE = 33000
 
 PROJECT = r"c:\Users\dhl\data\thesis\thesis"
@@ -152,7 +152,7 @@ def classify_feature(name):
 class CVAE(nn.Module):
     def __init__(self, d):
         super().__init__()
-        self.enc = nn.Sequential(nn.Linear(d+1,256),nn.SiLU(),nn.Dropout(0.1),nn.Linear(256,128),nn.SiLU())
+        self.enc = nn.Sequential(nn.Linear(d+1,256),nn.SiLU(),nn.Dropout(0.3),nn.Linear(256,128),nn.SiLU())
         self.mu = nn.Linear(128,LATENT); self.lv = nn.Linear(128,LATENT)
         self.dec = nn.Sequential(nn.Linear(LATENT+1,128),nn.SiLU(),nn.Linear(128,256),nn.SiLU(),nn.Linear(256,d))
         self.cls = nn.Sequential(nn.Linear(LATENT,64),nn.SiLU(),nn.Linear(64,1))
@@ -291,6 +291,10 @@ def train(X, y, envs, method):
                 b = VREX_PEN if ep>20 else VREX_PEN*(ep/20.0)
                 loss = erm + b*s.var()
             else: loss = erm
+            
+            # L1 Lasso Regularization targeting explicit latent nodes to zero out noise
+            l1_penalty = sum(p.abs().sum() for p in model.mu.parameters())
+            loss += 0.001 * l1_penalty
             loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(),10.0); opt.step()
             tl += loss.item(); nb += 1
         if (ep+1)%30==0: print(f"  Epoch {ep+1:3d} | Loss: {tl/max(nb,1):.8f}")

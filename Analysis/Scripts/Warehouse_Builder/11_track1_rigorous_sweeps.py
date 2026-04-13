@@ -41,7 +41,7 @@ def execute_rigorous_track1():
     # Simulate temporal regime for OOD worst-regime evaluation
     df['year'] = np.random.choice([2019, 2020, 2021, 2022, 2023, 2024], len(df))
     
-    features = ['bisg_white_200ft', 'bisg_black_200ft', 'bisg_asian_200ft', 'bisg_hispanic_200ft', 'bisg_white_nbr', 'bisg_black_nbr', 'bisg_asian_nbr', 'bisg_hispanic_nbr', 'acreage', 'frontage', 'corner_lot_flag']
+    features = ['acreage', 'frontage', 'corner_lot_flag']
     X = df[features].fillna(0)
     y = df['organized_opposition']
     

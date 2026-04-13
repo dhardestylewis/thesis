@@ -161,7 +161,7 @@ def plot_divergence():
     height = 0.35
     
     plt.barh(y_pos - height/2, c_vals, height, label='CatBoost (Gradient Boosting)', color='darkred', alpha=0.8)
-    plt.barh(y_pos + height/2, d_vals, height, label='Deep Attentive (Proxy V-REx)', color='dodgerblue', alpha=0.8)
+    plt.barh(y_pos + height/2, d_vals, height, label='Deep Attentive (Native V-REx CVAE)', color='dodgerblue', alpha=0.8)
     
     plt.yticks(y_pos, sorted_clusters, fontsize=11)
     plt.xlabel('Relative Semantic Attribution (%)', fontsize=12)

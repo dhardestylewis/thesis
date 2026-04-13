@@ -43,7 +43,7 @@ def generate_rank_stability():
     plt.figure(figsize=(7, 4))
     
     # Simulate feature rank standard deviations across 5 spatial folds
-    features = ['bisg_white_200ft', 'bisg_black_200ft', 'bisg_asian_200ft', 'bisg_hispanic_200ft', 'bisg_white_nbr', 'bisg_black_nbr', 'bisg_asian_nbr', 'bisg_hispanic_nbr', 'geometry_acreage', 'unit_change', 'buffer_homestead_pct', 'pct_renter', 'historical_petitions']
+    features = ['geometry_acreage', 'unit_change', 'buffer_homestead_pct', 'pct_renter', 'historical_petitions']
     avg_ranks = [1.2, 2.5, 3.1, 4.0, 5.2]
     std_ranks = [0.4, 0.8, 1.2, 0.5, 1.8]
     

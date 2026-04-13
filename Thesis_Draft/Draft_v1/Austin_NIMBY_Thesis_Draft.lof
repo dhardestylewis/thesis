@@ -3,30 +3,33 @@
 \contentsline {figure}{\numberline {3}{\ignorespaces 200ft Parcel Buffer Geometries}}{13}{figure.caption.5}%
 \contentsline {figure}{\numberline {4}{\ignorespaces Schematic of the Austin Zoning Process}}{14}{figure.caption.6}%
 \contentsline {figure}{\numberline {5}{\ignorespaces Stage C Unified Precision-Recall Curves by Model Class}}{17}{figure.caption.9}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Calibration Reliability Matrix: Standard, Deep, and Foundation Models}}{21}{figure.caption.13}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Performance Across Temporal Holdouts}}{22}{figure.caption.15}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Top Predictor Groups After Hierarchical Clustering}}{23}{figure.caption.16}%
-\contentsline {figure}{\numberline {9}{\ignorespaces SHAP Beeswarm Plot for the Opposition Model}}{24}{figure.caption.17}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Attribution Divergence Matrix: Gradient Boosting vs. Deep Attention}}{25}{figure.caption.18}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Expanding-Window Attribution Stability Test}}{27}{figure.caption.19}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Multi-Horizon Attribution Stability}}{28}{figure.caption.20}%
-\contentsline {figure}{\numberline {13}{\ignorespaces Causal Identification: Regression Discontinuity DAG}}{28}{figure.caption.21}%
-\contentsline {figure}{\numberline {14}{\ignorespaces Threshold-Based Discontinuity at the Measured 20\% Petition Share}}{29}{figure.caption.22}%
-\contentsline {figure}{\numberline {15}{\ignorespaces Geographic Distribution of False Positives vs. Actual Filings}}{32}{figure.caption.23}%
-\contentsline {figure}{\numberline {16}{\ignorespaces Supplementary Hyperparameter Search Results}}{43}{figure.caption.27}%
-\contentsline {figure}{\numberline {17}{\ignorespaces Mean Predicted Probability of Argument Frames by District}}{45}{figure.caption.28}%
-\contentsline {figure}{\numberline {18}{\ignorespaces Argument Frame Probabilities: Opposed vs. Unopposed Cases}}{46}{figure.caption.29}%
-\contentsline {figure}{\numberline {19}{\ignorespaces Development Hazard Classification PR Curves}}{48}{figure.caption.31}%
-\contentsline {figure}{\numberline {20}{\ignorespaces Predicted Geographic Occurrence vs. Realized Events}}{49}{figure.caption.33}%
-\contentsline {figure}{\numberline {21}{\ignorespaces Composite Measure of Expected Petitioned Units}}{52}{figure.caption.35}%
-\contentsline {figure}{\numberline {22}{\ignorespaces Estimated 2022 Electoral-Transition Interaction Effects by District}}{53}{figure.caption.36}%
-\contentsline {figure}{\numberline {23}{\ignorespaces Placebo Estimates Across Earlier Election Cycles}}{54}{figure.caption.37}%
-\contentsline {figure}{\numberline {24}{\ignorespaces HOME Phase 1 Event-Study Coefficients}}{55}{figure.caption.39}%
-\contentsline {figure}{\numberline {25}{\ignorespaces Longitudinal Stability Matrix}}{59}{figure.caption.42}%
-\contentsline {figure}{\numberline {26}{\ignorespaces Algorithmic Error Volatility across Time and Horizons}}{60}{figure.caption.43}%
-\contentsline {figure}{\numberline {27}{\ignorespaces OOD Deployment Error Decay}}{61}{figure.caption.44}%
-\contentsline {figure}{\numberline {28}{\ignorespaces Multi-Seed Stability Audit}}{62}{figure.caption.46}%
-\contentsline {figure}{\numberline {29}{\ignorespaces Seed Variance Interaction with OOD Offset}}{63}{figure.caption.47}%
-\contentsline {figure}{\numberline {30}{\ignorespaces Cross-Stage Seed Stability}}{64}{figure.caption.48}%
-\contentsline {figure}{\numberline {31}{\ignorespaces Stage B Typology Seed Stability}}{64}{figure.caption.49}%
-\contentsline {figure}{\numberline {32}{\ignorespaces Stage B Per-Class F1 Stability}}{65}{figure.caption.50}%
+\contentsline {figure}{\numberline {6}{\ignorespaces 3D Temporal Drift Topology: Structural Guardrails vs Deep Interpolation}}{21}{figure.caption.12}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Calibration Reliability Matrix: Standard, Deep, and Foundation Models}}{23}{figure.caption.14}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Performance Across Temporal Holdouts}}{24}{figure.caption.16}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Top Predictor Groups After Hierarchical Clustering}}{25}{figure.caption.17}%
+\contentsline {figure}{\numberline {10}{\ignorespaces SHAP Beeswarm Plot for the Opposition Model}}{26}{figure.caption.18}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Attribution Divergence Matrix: Gradient Boosting vs. Deep V-REx Penalization}}{27}{figure.caption.19}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Expanding-Window Attribution Stability Test}}{29}{figure.caption.20}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Multi-Horizon Attribution Stability}}{30}{figure.caption.21}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Meta-Attribution Structural Clustering}}{31}{figure.caption.22}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Causal Identification: Regression Discontinuity DAG}}{32}{figure.caption.23}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Threshold-Based Discontinuity at the Measured 20\% Petition Share}}{33}{figure.caption.24}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Geographic Distribution of False Positives vs. Actual Filings}}{36}{figure.caption.25}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Supplementary Hyperparameter Search Results}}{48}{figure.caption.30}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Mean Predicted Probability of Argument Frames by District}}{50}{figure.caption.31}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Argument Frame Probabilities: Opposed vs. Unopposed Cases}}{51}{figure.caption.32}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Development Hazard Classification PR Curves}}{53}{figure.caption.34}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Predicted Geographic Occurrence vs. Realized Events}}{54}{figure.caption.36}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Stage B Continuous Error Multi-Seed Stability}}{56}{figure.caption.38}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Composite Measure of Expected Petitioned Units}}{58}{figure.caption.39}%
+\contentsline {figure}{\numberline {25}{\ignorespaces Estimated 2022 Electoral-Transition Interaction Effects by District}}{59}{figure.caption.40}%
+\contentsline {figure}{\numberline {26}{\ignorespaces Placebo Estimates Across Earlier Election Cycles}}{60}{figure.caption.41}%
+\contentsline {figure}{\numberline {27}{\ignorespaces HOME Phase 1 Event-Study Coefficients}}{61}{figure.caption.43}%
+\contentsline {figure}{\numberline {28}{\ignorespaces Longitudinal Stability Matrix}}{65}{figure.caption.46}%
+\contentsline {figure}{\numberline {29}{\ignorespaces Algorithmic Error Volatility across Time and Horizons}}{66}{figure.caption.47}%
+\contentsline {figure}{\numberline {30}{\ignorespaces OOD Deployment Error Decay}}{67}{figure.caption.48}%
+\contentsline {figure}{\numberline {31}{\ignorespaces Multi-Seed Stability Audit}}{68}{figure.caption.50}%
+\contentsline {figure}{\numberline {32}{\ignorespaces Seed Variance Interaction with OOD Offset}}{69}{figure.caption.51}%
+\contentsline {figure}{\numberline {33}{\ignorespaces Cross-Stage Seed Stability}}{70}{figure.caption.52}%
+\contentsline {figure}{\numberline {34}{\ignorespaces Stage B Typology Seed Stability}}{70}{figure.caption.53}%
+\contentsline {figure}{\numberline {35}{\ignorespaces Stage B Per-Class F1 Stability}}{71}{figure.caption.54}%

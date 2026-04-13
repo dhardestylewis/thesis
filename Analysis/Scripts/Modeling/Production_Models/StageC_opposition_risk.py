@@ -17,19 +17,19 @@ except ImportError:
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.linear_model import LinearRegression
 
-class AnchorRegressionLPM(BaseEstimator, ClassifierMixin):
+class NonLinearAnchorRegression(BaseEstimator, ClassifierMixin):
     """
-    True Anchor Regression formulated as a Linear Probability Model (LPM) 
-    for out-of-distribution causal inference (Rothenhausler et al. 2021).
-    X_anc = X + (sqrt(gamma) - 1) * P_A X
-    y_anc = y + (sqrt(gamma) - 1) * P_A y
+    Non-Linear Anchor Regression.
+    Projects X and Y causally using an OLS anchor shift (Rothenhausler et al. 2021), 
+    but fits the causal mapping using a CatBoostRegressor to preserve spatial non-linearities!
     """
     _estimator_type = "classifier"
     
     def __init__(self, gamma=10.0, n_anchors=None):
         self.gamma = gamma
         self.n_anchors = n_anchors
-        self.model = LinearRegression(fit_intercept=True)
+        from catboost import CatBoostRegressor
+        self.model = CatBoostRegressor(iterations=150, depth=5, random_seed=42, verbose=0)
         self.proj_X = LinearRegression(fit_intercept=False)
         self.proj_y = LinearRegression(fit_intercept=False)
         
@@ -411,10 +411,10 @@ def process_horizon(path, horizon_name):
         X_anc_tr_prep = anchor_prep.fit_transform(X_anc_tr)
         num_anchors = len(anchor_prep.named_transformers_['cat'].get_feature_names_out())
         
-        anc = AnchorRegressionLPM(gamma=10.0, n_anchors=num_anchors)
+        anc = NonLinearAnchorRegression(gamma=10.0, n_anchors=num_anchors)
         anc.fit(X_anc_tr_prep, y_tr, sample_weight=w_tr)
         
-        # Get raw LPM predictions on training fold for isotonic fit
+        # Get raw predictions on training fold for isotonic fit
         raw_train_preds = anc.predict_proba(X_anc_tr_prep)[:, 1]
         iso_anc = IsotonicRegression(y_min=0, y_max=1, out_of_bounds='clip')
         iso_anc.fit(raw_train_preds, y_tr)
@@ -499,7 +499,12 @@ def process_horizon(path, horizon_name):
         tr_mask = df['year'] < anchor
         if tr_mask.sum() < 20: continue
         cb = clone(optimal_model)
-        cb.fit(X[tr_mask], y[tr_mask], sample_weight=weights[tr_mask])
+        # Apply Exponential Time Decay (Rate=1.0) to privilege recent physics and improve shock recovery
+        years_diff = (anchor - df['year'][tr_mask]).values
+        decay_weights = np.exp(-1.0 * years_diff)
+        combined_weights = weights[tr_mask] * decay_weights
+        
+        cb.fit(X[tr_mask], y[tr_mask], sample_weight=combined_weights)
         for offset in [0,1,2,3]:
             te_mask = df['year'] == (anchor + offset)
             if te_mask.sum() < 5 or y[te_mask].sum() < 1: continue
@@ -514,9 +519,9 @@ def process_horizon(path, horizon_name):
     print("\nPART B: POLICY REGIMES HOLDOUTS")
     regime_results = []
     regimes = [
-        {"name": "Pre-2022 Validation", "train_bound": 2021, "test_start": 2021, "test_end": 2021},
-        {"name": "2022 Transition", "train_bound": 2022, "test_start": 2022, "test_end": 2022},
-        {"name": "HOME Adoption (2024)", "train_bound": 2024, "test_start": 2024, "test_end": 2026}
+        {"name": "Pre-COVID Baseline", "train_bound": 2020, "test_start": 2020, "test_end": 2020},
+        {"name": "Pandemic Shock (2021-2022)", "train_bound": 2021, "test_start": 2021, "test_end": 2022},
+        {"name": "Post-2022 YIMBY Council (2023-2024)", "train_bound": 2023, "test_start": 2023, "test_end": 2026}
     ]
     for reg in regimes:
         tr_mask = df['year'] < reg['train_bound']

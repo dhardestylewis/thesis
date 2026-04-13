@@ -14,7 +14,7 @@ print("="*70)
 DATA_FILE = r'C:\Users\dhl\data\thesis\thesis\Data\Warehouse_As_Of\H0_Filing_Master_Enriched.csv'
 
 # Based on VR-Ex architecture from shap_vrex_final.py
-LATENT = 32
+LATENT = 8
 
 class DeepSurrogateProxy(nn.Module):
     """
