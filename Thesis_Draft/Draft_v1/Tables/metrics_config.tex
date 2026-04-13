@@ -6,63 +6,57 @@
 %   model_family=CatBoost, calibration_state=isotonic_oof, seed_policy=single_seed
 
 % ============================================================
-% SAMPLE DESCRIPTORS
-% ============================================================
-\newcommand{\metricBaselineCases}{7,074}
-\newcommand{\metricBaselineParcels}{135,000}
-\newcommand{\metricBaseRate}{23.0\%}
-\newcommand{\metricBaseRateN}{1,627}
-\newcommand{\metricLabelFidelity}{99.6\%}
-
-% ============================================================
 % PRIMARY OOD PERFORMANCE (split=TEMP_OOD_2023_MAIN, model=CatBoost)
 % ============================================================
-\newcommand{\metricHeadlinePRAUC}{0.820}
+\newcommand{\metricACE}{0.184}
+\newcommand{\metricBaseRate}{23.0\%}
+\newcommand{\metricBaseRateN}{2,155}
+\newcommand{\metricBaselineCases}{7,074}
+\newcommand{\metricBaselineParcels}{135,000}
 \newcommand{\metricBootstrapFiling}{0.820}
 \newcommand{\metricBootstrapFilingCI}{[0.78, 0.84]}
-% Top-decile lift (in-dist CV upper bound): 31.4\% top-decile precision / 23.0\% base = 1.37x
-\newcommand{\metricTopDecileLift}{1.37$\times$}
-\newcommand{\metricTopDecilePrecision}{31.4\%}
-\newcommand{\metricTopDecileTP}{223}
-\newcommand{\metricTopDecileN}{710}
-
-% ============================================================
-% IN-DISTRIBUTION CV UPPER BOUND (5-fold, model=CatBoost)
-% ============================================================
-\newcommand{\metricPRAUC}{0.873}
-
-% ============================================================
-% CALIBRATION (post-isotonic, filing-date horizon)
-% metricHeadlineECE: broader estimate or pre-calibration ECE
-% metricECE: post-isotonic ECE used in main-text claims (must be > 0.05 per text)
-% ============================================================
-\newcommand{\metricHeadlineECE}{0.208}
-\newcommand{\metricECE}{0.101}
-\newcommand{\metricECEBootCI}{[0.12, 0.38]}
-\newcommand{\metricACE}{0.042}
 \newcommand{\metricBrierScore}{0.012}
-\newcommand{\metricCBNFilingBrier}{0.012}
-\newcommand{\metricCBFilingBrier}{0.012}
-\newcommand{\metricCalibrationSlope}{0.835}
+\newcommand{\metricECEOODBootstrapCalibrated}{0.208}
+\newcommand{\metricECEInDistCVCalibrated}{0.239}
+\newcommand{\metricECEAltCalibrationSensitivity}{0.278}
+\newcommand{\metricCalibrationPrimaryMethod}{Isotonic Regression}
+\newcommand{\metricCalibrationPrimaryFolding}{OOD bootstrap (temporal holdout)}
+\newcommand{\metricCalibrationPrimaryBinning}{10-bin uniform ECE}
+\newcommand{\metricCalibrationPrimaryPostprocess}{Monotone isotonic mapping}
+\newcommand{\metricFNRGap}{4.2\%}
+\newcommand{\metricHeadlinePRAUC}{0.820}
+\newcommand{\metricLabelFidelity}{99.6\%}
+\newcommand{\metricMaxDistrictPositives}{42}
+\newcommand{\metricMeanProbTN}{0.008}
+\newcommand{\metricMeanProbTP}{0.602}
+\newcommand{\metricMedianDistrictPositives}{24}
+\newcommand{\metricMinDistrictPositives}{8}
+\newcommand{\metricNDistricts}{9}
+\newcommand{\metricPRAUC}{0.820}
 \newcommand{\metricPrecisionAtFifty}{66.7\%}
+\newcommand{\metricRDCI}{[26.40, 58.60]}
+\newcommand{\metricRDDelay}{42.5}
+\newcommand{\metricRDDelayWeeks}{6.1}
+\newcommand{\metricRDSE}{8.2}
 \newcommand{\metricRecallAtFifty}{66.7\%}
+\newcommand{\metricSpuriousCatBoost}{0.89}
+\newcommand{\metricSpuriousLogReg}{1.52}
+\newcommand{\metricSpuriousRF}{0.82}
+\newcommand{\metricTopDecileLift}{1.1x}
+\newcommand{\metricTopDecileN}{58}
+\newcommand{\metricTopDecilePrecision}{25.9\%}
+\newcommand{\metricTopDecileTP}{15}
 
 % ============================================================
 % PREDICTED PROBABILITY SEPARABILITY (in-dist CV)
 % ============================================================
-\newcommand{\metricMeanProbTP}{0.818}
-\newcommand{\metricMeanProbTN}{0.016}
+% Definitions moved to the primary OOD performance block above.
 
 % ============================================================
 % SUBGROUP DIAGNOSTICS (exploratory; insufficient for formal fairness claims)
 % ============================================================
-\newcommand{\metricNDistricts}{10}
-\newcommand{\metricFNRGap}{0.00\%}
 \newcommand{\metricFPRGap}{99.79\%}
 \newcommand{\metricFPR}{1.85\%}
-\newcommand{\metricMinDistrictPositives}{34}
-\newcommand{\metricMaxDistrictPositives}{112}
-\newcommand{\metricMedianDistrictPositives}{58}
 \newcommand{\metricSensitivityFprBaseline}{99.79\%}
 \newcommand{\metricSensitivityFnrBaseline}{0.00\%}
 \newcommand{\metricSensitivityFprKNN}{99.75\%}
@@ -79,10 +73,7 @@
 % REGRESSION DISCONTINUITY (institutional context; not headline)
 % Running variable: reconstructed petition-share percentage
 % ============================================================
-\newcommand{\metricRDDelay}{42.5}
-\newcommand{\metricRDDelayWeeks}{6.1}
-\newcommand{\metricRDSE}{8.2}
-\newcommand{\metricRDCI}{[26.4, 58.6]}
+% Definitions moved to the primary OOD performance block above.
 
 % ============================================================
 % 2022 ELECTORAL TRANSITION (descriptive evidence only)
@@ -106,9 +97,6 @@
 % FEATURE-RESTRICTION SURVIVAL RATIOS (exploratory; Appendix~\ref{app:spuriousness})
 % survival_ratio = restricted_feature_PR-AUC / full_feature_PR-AUC
 % ============================================================
-\newcommand{\metricSpuriousCatBoost}{0.89}
-\newcommand{\metricSpuriousLogReg}{1.52}
-\newcommand{\metricSpuriousRF}{0.82}
 \newcommand{\metricSpuriousTabNet}{1.12}
 \newcommand{\metricSpuriousXGB}{0.84}
 \newcommand{\metricSpuriousMLP}{0.87}

@@ -38,7 +38,7 @@ Columbia University}
 \maketitle
 
 \begin{abstract}
-This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from the clerk-certified valid petition (unobserved). Working from \metricBaselineCases{} discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify portable calibrated probabilities for institutional decision-making.
+This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from the clerk-certified valid petition (unobserved). Working from \metricBaselineCases{} discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with primary-layer calibration error $\text{ECE}_{C1}=\metricECEOODBootstrapCalibrated{}$ after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify portable calibrated probabilities for institutional decision-making.
 \end{abstract}
 
 \newpage
@@ -364,7 +364,7 @@ One notable descriptive pattern is a decline followed by partial recovery: CatBo
 
 \subsection{Predictive Performance Across All Horizons}
 
-Table~\ref{tab:metrics_summary} reports the pre-specified fairness and calibration metrics for the Stage C opposition model evaluated at the initial filing date horizon.
+Table~\ref{tab:metrics_summary} reports the pre-specified discrimination and exploratory equity metrics for the Stage C opposition model evaluated at the initial filing date horizon.
 
 \begin{table}[H]
 \centering
@@ -378,8 +378,7 @@ Table~\ref{tab:metrics_summary} reports the pre-specified fairness and calibrati
 Discrimination       & PR-AUC (Out-Dist Bootstrap)$^{\star}$ & \textbf{\metricBootstrapFiling{}} \\
 Discrimination       & PR-AUC (Seed Mean, 20 Seeds)$^{\ddagger}$ & \textbf{$0.528 \pm 0.042$} \\
 Discrimination       & Top-Decile Lift   & \textbf{\metricTopDecileLift{}} \\ \midrule
-Calibration      & Expected Calibration Error (ECE)   & \textbf{\metricECE{}} \\
-Calibration      & Calibration Slope      & \textbf{\metricCalibrationSlope{}} \\ \midrule
+
 Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Underpowered} \\ \bottomrule
 \multicolumn{3}{l}{\footnotesize $^{\star}$Primary evaluation: out-of-distribution bootstrap at the filing-date horizon.} \\
 \multicolumn{3}{l}{\footnotesize $^{\ddagger}$Seed-mean across 20 random seeds (Appendix~\ref{app:seed_stability}); provides within-sample variance characterization.} \\
@@ -389,13 +388,21 @@ Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Unde
 }
 \end{table}
 
+<<<<<<< HEAD
 The filing-date petition model uses trailing 3-year count of localized protests within one year---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates. Stage~A diagnostics are reported separately in Appendix~\ref{app:stagea}.
+=======
+To prevent cross-design metric drift, calibration claims are bound to explicit reporting layers: \textbf{C1} (primary OOD bootstrap calibrated ECE), \textbf{C2} (in-distribution CV calibrated ECE), and \textbf{C3} (alternative calibration sensitivity ECE). Main-text calibration claims use only Layer C1; Layers C2--C3 are reported in Appendix~\ref{app:calibration_layers}.
 
-Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits an Expected Calibration Error (ECE = \metricECE{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
+\input{Tables/calibration_primary_ood.tex}
+
+The Development Occurrence hazard model achieves a top-10\% lift of \metricHazardLift{} over the base probability rate, indicating that spatial features carry some predictive information about development occurrence (full Stage~A evaluation is reported in Appendix~\ref{app:stagea}). The filing-date petition model uses trailing 3-year count of localized protests within one year---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates.
+>>>>>>> origin/codex/implement-explicit-calibration-reporting-layers
+
+Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits a primary-layer Expected Calibration Error (Layer C1, ECE = \metricECEOODBootstrapCalibrated{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
 
 The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. As an exploratory equity diagnostic, the false negative rate (FNR) gap across \metricNDistricts{} council districts is \metricFNRGap{}; however, this metric should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), and Chouldechova \cite{chouldechova2017fair} proves that an imperfect classifier cannot simultaneously satisfy equalized false positive rates, false negative rates, and predictive parity across groups unless base rates are identical. With such sparse and unbalanced subgroups, the \metricFNRGap{} gap is likely driven by sparse subgroup counts, not evidence of equalized performance.
 
-After Isotonic Regression calibration, the model reports an Expected Calibration Error (ECE) of \metricECE{} (95\% bootstrap CI: \metricECEBootCI{}) and a calibration slope of \metricCalibrationSlope{}. While Isotonic Regression successfully reduces the overconfidence typical of gradient boosting under class imbalance, this calibration bounds the system strictly to relative spatial ranking. This level of calibration error makes fully automated administrative use difficult to justify, signaling that raw probabilities cannot be treated as deterministic.
+After Isotonic Regression calibration, the primary OOD reporting layer (C1) yields ECE = \metricECEOODBootstrapCalibrated{}. This layer-specific value bounds the system strictly to relative spatial ranking and makes fully automated administrative use difficult to justify, signaling that raw probabilities cannot be treated as deterministic.
 
 \begin{figure}[htbp]
     \centering
@@ -403,8 +410,6 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
     \caption[Calibration Reliability Matrix: Standard, Deep, and Foundation Models]{\textbf{Calibration Reliability Matrix:} Parallel evaluation of calibration reliability across the Stage A (Development Occurrence) and Stage C (Petition Risk) frameworks. Panel (c) shows calibration across deep and foundation models; all architectures exhibit similar post-isotonic calibration profiles.}
     \label{fig:global_calibration}
 \end{figure}
-
-\input{Tables/multi_horizon_results.tex}
 
 \vspace{1em}
 
@@ -610,8 +615,13 @@ The quantitative results and interview interpretations are reported as distinct 
     \item \textbf{Declining petition leverage before 2022:} Quantitative models bound the principal regime shift to the November 2022 supermajority election. Annick Beaudet (former zoning planner) noted the petition mechanism appears to have begun losing influence around 2019 during the Land Development Code revision: ``While people still scream and yell, they don't get as much traction... Necessity is the mother of invention.'' Alina Carnahan also pointed to the Hancock neighborhood rezoning as a key 2022 turning point that solidified the 9-2 pro-housing supermajority. Together, these testimonies suggest that while the 2022 election made the petition mechanism less consequential in practice, the petition may have been losing practical force as a veto point before formal state legislation (HB 24) dismantled it.
 
     \item \textbf{The Function of Opposition:} Highlighting the nuanced motivations driving public testimony, AURA board member Felicity Maxwell observed: ``We're not talking about suppressing opposition, but understanding it better to have more productive conversations.'' Predictive frameworks can integrate these spatial dynamics to identify localized friction earlier in the planning process.
+<<<<<<< HEAD
     \item \textbf{Asymmetric Transparency and Silent Supporters:} Jonathan Tomko (Principal Planner) emphasized that the municipal public comment process lacks any mechanism for \textit{anonymous} public testimony against a zoning case. Because neighborhood social dynamics often penalize residents who deviate from their neighborhood association's preservationist stance, Tomko noted that the formal opposition data is not strictly representative of the entire community. This aligns with Beaudet's observation that ``haters are overrepresented and silent supporters are underrepresented,'' which suggests the observed opposition data is an incomplete measure of community sentiment.
     \item \textbf{Two distinct motivations and geography:} Marla Torrado (Displacement Prevention Division) stressed that opposition mechanisms may be driven by differing underlying concerns. While the ``vocal opposition'' on the affluent West side leverage environmental overlays, East Austin neighborhoods frequently mobilize opposition mechanisms in response to rapid gentrification pressures. This context reinforces the severity of model miscalibration (ECE = \metricECE{}): using rigid probability thresholds could miss communities facing real displacement risk, failing ``to identify where people that are in actual need actually are'' because the algorithm cannot separate affluent NIMBYism from neighborhood preservation efforts.
+=======
+    \item \textbf{Asymmetric Transparency and Silent Supporters:} Jonathan Tomko (Principal Planner) emphasized that the municipal public comment process lacks any mechanism for \textit{anonymous} public testimony against a zoning case. Because neighborhood social dynamics often penalize residents who deviate from their neighborhood association's preservationist stance, Tomko noted that the formal opposition data is not strictly representative of the entire community. This aligns with Beaudet's observation that ``haters are overrepresented and silent supporters are underrepresented,'' which likely makes the observed opposition data an incomplete measure of community sentiment.
+    \item \textbf{Two distinct motivations and geography:} Marla Torrado (Displacement Prevention Division) stressed that opposition mechanisms may be driven by differing underlying concerns. While the ``vocal opposition'' on the affluent West side leverage environmental overlays, East Austin neighborhoods frequently mobilize opposition mechanisms in response to rapid gentrification pressures. This context reinforces the severity of model miscalibration (Layer C1 ECE = \metricECEOODBootstrapCalibrated{}): using rigid probability thresholds could miss communities facing real displacement risk, failing ``to identify where people that are in actual need actually are'' because the algorithm cannot separate affluent NIMBYism from neighborhood preservation efforts.
+>>>>>>> origin/codex/implement-explicit-calibration-reporting-layers
 \end{itemize}
 
 These interview interpretations contextualize, rather than establish, the quantitative deployment constraint: independently of interview evidence, the model is treated as a relative ranking heuristic because calibration error remains above strict administrative thresholds.
@@ -629,7 +639,7 @@ This study has several important limitations.
 
 \textbf{Limited post-policy windows.} HB~24 falls entirely outside the observation period. The event-study results should be interpreted as preliminary.
 
-\textbf{Calibration error context.} The opposition model produces an Expected Calibration Error of \metricECE{}. Because this expected error restricts strict probabilistic interpretation (which typically demands tighter calibration tolerances), the model should be treated as a relative ranking heuristic rather than a source of precise case-level probabilities. Regardless, the features generate spatial discrimination (top-decile lift of \metricTopDecileLift{}).
+\textbf{Calibration error context.} The opposition model produces a Layer C1 Expected Calibration Error of \metricECEOODBootstrapCalibrated{}. Because this expected error restricts strict probabilistic interpretation (which typically demands tighter calibration tolerances), the model should be treated as a relative ranking heuristic rather than a source of precise case-level probabilities. Regardless, the features generate spatial discrimination (top-decile lift of \metricTopDecileLift{}).
 
 \textbf{Proxy concerns and macro-level aggregation.} This study explicitly excludes individual-level demographic profiling algorithms, such as Bayesian Improved Surname Geocoding (BISG), from the predictive matrix. Because case-level predictions restrict features to macro-level aggregates (e.g., Census Tract demographics), the model intentionally cannot track highly localized 200ft-neighbor behavioral variations. Although other permitted macro variables proxy for these attributes, integrating exact individual-level demographics remains an area for future work but poses substantive empirical and defense concerns regarding spatial scaling.
 
@@ -650,7 +660,11 @@ This study has several important limitations.
 
 Filing-date administrative features can rank petition risk in Austin's pre-HB\,24 zoning regime, but they do not yet yield calibrated probabilities suitable for institutional use.
 
+<<<<<<< HEAD
 This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is qualified: spatial, economic, and site characteristics carry predictive information about petition risk, but the model does not meet the calibration benchmarks required for administrative deployment. Under the primary evaluation---out-of-distribution bootstrap at the filing-date horizon---the model achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with calibration error (ECE = \metricECE{}) exceeding the 0.05 threshold. In-distribution cross-validation provides an upper bound PR-AUC of \metricPRAUC{}. Supporting analyses are consistent with institutional relevance but are non-headline: the threshold discontinuity and electoral-transition sections are interpreted descriptively and are detailed in the appendix.
+=======
+This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is qualified: spatial, economic, and site characteristics carry predictive information about petition risk, but the model does not meet the calibration benchmarks required for administrative deployment. Under the primary evaluation---out-of-distribution bootstrap at the filing-date horizon---the model achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with primary-layer calibration error (Layer C1 ECE = \metricECEOODBootstrapCalibrated{}) exceeding the 0.05 threshold. In-distribution cross-validation provides an upper bound PR-AUC of \metricPRAUC{}. A regression discontinuity at the 20\% petition threshold estimates a \metricRDDelay{}-day increase in council processing time, consistent with the institutional significance of the outcome measure. Descriptive evidence from the 2022 electoral transition suggests that petition filing rates declined in districts that changed political representation, though staggered treatment timing and few treated clusters preclude formal causal claims.
+>>>>>>> origin/codex/implement-explicit-calibration-reporting-layers
 
 These results point to a ceiling on what prediction from public records alone can achieve. Petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and the 2022 council regime change altered the relationship between petitions and outcomes. Interview interpretation further contextualizes an ethical limitation: the model cannot distinguish affluent exclusionary mobilization from community-driven anti-displacement resistance, a distinction that administrative data does not encode.
 
@@ -664,15 +678,17 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 \appendix
 
 \newpage
-\section{Supplementary Calibration Comparison}
-\label{app:alt_models}
+\section{Supplementary Calibration Layers and Sensitivity Variants}
+\label{app:calibration_layers}
 
-\noindent The following section documents an expanded benchmark comparing baseline statistical and machine-learning models and PyTorch deep learning networks. (These tabular benchmarks have been moved into the main text in Section~\ref{sec:results} for direct performance evaluation). Each model class was formally cross-validated against SMOTE-resampled training sets (Synthetic Minority Over-sampling Technique) to assess the trade-off between class rebalancing and calibration (ECE). 
-
-\vspace{1em}
-\noindent Additionally, this appendix documents a systematic calibration method comparison evaluating Platt Scaling (sigmoid) against Isotonic Regression across base models: CatBoost, LightGBM, and Random Forest. For CatBoost, Platt Scaling achieved modestly lower ECE (0.186 vs.\ 0.211); however, Isotonic Regression was retained for the primary analytic specification because its non-parametric monotonic mapping provides stronger guarantees against non-monotone probability distortions under class imbalance.
+\noindent This appendix reports non-primary calibration layers only. Layer C2 is the in-distribution CV calibrated ECE (\metricECEInDistCVCalibrated{}). Layer C3 is the alternative calibration sensitivity ECE under Platt/sigmoid post-processing (\metricECEAltCalibrationSensitivity{}). These values are intentionally excluded from primary claims in the main text.
 
 \vspace{1em}
+\noindent \textbf{Layer C2 (In-Distribution CV calibrated ECE).} Supporting horizon-specific calibration diagnostics are reported below.
+\input{Tables/multi_horizon_results.tex}
+
+\vspace{1em}
+\noindent \textbf{Layer C3 (Alternative calibration sensitivity).} Method-comparison results are reported below with explicit non-primary labeling.
 \input{Tables/calibration_benchmark.tex}
 \newpage
 \section{Semantic Feature Mapping}

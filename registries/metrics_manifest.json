@@ -8,6 +8,12 @@
     "metricBaseRate": {
         "value": "23.0%"
     },
+    "metricBaseRateN": {
+        "value": "2,155"
+    },
+    "metricACE": {
+        "value": "0.184"
+    },
     "metricHeadlinePRAUC": {
         "value": "0.820"
     },
@@ -17,14 +23,89 @@
     "metricBootstrapFilingCI": {
         "value": "[0.78, 0.84]"
     },
+    "metricBrierScore": {
+        "value": "0.012"
+    },
+    "metricECEOODBootstrapCalibrated": {
+        "value": "0.208",
+        "method": "isotonic",
+        "folding": "ood_bootstrap_temporal_holdout",
+        "binning": "10-bin uniform ECE",
+        "postprocessing": "isotonic_regression"
+    },
+    "metricECEInDistCVCalibrated": {
+        "value": "0.239",
+        "method": "isotonic",
+        "folding": "in_distribution_5fold_cv",
+        "binning": "10-bin uniform ECE",
+        "postprocessing": "isotonic_regression"
+    },
+    "metricECEAltCalibrationSensitivity": {
+        "value": "0.278",
+        "method": "platt_sigmoid",
+        "folding": "in_distribution_5fold_cv",
+        "binning": "10-bin uniform ECE",
+        "postprocessing": "sigmoid_rescaling"
+    },
+    "metricCalibrationPrimaryMethod": {
+        "value": "Isotonic Regression"
+    },
+    "metricCalibrationPrimaryFolding": {
+        "value": "OOD bootstrap (temporal holdout)"
+    },
+    "metricCalibrationPrimaryBinning": {
+        "value": "10-bin uniform ECE"
+    },
+    "metricCalibrationPrimaryPostprocess": {
+        "value": "Monotone isotonic mapping"
+    },
+    "metricCBNFilingBrier": {
+        "value": "0.012"
+    },
+    "metricCBFilingBrier": {
+        "value": "0.012"
+    },
+    "metricCalibrationSlope": {
+        "value": "0.92"
+    },
+    "metricECEBootCI": {
+        "value": "[0.12, 0.38]"
+    },
+    "metricFNRGap": {
+        "value": "4.2%"
+    },
+    "metricFPRGap": {
+        "value": "99.79%"
+    },
+    "metricFPR": {
+        "value": "1.85%"
+    },
     "metricHeadlineECE": {
         "value": "0.208"
     },
-    "metricECE": {
-        "value": "0.208"
+    "metricLabelFidelity": {
+        "value": "99.6%"
     },
-    "metricBrierScore": {
-        "value": "0.012"
+    "metricMaxDistrictPositives": {
+        "value": "42"
+    },
+    "metricMeanProbTN": {
+        "value": "0.008"
+    },
+    "metricMeanProbTP": {
+        "value": "0.602"
+    },
+    "metricMedianDistrictPositives": {
+        "value": "24"
+    },
+    "metricMinDistrictPositives": {
+        "value": "8"
+    },
+    "metricNDistricts": {
+        "value": "9"
+    },
+    "metricPRAUC": {
+        "value": "0.820"
     },
     "metricPrecisionAtFifty": {
         "value": "66.7%"
@@ -35,8 +116,14 @@
     "metricTopDecileLift": {
         "value": "1.1x"
     },
-    "metricLabelFidelity": {
-        "value": "99.6%"
+    "metricTopDecileN": {
+        "value": "58"
+    },
+    "metricTopDecilePrecision": {
+        "value": "25.9%"
+    },
+    "metricTopDecileTP": {
+        "value": "15"
     },
     "metricRDDelay": {
         "value": "42.5"
@@ -48,55 +135,43 @@
         "value": "8.2"
     },
     "metricRDCI": {
-        "value": "[26.4, 58.6]"
+        "value": "[26.40, 58.60]"
     },
     "metricHazardLift": {
         "value": "2.4x"
     },
-    "metricPRAUC": {
-        "value": "0.820"
+    "metricSiteQuarterObs": {
+        "value": "4.2 million"
     },
-    "metricACE": {
-        "value": "0.042"
+    "metricBaseHazardProb": {
+        "value": "$\\approx 2.5 \\times 10^{-5}$"
     },
-    "metricCBNFilingBrier": {
-        "value": "0.012"
+    "metricFlipDiDCoeff": {
+        "value": "-0.04"
     },
-    "metricMeanProbTP": {
-        "value": "0.342"
+    "metricFlipDiDPval": {
+        "value": "0.24"
     },
-    "metricMeanProbTN": {
-        "value": "0.121"
+    "metricStageBMaeSqft": {
+        "value": "4,200"
     },
-    "metricNDistricts": {
-        "value": "10"
+    "metricStageBMaeUnits": {
+        "value": "2.1"
     },
-    "metricFNRGap": {
-        "value": "0.045"
+    "metricAttritionRate": {
+        "value": "0.12"
     },
-    "metricMinDistrictPositives": {
-        "value": "34"
-    },
-    "metricMaxDistrictPositives": {
-        "value": "112"
-    },
-    "metricMedianDistrictPositives": {
-        "value": "58"
-    },
-    "metricECEBootCI": {
-        "value": "[0.12, 0.38]"
-    },
-    "metricCalibrationSlope": {
-        "value": "0.92"
+    "metricUnopposedAttritionRate": {
+        "value": "0.05"
     },
     "metricSpuriousCatBoost": {
         "value": "0.89"
     },
-    "metricSpuriousRF": {
-        "value": "0.82"
-    },
     "metricSpuriousLogReg": {
         "value": "1.52"
+    },
+    "metricSpuriousRF": {
+        "value": "0.82"
     },
     "metricSpuriousTabNet": {
         "value": "1.12"
@@ -122,25 +197,67 @@
     "metricSpuriousLGBM": {
         "value": "0.85"
     },
+    "metricStabVREx": {
+        "value": "0.961"
+    },
+    "metricStabTabNet": {
+        "value": "0.873"
+    },
+    "metricStabERM": {
+        "value": "0.851"
+    },
+    "metricRFFilingPRAUC": {
+        "value": "0.574"
+    },
+    "metricCBFilingPRAUC": {
+        "value": "0.528"
+    },
     "metricNLPCorpus": {
         "value": "512"
     },
-    "metricFlipDiDCoeff": {
-        "value": "-0.04"
+    "metricNLPSeed": {
+        "value": "50"
     },
-    "metricFlipDiDPval": {
-        "value": "0.24"
+    "metricNFlaggedAtFifty": {
+        "value": "47"
     },
-    "metricStageBMaeSqft": {
-        "value": "4,200"
+    "metricTenOneITSCoeff": {
+        "value": "0.041"
     },
-    "metricStageBMaeUnits": {
-        "value": "2.1"
+    "metricTenOneITSPval": {
+        "value": "0.74"
     },
-    "metricAttritionRate": {
-        "value": "0.12"
+    "metricNPAFrictionCoeff": {
+        "value": "0.083"
     },
-    "metricUnopposedAttritionRate": {
-        "value": "0.05"
+    "metricNPAFrictionPval": {
+        "value": "0.61"
+    },
+    "metricHDFrictionCoeff": {
+        "value": "---"
+    },
+    "metricHDFrictionPval": {
+        "value": "---"
+    },
+    "metricTODFrictionCoeff": {
+        "value": "---"
+    },
+    "metricTODFrictionPval": {
+        "value": "---"
+    },
+    "metricDiDVotes": {
+        "value": "-0.031"
+    },
+    "metricDiDSE": {
+        "value": "0.044"
+    },
+    "metricDiDCI": {
+        "value": "[-0.117, 0.055]"
+    },
+    "metricDiDDirectionText": {
+        "value": "small reduction"
+    },
+    "metricDiDSignificanceText": {
+        "value": "not statistically significant ($p = 0.48$)"
     }
 }
