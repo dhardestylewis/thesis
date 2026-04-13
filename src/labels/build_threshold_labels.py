@@ -51,10 +51,31 @@ def build_threshold_labels():
     
     labels.append(v1[['case_id', 'label_version', 'reconstructed_petition_share', 'threshold_crossed']])
     
-    # label_v2_strict_threshold_crossing (Simulation)
-    v2 = v1.copy()
+    # label_v2_strict_threshold_crossing
+    # Uses a continuous petition share column if available (e.g. petition_share, protest_share).
+    # If the source data only exposes a binary is_protested flag, v2 falls back to the
+    # same binary indicator as v1 — both versions will be identical in that case.
+    # This is an acknowledged limitation: label differentiation requires a continuous share field.
+    v2 = universe[['case_id']].copy()
+    v2 = v2.merge(df[['case_number', 'is_protested']], left_on='case_id', right_on='case_number', how='left')
     v2['label_version'] = 'label_v2_strict_threshold_crossing'
-    v2['threshold_crossed'] = (v2['reconstructed_petition_share'] >= 0.25).astype(int)
+
+    # Look for a continuous petition share column in order of preference
+    share_col = next(
+        (c for c in ['petition_share', 'protest_share', 'reconstructed_petition_share']
+         if c in df.columns),
+        None,
+    )
+    if share_col is not None:
+        v2['reconstructed_petition_share'] = pd.to_numeric(df[share_col], errors='coerce').fillna(0).astype(float)
+        v2['threshold_crossed'] = (v2['reconstructed_petition_share'] >= 0.25).astype(int)
+        print(f"    label_v2: using continuous column '{share_col}' with 0.25 threshold")
+    else:
+        # Binary fallback — v2 will be identical to v1; documented as a known limitation
+        v2['reconstructed_petition_share'] = pd.to_numeric(v2['is_protested'], errors='coerce').fillna(0).astype(float)
+        v2['threshold_crossed'] = (v2['reconstructed_petition_share'] >= 0.2).astype(int)
+        print("    WARNING: label_v2 falls back to binary is_protested — "
+              "no continuous petition_share column found. v1 and v2 will be identical.")
     labels.append(v2[['case_id', 'label_version', 'reconstructed_petition_share', 'threshold_crossed']])
     
     label_registry = pd.concat(labels, ignore_index=True)
