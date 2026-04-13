@@ -1,0 +1,55 @@
+# configs/tasks/stage_d_descriptive_only.yaml
+#
+# Stage D: Political Outcome Analysis
+# -------------------------------------
+# PURPOSE: Descriptive reporting only. Stage D is NOT a predictive track.
+#
+# Rationale: Downstream political outcomes (council votes, withdrawals) are
+# structurally censored — cases withdraw or are continued before reaching a
+# council vote, and post-petition legal validity is unobserved. Predictive
+# modeling of political outcomes from petition-filing-date features is not
+# supported by this thesis.
+#
+# This config exists to make the Stage D constraint EXPLICIT in code so that
+# no script can accidentally route Stage D cases into the predictive DAG.
+
+task_id: STAGE_D_DESCRIPTIVE_ONLY
+predictive_role: none          # HARD CONSTRAINT: no model training allowed
+reporting_role: descriptive    # only descriptive tables and attrition summaries
+
+description: >
+  Documents the downstream consequences of petition filing, including high rates
+  of pre-council withdrawal among opposed cases and structural data limits that
+  preclude predictive modeling of political outcomes. All Stage D outputs are
+  audit and reporting artifacts, not model outputs.
+
+allowed_outputs:
+  - attrition_table            # case counts by disposition
+  - withdrawal_rate_summary    # fraction withdrawn before council
+  - structural_censoring_note  # LaTeX note for appendix
+
+prohibited_outputs:
+  - predictions                # no y_score outputs
+  - model_artifacts            # no trained model files
+  - calibration_outputs        # no ECE / Brier for Stage D
+
+sample:
+  source: STAGE_C_FILING_MAIN  # subset of the Stage C universe
+  restriction: >
+    Cases with petition_status = 'threshold_crossed' that reached or
+    were withdrawn before a council vote. Attrition rate: ~12% overall.
+
+metrics:
+  # Descriptive only — no ranking or calibration metrics
+  descriptive:
+    - n_cases_with_petition
+    - n_cases_withdrawn_before_council
+    - attrition_rate
+    - unopposed_attrition_rate
+    - council_processing_days_median
+
+audit_note: >
+  Stage D results are downstream of an institutional bottleneck (pre-council
+  withdrawal) that is not randomly assigned. Any predictive claim on Stage D
+  outcomes would require instrumental variable identification of the selection
+  process, which is outside the scope of this thesis.
