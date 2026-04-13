@@ -74,7 +74,7 @@ To answer this question, the research constructs a sequential predictive methodo
     \item \textbf{Stage A---Development Occurrence:} Where housing development proposals are likely to emerge, modeled as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels.
     \item \textbf{Stage B---Project Type and Scale:} Conditional on a development event, the expected project form and unit count.
     \item \textbf{Stage C---Formal Protest Petition:} Conditional on a project entering the formal public process, the probability that a measured threshold-crossing petition is filed. \textit{This is the core of the thesis.}
-    \item \textbf{Stage D---Political Outcome:} Conditional on project characteristics and opposition status, the likelihood of pre-council withdrawal or final disposition.
+    \item \textbf{Stage D---Political Outcome Analysis:} Conditional on opposition status, establishing structural data limits and the high rate of pre-council withdrawal among protested cases.
 \end{itemize}
 
 Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and equity to support high-confidence administrative use.
@@ -283,7 +283,7 @@ The predictive evaluation centers on Stage~C (Formal Protest Petition). Three su
 
 \textbf{Stage B---Project Type and Scale} classifies the expected project form and estimates expected unit counts, conditional on a development event. This segmentation is important because different project types (e.g., six-unit by-right infill vs.\ 300-unit PUD) generate fundamentally different institutional responses and petition likelihoods. Classification performance is reported in Appendix~\ref{app:stageb}.
 
-\textbf{Stage D---Political Outcome} estimates the probability of pre-council withdrawal conditional on a threshold-crossing petition. Because virtually all cases that reach a final council vote are approved, modeling attrition rather than terminal approval captures the institutional friction through which opposition most often affects outcomes. Performance metrics are reported in Appendix~\ref{app:staged}.
+\textbf{Stage D---Political Outcome Analysis} documents the structural missingness and high rates of pre-council withdrawal conditional on a threshold-crossing petition. Because virtually all cases that survive to a final council vote are approved, pre-council attrition is the primary mechanism through which opposition friction manifests. However, due to severe data censorship of withdrawn cases, it cannot be modeled predictively. This analysis is detailed in Appendix~\ref{app:staged}.
 
 A composite measure combining all four stages (\textbf{expected contested units}) is also constructed and mapped in Appendix~\ref{app:contested_units}. Because this multiplicative structure compounds uncertainty from each stage, the resulting map should be interpreted as a relative ranking rather than a reliable absolute probability.
 
@@ -862,7 +862,7 @@ $\hookrightarrow$ Multifamily & \metricStageBLgbMultifamilyFOne{} & \textbf{\met
 
 A structural diagnostic of the `goldmine tensor' dataset confirms this censorship bias. Out of the fully matched cases, nearly 44\% of protested zoning cases fail to materialize terminal council vote records (the NIMBY 'Chilling Effect' Attrition Rate), while a staggering portion of unopposed applications lack full transcript or geometric integration due to never reaching controversial council readings.
 
-Because the underlying datasets systematically censor stalled and abandoned rezonings, predicting ultimate disposition from early-stage administrative features is analytically flawed. The model trivially learns to predict that cases with missing downstream institutional features (such as `ldb_source_year` or `lui_matched`) will not receive a final vote. Therefore, we firmly scope the predictive bounds of this thesis to the intermediate threshold: formal petition attainment (Stage~C). Evaluating NIMBY risk strictly on terminal council outcomes systematically underestimates opposition friction.
+Because the underlying datasets systematically censor stalled and abandoned rezonings, predicting ultimate disposition from early-stage administrative features is analytically flawed. The model trivially learns to predict that cases with missing downstream institutional features (such as `ldb\_source\_year` or `lui\_matched`) will not receive a final vote. Therefore, we firmly scope the predictive bounds of this thesis to the intermediate threshold: formal petition attainment (Stage~C). Evaluating NIMBY risk strictly on terminal council outcomes systematically underestimates opposition friction.
 
 
 \newpage

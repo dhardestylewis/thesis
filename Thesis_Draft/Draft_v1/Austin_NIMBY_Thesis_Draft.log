@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 12:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 12:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1264,41 +1264,7 @@ _Figure4_Hotspot.png  used on input line 819.
  [49 <./Figures/Chapter4/StageA_Figure3_PR_Curves.png>] [50 <../../Analysis/Out
 put/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png>]
 [51{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc
-}]
-! Missing $ inserted.
-<inserted text> 
-                $
-l.865 ...eam institutional features (such as `ldb_
-                                                  source_year` or `lui_match...
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-! Missing $ inserted.
-<inserted text> 
-                $
-l.866 
-      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-
-Overfull \hbox (227.65373pt too wide) in paragraph at lines 865--866
-\T1/lmr/m/n/10.95 (-20) `ldb$[]\OML/lmm/m/it/10.95 ource[]ear\OT1/lmr/m/n/10.95
- (-20) `\OML/lmm/m/it/10.95 or\OT1/lmr/m/n/10.95 (-20) `\OML/lmm/m/it/10.95 lui
-[]atched\OT1/lmr/m/n/10.95 (-20) `)\OML/lmm/m/it/10.95 willnotreceiveafinalvote
-:Therefore; wefirmlyscopethepredictiveboundsofthisthesistotheintermediatethresh
-old \OT1/lmr/m/n/10.95 (-20) :
- []
-
-
-Overfull \hbox (243.17657pt too wide) in paragraph at lines 865--866
-\OML/lmm/m/it/10.95 formalpetitionattainment\OT1/lmr/m/n/10.95 (-20) (\OML/lmm/
-m/it/10.95 Stage C\OT1/lmr/m/n/10.95 (-20) )\OML/lmm/m/it/10.95 :EvaluatingNIMB
-Yriskstrictlyonterminalcounciloutcomessystematicallyunderestimatesoppositionfri
-ction:$ 
- []
-
-[52]
+}] [52]
 <Figures/Chapter4/F22_Joint_Policy_Map.png, id=2175, 1144.5159pt x 1113.9216pt>
 
 File: Figures/Chapter4/F22_Joint_Policy_Map.png Graphic file (type png)
@@ -1408,11 +1374,11 @@ ed.
 (rerunfilecheck)             Checksum: 109CDC164359DB1F156A51CC080C78D0;12304.
  ) 
 Here is how much of TeX's memory you used:
- 26956 strings out of 467871
- 511486 string characters out of 5419344
+ 26954 strings out of 467871
+ 511462 string characters out of 5419344
  904532 words of memory out of 5000000
  54879 multiletter control sequences out of 15000+600000
- 730467 words of font info for 239 fonts, out of 8000000 for 9000
+ 730373 words of font info for 238 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,104p,1486b,844s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
@@ -1451,7 +1417,7 @@ eX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX
 nts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/ty
 pe1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (66 pages, 45090984 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (66 pages, 45087119 bytes).
 PDF statistics:
  3129 PDF objects out of 3580 (max. 8388607)
  208 named destinations out of 1000 (max. 500000)
