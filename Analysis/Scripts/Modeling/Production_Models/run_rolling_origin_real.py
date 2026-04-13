@@ -6,6 +6,10 @@ import warnings
 warnings.filterwarnings('ignore')
 from sklearn.metrics import average_precision_score
 from catboost import CatBoostClassifier
+from lightgbm import LGBMClassifier
+from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from pytorch_tabnet.tab_model import TabNetClassifier
 from sklearn.preprocessing import StandardScaler
 import torch
@@ -17,17 +21,15 @@ OUT_DIR = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 def run_rolling_origin_drift():
-    print("Executing Real Rolling-Origin Temporal Drift Analysis...")
+    print("Executing COMPREHENSIVE Rolling-Origin Temporal Drift Analysis (Full Roster)...")
     master_path = os.path.join(DATA, 'H0_Filing_Master_Enriched.csv')
     df = pd.read_csv(master_path, low_memory=False)
     df['year'] = pd.to_numeric(df['year'], errors='coerce')
     df = df.dropna(subset=['year', 'is_protested']).sort_values('year')
     
-    # Feature list (Consistent with H0 Filing logic)
     drop_cols = ['is_protested', 'case_number', 'organized_opposition', 'year', 'date', 'application_start_date', 'final_date']
-    # Explicitly strip future features to prevent H0 leakage
     future_features = ['staff_recommendation_cat', 'agenda_text_raw', 'spatial_contagion_1yr', 'spatial_contagion_3yr']
-    X = df.drop(columns=[c for c in (drop_cols + future_features) if c in df.columns], errors='ignore').select_dtypes(include=[np.number]).fillna(0)
+    X_raw = df.drop(columns=[c for c in (drop_cols + future_features) if c in df.columns], errors='ignore').select_dtypes(include=[np.number]).fillna(0)
     y = df['is_protested'].values
     years = df['year'].values
 
@@ -37,138 +39,83 @@ def run_rolling_origin_drift():
     drift_results = []
     
     for anchor in anchors:
-        print(f"\n[+] Processing Anchor: Pre-{anchor} Training Window")
+        print(f"\n[+] Processing Anchor: Pre-{anchor}")
         train_mask = years < anchor
         if train_mask.sum() < 50: continue
         
-        X_train, y_train = X.values[train_mask], y[train_mask]
+        X_train_raw, y_train = X_raw.values[train_mask], y[train_mask]
         scaler = StandardScaler()
-        X_train_scaled = scaler.fit_transform(X_train)
+        X_train_sc = scaler.fit_transform(X_train_raw)
 
-        cb_model = CatBoostClassifier(iterations=200, depth=6, learning_rate=0.05, verbose=0, auto_class_weights='Balanced', random_seed=42)
-        cb_model.fit(X_train, y_train)
+        models = {
+            'CatBoost': CatBoostClassifier(iterations=100, depth=6, verbose=0, random_seed=42),
+            'XGBoost': XGBClassifier(n_estimators=100, max_depth=6, random_state=42, eval_metric='logloss'),
+            'LightGBM': LGBMClassifier(n_estimators=100, max_depth=6, random_state=42, verbose=-1),
+            'Random Forest': RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42),
+            'Logistic (L2)': LogisticRegression(class_weight='balanced', random_state=42),
+            'TabNet': TabNetClassifier(verbose=0, seed=42)
+        }
 
-        tabnet_model = TabNetClassifier(verbose=0)
-        tabnet_sparse = TabNetClassifier(
-            lambda_sparse=0.1,  # Extreme structural feature pruning
-            n_steps=3,
-            gamma=1.5,
-            verbose=0
-        )
-        from torch.nn import CrossEntropyLoss
-        # Split train for eval
-        split_idx = int(len(X_train_scaled)*0.8)
-        X_tr_tab, y_tr_tab = X_train_scaled[:split_idx], y_train[:split_idx]
-        X_val_tab, y_val_tab = X_train_scaled[split_idx:], y_train[split_idx:]
-        
-        try:
-            tabnet_model.fit(
-                X_train=X_tr_tab, y_train=y_tr_tab,
-                eval_set=[(X_val_tab, y_val_tab)],
-                patience=5, max_epochs=30,
-                loss_fn=CrossEntropyLoss(label_smoothing=0.1)
-            )
-            tabnet_ok = True
-        except Exception as e:
-            print("TabNet failed to train:", e)
-            tabnet_ok = False
+        # Train models
+        for name, m in models.items():
+            if name == 'TabNet':
+                m.fit(X_train=X_train_sc, y_train=y_train, max_epochs=20)
+            elif name == 'Logistic (L2)':
+                m.fit(X_train_sc, y_train)
+            else:
+                m.fit(X_train_raw, y_train)
 
-        try:
-            tabnet_sparse.fit(
-                X_train=X_tr_tab, y_train=y_tr_tab,
-                eval_set=[(X_val_tab, y_val_tab)],
-                patience=5, max_epochs=30,
-                loss_fn=CrossEntropyLoss(label_smoothing=0.1)
-            )
-            sparse_ok = True
-        except Exception as e:
-            print("TabNet Sparse failed to train:", e)
-            sparse_ok = False
-
-        models_to_eval = [('CatBoost', cb_model, False)]
-        if tabnet_ok: models_to_eval.append(('TabNet(LS=0.1)', tabnet_model, True))
-        if sparse_ok: models_to_eval.append(('TabNet(LS+Pruning)', tabnet_sparse, True))
-        
         for test_year in eval_years:
-            if test_year < anchor:
-                continue
-
+            if test_year < anchor: continue
             test_mask = years == test_year
-            offset = test_year - anchor
-
-            if test_mask.sum() < 5 or y[test_mask].sum() < 1:
-                continue
+            if test_mask.sum() < 5 or y[test_mask].sum() < 1: continue
                 
-            X_test, y_test = X.values[test_mask], y[test_mask]
-            X_test_scaled = scaler.transform(X_test)
+            X_test_raw, y_test = X_raw.values[test_mask], y[test_mask]
+            X_test_sc = scaler.transform(X_test_raw)
             
-            for m_name, m_inst, needs_scale in models_to_eval:
+            for name, m in models.items():
                 try:
-                    preds = m_inst.predict_proba(X_test_scaled if needs_scale else X_test)[:, 1]
-                    prauc = average_precision_score(y_test, preds)
-                except Exception:
-                    prauc = np.nan
+                    p = m.predict_proba(X_test_sc if name in ['TabNet', 'Logistic (L2)'] else X_test_raw)[:, 1]
+                    prauc = average_precision_score(y_test, p)
+                except: prauc = np.nan
                     
                 drift_results.append({
-                    'Model': m_name,
-                    'Anchor': f"Pre-{anchor}",
-                    'Evaluate_Year': test_year,
-                    'Offset': f"T+{offset}",
+                    'Model': name, 'Anchor': f"Pre-{anchor}",
+                    'Evaluate_Year': test_year, 'Offset': f"T+{test_year - anchor}",
                     'PR-AUC': round(prauc, 4) if not np.isnan(prauc) else None
                 })
-                if not np.isnan(prauc):
-                    print(f"    -> [{m_name}] Evaluated on {test_year} (T+{offset}): PR-AUC = {prauc:.4f}")
 
-    # Generate Pivot Table for LaTeX
+    # Save and Export
     results_df = pd.DataFrame(drift_results)
-    pivot = results_df.pivot_table(index=['Model', 'Anchor'], columns='Evaluate_Year', values='PR-AUC')
-    
-    # Calculate the max for each (Anchor, Evaluate_Year) to bold the best model per anchor
-    anchor_max = pivot.groupby('Anchor').max()
-    
-    # Save to JSON
     results_df.to_json(os.path.join(OUT_DIR, "rolling_origin_drift.json"), orient='records', indent=2)
     
-    # Generate LaTeX Table
+    pivot = results_df.pivot_table(index=['Model', 'Anchor'], columns='Evaluate_Year', values='PR-AUC')
+    anchor_max = pivot.groupby('Anchor').max()
+    
     tex_lines = [
-        r"\begin{table}[htbp]",
-        r"\centering",
-        r"\caption{\textbf{Temporal Predictive Drift: H0 Filing Performance Decay by Forecast Year}}",
-        r"\label{tab:temporal_drift}",
-        r"\resizebox{\textwidth}{!}{%",
-        r"\begin{tabular}{l" + "c"*len(eval_years) + "}",
-        r"\toprule",
+        r"\begin{table}[htbp]", r"\centering",
+        r"\caption{\textbf{Comprehensive Temporal Predictive Drift: PR-AUC Decay by Algorithm}}",
+        r"\label{tab:temporal_drift}", r"\resizebox{\textwidth}{!}{%",
+        r"\begin{tabular}{l" + "c"*len(eval_years) + "}", r"\toprule",
         r"\textbf{Anchor Training} & " + " & ".join([f"\\textbf{{{y}}}" for y in eval_years]) + r" \\",
         r"\midrule"
     ]
     
     for idx in pivot.index:
-        model, anchor = idx
-        row = pivot.loc[idx]
-        idx_str = f"{model} {anchor}"
+        model, anchor = idx; row = pivot.loc[idx]
         r = []
         for y in eval_years:
-            if y in row.index and pd.notnull(row[y]):
-                val = row[y]
-                val_str = f"{val:.3f}"
-                if val == anchor_max.loc[anchor, y]:
-                    val_str = f"\\textbf{{{val_str}}}"
-                r.append(val_str)
-            else:
-                r.append("---")
-        tex_lines.append(f"{idx_str} & {' & '.join(r)} \\\\" )
+            val = row.get(y, np.nan)
+            if pd.notnull(val):
+                s = f"{val:.3f}"
+                if val == anchor_max.loc[anchor, y]: s = f"\\textbf{{{s}}}"
+                r.append(s)
+            else: r.append("---")
+        tex_lines.append(f"{model} {anchor} & {' & '.join(r)} \\\\" )
         
-    tex_lines.extend([
-        r"\bottomrule",
-        r"\end{tabular}%",
-        r"}",
-        r"\end{table}"
-    ])
-    
-    tex_path = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Tables", "temporal_drift_analysis.tex")
-    with open(tex_path, 'w', encoding='utf-8') as f:
+    tex_lines.extend([r"\bottomrule", r"\end{tabular}%", r"}", r"\end{table}"])
+    with open(os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Tables", "temporal_drift_analysis.tex"), 'w') as f:
         f.write('\n'.join(tex_lines))
-    print(f"\n[+] Temporal Drift LaTeX Table saved to {tex_path}")
 
 if __name__ == "__main__":
     run_rolling_origin_drift()

@@ -1,0 +1,9 @@
+task_id: LABEL_AUDIT_MAIN
+label_versions:
+  - label_v1_reconstructed_threshold_crossing
+  - label_v2_strict_threshold_crossing
+  - label_v3_hand_validated_subset
+outputs:
+  - agreement_table
+  - confusion_table
+  - uncertainty_flags

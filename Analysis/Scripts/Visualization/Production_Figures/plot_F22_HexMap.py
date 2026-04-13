@@ -28,7 +28,7 @@ def generate_exhibits():
     ROOT = str(ROOT_DIR)
     STAGE_A_OUT = str(AR.STAGE_A_HAZARD_RESULTS)
     STAGE_C_OUT = str(AR.stage_c_oof("H0"))
-    PANEL = os.path.join(ROOT, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
+    PANEL = os.path.join(ROOT, "Data", "Panel", "Output", "Property_Year_Panel_Enriched.csv")
     out_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
     os.makedirs(out_dir, exist_ok=True)
 

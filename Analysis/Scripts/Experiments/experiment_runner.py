@@ -29,7 +29,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 
 # ---- Paths ----
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
 CENTROIDS_PATH = "Data/Panel/Reference/parcel_centroids.csv"
 V3_SCORES_PATH = "Analysis/Results/Diffusion_v3/per_parcel_scores.csv"
 V3_CHECKPOINT = "Analysis/Results/Diffusion_v3/model_checkpoint.pt"

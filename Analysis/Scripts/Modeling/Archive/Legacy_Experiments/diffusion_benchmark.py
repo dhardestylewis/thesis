@@ -35,7 +35,7 @@ types = {
 }
 
 print("Loading data (optimized)...")
-df = pd.read_csv("Data/Panel/Output/Property_Year_Panel_v3.csv", usecols=cols, dtype=types)
+df = pd.read_csv("Data/Panel/Output/Property_Year_Panel_Enriched.csv", usecols=cols, dtype=types)
 df['improvement_sq_ft'] = pd.to_numeric(df['improvement_sq_ft'], errors='coerce').astype('float32')
 df = df[df['year'] <= 2024]
 

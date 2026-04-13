@@ -17,7 +17,7 @@ def run_stage_a():
     try:
         print("[*] Loading FULL 282k Parcel Panel (v3.csv) via Multi-Core PyArrow...")
         # PyArrow engine parallelizes CSV parsing in C++, cutting a 40s read to ~3s
-        panel_df = pd.read_csv('Data/Panel/Output/Property_Year_Panel_v3.csv', engine='pyarrow')
+        panel_df = pd.read_csv('Data/Panel/Output/Property_Year_Panel_Enriched.csv', engine='pyarrow')
         print(f"    Loaded Full Panel Shape: {panel_df.shape}")
         
         print("[*] Loading historical zoning cases...")
@@ -184,8 +184,9 @@ def run_stage_a():
                 lgbm_base = LGBMClassifier(class_weight='balanced', random_state=42, n_jobs=-1, verbose=-1, n_estimators=600)
                 lgbm_base.fit(X_train, y_train, eval_set=[(X_val, y_val)], callbacks=[early_stopping(30, verbose=False)])
                 
-                platt_lgbm = CalibratedClassifierCV(lgbm_base, method='sigmoid', cv='prefit')
-                platt_lgbm.fit(X_val, y_val)
+                # Switch to 3-fold CV calibration to preserve probability scaling without triggering 'prefit' string validation errors in scikit-learn 1.4+
+                platt_lgbm = CalibratedClassifierCV(lgbm_base, method='sigmoid', cv=3)
+                platt_lgbm.fit(X_train, y_train)
                 
                 merged[f'Prob_LGBM_{h_tag}'] = platt_lgbm.predict_proba(X)[:, 1]
                 lgbm_auc = average_precision_score(y, merged[f'Prob_LGBM_{h_tag}'])
@@ -200,8 +201,9 @@ def run_stage_a():
             cb_base = CatBoostClassifier(iterations=1000, scale_pos_weight=pos_weight, verbose=0, random_seed=42, thread_count=-1)
             cb_base.fit(X_train, y_train, eval_set=(X_val, y_val), early_stopping_rounds=40)
             
-            platt_cb = CalibratedClassifierCV(cb_base, method='sigmoid', cv='prefit')
-            platt_cb.fit(X_val, y_val)
+            # Switch to 3-fold CV calibration to preserve probability scaling without triggering 'prefit' string validation errors in scikit-learn 1.4+
+            platt_cb = CalibratedClassifierCV(cb_base, method='sigmoid', cv=3)
+            platt_cb.fit(X_train, y_train)
             
             merged[f'Prob_CB_{h_tag}'] = platt_cb.predict_proba(X)[:, 1]
             cb_auc = average_precision_score(y, merged[f'Prob_CB_{h_tag}'])

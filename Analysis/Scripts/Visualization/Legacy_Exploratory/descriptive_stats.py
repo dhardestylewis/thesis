@@ -40,7 +40,7 @@ PET_SUMMARY = os.path.join(DATA, "Protest_Petitions", "Backfilled", "petition_su
 PET_SIGNERS = os.path.join(DATA, "Protest_Petitions", "petition_signers_from_pdf.csv")
 ENRICHED_ZD = os.path.join(DATA, "Zoning_Cases", "Processed_Data", "enriched_zoning_data_full.csv")
 MULTI_PARCEL= os.path.join(DATA, "Zoning_Cases", "Processed_Data", "multi_parcel_closed_2018_2025.csv")
-PANEL_V3    = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_V3    = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 PANEL_ENR   = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 
 # ── styling ────────────────────────────────────────────────────────────────

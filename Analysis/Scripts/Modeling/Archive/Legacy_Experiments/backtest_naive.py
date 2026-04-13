@@ -18,7 +18,7 @@ from datetime import datetime
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 
 # ---- Config ----
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
 RESULTS_DIR = "Analysis/Results/Backtests"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 

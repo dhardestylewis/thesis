@@ -13,7 +13,7 @@ from collections import defaultdict
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 random.seed(42)
 
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
 CENTROIDS_PATH = "Data/Panel/Reference/parcel_centroids.csv"
 OUT_DIR = "Analysis/Results"
 os.makedirs(OUT_DIR, exist_ok=True)

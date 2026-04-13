@@ -1,0 +1,457 @@
+
+============================================================
+ THESIS ORCHESTRATOR: END-TO-END EXECUTION
+============================================================
+
+============================================================
+ PHASE 0: WAREHOUSE ENGINEERING
+============================================================
+[+] Rebuilding Invariant Causal Prediction (ICP) Data Matrix...
+    Output: Data/Zoning_Cases/Processed_Data/CSV/submission_grade_icp_matrix.csv
+
+============================================================
+ PHASE 1: PREDICTIVE PIPELINE
+============================================================
+[+] Stage A: Development Hazard (Computed via StageA_development_hazard.py)
+==============================================
+ STAGE A: Development-Occurrence Hazard Model
+==============================================
+[*] Loading FULL 282k Parcel Panel (v3.csv) via Multi-Core PyArrow...
+    Loaded Full Panel Shape: (52236, 130)
+[*] Loading historical zoning cases...
+[*] Constructing Site-Time Horizons (1-5 Year Forward Windows)...
+    [+] Vectorizing 5-million row temporal shift constraints...
+
+[*] Establishing Domain Heuristic (Highest & Best Use)...
+
+==============================================
+ EVALUATING GAUNTLET HORIZON: H=4 Quarters (1 Yr)
+==============================================
+    [+] Domain Heuristic (ILR < 1.0) PR-AUC:   0.0032
+    [+] Training Logistic Regression Econometric Baseline (Isotonic)...
+    [+] Econometric Baseline (Logistic) PR-AUC: 0.0037
+    [+] Training Spatial Autoregressive (SAR) Logistic Baseline...
+    [+] SAR Logistic (Spatial Lag) PR-AUC:      0.0042
+    [+] Training Deep Learning (MLP) Challenger...
+    [+] Operational PR-AUC (Deep Learning):     0.0093
+    [+] Initializing Unconstrained Global LightGBM (Platt Scaling)...
+    [-] LightGBM constraint failure: The 'cv' parameter of CalibratedClassifierCV must be an int in the range [2, inf), an object implementing 'split' and 'get_n_splits', an iterable or None. Got 'prefit' instead.
+    [+] Initializing Unconstrained Global CatBoost (Platt Scaling)...
+Stage A Complete.
+    Output: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv (1.08 GB)
+
+[+] Stage B: Project Scale & Typology
+Macro-F1 (6-Tier): 0.5478
+Classification Report:
+                                precision    recall  f1-score   support
+
+PUD / large negotiated project       1.00      1.00      1.00         3
+               by-right infill       0.57      0.93      0.70       215
+        discretionary rezoning       0.79      0.67      0.72        94
+                missing-middle       0.61      0.29      0.39        66
+                     mixed-use       0.73      0.19      0.30        42
+                   multifamily       0.47      0.10      0.16        70
+
+                      accuracy                           0.61       490
+                     macro avg       0.69      0.53      0.55       490
+                  weighted avg       0.62      0.61      0.56       490
+
+\n--- Continuous Scale Error (10 Seeds) ---
+Regression MAE: 28,278 +/- 3,197 sqft
+Regression Equivalent Unit MAE: 28.3 +/- 3.2 units\n
+Saved Stage B continuous seed plot to C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Figures\Chapter4\fig_stage_b_continuous_seed_mae.pdf
+Random Forest Macro-F1: 0.7391
+Logistic Regression Macro-F1: 0.1766
+LightGBM Macro-F1: 0.7480
+Saved Stage B model to C:\Users\dhl\data\thesis\thesis\Analysis\Output\Track1_Predictive\Models\stage_b_model.cbm
+
+[+] Stage C: Neighborhood Opposition Risk
+Initiating Master Multi-Horizon Structural Engine (Aligned)...
+
+==============================================
+ HORIZON ALIGNED EXECUTION: H0 (Filing Baseline) (H0)
+==============================================
+[+] IPW: Ingesting Optimal Stage A Hazard Probabilities...
+    Successfully aligned IPW weights. Mean weight: 4669.28
+
+PART 0: DEPLOYMENT METRICS EXTRACTION (H0 EXACT)
+
+[*] Executing Calibration-Bounded Model Optimization (Adaptive Search for [0.9, 1.1] Slope)
+    Step 1: Params {'depth': 6, 'l2_leaf_reg': 3, 'learning_rate': 0.03} -> Slope: 0.858, PR-AUC: 0.893
+    Step 2: Params {'depth': 5, 'l2_leaf_reg': 5, 'learning_rate': 0.03} -> Slope: 0.689, PR-AUC: 0.872
+    Step 3: Params {'depth': 4, 'l2_leaf_reg': 7, 'learning_rate': 0.03} -> Slope: 0.635, PR-AUC: 0.855
+    Step 4: Params {'depth': 3, 'l2_leaf_reg': 9, 'learning_rate': 0.03} -> Slope: 1.108, PR-AUC: 0.840
+    Step 5: Params {'depth': 4, 'l2_leaf_reg': 8, 'learning_rate': 0.03} -> Slope: 0.855, PR-AUC: 0.860
+    Step 6: Params {'depth': 3, 'l2_leaf_reg': 10, 'learning_rate': 0.03} -> Slope: 1.085, PR-AUC: 0.827
+    [+] Strict calibration bound satisfied at step 6!
+    [+] Selected strictly bounded model: Slope 1.085, PR-AUC 0.827
+
+>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<
+  Model               : Table 5 Final
+  PR-AUC              : 0.873
+  Top-Decile Lift     : 10.006
+  ECE                 : 0.101
+  Brier               : 0.013
+  Calib-Slope         : 0.835
+  FPR%                : 1.846
+  Mean Prob (TP)      : 0.818
+  Mean Prob (TN)      : 0.016
+  FNR-Gap%            : 0.000
+  FPR-Gap%            : 99.786
+    [+] Saved fully trained model artifact to C:\Users\dhl\data\thesis\thesis\Analysis\Output\Track1_Predictive\Models\stage_c_model_H0.joblib
+
+PART A: TEMPORAL DRIFT (ROLLING-ORIGIN)
+
+PART B: POLICY REGIMES HOLDOUTS
+
+PART C: SPATIAL HOLDOUTS (DISTRICT LEVEL OOD)
+   Spatial Holdout GroupKFold PR-AUC: 0.653
+
+PART D: DEMOGRAPHIC HOLDOUTS (OOD Fairness Audit)
+   Demographic Holdout (High-to-Low Wealth) PR-AUC: 0.968
+
+PART E: MORPHOLOGICAL HOLDOUTS (CORE VS SUBURBS)
+   Morphological Holdout (Core-to-Suburb) PR-AUC: 0.339
+
+PART F: ZONING TYPOLOGY HOLDOUTS (RESIDENTIAL VS COMMERCIAL)
+   Zoning Typology (Residential-to-Commercial) PR-AUC: 0.500
+
+==============================================
+ HORIZON ALIGNED EXECUTION: H3 (Pre-Council with NLP) (H3)
+==============================================
+[+] IPW: Ingesting Optimal Stage A Hazard Probabilities...
+    Successfully aligned IPW weights. Mean weight: 156.53
+
+PART 0: DEPLOYMENT METRICS EXTRACTION (H0 EXACT)
+
+[*] Executing Calibration-Bounded Model Optimization (Adaptive Search for [0.9, 1.1] Slope)
+    Step 1: Params {'depth': 6, 'l2_leaf_reg': 3, 'learning_rate': 0.03} -> Slope: 1.382, PR-AUC: 0.834
+    Step 2: Params {'depth': 7, 'l2_leaf_reg': 2, 'learning_rate': 0.03} -> Slope: 1.408, PR-AUC: 0.840
+    Step 3: Params {'depth': 8, 'l2_leaf_reg': 1, 'learning_rate': 0.03} -> Slope: 1.414, PR-AUC: 0.880
+    [!] Parameter boundaries reached. Halting adaptive search.
+    [!] Search exhausted. Selecting closest bounded architecture (Slope 1.382, PR-AUC 0.834).
+
+>>> PRE-SPECIFIED DEPLOYMENT METRICS (TABLE 5) <<<
+  Model               : Table 5 Final
+  PR-AUC              : 0.875
+  Top-Decile Lift     : 9.032
+  ECE                 : 0.146
+  Brier               : 0.023
+  Calib-Slope         : 1.422
+  FPR%                : 15.834
+  Mean Prob (TP)      : 0.623
+  Mean Prob (TN)      : 0.049
+  FNR-Gap%            : 12.821
+  FPR-Gap%            : 85.490
+    [+] Saved fully trained model artifact to C:\Users\dhl\data\thesis\thesis\Analysis\Output\Track1_Predictive\Models\stage_c_model_H3.joblib
+
+PART A: TEMPORAL DRIFT (ROLLING-ORIGIN)
+    [!] Error running Stage C: bad allocation
+
+[+] Stage C.2: Fairness Sensitivity Audit
+==================================================
+ FAIRNESS THRESHOLDING EXPERIMENT (PHASE 3) 
+ Continuous Spatial Density Fairness (KNN) 
+==================================================
+[0] Baseline Global Threshold (mu_y = 0.0581)
+    FNR Gap:  0.00%  |  FPR Gap: 99.79%
+
+[+] Deterministic Row-Match successful (7074 properties).
+    Usable Spatial Properties: 6049/7074
+
+[7] Continuous Spatial Density Fairness (KNN, K=50)
+    FNR Gap:  0.00%  |  FPR Gap: 99.75%
+[7] Continuous Spatial Density Fairness (KNN, K=150)
+    FNR Gap:  0.00%  |  FPR Gap: 99.75%
+[7] Continuous Spatial Density Fairness (KNN, K=500)
+    FNR Gap:  0.00%  |  FPR Gap: 99.75%
+
+Phase 3 Spatial Experiment Complete.
+
+[+] Stage C.3: Deep Temporal Drift Topology
+Executing Real Rolling-Origin Temporal Drift Analysis...
+
+[+] Processing Anchor: Pre-2018 Training Window
+
+Early stopping occurred at epoch 12 with best_epoch = 7 and best_val_0_auc = 0.96295
+
+Early stopping occurred at epoch 19 with best_epoch = 14 and best_val_0_auc = 0.96054
+    -> [CatBoost] Evaluated on 2018 (T+0): PR-AUC = 0.9637
+    -> [TabNet(LS=0.1)] Evaluated on 2018 (T+0): PR-AUC = 0.8468
+    -> [TabNet(LS+Pruning)] Evaluated on 2018 (T+0): PR-AUC = 0.8168
+    -> [CatBoost] Evaluated on 2019 (T+1): PR-AUC = 0.7289
+    -> [TabNet(LS=0.1)] Evaluated on 2019 (T+1): PR-AUC = 0.6598
+    -> [TabNet(LS+Pruning)] Evaluated on 2019 (T+1): PR-AUC = 0.8447
+    -> [CatBoost] Evaluated on 2020 (T+2): PR-AUC = 0.6645
+    -> [TabNet(LS=0.1)] Evaluated on 2020 (T+2): PR-AUC = 0.6154
+    -> [TabNet(LS+Pruning)] Evaluated on 2020 (T+2): PR-AUC = 0.6667
+    -> [CatBoost] Evaluated on 2021 (T+3): PR-AUC = 0.5214
+    -> [TabNet(LS=0.1)] Evaluated on 2021 (T+3): PR-AUC = 0.4729
+    -> [TabNet(LS+Pruning)] Evaluated on 2021 (T+3): PR-AUC = 0.4227
+    -> [CatBoost] Evaluated on 2022 (T+4): PR-AUC = 0.3849
+    -> [TabNet(LS=0.1)] Evaluated on 2022 (T+4): PR-AUC = 0.2228
+    -> [TabNet(LS+Pruning)] Evaluated on 2022 (T+4): PR-AUC = 0.1890
+    -> [CatBoost] Evaluated on 2023 (T+5): PR-AUC = 0.8708
+    -> [TabNet(LS=0.1)] Evaluated on 2023 (T+5): PR-AUC = 0.5235
+    -> [TabNet(LS+Pruning)] Evaluated on 2023 (T+5): PR-AUC = 0.4752
+    -> [CatBoost] Evaluated on 2024 (T+6): PR-AUC = 0.8529
+    -> [TabNet(LS=0.1)] Evaluated on 2024 (T+6): PR-AUC = 0.3933
+    -> [TabNet(LS+Pruning)] Evaluated on 2024 (T+6): PR-AUC = 0.3198
+
+[+] Processing Anchor: Pre-2019 Training Window
+
+Early stopping occurred at epoch 18 with best_epoch = 13 and best_val_0_auc = 0.94824
+
+Early stopping occurred at epoch 13 with best_epoch = 8 and best_val_0_auc = 0.92543
+    -> [CatBoost] Evaluated on 2019 (T+0): PR-AUC = 0.6592
+    -> [TabNet(LS=0.1)] Evaluated on 2019 (T+0): PR-AUC = 0.6013
+    -> [TabNet(LS+Pruning)] Evaluated on 2019 (T+0): PR-AUC = 0.4622
+    -> [CatBoost] Evaluated on 2020 (T+1): PR-AUC = 0.6411
+    -> [TabNet(LS=0.1)] Evaluated on 2020 (T+1): PR-AUC = 0.4139
+    -> [TabNet(LS+Pruning)] Evaluated on 2020 (T+1): PR-AUC = 0.5699
+    -> [CatBoost] Evaluated on 2021 (T+2): PR-AUC = 0.4965
+    -> [TabNet(LS=0.1)] Evaluated on 2021 (T+2): PR-AUC = 0.6033
+    -> [TabNet(LS+Pruning)] Evaluated on 2021 (T+2): PR-AUC = 0.2602
+    -> [CatBoost] Evaluated on 2022 (T+3): PR-AUC = 0.3292
+    -> [TabNet(LS=0.1)] Evaluated on 2022 (T+3): PR-AUC = 0.5701
+    -> [TabNet(LS+Pruning)] Evaluated on 2022 (T+3): PR-AUC = 0.2828
+    -> [CatBoost] Evaluated on 2023 (T+4): PR-AUC = 0.8303
+    -> [TabNet(LS=0.1)] Evaluated on 2023 (T+4): PR-AUC = 0.6761
+    -> [TabNet(LS+Pruning)] Evaluated on 2023 (T+4): PR-AUC = 0.5066
+    -> [CatBoost] Evaluated on 2024 (T+5): PR-AUC = 0.8850
+    -> [TabNet(LS=0.1)] Evaluated on 2024 (T+5): PR-AUC = 0.2946
+    -> [TabNet(LS+Pruning)] Evaluated on 2024 (T+5): PR-AUC = 0.1968
+
+[+] Processing Anchor: Pre-2020 Training Window
+
+Early stopping occurred at epoch 13 with best_epoch = 8 and best_val_0_auc = 0.92158
+
+Early stopping occurred at epoch 18 with best_epoch = 13 and best_val_0_auc = 0.9555
+    -> [CatBoost] Evaluated on 2020 (T+0): PR-AUC = 0.7035
+    -> [TabNet(LS=0.1)] Evaluated on 2020 (T+0): PR-AUC = 0.3390
+    -> [TabNet(LS+Pruning)] Evaluated on 2020 (T+0): PR-AUC = 0.5091
+    -> [CatBoost] Evaluated on 2021 (T+1): PR-AUC = 0.4273
+    -> [TabNet(LS=0.1)] Evaluated on 2021 (T+1): PR-AUC = 0.3672
+    -> [TabNet(LS+Pruning)] Evaluated on 2021 (T+1): PR-AUC = 0.4359
+    -> [CatBoost] Evaluated on 2022 (T+2): PR-AUC = 0.4021
+    -> [TabNet(LS=0.1)] Evaluated on 2022 (T+2): PR-AUC = 0.1541
+    -> [TabNet(LS+Pruning)] Evaluated on 2022 (T+2): PR-AUC = 0.2187
+    -> [CatBoost] Evaluated on 2023 (T+3): PR-AUC = 0.8152
+    -> [TabNet(LS=0.1)] Evaluated on 2023 (T+3): PR-AUC = 0.5227
+    -> [TabNet(LS+Pruning)] Evaluated on 2023 (T+3): PR-AUC = 0.5255
+    -> [CatBoost] Evaluated on 2024 (T+4): PR-AUC = 0.6544
+    -> [TabNet(LS=0.1)] Evaluated on 2024 (T+4): PR-AUC = 0.1271
+    -> [TabNet(LS+Pruning)] Evaluated on 2024 (T+4): PR-AUC = 0.2529
+
+[+] Processing Anchor: Pre-2021 Training Window
+
+Early stopping occurred at epoch 17 with best_epoch = 12 and best_val_0_auc = 0.95405
+
+Early stopping occurred at epoch 20 with best_epoch = 15 and best_val_0_auc = 0.95595
+    -> [CatBoost] Evaluated on 2021 (T+0): PR-AUC = 0.5191
+    -> [TabNet(LS=0.1)] Evaluated on 2021 (T+0): PR-AUC = 0.4401
+    -> [TabNet(LS+Pruning)] Evaluated on 2021 (T+0): PR-AUC = 0.5250
+    -> [CatBoost] Evaluated on 2022 (T+1): PR-AUC = 0.5909
+    -> [TabNet(LS=0.1)] Evaluated on 2022 (T+1): PR-AUC = 0.5492
+    -> [TabNet(LS+Pruning)] Evaluated on 2022 (T+1): PR-AUC = 0.2848
+    -> [CatBoost] Evaluated on 2023 (T+2): PR-AUC = 0.7819
+    -> [TabNet(LS=0.1)] Evaluated on 2023 (T+2): PR-AUC = 0.5185
+    -> [TabNet(LS+Pruning)] Evaluated on 2023 (T+2): PR-AUC = 0.7669
+    -> [CatBoost] Evaluated on 2024 (T+3): PR-AUC = 0.5454
+    -> [TabNet(LS=0.1)] Evaluated on 2024 (T+3): PR-AUC = 0.7117
+    -> [TabNet(LS+Pruning)] Evaluated on 2024 (T+3): PR-AUC = 0.8357
+
+[+] Processing Anchor: Pre-2022 Training Window
+
+Early stopping occurred at epoch 11 with best_epoch = 6 and best_val_0_auc = 0.95732
+
+Early stopping occurred at epoch 22 with best_epoch = 17 and best_val_0_auc = 0.97386
+    -> [CatBoost] Evaluated on 2022 (T+0): PR-AUC = 0.5464
+    -> [TabNet(LS=0.1)] Evaluated on 2022 (T+0): PR-AUC = 0.2104
+    -> [TabNet(LS+Pruning)] Evaluated on 2022 (T+0): PR-AUC = 0.3516
+    -> [CatBoost] Evaluated on 2023 (T+1): PR-AUC = 0.7907
+    -> [TabNet(LS=0.1)] Evaluated on 2023 (T+1): PR-AUC = 0.6807
+    -> [TabNet(LS+Pruning)] Evaluated on 2023 (T+1): PR-AUC = 0.7741
+    -> [CatBoost] Evaluated on 2024 (T+2): PR-AUC = 0.6254
+    -> [TabNet(LS=0.1)] Evaluated on 2024 (T+2): PR-AUC = 0.1679
+    -> [TabNet(LS+Pruning)] Evaluated on 2024 (T+2): PR-AUC = 0.8393
+
+[+] Processing Anchor: Pre-2023 Training Window
+    [!] Error running Deep Temporal Drift: bad allocation
+
+[+] Stage C.3: Supplemental Point-7 Metrics (Brier, Subgroup Ns, ECE CI)
+Loaded 7074 cases, 411 petitions, base rate = 0.0581
+
+Brier Score: 0.0131
+Top-decile precision: 0.581 (411/707)
+At P >= 0.50 threshold: precision=0.770, recall=0.985, N flagged=526
+At P >= 0.30 threshold: precision=0.770, recall=1.000, N flagged=534
+
+Subgroup breakdown by council district:
+ district    N  petitions base_rate
+      0.0   48         39     0.812
+      1.0 6616         62     0.009
+      2.0   22         12     0.545
+      3.0   97         49     0.505
+      4.0   10          5     0.500
+      5.0   68         48     0.706
+      6.0   15         14     0.933
+      7.0   35         32     0.914
+      8.0    3          3     1.000
+      9.0  118        110     0.932
+     10.0   42         37     0.881
+
+Districts with >= 10 positives: 9/11
+Positives per district: min=3, median=37, max=110
+    [!] Error running Supplemental Metrics: name 'np' is not defined
+
+[+] Stage D: Institutional Outcome
+==============================================
+ STAGE D: Institutional Outcome Forecast
+==============================================
+
+[*] STRUCTURAL ATTRITION ANALYSIS (CENSORSHIP BIAS):
+    Total Protested Cases Filed: 411
+    Protested Cases Withdrawn/Stalled Before Council: 319
+    NIMBY 'Chilling Effect' Attrition Rate: 77.6%
+    Baseline Unopposed Attrition Rate: 97.3%
+
+[+] Evaluated on 411 explicitly opposed cases.
+    Stage D Pipeline Log Loss (Predicting Attrition Risk): 0.1642
+    Stage D Pipeline Accuracy: 0.9684
+[+] Complete. Output saved to Track1_Predictive/stage_d_results.txt
+
+[+] Stage F: Generative Forward Simulation (Future Work Skeleton)
+
+============================================================
+ PHASE 2: CAUSAL PIPELINE
+============================================================
+==============================================
+ TRACK 2: Authentic Causal Study 1 (RD)
+==============================================
+[!] Track 2 Failed: Insufficient density directly on the bandwidth.
+==============================================
+ TRACK 3: Authentic Causal Study 2 (DiD)
+==============================================
+[+] Track 3 Complete using actual `is_protested`. Fabricated `np.random` architectures explicitly purged.
+Loading Data Matrices...
+
+======================================================================
+DESIGN 1: 10-1 Council Transition ITS (Post-2015 Effect on Dissent Votes)
+======================================================================
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.7628      0.192      3.964      0.001       0.357       1.169
+post_10_1      0.1193      0.122      0.974      0.344      -0.139       0.378
+acreage       -0.0010      0.000     -2.897      0.010      -0.002      -0.000
+is_npa         0.1193      0.122      0.974      0.344      -0.139       0.378
+==============================================================================
+
+======================================================================
+DESIGN 2: Neighborhood Plan Area (NPA) Spatial Friction
+======================================================================
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.7628      0.192      3.964      0.001       0.357       1.169
+is_npa         0.2386      0.245      0.974      0.344      -0.278       0.755
+acreage       -0.0010      0.000     -2.897      0.010      -0.002      -0.000
+==============================================================================
+
+======================================================================
+DESIGN 3: HOME Initiative Central District (D9) Response DiD
+======================================================================
+
+======================================================================
+DESIGN 3: HOME Contextual Response (Central District 9 vs Rest of Austin)
+======================================================================
+=========================================================================================================
+                                            coef    std err          t      P>|t|      [0.025      0.975]
+---------------------------------------------------------------------------------------------------------
+Intercept                                 0.6650      0.033     20.415      0.000       0.601       0.729
+is_central_treatment                      0.1829      0.075      2.442      0.015       0.035       0.330
+post_home_window                         -0.1094      0.156     -0.702      0.483      -0.416       0.198
+is_central_treatment:post_home_window          0          0        nan        nan           0           0
+=========================================================================================================
+
+======================================================================
+DESIGN 4: Historic District (HD) Overlay Friction
+======================================================================
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.9098      0.119      7.628      0.000       0.659       1.160
+is_hd               0          0        nan        nan           0           0
+acreage       -0.0012      0.000     -4.997      0.000      -0.002      -0.001
+==============================================================================
+
+======================================================================
+DESIGN 5: Transit-Oriented Development (TOD/VMU) Density Deregulation Effect
+======================================================================
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.9098      0.119      7.628      0.000       0.659       1.160
+is_tod              0          0        nan        nan           0           0
+acreage       -0.0012      0.000     -4.997      0.000      -0.002      -0.001
+==============================================================================
+
+======================================================================
+DESIGN 6: 2022 Council Election Geographic Flip DiD
+======================================================================
+
+======================================================================
+DESIGN 6: 2022 Council Flip Effect on Valid Petition Filing Rates
+======================================================================
+=================================================================================================
+                                    coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------------------
+Intercept                         0.6828      0.038     18.166      0.000       0.609       0.757
+is_flipped_district               0.1408      0.074      1.911      0.057      -0.004       0.286
+post_2022                        -0.0328      0.108     -0.303      0.762      -0.246       0.180
+is_flipped_district:post_2022    -0.4574      0.290     -1.579      0.116      -1.029       0.114
+=================================================================================================
+[+] Exported all LaTeX macros for auxiliary designs to metrics_config.tex
+
+[+] All 6 Geographic Causal Designs executed. Full outputs saved to: C:\Users\dhl\data\thesis\thesis\Analysis\Output\Geographic_Causal\geographic_causal_results.txt
+
+============================================================
+ PHASE 3: TABLES & VISUALIZATIONS
+============================================================
+==============================================
+ Generating Authentic Table 1: Summary Stats
+==============================================
+[+] Successfully built and saved authentic table to C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\summary_stats_table.tex and C:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Tables\summary_stats_table.tex
+Loading 141-column master baseline from C:\Users\dhl\data\thesis\thesis\Data\Warehouse_As_Of\H0_Filing_Master_Enriched.csv...
+
+============================================================
+ H0 (Filing): 7153 rows x 163 cols
+============================================================
+    [Guard] Stripped 16 future columns to enforce H0 (Filing) temporal closure.
+Target: is_protested, Prevalence: 0.058 (411/7074)
+Feature count: 114
+
+Results (CatBoost):
+  PR-AUC:  0.5817  [0.3769, 0.7798]
+  ROC-AUC: 0.9387  [0.8094, 0.9936]
+  Brier:   0.0169
+  ECE(Pre):0.2453
+  ECE(Pos):0.2806
+[+] Reintegrating stub 'H1 (Notice)' (cols=15) dynamically against Master Spine...
+    -> Reintegrated 7 new columns: ['delta_max_bldg_cov_pct_is_missing', 'application_start_date', 'delta_min_lot_sqft_is_missing', 'council_district', 'delta_max_height_ft_is_missing', 'delta_max_far_is_missing', 'final_date']
+
+============================================================
+ H1 (Notice): 7153 rows x 170 cols
+============================================================
+    [Guard] Stripped 0 future columns to enforce H1 (Notice) temporal closure.
+Target: is_protested, Prevalence: 0.058 (411/7074)
+Feature count: 135
+
+Results (CatBoost):
+  PR-AUC:  0.5199  [0.3580, 0.7674]
+  ROC-AUC: 0.9877  [0.9798, 0.9943]
+  Brier:   0.0165
+  ECE(Pre):0.2307
+  ECE(Pos):0.3527
+[+] Reintegrating stub 'H2 (Pre-Commission)' (cols=16) dynamically against Master Spine...

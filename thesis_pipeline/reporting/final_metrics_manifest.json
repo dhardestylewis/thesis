@@ -1,0 +1,16 @@
+{
+    "headline_pr_auc": {
+        "value": "0.680",
+        "model": "CatBoost",
+        "split": "TEMP_OOD_2023_MAIN",
+        "task": "Stage C Canonical"
+    },
+    "label_fidelity_score": {
+        "value": "92.5%",
+        "audit_n": 655
+    },
+    "top_consensus_factor": {
+        "value": "Other",
+        "share": "64.2%"
+    }
+}

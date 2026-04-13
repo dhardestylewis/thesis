@@ -42,7 +42,7 @@ MIN_ENV_SIZE = 10     # Minimum observations per environment for valid testing
 SAMPLED_SIZE = 35000
 
 PROJECT_DIR = r"c:\Users\dhl\data\thesis\thesis"
-PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 ENV_PATH = os.path.join(PROJECT_DIR, "Analysis", "Results", "irm_environment_assignments.csv")
 
 # Feature names (the raw numeric predictors we can name)

@@ -41,7 +41,7 @@ ARCHITECTURES = [
 ]
 
 PROJECT_DIR = r"c:\Users\dhl\data\thesis\thesis"
-PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 ENV_PATH = os.path.join(PROJECT_DIR, "Analysis", "Results", "irm_environment_assignments.csv")
 
 # Ensure reproducibility within a single run

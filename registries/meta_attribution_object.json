@@ -1,0 +1,42 @@
+[
+    {
+        "semantic_cluster": "Location",
+        "mean": 0.855395560721828,
+        "median": 0.855395560721828,
+        "std": NaN,
+        "count": 1,
+        "is_consensus": false
+    },
+    {
+        "semantic_cluster": "Neighborhood Wealth",
+        "mean": 0.014069339233203164,
+        "median": 0.014069339233203164,
+        "std": NaN,
+        "count": 1,
+        "is_consensus": false
+    },
+    {
+        "semantic_cluster": "Other",
+        "mean": 1.2952975487683114,
+        "median": 1.0,
+        "std": 0.8858926463049339,
+        "count": 9,
+        "is_consensus": true
+    },
+    {
+        "semantic_cluster": "Parcel Scale",
+        "mean": 0.44413888861264883,
+        "median": 0.44413888861264883,
+        "std": NaN,
+        "count": 1,
+        "is_consensus": false
+    },
+    {
+        "semantic_cluster": "Zoning Delta",
+        "mean": 1.0287182725175186,
+        "median": 1.0287182725175186,
+        "std": NaN,
+        "count": 1,
+        "is_consensus": false
+    }
+]

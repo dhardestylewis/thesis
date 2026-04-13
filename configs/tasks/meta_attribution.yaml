@@ -1,0 +1,16 @@
+task_id: META_ATTRIBUTION_MAIN 
+base_task: STAGE_C_FILING_MAIN
+models:
+  - catboost
+  - rf 
+  - vrex_mlp
+  - excelformer
+splits:
+  - TEMP_OOD_2023_MAIN
+  - ROLLING_ORIGIN_2019_2023
+semantic_clusters: semantic_clusters_v1
+outputs:
+  - model_period_cluster_matrix
+  - consensus_features
+  - model_specific_features
+  - unstable_features

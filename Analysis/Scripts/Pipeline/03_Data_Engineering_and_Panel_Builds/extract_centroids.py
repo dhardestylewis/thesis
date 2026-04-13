@@ -13,8 +13,8 @@ csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 
 LUI_PATH = "Data/CoA_Open_Data/Land_Use/LUI_2024_7vsm-dvxg.csv"
 OUT_CENTROIDS = "Data/Panel/Reference/parcel_centroids.csv"
-PANEL_IN = "Data/Panel/Output/Property_Year_Panel_v3.csv"
-PANEL_OUT = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+PANEL_IN = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
+PANEL_OUT = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
 
 # ========== Step 1: Extract centroids from WKT ==========
 print("=" * 60)
@@ -98,7 +98,7 @@ print("Step 4: Updating panel lat/lon from LUI centroids...")
 print("=" * 60)
 t0 = time.time()
 
-TEMP_OUT = "Data/Panel/Output/Property_Year_Panel_v3_tmp.csv"
+TEMP_OUT = "Data/Panel/Output/Property_Year_Panel_Enriched_tmp.csv"
 
 with open(PANEL_IN, "r", encoding="utf-8") as fin:
     reader = csv.DictReader(fin)

@@ -39,7 +39,7 @@ def main():
             print(f"    -> Successfully Geocoded: {mapped_count} / {len(df_main)} Cases.")
             
             # Extract basic density & demographics from census if exists or fallback
-            panel_path = os.path.join(ROOT, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
+            panel_path = os.path.join(ROOT, "Data", "Panel", "Output", "Property_Year_Panel_Enriched.csv")
             if os.path.exists(panel_path):
                 print("[*] Scanning 99-Million Row Master Panel for the Demographic & Contagion intercepts...")
                 # We chunk through exactly 2 million rows strictly to build a representative KDTree 

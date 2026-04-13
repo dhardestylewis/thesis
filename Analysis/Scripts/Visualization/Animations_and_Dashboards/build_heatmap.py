@@ -57,7 +57,7 @@ print("Low risk sample (<0.1): %d" % len(low_risk_sample))
 
 # Also load actual protest locations for overlay
 actual_protests = []
-with open("Data/Panel/Output/Property_Year_Panel_v3.csv", "r", encoding="utf-8") as f:
+with open("Data/Panel/Output/Property_Year_Panel_Enriched.csv", "r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     seen = set()
     for row in reader:

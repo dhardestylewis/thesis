@@ -20,7 +20,7 @@ from sklearn.decomposition import TruncatedSVD
 import os, json, time
 
 PROJECT_DIR = r"c:\Users\dhl\data\thesis\thesis"
-PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 OUT_DIR = os.path.join(PROJECT_DIR, "Analysis", "Data", "Tensors")
 os.makedirs(OUT_DIR, exist_ok=True)
 

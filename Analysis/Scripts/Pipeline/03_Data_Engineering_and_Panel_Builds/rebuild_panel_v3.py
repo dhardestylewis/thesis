@@ -15,7 +15,7 @@ New columns:
   - protest_nearby_area_pct: parcel area as % of total nearby area in 200ft buffer
   - zoning_case_numbers:    pipe-delimited case numbers linked to this parcel
 
-Outputs: Data/Panel/Output/Property_Year_Panel_v3.csv
+Outputs: Data/Panel/Output/Property_Year_Panel_Enriched.csv
 """
 import csv, json, sys, os, re, time
 from collections import defaultdict
@@ -27,7 +27,7 @@ ZC_PATH = "Data/CoA_Open_Data/Zoning/ZC_current_edir-dcnf.csv"
 COMBINED_GJ_PATH = "Data/Zoning_Cases/Processed_Data/combined_cases_with_nearby.geojson"
 PDF_SIGNERS_PATH = "Data/Protest_Petitions/petition_signers_from_pdf.csv"
 PANEL_PATH = "Data/Panel/Output/Property_Year_Panel.csv"
-OUT_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+OUT_PATH = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
 
 
 def normalize_tcad(tid):
@@ -348,7 +348,7 @@ for yr in sorted(yr_stats):
 # ========== Step 6: Write v3 panel ==========
 print()
 print("=" * 60)
-print("Step 6: Writing Property_Year_Panel_v3.csv...")
+print("Step 6: Writing Property_Year_Panel_Enriched.csv...")
 print("=" * 60)
 t0 = time.time()
 

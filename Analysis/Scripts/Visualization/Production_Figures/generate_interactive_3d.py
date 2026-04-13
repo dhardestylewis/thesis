@@ -1,9 +1,12 @@
 import os, sys
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 # Re-open stdout in UTF-8 so print() works on Windows cp1252 terminals
-if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+# We check hasattr(sys.stdout, 'encoding') to handle custom loggers like DualLogger
+if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    # Only wrap if it has a buffer (standard sys.stdout)
+    if hasattr(sys.stdout, 'buffer'):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 """
 generate_interactive_3d.py
 --------------------------

@@ -19,7 +19,7 @@ from datetime import datetime
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 
 SCORES_PATH = "Analysis/Results/Diffusion_v2/per_parcel_scores.csv"
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
 OUT_DIR = "Analysis/Results/Diffusion_v2/diagnostics"
 os.makedirs(OUT_DIR, exist_ok=True)
 

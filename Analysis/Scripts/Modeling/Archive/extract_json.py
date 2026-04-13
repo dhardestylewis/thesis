@@ -4,7 +4,7 @@ from sklearn.metrics import classification_report
 import json
 
 chunks = []
-for chunk in pd.read_csv(r"C:\Users\dhl\data\thesis\thesis\Data\Panel\Output\Property_Year_Panel_v3.csv", usecols=["property_type_code", "improvement_market_value", "land_market_value", "deed_acreage", "year_built"], chunksize=250000, low_memory=False):
+for chunk in pd.read_csv(r"C:\Users\dhl\data\thesis\thesis\Data\Panel\Output\Property_Year_Panel_Enriched.csv", usecols=["property_type_code", "improvement_market_value", "land_market_value", "deed_acreage", "year_built"], chunksize=250000, low_memory=False):
     chunks.append(chunk.sample(frac=0.02, random_state=42))
 
 df = pd.concat(chunks)

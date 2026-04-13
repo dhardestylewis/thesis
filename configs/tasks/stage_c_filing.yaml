@@ -1,0 +1,26 @@
+task_id: STAGE_C_FILING_MAIN 
+outcome: label_v1_reconstructed_threshold_crossing
+horizon: filing_date 
+sample: discretionary_cases_full
+feature_view: filing_date_public
+weighting: none_or_stage_a_ipw
+primary_split: TEMP_OOD_2023_MAIN
+secondary_splits:
+  - CV5_IN_DIST_MAIN
+  - ROLLING_ORIGIN_MAIN
+  - SPATIAL_CD_HOLDOUTS
+metrics:
+  ranking:
+    - pr_auc
+    - top_decile_precision
+    - top_decile_lift
+  calibration:
+    - ece
+    - ace
+    - brier
+    - calibration_slope
+  thresholded:
+    - precision_at_0_30
+    - recall_at_0_30
+    - precision_at_0_50
+    - recall_at_0_50

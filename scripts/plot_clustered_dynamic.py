@@ -77,7 +77,7 @@ N_COLS = len(MODELS)    # 2
 
 fig, axes = plt.subplots(
     N_ROWS, N_COLS,
-    figsize=(12, 11),
+    figsize=(12, 14),
     sharex=False,
 )
 fig.patch.set_facecolor(BG_COLOR)

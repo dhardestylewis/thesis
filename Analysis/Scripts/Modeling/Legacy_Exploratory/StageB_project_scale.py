@@ -5,7 +5,7 @@ from catboost import CatBoostClassifier
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 
 ROOT_DIR = r"C:/Users/dhl/data/thesis/thesis"
-DATA_FILE = os.path.join(ROOT_DIR, "Data/Panel/Output/Property_Year_Panel_v3.csv")
+DATA_FILE = os.path.join(ROOT_DIR, "Data/Panel/Output/Property_Year_Panel_Enriched.csv")
 OUTPUT_DIR = os.path.join(ROOT_DIR, "Analysis/Output/Track1_Predictive")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

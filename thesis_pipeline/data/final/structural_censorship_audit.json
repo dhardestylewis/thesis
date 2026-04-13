@@ -1,0 +1,8 @@
+{
+    "audit_type": "structural_censorship",
+    "opposed_cases_total": 411,
+    "opposed_withdrawn_stalled": 83,
+    "chilling_effect_attrition_rate": "20.2%",
+    "baseline_unopposed_attrition_rate": "20.1%",
+    "censorship_ratio": "1.01x"
+}

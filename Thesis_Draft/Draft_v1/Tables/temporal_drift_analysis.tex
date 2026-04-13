@@ -1,33 +1,54 @@
 \begin{table}[htbp]
 \centering
-\caption{\textbf{Temporal Predictive Drift: H0 Filing Performance Decay by Forecast Year}}
+\caption{\textbf{Comprehensive Temporal Predictive Drift: PR-AUC Decay by Algorithm}}
 \label{tab:temporal_drift}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccccc}
 \toprule
 \textbf{Anchor Training} & \textbf{2018} & \textbf{2019} & \textbf{2020} & \textbf{2021} & \textbf{2022} & \textbf{2023} & \textbf{2024} \\
 \midrule
-CatBoost Pre-2018 & \textbf{0.964} & 0.729 & 0.664 & \textbf{0.521} & \textbf{0.385} & \textbf{0.871} & \textbf{0.853} \\
-CatBoost Pre-2019 & --- & \textbf{0.659} & \textbf{0.641} & 0.496 & 0.329 & \textbf{0.830} & \textbf{0.885} \\
-CatBoost Pre-2020 & --- & --- & \textbf{0.704} & 0.427 & \textbf{0.402} & \textbf{0.815} & \textbf{0.654} \\
-CatBoost Pre-2021 & --- & --- & --- & 0.519 & \textbf{0.591} & \textbf{0.782} & 0.545 \\
-CatBoost Pre-2022 & --- & --- & --- & --- & \textbf{0.546} & \textbf{0.791} & 0.625 \\
-CatBoost Pre-2023 & --- & --- & --- & --- & --- & \textbf{0.886} & 0.579 \\
-CatBoost Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{0.545} \\
-TabNet(LS+Pruning) Pre-2018 & 0.817 & \textbf{0.845} & \textbf{0.667} & 0.423 & 0.189 & 0.475 & 0.320 \\
-TabNet(LS+Pruning) Pre-2019 & --- & 0.462 & 0.570 & 0.260 & 0.283 & 0.507 & 0.197 \\
-TabNet(LS+Pruning) Pre-2020 & --- & --- & 0.509 & \textbf{0.436} & 0.219 & 0.525 & 0.253 \\
-TabNet(LS+Pruning) Pre-2021 & --- & --- & --- & \textbf{0.525} & 0.285 & 0.767 & \textbf{0.836} \\
-TabNet(LS+Pruning) Pre-2022 & --- & --- & --- & --- & 0.352 & 0.774 & \textbf{0.839} \\
-TabNet(LS+Pruning) Pre-2023 & --- & --- & --- & --- & --- & 0.720 & 0.513 \\
-TabNet(LS+Pruning) Pre-2024 & --- & --- & --- & --- & --- & --- & 0.447 \\
-TabNet(LS=0.1) Pre-2018 & 0.847 & 0.660 & 0.615 & 0.473 & 0.223 & 0.523 & 0.393 \\
-TabNet(LS=0.1) Pre-2019 & --- & 0.601 & 0.414 & \textbf{0.603} & \textbf{0.570} & 0.676 & 0.295 \\
-TabNet(LS=0.1) Pre-2020 & --- & --- & 0.339 & 0.367 & 0.154 & 0.523 & 0.127 \\
-TabNet(LS=0.1) Pre-2021 & --- & --- & --- & 0.440 & 0.549 & 0.518 & 0.712 \\
-TabNet(LS=0.1) Pre-2022 & --- & --- & --- & --- & 0.210 & 0.681 & 0.168 \\
-TabNet(LS=0.1) Pre-2023 & --- & --- & --- & --- & --- & 0.775 & \textbf{0.835} \\
-TabNet(LS=0.1) Pre-2024 & --- & --- & --- & --- & --- & --- & 0.404 \\
+CatBoost Pre-2018 & 0.950 & \textbf{0.851} & 0.709 & 0.476 & \textbf{0.371} & 0.861 & \textbf{0.808} \\
+CatBoost Pre-2019 & --- & 0.717 & 0.745 & 0.450 & 0.346 & 0.793 & 0.723 \\
+CatBoost Pre-2020 & --- & --- & \textbf{0.687} & 0.494 & 0.301 & \textbf{0.799} & 0.559 \\
+CatBoost Pre-2021 & --- & --- & --- & 0.455 & 0.233 & 0.756 & 0.594 \\
+CatBoost Pre-2022 & --- & --- & --- & --- & 0.559 & 0.737 & 0.564 \\
+CatBoost Pre-2023 & --- & --- & --- & --- & --- & 0.732 & 0.645 \\
+CatBoost Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{0.679} \\
+LightGBM Pre-2018 & 0.951 & 0.742 & 0.577 & 0.481 & 0.287 & 0.819 & 0.739 \\
+LightGBM Pre-2019 & --- & 0.711 & 0.592 & 0.507 & \textbf{0.360} & 0.711 & \textbf{0.764} \\
+LightGBM Pre-2020 & --- & --- & 0.648 & 0.534 & \textbf{0.544} & 0.736 & 0.605 \\
+LightGBM Pre-2021 & --- & --- & --- & 0.531 & \textbf{0.336} & 0.741 & 0.659 \\
+LightGBM Pre-2022 & --- & --- & --- & --- & 0.323 & 0.741 & 0.472 \\
+LightGBM Pre-2023 & --- & --- & --- & --- & --- & 0.641 & 0.464 \\
+LightGBM Pre-2024 & --- & --- & --- & --- & --- & --- & 0.444 \\
+Logistic (L2) Pre-2018 & \textbf{0.981} & 0.739 & 0.783 & 0.475 & 0.249 & 0.857 & 0.419 \\
+Logistic (L2) Pre-2019 & --- & \textbf{0.758} & 0.767 & 0.483 & 0.257 & \textbf{0.857} & 0.419 \\
+Logistic (L2) Pre-2020 & --- & --- & 0.683 & 0.526 & 0.270 & 0.773 & 0.419 \\
+Logistic (L2) Pre-2021 & --- & --- & --- & \textbf{0.542} & 0.249 & 0.677 & 0.430 \\
+Logistic (L2) Pre-2022 & --- & --- & --- & --- & 0.273 & 0.694 & 0.430 \\
+Logistic (L2) Pre-2023 & --- & --- & --- & --- & --- & 0.755 & 0.394 \\
+Logistic (L2) Pre-2024 & --- & --- & --- & --- & --- & --- & 0.405 \\
+Random Forest Pre-2018 & 0.914 & 0.778 & 0.592 & 0.513 & 0.338 & 0.801 & 0.664 \\
+Random Forest Pre-2019 & --- & 0.655 & 0.630 & 0.511 & 0.321 & 0.809 & 0.678 \\
+Random Forest Pre-2020 & --- & --- & 0.620 & 0.542 & 0.351 & 0.794 & \textbf{0.664} \\
+Random Forest Pre-2021 & --- & --- & --- & 0.488 & 0.333 & \textbf{0.813} & 0.628 \\
+Random Forest Pre-2022 & --- & --- & --- & --- & 0.473 & 0.808 & 0.530 \\
+Random Forest Pre-2023 & --- & --- & --- & --- & --- & \textbf{0.796} & 0.530 \\
+Random Forest Pre-2024 & --- & --- & --- & --- & --- & --- & 0.530 \\
+TabNet Pre-2018 & 0.810 & 0.767 & \textbf{0.832} & 0.419 & 0.206 & 0.643 & 0.383 \\
+TabNet Pre-2019 & --- & 0.692 & \textbf{0.841} & \textbf{0.595} & 0.287 & 0.731 & 0.587 \\
+TabNet Pre-2020 & --- & --- & 0.661 & \textbf{0.635} & 0.399 & 0.689 & 0.591 \\
+TabNet Pre-2021 & --- & --- & --- & 0.406 & 0.317 & 0.704 & 0.497 \\
+TabNet Pre-2022 & --- & --- & --- & --- & 0.392 & \textbf{0.866} & \textbf{0.712} \\
+TabNet Pre-2023 & --- & --- & --- & --- & --- & 0.774 & \textbf{0.761} \\
+TabNet Pre-2024 & --- & --- & --- & --- & --- & --- & 0.478 \\
+XGBoost Pre-2018 & 0.935 & 0.679 & 0.652 & \textbf{0.552} & 0.285 & \textbf{0.946} & 0.639 \\
+XGBoost Pre-2019 & --- & 0.679 & 0.640 & 0.568 & 0.299 & 0.845 & 0.725 \\
+XGBoost Pre-2020 & --- & --- & 0.686 & 0.540 & 0.487 & 0.793 & 0.659 \\
+XGBoost Pre-2021 & --- & --- & --- & 0.540 & 0.306 & 0.788 & \textbf{0.679} \\
+XGBoost Pre-2022 & --- & --- & --- & --- & \textbf{0.634} & 0.717 & 0.639 \\
+XGBoost Pre-2023 & --- & --- & --- & --- & --- & 0.689 & 0.597 \\
+XGBoost Pre-2024 & --- & --- & --- & --- & --- & --- & 0.530 \\
 \bottomrule
 \end{tabular}%
 }

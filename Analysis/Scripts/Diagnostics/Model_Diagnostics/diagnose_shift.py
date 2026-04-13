@@ -5,7 +5,7 @@ from collections import Counter
 
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_v3.csv"
+PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
 EARS_2025 = "Data/Panel/Intermediate/ears_2025_clean.csv"
 
 def get_distribution(values, name):

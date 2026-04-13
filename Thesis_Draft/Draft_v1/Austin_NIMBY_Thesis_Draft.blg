@@ -1,48 +1,53 @@
 This is BibTeX, Version 0.99e
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Austin_NIMBY_Thesis_Draft.aux
-I found no \citation commands---while reading file Austin_NIMBY_Thesis_Draft.aux
-I found no \bibdata command---while reading file Austin_NIMBY_Thesis_Draft.aux
-I found no \bibstyle command---while reading file Austin_NIMBY_Thesis_Draft.aux
-You've used 0 entries,
-            0 wiz_defined-function locations,
-            83 strings with 524 characters,
-and the built_in function-call counts, 0 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 0
-:= -- 0
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: plainurl.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: references.bib
+You've used 26 entries,
+            2943 wiz_defined-function locations,
+            817 strings with 10109 characters,
+and the built_in function-call counts, 12251 in all, are:
+= -- 1355
+> -- 390
+< -- 4
++ -- 139
+- -- 110
+* -- 731
+:= -- 1734
+add.period$ -- 96
+call.type$ -- 26
+change.case$ -- 133
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 0
-format.name$ -- 0
-if$ -- 0
+cite$ -- 26
+duplicate$ -- 313
+empty$ -- 1146
+format.name$ -- 110
+if$ -- 3152
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 0
-num.names$ -- 0
-pop$ -- 0
-preamble$ -- 0
-purify$ -- 0
+int.to.str$ -- 26
+missing$ -- 25
+newline$ -- 150
+num.names$ -- 52
+pop$ -- 239
+preamble$ -- 1
+purify$ -- 107
 quote$ -- 0
-skip$ -- 0
+skip$ -- 841
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 685
+swap$ -- 79
+text.length$ -- 34
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
+type$ -- 100
 warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 0
-(There were 3 error messages)
+while$ -- 96
+width$ -- 28
+write$ -- 323

@@ -1,0 +1,9 @@
+task_id: STAGE_A_IPW_SUPPORT
+outcome: development_occurrence
+horizon: site_quarter
+sample: parcel_quarter_panel
+feature_view: stage_a_hazard
+outputs:
+  - propensity_scores
+  - stabilized_ipw_weights
+  - weighted_vs_unweighted_stage_c_comparison

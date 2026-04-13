@@ -38,7 +38,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 
 ZONING_CSV = os.path.join(DATA, "Zoning_Cases", "Processed_Data", "enriched_zoning_data_updated.csv")
 PET_CSV = os.path.join(DATA, "Protest_Petitions", "Backfilled", "petition_summary_backfilled.csv")
-PANEL_CSV = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_CSV = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 
 def extract_tcads(val):
     if pd.isna(val) or val == '[]': return []
@@ -91,7 +91,7 @@ def analyze_did():
     print(f"Identified {len(target_tcads)} unique parcels involved in APPROVED zoning cases.")
     
     # 3. Read Panel Data in chunks and extract relevant traces
-    # Property_Year_Panel_v3 schema: standardized_tcad_id, year, imprv_val, market_value
+    # Property_Year_Panel_Enriched schema: standardized_tcad_id, year, imprv_val, market_value
     print("Scanning panel database (this may take a minute)...")
     
     chunksize = 1000000

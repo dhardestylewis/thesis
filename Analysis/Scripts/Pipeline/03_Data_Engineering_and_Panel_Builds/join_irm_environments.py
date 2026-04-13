@@ -18,7 +18,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 PROJECT_DIR = r"c:\Users\dhl\data\thesis\thesis"
-PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_PATH = os.path.join(PROJECT_DIR, "Data", "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 EVENTS_PATH = os.path.join(PROJECT_DIR, "Data", "Zoning_Cases", "Processed_Data", "multi_parcel_closed_2018_2025.csv")
 OUT_DIR = os.path.join(PROJECT_DIR, "Analysis", "Results")
 

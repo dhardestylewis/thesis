@@ -24,7 +24,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 ZONING_CSV = os.path.join(DATA, "Zoning_Cases", "Processed_Data", "enriched_zoning_data_updated.csv")
 PET_SUMMARY = os.path.join(DATA, "Protest_Petitions", "petition_summary_from_pdf.csv")
 PET_SIGNERS = os.path.join(DATA, "Protest_Petitions", "petition_signers_from_pdf.csv")
-PANEL_CSV = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_CSV = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 
 def run_backfill():
     print("=== DEDUCING NON-PROTESTING PROPERTIES ===")

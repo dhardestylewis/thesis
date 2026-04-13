@@ -47,7 +47,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 
 ZONING_CSV = os.path.join(DATA, "Zoning_Cases", "Processed_Data", "enriched_zoning_data_updated.csv")
 PET_CSV = os.path.join(DATA, "Protest_Petitions", "Backfilled", "petition_summary_backfilled.csv")
-PANEL_CSV = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_v3.csv")
+PANEL_CSV = os.path.join(DATA, "Panel", "Output", "Property_Year_Panel_Enriched.csv")
 
 def classify_use(use):
     if pd.isna(use): return 'Unknown'

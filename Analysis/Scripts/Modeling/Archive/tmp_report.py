@@ -2,7 +2,7 @@ import pandas as pd
 from catboost import CatBoostClassifier
 from sklearn.metrics import classification_report
 
-df = pd.read_csv(r"C:\Users\dhl\data\thesis\thesis\Data\Panel\Output\Property_Year_Panel_v3.csv", low_memory=False, usecols=['property_type_code', 'improvement_market_value', 'land_market_value', 'deed_acreage', 'year_built'])
+df = pd.read_csv(r"C:\Users\dhl\data\thesis\thesis\Data\Panel\Output\Property_Year_Panel_Enriched.csv", low_memory=False, usecols=['property_type_code', 'improvement_market_value', 'land_market_value', 'deed_acreage', 'year_built'])
 
 def define_archetypes(prop_type):
     if pd.isna(prop_type): return "Minor_Infill"

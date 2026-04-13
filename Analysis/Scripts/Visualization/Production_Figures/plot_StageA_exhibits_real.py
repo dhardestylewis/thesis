@@ -33,7 +33,7 @@ def generate_exhibits():
 
     # 2. Extract Latitude/Longitude and events efficiently
     print("    Loading spatial coordinates and calculating events...")
-    panel_geo_path = os.path.join(ROOT, 'Data', 'Panel', 'Output', 'Property_Year_Panel_v3.csv')
+    panel_geo_path = os.path.join(ROOT, 'Data', 'Panel', 'Output', 'Property_Year_Panel_Enriched.csv')
     case_tcad_path = os.path.join(ROOT, 'Data', 'Warehouse_As_Of', 'H0_Filing_Master_Enriched.csv')
     
     panel_geo = pd.read_csv(panel_geo_path, usecols=['standardized_tcad_id', 'year', 'latitude', 'longitude'])

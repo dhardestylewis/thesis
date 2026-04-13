@@ -1,0 +1,16 @@
+{
+    "metricHeadlinePRAUC": {
+        "value": "0.834",
+        "task_id": "STAGE_C_FILING_MAIN",
+        "split_id": "TEMP_OOD_2023_MAIN",
+        "model_family": "CatBoost",
+        "calibration_method": "none",
+        "source": "c:\\Users\\dhl\\data\\thesis\\thesis\\registries\\prediction_registry.parquet"
+    },
+    "metricLabelFidelity": {
+        "value": "93.6%",
+        "task_id": "LABEL_AUDIT_MAIN",
+        "split_id": "FULL_UNIVERSE",
+        "description": "Agreement between v1 reconstructed and v3 hand-validated subset"
+    }
+}

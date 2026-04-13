@@ -1,0 +1,16 @@
+clusters:
+  Neighborhood Wealth:
+    - appraisal_district_id
+    - county_id
+    - tax_year
+  Parcel Scale:
+    - gross_site_area_acres
+    - delta_min_lot_sqft
+  Zoning Delta:
+    - delta_max_height_ft
+    - delta_max_far
+    - delta_max_bldg_cov_pct
+  Location:
+    - latitude
+    - longitude
+    - council_district_x
