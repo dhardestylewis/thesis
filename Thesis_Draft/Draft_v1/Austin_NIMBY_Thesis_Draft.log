@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 11:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 11:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1336,13 +1336,13 @@ File: Figures/Chapter4/fig_ood_seed_variance.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/Chapter4/fig_ood_seed_variance.pdf  used on in
 put line 1056.
 (pdftex.def)             Requested size: 469.75502pt x 158.39404pt.
-<Figures/Chapter4/fig_all_stages_seed.pdf, id=2617, 1289.29678pt x 723.71294pt>
-
+<Figures/Chapter4/fig_all_stages_seed.pdf, id=2617, 1289.29678pt x 1085.06294pt
+>
 File: Figures/Chapter4/fig_all_stages_seed.pdf Graphic file (type pdf)
 <use Figures/Chapter4/fig_all_stages_seed.pdf>
 Package pdftex.def Info: Figures/Chapter4/fig_all_stages_seed.pdf  used on inpu
 t line 1064.
-(pdftex.def)             Requested size: 469.75502pt x 263.6837pt.
+(pdftex.def)             Requested size: 469.75502pt x 395.34102pt.
  [64 <./Figures/Chapter4/fig_ood_seed_variance.pdf>]
 <Figures/Chapter4/fig_stage_b_seed.pdf, id=2703, 1433.04991pt x 402.47275pt>
 File: Figures/Chapter4/fig_stage_b_seed.pdf Graphic file (type pdf)
@@ -1350,16 +1350,17 @@ File: Figures/Chapter4/fig_stage_b_seed.pdf Graphic file (type pdf)
 Package pdftex.def Info: Figures/Chapter4/fig_stage_b_seed.pdf  used on input l
 ine 1072.
 (pdftex.def)             Requested size: 469.75502pt x 131.93207pt.
-<Figures/Chapter4/fig_stage_b_perclass.pdf, id=2704, 1433.91643pt x 369.84799pt
+
+[65 <./Figures/Chapter4/fig_all_stages_seed.pdf>]
+<Figures/Chapter4/fig_stage_b_perclass.pdf, id=2824, 1433.91643pt x 369.84799pt
 >
 File: Figures/Chapter4/fig_stage_b_perclass.pdf Graphic file (type pdf)
 <use Figures/Chapter4/fig_stage_b_perclass.pdf>
 Package pdftex.def Info: Figures/Chapter4/fig_stage_b_perclass.pdf  used on inp
 ut line 1079.
 (pdftex.def)             Requested size: 469.75502pt x 121.15855pt.
-
-[65 <./Figures/Chapter4/fig_all_stages_seed.pdf> <./Figures/Chapter4/fig_stage_
-b_seed.pdf>] [66 <./Figures/Chapter4/fig_stage_b_perclass.pdf>]
+ [66 <./Figures/Chapter4/fig_stage_b_seed.pdf> <./Figures/Chapter4/fig_stage_b_
+perclass.pdf>]
 (Austin_NIMBY_Thesis_Draft.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -1417,9 +1418,9 @@ eX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX
 nts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/ty
 pe1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (66 pages, 45086886 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (66 pages, 45095059 bytes).
 PDF statistics:
- 3131 PDF objects out of 3580 (max. 8388607)
+ 3144 PDF objects out of 3580 (max. 8388607)
  209 named destinations out of 1000 (max. 500000)
  54873 words of extra memory for PDF output out of 61914 (max. 10000000)
 
