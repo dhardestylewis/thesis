@@ -1057,6 +1057,14 @@ H3 (Pre-Council) & Deep Surrogate & $0.451 \pm 0.043$ & $0.863 \pm 0.029$ & $0.0
     \caption[Seed Variance Interaction with OOD Offset]{Seed Variance $\times$ OOD Offset Interaction: PR-AUC mean and confidence bands ($\pm 1\sigma$, $\pm 2\sigma$) across 10 seeds and 3 training vintages. The widening bands confirm that model instability compounds with deployment distance.}
     \label{fig:ood_seed_variance}
 \end{figure}
+\noindent Finally, to confirm that seed stability is not unique to Stage~C, Figure~\ref{fig:all_stages_seed} extends the multi-seed audit across all binary modeling stages. Stage~A (Development Occurrence Hazard) exhibits even tighter seed variance than Stage~C across all architectures, confirming that the stochastic stability property is a structural characteristic of the administrative feature space rather than an artifact of the opposition prediction task.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Chapter4/fig_all_stages_seed.pdf}
+    \caption[Cross-Stage Seed Stability]{Cross-Stage Multi-Seed Stability: PR-AUC, ROC-AUC, and Brier Score distributions across 10 seeds and 4 architectures for both Stage~A (Development Occurrence) and Stage~C (Opposition Prediction). Narrow interquartile ranges across both stages confirm that seed stability is a structural property of the feature space.}
+    \label{fig:all_stages_seed}
+\end{figure}
 
 \end{document}
 
