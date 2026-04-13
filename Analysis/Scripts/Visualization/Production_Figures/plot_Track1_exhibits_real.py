@@ -198,10 +198,12 @@ def plot_all_track1_exhibits():
                 if not df_drift.empty:
                     for anchor in df_drift['Anchor'].unique():
                         sub = df_drift[df_drift['Anchor'] == anchor]
-                        plt.plot(sub['Offset'], sub['PR-AUC'], marker='o', label=f'Anchor < {anchor}')
-                        # True baseline for this anchor is the mean of the training set
-                        anchor_baseline = df_gt[df_gt['year'] < anchor][target].mean()
-                        plt.axhline(anchor_baseline, color='gray', linestyle=':', alpha=0.5)
+                        p = plt.plot(sub['Offset'], sub['PR-AUC'], marker='o', label=f'Anchor < {anchor}')
+                        color = p[0].get_color()
+                        
+                        # True baseline for each offset (test year incidence)
+                        baseline_vals = [df_gt[df_gt['year'] == (anchor + off)][target].mean() for off in sub['Offset']]
+                        plt.plot(sub['Offset'], baseline_vals, marker='x', linestyle=':', color=color, alpha=0.6, label=f'Baseline (Anchor < {anchor})')
 
                     overall_baseline = df_gt[target].mean()
                     plt.axhline(y=overall_baseline, color='red', linestyle='--', alpha=0.7, label=f'Pooled Baseline ({overall_baseline:.3f})')

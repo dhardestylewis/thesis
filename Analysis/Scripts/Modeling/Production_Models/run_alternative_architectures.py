@@ -16,6 +16,7 @@ from imblearn.pipeline import Pipeline as ImbPipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from lightgbm import LGBMClassifier
+from xgboost import XGBClassifier
 try:
     from catboost import CatBoostClassifier
 except: pass
@@ -170,27 +171,40 @@ def benchmark_horizon(path, horizon_name, master_df=None):
         except Exception as e: print(f"SMOTE + {model_name} failed: {e}")
 
     # Deep Learning Benchmark (TabNet)
+    def train_tabnet(name, model, fit_kwargs):
+        try:
+            model.fit(X_train=X_tr_fit_sc, y_train=y_tr_fit, eval_set=[(X_tr_cal_sc, y_tr_cal)], **fit_kwargs)
+            preds_raw = model.predict_proba(X_test_scaled)[:, 1]
+            ece_pre = compute_ece(y_test, preds_raw)
+            # Isotonic Calibration
+            cal_preds = model.predict_proba(X_tr_cal_sc)[:, 1]
+            iso = IsotonicRegression(y_min=0, y_max=1, out_of_bounds='clip')
+            iso.fit(cal_preds, y_tr_cal)
+            preds_cal = iso.predict(preds_raw)
+            ece_post = compute_ece(y_test, preds_cal)
+            ace_post = compute_ace(y_test, preds_cal)
+            results.append({
+                'Horizon': horizon_name, 'Architecture': name,
+                'PR-AUC': average_precision_score(y_test, preds_cal),
+                'ROC-AUC': roc_auc_score(y_test, preds_cal),
+                'ECE (Raw)': ece_pre,
+                'ECE (Cal)': ece_post,
+                'ACE (Cal)': ace_post
+            })
+        except Exception as e: print(f"{name} failed: {e}")
+
+    tabnet_base = TabNetClassifier(verbose=0)
+    train_tabnet('TabNet (Base)', tabnet_base, {'patience': 20, 'max_epochs': 100})
+
     try:
-        tabnet = TabNetClassifier(verbose=0)
-        tabnet.fit(X_train=X_tr_fit_sc, y_train=y_tr_fit, eval_set=[(X_tr_cal_sc, y_tr_cal)], patience=20, max_epochs=100)
-        preds_tabnet_raw = tabnet.predict_proba(X_test_scaled)[:, 1]
-        ece_pre_tab = compute_ece(y_test, preds_tabnet_raw)
-        # Isotonic Calibration
-        cal_preds_tab = tabnet.predict_proba(X_tr_cal_sc)[:, 1]
-        iso_tab = IsotonicRegression(y_min=0, y_max=1, out_of_bounds='clip')
-        iso_tab.fit(cal_preds_tab, y_tr_cal)
-        preds_tabnet_cal = iso_tab.predict(preds_tabnet_raw)
-        ece_post_tab = compute_ece(y_test, preds_tabnet_cal)
-        ace_post_tab = compute_ace(y_test, preds_tabnet_cal)
-        results.append({
-            'Horizon': horizon_name, 'Architecture': 'TabNet',
-            'PR-AUC': average_precision_score(y_test, preds_tabnet_cal),
-            'ROC-AUC': roc_auc_score(y_test, preds_tabnet_cal),
-            'ECE (Raw)': ece_pre_tab,
-            'ECE (Cal)': ece_post_tab,
-            'ACE (Cal)': ace_post_tab
-        })
-    except Exception as e: print(f"TabNet failed: {e}")
+        from torch.nn import CrossEntropyLoss
+        tabnet_ls = TabNetClassifier(verbose=0)
+        train_tabnet('TabNet (Label Smoothing 0.1)', tabnet_ls, 
+                     {'patience': 20, 'max_epochs': 100, 'loss_fn': CrossEntropyLoss(label_smoothing=0.1)})
+    except Exception as e: print("Label smoothing setup failed:", e)
+
+    tabnet_wd = TabNetClassifier(verbose=0, optimizer_params={'weight_decay': 1e-2})
+    train_tabnet('TabNet (Heavy L2 Reg)', tabnet_wd, {'patience': 20, 'max_epochs': 100})
 
     return results
 

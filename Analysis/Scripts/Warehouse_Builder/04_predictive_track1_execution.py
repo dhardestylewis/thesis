@@ -50,7 +50,7 @@ def execute_track1():
     # Target variable sourced from TRUE Austin historical petition validations
     df['organized_opposition'] = df['is_protested'].fillna(0).astype(int)
     
-    features = [
+    features = ['bisg_white_200ft', 'bisg_black_200ft', 'bisg_asian_200ft', 'bisg_hispanic_200ft', 'bisg_white_nbr', 'bisg_black_nbr', 'bisg_asian_nbr', 'bisg_hispanic_nbr', 
         'acreage', 'frontage', 'corner_lot_flag', 'council_district',
         'median_appraised_value', 'mean_appraised_value', 'std_appraised_value',
         'median_sqft', 'owner_occupancy_share', 'median_structure_age',

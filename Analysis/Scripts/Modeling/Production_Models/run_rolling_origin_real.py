@@ -28,8 +28,8 @@ def run_rolling_origin_drift():
     y = df['is_protested'].values
     years = df['year'].values
 
-    anchors = [2018, 2019, 2020, 2021, 2022]
-    offsets = [0, 1, 2, 3] # T+0 to T+3
+    anchors = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    eval_years = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
     
     drift_results = []
     
@@ -44,9 +44,12 @@ def run_rolling_origin_drift():
         model = CatBoostClassifier(iterations=200, depth=6, learning_rate=0.05, verbose=0, auto_class_weights='Balanced', random_seed=42)
         model.fit(X_train, y_train)
         
-        for offset in offsets:
-            test_year = anchor + offset
+        for test_year in eval_years:
+            if test_year < anchor:
+                continue
+                
             test_mask = years == test_year
+            offset = test_year - anchor
             
             if test_mask.sum() < 5 or y[test_mask].sum() < 1:
                 prauc = np.nan
@@ -61,11 +64,14 @@ def run_rolling_origin_drift():
                 'Offset': f"T+{offset}",
                 'PR-AUC': round(prauc, 4) if not np.isnan(prauc) else None
             })
-            print(f"    -> Evaluated on {test_year} (T+{offset}): PR-AUC = {prauc:.4f}")
+            if not np.isnan(prauc):
+                print(f"    -> Evaluated on {test_year} (T+{offset}): PR-AUC = {prauc:.4f}")
+            else:
+                print(f"    -> Evaluated on {test_year} (T+{offset}): PR-AUC = NaN")
 
     # Generate Pivot Table for LaTeX
     results_df = pd.DataFrame(drift_results)
-    pivot = results_df.pivot(index='Anchor', columns='Offset', values='PR-AUC')
+    pivot = results_df.pivot(index='Anchor', columns='Evaluate_Year', values='PR-AUC')
     
     # Save to JSON
     results_df.to_json(os.path.join(OUT_DIR, "rolling_origin_drift.json"), orient='records', indent=2)
@@ -74,21 +80,25 @@ def run_rolling_origin_drift():
     tex_lines = [
         r"\begin{table}[htbp]",
         r"\centering",
-        r"\caption{\textbf{Temporal Predictive Drift: H0 Filing Performance Decay}}",
+        r"\caption{\textbf{Temporal Predictive Drift: H0 Filing Performance Decay by Forecast Year}}",
         r"\label{tab:temporal_drift}",
-        r"\begin{tabular}{lcccc}",
+        r"\resizebox{\textwidth}{!}{%",
+        r"\begin{tabular}{l" + "c"*len(eval_years) + "}",
         r"\toprule",
-        r"\textbf{Anchor Training} & \textbf{T+0 (Same Year)} & \textbf{T+1} & \textbf{T+2} & \textbf{T+3} \\",
+        r"\textbf{Anchor Training} & " + " & ".join([f"\\textbf{{{y}}}" for y in eval_years]) + r" \\",
         r"\midrule"
     ]
     
-    for idx, row in pivot.iterrows():
-        r = [f"{row[off]:.3f}" if row[off] is not None else "---" for off in ['T+0', 'T+1', 'T+2', 'T+3']]
+    for idx in [f"Pre-{a}" for a in anchors]:
+        if idx not in pivot.index: continue
+        row = pivot.loc[idx]
+        r = [f"{row[y]:.3f}" if (y in row.index and pd.notnull(row[y])) else "---" for y in eval_years]
         tex_lines.append(f"{idx} & {' & '.join(r)} \\\\")
         
     tex_lines.extend([
         r"\bottomrule",
-        r"\end{tabular}",
+        r"\end{tabular}%",
+        r"}",
         r"\end{table}"
     ])
     

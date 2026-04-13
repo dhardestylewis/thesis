@@ -198,12 +198,13 @@ def main():
     ax1.set_xticks(df_res['Horizon'])
     ax1.invert_xaxis() # 5yr on left, 1yr on right
     
-    # Plot 2: Parcel Scale % Bar
+    # Plot 2: Top Model Feature % Bar
+    top_cluster = max(ref_shares, key=ref_shares.get)
     ax2 = ax1.twinx()
-    parcel_shares = [all_shares[row['Origin']].get('Parcel Scale', 0) for _, row in df_res.iterrows()]
-    bars = ax2.bar(df_res['Horizon'], parcel_shares, width=0.4, alpha=0.3, color='#e74c3c', label='Parcel Scale Share')
-    ax2.set_ylabel('Parcel Scale Attribution Share (%)', fontsize=11, color='#c0392b', fontweight='bold')
-    ax2.set_ylim(0, 100)
+    top_shares = [all_shares[row['Origin']].get(top_cluster, 0) for _, row in df_res.iterrows()]
+    bars = ax2.bar(df_res['Horizon'], top_shares, width=0.4, alpha=0.3, color='#e74c3c', label=f'{top_cluster} Share')
+    ax2.set_ylabel(f'{top_cluster} Attribution Share (%)', fontsize=11, color='#c0392b', fontweight='bold')
+    ax2.set_ylim(0, max(top_shares)*1.5)
     ax2.tick_params(axis='y', colors='#c0392b')
     ax2.grid(False)
     

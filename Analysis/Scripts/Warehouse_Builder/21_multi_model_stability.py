@@ -37,7 +37,7 @@ def generate_multi_model_stability():
     df = cm.merge(poly, on="CASE_NUMBER").merge(h0[['case_number', 'is_protested']], left_on="CASE_NUMBER", right_on="case_number", how='left')
     df['organized_opposition'] = df['is_protested'].fillna(0).astype(int)
     
-    features = ['acreage', 'frontage', 'corner_lot_flag']
+    features = ['bisg_white_200ft', 'bisg_black_200ft', 'bisg_asian_200ft', 'bisg_hispanic_200ft', 'bisg_white_nbr', 'bisg_black_nbr', 'bisg_asian_nbr', 'bisg_hispanic_nbr', 'acreage', 'frontage', 'corner_lot_flag']
     X = df[features].fillna(0)
     y = df['organized_opposition']
     
