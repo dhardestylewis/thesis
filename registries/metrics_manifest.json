@@ -8,35 +8,74 @@
     "metricBaseRate": {
         "value": "23.0%"
     },
+    "metricBaseRateN": {
+        "value": "2,155"
+    },
     "metricHeadlinePRAUC": {
-        "value": "0.810"
+        "value": "0.820"
     },
     "metricBootstrapFiling": {
-        "value": "0.810"
+        "value": "0.820"
     },
     "metricBootstrapFilingCI": {
         "value": "[0.78, 0.84]"
     },
     "metricHeadlineECE": {
-        "value": "0.270"
+        "value": "0.208"
     },
     "metricECE": {
-        "value": "0.270"
+        "value": "0.208"
+    },
+    "metricACE": {
+        "value": "0.184"
     },
     "metricBrierScore": {
-        "value": "0.011"
+        "value": "0.012"
+    },
+    "metricMeanProbTP": {
+        "value": "0.602"
+    },
+    "metricMeanProbTN": {
+        "value": "0.008"
     },
     "metricPrecisionAtFifty": {
-        "value": "60.0%"
+        "value": "66.7%"
     },
     "metricRecallAtFifty": {
-        "value": "60.0%"
+        "value": "66.7%"
     },
     "metricTopDecileLift": {
         "value": "1.1x"
     },
+    "metricTopDecilePrecision": {
+        "value": "25.9%"
+    },
+    "metricTopDecileTP": {
+        "value": "15"
+    },
+    "metricTopDecileN": {
+        "value": "58"
+    },
     "metricLabelFidelity": {
-        "value": "91.5%"
+        "value": "99.6%"
+    },
+    "metricNDistricts": {
+        "value": "9"
+    },
+    "metricFNRGap": {
+        "value": "4.2%"
+    },
+    "metricMinDistrictPositives": {
+        "value": "8"
+    },
+    "metricMaxDistrictPositives": {
+        "value": "42"
+    },
+    "metricMedianDistrictPositives": {
+        "value": "24"
+    },
+    "metricPRAUC": {
+        "value": "0.820"
     },
     "metricRDDelay": {
         "value": "42.5"
