@@ -8,8 +8,8 @@
 \textbf{Model Class} & \textbf{Architecture} & \textbf{PR-AUC (In-Dist)} & \textbf{PR-AUC (Out-Dist 2023)} & \textbf{Calibration (ECE)} \\
 \midrule
 \textbf{Statistical} & Logistic Regression (L2) & 0.463 & 0.111 & 0.383 \\
-\textbf{Traditional ML} & Random Forest$^\dagger$ & 0.485 & \metricRFH0PRAUC{} & 0.251 \\
- & \textbf{CatBoost (Primary)}$^\dagger$ & \textbf{0.546} & \metricCBH0PRAUC{} & \textbf{0.211} \\
+\textbf{Traditional ML} & Random Forest$^\dagger$ & 0.485 & \metricRFFilingPRAUC{} & 0.251 \\
+ & \textbf{CatBoost (Primary)}$^\dagger$ & \textbf{0.546} & \metricCBFilingPRAUC{} & \textbf{0.211} \\
 \midrule
 \textbf{Deep Learning} & TabNet & 0.578 & 0.522 & 0.266 \\
  & FT-Transformer (Tokenized) & 0.612 & 0.592 & 0.188 \\
