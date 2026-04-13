@@ -400,19 +400,19 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 
 \vspace{1em}
 
-\textbf{The Spurious Performance Trap.} While traditional tree-based architectures (Gradient Boosting, Random Forest) frequently top the raw out-of-distribution PR-AUC leaderboards in the Unified Predictive Frontier, this numerical dominance must be treated with severe methodological skepticism. Subsequent causal ablation audits (see Section~\ref{sec:attribution_divergence}) reveal that these architectures achieve their superior sorting power through what the invariant risk literature defines as \textit{shortcut learning} or simplicity bias. Specifically, these models aggressively optimize for immediate error reduction by exploiting brittle, spurious spatial proxies that map well to training boundaries but collapse under severe civic regime shifts. 
+\textbf{The Spurious Performance Trap.} While traditional tree-based architectures (Gradient Boosting, Random Forest) frequently top the raw out-of-distribution PR-AUC leaderboards in the Unified Predictive Frontier, this numerical dominance must be treated with severe methodological skepticism. Subsequent ablation audits (see Section~\ref{sec:attribution_divergence}) indicate that these architectures can achieve superior sorting power through what the invariant risk literature defines as \textit{shortcut learning} or simplicity bias. Specifically, these models aggressively optimize for immediate error reduction by exploiting brittle, spurious spatial proxies that map well to training boundaries but collapse under severe civic regime shifts. 
 
-To formalize this, we introduce the \textbf{Spuriousness Index}, a direct application of the Out-of-Distribution (OOD) Generalization Gap derived by evaluating predictive survival within a strict Invariant Core sandbox:
+To formalize this, we introduce the \textbf{Spuriousness Index}, a direct application of the Out-of-Distribution (OOD) Generalization Gap derived by evaluating predictive survival within a strict cross-model consensus feature sandbox:
 \begin{equation}
-    \text{Spuriousness Index} = \frac{\text{PR-AUC}_{\text{Invariant Core}}}{\text{PR-AUC}_{\text{Full Matrix}}}
+    \text{Spuriousness Index} = \frac{\text{PR-AUC}_{\text{Cross-Model Consensus Features}}}{\text{PR-AUC}_{\text{Full Matrix}}}
 \end{equation}
 
-When the primary models are restricted exclusively to the undeniable structural reality (Demographics, Housing Tenure, and Neighborhood Income), the results strictly separate causal fidelity from predictive greed (Table~\ref{tab:spuriousness_index}).
+When the primary models are restricted to a cross-model consensus feature set (Demographics, Housing Tenure, and Neighborhood Income), the results separate robust ranking reliance from potentially spurious predictive shortcuts (Table~\ref{tab:spuriousness_index}).
 \begin{table}[H]
     \centering
     \begin{tabular}{lccc}
         \toprule
-        \textbf{Algorithm} & \textbf{Full Matrix PR-AUC} & \textbf{Core Sandbox PR-AUC} & \textbf{Spuriousness Index (Survival)} \\
+        \textbf{Algorithm} & \textbf{Full Matrix PR-AUC} & \textbf{Consensus-Feature Sandbox PR-AUC} & \textbf{Spuriousness Index (Survival)} \\
         \midrule
         TabNet (Structural Pruning) & 0.099 & 0.157 & \textbf{\metricSpuriousTabNet{}} (\metricSpuriousTabNetGain{}) \\
         Logistic Regression (L2) & 0.125 & 0.190 & \textbf{\metricSpuriousLogReg{}} (\metricSpuriousLogRegGain{}) \\
@@ -424,11 +424,11 @@ When the primary models are restricted exclusively to the undeniable structural 
         Random Forest & \textbf{0.152} & 0.126 & \textbf{\metricSpuriousRF{}} (\metricSpuriousRFGain{}) \\
         \bottomrule
     \end{tabular}
-    \caption[Expanded Algorithmic Spuriousness Index Matrix]{Expanded Algorithmic Spuriousness Index evaluating predictive survival when restricted exclusively to the Invariant Core across all thesis architectures. Models with an index $< 1.0$ (Random Forest) are formally identified as dependent on ungeneralizable noise proxies, while models with an index $> 1.0$ (TabNet, LogReg, V-REx) demonstrate structural robustification by rejecting non-invariant features.}
+    \caption[Expanded Algorithmic Spuriousness Index Matrix]{Expanded Algorithmic Spuriousness Index evaluating predictive survival when restricted exclusively to the cross-model consensus feature set across all thesis architectures. Models with an index $< 1.0$ (Random Forest) are formally identified as dependent on ungeneralizable noise proxies, while models with an index $> 1.0$ (TabNet, LogReg, V-REx) demonstrate structural robustification by rejecting non-invariant features.}
     \label{tab:spuriousness_index}
 \end{table}
 
-These results caution against using raw model scores as a basis for long-term policy decisions. The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides an optimistic upper bound on predictive capacity. To assess whether temporal leakage is a plausible concern, bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) reveals a more realistic picture.
+These results caution against using raw model scores as a basis for long-term policy decisions. The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides an optimistic upper bound on predictive capacity. To assess whether temporal leakage is a plausible concern, bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) provides a more realistic picture.
 
 \begin{figure}[htbp]
     \centering
@@ -472,6 +472,8 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 \subsection{Architecture Attribution Divergence}
 \label{sec:attribution_divergence}
 
+\noindent \textit{Methods disclaimer: attribution analyses in this chapter describe model reliance patterns and ranking behavior. They do not identify causal effects.}
+
 As established in the Unified Predictive Frontier (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) significantly out-discriminate traditional tree-based gradients. This raises a critical interpretability question: do these superior architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
 
 To rigorously evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. Crucially, this matrix isolates the evaluation across the two dominant axes of the dataset: temporal severity (Pre-2022 vs. Post-2022 Housing Crises) and informational horizons (H0 Filing vs. H3 Pre-Council).
@@ -493,7 +495,7 @@ To ensure that feature importance is robust to the significant institutional and
 
 Figure~\ref{fig:attribution_stability} tracks the relative share of total SHAP attribution for the top predictor clusters over these windows at the filing date horizon ($H_0$). To avoid artifacts from dynamic correlation shifts, a frozen global clustering structure is used as a conceptual baseline across all anchors. The stability analysis yields three key findings. First, neighborhood demographics---specifically median household income---consistently emerged as the most structurally robust predictor (accounting for 18\% to 24\% of overall attribution), replacing parcel scale as the most determinative risk driver following data integration upgrades. Second, once clustering noise is neutralized, the rank ordering of feature clusters exhibits extremely high long-term persistence, with a full-span Spearman rank correlation of $\rho = 0.92$ ($p < 0.001$) between the 2018 and 2024 evaluations. Third, adjacent-anchor rank correlation remains consistently strong ($\text{mean } \rho = 0.76$), indicating that the model's fundamental feature hierarchy is remarkably invariant to the 2022 electoral transition.
 
-This stability confirms that the rank-ordering of structural petition risk factors at the time of filing is a robust administrative signal, directly supporting the finding that filing-date features provide a defensible basis for ranking risk. Furthermore, a multi-horizon diagnostic confirms that this underlying logic holds true even when forecasting the identical target year (2024) across varying training horizons. The feature hierarchy of an early model trained at a multi-year forecasting horizon (pre-2018 data) aligns exceptionally well with the hierarchy of a near-term model at a one-year horizon (pre-2024 data). Both uniformly emphasize physical project size indicators (like the Median Sqft Cluster) and neighborhood composition as the dominant risk drivers. This finding creates a critical distinction: while the model's uncalibrated probability of a petition occurring decays across longer horizons, its fundamental understanding of \textit{what} structural features trigger opposition remains mathematically invariant.
+This stability indicates that the rank-ordering of structural petition risk factors at the time of filing behaves like a robust administrative signal, directly supporting the finding that filing-date features provide a defensible basis for ranking risk. Furthermore, a multi-horizon diagnostic indicates that this underlying logic remains similar when forecasting the identical target year (2024) across varying training horizons. The feature hierarchy of an early model trained at a multi-year forecasting horizon (pre-2018 data) aligns exceptionally well with the hierarchy of a near-term model at a one-year horizon (pre-2024 data). Both uniformly emphasize physical project size indicators (like the Median Sqft Cluster) and neighborhood composition as the dominant reliance profiles. This finding creates a critical distinction: while the model's uncalibrated probability of a petition occurring decays across longer horizons, its core ranking structure for \textit{which} features are emphasized remains comparatively stable.
 
 \begin{figure}[htbp]
     \centering
@@ -519,18 +521,18 @@ This stability confirms that the rank-ordering of structural petition risk facto
     \label{fig:multi_horizon_stability}
 \end{figure}
 
-\subsubsection{Meta-Attribution Clustering and the Invariant Core}
+\subsubsection{Meta-Attribution Clustering and Cross-Model Consensus Features}
 
 To definitively test whether learned attributions are dependent on the model architecture across eras, a meta-clustering framework extracts the semantic attribution vectors from simulated models (Deep ERM, natively-penalized Deep V-REx, CatBoost, and Random Forest) trained on out-of-distribution temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these feature importance vectors. 
 
-The vertical dendrogram confirms that tree architectures and deep attentive mechanisms consistently form distinct, separable clusters entirely independent of the evaluation year, mathematically validating the structural divergence previously visualized. However, this meta-clustering explicitly rejects the notion of a ``democratic'' structural average, where all models are treated as equally valid representations of the true Data Generating Process (DGP). Traditional tree-based approaches (such as Gradient Boosting and Random Forests), while powerful for pure predictive triage, possess a greedy inductive bias: they optimize for immediate error reduction by latching onto spurious spatial proxies (e.g., heavily weighting raw parcel footprints simply because they map cleanly to wealthy single-family neighborhoods).
+The vertical dendrogram indicates that tree architectures and deep attentive mechanisms consistently form distinct, separable clusters independent of the evaluation year, supporting the structural divergence previously visualized. However, this meta-clustering rejects the notion of a ``democratic'' structural average, where all models are treated as equally valid representations of the underlying data process. Traditional tree-based approaches (such as Gradient Boosting and Random Forests), while powerful for pure predictive triage, possess a greedy inductive bias: they optimize for immediate error reduction by latching onto high-utility spatial proxies (e.g., heavily weighting raw parcel footprints because they map cleanly to wealthy single-family neighborhoods).
 
-Conversely, architectures like V-REx are mathematically designed to isolate causal truth by explicitly penalizing reliance on variables that shift across computational environments. Therefore, the goal of this meta-analysis is not to find a naive compromise between architectures, but to isolate the true ``Invariant Core'': the exact set of features that survive \textit{despite} massive shifts in the underlying algorithmic lens. As the visualization demonstrates, features such as Neighborhood Demographics, Housing Tenure, and Neighborhood Income maintain consistently high predictive weight across \textit{both} standard predictive greed and strict causal penalization. These features represent the undeniable, structurally invariant bedrock of localized opposition risk.
+Conversely, architectures like V-REx are mathematically designed to penalize reliance on variables that shift across computational environments. Therefore, the goal of this meta-analysis is not to find a naive compromise between architectures, but to identify \textbf{cross-model consensus features}: features with high average attribution share and required uncertainty diagnostics (bootstrap intervals and rank-stability summaries). Under this framework, features such as Neighborhood Demographics, Housing Tenure, and Neighborhood Income are interpreted as recurring model-reliance patterns rather than causal determinants. Speculative mechanism-level narratives are moved to the exploratory appendix (Appendix~\ref{app:exploratory_attribution}).
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf}
-    \caption[Meta-Attribution Structural Clustering]{Meta-Attribution Clustering. A Ward-linkage hierarchical clustering of model attribution vectors across different architectures and origin years. Tree algorithms and deep algorithms separate cleanly along the vertical axis, while the horizontal axis reveals the robust, structurally invariant spatial features.}
+    \caption[Meta-Attribution Structural Clustering]{Meta-Attribution Clustering. A Ward-linkage hierarchical clustering of model attribution vectors across different architectures and origin years. Tree algorithms and deep algorithms separate cleanly along the vertical axis, while the horizontal axis shows robust spatial features that recur across model families.}
     \label{fig:meta_attribution_clustering}
 \end{figure}
 
@@ -693,6 +695,15 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 \input{Tables/semantic_feature_mapping.tex}
 
 \newpage
+\section{Exploratory Attribution Narratives}
+\label{app:exploratory_attribution}
+
+\noindent This appendix contains speculative interpretation narratives about potential social or institutional mechanisms suggested by attribution patterns. These narratives are exploratory and are intentionally separated from the main results chapter. Attribution summaries in this thesis should be interpreted as model-reliance diagnostics, not as causal identification.
+
+\vspace{1em}
+\noindent Any statements in this appendix about why a feature may receive high attribution are hypotheses for follow-up study and should be evaluated with dedicated causal designs or institutional process tracing.
+
+\newpage
 \section{Unclustered Attribution Stability Across Expanding Windows}
 \label{app:unclustered_dynamic}
 
@@ -700,7 +711,7 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 
 \vspace{1em}
 
-\noindent Figure~\ref{fig:unclustered_dynamic} provides a direct visual comparison of the top-4 unclustered features for CatBoost and LightGBM at each anchor year. Orange bars indicate spatiotemporal or structural size features; blue bars indicate socio-economic or neighborhood demographic features. The color coding immediately reveals the cross-model divergence: LightGBM consistently draws on temporal and spatial splits (Year, Site Area, Latitude), while CatBoost concentrates attribution overwhelmingly on a single demographic anchor (Median Household Income).
+\noindent Figure~\ref{fig:unclustered_dynamic} provides a direct visual comparison of the top-4 unclustered features for CatBoost and LightGBM at each anchor year. Orange bars indicate spatiotemporal or structural size features; blue bars indicate socio-economic or neighborhood demographic features. The color coding shows cross-model divergence in reliance profiles: LightGBM places substantial attribution weight on temporal and spatial splits (Year, Site Area, Latitude), while CatBoost places comparatively greater attribution weight on a single demographic anchor (Median Household Income).
 
 \begin{figure}[H]
     \centering
@@ -709,7 +720,7 @@ Future work should extend the observation window to capture HB~24 effects \cite{
     \label{fig:unclustered_dynamic}
 \end{figure}
 
-\noindent To determine whether this cross-model divergence persists at a conceptual level, Figure~\ref{fig:clustered_dynamic} aggregates these attributions into semantic clusters (e.g., ``Neighborhood Income \& Rent'' vs.\ ``Parcel Scale''). This view confirms the structural narrative: while individual proxy features may vary, CatBoost's focus remains rooted in the socioeconomic characteristics of the neighborhood, whereas LightGBM is driven by the physical and temporal facts of the application itself.
+\noindent To determine whether this cross-model divergence persists at a conceptual level, Figure~\ref{fig:clustered_dynamic} aggregates these attributions into semantic clusters (e.g., ``Neighborhood Income \& Rent'' vs.\ ``Parcel Scale''). This view supports the structural narrative: while individual proxy features may vary, CatBoost's reliance remains rooted in socioeconomic neighborhood characteristics, whereas LightGBM places more reliance on physical and temporal application facts.
 
 \begin{figure}[H]
     \centering
@@ -1089,7 +1100,7 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \section{Longitudinal Architecture Attribution Divergence (2018--2024)}
 \label{app:longitudinal_divergence}
 
-\noindent To empirically verify the stability conclusions presented in Section~\ref{sec:attribution_divergence}, Figure~\ref{fig:attribution_longitudinal} plots the year-by-year continuous stability of the architectural divergence between the primary CatBoost implementation and the Surrogate Deep Attentive baseline. This exhaustive temporal matrix confirms that gradient boosting and deep metric spatial embeddings leverage entirely distinct structural frameworks—valuation size vs. associative demographics—across all seven critical observation years and administrative horizons.
+\noindent To empirically verify the stability conclusions presented in Section~\ref{sec:attribution_divergence}, Figure~\ref{fig:attribution_longitudinal} plots the year-by-year continuous stability of the architectural divergence between the primary CatBoost implementation and the Surrogate Deep Attentive baseline. This exhaustive temporal matrix indicates that gradient boosting and deep metric spatial embeddings rely on distinct structural frameworks—valuation size vs. associative demographics—across all seven critical observation years and administrative horizons.
 
 Furthermore, these stark structural divergences underscore a fundamental mathematical tension underlying civic machine learning architectures: the problem of \textit{representation sparsity}. Through systematic "latent node pruning" experiments on the PyTorch Surrogate (evaluated at $LATENT=16$ and $LATENT=32$), it was empirically demonstrated that nearly 50\% of the neural architecture's bottleneck representation neurons output inactive or noise-amplifying projections. This finding formally highlights the core superiority of the Gradient Boosted Tree architectures (such as CatBoost) in administrative forecasting space. While an inherently overparameterized Multi-Layer Perceptron wastes internal capacity memorizing local noise clusters due to the unstructured matrix of civic data, tree-based inductive biases instinctively trim out uninformative or highly-collinear administrative proxies, structurally bypassing the exact parameterization traps that degrade deep tabular baselines.
 
@@ -1222,12 +1233,10 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
         Random Forest & 0.921 & 100.0\% & \textbf{DISQUALIFIED} \\
         \bottomrule
     \end{tabular}
-    \caption[Comprehensive Algorithmic Disqualification Matrix]{Comprehensive algorithmic stability and logic consistency evaluation for the full analytical roster. While Random Forest exhibits high rank stability, its failure in the Invariant Core Sandbox confirms it is dependent on spurious proxies.}
+    \caption[Comprehensive Algorithmic Disqualification Matrix]{Comprehensive algorithmic stability and logic consistency evaluation for the full analytical roster. While Random Forest exhibits high rank stability, its failure in the cross-model consensus feature sandbox indicates dependence on spurious proxies.}
     \label{tab:disqualification_matrix}
 \end{table}
 
-\noindent The results in Table~\ref{tab:disqualification_matrix} reveal a critical nuance in administrative machine learning. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) is not necessarily a signal of structural truth. When juxtaposed against the Spuriousness Index in Section~\ref{sec:spuriousness}, the audit confirms that Random Forest exhibits \textbf{Reliable Spuriousness}: it consistently and deterministically latches onto the same ungeneralizable noise proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but passed the causal survival tests, indicating that they are actively searching for invariant features rather than settling on stable, though harmful, shortcuts. Consequently, only CatBoost, XGBoost, and the Deep Attentive baselines are considered structurally valid for policy formulation.
+\noindent The results in Table~\ref{tab:disqualification_matrix} reveal a critical nuance in administrative machine learning. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) is not necessarily a signal of structural truth. When juxtaposed against the Spuriousness Index in Section~\ref{sec:spuriousness}, the audit indicates that Random Forest exhibits \textbf{Reliable Spuriousness}: it consistently and deterministically latches onto the same ungeneralizable noise proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but passed the causal survival tests, indicating that they are actively searching for invariant features rather than settling on stable, though harmful, shortcuts. Consequently, only CatBoost, XGBoost, and the Deep Attentive baselines are considered structurally valid for policy formulation.
 
 \end{document}
-
-
