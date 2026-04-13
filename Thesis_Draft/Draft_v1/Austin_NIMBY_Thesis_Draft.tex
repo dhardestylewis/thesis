@@ -38,7 +38,7 @@ Columbia University}
 \maketitle
 
 \begin{abstract}
-This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from a legally certified measured threshold-crossing petition. Working from 7,074 discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify portable calibrated probabilities for institutional decision-making.
+This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from a legally certified threshold-crossing petition. Working from 7,074 discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after isotonic calibration. Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The thesis is organized around one canonical Stage~C predictive pipeline, with Stage~A used only for selection correction and Stage~D retained as a descriptive audit.
 \end{abstract}
 
 \newpage
@@ -71,16 +71,16 @@ The outcome under study is specific. Under the pre-2025 framework of Texas Local
 
 To answer this question, the research uses a staged workflow but limits headline inference to Stage~C. The chapter flow is intentionally compact: Introduction; outcome definition and as-of information setup; Stage~C primary results; limitations; and brief references to supporting analyses in appendices.
 
-The staged workflow includes four components:
+The workflow is intentionally asymmetric:
 
 \begin{itemize}
-    \item \textbf{Stage A---Development Occurrence:} Where housing development proposals are likely to emerge, modeled as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels.
-    \item \textbf{Stage B---Project Type and Scale:} Conditional on a development event, the expected project form and unit count.
-    \item \textbf{Stage C---Formal Protest Petition:} Conditional on a project entering the formal public process, the probability that a measured threshold-crossing petition is filed. \textit{This is the core of the thesis.}
-    \item \textbf{Stage D---Administrative Audit:} Descriptive documentation of structural data limits and high pre-council withdrawal among protested cases.
+    \item \textbf{Stage A---Selection correction sidecar:} estimates development occurrence only to construct inverse-probability weights for Stage~C.
+    \item \textbf{Stage C---Canonical predictive pipeline:} predicts whether a measured threshold-crossing petition is filed at the filing-date horizon. \textit{This is the core of the thesis.}
+    \item \textbf{Interpretation sidecar:} documents attribution stability and meta-attribution patterns for audit purposes.
+    \item \textbf{Stage D---Descriptive audit:} reports downstream attrition and missingness descriptively, without treating it as a coequal prediction target.
 \end{itemize}
 
-Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it produces calibration sufficient for relative risk ranking.
+Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. The interpretation sidecar is used only to diagnose which feature families remain stable across model classes. Stage~D documents downstream attrition after filing. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it produces calibration sufficient for relative risk ranking.
 
 The thesis also includes two exploratory analyses of downstream institutional dynamics. A regression discontinuity design at the 20\% petition threshold estimates the processing-time consequence of crossing the statutory margin. Descriptive evidence from the 2022 council electoral transition, in which specific districts replaced preservationist incumbents with pro-housing representatives, examines whether petition filing rates declined differentially in those districts.
 
@@ -280,11 +280,11 @@ The feature set is separated to prevent predictive models from leveraging sensit
 \subsection{Supporting Stages (Methods Support Only): Stage A, Stage B, and Stage D}
 \label{sec:supporting_stages}
 
-The predictive evaluation centers on Stage~C (Formal Protest Petition). Three supporting stages provide context and methodological inputs:
+The predictive evaluation centers on Stage~C (Formal Protest Petition). The remaining components are bounded sidecars or descriptive checks:
 
 \textbf{Stage A---Development Occurrence (IPW input only)} estimates selection into the observed filing sample and contributes inverse-probability weights used in Stage~C. Stage~A is retained as methods support in the main text; full specification and diagnostics are reported in Appendix~\ref{app:stagea}.
 
-\textbf{Stage B---Project Type and Scale (supporting context)} is treated as non-headline support. Stage~B performance tables and figures are moved to Appendix~\ref{app:stageb}.
+\textbf{Stage B---Project Type and Scale (supporting context)} is retained only as auxiliary descriptive context and is not treated as a headline predictive task.
 
 \textbf{Stage D---Administrative Audit (descriptive only)} documents structural missingness and pre-council withdrawal patterns conditional on petition filing. Stage~D is not treated as a predictive results track and is reported as a descriptive audit in Appendix~\ref{app:staged}.
 
@@ -307,9 +307,9 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
 \end{figure}
 
 \subsubsection{Exploratory Comparison of Alternative Model Classes}
-To provide context for the primary CatBoost result, the modeling framework compares standard statistical baselines against traditional machine learning (Gradient Boosting) and alternative architectures (Neural Tabular and Foundation Models). Table~\ref{tab:comprehensive_benchmark} presents this exploratory performance comparison, tracking discrimination in the out-of-distribution (post-regime shift) evaluation environment.
+To provide context for the primary CatBoost result, the modeling framework compares standard statistical baselines against traditional machine learning (Gradient Boosting) and alternative architectures (Neural Tabular and Foundation Models). Table~\ref{tab:comprehensive_benchmark} presents this bounded exploratory benchmark, which is reported for context rather than as a coequal predictive track.
 
-While \textbf{CatBoost} \cite{prokhorenkova2018catboost} serves as the primary comparison model---selected for its calibration stability (ECE = \metricECE{}) and narrowest OOD seed-variance envelope (Appendix~\ref{app:seed_stability})---the highest raw discrimination is achieved by \textbf{ExcelFormer} (0.635 PR-AUC). The comparison also evaluates \textbf{TabPFN}, a zero-shot foundation model pre-trained to perform Bayesian inference without any Austin-specific data. Its performance suggests that some predictive signal transfers to a pretrained tabular model, though this does not establish structural stability of the underlying social process. 
+While \textbf{CatBoost} \cite{prokhorenkova2018catboost} serves as the primary comparison model---selected for its calibration stability (ECE = \metricECE{}) and narrowest OOD seed-variance envelope (Appendix~\ref{app:seed_stability})---the highest raw discrimination is achieved by \textbf{ExcelFormer} (0.635 PR-AUC). The comparison also evaluates \textbf{TabPFN}, a zero-shot foundation model pre-trained to perform Bayesian inference without any Austin-specific data. Its performance suggests that some predictive signal transfers to a pretrained tabular model, though this does not establish structural stability of the underlying social process.
 
 \vspace{1em}
 \input{Tables/comprehensive_benchmark.tex}
@@ -440,12 +440,12 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
     \label{fig:shap_beeswarm}
 \end{figure}
 
-\subsection{Architecture Attribution Divergence}
+\subsection{Interpretation Sidecar: Attribution Stability and Meta-Attribution}
 \label{sec:attribution_divergence}
 
-As shown in the exploratory model comparison (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) out-discriminate traditional tree-based gradients in raw PR-AUC. This raises a critical interpretability question: do these superior architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
+As shown in the exploratory model comparison (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) can outperform traditional tree-based gradients in raw PR-AUC. This does not change the manuscript's main claim. The interpretation sidecar asks a narrower question: which feature families remain stable across model classes, and how much of the ranking signal is concentrated in a few recurring spatial and socioeconomic clusters?
 
-To rigorously evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. Crucially, this matrix isolates the evaluation across the two dominant axes of the dataset: temporal severity (Pre-2022 vs. Post-2022 Housing Crises) and informational horizons (H0 Filing vs. H3 Pre-Council).
+To evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. The matrix is used only as an audit aid: it compares attribution profiles across model classes and temporal horizons, but it is not used to claim causal identification.
 
 \begin{figure}[htbp]
     \centering
@@ -493,11 +493,11 @@ This stability suggests that the rank-ordering of petition risk predictors at th
 \subsubsection{Exploratory Meta-Attribution Analysis}
 \label{sec:attribution_divergence_meta}
 
-To definitively test whether learned attributions are dependent on the model architecture across eras, a meta-clustering framework extracts the semantic attribution vectors from simulated models (Deep ERM, natively-penalized Deep V-REx, CatBoost, and Random Forest) trained on out-of-distribution temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these feature importance vectors. 
+To test whether learned attributions are dependent on the model architecture across eras, a meta-clustering framework extracts semantic attribution vectors from models (Deep ERM, natively penalized Deep V-REx, CatBoost, and Random Forest) trained on out-of-distribution temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these feature-importance vectors.
 
-The vertical dendrogram confirms that tree architectures and deep attentive mechanisms consistently form distinct, separable clusters entirely independent of the evaluation year, mathematically validating the structural divergence previously visualized. However, this meta-clustering explicitly rejects the notion of a ``democratic'' structural average, where all models are treated as equally valid representations of the true Data Generating Process (DGP). Traditional tree-based approaches (such as Gradient Boosting and Random Forests), while powerful for pure predictive triage, possess a greedy inductive bias: they optimize for immediate error reduction by latching onto spurious spatial proxies (e.g., heavily weighting raw parcel footprints simply because they map cleanly to wealthy single-family neighborhoods).
+The vertical dendrogram suggests that tree architectures and deep attentive mechanisms form distinct, separable clusters across years. This is an interpretive audit, not a claim that one model family recovers the true data-generating process. Traditional tree-based approaches (such as Gradient Boosting and Random Forests) remain strong predictive baselines, but their higher-leverage features should be interpreted as model-specific inductive bias rather than as evidence of causal structure.
 
-Conversely, architectures like V-REx are designed to penalize reliance on variables that shift across computational environments. The goal of this meta-analysis is to identify features that remain predictively relevant across both standard and penalized specifications. As the visualization suggests, features such as Neighborhood Demographics, Housing Tenure, and Neighborhood Income maintain comparatively stable predictive weight across both standard and penalized architectures. These features appear stable across model specifications, though this stability does not constitute causal identification. Full results are reported in Appendix~\ref{app:meta_attribution}.
+Conversely, architectures like V-REx are designed to penalize reliance on variables that shift across computational environments. The goal of this meta-analysis is to identify features that remain predictively relevant across both standard and penalized specifications. As the visualization suggests, features such as Neighborhood Demographics, Housing Tenure, and Neighborhood Income maintain comparatively stable predictive weight across both standard and penalized architectures. Full results are reported in Appendix~\ref{app:meta_attribution}.
 
 \begin{figure}[htbp]
     \centering
@@ -579,7 +579,7 @@ Supplementary quasi-experimental estimates for institutional geographic overlays
 
 An exploratory event-study analysis of the HOME Initiative is reported in Appendix~\ref{app:home}. The short post-policy observation window and the absence of a clean spatial control cohort limit interpretation.
 
-An Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} using 1,186 multi-parcel geometric environments consistently rejected feature-set invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved factors play a substantial role. Full ICP results are reported in Appendix~\ref{app:icp}.
+An Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} using 1,186 multi-parcel geometric environments consistently rejected feature-set invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved factors play a substantial role. Full ICP results are reported in the supplementary appendix.
 
 \section{Qualitative Planning Context}
 \label{sec:interviews}
@@ -1242,7 +1242,7 @@ The ratio of restricted-feature PR-AUC to full-feature PR-AUC is reported as a d
 \section{Exploratory Meta-Attribution Analysis}
 \label{app:meta_attribution}
 
-\noindent To test whether learned feature attributions depend on model architecture, a meta-clustering framework extracts semantic attribution vectors from models (Deep ERM, Deep V-REx, CatBoost, and Random Forest) trained on temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these vectors.
+\noindent To test whether learned feature attributions depend on model architecture, a meta-clustering framework extracts semantic attribution vectors from models (Deep ERM, Deep V-REx, CatBoost, and Random Forest) trained on temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering_appendix} presents a Euclidean Ward-linkage hierarchical clustering of these vectors.
 
 The dendrogram confirms that tree architectures and deep attentive mechanisms consistently form distinct, separable clusters. This architectural divergence appears stable across evaluation years, suggesting that different model classes emphasize different feature regimes. However, this divergence reflects differences in inductive bias, not a determination of which features are causally relevant to petition filing. The goal of this analysis is to identify features that remain predictively relevant across both standard and penalized specifications---not to adjudicate causal structure.
 
@@ -1250,7 +1250,7 @@ The dendrogram confirms that tree architectures and deep attentive mechanisms co
     \centering
     \includegraphics[width=0.95\textwidth]{../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf}
     \caption[Meta-Attribution Analysis]{Meta-Attribution Analysis. Ward-linkage hierarchical clustering of model attribution vectors across different architectures and origin years. Tree algorithms and deep algorithms separate along the vertical axis; the horizontal axis reveals features with comparatively stable attribution weight across specifications.}
-    \label{fig:meta_attribution_clustering}
+    \label{fig:meta_attribution_clustering_appendix}
 \end{figure}
 
 \end{document}

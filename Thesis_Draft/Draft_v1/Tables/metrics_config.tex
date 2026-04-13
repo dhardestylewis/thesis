@@ -1,161 +1,82 @@
 % AUTO-GENERATED THESIS METRICS CONFIG
 % Source: reporting/final_metrics_manifest.json
-% Regenerate: python scripts/10_export_manuscript_artifacts.py
-% Each macro is traceable to a task_id, split_id, model_family, and calibration_state.
-% Primary evaluation: task_id=STAGE_C_FILING_MAIN, split_id=TEMP_OOD_2023_MAIN,
-%   model_family=CatBoost, calibration_state=isotonic_oof, seed_policy=single_seed
 
-% ============================================================
-% SAMPLE DESCRIPTORS
-% ============================================================
-\newcommand{\metricBaselineCases}{7,074}
-\newcommand{\metricBaselineParcels}{135,000}
-\newcommand{\metricBaseRate}{23.0\%}
-\newcommand{\metricBaseRateN}{1,627}
-\newcommand{\metricLabelFidelity}{99.6\%}
-
-% ============================================================
-% PRIMARY OOD PERFORMANCE (split=TEMP_OOD_2023_MAIN, model=CatBoost)
-% ============================================================
-\newcommand{\metricHeadlinePRAUC}{0.820}
-\newcommand{\metricBootstrapFiling}{0.820}
-\newcommand{\metricBootstrapFilingCI}{[0.78, 0.84]}
-% Top-decile lift (in-dist CV upper bound): 31.4\% top-decile precision / 23.0\% base = 1.37x
-\newcommand{\metricTopDecileLift}{1.37$\times$}
-\newcommand{\metricTopDecilePrecision}{31.4\%}
-\newcommand{\metricTopDecileTP}{223}
-\newcommand{\metricTopDecileN}{710}
-
-% ============================================================
-% IN-DISTRIBUTION CV UPPER BOUND (5-fold, model=CatBoost)
-% ============================================================
-\newcommand{\metricPRAUC}{0.873}
-
-% ============================================================
-% CALIBRATION (post-isotonic, filing-date horizon)
-% metricHeadlineECE: broader estimate or pre-calibration ECE
-% metricECE: post-isotonic ECE used in main-text claims (must be > 0.05 per text)
-% ============================================================
-\newcommand{\metricHeadlineECE}{0.208}
-\newcommand{\metricECE}{0.101}
-\newcommand{\metricECEBootCI}{[0.12, 0.38]}
-\newcommand{\metricACE}{0.042}
+\newcommand{\metricACE}{0.005}
+\newcommand{\metricAttritionRate}{NA}
+\newcommand{\metricBaseHazardProb}{NA}
+\newcommand{\metricBaseRate}{2.6\%}
+\newcommand{\metricBaseRateN}{17500.0\%}
+\newcommand{\metricBaselineCases}{6783}
+\newcommand{\metricBaselineParcels}{NA}
+\newcommand{\metricBootstrapFiling}{0.748}
+\newcommand{\metricBootstrapFilingCI}{NA}
 \newcommand{\metricBrierScore}{0.012}
-\newcommand{\metricCBNFilingBrier}{0.012}
-\newcommand{\metricCBFilingBrier}{0.012}
-\newcommand{\metricCalibrationSlope}{0.835}
-\newcommand{\metricPrecisionAtFifty}{66.7\%}
-\newcommand{\metricRecallAtFifty}{66.7\%}
-
-% ============================================================
-% PREDICTED PROBABILITY SEPARABILITY (in-dist CV)
-% ============================================================
-\newcommand{\metricMeanProbTP}{0.818}
-\newcommand{\metricMeanProbTN}{0.016}
-
-% ============================================================
-% SUBGROUP DIAGNOSTICS (exploratory; insufficient for formal fairness claims)
-% ============================================================
-\newcommand{\metricNDistricts}{10}
-\newcommand{\metricFNRGap}{0.00\%}
-\newcommand{\metricFPRGap}{99.79\%}
-\newcommand{\metricFPR}{1.85\%}
-\newcommand{\metricMinDistrictPositives}{34}
-\newcommand{\metricMaxDistrictPositives}{112}
-\newcommand{\metricMedianDistrictPositives}{58}
-\newcommand{\metricSensitivityFprBaseline}{99.79\%}
-\newcommand{\metricSensitivityFnrBaseline}{0.00\%}
-\newcommand{\metricSensitivityFprKNN}{99.75\%}
-\newcommand{\metricSensitivityFnrKNN}{0.00\%}
-
-% ============================================================
-% STAGE A HAZARD MODEL (support track only)
-% ============================================================
-\newcommand{\metricHazardLift}{2.4x}
-\newcommand{\metricSiteQuarterObs}{4.2 million}
-\newcommand{\metricBaseHazardProb}{$\approx 2.5 \times 10^{-5}$}
-
-% ============================================================
-% REGRESSION DISCONTINUITY (institutional context; not headline)
-% Running variable: reconstructed petition-share percentage
-% ============================================================
-\newcommand{\metricRDDelay}{42.5}
-\newcommand{\metricRDDelayWeeks}{6.1}
-\newcommand{\metricRDSE}{8.2}
-\newcommand{\metricRDCI}{[26.4, 58.6]}
-
-% ============================================================
-% 2022 ELECTORAL TRANSITION (descriptive evidence only)
-% ============================================================
-\newcommand{\metricFlipDiDCoeff}{-0.04}
-\newcommand{\metricFlipDiDPval}{0.24}
-
-% ============================================================
-% STAGE B SUPPLEMENTARY (context only)
-% ============================================================
-\newcommand{\metricStageBMaeSqft}{4,200}
-\newcommand{\metricStageBMaeUnits}{2.1}
-
-% ============================================================
-% STAGE D DESCRIPTIVE (reporting only; no predictive claims)
-% ============================================================
-\newcommand{\metricAttritionRate}{0.12}
-\newcommand{\metricUnopposedAttritionRate}{0.05}
-
-% ============================================================
-% FEATURE-RESTRICTION SURVIVAL RATIOS (exploratory; Appendix~\ref{app:spuriousness})
-% survival_ratio = restricted_feature_PR-AUC / full_feature_PR-AUC
-% ============================================================
-\newcommand{\metricSpuriousCatBoost}{0.89}
-\newcommand{\metricSpuriousLogReg}{1.52}
-\newcommand{\metricSpuriousRF}{0.82}
-\newcommand{\metricSpuriousTabNet}{1.12}
-\newcommand{\metricSpuriousXGB}{0.84}
-\newcommand{\metricSpuriousMLP}{0.87}
-\newcommand{\metricSpuriousVREx}{0.98}
-\newcommand{\metricSpuriousLGBM}{0.85}
-\newcommand{\metricSpuriousTabNetGain}{+12\%}
-\newcommand{\metricSpuriousLogRegGain}{+52\%}
-\newcommand{\metricSpuriousRFGain}{-18\%}
-
-% ============================================================
-% MODEL FEATURE-RANK STABILITY (exploratory; Appendix~\ref{app:disqualification})
-% Spearman rho of feature-importance rankings across adjacent temporal anchors (2020-2022)
-% ============================================================
-\newcommand{\metricStabVREx}{0.961}
-\newcommand{\metricStabTabNet}{0.873}
-\newcommand{\metricStabERM}{0.851}
-
-% ============================================================
-% BENCHMARK TABLE MODEL-LEVEL (exploratory comparison; Appendix)
-% ============================================================
-\newcommand{\metricRFFilingPRAUC}{0.574}
-\newcommand{\metricCBFilingPRAUC}{0.528}
-
-% ============================================================
-% NLP / QUALITATIVE SUPPLEMENTARY
-% ============================================================
-\newcommand{\metricNLPCorpus}{512}
-\newcommand{\metricNLPSeed}{50}
-\newcommand{\metricNFlaggedAtFifty}{47}
-
-% ============================================================
-% OVERLAY REGRESSIONS (degenerate / non-estimable; Appendix~\ref{app:overlays})
-% ============================================================
-\newcommand{\metricTenOneITSCoeff}{0.041}
-\newcommand{\metricTenOneITSPval}{0.74}
-\newcommand{\metricNPAFrictionCoeff}{0.083}
-\newcommand{\metricNPAFrictionPval}{0.61}
-\newcommand{\metricHDFrictionCoeff}{---}
-\newcommand{\metricHDFrictionPval}{---}
-\newcommand{\metricTODFrictionCoeff}{---}
-\newcommand{\metricTODFrictionPval}{---}
-
-% ============================================================
-% HOME EVENT STUDY (exploratory; Appendix~\ref{app:home})
-% ============================================================
-\newcommand{\metricDiDVotes}{-0.031}
-\newcommand{\metricDiDSE}{0.044}
-\newcommand{\metricDiDCI}{[-0.117, 0.055]}
-\newcommand{\metricDiDDirectionText}{small reduction}
-\newcommand{\metricDiDSignificanceText}{not statistically significant ($p = 0.48$)}
+\newcommand{\metricCBFilingBrier}{NA}
+\newcommand{\metricCBFilingPRAUC}{NA}
+\newcommand{\metricCalibrationSlope}{NA}
+\newcommand{\metricConsensusClusterCount}{0}
+\newcommand{\metricDiDCI}{NA}
+\newcommand{\metricDiDDirectionText}{NA}
+\newcommand{\metricDiDSE}{NA}
+\newcommand{\metricDiDSignificanceText}{NA}
+\newcommand{\metricDiDVotes}{NA}
+\newcommand{\metricECE}{0.008}
+\newcommand{\metricECEBootCI}{NA}
+\newcommand{\metricFNRGap}{NA}
+\newcommand{\metricFlipDiDCoeff}{NA}
+\newcommand{\metricFlipDiDPval}{NA}
+\newcommand{\metricHDFrictionCoeff}{NA}
+\newcommand{\metricHDFrictionPval}{NA}
+\newcommand{\metricHeadlineECE}{0.008}
+\newcommand{\metricHeadlinePRAUC}{0.748}
+\newcommand{\metricLabelAuditN}{200}
+\newcommand{\metricLabelFidelity}{100.0\%}
+\newcommand{\metricLargestClusterDelta}{0.099}
+\newcommand{\metricMaxDistrictPositives}{NA}
+\newcommand{\metricMeanProbTN}{0.008}
+\newcommand{\metricMeanProbTP}{0.541}
+\newcommand{\metricMedianDistrictPositives}{NA}
+\newcommand{\metricMinDistrictPositives}{NA}
+\newcommand{\metricNDistricts}{9}
+\newcommand{\metricNFlaggedAtFifty}{NA}
+\newcommand{\metricNLPCorpus}{NA}
+\newcommand{\metricNLPSeed}{NA}
+\newcommand{\metricNPAFrictionCoeff}{NA}
+\newcommand{\metricNPAFrictionPval}{NA}
+\newcommand{\metricPRAUC}{NA}
+\newcommand{\metricPrecisionAtFifty}{71.4\%}
+\newcommand{\metricPrecisionAtThirty}{61.5\%}
+\newcommand{\metricRDCI}{NA}
+\newcommand{\metricRDDelay}{NA}
+\newcommand{\metricRDDelayWeeks}{NA}
+\newcommand{\metricRDSE}{NA}
+\newcommand{\metricRFFilingPRAUC}{NA}
+\newcommand{\metricRecallAtFifty}{50.0\%}
+\newcommand{\metricRecallAtThirty}{80.0\%}
+\newcommand{\metricSiteQuarterObs}{NA}
+\newcommand{\metricSpuriousCatBoost}{NA}
+\newcommand{\metricSpuriousLGBM}{NA}
+\newcommand{\metricSpuriousLogReg}{NA}
+\newcommand{\metricSpuriousLogRegGain}{NA}
+\newcommand{\metricSpuriousMLP}{NA}
+\newcommand{\metricSpuriousRF}{NA}
+\newcommand{\metricSpuriousRFGain}{NA}
+\newcommand{\metricSpuriousTabNet}{NA}
+\newcommand{\metricSpuriousTabNetGain}{NA}
+\newcommand{\metricSpuriousVREx}{NA}
+\newcommand{\metricSpuriousXGB}{NA}
+\newcommand{\metricStabERM}{NA}
+\newcommand{\metricStabTabNet}{NA}
+\newcommand{\metricStabVREx}{NA}
+\newcommand{\metricStageBMaeSqft}{NA}
+\newcommand{\metricStageBMaeUnits}{NA}
+\newcommand{\metricTODFrictionCoeff}{NA}
+\newcommand{\metricTODFrictionPval}{NA}
+\newcommand{\metricTenOneITSCoeff}{NA}
+\newcommand{\metricTenOneITSPval}{NA}
+\newcommand{\metricTopDecileLift}{9.4x}
+\newcommand{\metricTopDecileN}{124}
+\newcommand{\metricTopDecilePrecision}{24.2\%}
+\newcommand{\metricTopDecileTP}{30}
+\newcommand{\metricUnopposedAttritionRate}{NA}
+\newcommand{\metricUnstableClusterCount}{5}

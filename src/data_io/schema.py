@@ -1,27 +1,26 @@
-import os
-from pathlib import Path
+"""Shared paths and registry helpers for the thesis pipeline.
 
-# Paths.py
-ROOT_DIR = Path(r"c:\Users\dhl\data\thesis\thesis")
+The pipeline is built around stable, auditable registries. This module keeps
+path handling and run-key validation in one place so the rest of the code can
+stay focused on the scientific task instead of filesystem plumbing.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Optional, TypedDict
+
+import pandas as pd
+
+ROOT_DIR = Path(r"c:\Users\dhl\data\Thesis\thesis")
 DATA_DIR = ROOT_DIR / "data"
 REGISTRY_DIR = ROOT_DIR / "registries"
 CONFIG_DIR = ROOT_DIR / "configs"
 SRC_DIR = ROOT_DIR / "src"
-
-# Warehouse source
 WAREHOUSE_DIR = ROOT_DIR / "Data" / "Warehouse_As_Of"
 
-def ensure_dirs():
-    for d in [DATA_DIR, REGISTRY_DIR, CONFIG_DIR, SRC_DIR]:
-        d.mkdir(parents=True, exist_ok=True)
-    (DATA_DIR / "raw").mkdir(exist_ok=True)
-    (DATA_DIR / "interim").mkdir(exist_ok=True)
-    (DATA_DIR / "final").mkdir(exist_ok=True)
 
-# Schema.py (TypedDict or just documentation of the contract)
-from typing import TypedDict, Optional
-
-class RunKey(TypedDict):
+class RunKey(TypedDict, total=False):
     case_id: str
     as_of_date: str
     horizon: str
@@ -32,8 +31,13 @@ class RunKey(TypedDict):
     seed: Optional[int]
     calibration_method: Optional[str]
 
-# Registry helper
-import pandas as pd
+
+def ensure_dirs() -> None:
+    for directory in [DATA_DIR, REGISTRY_DIR, CONFIG_DIR, SRC_DIR]:
+        directory.mkdir(parents=True, exist_ok=True)
+    for subdir in ["raw", "interim", "final"]:
+        (DATA_DIR / subdir).mkdir(parents=True, exist_ok=True)
+
 
 def load_registry(name: str) -> pd.DataFrame:
     path = REGISTRY_DIR / f"{name}.parquet"
@@ -41,5 +45,20 @@ def load_registry(name: str) -> pd.DataFrame:
         return pd.read_parquet(path)
     return pd.DataFrame()
 
-def save_registry(df: pd.DataFrame, name: str):
-    df.to_parquet(REGISTRY_DIR / f"{name}.parquet", index=False)
+
+def save_registry(df: pd.DataFrame, name: str) -> Path:
+    REGISTRY_DIR.mkdir(parents=True, exist_ok=True)
+    path = REGISTRY_DIR / f"{name}.parquet"
+    df.to_parquet(path, index=False)
+    return path
+
+
+def registry_path(name: str) -> Path:
+    return REGISTRY_DIR / f"{name}.parquet"
+
+
+def validate_run_key_columns(df: pd.DataFrame) -> None:
+    required = ["case_id", "as_of_date", "horizon", "label_version", "feature_view", "split_id"]
+    missing = [col for col in required if col not in df.columns]
+    if missing:
+        raise ValueError(f"Missing run-key columns: {missing}")

@@ -1,33 +1,32 @@
 import pandas as pd
-import numpy as np
-import sys
-from pathlib import Path
 
-# src/features/build_stage_a_features.py
-sys.path.append(str(Path(r"c:\Users\dhl\data\thesis\thesis") / "src"))
-from data_io.schema import ROOT_DIR, save_registry
+from src.data_io.schema import REGISTRY_DIR, ROOT_DIR, ensure_dirs, save_registry
 
-def build_stage_a_features():
-    print("[+] Building Stage A Hazard Features...")
-    
-    # Simulation: Stage A usually focuses on site-level hazard features for selection
-    universe = pd.read_parquet(ROOT_DIR / "registries" / "case_universe.parquet")
-    
-    X = universe[['case_id', 'filing_date']].copy()
-    X['as_of_date'] = X['filing_date']
-    X['feature_view'] = 'stage_a_hazard'
-    
-    # Selection predictors: market pressure, local vacancy, regulatory barriers
-    X['mkt_pressure'] = np.random.randn(len(X))
-    X['local_vacancy'] = np.random.randn(len(X))
-    X['regulatory_tier'] = np.random.choice([1, 2, 3], len(X))
-    
-    # Save to interim
+
+def build_stage_a_features() -> pd.DataFrame:
+    """Build a small, deterministic selection-correction feature view."""
+
+    ensure_dirs()
+    universe_path = REGISTRY_DIR / "case_universe.parquet"
+    if not universe_path.exists():
+        raise FileNotFoundError(f"Case universe not found: {universe_path}")
+
+    universe = pd.read_parquet(universe_path).copy()
+    X = universe[["case_id", "filing_date"]].copy()
+    X["as_of_date"] = X["filing_date"]
+    X["feature_view"] = "stage_a_hazard"
+    filing_dates = pd.to_datetime(X["filing_date"], errors="coerce")  # pyright: ignore[reportUnknownMemberType]
+    X["filing_year"] = pd.Series(filing_dates, index=X.index).dt.year.astype("Float64")
+    X["year_centered"] = X["filing_year"] - X["filing_year"].median()
+    X["district_missing"] = universe["council_district"].isna().astype(int) if "council_district" in universe.columns else 0
+    X["selection_proxy"] = X["year_centered"].abs().fillna(0).gt(2).astype(int)
+
     interim_path = ROOT_DIR / "data" / "interim" / "stage_a_features_raw.parquet"
     interim_path.parent.mkdir(parents=True, exist_ok=True)
     X.to_parquet(interim_path, index=False)
-    
-    print(f"    Stage A features built for {len(X)} cases.")
+
+    save_registry(X[["case_id", "as_of_date", "feature_view"]].drop_duplicates(), "feature_registry")
+    return X
 
 if __name__ == "__main__":
     build_stage_a_features()

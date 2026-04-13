@@ -1,42 +1,125 @@
-[
-    {
-        "semantic_cluster": "Location",
-        "mean": 1.257017473515076,
-        "median": 1.257017473515076,
-        "std": NaN,
-        "count": 1,
-        "is_consensus": false
+{
+    "meta_attribution_version": "v2",
+    "consensus_criteria": {
+        "min_presence_fraction": 0.75,
+        "min_rank_stability": 0.7,
+        "bootstrap_ci_excludes_zero": true,
+        "must_be_top_quartile": true,
+        "presence_threshold_per_cell": 0.05,
+        "n_bootstrap": 500,
+        "alpha": 0.05
     },
-    {
-        "semantic_cluster": "Neighborhood Wealth",
-        "mean": 0.014069339233203164,
-        "median": 0.014069339233203164,
-        "std": NaN,
-        "count": 1,
-        "is_consensus": false
-    },
-    {
-        "semantic_cluster": "Other",
-        "mean": 1.4140397512603569,
-        "median": 1.0,
-        "std": 1.242119253781071,
-        "count": 9,
-        "is_consensus": true
-    },
-    {
-        "semantic_cluster": "Parcel Scale",
-        "mean": 0.6250198555162152,
-        "median": 0.6250198555162152,
-        "std": NaN,
-        "count": 1,
-        "is_consensus": false
-    },
-    {
-        "semantic_cluster": "Zoning Delta",
-        "mean": 1.3775355703922918,
-        "median": 1.3775355703922918,
-        "std": NaN,
-        "count": 1,
-        "is_consensus": false
-    }
-]
+    "q75_share_threshold": 0.06243300357223503,
+    "n_total_cells": 5,
+    "cross_model_consensus_features": [],
+    "model_specific_features": [
+        "Other",
+        "Location",
+        "Zoning Delta",
+        "Neighborhood Wealth"
+    ],
+    "unstable_features": [
+        "Other",
+        "Location",
+        "Zoning Delta",
+        "Parcel Scale",
+        "Neighborhood Wealth"
+    ],
+    "cluster_summary": [
+        {
+            "semantic_cluster": "Other",
+            "mean_share": 0.8938972011212986,
+            "std_share": 0.13467750015402566,
+            "ci_lo": 0.7643983702811892,
+            "ci_hi": 0.9834586466165414,
+            "ci_excludes_zero": true,
+            "presence_fraction": 1.0,
+            "n_cells": 5,
+            "rank_stability": 0.0,
+            "meets_top_quartile": true,
+            "meets_presence": true,
+            "meets_ci": true,
+            "meets_rank_stability": false,
+            "is_consensus": false,
+            "is_model_specific": true,
+            "coeff_variation": 0.15066329756310215,
+            "is_unstable": true
+        },
+        {
+            "semantic_cluster": "Location",
+            "mean_share": 0.06243300357223503,
+            "std_share": 0.05639404635305182,
+            "ci_lo": 0.022556390977443608,
+            "ci_hi": 0.14218622876181788,
+            "ci_excludes_zero": true,
+            "presence_fraction": 0.3333333333333333,
+            "n_cells": 3,
+            "rank_stability": 0.0,
+            "meets_top_quartile": true,
+            "meets_presence": false,
+            "meets_ci": true,
+            "meets_rank_stability": false,
+            "is_consensus": false,
+            "is_model_specific": true,
+            "coeff_variation": 0.9032729842082783,
+            "is_unstable": true
+        },
+        {
+            "semantic_cluster": "Zoning Delta",
+            "mean_share": 0.06148648955298653,
+            "std_share": 0.055055473390054316,
+            "ci_lo": 0.022556390977443608,
+            "ci_hi": 0.13934668670407238,
+            "ci_excludes_zero": true,
+            "presence_fraction": 0.3333333333333333,
+            "n_cells": 3,
+            "rank_stability": 0.0,
+            "meets_top_quartile": false,
+            "meets_presence": false,
+            "meets_ci": true,
+            "meets_rank_stability": false,
+            "is_consensus": false,
+            "is_model_specific": true,
+            "coeff_variation": 0.89540763987188,
+            "is_unstable": true
+        },
+        {
+            "semantic_cluster": "Parcel Scale",
+            "mean_share": 0.037625719957819166,
+            "std_share": 0.03194443409940599,
+            "ci_lo": 0.015037593984962405,
+            "ci_hi": 0.08280197190353268,
+            "ci_excludes_zero": true,
+            "presence_fraction": 0.3333333333333333,
+            "n_cells": 3,
+            "rank_stability": 0.0,
+            "meets_top_quartile": false,
+            "meets_presence": false,
+            "meets_ci": true,
+            "meets_rank_stability": false,
+            "is_consensus": false,
+            "is_model_specific": false,
+            "coeff_variation": 0.849005235945319,
+            "is_unstable": true
+        },
+        {
+            "semantic_cluster": "Neighborhood Wealth",
+            "mean_share": 0.015292785048128166,
+            "std_share": 0.010272290016971528,
+            "ci_lo": 0.0007655731894972801,
+            "ci_hi": 0.022556390977443608,
+            "ci_excludes_zero": true,
+            "presence_fraction": 0.0,
+            "n_cells": 3,
+            "rank_stability": 0.0,
+            "meets_top_quartile": false,
+            "meets_presence": false,
+            "meets_ci": true,
+            "meets_rank_stability": false,
+            "is_consensus": false,
+            "is_model_specific": true,
+            "coeff_variation": 0.6717082148827195,
+            "is_unstable": true
+        }
+    ]
+}

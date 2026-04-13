@@ -1,6 +1,9 @@
-{
-    "agreement": 0.9960896130346232,
-    "sample_size": 12275,
-    "fp": 32,
-    "fn": 16
-}
+[
+  {
+    "agreement": 1.0,
+    "sample_size": 200,
+    "fp": 0,
+    "fn": 0,
+    "audit_mode": "observed"
+  }
+]

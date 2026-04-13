@@ -82,7 +82,7 @@ def _validate_glossary_terms(cfg: Dict, manuscript_text: str, root: Path) -> Che
         return CheckResult("glossary_terms", False, [f"Missing glossary: {glossary_path}"])
 
     glossary_text = glossary_path.read_text(encoding="utf-8", errors="ignore")
-    terms = re.findall(r"\*\*(.+?)\*\*", glossary_text)
+    terms = re.findall(r"^\*\*([^*\n]+)\*\*", glossary_text, flags=re.M)
     normalized = [t.strip().lower() for t in terms]
     dupes = sorted({t for t in normalized if normalized.count(t) > 1})
     if dupes:
