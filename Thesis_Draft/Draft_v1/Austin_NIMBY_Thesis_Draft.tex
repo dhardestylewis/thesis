@@ -67,7 +67,7 @@ As the United States confronts a persistent housing affordability crisis, unders
 
 Against this backdrop, the central research question is whether a measured threshold-crossing petition---defined below in Section~\ref{sec:outcome}---can be predicted before formal public hearings begin.
 
-The outcome under study is specific. Under the pre-2025 framework of Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the relevant adjoining land area were collected and the municipal clerk certified the petition as valid, the petition historically required a three-fourths supermajority for City Council approval. (Effective September 1, 2025, House Bill 24 repealed and replaced this mechanism with a differentiated, multi-tier system under \S~211.0061.) This is one institutionalized form of neighborhood opposition---the most consequential and best-observed form in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
+The outcome under study is specific. Under the pre-2025 framework of Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the relevant adjoining land area were collected and the municipal clerk certified the petition as valid, the petition historically required a three-fourths supermajority for City Council approval. (Effective September 1, 2025, House Bill 24 repealed and replaced this mechanism with a differentiated, multi-tier system under \S~211.0061 \cite{hb24_2025,texas2110061}.) This is one institutionalized form of neighborhood opposition---the most consequential and best-observed form in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
 
 To answer this question, the research constructs a sequential predictive methodology organized around four stages:
 
@@ -159,7 +159,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Archive_Pipelines/fig1_spatial_distribution.png}
-    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$).}
+    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$).}
     \label{fig:spatial_dist}
 \end{figure}
 
@@ -178,7 +178,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 2011 & 369 & 2017 & 483 & 2023 & 625 \\
 2012 & 335 & 2018 & 492 & 2024 & 284 \\
 \midrule
-\multicolumn{6}{l}{\textbf{Total (2007---2024):} 7,074 cases} \\
+\multicolumn{6}{l}{\textbf{Total (2007---2024):} \metricBaselineCases{} cases} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -234,14 +234,14 @@ Table~\ref{tab:attrition} reports the sample selection from raw administrative r
 \midrule
 Raw Austin open data portal zoning records (2007 to 2024) & 15,238 \\
 Restrict to discretionary cases (rezonings, PUDs, NPAs) & 7,153 \\
-Exclude cases with unusable or missing initial filing-year information & 7,074 \\
+Exclude cases with unusable or missing initial filing-year information & \metricBaselineCases{} \\
 \midrule
-\textbf{Final Analytic Sample (Stages C/D)} & \textbf{7,074} \\
+\textbf{Final Analytic Sample (Stages C/D)} & \textbf{\metricBaselineCases{}} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The analytical samples vary by analytical goal. The primary predictive evaluation (Stage C) uses the full sample of 7,074 discretionary geographic cases. In contrast, the supporting analyses use restricted sub-samples designed to isolate specific mechanisms. The 2022 electoral-transition descriptive analysis and the HOME event study utilize $N=518$ because they are restricted to active single-member districts immediately surrounding the relevant election or policy cycle. The Invariant Causal Prediction (ICP) analysis utilizes $N=1,186$ multi-parcel geometric environments to represent cohesive spatial clusters. Finally, the institutional geographic overlay regressions evaluate policy flags aggregated at the council-term level across periods, resulting in $N=20$ macro-observations.
+The analytical samples vary by analytical goal. The primary predictive evaluation (Stage C) uses the full sample of \metricBaselineCases{} discretionary geographic cases. In contrast, the supporting analyses use restricted sub-samples designed to isolate specific mechanisms. The 2022 electoral-transition descriptive analysis and the HOME event study utilize $N=518$ because they are restricted to active single-member districts immediately surrounding the relevant election or policy cycle. The Invariant Causal Prediction (ICP) analysis utilizes $N=1,186$ multi-parcel geometric environments to represent cohesive spatial clusters. Finally, the institutional geographic overlay regressions evaluate policy flags aggregated at the council-term level across periods, resulting in $N=20$ macro-observations.
 
 Unlike approaches that require complete-case geometric intersections, this methodology uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This approach retains cases with partially missing covariates, reducing artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
 
@@ -261,7 +261,7 @@ Secondary outcomes are analyzed separately:
 
 All primary results report $y_0$. Sensitivity analyses replicate key findings using individual secondary outcomes. This separation is important because staff recommendations, commission votes, and council outcomes reflect different institutional mechanisms than neighborhood mobilization through petitions, and collapsing them into a single binary would obscure meaningful distinctions. Cases withdrawn before public notice are excluded, rather than coded as zero, because no opportunity for opposition existed. ETJ cases and routine variances are excluded because the formal petition mechanism does not apply to them.
 
-Note on stage-specific samples: the Stage C filing-date model uses the full 7,074-case analytic sample regardless of whether a hearing transcript exists, since transcripts post-date the filing horizon and are not used as predictive features at that stage. Cases missing hearing transcripts or petition-database coverage are omitted only from later-horizon evaluations and secondary-outcome analyses where those records serve as inputs or outcome sources.
+Note on stage-specific samples: the Stage C filing-date model uses the full \metricBaselineCases{}-case analytic sample regardless of whether a hearing transcript exists, since transcripts post-date the filing horizon and are not used as predictive features at that stage. Cases missing hearing transcripts or petition-database coverage are omitted only from later-horizon evaluations and secondary-outcome analyses where those records serve as inputs or outcome sources.
 
 \subsection{Feature Libraries: Policy Forecasting vs.\ Explanatory Research}
 
@@ -320,7 +320,7 @@ Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given the su
 
 \textbf{Primary evaluation.} The out-of-distribution bootstrap PR-AUC at the filing-date horizon is the primary evaluation metric, as it simulates realistic forward evaluation conditions. In-distribution 5-fold cross-validation PR-AUC is reported as an upper bound. Because this is a ranking model with limited calibration transportability, the emphasis is on ranking metrics (PR-AUC, top-decile lift), calibration plots, and decision-relevant review budgets rather than threshold-dependent classification metrics. To verify that reported metrics are not artifacts of pseudo-random seed selection, all stochastic models are validated across 20 independent seeds; the resulting confidence intervals ($\sigma_{\text{PR-AUC}} < 0.05$ for all architectures) are reported in Table~\ref{tab:comprehensive_benchmark} and Appendix~\ref{app:seed_stability}.
 
-Because the baseline opposition frequency is highly skewed, raw predicted probabilities from gradient boosting models suffer from persistent overconfidence. To address this, the evaluation applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), the evaluation also reports the Brier Score and Adaptive Calibration Error (ACE = \metricACE{}).\footnote{At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}, flagging \metricNFlaggedAtFifty{} of 7,074 cases. However, this threshold is difficult to defend for a rare-event triage problem; ranking-based metrics are more appropriate.} The Brier score is \metricBrierScore{} (\metricCBFilingBrier{} across 20 seeds). 
+Because the baseline opposition frequency is highly skewed, raw predicted probabilities from gradient boosting models suffer from persistent overconfidence. To address this, the evaluation applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), the evaluation also reports the Brier Score and Adaptive Calibration Error (ACE = \metricACE{}).\footnote{At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}, flagging \metricNFlaggedAtFifty{} of \metricBaselineCases{} cases. However, this threshold is difficult to defend for a rare-event triage problem; ranking-based metrics are more appropriate.} The Brier score is \metricBrierScore{} (\metricCBFilingBrier{} across 20 seeds). 
 
 Strictly proper scoring rules like the Brier Score \cite{brier1950verification} and Adaptive Calibration (which evaluates equal-mass rather than equal-width bins) are useful complementary calibration measures; standard ECE can be unstable under severe class imbalance because fixed-width probability bins at the highest confidence intervals routinely remain empty when predicting rare events, causing aggregate ECE weights to understate miscalibration for rare positive cases.
 
@@ -601,7 +601,7 @@ These institutional realities underscore why the predictive model performs best 
 
 This study has several important limitations.
 
-\textbf{Small NLP sample.} The \metricNLPCorpus{} cases used for text-frame classification are small relative to the 7,074-case analytic sample, raising overfitting concerns for the NLP components. The number of models explored should be viewed as a sensitivity exercise rather than a competitive selection process.
+\textbf{Small NLP sample.} The \metricNLPCorpus{} cases used for text-frame classification are small relative to the \metricBaselineCases{}-case analytic sample, raising overfitting concerns for the NLP components. The number of models explored should be viewed as a sensitivity exercise rather than a competitive selection process.
 
 \textbf{Measurement error in reconstructed dates.} Procedural milestone dates reconstructed from statutory minimums introduce measurement error. Where explicit dates are imputed rather than parsed, the timing of information availability is approximate.
 
@@ -634,7 +634,7 @@ This thesis asks whether measured threshold-crossing petitions against housing d
 
 These results point to a ceiling on what prediction from public records alone can achieve. Petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and the 2022 council regime change altered the relationship between petitions and outcomes. Stakeholder interviews underscore an irreducible ethical limitation: the model cannot distinguish affluent exclusionary mobilization from community-driven anti-displacement resistance, a distinction that administrative data does not encode.
 
-Future work should extend the observation window to capture HB~24 effects \cite{hamilton2024texas}, explore richer text features from pre-hearing public comments, and isolate the exact mechanisms of the 2021--2022 temporary covariate shock.
+Future work should extend the observation window to capture HB~24 effects \cite{hb24_2025}, explore richer text features from pre-hearing public comments, and isolate the exact mechanisms of the 2021--2022 temporary covariate shock.
 
 \cleardoublepage
 \phantomsection
@@ -1243,5 +1243,3 @@ The dendrogram confirms that tree architectures and deep attentive mechanisms co
 \end{figure}
 
 \end{document}
-
-

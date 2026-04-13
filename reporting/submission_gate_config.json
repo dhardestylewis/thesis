@@ -1,0 +1,21 @@
+{
+  "headline_claim_metric_ids": [
+    "metricBootstrapFiling",
+    "metricECE",
+    "metricTopDecileLift",
+    "metricHeadlinePRAUC",
+    "metricHeadlineECE"
+  ],
+  "required_glossary_terms": [
+    "measured threshold-crossing petition",
+    "out-of-distribution",
+    "expected calibration error"
+  ],
+  "banned_phrases": [
+    "TODO",
+    "TBD",
+    "lorem ipsum",
+    "insert citation",
+    "[citation needed]"
+  ]
+}
