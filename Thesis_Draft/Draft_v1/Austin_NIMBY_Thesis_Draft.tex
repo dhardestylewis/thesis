@@ -429,6 +429,22 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
     \label{fig:shap_beeswarm}
 \end{figure}
 
+\subsection{Architecture Attribution Divergence}
+\label{sec:attribution_divergence}
+
+As established in the Unified Predictive Frontier (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) significantly out-discriminate traditional tree-based gradients. This raises a critical interpretability question: do these superior architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
+
+To evaluate this, Figure~\ref{fig:attribution_divergence} maps the semantic SHAP attributions extracted from the traditional Gradient Boosting baseline against an equivalent Deep Neural (V-REx proxy) framework via Surrogate DeepExplainer gradients.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Chapter4/fig_attribution_divergence.pdf}
+    \caption[Attribution Divergence: Gradient Boosting vs. Deep Attention]{Comparison of semantic feature attribution between the primary tree-based architecture and a Deep Surrogate (neural embedding) architecture. Identical spatial inputs map to distinctly different structural priors.}
+    \label{fig:attribution_divergence}
+\end{figure}
+
+The divergence is stark. While the tree-based CatBoost model highly indexes on continuous univariate property valuation and basic historical contagion rules, the Deep Attentive model relies substantially more heavily on complex neighborhood geometries—specifically demographic composition, land-use classifications, and the intersection of rent brackets. This confirms that the Deep Models are not merely "better CatBoosts," but are functionally mapping a completely different structural geometry of what causes NIMBY opposition.
+
 \subsubsection{Attribution Stability Across Temporal Windows}
 
 To ensure that feature importance is robust to the significant institutional and market shifts between 2007 and 2024, an expanding-window attribution stability test evaluates how SHAP values evolve. This test recursively retrains the primary CatBoost model on expanding historical windows (anchored at 2019 through 2023) and extracts case-level TreeSHAP attributions on the immediately following out-of-distribution year.

@@ -17,31 +17,32 @@
 \contentsline {section}{\numberline {5}Results}{20}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{20}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{23}{subsection.5.2}%
-\contentsline {subsubsection}{\numberline {5.2.1}Attribution Stability Across Temporal Windows}{23}{subsubsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.3}Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}{26}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Descriptive Evidence from the 2022 Electoral Transition}{29}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Supplementary Institutional Analyses}{30}{subsection.5.5}%
-\contentsline {section}{\numberline {6}Qualitative Planning Context}{30}{section.6}%
-\contentsline {section}{\numberline {7}Limitations}{31}{section.7}%
-\contentsline {section}{\numberline {8}Conclusion}{32}{section.8}%
-\contentsline {section}{References}{34}{section*.23}%
-\contentsline {section}{\numberline {A}Supplementary Calibration Comparison}{36}{appendix.A}%
-\contentsline {section}{\numberline {B}Semantic Feature Mapping}{37}{appendix.B}%
-\contentsline {section}{\numberline {C}Interview Recruitment Overview}{38}{appendix.C}%
-\contentsline {section}{\numberline {D}IRB Protocol Summary}{39}{appendix.D}%
-\contentsline {section}{\numberline {E}Semi-Structured Interview Guide}{40}{appendix.E}%
-\contentsline {section}{\numberline {F}Sample Protest Petition}{41}{appendix.F}%
-\contentsline {section}{\numberline {G}Illustrative Support-Layer Panel Structure}{42}{appendix.G}%
-\contentsline {section}{\numberline {H}Methodological Appendix: Expanded Details}{43}{appendix.H}%
-\contentsline {subsection}{\numberline {H.1}Variable Dictionary}{43}{subsection.H.1}%
-\contentsline {subsection}{\numberline {H.2}Hyperparameter Search Grids}{43}{subsection.H.2}%
-\contentsline {subsection}{\numberline {H.3}Subgroup Definitions \& Fairness Testing}{44}{subsection.H.3}%
-\contentsline {subsection}{\numberline {H.4}Natural Language Processing Model: Exploratory Text Features}{44}{subsection.H.4}%
-\contentsline {section}{\numberline {I}Development Occurrence Model (Stage A)}{47}{appendix.I}%
-\contentsline {section}{\numberline {J}Project Type and Scale Model (Stage B)}{50}{appendix.J}%
-\contentsline {section}{\numberline {K}Political Outcome Model (Stage D)}{51}{appendix.K}%
-\contentsline {section}{\numberline {L}Expected Contested Units (Composite Measure)}{52}{appendix.L}%
-\contentsline {section}{\numberline {M}Institutional Geographic Overlay Analyses}{53}{appendix.M}%
-\contentsline {section}{\numberline {N}HOME Initiative Event Study}{55}{appendix.N}%
-\contentsline {section}{\numberline {O}Temporal Integrity and Leakage Audit}{56}{appendix.O}%
-\contentsline {section}{\numberline {P}Extended Architectural Search and Resampling Strategies}{57}{appendix.P}%
+\contentsline {subsection}{\numberline {5.3}Architecture Attribution Divergence}{23}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Attribution Stability Across Temporal Windows}{26}{subsubsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.4}Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}{27}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Descriptive Evidence from the 2022 Electoral Transition}{30}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Supplementary Institutional Analyses}{30}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Qualitative Planning Context}{31}{section.6}%
+\contentsline {section}{\numberline {7}Limitations}{32}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{33}{section.8}%
+\contentsline {section}{References}{35}{section*.24}%
+\contentsline {section}{\numberline {A}Supplementary Calibration Comparison}{37}{appendix.A}%
+\contentsline {section}{\numberline {B}Semantic Feature Mapping}{38}{appendix.B}%
+\contentsline {section}{\numberline {C}Interview Recruitment Overview}{39}{appendix.C}%
+\contentsline {section}{\numberline {D}IRB Protocol Summary}{40}{appendix.D}%
+\contentsline {section}{\numberline {E}Semi-Structured Interview Guide}{41}{appendix.E}%
+\contentsline {section}{\numberline {F}Sample Protest Petition}{42}{appendix.F}%
+\contentsline {section}{\numberline {G}Illustrative Support-Layer Panel Structure}{43}{appendix.G}%
+\contentsline {section}{\numberline {H}Methodological Appendix: Expanded Details}{44}{appendix.H}%
+\contentsline {subsection}{\numberline {H.1}Variable Dictionary}{44}{subsection.H.1}%
+\contentsline {subsection}{\numberline {H.2}Hyperparameter Search Grids}{44}{subsection.H.2}%
+\contentsline {subsection}{\numberline {H.3}Subgroup Definitions \& Fairness Testing}{45}{subsection.H.3}%
+\contentsline {subsection}{\numberline {H.4}Natural Language Processing Model: Exploratory Text Features}{45}{subsection.H.4}%
+\contentsline {section}{\numberline {I}Development Occurrence Model (Stage A)}{48}{appendix.I}%
+\contentsline {section}{\numberline {J}Project Type and Scale Model (Stage B)}{51}{appendix.J}%
+\contentsline {section}{\numberline {K}Political Outcome Model (Stage D)}{52}{appendix.K}%
+\contentsline {section}{\numberline {L}Expected Contested Units (Composite Measure)}{53}{appendix.L}%
+\contentsline {section}{\numberline {M}Institutional Geographic Overlay Analyses}{54}{appendix.M}%
+\contentsline {section}{\numberline {N}HOME Initiative Event Study}{56}{appendix.N}%
+\contentsline {section}{\numberline {O}Temporal Integrity and Leakage Audit}{57}{appendix.O}%
+\contentsline {section}{\numberline {P}Extended Architectural Search and Resampling Strategies}{58}{appendix.P}%
