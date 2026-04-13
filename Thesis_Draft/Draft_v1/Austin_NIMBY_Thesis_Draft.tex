@@ -445,6 +445,8 @@ To rigorously evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps
 
 The divergence is stark, yet remarkably stable. Across every quadrant—regardless of the timeline or the horizon—the tree-based CatBoost and Random Forest models overwhelmingly index on contiguous parcel facts (Property Valuation, Parcel Scale, and Structure Age). Conversely, the Deep Attentive framework systematically ignores parcel constraints and directs its learning toward complex neighborhood distributions—specifically Demographic Composition, Housing Tenure, and combinations of Rent characteristics. This confirms that Deep Models do not merely optimize CatBoost's decision boundaries; they map a completely distinct structural geometry of what catalyzes NIMBY opposition, and they maintain that distinct lens consistently through regime shifts.
 
+To empirically verify that this phenomena holds continuously year-by-year and is not merely an artifact of merging the Pre/Post-2022 anchors, Appendix~\ref{app:longitudinal_divergence} provides a full longitudinal decomposition across every individual year from 2019 to 2023, validating that the comparative algorithmic architecture remains rigidly diverged.
+
 \subsubsection{Attribution Stability Across Temporal Windows}
 
 To ensure that feature importance is robust to the significant institutional and market shifts between 2007 and 2024, an expanding-window attribution stability test evaluates how SHAP values evolve. This test recursively retrains the primary CatBoost model on expanding historical windows (anchored at 2019 through 2023) and extracts case-level TreeSHAP attributions on the immediately following out-of-distribution year.
@@ -974,6 +976,19 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \vspace{1em}
 \input{Tables/alternative_architectures.tex}
 \vspace{1em}
+
+\newpage
+\section{Longitudinal Architecture Attribution Divergence (2019--2023)}
+\label{app:longitudinal_divergence}
+
+\noindent To empirically verify the stability conclusions presented in Section~\ref{sec:attribution_divergence}, Figure~\ref{fig:attribution_longitudinal} plots the year-by-year continuous stability of the architectural divergence between the primary CatBoost implementation and the Surrogate Deep Attentive baseline. This exhaustive temporal matrix confirms that gradient boosting and deep metric spatial embeddings leverage entirely distinct structural frameworks—valuation size vs. associative demographics—across all five critical observation years and administrative horizons.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Chapter4/fig_attribution_longitudinal.pdf}
+    \caption[Longitudinal Stability Matrix]{Longitudinal Stability Matrix: Year-by-year tracking (2019 to 2023) of architectural feature divergence between Tree distributions and Neural embeddings at both H0 (Filing) and H3 (Pre-Council) thresholds.}
+    \label{fig:attribution_longitudinal}
+\end{figure}
 
 \end{document}
 
