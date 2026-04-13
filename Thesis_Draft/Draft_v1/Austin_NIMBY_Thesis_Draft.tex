@@ -67,7 +67,7 @@ As the United States confronts a persistent housing affordability crisis, unders
 
 Against this backdrop, the central research question is whether a measured threshold-crossing petition---defined below in Section~\ref{sec:outcome}---can be predicted before formal public hearings begin.
 
-The outcome under study is specific. Under the pre-2025 framework of Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the relevant adjoining land area were collected and the municipal clerk certified the petition as valid, the petition historically required a three-fourths supermajority for City Council approval. (Effective September 1, 2025, House Bill 24 repealed and replaced this mechanism with a differentiated, multi-tier system under \S~211.0061.) This is one institutionalized form of neighborhood opposition---the most consequential and best-observed form in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
+The outcome under study is specific. Under the pre-2025 framework of Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the relevant adjoining land area were collected and the municipal clerk certified the petition as valid, the petition historically required a three-fourths supermajority for City Council approval. (Effective September 1, 2025, House Bill 24 repealed and replaced this mechanism with a differentiated, multi-tier system under \S~211.0061 \cite{hb24_2025,texas2110061}.) This is one institutionalized form of neighborhood opposition---the most consequential and best-observed form in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
 
 To answer this question, the research constructs a sequential predictive methodology organized around four stages:
 
@@ -664,7 +664,7 @@ This thesis asks whether measured threshold-crossing petitions against housing d
 
 These results point to a ceiling on what prediction from public records alone can achieve. Petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and the 2022 council regime change altered the relationship between petitions and outcomes. Stakeholder interviews underscore an irreducible ethical limitation: the model cannot distinguish affluent exclusionary mobilization from community-driven anti-displacement resistance, a distinction that administrative data does not encode.
 
-Future work should extend the observation window to capture HB~24 effects \cite{hamilton2024texas}, explore richer text features from pre-hearing public comments, and isolate the exact mechanisms of the 2021--2022 temporary covariate shock.
+Future work should extend the observation window to capture HB~24 effects \cite{hb24_2025}, explore richer text features from pre-hearing public comments, and isolate the exact mechanisms of the 2021--2022 temporary covariate shock.
 
 \cleardoublepage
 \phantomsection
@@ -1229,5 +1229,3 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
 \noindent The results in Table~\ref{tab:disqualification_matrix} reveal a critical nuance in administrative machine learning. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) is not necessarily a signal of structural truth. When juxtaposed against the Spuriousness Index in Section~\ref{sec:spuriousness}, the audit confirms that Random Forest exhibits \textbf{Reliable Spuriousness}: it consistently and deterministically latches onto the same ungeneralizable noise proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but passed the causal survival tests, indicating that they are actively searching for invariant features rather than settling on stable, though harmful, shortcuts. Consequently, only CatBoost, XGBoost, and the Deep Attentive baselines are considered structurally valid for policy formulation.
 
 \end{document}
-
-
