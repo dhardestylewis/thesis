@@ -94,14 +94,6 @@ Joseph Gyourko and Raven Molloy.
 \newblock \href {https://doi.org/10.1016/B978-0-444-59531-7.00019-3}
   {\path{doi:10.1016/B978-0-444-59531-7.00019-3}}.
 
-\bibitem{hamilton2024texas}
-Emily Hamilton and Salim Furth.
-\newblock Texas protest petition primer: How {HB} 24 reforms the supermajority
-  requirement.
-\newblock Policy brief, Mercatus Center at George Mason University, 2024.
-\newblock URL:
-  \url{https://www.mercatus.org/research/policy-briefs/texas-protest-petition-primer}.
-
 \bibitem{hankinson2018}
 Michael Hankinson.
 \newblock When do renters behave like homeowners? high rent, price anxiety, and
@@ -167,10 +159,24 @@ Galit Shmueli.
 \newblock \href {https://doi.org/10.1214/10-STS330}
   {\path{doi:10.1214/10-STS330}}.
 
+\bibitem{hb24_2025}
+{Texas Legislature}.
+\newblock House bill 24, 89th legislature, regular session, 2025.
+\newblock Effective September 1, 2025. Codified as Texas Local Government Code
+  \S 211.0061.
+\newblock URL:
+  \url{https://capitol.texas.gov/BillLookup/History.aspx?LegSess=89R&Bill=HB24}.
+
 \bibitem{texas211006}
 {Texas State Legislature}.
 \newblock Texas local government code {\S}~211.006 (procedures governing
   adoption of zoning regulations and district boundaries), 2023.
+\newblock URL: \url{https://statutes.capitol.texas.gov/Docs/LG/htm/LG.211.htm}.
+
+\bibitem{texas2110061}
+{Texas State Legislature}.
+\newblock Texas local government code {\S}~211.0061 (protests and supermajority
+  voting), 2025.
 \newblock URL: \url{https://statutes.capitol.texas.gov/Docs/LG/htm/LG.211.htm}.
 
 \bibitem{tcclerk2022}
