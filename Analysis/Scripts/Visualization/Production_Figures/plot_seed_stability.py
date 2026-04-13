@@ -49,7 +49,7 @@ def run_seed_audit():
     out_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
     os.makedirs(out_dir, exist_ok=True)
     
-    SEEDS = list(range(0, 20))
+    SEEDS = list(range(100))
     
     horizons = [
         ('H0 (Filing Date)', 'H0_Filing_Master_Enriched.csv'),

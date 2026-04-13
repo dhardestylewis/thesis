@@ -105,7 +105,7 @@ def run():
     ROOT = r"C:\Users\dhl\data\thesis\thesis"
     out_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
 
-    SEEDS = list(range(10))
+    SEEDS = list(range(100))
     MODELS = ['CatBoost', 'Random Forest', 'TabNet', 'FT-Transformer', 'TabPFN']
     COLORS = {'CatBoost': '#8B0000', 'Random Forest': '#888888', 'TabNet': '#FF8C00',
               'FT-Transformer': '#228B22', 'TabPFN': '#9400D3'}

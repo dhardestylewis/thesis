@@ -34,7 +34,7 @@ except Exception:
     pass
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
-SEEDS = list(range(10))
+SEEDS = list(range(100))
 
 class DeepSurrogate(nn.Module):
     def __init__(self, d, out=1):

@@ -38,7 +38,7 @@ class SimpleDeepTabular(nn.Module):
 
 def plot_longitudinal():
     print("===================================================================")
-    print(" Rendering Longitudinal Attribution Divergence Matrix (2019-2023)")
+    print(" Rendering Longitudinal Attribution Divergence Matrix (2018-2024)")
     print("===================================================================")
     
     ROOT = r"C:\Users\dhl\data\thesis\thesis"
@@ -80,7 +80,7 @@ def plot_longitudinal():
     }
 
     horizons = [('H0', 'H0_Filing_Master_Enriched.csv', 0), ('H3', 'H3_Filing_Master_NLP.csv', 1)]
-    years = [2019, 2020, 2021, 2022, 2023]
+    years = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
     
     fig, axes = plt.subplots(len(years), 2, figsize=(14, 18), sharex=True)
     
@@ -174,7 +174,7 @@ def plot_longitudinal():
                 
             ax.grid(axis='x', linestyle='--', alpha=0.5)
 
-    plt.suptitle("Longitudinal Stability: Architectural Divergence (2019-2023)", fontsize=18, y=0.95)
+    plt.suptitle("Longitudinal Stability: Architectural Divergence (2018-2024)", fontsize=18, y=0.95)
     plt.tight_layout(rect=[0, 0, 1, 0.94])
     
     out_pdf = os.path.join(out_dir, "fig_attribution_longitudinal.pdf")

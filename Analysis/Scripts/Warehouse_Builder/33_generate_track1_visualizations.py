@@ -93,7 +93,7 @@ def build_visuals():
     drift_data = []
     
     # Implementing All 3 Cross-Validation Models per User Directive
-    for anchor in [2019, 2020, 2021]:
+    for anchor in [2018, 2019, 2020, 2021, 2022, 2023, 2024]:
         train_mask = df['year'] < anchor
         if train_mask.sum() < 20: continue
             
@@ -101,8 +101,10 @@ def build_visuals():
         lr = LogisticRegression(max_iter=500, class_weight='balanced').fit(X[train_mask], y[train_mask])
         rf = RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=42).fit(X[train_mask], y[train_mask])
         
-        for offset in [0, 1, 2, 3]:
-            test_year = anchor + offset
+        # Open-ended eval of all years >= anchor
+        test_years = sorted(df[df['year'] >= anchor]['year'].unique())
+        for test_year in test_years:
+            offset = int(test_year - anchor)
             test_mask = df['year'] == test_year
             if test_mask.sum() < 5 or y[test_mask].sum() < 1: continue
             

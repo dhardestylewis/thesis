@@ -211,7 +211,7 @@ def plot_all_track1_exhibits():
                     plt.title(titles.get("stage_c_drift", "Temporal Drift").format(hz=hz_name), fontsize=14)
                     plt.xlabel('Years Out-of-Distribution (T + offset)', fontsize=12)
                     plt.ylabel('PR-AUC', fontsize=12)
-                    plt.xticks([0, 1, 2, 3])
+                    # plt.xticks([0, 1, 2, 3]) # Removed hardcoded limit
                     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
                     plt.grid(True, alpha=0.3)
             except Exception as e:
@@ -258,7 +258,7 @@ def plot_all_track1_exhibits():
             print(f"  [+] Saved fig_policy_regimes_{hz}.pdf")
 
         # 4. Temporal Iteration over Importance and SHAP
-        for period in ['Full', 'Pre-2022', 'Post-2022', '2019', '2020', '2021', '2023', '2024']:
+        for period in ['Full', 'Pre-2022', 'Post-2022', '2018', '2019', '2020', '2021', '2022', '2023', '2024']:
             _plot_clustered_importance(hz, hz_name, titles, period)
             _plot_shap_beeswarm(hz, hz_name, titles, period)
 

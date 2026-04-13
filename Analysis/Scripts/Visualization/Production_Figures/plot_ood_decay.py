@@ -53,8 +53,8 @@ def run_ood_decay_audit():
     horizons = [('H0 (Filing Date)', 'H0_Filing_Master_Enriched.csv'), 
                 ('H3 (Pre-Council)', 'H3_Filing_Master_NLP.csv')]
                 
-    vintages = list(range(2009, 2019))  # Train up to V, deploy on V+1 to V+5
-    offsets = [1, 2, 3, 4, 5]
+    vintages = list(range(2009, 2025))  # Train up to V, deploy on V+1 to V+6
+    offsets = [1, 2, 3, 4, 5, 6]
     
     fig, axes = plt.subplots(2, 2, figsize=(16, 12), sharex=True)
     

@@ -86,7 +86,21 @@ def generate_spatial_error_map():
     ax2.legend(loc='lower right')
     
     plt.tight_layout()
-    
+
+    # --- QR code stamp (consistent across spatial exhibits) ---
+    try:
+        from PIL import Image
+        qr_path = os.path.join(r"C:\Users\dhl\data\thesis\thesis\Analysis\Scripts\Visualization\Production_Figures", "qr_temporal_drift.png")
+        if os.path.exists(qr_path):
+            qr_img  = Image.open(qr_path).convert("RGB")
+            qr_size = 0.08   # fraction of figure
+            ax_qr = fig.add_axes([0.91, 0.015, qr_size, qr_size])
+            ax_qr.imshow(qr_img)
+            ax_qr.axis("off")
+            ax_qr.set_title("Scan for\ninteractive", fontsize=7, pad=2, color="#444444")
+    except Exception as e:
+        print(f"QR stamp warning: {e}")
+
     artifact_path = r"C:\Users\dhl\.gemini\antigravity\brain\ebf7d3ae-8672-4ccd-9da8-331e25c23773\F23_Spatial_Error.png"
     plt.savefig(artifact_path, dpi=300, bbox_inches='tight')
     
@@ -95,7 +109,7 @@ def generate_spatial_error_map():
     repo_path = os.path.join(out_dir, "F23_Spatial_Error.png")
     plt.savefig(repo_path, dpi=300, bbox_inches='tight')
     
-    print(f"[*] Visual rendering complete: saved to {artifact_path} & {repo_path}")
+    print(f"[*] Visual rendering complete (with QR stamp): saved to {artifact_path} & {repo_path}")
 
 if __name__ == '__main__':
     generate_spatial_error_map()

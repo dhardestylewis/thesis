@@ -127,10 +127,24 @@ def generate_exhibits():
 
     plt.tight_layout()
 
+    # --- QR code stamp (consistent with Figure 6) ---
+    try:
+        from PIL import Image
+        qr_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qr_temporal_drift.png")
+        if os.path.exists(qr_path):
+            qr_img  = Image.open(qr_path).convert("RGB")
+            qr_size = 0.08   # fraction of figure
+            ax_qr = fig.add_axes([0.91, 0.015, qr_size, qr_size])
+            ax_qr.imshow(qr_img)
+            ax_qr.axis("off")
+            ax_qr.set_title("Scan for\ninteractive", fontsize=7, pad=2, color="#444444")
+    except Exception as e:
+        print(f"QR stamp warning: {e}")
+
     f22_path = os.path.join(out_dir, "F22_Joint_Policy_Map.png")
     plt.savefig(f22_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"    [+] Successfully saved 4-panel explicit {f22_path} via authentic hazard vectors and basemaps.")
+    print(f"    [+] Successfully saved 4-panel explicit {f22_path} via authentic hazard vectors and basemaps (with QR stamp).")
 
 if __name__ == "__main__":
     generate_exhibits()

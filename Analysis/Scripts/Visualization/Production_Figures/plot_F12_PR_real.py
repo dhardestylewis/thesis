@@ -1,10 +1,18 @@
+import os, sys, warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.metrics import precision_recall_curve, average_precision_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from catboost import CatBoostClassifier
+import torch
+import torch.nn as nn
+from sklearn.preprocessing import StandardScaler
 
-import sys
+warnings.filterwarnings("ignore")
+
 try:
-    # Attempt to locate the root Scripts directory
     _curr = os.path.dirname(os.path.abspath(__file__))
     while os.path.basename(_curr) != 'Scripts' and os.path.dirname(_curr) != _curr:
         _curr = os.path.dirname(_curr)
@@ -15,92 +23,114 @@ try:
 except Exception:
     pass
 
-from sklearn.metrics import precision_recall_curve, average_precision_score
-import os
-
-import sys
-_scripts_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
-if _scripts_dir not in sys.path:
-    sys.path.insert(0, _scripts_dir)
-from artifact_registry import ROOT_DIR, FIGURES_DIR, TraceabilityRegistry as AR
-
-ROOT = str(ROOT_DIR)
+ROOT = r"C:\Users\dhl\data\thesis\thesis"
 OUT_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# Stage C Opposition Results contain the authentic out-of-fold probabilistic outputs
-STAGE_C_OUT = str(AR.STAGE_C_OOF_H0)
+N_SEEDS = 100
+
+def train_and_predict(model_name, seed, X_train, y_train, X_test):
+    if model_name == 'Logistic Regression':
+        m = LogisticRegression(random_state=seed, class_weight='balanced', max_iter=200)
+        m.fit(X_train, y_train)
+        return m.predict_proba(X_test)[:, 1]
+    elif model_name == 'Random Forest':
+        m = RandomForestClassifier(n_estimators=50, random_state=seed, n_jobs=-1, class_weight='balanced')
+        m.fit(X_train, y_train)
+        return m.predict_proba(X_test)[:, 1]
+    elif model_name == 'CatBoost':
+        m = CatBoostClassifier(iterations=150, depth=6, learning_rate=0.05, verbose=0, random_seed=seed, auto_class_weights='Balanced')
+        m.fit(X_train, y_train)
+        return m.predict_proba(X_test)[:, 1]
+    elif model_name == 'TabNet':
+        from pytorch_tabnet.tab_model import TabNetClassifier
+        m = TabNetClassifier(seed=seed, verbose=0, device_name='cpu')
+        m.fit(X_train.values if hasattr(X_train, 'values') else X_train,
+              y_train, max_epochs=20, patience=5, batch_size=256, drop_last=False)
+        return m.predict_proba(X_test.values if hasattr(X_test, 'values') else X_test)[:, 1]
 
 def plot_f12():
     print("==============================================")
-    print(" Rendering Authentic F12: PR Curves")
+    print(f" Rendering Authentic F12: PR Curves ({N_SEEDS} Seeds)")
     print("==============================================")
     
-    if not os.path.exists(STAGE_C_OUT):
-        print("[-] Required Stage C predictive data not found.")
+    hz_file = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
+    if not os.path.exists(hz_file):
+        print(f"[-] Data not found at {hz_file}")
         return
         
-    df = pd.read_csv(STAGE_C_OUT, usecols=['y_true', 'y_prob_lr', 'y_prob_rf', 'y_prob_spatial_lr', 'y_prob_anchor', 'y_prob'])
-    
-    # We evaluate for the H=4 (1 Yr) horizon
-    y_true = df['y_true']
-    
-    # Calculate PR Curves for the underlying empirical models
-    p_lr, r_lr, _ = precision_recall_curve(y_true, df['y_prob_lr'])
-    auc_lr = average_precision_score(y_true, df['y_prob_lr'])
-    
-    p_rf, r_rf, _ = precision_recall_curve(y_true, df['y_prob_rf'])
-    auc_rf = average_precision_score(y_true, df['y_prob_rf'])
-    
-    p_sp, r_sp, _ = precision_recall_curve(y_true, df['y_prob_spatial_lr'])
-    auc_sp = average_precision_score(y_true, df['y_prob_spatial_lr'])
-    
-    p_anc, r_anc, _ = precision_recall_curve(y_true, df['y_prob_anchor'])
-    auc_anc = average_precision_score(y_true, df['y_prob_anchor'])
-    
-    p_cb, r_cb, _ = precision_recall_curve(y_true, df['y_prob'])
-    auc_cb = average_precision_score(y_true, df['y_prob'])
-    
-    baseline = y_true.sum() / len(y_true)
+    df = pd.read_csv(hz_file, low_memory=False)
+    target_col = 'is_protested' if 'is_protested' in df.columns else 'protest'
+    df[target_col] = pd.to_numeric(df[target_col], errors='coerce').fillna(0).astype(int)
+    df['year'] = pd.to_numeric(df['year'], errors='coerce')
 
-    def synth_prob(y_t, p_b, target):
-        best_p = p_b.copy()
-        best_diff = 1.0
-        # If target < auc_cb we blend with noise, if > we blend with y_t
-        noise = np.random.RandomState(42).uniform(0, 1, size=len(y_t))
-        for alpha in np.linspace(0, 1, 100):
-            if target > auc_cb:
-                p = alpha * y_t + (1 - alpha) * p_b
-            else:
-                p = alpha * noise + (1 - alpha) * p_b
-            p = np.clip(p, 0, 1)
-            auc = average_precision_score(y_t, p)
-            if abs(auc - target) < best_diff:
-                best_diff = abs(auc - target)
-                best_p = p
-        return best_p
+    drop_cols = [target_col, 'case_number', 'organized_opposition', 'has_audio_record',
+                 'TCAD ID', 'date', 'application_start_date', 'final_date',
+                 'standardized_tcad_id', 'Prob_H=4', 'Prob_LGBM_H=4',
+                 'Prob_CB_H=4', 'Prob_Optimal_H=4', 'ipw',
+                 'council_district', 'council_district_x']
+    
+    df_clean = df.drop(columns=[c for c in drop_cols if c in df.columns])
+    df_clean = df_clean.drop(columns=[c for c in df_clean.columns if c.startswith('tfidf_') or c.startswith('speech_')])
+    
+    X = df_clean.select_dtypes(include=[np.number]).fillna(0)
+    y = df[target_col].values
 
-    y_prob_excel = synth_prob(y_true, df['y_prob'], 0.635)
-    y_prob_ft = synth_prob(y_true, df['y_prob'], 0.612)
-    y_prob_tab = synth_prob(y_true, df['y_prob'], 0.541)
+    # Train on Pre-2022, Eval on Out-Dist 2023 (as matching Table 5)
+    train_mask = df['year'] < 2022
+    test_mask = df['year'] == 2023
+    
+    X_train, y_train = X[train_mask], y[train_mask]
+    X_test, y_test = X[test_mask], y[test_mask]
+    
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    
+    MODELS = ['Logistic Regression', 'Random Forest', 'CatBoost', 'TabNet']
+    COLORS = {'Logistic Regression': 'coral', 'Random Forest': 'gray', 'CatBoost': 'darkred', 'TabNet': 'orange'}
+    
+    # We will interpolate precision onto a common recall grid to average it across seeds
+    common_recall = np.linspace(0, 1, 150)
+    model_pr_curves = {m: [] for m in MODELS}
+    model_aucs = {m: [] for m in MODELS}
 
-    p_ex, r_ex, _ = precision_recall_curve(y_true, y_prob_excel)
-    p_ft, r_ft, _ = precision_recall_curve(y_true, y_prob_ft)
-    p_tab, r_tab, _ = precision_recall_curve(y_true, y_prob_tab)
+    for m in MODELS:
+        print(f"[*] Evaluating {m} across {N_SEEDS} seeds...")
+        for s in range(N_SEEDS):
+            try:
+                # Use scaled data for LR and TabNet, raw data for trees
+                x_t, x_v = (X_train_scaled, X_test_scaled) if m in ['Logistic Regression', 'TabNet'] else (X_train, X_test)
+                
+                probs = train_and_predict(m, s, x_t, y_train, x_v)
+                auc = average_precision_score(y_test, probs)
+                p, r, _ = precision_recall_curve(y_test, probs)
+                
+                # Interpolate precision to common_recall grid (descending order for interpolation)
+                # precision_recall_curve returns recall in descending order
+                p_interp = np.interp(common_recall, r[::-1], p[::-1])
+                model_pr_curves[m].append(p_interp)
+                model_aucs[m].append(auc)
+            except Exception as e:
+                print(f"Error on {m} seed {s}: {e}")
 
     plt.figure(figsize=(10, 8))
-    plt.plot([0, 1], [baseline, baseline], label=f'Baseline Prevalence (PR-AUC {baseline:.2f})', linestyle=':', color='gray')
-    plt.plot(r_lr, p_lr, label=f'Standard Logistic (ERM) (PR-AUC {auc_lr:.2f})', linestyle=':', color='coral')
-    plt.plot(r_rf, p_rf, label=f'RandomForest (ERM) (PR-AUC {auc_rf:.2f})', linestyle=':', color='gray')
-    plt.plot(r_sp, p_sp, label=f'Spatial-FE Logistic (PR-AUC {auc_sp:.2f})', linestyle='--', color='purple')
-    plt.plot(r_anc, p_anc, label=f'Anchor Regression (PR-AUC {auc_anc:.2f})', linestyle='-.', color='teal', linewidth=1.5)
+    baseline = y_test.sum() / len(y_test)
+    plt.plot([0, 1], [baseline, baseline], label=f'Baseline/Chance (PR-AUC {baseline:.2f})', linestyle=':', color='gray')
     
-    plt.plot(r_tab, p_tab, label=f'TabPFN Zero-Shot (PR-AUC 0.54)', linestyle='-', color='dodgerblue', linewidth=2)
-    plt.plot(r_cb, p_cb, label=f'CatBoost Primary (PR-AUC {auc_cb:.2f})', linewidth=2.5, color='darkred')
-    plt.plot(r_ft, p_ft, label=f'FT-Transformer (PR-AUC 0.61)', linestyle='-', color='darkorange', linewidth=2.5)
-    plt.plot(r_ex, p_ex, label=f'ExcelFormer Attention (PR-AUC 0.64)', linestyle='-', color='gold', linewidth=3)
+    for m in MODELS:
+        if not model_pr_curves[m]: continue
+        pr_array = np.array(model_pr_curves[m])
+        mean_pr = np.mean(pr_array, axis=0)
+        std_pr = np.std(pr_array, axis=0)
+        
+        mean_auc = np.mean(model_aucs[m])
+        std_auc = np.std(model_aucs[m])
+        
+        plt.plot(common_recall, mean_pr, label=f"{m} (AUC={mean_auc:.3f} ± {std_auc:.3f})", color=COLORS[m], lw=2.5)
+        plt.fill_between(common_recall, np.clip(mean_pr - 1.96*std_pr, 0, 1), np.clip(mean_pr + 1.96*std_pr, 0, 1), color=COLORS[m], alpha=0.15)
 
-    plt.title('Stage C Unified Precision-Recall Curves (Filing-Date Horizon)', fontsize=14, pad=15)
+    plt.title(f'Stage C Out-of-Distribution Precision-Recall ({N_SEEDS}-Seed 95% CIs)', fontsize=14, pad=15)
     plt.xlabel('Recall (Sensitivity)', fontsize=12)
     plt.ylabel('Precision (Positive Predictive Value)', fontsize=12)
     plt.legend(loc='lower left', fontsize=11, frameon=True)
@@ -111,7 +141,7 @@ def plot_f12():
 
     f12_path = os.path.join(OUT_DIR, "F12_Opposition_PR.png")
     plt.savefig(f12_path, dpi=300)
-    print(f"[+] Successfully saved {f12_path}")
+    print(f"[+] Successfully saved authentic seed-based curve: {f12_path}")
 
 if __name__ == '__main__':
     plot_f12()

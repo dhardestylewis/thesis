@@ -65,7 +65,7 @@ METRICS_DIR = str(AR.TRACK1_METRICS)
 os.makedirs(FIG_DIR, exist_ok=True)
 os.makedirs(METRICS_DIR, exist_ok=True)
 
-ANCHORS = [2019, 2020, 2021, 2022, 2023]
+ANCHORS = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
 SEMANTIC_CLUSTERS = {
     'acs_owner_occupied_units': 'Housing Tenure',

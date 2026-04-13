@@ -92,10 +92,10 @@ def run_rolling_origin_drift():
         for test_year in eval_years:
             if test_year < anchor:
                 continue
-                
+
             test_mask = years == test_year
             offset = test_year - anchor
-            
+
             if test_mask.sum() < 5 or y[test_mask].sum() < 1:
                 continue
                 
@@ -123,6 +123,9 @@ def run_rolling_origin_drift():
     results_df = pd.DataFrame(drift_results)
     pivot = results_df.pivot_table(index=['Model', 'Anchor'], columns='Evaluate_Year', values='PR-AUC')
     
+    # Calculate the max for each (Anchor, Evaluate_Year) to bold the best model per anchor
+    anchor_max = pivot.groupby('Anchor').max()
+    
     # Save to JSON
     results_df.to_json(os.path.join(OUT_DIR, "rolling_origin_drift.json"), orient='records', indent=2)
     
@@ -140,10 +143,20 @@ def run_rolling_origin_drift():
     ]
     
     for idx in pivot.index:
+        model, anchor = idx
         row = pivot.loc[idx]
-        idx_str = f"{idx[0]} {idx[1]}"
-        r = [f"{row[y]:.3f}" if (y in row.index and pd.notnull(row[y])) else "---" for y in eval_years]
-        tex_lines.append(f"{idx_str} & {' & '.join(r)} \\\\")
+        idx_str = f"{model} {anchor}"
+        r = []
+        for y in eval_years:
+            if y in row.index and pd.notnull(row[y]):
+                val = row[y]
+                val_str = f"{val:.3f}"
+                if val == anchor_max.loc[anchor, y]:
+                    val_str = f"\\textbf{{{val_str}}}"
+                r.append(val_str)
+            else:
+                r.append("---")
+        tex_lines.append(f"{idx_str} & {' & '.join(r)} \\\\" )
         
     tex_lines.extend([
         r"\bottomrule",

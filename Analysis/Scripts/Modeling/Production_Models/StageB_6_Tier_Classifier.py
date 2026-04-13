@@ -80,7 +80,8 @@ def run_stage_b():
         plt.grid(axis='y', linestyle='--', alpha=0.7)
         plt.tight_layout()
         
-        plot_path = Path(str(AR.FIGURES_DIR).replace('Draft_v1\\\\Figures', 'Draft_v1/Figures')) / "Chapter4" / "fig_stage_b_continuous_seed_mae.pdf"
+        from artifact_registry import ROOT_DIR as _ROOT
+        plot_path = Path(_ROOT) / "Thesis_Draft" / "Draft_v1" / "Figures" / "Chapter4" / "fig_stage_b_continuous_seed_mae.pdf"
         os.makedirs(plot_path.parent, exist_ok=True)
         plt.savefig(plot_path)
         print(f"Saved Stage B continuous seed plot to {plot_path}")

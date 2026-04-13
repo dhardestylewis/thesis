@@ -119,7 +119,7 @@ def main():
     if isinstance(ref_sv, list): ref_sv = ref_sv[1] if len(ref_sv)>1 else ref_sv[0]
     global_cluster_map, _ = _get_cluster_names(features, ref_labels, ref_sv)
 
-    TARGET_YEAR = 2023
+    TARGET_YEAR = 2024
     te_mask = df['year'] == TARGET_YEAR
     X_test = X_all[te_mask]
     n_shap = min(1000, len(X_test))
@@ -130,7 +130,7 @@ def main():
         method='sigmoid', cv=5
     )
 
-    origins = [2018, 2019, 2020, 2021, 2022]
+    origins = [2018, 2019, 2020, 2021, 2022, 2023]
     all_shares = {}
     
     for origin in origins:
@@ -168,7 +168,7 @@ def main():
     print("\n" + "="*70)
     print(" SUMMARY: RANK STABILITY OF 2023 PREDICTORS ACROSS DIFFERENT ORIGINS")
     print("="*70)
-    ref_shares = all_shares[2022] # 1-year horizon is the "ground truth"
+    ref_shares = all_shares[2023] # 1-year horizon is the "ground truth"
     
     results = []
     for origin in origins[:-1]:
@@ -182,7 +182,7 @@ def main():
         results.append({'Horizon': horizon, 'Origin': origin, 'Spearman_rho': rho})
     
     # 1yr self-comparison
-    results.append({'Horizon': 1, 'Origin': 2022, 'Spearman_rho': 1.0})
+    results.append({'Horizon': 1, 'Origin': 2023, 'Spearman_rho': 1.0})
     
     df_res = pd.DataFrame(results).sort_values('Horizon', ascending=False)
     
@@ -208,7 +208,7 @@ def main():
     ax2.tick_params(axis='y', colors='#c0392b')
     ax2.grid(False)
     
-    plt.title('Multi-Horizon Attribution Stability (Target Year: 2023)', fontweight='bold', fontsize=12)
+    plt.title('Multi-Horizon Attribution Stability (Target Year: 2024)', fontweight='bold', fontsize=12)
     
     # Save Outputs
     output_dir = os.path.join(ROOT, 'Thesis_Draft', 'Draft_v1', 'Figures', 'Track1_Exhibits')

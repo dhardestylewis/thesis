@@ -44,9 +44,9 @@ def generate_descriptive_stats():
     
     # Ensure columns exist before describing to prevent key errors
     available_vars = [v for v in desc_vars if v in df.columns]
-    desc_df = df[available_vars].describe().T
-    desc_df = desc_df[['count', 'mean', 'std', 'min', '50%', 'max']]
-    desc_df.rename(columns={'50%': 'Median'}, inplace=True)
+    desc_df = df[available_vars].describe()
+    desc_df = desc_df.loc[['count', 'mean', 'std', 'min', '50%', 'max']]
+    desc_df.rename(index={'count': 'Count', 'mean': 'Mean', 'std': 'Std. Dev', 'min': 'Min', '50%': 'Median', 'max': 'Max'}, inplace=True)
     
     # Rename for academic presentation conditionally
     rename_dict = {
@@ -65,7 +65,7 @@ def generate_descriptive_stats():
         'pct_bachelor_fill': 'ACS Bachelor Degree or Higher (\\%)',
         'appraised_val_per_sqft_fill': 'TCAD Appraised Value per SqFt (\\$)'
     }
-    desc_df.index = [rename_dict.get(i, i) for i in desc_df.index]
+    desc_df.rename(columns=rename_dict, inplace=True)
     
     # Generate standard booktabs
     raw_latex = desc_df.to_latex(float_format="%.2f", caption="Historical Panel Descriptive Statistics (V2 Full Dimensional Array)", label="tab:desc_stats")

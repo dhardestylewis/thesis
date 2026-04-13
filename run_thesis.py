@@ -61,7 +61,8 @@ import plot_F12_PR_real as f12
 import plot_F16_RD_real as f16
 import plot_F17_DiD_real as f17
 import plot_Track1_exhibits_real as t1_ex
-import plot_3D_temporal_drift as plot_3d
+import generate_interactive_3d as plot_3d
+import plot_F12_PR_real as f12_pr
 import generate_summary_stats_real as stats_table
 import plot_F19_F20_Qualitative as f19_f20
 import plot_F22_HexMap as f22
@@ -250,7 +251,12 @@ def main():
         print(f"    [!] Error generating Track 1 exhibits: {e}")
 
     try:
-        plot_3d.plot_3d_drift()
+        f12_pr.plot_f12()
+    except Exception as e:
+        print(f"    [!] Error generating Authentic PR Curves (F12): {e}")
+
+    try:
+        plot_3d.main()
     except Exception as e:
         print(f"    [!] Error generating 3D Drift exhibits: {e}")
 
@@ -271,6 +277,27 @@ def main():
         os.system(f'python "{meta_cluster_script}"')
     except Exception as e:
         print(f"    [!] Error generating Meta-Attribution Clustering exhibits: {e}")
+
+    try:
+        unclustered_fig_script = os.path.join(ROOT, "scripts", "plot_unclustered_dynamic.py")
+        os.system(f'python "{unclustered_fig_script}"')
+        print("    [+] Generated Unclustered Dynamic Figure (fig_unclustered_dynamic.pdf)")
+    except Exception as e:
+        print(f"    [!] Error generating Unclustered Dynamic Figure: {e}")
+
+    try:
+        clustered_fig_script = os.path.join(ROOT, "scripts", "plot_clustered_dynamic.py")
+        os.system(f'python "{clustered_fig_script}"')
+        print("    [+] Generated Clustered Dynamic Figure (fig_clustered_dynamic.pdf)")
+    except Exception as e:
+        print(f"    [!] Error generating Clustered Dynamic Figure: {e}")
+
+    try:
+        unclustered_table_script = os.path.join(ROOT, "generate_unclustered_table.py")
+        os.system(f'python "{unclustered_table_script}"')
+        print("    [+] Generated Unclustered Dynamic Table (unclustered_stability.tex)")
+    except Exception as e:
+        print(f"    [!] Error generating Unclustered Dynamic Table: {e}")
 
     try:
         f19_f20.generate_exhibits()
@@ -322,6 +349,14 @@ def main():
             pruning_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "run_deep_surrogate_pruning.py")
             os.system(f'python "{pruning_script}"')
             print("    [+] Evaluated PyTorch Deep Surrogate Latent Node Pruning")
+
+            sandbox_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "run_invariant_core_sandbox.py")
+            os.system(f'python "{sandbox_script}"')
+            print("    [+] Evaluated Invariant Core Spuriousness Index")
+
+            disq_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "algorithmic_disqualification_audit.py")
+            os.system(f'python "{disq_script}"')
+            print("    [+] Evaluated Multi-Era Taxonomic Disqualification")
     except Exception as e:
         print(f"    [!] Error running Architectural Knockout Audits: {e}")
 
@@ -338,14 +373,29 @@ def main():
     # ---------------------------------------------------------
     # PART 5: LATEX COMPILATION
     # ---------------------------------------------------------
-    print_header("PHASE 4: COMPILING THESIS DOCUMENT")
-    os.chdir(os.path.join(ROOT, "Thesis_Draft", "Draft_v1"))
-    result = os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex")
+    print_header("PHASE 5: COMPILING THESIS DOCUMENT")
+    
+    # Save current DIR to return after
+    current_cwd = os.getcwd()
+    target_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1")
+    os.chdir(target_dir)
+
+    # Multi-pass LaTeX compilation for TOC and Citations
+    print("[*] PASS 1: PDFLaTeX")
+    os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex > NUL")
+    print("[*] PASS 2: BibTeX")
+    os.system("bibtex Austin_NIMBY_Thesis_Draft > NUL")
+    print("[*] PASS 3: PDFLaTeX (References)")
+    os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex > NUL")
+    print("[*] PASS 4: PDFLaTeX (Final)")
+    result = os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex > NUL")
     
     if result == 0:
-        print("\n[+] PDF compiled successfully.")
+        print("\n[+] Thesis PDF compiled successfully (Austin_NIMBY_Thesis_Draft.pdf).")
     else:
-        print("\n[-] PDF compilation returned warnings or errors.")
+        print("\n[-] PDF compilation returned warnings or errors. Check .log file.")
+
+    os.chdir(current_cwd)
 
     end_time = time.time()
     minutes = (end_time - start_time) / 60

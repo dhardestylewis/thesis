@@ -495,7 +495,8 @@ def process_horizon(path, horizon_name):
     # ---------------------------------------------------------
     print("\nPART A: TEMPORAL DRIFT (ROLLING-ORIGIN)")
     drift_res = []
-    for anchor in [2019, 2020, 2021, 2022, 2023]:
+    drift_eval_years = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    for anchor in [2018, 2019, 2020, 2021, 2022, 2023, 2024]:
         tr_mask = df['year'] < anchor
         if tr_mask.sum() < 20: continue
         cb = clone(optimal_model)
@@ -505,8 +506,10 @@ def process_horizon(path, horizon_name):
         combined_weights = weights[tr_mask] * decay_weights
         
         cb.fit(X[tr_mask], y[tr_mask], sample_weight=combined_weights)
-        for offset in [0,1,2,3]:
-            te_mask = df['year'] == (anchor + offset)
+        for test_year in drift_eval_years:
+            if test_year < anchor: continue
+            te_mask = df['year'] == test_year
+            offset = test_year - anchor
             if te_mask.sum() < 5 or y[te_mask].sum() < 1: continue
             preds = cb.predict_proba(X[te_mask])[:, 1]
             drift_res.append({'Anchor': anchor, 'Offset': offset, 'PR-AUC': average_precision_score(y[te_mask], preds)})
