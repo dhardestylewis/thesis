@@ -530,15 +530,15 @@ Conversely, architectures like V-REx are mathematically designed to isolate caus
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf}
-    \caption[Meta-Attribution Structural Clustering]{Meta-Attribution Clustering. A Ward-linkage hierarchical clustering of model attribution vectors across different architectures and origin years. Tree algorithms and deep algorithms separate cleanly along the vertical axis, while the horizontal axis reveals the robust, structurally invariant spatial features.}
+    \caption[Meta-Attribution Structural Clustering]{Meta-Attribution Clustering. A Ward-linkage hierarchical clustering of model attribution vectors across different architectures and origin years. Tree algorithms and deep algorithms separate along the vertical axis, while the horizontal axis reveals feature clusters with consistently high attribution across models.}
     \label{fig:meta_attribution_clustering}
 \end{figure}
 
 \subsubsection{The Non-Stationary City and the Illusion of Static Portability}
 
-The core finding of this empirical audit is that urban administrative environments are not stationary. Our taxonomic analysis demonstrated that the latent covariance structure of Austin's real estate data severely decoupled between 2018 and 2024 (evidenced by the Adjusted Rand Index dropping below 0.62). As the underlying reality of the city fractured under post-pandemic pressures, predictive models were forced to rapidly synthesize complex new interaction logic---ranging from CatBoost's socio-economic pairings to LightGBM's spatiotemporal coordinate splits---merely to stay afloat.
+This attribution stability analysis shows that feature cluster rankings shift across time periods, with the latent covariance structure of Austin's real estate data changing meaningfully between 2018 and 2024 (evidenced by the Adjusted Rand Index dropping below 0.62). Under post-pandemic market and institutional changes, different model architectures emphasize different interaction pathways---CatBoost tends toward socio-economic pairings while LightGBM draws on spatiotemporal coordinates.
 
-\textbf{The Policy Implication:} When municipal governments procure ``black-box'' urban risk models, they assume the model's logic is a fixed reflection of structural reality. This thesis proves the opposite: as the city's reality shifts, models quietly map entirely new, dynamic interaction pathways. Therefore, it is critical not just to monitor a model's predictive accuracy over time, but to explicitly audit its shifting attribution taxonomies. Without a frozen comparative baseline, planners will unwittingly accept automated decisions that are rapidly re-calibrating their biases to a changing urban grid. \textbf{Detailed longitudinal exhibits in Appendix~\ref{app:unclustered_dynamic} (Figures~\ref{fig:unclustered_dynamic} and~\ref{fig:clustered_dynamic}) demonstrate this phenomenon in practice, tracking how model focus diverges even as predictive performance fluctuates.}
+\textbf{The Policy Implication:} When municipal governments use risk-ranking models over time, monitoring predictive accuracy alone is insufficient. Attribution audits---tracking which features drive scores in each period against a frozen baseline---can reveal whether the model's implicit weighting has shifted in response to covariate drift. Detailed longitudinal exhibits in Appendix~\ref{app:unclustered_dynamic} (Figures~\ref{fig:unclustered_dynamic} and~\ref{fig:clustered_dynamic}) illustrate this by tracking how feature emphasis changes across anchor years.
 
 
 \subsection{Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}
