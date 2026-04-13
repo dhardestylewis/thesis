@@ -78,7 +78,7 @@ To answer this question, the research constructs a sequential predictive methodo
     \item \textbf{Stage D---Political Outcome Analysis:} Conditional on opposition status, establishing structural data limits and the high rate of pre-council withdrawal among protested cases.
 \end{itemize}
 
-Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and equity to support high-confidence administrative use.
+Stages A, B, and D provide context for Stage~C. Stage~A is used to test whether inverse-probability weighting (IPW) can credibly adjust for spatial selection into the analytic sample; diagnostics reported below show this weighting strategy fails overlap and balance gates and is therefore retained only as a failed sensitivity analysis. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation centers on Stage~C under the unweighted primary specification: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and equity to support high-confidence administrative use.
 
 The thesis also includes two exploratory analyses of downstream institutional dynamics. A regression discontinuity design at the 20\% petition threshold estimates the processing-time consequence of crossing the statutory margin. Descriptive evidence from the 2022 council electoral transition, in which specific districts replaced preservationist incumbents with pro-housing representatives, examines whether petition filing rates declined differentially in those districts.
 
@@ -280,13 +280,39 @@ The feature set is separated to prevent predictive models from leveraging sensit
 
 The predictive evaluation centers on Stage~C (Formal Protest Petition). Three supporting stages provide context and methodological inputs:
 
-\textbf{Stage A---Development Occurrence} models where housing development proposals are likely to emerge as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels. Its primary methodological role is to supply inverse-probability weights (IPW) that adjust for spatial selection into the analytic sample: the filing-date petition model observes only neighborhoods that actually received development proposals, and IPW corrects for this non-random selection on observables. Full model details, target definitions, precision--recall curves, and hotspot maps are reported in Appendix~\ref{app:stagea}.
+\textbf{Stage A---Development Occurrence} models where housing development proposals are likely to emerge as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels. Stage A additionally provides a candidate inverse-probability weighting (IPW) sensitivity strategy for spatial selection into the analytic sample. However, as documented in the IPW diagnostics subsection, overlap, ESS, and balance checks do not pass pre-specified quality gates, so weighted Stage C estimates are not used in the main narrative. Full model details, target definitions, precision--recall curves, and hotspot maps are reported in Appendix~\ref{app:stagea}.
 
 \textbf{Stage B---Project Type and Scale} classifies the expected project form and estimates expected unit counts, conditional on a development event. This segmentation is important because different project types (e.g., six-unit by-right infill vs.\ 300-unit PUD) generate fundamentally different institutional responses and petition likelihoods. Classification performance is reported in Appendix~\ref{app:stageb}.
 
 \textbf{Stage D---Political Outcome Analysis} documents the structural missingness and high rates of pre-council withdrawal conditional on a threshold-crossing petition. Because virtually all cases that survive to a final council vote are approved, pre-council attrition is the primary mechanism through which opposition friction manifests. However, due to severe data censorship of withdrawn cases, it cannot be modeled predictively. This analysis is detailed in Appendix~\ref{app:staged}.
 
 A composite measure combining all four stages (\textbf{expected contested units}) is also constructed and mapped in Appendix~\ref{app:contested_units}. Because this multiplicative structure compounds uncertainty from each stage, the resulting map should be interpreted as a relative ranking rather than a reliable absolute probability.
+
+\subsection{IPW Diagnostics and Sensitivity Protocol}
+\label{sec:ipw_diagnostics}
+
+To formally evaluate whether selection weighting is admissible, Stage A estimates a propensity score $\hat e_i = \Pr(D_i=1\mid X_i)$ for inclusion in the Stage C analytic sample. For observed cases ($D_i=1$), the stabilized weight is
+\begin{equation}
+  w_i^{\text{stab}} = \frac{\Pr(D=1)}{\hat e_i}.
+\end{equation}
+The covariate set $X_i$ is fixed ex ante and includes parcel area, parcel frontage, baseline zoning class, council-district fixed effects, ACS renter share, ACS median income, homestead share, lagged neighborhood petition rate, and year fixed effects.
+
+Primary truncation clips stabilized weights at empirical $[p_1,p_{99}]$ to limit variance inflation. Sensitivity bands additionally test $[p_{2.5},p_{97.5}]$ and $[p_{5},p_{95}]$. For each band, we report overlap, standardized mean differences (SMD), and effective sample size
+\begin{equation}
+  ESS = \frac{(\sum_i w_i)^2}{\sum_i w_i^2}.
+\end{equation}
+
+\input{Tables/ipw_diagnostics_summary.tex}
+\input{Tables/ipw_balance_diagnostics.tex}
+
+\begin{figure}[H]
+    \centering
+    \input{Figures/Chapter4/fig_ipw_overlap_balance.tex}
+    \caption[IPW overlap, ESS, and balance diagnostics]{IPW diagnostics for Stage A sensitivity weighting. The overlap and balance profile remains weak after truncation, and ESS remains well below the 40\% admissibility threshold.}
+    \label{fig:ipw_diag}
+\end{figure}
+
+All weighting bands fail the joint diagnostic gate (insufficient overlap, insufficient ESS retention, and residual imbalance), so weighted Stage C effects are excluded from primary claims and retained only as failed sensitivity analyses.
 
 \subsection{Formal Protest Petition}
 
@@ -295,7 +321,7 @@ The Formal Protest Petition forecast is the core of the thesis: conditional on a
 P(y_0 = 1 \mid D=1, X_{i,t}, Z)
 \end{equation}
 
-At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. To adjust for selection on observables---given that the analytic sample naturally contains only neighborhoods that actually receive development proposals---the model applies inverse-probability weighting derived from the Development Occurrence hazard ($Z$). While this weighting corrects for spatial baseline probabilities, it remains inherently limited because it cannot completely resolve unobserved political or social factors that simultaneously influence both proposal location and opposition likelihood. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
+At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. The primary Stage C specification is intentionally unweighted because IPW diagnostics from Stage A fail overlap and balance thresholds (Section~\ref{sec:ipw_diagnostics}). Weighted estimates are retained only as failed sensitivity checks and are not used for headline claims. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
 
 \begin{figure}[H]
     \centering
@@ -381,7 +407,7 @@ Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Unde
 }
 \end{table}
 
-The Development Occurrence hazard model achieves a top-10\% lift of \metricHazardLift{} over the base probability rate, indicating that spatial features carry some predictive information about development occurrence (full Stage~A evaluation is reported in Appendix~\ref{app:stagea}). The filing-date petition model uses trailing 3-year count of localized protests within one year---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates.
+The Development Occurrence hazard model is used as a supporting stage and as the source of attempted IPW sensitivity weights. Because IPW diagnostics fail (Section~\ref{sec:ipw_diagnostics}), weighted Stage C claims are intentionally omitted from the main results. The filing-date petition model therefore reports unweighted discrimination and calibration metrics, and uses trailing 3-year counts of localized protests within one year---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates.
 
 Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits an Expected Calibration Error (ECE = \metricECE{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
 
@@ -635,7 +661,7 @@ This study has several important limitations.
 
 \textbf{Measurement error in reconstructed dates.} Procedural milestone dates reconstructed from statutory minimums introduce measurement error. Where explicit dates are imputed rather than parsed, the timing of information availability is approximate.
 
-\textbf{Selection into observed cases.} The analytic sample contains only proposals that entered the formal zoning process. Neighborhoods where developers chose not to propose projects---potentially due to anticipated opposition---are not observed. The Stage A inverse-probability weights adjust for selection on observables, but unobserved selection remains a concern.
+\textbf{Selection into observed cases.} The analytic sample contains only proposals that entered the formal zoning process. Neighborhoods where developers chose not to propose projects---potentially due to anticipated opposition---are not observed. Attempted Stage A inverse-probability weighting fails overlap and balance diagnostics and is therefore retained only as a failed sensitivity check; unobserved selection remains a concern under the unweighted primary specification.
 
 \textbf{Limited post-policy windows.} HB~24 falls entirely outside the observation period. The event-study results should be interpreted as preliminary.
 
@@ -1229,5 +1255,3 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
 \noindent The results in Table~\ref{tab:disqualification_matrix} reveal a critical nuance in administrative machine learning. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) is not necessarily a signal of structural truth. When juxtaposed against the Spuriousness Index in Section~\ref{sec:spuriousness}, the audit confirms that Random Forest exhibits \textbf{Reliable Spuriousness}: it consistently and deterministically latches onto the same ungeneralizable noise proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but passed the causal survival tests, indicating that they are actively searching for invariant features rather than settling on stable, though harmful, shortcuts. Consequently, only CatBoost, XGBoost, and the Deep Attentive baselines are considered structurally valid for policy formulation.
 
 \end{document}
-
-
