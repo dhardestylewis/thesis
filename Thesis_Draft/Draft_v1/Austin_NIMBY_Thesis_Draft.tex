@@ -1049,6 +1049,15 @@ H3 (Pre-Council) & Deep Surrogate & $0.451 \pm 0.043$ & $0.863 \pm 0.029$ & $0.0
     \label{fig:seed_stability}
 \end{figure}
 
+\noindent A critical follow-up question is whether seed-level variance itself increases with deployment distance. Figure~\ref{fig:ood_seed_variance} plots mean PR-AUC with $\pm 1\sigma$ and $\pm 2\sigma$ bands across 10 seeds and 3 cumulative training vintages at each OOD offset. The confidence bands widen substantially from near-zero at offset $+0$ (in-distribution) to $\sigma > 0.10$ by offset $+2$, confirming that model instability compounds with temporal distance. CatBoost maintains the narrowest variance envelope across all offsets, empirically justifying its selection as the primary operational baseline over architectures with higher mean discrimination but greater seed sensitivity.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Chapter4/fig_ood_seed_variance.pdf}
+    \caption[Seed Variance Interaction with OOD Offset]{Seed Variance $\times$ OOD Offset Interaction: PR-AUC mean and confidence bands ($\pm 1\sigma$, $\pm 2\sigma$) across 10 seeds and 3 training vintages. The widening bands confirm that model instability compounds with deployment distance.}
+    \label{fig:ood_seed_variance}
+\end{figure}
+
 \end{document}
 
 
