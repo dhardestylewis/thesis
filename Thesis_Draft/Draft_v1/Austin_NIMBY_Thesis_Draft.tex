@@ -300,18 +300,15 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{Chapter4/F12_Opposition_PR.png}
-    \caption[Stage C Unified Precision-Recall Curves by Model Class]{Unified Precision--Recall curves for the filing-date petition models: Statistical Baselines (Logistic), Traditional ML (CatBoost, Random Forest), Deep Attentive models (ExcelFormer, FT-Transformer), and Tabular Foundations (TabPFN).}
+    \caption[Stage C Precision-Recall Curves by Model Class]{Precision--Recall curves for filing-date petition models from the pre-registered benchmark roster.}
     \label{fig:pr_curves}
 \end{figure}
 
-\subsubsection{Comparative Benchmarks: Standard, Deep, and Tabular Models}
-To provide a consolidated view of predictive capacity, the modeling framework evaluates standard statistical models against traditional machine learning (Gradient Boosting) and state-of-the-art architectures (Neural Tabular learning and Foundation Models). Table~\ref{tab:comprehensive_benchmark} presents this unified performance matrix, tracking discrimination both in-distribution and in the out-of-distribution (post-regime shift) environment.
+\subsubsection{Primary Model Selection and Fixed Benchmark Roster}
+The benchmark roster was fixed before final analysis and not expanded post hoc. The fixed roster contains Logistic Regression, Random Forest, XGBoost, LightGBM, CatBoost, Deep ERM, Deep V-REx, TabNet, FT-Transformer, ExcelFormer, and TabPFN. The model chosen for all primary filing-date analyses is \textbf{CatBoost} because the explicit selection criterion prioritizes out-of-distribution filing-date PR-AUC subject to a calibration admissibility rule (lowest ECE among models with acceptable discrimination), with no architecture additions after this roster freeze.
 
-While \textbf{CatBoost} \cite{prokhorenkova2018catboost} serves as the primary operational baseline due to its stable calibration (ECE = 0.211) and native handling of categorical features, the highest raw discrimination is achieved by \textbf{ExcelFormer} (0.635 PR-AUC). Crucially, the matrix also evaluates \textbf{TabPFN}, a zero-shot foundation model pre-trained to perform Bayesian inference without any Austin-specific data. Its performance suggests that some predictive signal transfers to a pretrained tabular model, though this does not establish structural stability of the underlying social process. 
+The full fixed-roster benchmark matrix is reported in Appendix~\ref{app:alt_models} rather than the main text to keep the core narrative tied to one primary estimator and one decision rule.
 
-\vspace{1em}
-\input{Tables/comprehensive_benchmark.tex}
-\vspace{1em}
 
 
   \subsection{Model Evaluation Strategy}
@@ -392,7 +389,7 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{Chapter4/fig_combined_calibration_reliability.pdf}
-    \caption[Calibration Reliability Matrix: Standard, Deep, and Foundation Models]{\textbf{Calibration Reliability Matrix:} Parallel evaluation of calibration reliability across the Stage A (Development Occurrence) and Stage C (Unified Opposition) frameworks. Panel (c) highlights calibration across the new unified frontier, confirming that Deep and Foundation models maintain stable probability distributions.}
+    \caption[Calibration Reliability Matrix]{\textbf{Calibration Reliability Matrix:} Parallel calibration evaluation across Stage A (Development Occurrence) and Stage C (Petition Filing) frameworks.}
     \label{fig:global_calibration}
 \end{figure}
 
@@ -400,35 +397,7 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 
 \vspace{1em}
 
-\textbf{The Spurious Performance Trap.} While traditional tree-based architectures (Gradient Boosting, Random Forest) frequently top the raw out-of-distribution PR-AUC leaderboards in the Unified Predictive Frontier, this numerical dominance must be treated with severe methodological skepticism. Subsequent causal ablation audits (see Section~\ref{sec:attribution_divergence}) reveal that these architectures achieve their superior sorting power through what the invariant risk literature defines as \textit{shortcut learning} or simplicity bias. Specifically, these models aggressively optimize for immediate error reduction by exploiting brittle, spurious spatial proxies that map well to training boundaries but collapse under severe civic regime shifts. 
-
-To formalize this, we introduce the \textbf{Spuriousness Index}, a direct application of the Out-of-Distribution (OOD) Generalization Gap derived by evaluating predictive survival within a strict Invariant Core sandbox:
-\begin{equation}
-    \text{Spuriousness Index} = \frac{\text{PR-AUC}_{\text{Invariant Core}}}{\text{PR-AUC}_{\text{Full Matrix}}}
-\end{equation}
-
-When the primary models are restricted exclusively to the undeniable structural reality (Demographics, Housing Tenure, and Neighborhood Income), the results strictly separate causal fidelity from predictive greed (Table~\ref{tab:spuriousness_index}).
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lccc}
-        \toprule
-        \textbf{Algorithm} & \textbf{Full Matrix PR-AUC} & \textbf{Core Sandbox PR-AUC} & \textbf{Spuriousness Index (Survival)} \\
-        \midrule
-        TabNet (Structural Pruning) & 0.099 & 0.157 & \textbf{\metricSpuriousTabNet{}} (\metricSpuriousTabNetGain{}) \\
-        Logistic Regression (L2) & 0.125 & 0.190 & \textbf{\metricSpuriousLogReg{}} (\metricSpuriousLogRegGain{}) \\
-        XGBoost & 0.119 & 0.140 & \textbf{\metricSpuriousXGB{}} \\
-        Deep ERM (Multi-Layer Perceptron) & 0.132 & 0.151 & \textbf{\metricSpuriousMLP{}} \\
-        CatBoost (Gradient Boosting) & 0.121 & 0.136 & \textbf{\metricSpuriousCatBoost{}} \\
-        Deep V-REx (Causal Representation) & 0.122 & 0.125 & \textbf{\metricSpuriousVREx{}} \\
-        LightGBM & 0.122 & 0.124 & \textbf{\metricSpuriousLGBM{}} \\
-        Random Forest & \textbf{0.152} & 0.126 & \textbf{\metricSpuriousRF{}} (\metricSpuriousRFGain{}) \\
-        \bottomrule
-    \end{tabular}
-    \caption[Expanded Algorithmic Spuriousness Index Matrix]{Expanded Algorithmic Spuriousness Index evaluating predictive survival when restricted exclusively to the Invariant Core across all thesis architectures. Models with an index $< 1.0$ (Random Forest) are formally identified as dependent on ungeneralizable noise proxies, while models with an index $> 1.0$ (TabNet, LogReg, V-REx) demonstrate structural robustification by rejecting non-invariant features.}
-    \label{tab:spuriousness_index}
-\end{table}
-
-These results caution against using raw model scores as a basis for long-term policy decisions. The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides an optimistic upper bound on predictive capacity. To assess whether temporal leakage is a plausible concern, bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) reveals a more realistic picture.
+To avoid winner-switching narratives across incompatible metrics, model comparison in the main text is restricted to the fixed selection rule stated above. Extended architecture diagnostics (including spuriousness tests, attribution divergence, and cross-family comparison panels) are retained in the appendix as bounded supplementary evidence rather than competing headline claims. The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) remains an optimistic upper bound, while bootstrap evaluation across administrative horizons (Table~\ref{tab:multi_horizon}) provides the primary decision-relevant estimate.
 
 \begin{figure}[htbp]
     \centering
@@ -472,20 +441,7 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 \subsection{Architecture Attribution Divergence}
 \label{sec:attribution_divergence}
 
-As established in the Unified Predictive Frontier (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) significantly out-discriminate traditional tree-based gradients. This raises a critical interpretability question: do these superior architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
-
-To rigorously evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. Crucially, this matrix isolates the evaluation across the two dominant axes of the dataset: temporal severity (Pre-2022 vs. Post-2022 Housing Crises) and informational horizons (H0 Filing vs. H3 Pre-Council).
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{Chapter4/fig_attribution_divergence_matrix.pdf}
-    \caption[Attribution Divergence Matrix: Gradient Boosting vs. Deep V-REx Penalization]{Comparison of semantic feature attribution between traditional tree architectures (Bagging/Boosting) and a natively-penalized Deep V-REx (Variance Risk Extrapolation) architecture. Identical spatial inputs map to distinctly different structural priors, a phenomenon that remains rigidly stable across all development horizons and policy eras.}
-    \label{fig:attribution_divergence_matrix}
-\end{figure}
-
-The divergence is stark, yet remarkably stable. Across every quadrant—regardless of the timeline or the horizon—the tree-based CatBoost and Random Forest models overwhelmingly index on contiguous parcel facts (Property Valuation, Parcel Scale, and Structure Age). Conversely, the Deep Attentive framework systematically ignores parcel constraints and directs its learning toward complex neighborhood distributions—specifically Demographic Composition, Housing Tenure, and combinations of Rent characteristics. The deep and tree-based models appear to rely on different attribution profiles, though these differences should not be interpreted as identifying distinct causal mechanisms.
-
-To empirically verify that this phenomena holds continuously year-by-year and is not merely an artifact of merging the Pre/Post-2022 anchors, Appendix~\ref{app:longitudinal_divergence} provides a full longitudinal decomposition across every individual year from 2018 to 2024, validating that the comparative algorithmic architecture remains rigidly diverged.
+Extended architecture-level attribution comparisons are intentionally moved out of the main text. Appendix~\ref{app:longitudinal_divergence} reports the full divergence panels, year-by-year decompositions, and supplementary discussion across deep, tree-based, and foundation families using the fixed benchmark roster.
 
 \subsubsection{Attribution Stability Across Temporal Windows}
 
@@ -674,10 +630,13 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 \appendix
 
 \newpage
-\section{Supplementary Calibration Comparison}
+\section{Supplementary Benchmark and Calibration Comparison}
 \label{app:alt_models}
 
-\noindent The following section documents an expanded benchmark comparing baseline statistical and machine-learning models and PyTorch deep learning networks. (These tabular benchmarks have been moved into the main text in Section~\ref{sec:results} for direct performance evaluation). Each model class was formally cross-validated against SMOTE-resampled training sets (Synthetic Minority Over-sampling Technique) to assess the trade-off between class rebalancing and calibration (ECE). 
+\noindent This appendix contains the bounded benchmark material that is intentionally trimmed from the main text. The benchmark roster is fixed ex ante and includes only Logistic Regression, Random Forest, XGBoost, LightGBM, CatBoost, Deep ERM, Deep V-REx, TabNet, FT-Transformer, ExcelFormer, and TabPFN. No additional model classes were introduced after this roster was frozen. The full fixed-roster benchmark matrix is reported in Table~\ref{tab:comprehensive_benchmark}. Extended architecture comparisons are descriptive diagnostics, while primary model selection in the main text follows a single criterion: out-of-distribution filing-date PR-AUC subject to calibration admissibility.
+
+\vspace{1em}
+\input{Tables/comprehensive_benchmark.tex}
 
 \vspace{1em}
 \noindent Additionally, this appendix documents a systematic calibration method comparison evaluating Platt Scaling (sigmoid) against Isotonic Regression across base models: CatBoost, LightGBM, and Random Forest. For CatBoost, Platt Scaling achieved modestly lower ECE (0.186 vs.\ 0.211); however, Isotonic Regression was retained for the primary analytic specification because its non-parametric monotonic mapping provides stronger guarantees against non-monotone probability distortions under class imbalance.
@@ -1079,7 +1038,7 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \section{Extended Architectural Search and Resampling Strategies}
 \label{app:architectural_search}
 
-\noindent Prior to the formalization of the Unified Predictive Frontier matrix (Table 5), extensive hyperparameter and re-sampling evaluations were conducted across traditional machine learning models to combat the severe class imbalance of formal petitions. Table~\ref{tab:alt_architectures} presents the unabridged results of these search cycles, demonstrating that while synthetic oversampling (SMOTE) marginally improved discrimination in some tree architectures, it persistently degraded calibration (ECE), justifying the selection of CatBoost without SMOTE as the primary deployable baseline.
+\noindent Prior to final model lock, extensive hyperparameter and re-sampling evaluations were conducted across the fixed benchmark roster to address severe class imbalance in formal petition filing. Table~\ref{tab:alt_architectures} reports these bounded search results. Synthetic oversampling (SMOTE) sometimes increased discrimination metrics, but often worsened calibration (ECE), so the primary specification retained the non-SMOTE CatBoost baseline under the selection rule used in the main text.
 
 \vspace{1em}
 \input{Tables/alternative_architectures.tex}
@@ -1089,9 +1048,9 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \section{Longitudinal Architecture Attribution Divergence (2018--2024)}
 \label{app:longitudinal_divergence}
 
-\noindent To empirically verify the stability conclusions presented in Section~\ref{sec:attribution_divergence}, Figure~\ref{fig:attribution_longitudinal} plots the year-by-year continuous stability of the architectural divergence between the primary CatBoost implementation and the Surrogate Deep Attentive baseline. This exhaustive temporal matrix confirms that gradient boosting and deep metric spatial embeddings leverage entirely distinct structural frameworks—valuation size vs. associative demographics—across all seven critical observation years and administrative horizons.
+\noindent To empirically verify the stability conclusions presented in Section~\ref{sec:attribution_divergence}, Figure~\ref{fig:attribution_longitudinal} plots year-by-year attribution differences between the primary CatBoost implementation and the Surrogate Deep Attentive baseline. The longitudinal matrix indicates persistent differences in attribution profiles (valuation/parcel-scale emphasis versus neighborhood-distribution emphasis) across observation years and horizons.
 
-Furthermore, these stark structural divergences underscore a fundamental mathematical tension underlying civic machine learning architectures: the problem of \textit{representation sparsity}. Through systematic "latent node pruning" experiments on the PyTorch Surrogate (evaluated at $LATENT=16$ and $LATENT=32$), it was empirically demonstrated that nearly 50\% of the neural architecture's bottleneck representation neurons output inactive or noise-amplifying projections. This finding formally highlights the core superiority of the Gradient Boosted Tree architectures (such as CatBoost) in administrative forecasting space. While an inherently overparameterized Multi-Layer Perceptron wastes internal capacity memorizing local noise clusters due to the unstructured matrix of civic data, tree-based inductive biases instinctively trim out uninformative or highly-collinear administrative proxies, structurally bypassing the exact parameterization traps that degrade deep tabular baselines.
+These divergences motivate a representation-sparsity diagnostic rather than a single-model ``winner'' claim. Latent-node pruning experiments on the PyTorch surrogate (evaluated at $LATENT=16$ and $LATENT=32$) show that many bottleneck units contribute limited signal, indicating that architecture-specific inductive biases shape which features are retained or suppressed under sparse tabular settings.
 
 \begin{figure}[H]
     \centering
@@ -1229,5 +1188,3 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
 \noindent The results in Table~\ref{tab:disqualification_matrix} reveal a critical nuance in administrative machine learning. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) is not necessarily a signal of structural truth. When juxtaposed against the Spuriousness Index in Section~\ref{sec:spuriousness}, the audit confirms that Random Forest exhibits \textbf{Reliable Spuriousness}: it consistently and deterministically latches onto the same ungeneralizable noise proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but passed the causal survival tests, indicating that they are actively searching for invariant features rather than settling on stable, though harmful, shortcuts. Consequently, only CatBoost, XGBoost, and the Deep Attentive baselines are considered structurally valid for policy formulation.
 
 \end{document}
-
-
