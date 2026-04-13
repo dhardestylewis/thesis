@@ -1005,6 +1005,15 @@ While the False Positive Rate (FPR) exhibits stable algorithmic tracking (due to
     \label{fig:fpr_fnr_longitudinal}
 \end{figure}
 
+\noindent Given the constraints of training sparsity, evaluating the out-of-distribution (OOD) decay of these error topologies necessitates a cumulative origin design. Figure~\ref{fig:ood_offset_decay} models predictive drift by fixing the training corpus at continuous historic vintages ($T \le Y$) and tracking the algorithmic degradation over fixed deployment offsets ($+1$ to $+5$ years into the future). By averaging the expected FPR and FNR across all possible origin years, this temporal decay curve provides a rigorous, smoothed expectation of how rapidly algorithmic bias escalates in deployment before requiring a hard model retrain.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Chapter4/fig_ood_offset_decay.pdf}
+    \caption[OOD Deployment Error Decay]{Out-of-Distribution Error Decay: Expected FPR and FNR drift across continuous temporal deployment offsets. Averaging the error topologies across all cumulative historical vintages smooths single-year sample volatility and establishes an expected ceiling on model decay for multi-year municipal deployments.}
+    \label{fig:ood_offset_decay}
+\end{figure}
+
 \end{document}
 
 
