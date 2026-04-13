@@ -38,7 +38,7 @@ Columbia University}
 \maketitle
 
 \begin{abstract}
-This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from a legally certified measured threshold-crossing petition. Working from 7,074 discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify portable calibrated probabilities for institutional decision-making.
+This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from the clerk-certified valid petition (unobserved). Working from \metricBaselineCases{} discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify portable calibrated probabilities for institutional decision-making.
 \end{abstract}
 
 \newpage
@@ -100,7 +100,7 @@ The theoretical centerpiece for understanding this localized resistance is Fisch
 
 Participatory distortion matters for housing supply when it operates through institutions that can delay or block projects. Manville and Monkkonen \cite{manville2016unpermitted} highlight that discretionary review processes---where development relies on site-specific municipal approvals rather than by-right administrative clearance---serve as the primary vehicle through which local opposition exerts leverage. In a discretionary regime, citywide housing goals are repeatedly displaced by parcel-level political conflict \cite{hills2011zoning}.
 
-In Texas, this leverage is explicitly codified through the protest petition mechanism (Local Government Code \S~211.006). The statute legally empowers adjacent property owners to force supermajority city council voting requirements if owners representing 20\% of the \emph{area of lots} immediately adjoining the proposed change and extending 200 feet from that area sign a valid petition.\footnote{\S~211.006(d) and (f) were repealed effective September 1, 2025 by HB 24 (89th Texas Legislature). The operative provisions now reside in new \S~211.0061, which establishes a three-tier protest system: (1)~owners of $\ge$20\% of the directly affected area trigger a three-fourths vote; (2)~owners of $\ge$60\% of the adjoining 200-foot buffer trigger a three-fourths vote; and (3)~for qualifying residential development under subsection~(b)(3), a simple majority of all governing body members is required. Proposed comprehensive zoning changes are exempted from the protest mechanism entirely.} This mechanism empowers localized opposition, transforming protest into a formal institutional hurdle. Cellini, Ferreira, and Rothstein \cite{cellini2010schools}, in their analysis of California school bond referenda, demonstrate how supermajority thresholds inherently distort political outcomes to favor the status quo. 
+In Texas, this leverage is explicitly codified through the protest petition mechanism (Local Government Code \S~211.006). The statute legally empowers adjacent property owners to force supermajority city council voting requirements if owners representing 20\% of the \emph{area of lots} immediately adjoining the proposed change and extending 200 feet from that area sign a petition that the City Clerk certifies as valid.\footnote{\S~211.006(d) and (f) were repealed effective September 1, 2025 by HB 24 (89th Texas Legislature). The operative provisions now reside in new \S~211.0061, which establishes a three-tier protest system: (1)~owners of $\ge$20\% of the directly affected area trigger a three-fourths vote; (2)~owners of $\ge$60\% of the adjoining 200-foot buffer trigger a three-fourths vote; and (3)~for qualifying residential development under subsection~(b)(3), a simple majority of all governing body members is required. Proposed comprehensive zoning changes are exempted from the protest mechanism entirely.} This mechanism empowers localized opposition, transforming protest into a formal institutional hurdle. Cellini, Ferreira, and Rothstein \cite{cellini2010schools}, in their analysis of California school bond referenda, demonstrate how supermajority thresholds inherently distort political outcomes to favor the status quo. 
 
 In Austin, the protest petition creates institutional friction for land use: cases exceeding the measured petition threshold appear to face additional voting requirements and longer processing times. Recent empirical research by the Mercatus Center at George Mason University confirms the severity and asymmetry of this mechanism specifically within the Austin political geography. Their analysis demonstrates that measured threshold-crossing petitions are more common for rezonings that increase residential density: historically, 25\% of rezonings to multifamily use in Austin crossed that measured threshold, compared to only 5\% for commercial rezonings. 
 
@@ -247,10 +247,19 @@ The analytical samples vary by analytical goal. The primary predictive evaluatio
 
 Unlike approaches that require complete-case geometric intersections, this methodology uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This approach retains cases with partially missing covariates, reducing artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
 
+\subsection{Controlled Terminology Glossary}
+\label{sec:terminology_glossary}
+
+\begin{description}
+    \item[measured threshold-crossing petition] The observed binary study outcome: an indicator that the reconstructed petition share is at least 20\% in the public records used for this thesis.
+    \item[reconstructed petition share] The computed share of signed adjoining-lot area derived from petition filings and parcel geometry; this is a measurement construct rather than a clerk ruling.
+    \item[clerk-certified valid petition (unobserved)] The legal administrative determination by the City Clerk that a petition satisfies statutory requirements; this is not directly observed in the analytic dataset.
+\end{description}
+
 \subsection{Primary Outcome Definition}
 \label{sec:outcome}
 
-The primary predictive outcome ($y_0$) is a \emph{measured threshold-crossing petition}: a binary indicator equal to one when the reconstructed petition-share calculation---derived from public petition filings and buffer-area computations---exceeds the 20\% statutory threshold defined by Texas Local Government Code Chapter~211 and Austin LDC \S~25-2-284. This is an operationalized outcome, not a direct observation of the legally decisive event. The City Clerk's formal certification of each petition as legally valid is not recorded in the public dataset; consequently, the outcome captures cases that \emph{appear} to have crossed the threshold based on available records, which may include petitions that were ultimately rejected on procedural grounds or petitions whose true area share differed from the calculated value. Throughout this manuscript, ``threshold-crossing petition'' refers to this reconstructed measure, and ``legally certified petition'' is reserved for the unobserved clerk-certified outcome.
+The primary predictive outcome ($y_0$) is a \emph{measured threshold-crossing petition}: a binary indicator equal to one when the reconstructed petition-share calculation---derived from public petition filings and buffer-area computations---exceeds the 20\% statutory threshold defined by Texas Local Government Code Chapter~211 and Austin LDC \S~25-2-284. This is an operationalized outcome, not a direct observation of the legally decisive event. The City Clerk's formal certification of each petition as legally valid is not recorded in the public dataset; consequently, the outcome captures cases that \emph{appear} to have crossed the threshold based on available records, which may include petitions that were ultimately rejected on procedural grounds or petitions whose true area share differed from the calculated value. Throughout this manuscript, terminology follows Section~\ref{sec:terminology_glossary}: ``measured threshold-crossing petition'' and ``reconstructed petition share'' refer to observed constructs, while ``clerk-certified valid petition (unobserved)'' denotes the legal determination not captured in these data.
 
 Secondary outcomes are analyzed separately:
 \begin{itemize}
@@ -543,12 +552,12 @@ The following analysis is included as institutional context that corroborates th
 \draw[arrow] (X) to[bend right=15] (Y.south);
 \end{tikzpicture}
 
-\caption[Causal Identification: Regression Discontinuity DAG]{Directed acyclic graph for the threshold-based regression discontinuity design. The running variable $R$ (reconstructed petition-share percentage) determines treatment $T$ (crossing the 20\% threshold), which affects council processing delay $Y$. Unobserved factors $U$ may influence both petition mobilization and delay through channels not mediated by the threshold.}
+\caption[Causal Identification: Regression Discontinuity DAG]{Directed acyclic graph for the threshold-based regression discontinuity design. The running variable $R$ (reconstructed petition share) determines treatment $T$ (crossing the 20\% measured threshold), which affects council processing delay $Y$. Unobserved factors $U$ may influence both petition mobilization and delay through channels not mediated by the threshold.}
 \label{fig:causal_dag}
 \end{figure}
 
 
-To estimate the causal effect of crossing the formal protest threshold, a regression discontinuity (RD) design exploits the 20\% statutory petition threshold under Texas LGC Chapter~211. The running variable is the reconstructed petition-share percentage within the 200-foot buffer---a measure derived from public petition filings and parcel-area calculations, not from clerk certification.
+To estimate the causal effect of crossing the measured threshold, a regression discontinuity (RD) design exploits the 20\% statutory petition threshold under Texas LGC Chapter~211. The running variable is the reconstructed petition share within the 200-foot buffer---a measure derived from public petition filings and parcel-area calculations, not from clerk certification.
 
 A triangular-kernel weighted least squares estimator yields an estimated shift of $\metricRDDelay{}$ days in council processing time at the threshold ($p < 0.001$, SE $= \metricRDSE{}$, 95\% CI: $\metricRDCI{}$). This corresponds to approximately \metricRDDelayWeeks{} weeks of additional delay associated with crossing the statutory margin.
 
@@ -559,7 +568,7 @@ Design limitations include potential manipulation of the running variable, since
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter5/F16_Petition_RD.png}
-\caption[Threshold-Based Discontinuity at the Measured 20\% Petition Share]{Regression discontinuity at the 20\% measured petition threshold. Estimated discontinuity in council processing time. Bin widths were selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure.}
+\caption[Threshold-Based Discontinuity at the Measured 20\% Petition Share]{Regression discontinuity at the 20\% reconstructed petition-share threshold. Estimated discontinuity in council processing time. Bin widths were selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure.}
 \label{fig:f16_rd}
 \end{figure}
 
@@ -1006,7 +1015,7 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 
 \begin{table}[H]
 \centering
-\caption{Summary of Supplementary Quasi-Experimental Estimates}
+\caption{Summary of Supplementary Quasi-Experimental Estimates for Reconstructed Petition Outcomes}
 \label{tab:geographic_causal}
 \small
 \begin{tabular}{@{}llrrrr@{}}
@@ -1017,7 +1026,7 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 \textit{(2) NPA Designation}   & vote\_no       & \metricNPAFrictionCoeff{} & 0.245  & \metricNPAFrictionPval{}& 20 \\
 \textit{(3) Historic District}      & vote\_no       & \metricHDFrictionCoeff{}  & ---    & \metricHDFrictionPval{} & 20 \\
 \textit{(4) TOD Deregulation}       & vote\_no       & \metricTODFrictionCoeff{} & ---    & \metricTODFrictionPval{}& 20 \\
-\textit{(5) 2022 Flipped District DiD}& protested    & \textbf{\metricFlipDiDCoeff{}}     & 0.266  & \textbf{\metricFlipDiDPval{}}    & 518 \\
+\textit{(5) 2022 Flipped District DiD}& measured\_threshold\_crossing    & \textbf{\metricFlipDiDCoeff{}}     & 0.266  & \textbf{\metricFlipDiDPval{}}    & 518 \\
 \bottomrule
 \multicolumn{6}{l}{\footnotesize OLS with robust standard errors. Designs (3)--(4) are non-informative due to limited variation}\\
 \multicolumn{6}{l}{\footnotesize or zero-variance outcomes; they are reported for transparency rather than substantive interpretation.} \\
@@ -1032,14 +1041,14 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 
 \noindent Event-study models evaluate the short-run effects of the HOME Initiative on opposition dynamics. HOME Phase~1 and Phase~2 are treated as independent policy shocks, with treatment defined at the case level by parcel eligibility and timing anchored to application-acceptance start dates \cite{callaway2021did}.
 
-The event-study estimate for organized opposition, operationalized as the filing of a threshold-crossing petition per zoning case, is $\metricDiDVotes{}$ (SE $= \metricDiDSE{}$, 95\% CI: $\metricDiDCI{}$). This estimate suggests a \metricDiDDirectionText{} in organized opposition, and the effect is \metricDiDSignificanceText{}. The specification uses a Two-Way Fixed Effects (TWFE) model with case-level and time fixed effects, excluding post-treatment covariates to avoid ``bad control'' bias \cite{cinelli2020making}.
+The event-study estimate for organized opposition, operationalized as the filing of a measured threshold-crossing petition per zoning case, is $\metricDiDVotes{}$ (SE $= \metricDiDSE{}$, 95\% CI: $\metricDiDCI{}$). This estimate suggests a \metricDiDDirectionText{} in organized opposition, and the effect is \metricDiDSignificanceText{}. The specification uses a Two-Way Fixed Effects (TWFE) model with case-level and time fixed effects, excluding post-treatment covariates to avoid ``bad control'' bias \cite{cinelli2020making}.
 
 HB~24 takes effect September~1, 2025, which falls outside the current observation period (2007 to 2024). Its evaluation is explicitly pre-registered as a future extension.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter5/F17_DiD_EventStudy.png}
-\caption[HOME Phase 1 Event-Study Coefficients]{HOME Phase 1 event-study coefficients relative to the implementation date. The absence of a clean spatial control cohort necessitates purely temporal event-tracking.}
+\caption[HOME Phase 1 Event-Study Coefficients (Reconstructed Petition Outcome)]{HOME Phase 1 event-study coefficients for measured threshold-crossing petitions relative to the implementation date. The absence of a clean spatial control cohort necessitates purely temporal event-tracking.}
 \label{fig:f17_did}
 \end{figure}
 
@@ -1254,3 +1263,4 @@ The dendrogram confirms that tree architectures and deep attentive mechanisms co
 \end{figure}
 
 \end{document}
+

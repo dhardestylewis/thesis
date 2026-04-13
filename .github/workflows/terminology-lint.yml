@@ -1,0 +1,13 @@
+name: terminology-lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-terminology:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint thesis terminology
+        run: python scripts/lint_thesis_terminology.py
