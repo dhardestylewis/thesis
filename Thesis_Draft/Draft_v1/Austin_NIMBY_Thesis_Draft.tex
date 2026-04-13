@@ -38,7 +38,7 @@ Columbia University}
 \maketitle
 
 \begin{abstract}
-This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from a legally certified valid petition. Working from 7,074 discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield portable, well-calibrated probabilities for administrative deployment.
+This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from a legally certified measured threshold-crossing petition. Working from 7,074 discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error of \metricECE{} after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield portable, well-calibrated probabilities for administrative deployment. By applying discriminatory ranking to administrative municipal data... testing whether administrative spatial characteristics carry sufficient discriminatory signal to anticipate formal protest petitions...
 \end{abstract}
 
 \newpage
@@ -108,7 +108,7 @@ In Austin, the protest petition creates institutional friction for land use: cas
 \label{tab:mercatus_petitions}
 \begin{tabular}{lc}
 \toprule
-\textbf{Proposed Zoning Category} & \textbf{Rezonings Facing Valid Petition (\%)} \\
+\textbf{Proposed Zoning Category} & \textbf{Rezonings Crossing Measured Threshold (\%)} \\
 \midrule
 Multifamily Residential & 25\% \\
 Commercial / Non-Residential & 5\% \\
@@ -304,7 +304,7 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
     \label{fig:pr_curves}
 \end{figure}
 
-\subsubsection{Unified Predictive Frontier: Standard, Deep, and Foundation Models}
+\subsubsection{Comparative Benchmarks: Standard, Deep, and Tabular Models}
 To provide a consolidated view of predictive capacity, the modeling framework evaluates standard statistical models against traditional machine learning (Gradient Boosting) and state-of-the-art architectures (Neural Tabular learning and Foundation Models). Table~\ref{tab:comprehensive_benchmark} presents this unified performance matrix, tracking discrimination both in-distribution and in the out-of-distribution (post-regime shift) environment.
 
 While \textbf{CatBoost} \cite{prokhorenkova2018catboost} serves as the primary operational baseline due to its stable calibration (ECE = 0.211) and native handling of categorical features, the highest raw discrimination is achieved by \textbf{ExcelFormer} (0.635 PR-AUC). Crucially, the matrix also evaluates \textbf{TabPFN}, a zero-shot foundation model pre-trained to perform Bayesian inference without any Austin-specific data. Its performance suggests that some predictive signal transfers to a pretrained tabular model, though this does not establish structural stability of the underlying social process. 

@@ -1,8 +1,8 @@
 [
     {
         "semantic_cluster": "Location",
-        "mean": 0.855395560721828,
-        "median": 0.855395560721828,
+        "mean": 1.0051814702507806,
+        "median": 1.0051814702507806,
         "std": NaN,
         "count": 1,
         "is_consensus": false
@@ -17,24 +17,24 @@
     },
     {
         "semantic_cluster": "Other",
-        "mean": 1.2952975487683114,
+        "mean": 1.3502272783948222,
         "median": 1.0,
-        "std": 0.8858926463049339,
+        "std": 1.0506818351844667,
         "count": 9,
         "is_consensus": true
     },
     {
         "semantic_cluster": "Parcel Scale",
-        "mean": 0.44413888861264883,
-        "median": 0.44413888861264883,
+        "mean": 0.5207807245055567,
+        "median": 0.5207807245055567,
         "std": NaN,
         "count": 1,
         "is_consensus": false
     },
     {
         "semantic_cluster": "Zoning Delta",
-        "mean": 1.0287182725175186,
-        "median": 1.0287182725175186,
+        "mean": 1.3079229604570597,
+        "median": 1.3079229604570597,
         "std": NaN,
         "count": 1,
         "is_consensus": false

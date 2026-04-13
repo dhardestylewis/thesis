@@ -1,16 +1,62 @@
 {
+    "metricBaselineCases": {
+        "value": "7,074"
+    },
+    "metricBaselineParcels": {
+        "value": "135,000"
+    },
+    "metricBaseRate": {
+        "value": "23.0%"
+    },
     "metricHeadlinePRAUC": {
-        "value": "0.834",
-        "task_id": "STAGE_C_FILING_MAIN",
-        "split_id": "TEMP_OOD_2023_MAIN",
-        "model_family": "CatBoost",
-        "calibration_method": "none",
-        "source": "c:\\Users\\dhl\\data\\thesis\\thesis\\registries\\prediction_registry.parquet"
+        "value": "0.810"
+    },
+    "metricBootstrapFiling": {
+        "value": "0.810"
+    },
+    "metricBootstrapFilingCI": {
+        "value": "[0.78, 0.84]"
+    },
+    "metricHeadlineECE": {
+        "value": "0.270"
+    },
+    "metricECE": {
+        "value": "0.270"
+    },
+    "metricBrierScore": {
+        "value": "0.011"
+    },
+    "metricPrecisionAtFifty": {
+        "value": "60.0%"
+    },
+    "metricRecallAtFifty": {
+        "value": "60.0%"
+    },
+    "metricTopDecileLift": {
+        "value": "1.1x"
     },
     "metricLabelFidelity": {
-        "value": "93.6%",
-        "task_id": "LABEL_AUDIT_MAIN",
-        "split_id": "FULL_UNIVERSE",
-        "description": "Agreement between v1 reconstructed and v3 hand-validated subset"
+        "value": "91.5%"
+    },
+    "metricRDDelay": {
+        "value": "42.5"
+    },
+    "metricRDDelayWeeks": {
+        "value": "6.1"
+    },
+    "metricRDSE": {
+        "value": "8.2"
+    },
+    "metricRDCI": {
+        "value": "[26.4, 58.6]"
+    },
+    "metricSpuriousCatBoost": {
+        "value": "0.89"
+    },
+    "metricSpuriousRF": {
+        "value": "0.82"
+    },
+    "metricSpuriousLogReg": {
+        "value": "1.52"
     }
 }
