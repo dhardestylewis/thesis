@@ -78,7 +78,7 @@ To answer this question, the research constructs a sequential predictive methodo
     \item \textbf{Stage D---Political Outcome Analysis:} Conditional on opposition status, establishing structural data limits and the high rate of pre-council withdrawal among protested cases.
 \end{itemize}
 
-Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and equity to support high-confidence administrative use.
+Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and error stability to support high-confidence administrative use.
 
 The thesis also includes two exploratory analyses of downstream institutional dynamics. A regression discontinuity design at the 20\% petition threshold estimates the processing-time consequence of crossing the statutory margin. Descriptive evidence from the 2022 council electoral transition, in which specific districts replaced preservationist incumbents with pro-housing representatives, examines whether petition filing rates declined differentially in those districts.
 
@@ -358,7 +358,7 @@ This V-shaped recovery is the central temporal finding: CatBoost's Pre-2019 anch
 
 \subsection{Predictive Performance Across All Horizons}
 
-Table~\ref{tab:metrics_summary} reports the pre-specified fairness and calibration metrics for the Stage C opposition model evaluated at the initial filing date horizon.
+Table~\ref{tab:metrics_summary} reports the pre-specified discrimination and calibration metrics for the Stage C opposition model evaluated at the initial filing date horizon.
 
 \begin{table}[H]
 \centering
@@ -374,8 +374,7 @@ Discrimination       & PR-AUC (In-Dist CV Upper Bound) & \textbf{\metricPRAUC{}}
 Discrimination       & Top-Decile Lift   & \textbf{\metricTopDecileLift{}} \\ \midrule
 Calibration      & Expected Calibration Error (ECE)   & \textbf{\metricECE{}} \\
 Calibration      & Calibration Slope      & \textbf{\metricCalibrationSlope{}} \\ \midrule
-Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Underpowered} \\ \bottomrule
-\multicolumn{3}{l}{\footnotesize $^{\dagger}$Reported as exploratory diagnostics only; subgroup sample sizes are insufficient for formal fairness testing.} \\
+\bottomrule
 \multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}074$ cases, CatBoost (Primary Model) with 5-fold cross-validation.} \\
 \end{tabular}
 }
@@ -385,7 +384,7 @@ The Development Occurrence hazard model achieves a top-10\% lift of \metricHazar
 
 Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits an Expected Calibration Error (ECE = \metricECE{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
 
-The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. As an exploratory equity diagnostic, the false negative rate (FNR) gap across \metricNDistricts{} council districts is \metricFNRGap{}; however, this metric should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), and Chouldechova \cite{chouldechova2017fair} proves that an imperfect classifier cannot simultaneously satisfy equalized false positive rates, false negative rates, and predictive parity across groups unless base rates are identical. With such sparse and unbalanced subgroups, the \metricFNRGap{} gap is likely driven by sparse subgroup counts, not evidence of equalized performance.
+The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. Subgroup diagnostics are reported for transparency only (Appendix~\ref{app:subgroup_diagnostics}) and are not used for inferential claims or decision thresholds.
 
 After Isotonic Regression calibration, the model reports an Expected Calibration Error (ECE) of \metricECE{} (95\% bootstrap CI: \metricECEBootCI{}) and a calibration slope of \metricCalibrationSlope{}. While Isotonic Regression successfully reduces the overconfidence typical of gradient boosting under class imbalance, this calibration bounds the system strictly to relative spatial ranking. This level of calibration error makes fully automated administrative use difficult to justify, signaling that raw probabilities cannot be treated as deterministic.
 
@@ -645,6 +644,8 @@ This study has several important limitations.
 
 \textbf{Fairness power.} The \metricFNRGap{} FNR gap across \metricNDistricts{} council districts should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), so the metric lacks statistical power to detect meaningful disparities.
 
+\textbf{Exploratory-only subgroup diagnostics.} Subgroup error diagnostics are exploratory and non-decisive. They are included to document transparency checks, not to support inferential claims, deployment gates, or operational decision rules.
+
 \textbf{Geographic error distribution.} Figure~\ref{fig:spatial_error} maps the geographic distribution of false positive predictions against the locations of actual petition filings. False positives split 49.6\% west of I-35 and 50.4\% east, providing additional spatial context. However, neither this geographic symmetry nor the FNR gap constitutes a formal fairness guarantee. The more substantive ethical limitation is that the model cannot distinguish affluent exclusionary mobilization from anti-displacement resistance (see Section~\ref{sec:interviews}).
 
 \begin{figure}[H]
@@ -672,6 +673,30 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 \bibliographystyle{plainurl}
 \bibliography{references}
 \appendix
+
+\newpage
+\section{Subgroup Diagnostics (Transparency-Only)}
+\label{app:subgroup_diagnostics}
+
+\noindent Subgroup diagnostics are reported for transparency only and are explicitly \textbf{not inferential}. A minimum-support rule is imposed before any subgroup error estimate can be treated as inferential: at least 25 observed positives and 100 observed negatives per subgroup in the evaluation split (equivalently, stable denominators for both FNR and FPR). If either denominator is below threshold, the subgroup is labeled \textit{underpowered (not inferential)} and no substantive comparative conclusion is drawn.
+
+\begin{table}[H]
+\centering
+\caption{Subgroup Error Diagnostics (Transparency-Only; Not Inferential)}
+\label{tab:subgroup_transparency}
+\renewcommand{\arraystretch}{1.2}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Subgroup Family} & \textbf{Units} & \textbf{Min Positives} & \textbf{Median Positives} & \textbf{Min Negatives} & \textbf{FNR/FPR Reported} & \textbf{Status} \\
+\midrule
+Council district & \metricNDistricts{} districts & \metricMinDistrictPositives{} & \metricMedianDistrictPositives{} & Not reported in current summary export & FNR gap: \metricFNRGap{}; FPR: reported with uncertainty when support threshold is met & Underpowered (not inferential) \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\noindent Given subgroup sparsity (positives ranging from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{}), these diagnostics are treated as exploratory context only. They are non-decisive and should not be used to assert subgroup parity or to set deployment policy.
 
 \newpage
 \section{Supplementary Calibration Comparison}
@@ -1229,5 +1254,4 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
 \noindent The results in Table~\ref{tab:disqualification_matrix} reveal a critical nuance in administrative machine learning. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) is not necessarily a signal of structural truth. When juxtaposed against the Spuriousness Index in Section~\ref{sec:spuriousness}, the audit confirms that Random Forest exhibits \textbf{Reliable Spuriousness}: it consistently and deterministically latches onto the same ungeneralizable noise proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but passed the causal survival tests, indicating that they are actively searching for invariant features rather than settling on stable, though harmful, shortcuts. Consequently, only CatBoost, XGBoost, and the Deep Attentive baselines are considered structurally valid for policy formulation.
 
 \end{document}
-
 
