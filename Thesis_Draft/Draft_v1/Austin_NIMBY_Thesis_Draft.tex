@@ -80,7 +80,7 @@ The staged workflow includes four components:
     \item \textbf{Stage D---Administrative Audit:} Descriptive documentation of structural data limits and high pre-council withdrawal among protested cases.
 \end{itemize}
 
-Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it produces calibration sufficient for relative risk ranking.
+Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and error stability to support high-confidence administrative use.
 
 The thesis also includes two exploratory analyses of downstream institutional dynamics. A regression discontinuity design at the 20\% petition threshold estimates the processing-time consequence of crossing the statutory margin. Descriptive evidence from the 2022 council electoral transition, in which specific districts replaced preservationist incumbents with pro-housing representatives, examines whether petition filing rates declined differentially in those districts.
 
@@ -403,7 +403,7 @@ The Development Occurrence hazard model achieves a top-10\% lift of \metricHazar
 
 Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits a primary-layer Expected Calibration Error (Layer C1, ECE = \metricECEOODBootstrapCalibrated{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
 
-The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. As an exploratory equity diagnostic, the false negative rate (FNR) gap across \metricNDistricts{} council districts is \metricFNRGap{}; however, this metric should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), and Chouldechova \cite{chouldechova2017fair} proves that an imperfect classifier cannot simultaneously satisfy equalized false positive rates, false negative rates, and predictive parity across groups unless base rates are identical. With such sparse and unbalanced subgroups, the \metricFNRGap{} gap is likely driven by sparse subgroup counts, not evidence of equalized performance.
+The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. Subgroup diagnostics are reported for transparency only (Appendix~\ref{app:subgroup_diagnostics}) and are not used for inferential claims or decision thresholds.
 
 After Isotonic Regression calibration, the primary OOD reporting layer (C1) yields ECE = \metricECEOODBootstrapCalibrated{}. This layer-specific value bounds the system strictly to relative spatial ranking and makes fully automated administrative use difficult to justify, signaling that raw probabilities cannot be treated as deterministic.
 
@@ -672,6 +672,8 @@ This study has several important limitations.
 
 \textbf{Fairness power.} The \metricFNRGap{} FNR gap across \metricNDistricts{} council districts should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), so the metric lacks statistical power to detect meaningful disparities.
 
+\textbf{Exploratory-only subgroup diagnostics.} Subgroup error diagnostics are exploratory and non-decisive. They are included to document transparency checks, not to support inferential claims, deployment gates, or operational decision rules.
+
 \textbf{Geographic error distribution.} Figure~\ref{fig:spatial_error} maps the geographic distribution of false positive predictions against the locations of actual petition filings. False positives split 49.6\% west of I-35 and 50.4\% east, providing additional spatial context. However, neither this geographic symmetry nor the FNR gap constitutes a formal fairness guarantee. The more substantive ethical limitation is that the model cannot distinguish affluent exclusionary mobilization from anti-displacement resistance (see Section~\ref{sec:interviews}).
 
 \begin{figure}[H]
@@ -702,6 +704,31 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 
 \newpage
 \section{Supplementary Benchmark and Calibration Comparison}
+\section{Subgroup Diagnostics (Transparency-Only)}
+\label{app:subgroup_diagnostics}
+
+\noindent Subgroup diagnostics are reported for transparency only and are explicitly \textbf{not inferential}. A minimum-support rule is imposed before any subgroup error estimate can be treated as inferential: at least 25 observed positives and 100 observed negatives per subgroup in the evaluation split (equivalently, stable denominators for both FNR and FPR). If either denominator is below threshold, the subgroup is labeled \textit{underpowered (not inferential)} and no substantive comparative conclusion is drawn.
+
+\begin{table}[H]
+\centering
+\caption{Subgroup Error Diagnostics (Transparency-Only; Not Inferential)}
+\label{tab:subgroup_transparency}
+\renewcommand{\arraystretch}{1.2}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Subgroup Family} & \textbf{Units} & \textbf{Min Positives} & \textbf{Median Positives} & \textbf{Min Negatives} & \textbf{FNR/FPR Reported} & \textbf{Status} \\
+\midrule
+Council district & \metricNDistricts{} districts & \metricMinDistrictPositives{} & \metricMedianDistrictPositives{} & Not reported in current summary export & FNR gap: \metricFNRGap{}; FPR: reported with uncertainty when support threshold is met & Underpowered (not inferential) \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\noindent Given subgroup sparsity (positives ranging from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{}), these diagnostics are treated as exploratory context only. They are non-decisive and should not be used to assert subgroup parity or to set deployment policy.
+
+\newpage
+\section{Supplementary Calibration Comparison}
 \label{app:alt_models}
 
 \noindent This appendix contains the bounded benchmark material that is intentionally trimmed from the main text. The benchmark roster is fixed ex ante and includes only Logistic Regression, Random Forest, XGBoost, LightGBM, CatBoost, Deep ERM, Deep V-REx, TabNet, FT-Transformer, ExcelFormer, and TabPFN. No additional model classes were introduced after this roster was frozen. The full fixed-roster benchmark matrix is reported in Table~\ref{tab:comprehensive_benchmark}. Extended architecture comparisons are descriptive diagnostics, while primary model selection in the main text follows a single criterion: out-of-distribution filing-date PR-AUC subject to calibration admissibility.
