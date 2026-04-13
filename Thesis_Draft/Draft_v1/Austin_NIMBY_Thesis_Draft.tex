@@ -221,7 +221,7 @@ Exclude cases with unusable or missing initial filing-year information & \metric
 \end{tabular}
 \end{table}
 
-The analytical samples vary by analytical goal. The primary predictive evaluation (Stage C) uses the full sample of \metricBaselineCases{} discretionary geographic cases. In contrast, the supporting analyses use restricted sub-samples designed to isolate specific mechanisms. The 2022 electoral-transition descriptive analysis and the HOME event study utilize $N=518$ because they are restricted to active single-member districts immediately surrounding the relevant election or policy cycle. The Invariant Causal Prediction (ICP) analysis utilizes $N=1,186$ multi-parcel geometric environments to represent cohesive spatial clusters. Finally, the institutional geographic overlay regressions evaluate policy flags aggregated at the council-term level across periods, resulting in $N=20$ macro-observations.
+The analytical samples vary by analytical goal. The primary predictive evaluation (Stage C) uses the full sample of \metricBaselineCases{} discretionary geographic cases from the legally relevant pre-HB\,24 petition regime (2007--2024). Supporting analyses are constrained to institutionally defensible windows rather than broad pooled periods. The electoral-transition descriptive panel ($N=518$) is limited to active single-member districts around the January~2022 through January~2023 representation transitions, with post windows ending in 2024. The HOME appendix analysis uses the same restricted district panel and is presented as non-identifying descriptive event tracking only. The Invariant Causal Prediction (ICP) analysis utilizes $N=1,186$ multi-parcel geometric environments to represent cohesive spatial clusters. Finally, the institutional geographic overlay appendix aggregates policy flags by council term ($N=20$ macro-observations) and marks designs with insufficient identifying variation as not estimable.
 
 Unlike approaches that require complete-case geometric intersections, this methodology uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This approach retains cases with partially missing covariates, reducing artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
 
@@ -587,14 +587,14 @@ The preceding empirical audit confirms that urban administrative environments ar
 \textbf{The Policy Implication:} When municipal governments procure urban risk models, they should not assume the model's logic is a fixed reflection of structural reality. As the city's characteristics shift over time, models may adapt their learned pathways. It is therefore important not just to monitor a model's predictive accuracy over time, but to audit its shifting attribution patterns against a frozen comparative baseline. \textbf{Detailed longitudinal exhibits in Appendix~\ref{app:unclustered_dynamic} (Figures~\ref{fig:unclustered_dynamic} and~\ref{fig:clustered_dynamic}) demonstrate this phenomenon in practice.}
 
 
-\subsection{Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}
+\subsection{Institutional Context: Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share}
 
 The following analysis is included as institutional context that corroborates the significance of the outcome measure---a measured threshold-crossing petition---rather than as a parallel headline finding.
 \begin{figure}[H]
 \centering
 
 \vspace{0.2cm}
-\textbf{\small Threshold-Based Discontinuity at the Measured 20\% Petition Share (RD)}\par\vspace{0.3cm}
+\textbf{\small Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share}\par\vspace{0.3cm}
 \begin{tikzpicture}[
     node distance=1.5cm and 2.5cm,
     var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
@@ -617,12 +617,12 @@ The following analysis is included as institutional context that corroborates th
 \draw[arrow] (X) to[bend right=15] (Y.south);
 \end{tikzpicture}
 
-\caption[Causal Identification: Regression Discontinuity DAG]{Directed acyclic graph for the threshold-based regression discontinuity design. The running variable $R$ (reconstructed petition share) determines treatment $T$ (crossing the 20\% measured threshold), which affects council processing delay $Y$. Unobserved factors $U$ may influence both petition mobilization and delay through channels not mediated by the threshold.}
+\caption[Identification Diagram: Threshold-Based Reduced-Form Discontinuity]{Identification diagram for the threshold-based reduced-form discontinuity design. The running variable $R$ (reconstructed signed-area share) defines threshold crossing $T$ ($\geq 20\%$), and the model estimates the associated discontinuous shift in council processing delay $Y$ without observing clerk certification compliance. Unobserved factors $U$ may influence both petition mobilization and delay through channels not mediated by the threshold.}
 \label{fig:causal_dag}
 \end{figure}
 
 
-To estimate the causal effect of crossing the measured threshold, a regression discontinuity (RD) design exploits the 20\% statutory petition threshold under Texas LGC Chapter~211. The running variable is the reconstructed petition share within the 200-foot buffer---a measure derived from public petition filings and parcel-area calculations, not from clerk certification.
+To estimate the threshold-associated shift in processing timelines, the analysis applies a threshold-based reduced-form discontinuity on reconstructed petition share at the 20\% statutory margin under Texas LGC Chapter~211. The running variable is the reconstructed percentage of signed area within the 200-foot buffer.
 
 A triangular-kernel weighted least squares estimator yields an estimated shift of $\metricRDDelay{}$ days in council processing time at the threshold ($p < 0.001$, SE $= \metricRDSE{}$, 95\% CI: $\metricRDCI{}$). This corresponds to approximately \metricRDDelayWeeks{} weeks of additional delay associated with crossing the statutory margin.
 
@@ -633,7 +633,7 @@ Design limitations include potential manipulation of the running variable, since
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Chapter5/F16_Petition_RD.png}
-\caption[Threshold-Based Discontinuity at the Measured 20\% Petition Share]{Regression discontinuity at the 20\% reconstructed petition-share threshold. Estimated discontinuity in council processing time. Bin widths were selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure.}
+\caption[Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share]{Threshold-based reduced-form discontinuity at the 20\% reconstructed petition-share threshold. The figure reports the estimated shift in council processing time. Bin widths were selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure.}
 \label{fig:f16_rd}
 \end{figure}
 
@@ -649,9 +649,9 @@ A difference-in-differences specification interacting a ``Flipped District'' ind
 
 Several additional analyses examine downstream institutional dynamics. These are reported as exploratory context rather than as headline findings, given the inferential limitations of each design.
 
-Supplementary quasi-experimental estimates for institutional geographic overlays---Neighborhood Plan Areas, Historic Districts, Transit-Oriented Development deregulation, and the 10-1 council transition---produced null or degenerate results and are reported in Appendix~\ref{app:overlays} for transparency.
+Supplementary overlay estimates---Neighborhood Plan Areas, Historic Districts, Transit-Oriented Development deregulation, and the 10-1 council transition---are reported in Appendix~\ref{app:overlays} as transparency checks. Designs without usable identifying variation are labeled not estimable rather than interpreted as null effects.
 
-An exploratory event-study analysis of the HOME Initiative is reported in Appendix~\ref{app:home}. The short post-policy observation window and the absence of a clean spatial control cohort limit interpretation.
+Exploratory HOME policy tracking is moved to Appendix~\ref{app:home} and treated as descriptive timing evidence only. The short post-policy window and lack of a defensible spatial control cohort make formal effect estimation non-estimable in this sample.
 
 An Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} using 1,186 multi-parcel geometric environments consistently rejected feature-set invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved factors play a substantial role. Full ICP results are reported in Appendix~\ref{app:icp}.
 
@@ -1109,7 +1109,7 @@ Because the underlying datasets systematically censor stalled and abandoned rezo
 
 \noindent Additional analyses evaluate localized institutional overlays---Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 2015 transition to a 10-1 single-member council district system.
 
-The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), failing to reach statistical significance. The NPA overlay yielded a positive but insignificant coefficient of \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlays produced degenerate estimates with zero variance, likely because these zoning suffixes are rarely applied independently of major base-zone changes. These null and degenerate results are reported for transparency.
+The ITS check for the 10-1 transition reports coefficient \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), and the NPA check reports coefficient \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlay designs are not estimable in this panel because outcome and/or treatment variation collapses once the legally relevant window restrictions are imposed. These outputs are retained only for transparency and are not interpreted substantively.
 
 \begin{figure}[H]
     \centering
@@ -1136,12 +1136,12 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 \midrule
 \textit{(1) 10-1 Council ITS}       & vote\_no       & \metricTenOneITSCoeff{}   & 0.122  & \metricTenOneITSPval{}  & 20 \\
 \textit{(2) NPA Designation}   & vote\_no       & \metricNPAFrictionCoeff{} & 0.245  & \metricNPAFrictionPval{}& 20 \\
-\textit{(3) Historic District}      & vote\_no       & \metricHDFrictionCoeff{}  & ---    & \metricHDFrictionPval{} & 20 \\
-\textit{(4) TOD Deregulation}       & vote\_no       & \metricTODFrictionCoeff{} & ---    & \metricTODFrictionPval{}& 20 \\
+\textit{(3) Historic District}      & vote\_no       & not estimable  & not estimable    & not estimable & 20 \\
+\textit{(4) TOD Deregulation}       & vote\_no       & not estimable & not estimable    & not estimable& 20 \\
 \textit{(5) 2022 Flipped District DiD}& measured\_threshold\_crossing    & \textbf{\metricFlipDiDCoeff{}}     & 0.266  & \textbf{\metricFlipDiDPval{}}    & 518 \\
 \bottomrule
-\multicolumn{6}{l}{\footnotesize OLS with robust standard errors. Designs (3)--(4) are non-informative due to limited variation}\\
-\multicolumn{6}{l}{\footnotesize or zero-variance outcomes; they are reported for transparency rather than substantive interpretation.} \\
+\multicolumn{6}{l}{\footnotesize OLS with robust standard errors where estimable. Designs (3)--(4) are marked "not estimable" due to}\\
+\multicolumn{6}{l}{\footnotesize collapsed identifying variation (zero/near-zero treatment or outcome support) in the restricted institutional windows.} \\
 \multicolumn{6}{l}{\footnotesize Design (5) reports the $\text{Flipped} \times \text{Post-2022}$ interaction coefficient.} \\
 \end{tabular}
 \end{table}
@@ -1153,7 +1153,7 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 
 \noindent Event-study models evaluate the short-run effects of the HOME Initiative on opposition dynamics. HOME Phase~1 and Phase~2 are treated as independent policy shocks, with treatment defined at the case level by parcel eligibility and timing anchored to application-acceptance start dates \cite{callaway2021did}.
 
-The event-study estimate for organized opposition, operationalized as the filing of a measured threshold-crossing petition per zoning case, is $\metricDiDVotes{}$ (SE $= \metricDiDSE{}$, 95\% CI: $\metricDiDCI{}$). This estimate suggests a \metricDiDDirectionText{} in organized opposition, and the effect is \metricDiDSignificanceText{}. The specification uses a Two-Way Fixed Effects (TWFE) model with case-level and time fixed effects, excluding post-treatment covariates to avoid ``bad control'' bias \cite{cinelli2020making}.
+Given the limited post-policy window and missing defensible controls, this sample does not support an estimable causal HOME effect. For transparency, descriptive TWFE coefficients are retained in the replication outputs, but they are not interpreted as policy effects. In this manuscript, HOME results are explicitly marked "not estimable" for identification purposes, with figure-based event timing shown only as context \cite{cinelli2020making}.
 
 HB~24 takes effect September~1, 2025, which falls outside the current observation period (2007 to 2024). Its evaluation is explicitly pre-registered as a future extension.
 
