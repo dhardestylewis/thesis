@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  12 APR 2026 20:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  12 APR 2026 20:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1405,11 +1405,11 @@ ed.
 (rerunfilecheck)             Checksum: DD03D540CCAEF06B966DE9A1659A0146;11830.
  ) 
 Here is how much of TeX's memory you used:
- 26859 strings out of 467871
- 508186 string characters out of 5419344
+ 26857 strings out of 467871
+ 508162 string characters out of 5419344
  903648 words of memory out of 5000000
  54801 multiletter control sequences out of 15000+600000
- 730312 words of font info for 237 fonts, out of 8000000 for 9000
+ 730218 words of font info for 236 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,104p,1486b,844s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
@@ -1448,7 +1448,7 @@ eX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX
 nts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/ty
 pe1/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (60 pages, 44803858 bytes).
+Output written on Austin_NIMBY_Thesis_Draft.pdf (60 pages, 44804136 bytes).
 PDF statistics:
  2407 PDF objects out of 2487 (max. 8388607)
  193 named destinations out of 1000 (max. 500000)
