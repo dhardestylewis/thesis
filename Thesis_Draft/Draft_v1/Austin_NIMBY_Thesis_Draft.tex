@@ -69,13 +69,15 @@ Against this backdrop, the central research question is whether a measured thres
 
 The outcome under study is specific. Under the pre-2025 framework of Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the relevant adjoining land area were collected and the municipal clerk certified the petition as valid, the petition historically required a three-fourths supermajority for City Council approval. (Effective September 1, 2025, House Bill 24 repealed and replaced this mechanism with a differentiated, multi-tier system under \S~211.0061 \cite{hb24_2025,texas2110061}.) This is one institutionalized form of neighborhood opposition---the most consequential and best-observed form in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
 
-To answer this question, the research constructs a sequential predictive methodology organized around four stages:
+To answer this question, the research uses a staged workflow but limits headline inference to Stage~C. The chapter flow is intentionally compact: Introduction; outcome definition and as-of information setup; Stage~C primary results; limitations; and brief references to supporting analyses in appendices.
+
+The staged workflow includes four components:
 
 \begin{itemize}
     \item \textbf{Stage A---Development Occurrence:} Where housing development proposals are likely to emerge, modeled as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels.
     \item \textbf{Stage B---Project Type and Scale:} Conditional on a development event, the expected project form and unit count.
     \item \textbf{Stage C---Formal Protest Petition:} Conditional on a project entering the formal public process, the probability that a measured threshold-crossing petition is filed. \textit{This is the core of the thesis.}
-    \item \textbf{Stage D---Political Outcome Analysis:} Conditional on opposition status, establishing structural data limits and the high rate of pre-council withdrawal among protested cases.
+    \item \textbf{Stage D---Administrative Audit:} Descriptive documentation of structural data limits and high pre-council withdrawal among protested cases.
 \end{itemize}
 
 Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it produces calibration sufficient for relative risk ranking.
@@ -137,7 +139,7 @@ While transitioning to a predictive methodology offers potential analytical valu
 
 Consequently, the viability of algorithmic prediction in spatial planning is constrained by mathematical limits on fairness. Chouldechova \cite{chouldechova2017fair} proves that when base rates of an outcome differ across groups, no imperfect predictor can simultaneously satisfy both predictive parity and classification parity. Recognizing these fixed mathematical constraints, modern predictive models intended for public-sector use must be evaluated against explicit calibration and error-rate thresholds. Rather than attempting to maximize pure predictive lift, the administrative application of such models should consider explicit calibration accuracy and the equalization of False Negative Rates across geographic groups, ensuring that predictive efficiency does not come at the cost of democratic equity.
 
-\section{Data and Methods}
+\section{Outcome Definition and As-of Information Setup}
 
 The empirical foundation is a time-stamped spatial panel dataset that reconstructs what information was available at each historical prediction point. Every record anchors to an explicit as-of date, ensuring that backtests use only Census releases, appraisal rolls, and case documents published before the prediction date.
 
@@ -275,16 +277,16 @@ The feature set is separated to prevent predictive models from leveraging sensit
 
 \section{Modeling Strategy}
 
-\subsection{Supporting Stages: Development Occurrence, Project Type, and Political Outcome}
+\subsection{Supporting Stages (Methods Support Only): Stage A, Stage B, and Stage D}
 \label{sec:supporting_stages}
 
 The predictive evaluation centers on Stage~C (Formal Protest Petition). Three supporting stages provide context and methodological inputs:
 
-\textbf{Stage A---Development Occurrence} models where housing development proposals are likely to emerge as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels. Its primary methodological role is to supply inverse-probability weights (IPW) that adjust for spatial selection into the analytic sample: the filing-date petition model observes only neighborhoods that actually received development proposals, and IPW corrects for this non-random selection on observables. Full model details, target definitions, precision--recall curves, and hotspot maps are reported in Appendix~\ref{app:stagea}.
+\textbf{Stage A---Development Occurrence (IPW input only)} estimates selection into the observed filing sample and contributes inverse-probability weights used in Stage~C. Stage~A is retained as methods support in the main text; full specification and diagnostics are reported in Appendix~\ref{app:stagea}.
 
-\textbf{Stage B---Project Type and Scale} classifies the expected project form and estimates expected unit counts, conditional on a development event. This segmentation is important because different project types (e.g., six-unit by-right infill vs.\ 300-unit PUD) generate fundamentally different institutional responses and petition likelihoods. Classification performance is reported in Appendix~\ref{app:stageb}.
+\textbf{Stage B---Project Type and Scale (supporting context)} is treated as non-headline support. Stage~B performance tables and figures are moved to Appendix~\ref{app:stageb}.
 
-\textbf{Stage D---Political Outcome Analysis} documents the structural missingness and high rates of pre-council withdrawal conditional on a threshold-crossing petition. Because virtually all cases that survive to a final council vote are approved, pre-council attrition is the primary mechanism through which opposition friction manifests. However, due to severe data censorship of withdrawn cases, it cannot be modeled predictively. This analysis is detailed in Appendix~\ref{app:staged}.
+\textbf{Stage D---Administrative Audit (descriptive only)} documents structural missingness and pre-council withdrawal patterns conditional on petition filing. Stage~D is not treated as a predictive results track and is reported as a descriptive audit in Appendix~\ref{app:staged}.
 
 A composite measure combining all four stages (\textbf{expected contested units}) is also constructed and mapped in Appendix~\ref{app:contested_units}. Because this multiplicative structure compounds uncertainty from each stage, the resulting map should be interpreted as a relative ranking rather than a reliable absolute probability.
 
@@ -295,7 +297,7 @@ The Formal Protest Petition forecast is the core of the thesis: conditional on a
 P(y_0 = 1 \mid D=1, X_{i,t}, Z)
 \end{equation}
 
-At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. To adjust for selection on observables---given that the analytic sample naturally contains only neighborhoods that actually receive development proposals---the model applies inverse-probability weighting derived from the Development Occurrence hazard ($Z$). While this weighting corrects for spatial baseline probabilities, it remains inherently limited because it cannot completely resolve unobserved political or social factors that simultaneously influence both proposal location and opposition likelihood. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
+At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at filing (site geometry, requested zoning changes, buffer demographics, and historical petition rates). Stage~A contributes IPW as a support-layer adjustment for observable selection; details are deferred to Appendix~\ref{app:stagea}. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
 
 \begin{figure}[H]
     \centering
@@ -348,7 +350,7 @@ One notable descriptive pattern is a decline followed by partial recovery: CatBo
 
 
 
-\section{Results}
+\section{Stage C Primary Results}
 \label{sec:results}
 
 \subsection{Predictive Performance Across All Horizons}
@@ -378,7 +380,7 @@ Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Unde
 }
 \end{table}
 
-The Development Occurrence hazard model achieves a top-10\% lift of \metricHazardLift{} over the base probability rate, indicating that spatial features carry some predictive information about development occurrence (full Stage~A evaluation is reported in Appendix~\ref{app:stagea}). The filing-date petition model uses trailing 3-year count of localized protests within one year---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates.
+The filing-date petition model uses trailing 3-year count of localized protests within one year---whether neighboring properties historically faced petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates. Stage~A diagnostics are reported separately in Appendix~\ref{app:stagea}.
 
 Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits an Expected Calibration Error (ECE = \metricECE{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
 
@@ -569,7 +571,7 @@ The 2022 council elections provide suggestive descriptive evidence on the relati
 
 A difference-in-differences specification interacting a ``Flipped District'' indicator with a ``Post-2022'' temporal indicator yields a coefficient of \metricFlipDiDCoeff{} ($p=\metricFlipDiDPval{}$) on petition filing rates. However, formal causal inference is not feasible here: with only two treated districts, staggered treatment timing, a short post-treatment window, and sparse petition events per district, standard cluster-robust inference is known to over-reject \cite{cameron2008bootstrap}. Even wild-bootstrap corrections can fail with very few treated clusters. This estimate should be interpreted as suggestive descriptive evidence only.
 
-\subsection{Supplementary Institutional Analyses}
+\subsection{Brief Support References (Non-Headline)}
 
 Several additional analyses examine downstream institutional dynamics. These are reported as exploratory context rather than as headline findings, given the inferential limitations of each design.
 
@@ -639,7 +641,7 @@ This study has several important limitations.
 
 Filing-date administrative features can rank petition risk in Austin's pre-HB\,24 zoning regime, but they do not yet yield calibrated probabilities suitable for institutional use.
 
-This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is qualified: spatial, economic, and site characteristics carry predictive information about petition risk, but the model does not meet the calibration benchmarks required for administrative deployment. Under the primary evaluation---out-of-distribution bootstrap at the filing-date horizon---the model achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with calibration error (ECE = \metricECE{}) exceeding the 0.05 threshold. In-distribution cross-validation provides an upper bound PR-AUC of \metricPRAUC{}. A regression discontinuity at the 20\% petition threshold estimates a \metricRDDelay{}-day increase in council processing time, consistent with the institutional significance of the outcome measure. Descriptive evidence from the 2022 electoral transition suggests that petition filing rates declined in districts that changed political representation, though staggered treatment timing and few treated clusters preclude formal causal claims.
+This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is qualified: spatial, economic, and site characteristics carry predictive information about petition risk, but the model does not meet the calibration benchmarks required for administrative deployment. Under the primary evaluation---out-of-distribution bootstrap at the filing-date horizon---the model achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with calibration error (ECE = \metricECE{}) exceeding the 0.05 threshold. In-distribution cross-validation provides an upper bound PR-AUC of \metricPRAUC{}. Supporting analyses are consistent with institutional relevance but are non-headline: the threshold discontinuity and electoral-transition sections are interpreted descriptively and are detailed in the appendix.
 
 These results point to a ceiling on what prediction from public records alone can achieve. Petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and the 2022 council regime change altered the relationship between petitions and outcomes. Interview interpretation further contextualizes an ethical limitation: the model cannot distinguish affluent exclusionary mobilization from community-driven anti-displacement resistance, a distinction that administrative data does not encode.
 
