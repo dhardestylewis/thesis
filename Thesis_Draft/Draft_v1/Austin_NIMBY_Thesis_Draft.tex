@@ -949,6 +949,16 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 
 \noindent The results demonstrate that in every year of the observation period, the locally-trained CatBoost model significantly outperformed the pre-trained foundation model. If leakage had occurred, the foundation model would have "absorbed" future labels and outperformed the local model on those years. Furthermore, both models shared a symmetric performance collapse during the 2022 regime shift, confirming that TabPFN is making decisions based on the structural administrative features provided, rather than memorized future outcomes.
 
+\newpage
+\section{Extended Architectural Search and Resampling Strategies}
+\label{app:architectural_search}
+
+\noindent Prior to the formalization of the Unified Predictive Frontier matrix (Table 5), extensive hyperparameter and re-sampling evaluations were conducted across traditional machine learning models to combat the severe class imbalance of formal petitions. Table~\ref{tab:alt_architectures} presents the unabridged results of these search cycles, demonstrating that while synthetic oversampling (SMOTE) marginally improved discrimination in some tree architectures, it persistently degraded calibration (ECE), justifying the selection of CatBoost without SMOTE as the primary deployable baseline.
+
+\vspace{1em}
+\input{Tables/alternative_architectures.tex}
+\vspace{1em}
+
 \end{document}
 
 
