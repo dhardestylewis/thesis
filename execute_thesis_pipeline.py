@@ -22,7 +22,8 @@ PIPELINE_STEPS = [
     ("08_run_meta_attribution.py", "Running meta-attribution consensus audit..."),
     ("08b_run_ablation_suite.py", "Running cluster ablation sensitivity tests..."),
     ("09_run_audits.py", "Running structural and fairness audits..."),
-    ("10_export_manuscript_artifacts.py", "Generating manifest and LaTeX macros...")
+    ("10_export_manuscript_artifacts.py", "Generating manifest and LaTeX macros..."),
+    ("11_final_build_gate.py", "Running final submission build gate...")
 ]
 
 def run_step(script_name, description):
@@ -57,6 +58,7 @@ def create_script_wrapper(name):
         "08b_run_ablation_suite.py": "from src.interpretation.ablation_suite import run_ablation_suite; run_ablation_suite()",
         "09_run_audits.py": "from src.labels.audit_label_fidelity import audit_label_fidelity; audit_label_fidelity()",
         "10_export_manuscript_artifacts.py": "from src.reporting.build_metrics_manifest import build_metrics_manifest; from src.reporting.export_metrics_tex import export_metrics_tex; build_metrics_manifest(); export_metrics_tex()",
+        "11_final_build_gate.py": "from src.reporting.final_build_gate import run_final_build_gate; raise SystemExit(run_final_build_gate())",
     }
     
     if name in mappings:
