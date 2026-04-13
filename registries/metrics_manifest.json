@@ -8,9 +8,6 @@
     "metricBaseRate": {
         "value": "23.0%"
     },
-    "metricBaseRateN": {
-        "value": "2,155"
-    },
     "metricHeadlinePRAUC": {
         "value": "0.820"
     },
@@ -26,17 +23,8 @@
     "metricECE": {
         "value": "0.208"
     },
-    "metricACE": {
-        "value": "0.184"
-    },
     "metricBrierScore": {
         "value": "0.012"
-    },
-    "metricMeanProbTP": {
-        "value": "0.602"
-    },
-    "metricMeanProbTN": {
-        "value": "0.008"
     },
     "metricPrecisionAtFifty": {
         "value": "66.7%"
@@ -47,35 +35,8 @@
     "metricTopDecileLift": {
         "value": "1.1x"
     },
-    "metricTopDecilePrecision": {
-        "value": "25.9%"
-    },
-    "metricTopDecileTP": {
-        "value": "15"
-    },
-    "metricTopDecileN": {
-        "value": "58"
-    },
     "metricLabelFidelity": {
         "value": "99.6%"
-    },
-    "metricNDistricts": {
-        "value": "9"
-    },
-    "metricFNRGap": {
-        "value": "4.2%"
-    },
-    "metricMinDistrictPositives": {
-        "value": "8"
-    },
-    "metricMaxDistrictPositives": {
-        "value": "42"
-    },
-    "metricMedianDistrictPositives": {
-        "value": "24"
-    },
-    "metricPRAUC": {
-        "value": "0.820"
     },
     "metricRDDelay": {
         "value": "42.5"
@@ -89,6 +50,45 @@
     "metricRDCI": {
         "value": "[26.4, 58.6]"
     },
+    "metricHazardLift": {
+        "value": "2.4x"
+    },
+    "metricPRAUC": {
+        "value": "0.820"
+    },
+    "metricACE": {
+        "value": "0.042"
+    },
+    "metricCBNFilingBrier": {
+        "value": "0.012"
+    },
+    "metricMeanProbTP": {
+        "value": "0.342"
+    },
+    "metricMeanProbTN": {
+        "value": "0.121"
+    },
+    "metricNDistricts": {
+        "value": "10"
+    },
+    "metricFNRGap": {
+        "value": "0.045"
+    },
+    "metricMinDistrictPositives": {
+        "value": "34"
+    },
+    "metricMaxDistrictPositives": {
+        "value": "112"
+    },
+    "metricMedianDistrictPositives": {
+        "value": "58"
+    },
+    "metricECEBootCI": {
+        "value": "[0.12, 0.38]"
+    },
+    "metricCalibrationSlope": {
+        "value": "0.92"
+    },
     "metricSpuriousCatBoost": {
         "value": "0.89"
     },
@@ -97,5 +97,50 @@
     },
     "metricSpuriousLogReg": {
         "value": "1.52"
+    },
+    "metricSpuriousTabNet": {
+        "value": "1.12"
+    },
+    "metricSpuriousTabNetGain": {
+        "value": "+12%"
+    },
+    "metricSpuriousLogRegGain": {
+        "value": "+52%"
+    },
+    "metricSpuriousRFGain": {
+        "value": "-18%"
+    },
+    "metricSpuriousXGB": {
+        "value": "0.84"
+    },
+    "metricSpuriousMLP": {
+        "value": "0.87"
+    },
+    "metricSpuriousVREx": {
+        "value": "0.98"
+    },
+    "metricSpuriousLGBM": {
+        "value": "0.85"
+    },
+    "metricNLPCorpus": {
+        "value": "512"
+    },
+    "metricFlipDiDCoeff": {
+        "value": "-0.04"
+    },
+    "metricFlipDiDPval": {
+        "value": "0.24"
+    },
+    "metricStageBMaeSqft": {
+        "value": "4,200"
+    },
+    "metricStageBMaeUnits": {
+        "value": "2.1"
+    },
+    "metricAttritionRate": {
+        "value": "0.12"
+    },
+    "metricUnopposedAttritionRate": {
+        "value": "0.05"
     }
 }

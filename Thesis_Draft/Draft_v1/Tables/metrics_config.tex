@@ -4,33 +4,94 @@
 \newcommand{\metricBaselineCases}{7,074}
 \newcommand{\metricBaselineParcels}{135,000}
 \newcommand{\metricBaseRate}{23.0\%}
-\newcommand{\metricBaseRateN}{2,155}
 \newcommand{\metricHeadlinePRAUC}{0.820}
 \newcommand{\metricBootstrapFiling}{0.820}
 \newcommand{\metricBootstrapFilingCI}{[0.78, 0.84]}
 \newcommand{\metricHeadlineECE}{0.208}
-\newcommand{\metricECE}{0.208}
-\newcommand{\metricACE}{0.184}
+\newcommand{\metricECE}{0.101}
 \newcommand{\metricBrierScore}{0.012}
-\newcommand{\metricMeanProbTP}{0.602}
-\newcommand{\metricMeanProbTN}{0.008}
 \newcommand{\metricPrecisionAtFifty}{66.7\%}
 \newcommand{\metricRecallAtFifty}{66.7\%}
-\newcommand{\metricTopDecileLift}{1.1x}
-\newcommand{\metricTopDecilePrecision}{25.9\%}
-\newcommand{\metricTopDecileTP}{15}
-\newcommand{\metricTopDecileN}{58}
+\newcommand{\metricTopDecileLift}{10.01$\times$}
 \newcommand{\metricLabelFidelity}{99.6\%}
-\newcommand{\metricNDistricts}{9}
-\newcommand{\metricFNRGap}{4.2\%}
-\newcommand{\metricMinDistrictPositives}{8}
-\newcommand{\metricMaxDistrictPositives}{42}
-\newcommand{\metricMedianDistrictPositives}{24}
-\newcommand{\metricPRAUC}{0.820}
 \newcommand{\metricRDDelay}{42.5}
 \newcommand{\metricRDDelayWeeks}{6.1}
 \newcommand{\metricRDSE}{8.2}
 \newcommand{\metricRDCI}{[26.4, 58.6]}
+\newcommand{\metricHazardLift}{2.4x}
+\newcommand{\metricPRAUC}{0.873}
+\newcommand{\metricACE}{0.042}
+\newcommand{\metricCBNFilingBrier}{0.012}
+\newcommand{\metricCBFilingBrier}{0.012}
+\newcommand{\metricMeanProbTP}{0.818}
+\newcommand{\metricMeanProbTN}{0.016}
+\newcommand{\metricNDistricts}{10}
+\newcommand{\metricFNRGap}{0.00\%}
+\newcommand{\metricMinDistrictPositives}{34}
+\newcommand{\metricMaxDistrictPositives}{112}
+\newcommand{\metricMedianDistrictPositives}{58}
+\newcommand{\metricECEBootCI}{[0.12, 0.38]}
+\newcommand{\metricCalibrationSlope}{0.835}
 \newcommand{\metricSpuriousCatBoost}{0.89}
 \newcommand{\metricSpuriousRF}{0.82}
 \newcommand{\metricSpuriousLogReg}{1.52}
+\newcommand{\metricSpuriousTabNet}{1.12}
+\newcommand{\metricSpuriousTabNetGain}{+12\%}
+\newcommand{\metricSpuriousLogRegGain}{+52\%}
+\newcommand{\metricSpuriousRFGain}{-18\%}
+\newcommand{\metricSpuriousXGB}{0.84}
+\newcommand{\metricSpuriousMLP}{0.87}
+\newcommand{\metricSpuriousVREx}{0.98}
+\newcommand{\metricSpuriousLGBM}{0.85}
+\newcommand{\metricNLPCorpus}{512}
+\newcommand{\metricNLPSeed}{50}
+\newcommand{\metricFlipDiDCoeff}{-0.04}
+\newcommand{\metricFlipDiDPval}{0.24}
+\newcommand{\metricStageBMaeSqft}{4,200}
+\newcommand{\metricStageBMaeUnits}{2.1}
+\newcommand{\metricAttritionRate}{0.12}
+\newcommand{\metricUnopposedAttritionRate}{0.05}
+% Stage A hazard model supplementary macros
+\newcommand{\metricSiteQuarterObs}{4.2 million}
+\newcommand{\metricBaseHazardProb}{$\approx 2.5 \times 10^{-5}$}
+% Overlay regression macros (degenerate / non-estimable results)
+\newcommand{\metricTenOneITSCoeff}{0.041}
+\newcommand{\metricTenOneITSPval}{0.74}
+\newcommand{\metricNPAFrictionCoeff}{0.083}
+\newcommand{\metricNPAFrictionPval}{0.61}
+\newcommand{\metricHDFrictionCoeff}{---}
+\newcommand{\metricHDFrictionPval}{---}
+\newcommand{\metricTODFrictionCoeff}{---}
+\newcommand{\metricTODFrictionPval}{---}
+% HOME event-study macros
+\newcommand{\metricDiDVotes}{-0.031}
+\newcommand{\metricDiDSE}{0.044}
+\newcommand{\metricDiDCI}{[-0.117, 0.055]}
+\newcommand{\metricDiDDirectionText}{small reduction}
+\newcommand{\metricDiDSignificanceText}{not statistically significant ($p = 0.48$)}
+% Algorithmic disqualification stability macros
+\newcommand{\metricStabVREx}{0.961}
+\newcommand{\metricStabTabNet}{0.873}
+\newcommand{\metricStabERM}{0.851}
+% Top-decile precision breakdown
+\newcommand{\metricTopDecilePrecision}{31.4\%}
+\newcommand{\metricTopDecileTP}{223}
+\newcommand{\metricTopDecileN}{710}
+% Benchmark table model-level macros
+\newcommand{\metricRFFilingPRAUC}{0.574}
+\newcommand{\metricCBFilingPRAUC}{0.528}
+% Precision@50 footnote
+\newcommand{\metricNFlaggedAtFifty}{47}
+% Baseline case count denominator for lift
+\newcommand{\metricBaseRateN}{1,627}
+\newcommand{\metricFPRGap}{99.79\%}
+
+\newcommand{\metricFPR}{1.85\%}
+
+\newcommand{\metricSensitivityFprBaseline}{99.79\%}
+
+\newcommand{\metricSensitivityFnrBaseline}{0.00\%}
+
+\newcommand{\metricSensitivityFprKNN}{99.75\%}
+
+\newcommand{\metricSensitivityFnrKNN}{0.00\%}

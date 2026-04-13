@@ -51,9 +51,11 @@ Alexandra Chouldechova.
 
 \bibitem{cinelli2020making}
 Carlos Cinelli and Chad Hazlett.
-\newblock Making sense of sensitivity: Extending omitted variable bias.
+\newblock Making sense of sensitivity: {Extending} omitted variable bias.
 \newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
   Methodology)}, 82(1):39--67, 2020.
+\newblock \href {https://doi.org/10.1111/rssb.12347}
+  {\path{doi:10.1111/rssb.12347}}.
 
 \bibitem{einstein2019book}
 Katherine~Levine Einstein, David~M. Glick, and Maxwell Palmer.
@@ -121,10 +123,12 @@ Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer.
   {\path{doi:10.1257/aer.p20151023}}.
 
 \bibitem{manville2016unpermitted}
-Michael Manville and Paavo Monkkonen.
-\newblock Unpermitted: Urban growth and the local politics of zoning.
-\newblock {\em Journal of the American Planning Association}, 82(1):73--74,
+Michael Manville.
+\newblock Unpermitted: {The} history and economics of land-use regulation.
+\newblock {\em Journal of the American Planning Association}, 82(1):100--102,
   2016.
+\newblock \href {https://doi.org/10.1080/01944363.2015.1111666}
+  {\path{doi:10.1080/01944363.2015.1111666}}.
 
 \bibitem{mullainathan2017ml}
 Sendhil Mullainathan and Jann Spiess.
@@ -150,10 +154,11 @@ Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna~Veronika Dorogush,
   volume~31, pages 6639--6649, 2018.
 
 \bibitem{richardson2019dirty}
-Rashida Richardson, Jason~M. Schultz, and Kate Crawford.
-\newblock Dirty data, bad predictions: How civil rights violations impact
-  police data, predictive policing systems, and justice.
-\newblock {\em NYU Law Review Online}, 94:192--233, 2019.
+Jason Richardson, Bruce Mitchell, and Juan Franco.
+\newblock Dirty deeds: {The} past and future of redlining.
+\newblock Technical report, National Community Reinvestment Coalition, 2019.
+\newblock URL:
+  \url{https://ncrc.org/wp-content/uploads/2019/04/NCRC-Dirty-Deeds-The-Past-And-Future-Of-Redlining.pdf}.
 
 \bibitem{shmueli2010}
 Galit Shmueli.
@@ -177,8 +182,10 @@ Galit Shmueli.
 
 \bibitem{whittemore2014racial}
 Andrew~H. Whittemore.
-\newblock Racial and class politics in zoning: A case study of single-family
-  zoning in {Durham}, {North Carolina}.
-\newblock {\em Journal of Urban Affairs}, 36(4):568--585, 2014.
+\newblock Racial and class bias in exclusionary zoning: {The} case of
+  {Maywood}, {Illinois}.
+\newblock {\em Journal of Planning History}, 13(3):250--272, 2014.
+\newblock \href {https://doi.org/10.1177/1538513213511195}
+  {\path{doi:10.1177/1538513213511195}}.
 
 \end{thebibliography}
