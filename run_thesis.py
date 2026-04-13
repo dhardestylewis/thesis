@@ -380,6 +380,14 @@ def main():
     target_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1")
     os.chdir(target_dir)
 
+    # Final build gate: block thesis compilation if submission integrity checks fail
+    gate_script = os.path.join(ROOT, "scripts", "11_final_build_gate.py")
+    gate_result = os.system(f'python "{gate_script}"')
+    if gate_result != 0:
+        print("\n[-] Final submission build gate failed. Blocking PDF compilation.")
+        os.chdir(current_cwd)
+        return
+
     # Multi-pass LaTeX compilation for TOC and Citations
     print("[*] PASS 1: PDFLaTeX")
     os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex > NUL")
