@@ -52,6 +52,7 @@ import run_causal_track2_rd_real as track2
 import run_causal_track3_did_real as track3
 import run_multi_horizon as multi_horizon_table
 import run_alternative_architectures as alt_arch
+import run_rolling_origin_real as rolling_origin
 
 # Import Visualizations & Tables (Real Data Versions)
 import plot_F8_Calibration_real as f8
@@ -195,6 +196,11 @@ def main():
         print(f"    [!] Error generating Table 8 (Multi-Horizon): {e}")
 
     try:
+        rolling_origin.run_rolling_origin_drift()
+    except Exception as e:
+        print(f"    [!] Error generating Table 6 (Rolling Origin Temporal Drift): {e}")
+
+    try:
         alt_arch.main()
     except Exception as e:
         print(f"    [!] Error generating Alternative Architectures Benchmark: {e}")
@@ -248,6 +254,12 @@ def main():
         print(f"    [!] Error generating Multi-Horizon Attribution exhibits: {e}")
 
     try:
+        meta_cluster_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "meta_attribution_clustering.py")
+        os.system(f'python "{meta_cluster_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Meta-Attribution Clustering exhibits: {e}")
+
+    try:
         f19_f20.generate_exhibits()
     except Exception as e:
         print(f"    [!] Error generating Figure 19/20 (Qualitative): {e}")
@@ -280,6 +292,25 @@ def main():
             print("    [!] Could not load 18_real_model_sweeps module.")
     except Exception as e:
         print(f"    [!] Error generating Real Model Sweeps (Fig 8, 9, 10): {e}")
+
+    # ---------------------------------------------------------
+    # PART 3.5: ARCHITECTURAL KNOCKOUT AUDITS
+    # ---------------------------------------------------------
+    print_header("PHASE 3.5: ARCHITECTURAL KNOCKOUT AUDITS")
+    
+    try:
+        if fast_mode:
+            print("    [--fast bypass] Skipping computationally heavy 20-Seed T-Test and Deep Surrogate Pruning...")
+        else:
+            ttest_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "run_20seed_ttest.py")
+            os.system(f'python "{ttest_script}"')
+            print("    [+] Evaluated 20-Seed Feature Ablation T-Test")
+            
+            pruning_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "run_deep_surrogate_pruning.py")
+            os.system(f'python "{pruning_script}"')
+            print("    [+] Evaluated PyTorch Deep Surrogate Latent Node Pruning")
+    except Exception as e:
+        print(f"    [!] Error running Architectural Knockout Audits: {e}")
 
     # ---------------------------------------------------------
     # PART 4: AST SEMANTIC NARRATIVE GENERATION
