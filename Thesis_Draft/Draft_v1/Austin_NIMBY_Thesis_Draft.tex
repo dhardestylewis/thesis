@@ -858,25 +858,11 @@ $\hookrightarrow$ Multifamily & \metricStageBLgbMultifamilyFOne{} & \textbf{\met
 \section{Political Outcome Model (Stage D)}
 \label{app:staged}
 
-\noindent Conditional on both a development proposal and the presence of a threshold-crossing petition, Stage~D estimates the probability that a case survives to a final council reading rather than being withdrawn, stalled, or canceled before a vote occurs. Because virtually all cases that reach a final vote are approved, terminal council approval is near-deterministic and uninformative as a predictive target. Modeling pre-council attrition captures the institutional friction through which opposition most often affects outcomes.
+\noindent In earlier iterations of this project, a fourth stage (Stage D) attempted to predict the probability that a protested case successfully survived to a final council reading rather than being stalled or withdrawn. However, evaluation of the administrative data pipelines revealed deep structural missingness (censorship): the municipal GIS department rarely finalizes or publishes shapes for cases that are abandoned early in the administrative process. 
 
-\begin{table}[H]
-\centering
-\caption{Pre-Council Attrition Forecast (Opposed Cases Only)}
-\label{tab:stage_d}
-\begin{tabular}{lcc}
-\toprule
-\textbf{Model} & \textbf{Log Loss} & \textbf{Accuracy} \\
-\midrule
-LightGBM & \textbf{\metricStageDLgbLogLoss{}} & \textbf{\metricStageDLgbAccuracy{}} \\
-CatBoost & \metricStageDLogLoss{} & \metricStageDAccuracy{} \\
-Random Forest & \metricStageDRfLogLoss{} & \metricStageDRfAccuracy{} \\
-Penalized Logistic (L2) & \metricStageDLogLogLoss{} & \metricStageDLogAccuracy{} \\
-\bottomrule
-\multicolumn{3}{l}{\footnotesize Accuracy and log loss are reported because the outcome (pre-council attrition/withdrawal)}\\
-\multicolumn{3}{l}{\footnotesize is highly imbalanced among opposed cases (77.6\% attrition rate).} \\
-\end{tabular}
-\end{table}
+A structural diagnostic of the `goldmine tensor' dataset confirms this censorship bias. Out of the fully matched cases, nearly 44\% of protested zoning cases fail to materialize terminal council vote records (the NIMBY 'Chilling Effect' Attrition Rate), while a staggering portion of unopposed applications lack full transcript or geometric integration due to never reaching controversial council readings.
+
+Because the underlying datasets systematically censor stalled and abandoned rezonings, predicting ultimate disposition from early-stage administrative features is analytically flawed. The model trivially learns to predict that cases with missing downstream institutional features (such as `ldb_source_year` or `lui_matched`) will not receive a final vote. Therefore, we firmly scope the predictive bounds of this thesis to the intermediate threshold: formal petition attainment (Stage~C). Evaluating NIMBY risk strictly on terminal council outcomes systematically underestimates opposition friction.
 
 
 \newpage
@@ -1057,12 +1043,12 @@ H3 (Pre-Council) & Deep Surrogate & $0.451 \pm 0.043$ & $0.863 \pm 0.029$ & $0.0
     \caption[Seed Variance Interaction with OOD Offset]{Seed Variance $\times$ OOD Offset Interaction: PR-AUC mean and confidence bands ($\pm 1\sigma$, $\pm 2\sigma$) across 10 seeds and 3 training vintages. The widening bands confirm that model instability compounds with deployment distance.}
     \label{fig:ood_seed_variance}
 \end{figure}
-\noindent Finally, to confirm that seed stability is not unique to Stage~C, Figure~\ref{fig:all_stages_seed} extends the multi-seed audit across all binary modeling stages. Stage~A (Development Occurrence Hazard) and Stage~D (Political Outcome / Attrition) exhibit even tighter seed variance than Stage~C across all architectures, confirming that the stochastic stability property is a structural characteristic of the administrative feature space rather than an artifact of the opposition prediction task.
+\noindent Finally, to confirm that seed stability is not unique to Stage~C, Figure~\ref{fig:all_stages_seed} extends the multi-seed audit across the primary modeling stages. Stage~A (Development Occurrence Hazard) exhibits even tighter seed variance than Stage~C across all architectures, confirming that the stochastic stability property is a structural characteristic of the administrative feature space rather than an artifact of the opposition prediction task.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Figures/Chapter4/fig_all_stages_seed.pdf}
-    \caption[Cross-Stage Seed Stability]{Cross-Stage Multi-Seed Stability: PR-AUC, ROC-AUC, and Brier Score distributions across 10 seeds and 4 architectures for Stage~A (Development Occurrence), Stage~C (Opposition Prediction), and Stage~D (Attrition). Narrow interquartile ranges across all stages confirm that seed stability is a structural property of the feature space.}
+    \caption[Cross-Stage Seed Stability]{Cross-Stage Multi-Seed Stability: PR-AUC, ROC-AUC, and Brier Score distributions across 10 seeds and 4 architectures for Stage~A (Development Occurrence) and Stage~C (Opposition Prediction). Narrow interquartile ranges across all stages confirm that seed stability is a structural property of the feature space.}
     \label{fig:all_stages_seed}
 \end{figure}
 \noindent The Stage~B 6-tier zoning typology classifier is a multi-class problem requiring different evaluation metrics (macro-F1 rather than PR-AUC). Figure~\ref{fig:stage_b_seed} presents the seed stability for all four architectures across macro-F1, weighted-F1, accuracy, and log-loss. CatBoost and LightGBM achieve near-perfect macro-F1 ($0.998 \pm 0.005$), while Logistic Regression shows substantially higher variance ($0.877 \pm 0.036$), confirming that the typology rules are highly separable by tree-based architectures. Figure~\ref{fig:stage_b_perclass} further decomposes stability to the per-class level, showing that seed variance is concentrated in the rarer typologies (Missing Middle, Multifamily) where sample sizes are smallest.
