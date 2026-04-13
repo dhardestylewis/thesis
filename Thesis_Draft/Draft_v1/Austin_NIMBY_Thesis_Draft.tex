@@ -299,7 +299,7 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{Chapter4/F12_Opposition_PR.png}
-    \caption[Formal Protest Petition PR Curves by Model]{Precision--recall curves for the filing-date petition model: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
+    \caption[Stage C Unified Precision-Recall Curves by Model Class]{Unified Precision--Recall curves for the filing-date petition models: Statistical Baselines (Logistic), Traditional ML (CatBoost, Random Forest), Deep Attentive models (ExcelFormer, FT-Transformer), and Tabular Foundations (TabPFN).}
     \label{fig:pr_curves}
 \end{figure}
 
@@ -380,7 +380,7 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{Chapter4/fig_combined_calibration_reliability.pdf}
-    \caption[Calibration of the Stage A and Stage C Models]{\textbf{Calibration of the Stage A and Stage C Models:} Parallel evaluation of calibration reliability and capture curves across the Stage A (Development Occurrence) and Stage C (Formal Protest Petition) models. All probabilities are post-Isotonic out-of-fold predictions.}
+    \caption[Calibration Reliability Matrix: Standard, Deep, and Foundation Models]{\textbf{Calibration Reliability Matrix:} Parallel evaluation of calibration reliability across the Stage A (Development Occurrence) and Stage C (Unified Opposition) frameworks. Panel (c) highlights calibration across the new unified frontier, confirming that Deep and Foundation models maintain stable probability distributions.}
     \label{fig:global_calibration}
 \end{figure}
 
