@@ -80,7 +80,7 @@ The staged workflow includes four components:
     \item \textbf{Stage D---Administrative Audit:} Descriptive documentation of structural data limits and high pre-council withdrawal among protested cases.
 \end{itemize}
 
-Stages A, B, and D provide context for Stage~C. Stage~A supplies inverse-probability weights to adjust for spatial selection into the analytic sample. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation, however, centers on Stage~C: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and error stability to support high-confidence administrative use.
+Stages A, B, and D provide context for Stage~C. Stage~A is used to test whether inverse-probability weighting (IPW) can credibly adjust for spatial selection into the analytic sample; diagnostics reported below show this weighting strategy fails overlap and balance gates and is therefore retained only as a failed sensitivity analysis. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation centers on Stage~C under the unweighted primary specification: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration and equity to support high-confidence administrative use.
 
 The thesis also includes two exploratory analyses of downstream institutional dynamics. A regression discontinuity design at the 20\% petition threshold estimates the processing-time consequence of crossing the statutory margin. Descriptive evidence from the 2022 council electoral transition, in which specific districts replaced preservationist incumbents with pro-housing representatives, examines whether petition filing rates declined differentially in those districts.
 
@@ -269,13 +269,39 @@ The feature set is separated to prevent predictive models from leveraging sensit
 
 The predictive evaluation centers on Stage~C (Formal Protest Petition). Three supporting stages provide context and methodological inputs:
 
-\textbf{Stage A---Development Occurrence (IPW input only)} estimates selection into the observed filing sample and contributes inverse-probability weights used in Stage~C. Stage~A is retained as methods support in the main text; full specification and diagnostics are reported in Appendix~\ref{app:stagea}.
+\textbf{Stage A---Development Occurrence} models where housing development proposals are likely to emerge as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels. Stage A additionally provides a candidate inverse-probability weighting (IPW) sensitivity strategy for spatial selection into the analytic sample. However, as documented in the IPW diagnostics subsection, overlap, ESS, and balance checks do not pass pre-specified quality gates, so weighted Stage C estimates are not used in the main narrative. Full model details, target definitions, precision--recall curves, and hotspot maps are reported in Appendix~\ref{app:stagea}.
 
 \textbf{Stage B---Project Type and Scale (supporting context)} is treated as non-headline support. Stage~B performance tables and figures are moved to Appendix~\ref{app:stageb}.
 
 \textbf{Stage D---Administrative Audit (descriptive only)} documents structural missingness and pre-council withdrawal patterns conditional on petition filing. Stage~D is not treated as a predictive results track and is reported as a descriptive audit in Appendix~\ref{app:staged}.
 
 A composite measure combining all four stages (\textbf{expected contested units}) is also constructed and mapped in Appendix~\ref{app:contested_units}. Because this multiplicative structure compounds uncertainty from each stage, the resulting map should be interpreted as a relative ranking rather than a reliable absolute probability.
+
+\subsection{IPW Diagnostics and Sensitivity Protocol}
+\label{sec:ipw_diagnostics}
+
+To formally evaluate whether selection weighting is admissible, Stage A estimates a propensity score $\hat e_i = \Pr(D_i=1\mid X_i)$ for inclusion in the Stage C analytic sample. For observed cases ($D_i=1$), the stabilized weight is
+\begin{equation}
+  w_i^{\text{stab}} = \frac{\Pr(D=1)}{\hat e_i}.
+\end{equation}
+The covariate set $X_i$ is fixed ex ante and includes parcel area, parcel frontage, baseline zoning class, council-district fixed effects, ACS renter share, ACS median income, homestead share, lagged neighborhood petition rate, and year fixed effects.
+
+Primary truncation clips stabilized weights at empirical $[p_1,p_{99}]$ to limit variance inflation. Sensitivity bands additionally test $[p_{2.5},p_{97.5}]$ and $[p_{5},p_{95}]$. For each band, we report overlap, standardized mean differences (SMD), and effective sample size
+\begin{equation}
+  ESS = \frac{(\sum_i w_i)^2}{\sum_i w_i^2}.
+\end{equation}
+
+\input{Tables/ipw_diagnostics_summary.tex}
+\input{Tables/ipw_balance_diagnostics.tex}
+
+\begin{figure}[H]
+    \centering
+    \input{Figures/Chapter4/fig_ipw_overlap_balance.tex}
+    \caption[IPW overlap, ESS, and balance diagnostics]{IPW diagnostics for Stage A sensitivity weighting. The overlap and balance profile remains weak after truncation, and ESS remains well below the 40\% admissibility threshold.}
+    \label{fig:ipw_diag}
+\end{figure}
+
+All weighting bands fail the joint diagnostic gate (insufficient overlap, insufficient ESS retention, and residual imbalance), so weighted Stage C effects are excluded from primary claims and retained only as failed sensitivity analyses.
 
 \subsection{Formal Protest Petition}
 
@@ -284,7 +310,7 @@ The Formal Protest Petition forecast is the core of the thesis: conditional on a
 P(y_0 = 1 \mid D=1, X_{i,t}, Z)
 \end{equation}
 
-At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at filing (site geometry, requested zoning changes, buffer demographics, and historical petition rates). Stage~A contributes IPW as a support-layer adjustment for observable selection; details are deferred to Appendix~\ref{app:stagea}. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
+At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. The primary Stage C specification is intentionally unweighted because IPW diagnostics from Stage A fail overlap and balance thresholds (Section~\ref{sec:ipw_diagnostics}). Weighted estimates are retained only as failed sensitivity checks and are not used for headline claims. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
 
 \begin{figure}[H]
     \centering
@@ -396,6 +422,8 @@ Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Unde
 \end{table}
 
 To prevent cross-design metric drift, calibration claims are bound to explicit reporting layers: \textbf{C1} (primary OOD bootstrap calibrated ECE), \textbf{C2} (in-distribution CV calibrated ECE), and \textbf{C3} (alternative calibration sensitivity ECE). Main-text calibration claims use only Layer C1; Layers C2--C3 are reported in Appendix~\ref{app:calibration_layers}.
+
+The Development Occurrence hazard model is used as a supporting stage and as the source of attempted IPW sensitivity weights. Because IPW diagnostics fail (Section~\ref{sec:ipw_diagnostics}), weighted Stage C claims are intentionally omitted from the main results. The filing-date petition model therefore reports unweighted discrimination and calibration metrics.
 
 \input{Tables/calibration_primary_ood.tex}
 
@@ -662,7 +690,7 @@ This study has several important limitations.
 
 \textbf{Measurement error in reconstructed dates.} Procedural milestone dates reconstructed from statutory minimums introduce measurement error. Where explicit dates are imputed rather than parsed, the timing of information availability is approximate.
 
-\textbf{Selection into observed cases.} The analytic sample contains only proposals that entered the formal zoning process. Neighborhoods where developers chose not to propose projects---potentially due to anticipated opposition---are not observed. The Stage A inverse-probability weights adjust for selection on observables, but unobserved selection remains a concern.
+\textbf{Selection into observed cases.} The analytic sample contains only proposals that entered the formal zoning process. Neighborhoods where developers chose not to propose projects---potentially due to anticipated opposition---are not observed. Attempted Stage A inverse-probability weighting fails overlap and balance diagnostics and is therefore retained only as a failed sensitivity check; unobserved selection remains a concern under the unweighted primary specification.
 
 \textbf{Limited post-policy windows.} HB~24 falls entirely outside the observation period. The event-study results should be interpreted as preliminary.
 
