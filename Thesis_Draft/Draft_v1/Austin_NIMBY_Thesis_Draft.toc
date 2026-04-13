@@ -1,0 +1,51 @@
+\contentsline {section}{\numberline {1}Introduction}{7}{section.1}%
+\contentsline {section}{\numberline {2}Literature Review}{8}{section.2}%
+\contentsline {subsection}{\numberline {2.1}The Political Economy of Zoning Friction and Participatory Distortion}{8}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Discretionary Review and Institutional Vetoes}{8}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}The Prediction Policy Problem in Spatial Planning}{11}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Evaluative Constraints on Predictive Governance}{11}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Data and Methods}{11}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Analytical Panel Structure}{12}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Selection}{14}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{16}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{16}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Modeling Strategy}{17}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Supporting Stages: Development Occurrence, Project Type, and Political Outcome}{17}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Formal Protest Petition}{17}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Unified Predictive Frontier: Standard, Deep, and Foundation Models}{18}{subsubsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.3}Model Evaluation Strategy}{19}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Results}{21}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{21}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{23}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Architecture Attribution Divergence}{25}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Attribution Stability Across Temporal Windows}{27}{subsubsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.4}Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}{27}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Descriptive Evidence from the 2022 Electoral Transition}{30}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Supplementary Institutional Analyses}{31}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Qualitative Planning Context}{31}{section.6}%
+\contentsline {section}{\numberline {7}Limitations}{32}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{33}{section.8}%
+\contentsline {section}{References}{35}{section*.24}%
+\contentsline {section}{\numberline {A}Supplementary Calibration Comparison}{37}{appendix.A}%
+\contentsline {section}{\numberline {B}Semantic Feature Mapping}{38}{appendix.B}%
+\contentsline {section}{\numberline {C}Interview Recruitment Overview}{39}{appendix.C}%
+\contentsline {section}{\numberline {D}IRB Protocol Summary}{40}{appendix.D}%
+\contentsline {section}{\numberline {E}Semi-Structured Interview Guide}{41}{appendix.E}%
+\contentsline {section}{\numberline {F}Sample Protest Petition}{42}{appendix.F}%
+\contentsline {section}{\numberline {G}Illustrative Support-Layer Panel Structure}{43}{appendix.G}%
+\contentsline {section}{\numberline {H}Methodological Appendix: Expanded Details}{44}{appendix.H}%
+\contentsline {subsection}{\numberline {H.1}Variable Dictionary}{44}{subsection.H.1}%
+\contentsline {subsection}{\numberline {H.2}Hyperparameter Search Grids}{44}{subsection.H.2}%
+\contentsline {subsection}{\numberline {H.3}Subgroup Definitions \& Fairness Testing}{45}{subsection.H.3}%
+\contentsline {subsection}{\numberline {H.4}Natural Language Processing Model: Exploratory Text Features}{45}{subsection.H.4}%
+\contentsline {section}{\numberline {I}Development Occurrence Model (Stage A)}{48}{appendix.I}%
+\contentsline {section}{\numberline {J}Project Type and Scale Model (Stage B)}{51}{appendix.J}%
+\contentsline {section}{\numberline {K}Political Outcome Model (Stage D)}{52}{appendix.K}%
+\contentsline {section}{\numberline {L}Expected Contested Units (Composite Measure)}{53}{appendix.L}%
+\contentsline {section}{\numberline {M}Institutional Geographic Overlay Analyses}{54}{appendix.M}%
+\contentsline {section}{\numberline {N}HOME Initiative Event Study}{56}{appendix.N}%
+\contentsline {section}{\numberline {O}Temporal Integrity and Leakage Audit}{57}{appendix.O}%
+\contentsline {section}{\numberline {P}Extended Architectural Search and Resampling Strategies}{58}{appendix.P}%
+\contentsline {section}{\numberline {Q}Longitudinal Architecture Attribution Divergence (2019--2023)}{59}{appendix.Q}%
+\contentsline {section}{\numberline {R}Longitudinal Error Topology (FNR/FPR Tracking)}{61}{appendix.R}%
+\contentsline {section}{\numberline {S}Multi-Seed Stability Audit}{63}{appendix.S}%
