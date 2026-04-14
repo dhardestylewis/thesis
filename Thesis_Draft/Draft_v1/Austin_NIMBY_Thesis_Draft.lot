@@ -1,0 +1,26 @@
+\contentsline {table}{\numberline {1}{\ignorespaces Measured Threshold-Crossing Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}}{9}{table.caption.1}%
+\contentsline {table}{\numberline {2}{\ignorespaces Annual Distribution of Discretionary Zoning Cases (2007---2024)}}{13}{table.caption.4}%
+\contentsline {table}{\numberline {3}{\ignorespaces Historical Panel Descriptive Statistics}}{14}{table.caption.7}%
+\contentsline {table}{\numberline {4}{\ignorespaces Sample Selection from Raw Records to Analytic Sample}}{14}{table.caption.8}%
+\contentsline {table}{\numberline {5}{\ignorespaces Label-Validity Object for Stage C Primary Outcome}}{16}{table.caption.9}%
+\contentsline {table}{\numberline {6}{\ignorespaces Stage A IPW Diagnostic Summary (Stabilized and Truncated Weights)}}{18}{table.caption.10}%
+\contentsline {table}{\numberline {7}{\ignorespaces Overlap and Covariate Balance Diagnostics for Stage A IPW}}{18}{table.caption.11}%
+\contentsline {table}{\numberline {8}{\ignorespaces \textbf {Comprehensive Temporal Predictive Drift: PR-AUC Decay by Algorithm}}}{22}{table.caption.14}%
+\contentsline {table}{\numberline {9}{\ignorespaces Uncertainty annotation lookup for temporal cells (CatBoost H0 drift view).}}{23}{table.caption.16}%
+\contentsline {table}{\numberline {10}{\ignorespaces Stage C Filing-Date Headline Metrics (Primary Object + Supporting Diagnostics)}}{24}{table.caption.17}%
+\contentsline {table}{\numberline {11}{\ignorespaces Primary OOD Calibration Reporting Layer (Layer C1)}}{24}{table.caption.18}%
+\contentsline {table}{\numberline {12}{\ignorespaces Feature-Restriction Survival Ratio Matrix}}{26}{table.caption.20}%
+\contentsline {table}{\numberline {13}{\ignorespaces Subgroup Error Diagnostics (Transparency-Only; Not Inferential)}}{41}{table.caption.31}%
+\contentsline {table}{\numberline {14}{\ignorespaces Stage C Benchmark Matrix: Fixed Model Roster}}{42}{table.caption.32}%
+\contentsline {table}{\numberline {15}{\ignorespaces \textbf {Stage C: Multi-Horizon Opposition Model Performance with 95\% Bootstrap CIs}}}{42}{table.caption.33}%
+\contentsline {table}{\numberline {16}{\ignorespaces Calibration Method Comparison: ECE and Brier Score Across Architectures (Layer C3 --- In-Distribution CV, Alternative Calibration Sensitivity). These numbers are in-distribution cross-validation estimates and are \textit {not} the primary OOD bootstrap calibrated ECE ($\text {ECE}_{C1} = 0.20524162165852614{}$) used in the main results.}}{43}{table.caption.34}%
+\contentsline {table}{\numberline {17}{\ignorespaces Semantic Feature Aggregation Mapping}}{44}{table.caption.35}%
+\contentsline {table}{\numberline {18}{\ignorespaces Top Unclustered Features by Anchor Year: CatBoost vs. LightGBM (Dynamic View)}}{50}{table.caption.38}%
+\contentsline {table}{\numberline {19}{\ignorespaces Stage A Target Definitions}}{61}{table.caption.42}%
+\contentsline {table}{\numberline {20}{\ignorespaces Development Occurrence Hazard Model Performance}}{62}{table.caption.44}%
+\contentsline {table}{\numberline {21}{\ignorespaces Project Type and Scale}}{64}{table.caption.46}%
+\contentsline {table}{\numberline {22}{\ignorespaces Summary of Supplementary Quasi-Experimental Estimates for Reconstructed Petition Outcomes}}{69}{table.caption.51}%
+\contentsline {table}{\numberline {23}{\ignorespaces Temporal Integrity and Leakage Audit: Local vs. Foundation Performance}}{71}{table.caption.53}%
+\contentsline {table}{\numberline {24}{\ignorespaces Stage A \& Stage C Evaluated at Filing: Raw vs. Calibrated Candidate Architectures}}{72}{table.caption.54}%
+\contentsline {table}{\numberline {25}{\ignorespaces Multi-Seed Performance Summary (mean $\pm $ std across 20 seeds, \textit {benchmark roster evaluation})}}{77}{table.caption.58}%
+\contentsline {table}{\numberline {26}{\ignorespaces Algorithmic Feature-Restriction Stability Matrix}}{82}{table.caption.65}%
