@@ -15,6 +15,8 @@ import pandas as pd
 ROOT_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT_DIR / "data"
 REGISTRY_DIR = ROOT_DIR / "registries"
+# Canonical Stage C prediction horizon key written by train_stage_c (dedupes legacy aliases in registries).
+PRIMARY_STAGE_C_HORIZON = "filing"
 CONFIG_DIR = ROOT_DIR / "configs"
 SRC_DIR = ROOT_DIR / "src"
 WAREHOUSE_DIR = ROOT_DIR / "Data" / "Warehouse_As_Of"

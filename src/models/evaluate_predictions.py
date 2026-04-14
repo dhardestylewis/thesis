@@ -11,7 +11,7 @@ import numpy.typing as npt
 import pandas as pd
 import sklearn.metrics as skm
 
-from src.data_io.schema import REGISTRY_DIR, ensure_dirs
+from src.data_io.schema import PRIMARY_STAGE_C_HORIZON, REGISTRY_DIR, ensure_dirs
 
 PRIMARY_SPLIT_ID = "TEMP_OOD_2023_MAIN"
 PRIMARY_MODEL = "CatBoost"
@@ -56,6 +56,35 @@ def _ace(y_true: npt.NDArray[np.int_], y_prob: npt.NDArray[np.float64], n_bins: 
     return float(np.mean(diffs)) if diffs else float("nan")
 
 
+def _bootstrap_pr_auc_ci(
+    y_true: npt.NDArray[np.int_],
+    y_score: npt.NDArray[np.float64],
+    *,
+    n_boot: int = 2000,
+    seed: int = 42,
+) -> tuple[float | None, float | None]:
+    """Percentile bootstrap CI for PR-AUC (average precision) on the evaluation rows."""
+    if len(y_true) < 2 or int(np.sum(y_true)) < 1:
+        return None, None
+    rng = np.random.default_rng(seed)
+    scores: list[float] = []
+    n = len(y_true)
+    attempts = 0
+    max_attempts = n_boot * 50
+    while len(scores) < n_boot and attempts < max_attempts:
+        attempts += 1
+        idx = rng.integers(0, n, size=n)
+        yt = y_true[idx]
+        if int(np.sum(yt)) < 1:
+            continue
+        ys = y_score[idx]
+        scores.append(float(average_precision(yt, ys)))
+    if len(scores) < 100:
+        return None, None
+    lo, hi = float(np.quantile(scores, 0.025)), float(np.quantile(scores, 0.975))
+    return lo, hi
+
+
 def _threshold_metrics(y_true: npt.NDArray[np.int_], y_prob: npt.NDArray[np.float64], threshold: float) -> dict[str, float]:
     preds = (y_prob >= threshold).astype(int)
     return {
@@ -81,6 +110,12 @@ def evaluate_predictions(
     subset = df[(df["split_id"] == split_id) & (df["model_family"] == model_family)].copy()
     if subset.empty:
         raise ValueError(f"No prediction rows found for split_id={split_id!r}, model_family={model_family!r}.")
+    if "horizon" in subset.columns:
+        subset = subset.loc[subset["horizon"] == PRIMARY_STAGE_C_HORIZON].copy()
+    if subset.empty:
+        raise ValueError(
+            f"No rows after horizon filter ({PRIMARY_STAGE_C_HORIZON!r}) for split_id={split_id!r}, model_family={model_family!r}."
+        )
 
     y_true = cast(npt.NDArray[np.int_], np.asarray(subset["y_true"], dtype=int))
     score_col = "y_score_calibrated" if use_calibrated and "y_score_calibrated" in subset.columns else "y_score_raw"
@@ -94,11 +129,16 @@ def evaluate_predictions(
     if top_decile_precision is not None and baseline_rate not in (None, 0.0):
         top_decile_lift = float(top_decile_precision / baseline_rate)
 
+    pr_auc = float(average_precision(y_true, y_score))
+    pr_lo, pr_hi = _bootstrap_pr_auc_ci(y_true, y_score)
     ranking: dict[str, Any] = {
-        "pr_auc": float(average_precision(y_true, y_score)),
+        "pr_auc": pr_auc,
         "top_decile_precision": top_decile_precision,
         "top_decile_lift": top_decile_lift,
     }
+    if pr_lo is not None and pr_hi is not None:
+        ranking["pr_auc_ci_low"] = pr_lo
+        ranking["pr_auc_ci_high"] = pr_hi
     calibration: dict[str, Any] = {
         "brier": float(brier_score(y_true, y_score)),
         "ece": _ece(y_true, y_score),
@@ -119,7 +159,7 @@ def evaluate_predictions(
         "thresholded": thresholded,
         "sample_size": int(len(subset)),
         "positive_rate": float(y_true.mean()),
-        "generated_at": pd.Timestamp.utcnow().isoformat(),
+        "generated_at": pd.Timestamp.now("UTC").isoformat(),
     }
 
     out_path = Path(output_path) if output_path else REGISTRY_DIR / "evaluation_results.json"

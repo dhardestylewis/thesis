@@ -14,13 +14,13 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 
-from src.data_io.schema import REGISTRY_DIR, ROOT_DIR, ensure_dirs, save_registry
+from src.data_io.schema import PRIMARY_STAGE_C_HORIZON, REGISTRY_DIR, ROOT_DIR, ensure_dirs, save_registry
 from src.interpretation.extract_raw_explanations import extract_raw_explanations
 
 PRIMARY_SPLIT_ID = "TEMP_OOD_2023_MAIN"
 PRIMARY_LABEL_VERSION = "label_v1_reconstructed_threshold_crossing"
 PRIMARY_FEATURE_VIEW = "filing_date_public"
-PRIMARY_HORIZON = "filing"
+PRIMARY_HORIZON = PRIMARY_STAGE_C_HORIZON
 
 
 def _load_prediction_registry() -> pd.DataFrame:

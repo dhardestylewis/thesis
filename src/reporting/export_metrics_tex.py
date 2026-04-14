@@ -14,6 +14,8 @@ def _format_metric(metric_id: str, value: Any) -> str:
     if isinstance(value, int):
         return f"{value:,}"
     if isinstance(value, float):
+        if metric_id == "metricBaseRateN":
+            return f"{int(round(value)):,}"
         if "Rate" in metric_id or "Precision" in metric_id or "Recall" in metric_id or "Fidelity" in metric_id or "Gap" in metric_id:
             return f"{value:.1%}"
         if "Lift" in metric_id:
@@ -183,6 +185,9 @@ def export_metrics_tex() -> None:
     for macro, value in compatibility_macros.items():
         macro_values.setdefault(macro, value)
 
+    if "metricBootstrapFilingCI" in macro_values:
+        macro_values["metricHeadlinePRAUCCI"] = macro_values["metricBootstrapFilingCI"]
+
     # Parse DiD results from file if available to override causal metrics in Tables
     did_results_path = root / "results" / "stijn_did_results.txt"
     if did_results_path.exists():
@@ -200,9 +205,8 @@ def export_metrics_tex() -> None:
         "% Sources: reporting/final_metrics_manifest.json (computed)",
         "%          registries/metrics_manifest.json (golden/supplemental)",
         "% Computed values override golden where both are present.",
-        "% CI for metricBootstrapFiling corrected to bootstrap-computed [0.64,0.95]",
-        "% (n=2000 resamples, n_test_pos=15). Prior hardcoded [0.78,0.84] was incorrect.",
-        "% ECE corrected: pre-calibration ECE=0.208; post-OOF-isotonic ECE=0.205.",
+        "% PR-AUC CI: bootstrap on OOD test rows (src/models/evaluate_predictions.py).",
+        "% Layer C1 ECE: 10-bin ECE on calibrated scores; matches evaluation_results.json (horizon=filing).",
         "",
     ]
     for macro in sorted(macro_values):

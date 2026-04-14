@@ -11,7 +11,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/case_universe.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.577436+00:00"
   },
   {
     "metric_id": "metricNDistricts",
@@ -25,7 +25,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/case_universe.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.579452+00:00"
   },
   {
     "metric_id": "metricBaseRate",
@@ -39,7 +39,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_registry.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricBaseRateN",
@@ -53,11 +53,39 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_registry.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+  },
+  {
+    "metric_id": "metricNTestTotal",
+    "value": 583.0,
+    "ci_low": null,
+    "ci_high": null,
+    "task_id": "STAGE_C_FILING_MAIN",
+    "split_id": "TEMP_OOD_2023_MAIN",
+    "model_family": "CatBoost",
+    "horizon": "filing",
+    "calibration_state": "identity_noop",
+    "seed_policy": "single_seed",
+    "source_artifact": "registries/prediction_registry.parquet",
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+  },
+  {
+    "metric_id": "metricNTestPositive",
+    "value": 15.0,
+    "ci_low": null,
+    "ci_high": null,
+    "task_id": "STAGE_C_FILING_MAIN",
+    "split_id": "TEMP_OOD_2023_MAIN",
+    "model_family": "CatBoost",
+    "horizon": "filing",
+    "calibration_state": "identity_noop",
+    "seed_policy": "single_seed",
+    "source_artifact": "registries/prediction_registry.parquet",
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricMeanProbTP",
-    "value": 0.5409614363955775,
+    "value": 0.48003632302502175,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -67,11 +95,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricMeanProbTN",
-    "value": 0.007919267001694572,
+    "value": 0.007559040022968781,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -81,11 +109,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricTopDecileTP",
-    "value": 30.0,
+    "value": 15.0,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -95,11 +123,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricTopDecileN",
-    "value": 124.0,
+    "value": 59.0,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -109,11 +137,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricHeadlinePRAUC",
-    "value": 0.7477099019122676,
+    "value": 0.7177399008513559,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -123,13 +151,13 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricBootstrapFiling",
-    "value": 0.7477099019122676,
-    "ci_low": null,
-    "ci_high": null,
+    "value": 0.7177399008513559,
+    "ci_low": 0.4807182449725608,
+    "ci_high": 0.9073921703548838,
     "task_id": "STAGE_C_FILING_MAIN",
     "split_id": "TEMP_OOD_2023_MAIN",
     "model_family": "CatBoost",
@@ -137,11 +165,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricTopDecilePrecision",
-    "value": 0.24193548387096775,
+    "value": 0.2542372881355932,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -151,11 +179,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricTopDecileLift",
-    "value": 9.370967741935484,
+    "value": 9.88135593220339,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -165,11 +193,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricHeadlineECE",
-    "value": 0.008324013745886424,
+    "value": 0.008640409622402588,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -179,11 +207,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricECE",
-    "value": 0.008324013745886424,
+    "value": 0.008640409622402588,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -193,11 +221,25 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+  },
+  {
+    "metric_id": "metricECEOODBootstrapCalibrated",
+    "value": 0.008640409622402588,
+    "ci_low": null,
+    "ci_high": null,
+    "task_id": "STAGE_C_FILING_MAIN",
+    "split_id": "TEMP_OOD_2023_MAIN",
+    "model_family": "CatBoost",
+    "horizon": "filing",
+    "calibration_state": "identity_noop",
+    "seed_policy": "single_seed",
+    "source_artifact": "registries/evaluation_results.json",
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricACE",
-    "value": 0.004739587574473661,
+    "value": 0.006764254559438189,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -207,11 +249,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricBrierScore",
-    "value": 0.011600586932944705,
+    "value": 0.011039489114334368,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -221,11 +263,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricPrecisionAtThirty",
-    "value": 0.6153846153846154,
+    "value": 0.6190476190476191,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -235,11 +277,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricRecallAtThirty",
-    "value": 0.8,
+    "value": 0.8666666666666667,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -249,11 +291,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricPrecisionAtFifty",
-    "value": 0.7142857142857143,
+    "value": 0.8333333333333334,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -263,11 +305,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricRecallAtFifty",
-    "value": 0.5,
+    "value": 0.3333333333333333,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -277,7 +319,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricLabelFidelity",
@@ -291,7 +333,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_audit_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricLabelAuditN",
@@ -305,7 +347,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_audit_results.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricLargestClusterDelta",
@@ -319,7 +361,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/ablation_results.parquet",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricConsensusClusterCount",
@@ -333,7 +375,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/meta_attribution_object.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   },
   {
     "metric_id": "metricUnstableClusterCount",
@@ -347,6 +389,6 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/meta_attribution_object.json",
-    "generated_at": "2026-04-14T02:58:07.456335+00:00"
+    "generated_at": "2026-04-14T04:46:38.585733+00:00"
   }
 ]

@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Austin_NIMBY_Thesis_Draft_build.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: plainurl.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: references.bib
+You've used 22 entries,
+            2943 wiz_defined-function locations,
+            788 strings with 9243 characters,
+and the built_in function-call counts, 10073 in all, are:
+= -- 1118
+> -- 304
+< -- 2
++ -- 109
+- -- 84
+* -- 593
+:= -- 1421
+add.period$ -- 84
+call.type$ -- 22
+change.case$ -- 107
+chr.to.int$ -- 0
+cite$ -- 22
+duplicate$ -- 252
+empty$ -- 963
+format.name$ -- 84
+if$ -- 2608
+int.to.chr$ -- 0
+int.to.str$ -- 22
+missing$ -- 20
+newline$ -- 130
+num.names$ -- 44
+pop$ -- 211
+preamble$ -- 1
+purify$ -- 86
+quote$ -- 0
+skip$ -- 699
+stack$ -- 0
+substring$ -- 531
+swap$ -- 63
+text.length$ -- 32
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 84
+warning$ -- 0
+while$ -- 77
+width$ -- 24
+write$ -- 276

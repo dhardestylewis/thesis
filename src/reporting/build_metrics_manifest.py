@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional, cast
 import numpy as np
 import pandas as pd
 
-from src.data_io.schema import REGISTRY_DIR, ROOT_DIR, ensure_dirs
+from src.data_io.schema import PRIMARY_STAGE_C_HORIZON, REGISTRY_DIR, ROOT_DIR, ensure_dirs
 
 PRIMARY_TASK_ID = "STAGE_C_FILING_MAIN"
 PRIMARY_SPLIT_ID = "TEMP_OOD_2023_MAIN"
@@ -83,8 +83,10 @@ def _from_evaluation(eval_data: Dict[str, Any], source_artifact: str) -> List[Di
         rows.append(_record("metricTopDecilePrecision", ranking.get("top_decile_precision"), source_artifact))
         rows.append(_record("metricTopDecileLift", ranking.get("top_decile_lift"), source_artifact))
     if calibration:
-        rows.append(_record("metricHeadlineECE", calibration.get("ece"), source_artifact))
-        rows.append(_record("metricECE", calibration.get("ece"), source_artifact))
+        ece_val = calibration.get("ece")
+        rows.append(_record("metricHeadlineECE", ece_val, source_artifact))
+        rows.append(_record("metricECE", ece_val, source_artifact))
+        rows.append(_record("metricECEOODBootstrapCalibrated", ece_val, source_artifact))
         rows.append(_record("metricACE", calibration.get("ace"), source_artifact))
         rows.append(_record("metricBrierScore", calibration.get("brier"), source_artifact))
     if thresholded:
@@ -130,7 +132,11 @@ def build_metrics_manifest(evaluation_outputs_dir: Optional[str] = None, output_
 
     if not preds.empty:
         main_preds = preds[(preds["model_family"] == PRIMARY_MODEL) & (preds["split_id"] == PRIMARY_SPLIT_ID)]
+        if "horizon" in main_preds.columns:
+            main_preds = main_preds.loc[main_preds["horizon"] == PRIMARY_STAGE_C_HORIZON]
         if not main_preds.empty:
+            records.append(_record("metricNTestTotal", int(len(main_preds)), "registries/prediction_registry.parquet"))
+            records.append(_record("metricNTestPositive", int(main_preds["y_true"].sum()), "registries/prediction_registry.parquet"))
             records.append(_record("metricMeanProbTP", main_preds.loc[main_preds["y_true"] == 1, "y_score_raw"].mean(), "registries/prediction_registry.parquet"))
             records.append(_record("metricMeanProbTN", main_preds.loc[main_preds["y_true"] == 0, "y_score_raw"].mean(), "registries/prediction_registry.parquet"))
             top_decile_cut = main_preds["y_score_raw"].quantile(0.9)
