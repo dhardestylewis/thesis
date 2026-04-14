@@ -21,7 +21,7 @@ import contextily as cx
 
 ROOT = r"C:\Users\dhl\data\thesis\thesis"
 MASTER_DATA = os.path.join(ROOT, "Data", "Warehouse_As_Of", "H0_Filing_Master_Enriched.csv")
-IMG_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Archive_Pipelines")
+IMG_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Chapter4")
 os.makedirs(IMG_DIR, exist_ok=True)
 
 def main():

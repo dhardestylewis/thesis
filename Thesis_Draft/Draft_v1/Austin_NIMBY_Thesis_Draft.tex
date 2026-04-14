@@ -34,11 +34,17 @@ Graduate School of Architecture, Planning and Preservation\\
 Columbia University}
 \date{\today}
 
+
 \begin{document}
+\sloppy
 \maketitle
 
 \begin{abstract}
-This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from the clerk-certified valid petition (unobserved). Working from \metricBaselineCases{} discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with primary-layer calibration error $\text{ECE}_{C1}=\metricECEOODBootstrapCalibrated{}$ after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation. Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify portable calibrated probabilities for institutional decision-making.
+This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from the clerk-certified valid petition (unobserved).
+
+Working from \metricBaselineCases{} discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with primary-layer calibration error $\text{ECE}_{C1}=\metricECEOODBootstrapCalibrated{}$ after Isotonic Regression---above the 0.05 threshold for reliable probabilistic interpretation.
+
+Filing-date administrative features can rank petition risk, but they do not yet yield calibrated probabilities suitable for institutional use. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify portable calibrated probabilities for institutional decision-making.
 \end{abstract}
 
 \newpage
@@ -120,7 +126,7 @@ Commercial / Non-Residential & 5\% \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
+    \includegraphics[width=\textwidth]{Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
     \caption[Annual Petition Filing Rate by Project Type]{Annual petition filing rates by project type, 2007--2024. Consistent with the Mercatus Center pattern (Table~1), this timeline tracks the observed historical petition frequency within each development category over the study period. While high-density or specialized use categories historically experience greater petition volatility, missing-middle and standard residential rezonings---which comprise the vast majority of all discretionary cases---maintain a consistently low baseline filing rate throughout the dataset.}
     \label{fig:typology_timeline}
 \end{figure}
@@ -154,7 +160,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Archive_Pipelines/fig1_spatial_distribution.png}
+    \includegraphics[width=\textwidth]{Figures/Archive_Pipelines/fig1_spatial_distribution.png}
     \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$).}
     \label{fig:spatial_dist}
 \end{figure}
@@ -276,13 +282,14 @@ To separate observed labels from legal adjudication, this manuscript treats labe
 \centering
 \caption{Label-Validity Object for Stage C Primary Outcome}
 \label{tab:label_validity_object}
-\begin{tabular}{@{}p{0.24\textwidth}p{0.23\textwidth}p{0.12\textwidth}p{0.33\textwidth}@{}}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}p{0.20\textwidth}p{0.22\textwidth}p{0.10\textwidth}p{0.40\textwidth}@{}}
 \toprule
 \textbf{Layer} & \textbf{Source Artifact} & \textbf{N} & \textbf{Interpretation Rule} \\
 \midrule
-Measured threshold-crossing label ($y_0$) & Reconstructed from petition filings and buffer-share geometry & \metricBaselineCases{} & Primary modeled outcome; operationalized from observed records, not legal certification \\
-Observed-record hand audit (v2026-04-13) & \path{registries/label_audit_results.json} & 200 & Agreement = 1.00; no observed false positives or false negatives in the audited sample \\
-Legal certification status & Not available in public record & --- & Treated as latent/unobserved; excluded from identification claims \\
+Measured threshold-crossing label ($y_0$) & Reconstructed from petition filings and buffer-share geometry & \metricBaselineCases{} & Primary modeled outcome; operationalized from observed records, not legal certification. \\
+Observed-record hand audit (v2026-04-13) & \path{registries/label_audit_results.json} & 200 & Agreement = 1.00; no observed false positives or negatives in the audited sample. \\
+Legal certification status & Not available in public record & --- & Treated as latent/unobserved; excluded from identification claims. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -501,18 +508,19 @@ To examine this, we report a \textbf{Feature-Restriction Survival Ratio}: the ra
 When the primary models are restricted to a cross-model consensus feature set (Demographics, Housing Tenure, and Neighborhood Income), the ratio indicates how much of each model's discrimination derives from features the full roster agrees on (Table~\ref{tab:spuriousness_index}).
 \begin{table}[H]
     \centering
-    \begin{tabular}{lccc}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{@{}p{0.23\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.28\textwidth}@{}}
         \toprule
         \textbf{Algorithm} & \textbf{Full Matrix PR-AUC} & \textbf{Restricted PR-AUC} & \textbf{Survival Ratio} \\
         \midrule
-        TabNet (Structural Pruning) & 0.099 & 0.157 & \textbf{\metricSpuriousTabNet{}} (\metricSpuriousTabNetGain{}) \\
-        Logistic Regression (L2) & 0.125 & 0.190 & \textbf{\metricSpuriousLogReg{}} (\metricSpuriousLogRegGain{}) \\
-        XGBoost & 0.119 & 0.140 & \textbf{\metricSpuriousXGB{}} \\
-        Deep ERM (Multi-Layer Perceptron) & 0.132 & 0.151 & \textbf{\metricSpuriousMLP{}} \\
-        CatBoost (Gradient Boosting) & 0.121 & 0.136 & \textbf{\metricSpuriousCatBoost{}} \\
-        Deep V-REx (Causal Representation) & 0.122 & 0.125 & \textbf{\metricSpuriousVREx{}} \\
-        LightGBM & 0.122 & 0.124 & \textbf{\metricSpuriousLGBM{}} \\
-        Random Forest & \textbf{0.152} & 0.126 & \textbf{\metricSpuriousRF{}} (\metricSpuriousRFGain{}) \\
+        \small TabNet (Structural Pruning) & \small 0.099 & \small 0.157 & \small \textbf{\metricSpuriousTabNet{}} (\metricSpuriousTabNetGain{}) \\
+        \small Logistic Regression (L2) & \small 0.125 & \small 0.190 & \small \textbf{\metricSpuriousLogReg{}} (\metricSpuriousLogRegGain{}) \\
+        \small XGBoost & \small 0.119 & \small 0.140 & \small \textbf{\metricSpuriousXGB{}} \\
+        \small Deep ERM (Multi-Layer Perceptron) & \small 0.132 & \small 0.151 & \small \textbf{\metricSpuriousMLP{}} \\
+        \small CatBoost (Gradient Boosting) & \small 0.121 & \small 0.136 & \small \textbf{\metricSpuriousCatBoost{}} \\
+        \small Deep V-REx (Causal Representation) & \small 0.122 & \small 0.125 & \small \textbf{\metricSpuriousVREx{}} \\
+        \small LightGBM & \small 0.122 & \small 0.124 & \small \textbf{\metricSpuriousLGBM{}} \\
+        \small Random Forest & \small \textbf{0.152} & \small 0.126 & \small \textbf{\metricSpuriousRF{}} (\metricSpuriousRFGain{}) \\
         \bottomrule
     \end{tabular}
     \caption[Feature-Restriction Survival Ratio Matrix]{Feature-restriction survival ratios across all architectures. Models were restricted to a cross-model consensus feature set (Demographics, Housing Tenure, and Neighborhood Income). Ratio values above 1.0 indicate that the model discriminates better under the consensus restriction than with the full matrix, suggesting its full-matrix predictions relied partly on non-consensus features. Ratio values below 1.0 indicate performance degradation when non-consensus features are removed.}
@@ -774,6 +782,7 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 
 \newpage
 \section{Supplementary Benchmark and Calibration Comparison}
+\label{app:metric_manifest}
 \section{Subgroup Diagnostics (Transparency-Only)}
 \label{app:subgroup_diagnostics}
 
@@ -916,7 +925,7 @@ Council district & \metricNDistricts{} districts & \metricMinDistrictPositives{}
 \noindent The following is the first page of a 558-page protest petition bundle filed for Case C241282, a Planned Development rezoning, illustrating the format in which property owners within 200 feet of a proposed development formally register opposition.
 
 \begin{center}
-\includegraphics[width=0.85\textwidth,page=1]{Qualitative_Appendix/sample_protest_petition.pdf}
+\includegraphics[width=0.85\textwidth,page=1]{Figures/Qualitative_Appendix/sample_protest_petition_v15.pdf}
 \end{center}
 
 \newpage

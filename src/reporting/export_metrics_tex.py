@@ -148,13 +148,6 @@ def export_metrics_tex() -> None:
         "metricBaseHazardProb": "$\\approx 2.5 \\times 10^{-5}$",
         "metricAttritionRate": "0.12",
         "metricUnopposedAttritionRate": "0.05",
-        "metricFlipDiDCoeff": "-0.04",
-        "metricFlipDiDPval": "0.24",
-        "metricDiDVotes": "-0.031",
-        "metricDiDSE": "0.044",
-        "metricDiDCI": "[-0.117, 0.055]",
-        "metricDiDDirectionText": "small reduction",
-        "metricDiDSignificanceText": "not statistically significant ($p = 0.48$)",
         "metricHDFrictionCoeff": "---",
         "metricHDFrictionPval": "---",
         "metricBaselineParcels": "135000",
@@ -189,6 +182,18 @@ def export_metrics_tex() -> None:
     }
     for macro, value in compatibility_macros.items():
         macro_values.setdefault(macro, value)
+
+    # Parse DiD results from file if available to override causal metrics in Tables
+    did_results_path = root / "results" / "stijn_did_results.txt"
+    if did_results_path.exists():
+        did_text = did_results_path.read_text(encoding="utf-8")
+        did_match = re.search(r"behaviors by ([+-]?\d+\.?\d*) votes.*\(p=([<]?\d+\.?\d*)\)", did_text)
+        if did_match:
+            macro_values["metricFlipDiDCoeff"] = _escape_latex(did_match.group(1))
+            macro_values["metricFlipDiDPval"] = _escape_latex(did_match.group(2))
+    else:
+        macro_values.setdefault("metricFlipDiDCoeff", "-0.04")
+        macro_values.setdefault("metricFlipDiDPval", "0.24")
 
     lines = [
         "% AUTO-GENERATED THESIS METRICS CONFIG",
