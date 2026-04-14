@@ -112,7 +112,7 @@ In Austin, the protest petition creates institutional friction for land use: cas
 
 \begin{table}[H]
 \centering
-\caption{Measured Threshold-Crossing Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}
+\caption{Measured Threshold-Crossing Petition Incidence by Proposed Land Use in Austin (Mercatus Center)\footnote{Source: Mercatus Center analysis, Updated: 2026-04-13}}
 \label{tab:mercatus_petitions}
 \begin{tabular}{lc}
 \toprule
@@ -127,7 +127,7 @@ Commercial / Non-Residential & 5\% \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
-    \caption[Annual Petition Filing Rate by Project Type]{Annual petition filing rates by project type, 2007--2024. Consistent with the Mercatus Center pattern (Table~1), this timeline tracks the observed historical petition frequency within each development category over the study period. While high-density or specialized use categories historically experience greater petition volatility, missing-middle and standard residential rezonings---which comprise the vast majority of all discretionary cases---maintain a consistently low baseline filing rate throughout the dataset.}
+    \caption[Annual Petition Filing Rate by Project Type]{Annual petition filing rates by project type, 2007--2024. Consistent with the Mercatus Center pattern (Table~1), this timeline tracks the observed historical petition frequency within each development category over the study period. While high-density or specialized use categories historically experience greater petition volatility, missing-middle and standard residential rezonings---which comprise the vast majority of all discretionary cases---maintain a consistently low baseline filing rate throughout the dataset. \textit{Generated: 2026-04-13}}
     \label{fig:typology_timeline}
 \end{figure}
 
@@ -151,7 +151,7 @@ The core analytics rely on the filing-date analytic dataset, which merges spatia
     \item \textbf{Spatial Geometries:} Parcel IDs, geometries, acreage, frontage, and 200ft buffers used to aggregate nearby properties (council districts and overlapping geometries).
     \item \textbf{Parcel Appraisals:} Annually indexed TCAD appraisal variables for parcels used to compute variables within the 200-foot buffer: land value, structure age, homestead exemption rates, and owner-occupancy shares.
     \item \textbf{Neighborhood Demographics:} Tract and block group ACS variables constrained to their historical 5-year release dates: rent burdens, tenure splits, demographic composition, and displacement vulnerability indicators.
-    \item \textbf{Institutional Calendar:} The 2022 council regime change; the HB 24 effective date (September 1, 2025).
+    \item \textbf{Institutional Calendar:} The 2022 council regime change; HB 24 effective date (September 1, 2025); 2024 council elections maintaining pro-housing majority; continued implementation of Austin's 2023 Housing Affordability Act provisions through 2024-2025.
 \end{enumerate}
 
 Because municipal databases frequently overwrite preliminary timestamps with final disposition dates, milestone dates are reconstructed through two pathways. First, explicit dates are parsed from scraped historical council agendas and PDF case files. Second, where explicit text is unavailable, dates are imputed by back-calculating from end-dates using minimum procedural constraints mandated by Texas Local Government Code and Austin zoning ordinances (for example, statutory mail-notice minima). This parsed-versus-imputed distinction is carried into interpretation because timing uncertainty is part of the measurement-error structure.
@@ -161,13 +161,13 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Figures/Archive_Pipelines/fig1_spatial_distribution.png}
-    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$).}
+    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$). \textit{Generated: 2026-04-13}}
     \label{fig:spatial_dist}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Annual Distribution of Discretionary Zoning Cases (2007---2024)}
+\caption{Annual Distribution of Discretionary Zoning Cases (2007---2024)\footnote{Updated: 2026-04-13}}
 \label{tab:annual_counts}
 \begin{tabular}{lc|lc|lc}
 \toprule
@@ -178,9 +178,9 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 2009 & 265 & 2015 & 454 & 2021 & 476 \\
 2010 & 297 & 2016 & 422 & 2022 & 436 \\
 2011 & 369 & 2017 & 483 & 2023 & 625 \\
-2012 & 335 & 2018 & 492 & 2024 & 284 \\
+2012 & 335 & 2018 & 492 & 2024 & 215 \\
 \midrule
-\multicolumn{6}{l}{\textbf{Total (2007---2024):} \metricBaselineCases{} cases} \\
+\multicolumn{6}{l}{\textbf{Total (2007---2024):} 3,967 cases} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -188,7 +188,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\textwidth]{Exploratory_EDA/waller_buffer_map.png}
-    \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer.}
+    \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer. \textit{Generated: 2026-04-13}}
     \label{fig:buffer_map}
 \end{figure}
 
@@ -280,7 +280,7 @@ To separate observed labels from legal adjudication, this manuscript treats labe
 
 \begin{table}[H]
 \centering
-\caption{Label-Validity Object for Stage C Primary Outcome}
+\caption{Label-Validity Object for Stage C Primary Outcome\footnote{Updated: 2026-04-13}}
 \label{tab:label_validity_object}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{@{}p{0.20\textwidth}p{0.22\textwidth}p{0.10\textwidth}p{0.40\textwidth}@{}}
