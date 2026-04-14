@@ -1,19 +1,19 @@
 # Fdb version 4
-["bibtex $job"] 1776142822.39299 "$job.aux" "$job.bbl" "$job" 1776143438.60858 0
-  "$job.aux" 1776143436 33016 5f28917d61713847478ef8d652fc5c69 "pdflatex"
+["bibtex $job"] 1776142822.39299 "$job.aux" "$job.bbl" "$job" 1776144129.82294 0
+  "$job.aux" 1776144128 33016 5f28917d61713847478ef8d652fc5c69 "pdflatex"
   "./plainurl.bst" 1774837120 33495 46cfb45e24a877059f9f7e142c7fc61c ""
   "./references.bib" 1776138318 41996 01f4099a72b33909f39671479cf05efa ""
   (generated)
   "$job.bbl"
   "$job.blg"
   (rewritten before read)
-["pdflatex"] 1776143406.27354 "Austin_NIMBY_Thesis_Draft.tex" "$job.pdf" "$job" 1776143438.60986 0
-  "$job.aux" 1776143436 33016 5f28917d61713847478ef8d652fc5c69 "pdflatex"
+["pdflatex"] 1776144105.31197 "Austin_NIMBY_Thesis_Draft.tex" "$job.pdf" "$job" 1776144129.82364 0
+  "$job.aux" 1776144128 33016 5f28917d61713847478ef8d652fc5c69 "pdflatex"
   "$job.bbl" 1776142822 6672 4b52e72823bea882baf04e2721da8014 "bibtex $job"
-  "$job.lof" 1776143436 4942 ae9bb8c1f842bf880975a113c06decd6 "pdflatex"
-  "$job.lot" 1776143436 3629 6523c5ceb11626e9f2b99feb9a557089 "pdflatex"
-  "$job.out" 1776143436 15656 e72d9cdacbb6822073b7d88d6f46fda6 "pdflatex"
-  "$job.toc" 1776143436 6164 86c77f181a729c516849e5d4cf61d3dd "pdflatex"
+  "$job.lof" 1776144128 4942 ae9bb8c1f842bf880975a113c06decd6 "pdflatex"
+  "$job.lot" 1776144128 3629 6523c5ceb11626e9f2b99feb9a557089 "pdflatex"
+  "$job.out" 1776144128 15656 e72d9cdacbb6822073b7d88d6f46fda6 "pdflatex"
+  "$job.toc" 1776144128 6164 86c77f181a729c516849e5d4cf61d3dd "pdflatex"
   "../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf" 1776109568 40450 9bab2f0bc4bbea1948413b44ba3919a4 ""
   "../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png" 1776142689 3938759 b3db9bae479f44353607dd6d0f59eb8d ""
   "Austin_NIMBY_Thesis_Draft.tex" 1776141670 146239 abde011b7d08688be4d29bd00de1c2c1 ""
@@ -241,7 +241,7 @@
   "Figures/Chapter4/F22_Joint_Policy_Map.png" 1776034445 11383857 015779e8dc821a1bcf89935f21837bad ""
   "Figures/Chapter4/F23_Spatial_Error.png" 1776107997 6738663 f9c63f2adc7ea2e1ced25f930044d96f ""
   "Figures/Chapter4/StageA_Figure3_PR_Curves.png" 1776142901 186250 e9f5bf43380260688c9f2f652d66cf83 ""
-  "Figures/Chapter4/fig_all_stages_seed.pdf" 1776143387 76871 9344a32d26f13659e7ecf314df8dd22b ""
+  "Figures/Chapter4/fig_all_stages_seed.pdf" 1776144086 76871 6efc70e2c45ad82be2af3c50ac0e716d ""
   "Figures/Chapter4/fig_attribution_divergence_matrix.pdf" 1776039251 35614 ad468271ca2630b2000a186e5a919753 ""
   "Figures/Chapter4/fig_attribution_longitudinal.pdf" 1776108209 35972 b52b16814ceac5c5f6f2a76b354d94e2 ""
   "Figures/Chapter4/fig_combined_calibration_reliability.pdf" 1776111529 36509 2fc660e0c772e399cada82e11a6b852a ""
