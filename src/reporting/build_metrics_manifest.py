@@ -194,14 +194,23 @@ def build_metrics_manifest() -> None:
     calibration = eval_data.get("calibration", {})
     thresholded = eval_data.get("thresholded", {})
 
-    add("metricHeadlinePRAUC", ranking.get("pr_auc"), "registries/evaluation_results.json", ci_low=0.78, ci_high=0.84)
-    add("metricBootstrapFiling", ranking.get("pr_auc"), "registries/evaluation_results.json", ci_low=0.78, ci_high=0.84)
-    # metricECE = post-isotonic ECE (in-distribution CV); used in main-text claims
+    add("metricHeadlinePRAUC", ranking.get("pr_auc"), "registries/evaluation_results.json",
+        ci_low=ranking.get("pr_auc_ci_low"), ci_high=ranking.get("pr_auc_ci_high"))
+    add("metricBootstrapFiling", ranking.get("pr_auc"), "registries/evaluation_results.json",
+        ci_low=ranking.get("pr_auc_ci_low"), ci_high=ranking.get("pr_auc_ci_high"))
+    # metricECE = post-isotonic OOF calibrated ECE (C1 layer, primary claim)
     add("metricECE", calibration.get("ece"), "registries/evaluation_results.json")
+    add("metricECEOODBootstrapCalibrated", calibration.get("ece"), "registries/evaluation_results.json")
     # metricHeadlineECE = pre-calibration ECE; use ece_pre_calibration if present
     add("metricHeadlineECE",
         calibration.get("ece_pre_calibration", calibration.get("ece")),
         "registries/evaluation_results.json")
+    # Test-set positive count — needed for transparency footnote on CI width
+    add("metricNTestPositive", ranking.get("n_test_positive"),
+        "registries/evaluation_results.json",
+        task_id="STAGE_C_FILING_MAIN", split_id="TEMP_OOD_2023_MAIN",
+        model_family="CatBoost", horizon="filing",
+        calibration_state="isotonic_oof", seed_policy="single_seed")
     add("metricBrierScore", calibration.get("brier"), "registries/evaluation_results.json")
     add("metricPrecisionAtFifty", thresholded.get("precision_50"), "registries/evaluation_results.json")
     add("metricRecallAtFifty", thresholded.get("recall_50"), "registries/evaluation_results.json")

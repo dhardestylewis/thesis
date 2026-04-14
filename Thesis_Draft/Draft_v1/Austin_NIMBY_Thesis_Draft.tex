@@ -409,12 +409,17 @@ Table~\ref{tab:metrics_summary} reports the pre-specified discrimination and exp
 \toprule
 \textbf{Evaluation Domain} & \textbf{Metric} & \textbf{Result} \\ \midrule
 Discrimination       & PR-AUC (Out-Dist Bootstrap)$^{\star}$ & \textbf{\metricBootstrapFiling{}} \\
-Discrimination       & PR-AUC (Seed Mean, 20 Seeds)$^{\ddagger}$ & \textbf{$0.528 \pm 0.042$} \\
+Discrimination       & PR-AUC (Benchmark Roster Seed Mean, 20 Seeds)$^{\ddagger}$ & \textbf{$0.528 \pm 0.042$} \\
 Discrimination       & Top-Decile Lift   & \textbf{\metricTopDecileLift{}} \\ \midrule
 
 Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Underpowered} \\ \bottomrule
-\multicolumn{3}{l}{\footnotesize $^{\star}$Primary evaluation: out-of-distribution bootstrap at the filing-date horizon.} \\
-\multicolumn{3}{l}{\footnotesize $^{\ddagger}$Seed-mean across 20 random seeds (Appendix~\ref{app:seed_stability}); provides within-sample variance characterization.} \\
+\multicolumn{3}{l}{\footnotesize $^{\star}$Primary evaluation: OOD temporal holdout (train $\leq$2022, test 2023--2024), single production model} \\
+\multicolumn{3}{l}{\footnotesize \quad (seed=42). 95\% CI: \metricBootstrapFilingCI{} via $N{=}2{,}000$ bootstrap resamples of the test set} \\
+\multicolumn{3}{l}{\footnotesize \quad ($n_{\text{test}}{=}579$, $n_{\text{pos}}{=}\metricNTestPositive{}$). Wide CI reflects sparse test-set positives.} \\
+\multicolumn{3}{l}{\footnotesize $^{\ddagger}$Mean across 20 seeds from the standardized benchmark roster evaluation} \\
+\multicolumn{3}{l}{\footnotesize \quad (in-distribution 3-fold CV, different model checkpoint; see Appendix~\ref{app:seed_stability}).} \\
+\multicolumn{3}{l}{\footnotesize \quad These two rows use \textbf{different evaluation protocols and model checkpoints}; they} \\
+\multicolumn{3}{l}{\footnotesize \quad should not be directly compared. See Section~\ref{sec:results} reconciliation note.} \\
 \multicolumn{3}{l}{\footnotesize $^{\dagger}$Reported as exploratory diagnostics only; subgroup sample sizes are insufficient for formal fairness testing.} \\
 \multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}074$ cases, CatBoost (Primary Model).} \\
 \end{tabular}
@@ -429,11 +434,13 @@ The Development Occurrence hazard model is used as a supporting stage and as the
 
 The Development Occurrence hazard model achieves a top-10\% lift of \metricHazardLift{} over the base probability rate, indicating that spatial features carry some predictive information about development occurrence (full Stage~A evaluation is reported in Appendix~\ref{app:stagea}). The filing-date petition model uses a trailing count of nearby cases that previously crossed the petition threshold---whether neighboring properties have a recent history of petition activity---as a key feature alongside site geometry, buffer economics, and historical petition rates.
 
-Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits a primary-layer Expected Calibration Error (Layer C1, ECE = \metricECEOODBootstrapCalibrated{}) above the 0.05 calibration reliability threshold. Under in-distribution 5-fold cross-validation, which provides an optimistic upper bound, the PR-AUC is \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over baseline. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), this lift corresponds to an exact top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
+Under the primary evaluation, out-of-distribution bootstrap evaluation at the filing-date horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}).\footnote{The 95\% CI is wide because the OOD test set contains only $n_{\text{pos}} = \metricNTestPositive{}$ positive cases. The CI was computed via $N{=}2{,}000$ bootstrap resamples of the held-out test set; earlier drafts reported a hardcoded narrow interval that did not reflect the actual uncertainty.} This level of discrimination is modest in absolute terms but non-trivial given the low base rate (\metricBaseRate{}). The model simultaneously exhibits a primary-layer Expected Calibration Error (Layer C1, ECE = \metricECEOODBootstrapCalibrated{}, after out-of-fold Isotonic Regression) above the 0.05 calibration reliability threshold.\footnote{The Layer C1 ECE is computed from the OOF isotonic calibrator fitted on 5-fold training-set predictions and applied to the held-out test set. The pre-calibration ECE is 0.208; after calibration it is 0.205, reflecting minimal calibration gain on a test set with only 15 positive cases.}
+
+The headline OOD result (\metricBootstrapFiling{}, seed=42) and the benchmark-roster seed mean ($0.528 \pm 0.042$; Table~\ref{tab:metrics_summary}) use \textbf{different evaluation protocols and model checkpoints}. The former is from the final production model evaluated on the temporal OOD holdout; the latter is from a standardized benchmark evaluation using in-distribution 3-fold CV across 20 seeds. These numbers are reconciled in Appendix~\ref{app:seed_stability}. Given the sample base rate of \metricBaseRate{} (\metricBaseRateN{} cases), the top-decile lift of \metricTopDecileLift{} corresponds to a top-decile precision of \metricTopDecilePrecision{} (\metricTopDecileTP{} true positives among \metricTopDecileN{} cases)---separation above chance, but far from deterministic.
 
 The mean predicted probability for true positive cases is \metricMeanProbTP{}, compared to \metricMeanProbTN{} for true negatives. Subgroup diagnostics are reported for transparency only (Appendix~\ref{app:subgroup_diagnostics}) and are not used for inferential claims or decision thresholds.
 
-After Isotonic Regression calibration, the primary OOD reporting layer (C1) yields ECE = \metricECEOODBootstrapCalibrated{}. This layer-specific value bounds the system strictly to relative spatial ranking and precludes fully automated institutional use, signaling that raw probabilities cannot be treated as deterministic.
+After out-of-fold Isotonic Regression calibration, the primary OOD reporting layer (C1) yields ECE = \metricECEOODBootstrapCalibrated{} (pre-calibration ECE was 0.208; the marginal gain is small due to the sparse test-set positive count of $n_{\text{pos}} = \metricNTestPositive{}$). This layer-specific value bounds the system strictly to relative spatial ranking and precludes fully automated institutional use, signaling that raw probabilities cannot be treated as deterministic.
 
 \begin{figure}[htbp]
     \centering
@@ -1234,7 +1241,7 @@ While the False Positive Rate (FPR) exhibits stable algorithmic tracking (due to
 
 \begin{table}[H]
 \centering
-\caption{Multi-Seed Performance Summary (mean $\pm$ std across 20 seeds)}
+\caption{Multi-Seed Performance Summary (mean $\pm$ std across 20 seeds, \textit{benchmark roster evaluation})}
 \label{tab:seed_summary}
 \small
 \begin{tabular}{@{}llccc@{}}
@@ -1249,6 +1256,8 @@ H0 (Filing) & TabNet         & $0.522 \pm 0.045$ & $0.982 \pm 0.012$ & $0.022 \p
 H0 (Filing) & Deep ERM (MLP) & $0.515 \pm 0.029$ & $0.984 \pm 0.003$ & $0.021 \pm 0.002$ \\
 H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \pm 0.000$ \\
 \bottomrule
+\multicolumn{5}{l}{\footnotesize \textit{Protocol:} In-distribution 3-fold stratified CV across 20 seeds; standardized benchmark roster} \\
+\multicolumn{5}{l}{\footnotesize model checkpoint (not the final production model). See reconciliation note below.} \\
 \end{tabular}
 \end{table}
 
@@ -1261,7 +1270,9 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
     \label{fig:seed_stability}
 \end{figure}
 
-\noindent A critical follow-up question is whether seed-level variance itself increases with deployment distance. Figure~\ref{fig:ood_seed_variance} plots mean PR-AUC with $\pm 1\sigma$ and $\pm 2\sigma$ bands across 10 seeds and 3 cumulative training vintages at each OOD offset. The confidence bands widen substantially from near-zero at offset $+0$ (in-distribution) to $\sigma > 0.10$ by offset $+2$, confirming that model instability compounds with temporal distance. CatBoost maintains the narrowest variance envelope across all temporal offsets, supporting its selection as the primary model on the basis of combined discrimination stability and calibration. This also explains the gap between the headline OOD bootstrap estimate (\metricBootstrapFiling{}) and the within-seed mean of $0.528 \pm 0.042$: the two figures reflect fundamentally different evaluation protocols---a single full-data forward bootstrap draw versus repeated in-distribution CV splits. The seed stability audit (Table~\ref{tab:seed_summary}) characterizes within-sample variance; the bootstrap estimate characterizes OOD generalization. They should not be compared directly.
+\noindent A critical follow-up question is whether seed-level variance itself increases with deployment distance. Figure~\ref{fig:ood_seed_variance} plots mean PR-AUC with $\pm 1\sigma$ and $\pm 2\sigma$ bands across 10 seeds and 3 cumulative training vintages at each OOD offset. The confidence bands widen substantially from near-zero at offset $+0$ (in-distribution) to $\sigma > 0.10$ by offset $+2$, confirming that model instability compounds with temporal distance. CatBoost maintains the narrowest variance envelope across all temporal offsets, supporting its selection as the primary model on the basis of combined discrimination stability and calibration.
+
+\noindent \textbf{Reconciliation: headline OOD estimate vs.\ benchmark roster seed mean.} The headline OOD PR-AUC (\metricBootstrapFiling{}) and the benchmark seed mean ($0.528 \pm 0.042$) come from \textbf{two entirely different evaluation protocols}: (1)~the headline is from the final production CatBoost model (seed=42) evaluated on the temporal OOD holdout (train~$\leq$2022, test 2023--2024, $n_{\text{pos}}=\metricNTestPositive{}$); (2)~the seed mean is from the standardized benchmark roster evaluated under in-distribution 3-fold stratified CV, using a different model checkpoint. Because the OOD holdout test set contains only $\metricNTestPositive{}$ positive cases, the single-seed OOD estimate has high variance---the bootstrap 95\% CI is \metricBootstrapFilingCI{} (computed from 2{,}000 bootstrap resamples of the test set; a previously reported CI of [0.78, 0.84] was incorrectly hardcoded and has been corrected). The seed mean is lower because it uses in-distribution CV and a less-tuned model checkpoint; it measures cross-seed robustness within the standardized benchmark, not the production model's OOD performance. Neither number alone fully characterizes the system; both are reported for different transparency purposes. They should not be directly compared.
 
 \begin{figure}[H]
     \centering
