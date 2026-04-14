@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 22:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 23:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -768,7 +768,7 @@ File: microtype.cfg 2025/07/09 v3.2b microtype main configuration file (RS)
 )
 LaTeX Info: Redefining \microtypesetup on input line 3065.
 ) (Tables/metrics_config.tex) (Tables/lib_ast.tex)
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 37
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 38
 .
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
@@ -781,24 +781,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (Austin_NIMBY_Thesis_Draft.aux)
 \openout1 = `Austin_NIMBY_Thesis_Draft.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -834,7 +834,7 @@ LaTeX Font Info:    ... okay on input line 37.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 37.
+Package hyperref Info: Link coloring OFF on input line 38.
 (Austin_NIMBY_Thesis_Draft.out) (Austin_NIMBY_Thesis_Draft.out)
 \@outlinefile=\write4
 \openout4 = `Austin_NIMBY_Thesis_Draft.out'.
@@ -865,16 +865,16 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 37.
-Package microtype Info: Applying patch `item' on input line 37.
-Package microtype Info: Applying patch `toc' on input line 37.
-Package microtype Info: Applying patch `eqnum' on input line 37.
+LaTeX Info: Redefining \microtypecontext on input line 38.
+Package microtype Info: Applying patch `item' on input line 38.
+Package microtype Info: Applying patch `toc' on input line 38.
+Package microtype Info: Applying patch `eqnum' on input line 38.
 
 
-Package microtype Warning: Unable to apply patch `footnote' on input line 37.
+Package microtype Warning: Unable to apply patch `footnote' on input line 38.
 
-Package microtype Info: Applying patch `verbatim' on input line 37.
-LaTeX Info: Redefining \microtypesetup on input line 37.
+Package microtype Info: Applying patch `verbatim' on input line 38.
+LaTeX Info: Redefining \microtypesetup on input line 38.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -889,37 +889,37 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 3
-9.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 4
+1.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 3
-9.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 4
+1.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-39.
+41.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-39.
+41.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 39.
+(Font)              <12> on input line 41.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 39.
+(Font)              <8> on input line 41.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 39.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 39.
+(Font)              <6> on input line 41.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 41.
 
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
@@ -928,7 +928,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 39.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 41.
 
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -937,703 +937,142 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 45.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 45.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 45.
+
 [1
 
 {C:/Users/dhl/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/dhl/Ap
-pData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}] [2]
-(Austin_NIMBY_Thesis_Draft.toc
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 3.
- [3])
+pData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C:/Users/dhl/AppData/
+Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Users/dhl/AppData/Lo
+cal/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}] [2]
+(Austin_NIMBY_Thesis_Draft.toc)
 \tf@toc=\write5
 \openout5 = `Austin_NIMBY_Thesis_Draft.toc'.
 
- [4] (Austin_NIMBY_Thesis_Draft.lof)
+ [3] (Austin_NIMBY_Thesis_Draft.lof)
 \tf@lof=\write6
 \openout6 = `Austin_NIMBY_Thesis_Draft.lof'.
 
-
-[5] (Austin_NIMBY_Thesis_Draft.lot)
+ [4]
+(Austin_NIMBY_Thesis_Draft.lot)
 \tf@lot=\write7
 \openout7 = `Austin_NIMBY_Thesis_Draft.lot'.
 
- [6{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc
-}]
+ [5]
 
-LaTeX Warning: Citation `texas211006' on page 7 undefined on input line 70.
-
-
-LaTeX Warning: Citation `hb24_2025' on page 7 undefined on input line 70.
+LaTeX Warning: Reference `sec:outcome' on page 6 undefined on input line 74.
 
 
-LaTeX Warning: Citation `texas2110061' on page 7 undefined on input line 70.
+LaTeX Warning: Citation `texas211006' on page 6 undefined on input line 76.
 
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 7
-7.
+
+LaTeX Warning: Citation `hb24_2025' on page 6 undefined on input line 76.
+
+
+LaTeX Warning: Citation `texas2110061' on page 6 undefined on input line 76.
+
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 8
+3.
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [7{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
+) [6{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
 
 
-LaTeX Warning: Citation `glaeser2005manhattan' on page 8 undefined on input lin
-e 95.
+LaTeX Warning: Citation `glaeser2005manhattan' on page 7 undefined on input lin
+e 101.
 
 
-LaTeX Warning: Citation `glaeser2003zoning' on page 8 undefined on input line 9
-5.
+LaTeX Warning: Citation `glaeser2003zoning' on page 7 undefined on input line 1
+01.
 
 
-LaTeX Warning: Citation `gyourko2015regulation' on page 8 undefined on input li
-ne 95.
+LaTeX Warning: Citation `gyourko2015regulation' on page 7 undefined on input li
+ne 101.
 
 
-LaTeX Warning: Citation `fischel2001homevoter' on page 8 undefined on input lin
-e 97.
+LaTeX Warning: Citation `fischel2001homevoter' on page 7 undefined on input lin
+e 103.
 
 
-LaTeX Warning: Citation `einstein2019book' on page 8 undefined on input line 97
+LaTeX Warning: Citation `einstein2019book' on page 7 undefined on input line 10
+3.
+
+
+LaTeX Warning: Citation `hankinson2018' on page 7 undefined on input line 103.
+
+
+LaTeX Warning: Citation `manville2016unpermitted' on page 7 undefined on input 
+line 107.
+
+
+LaTeX Warning: Citation `hills2011zoning' on page 7 undefined on input line 107
 .
 
-
-LaTeX Warning: Citation `hankinson2018' on page 8 undefined on input line 97.
-
-
-LaTeX Warning: Citation `manville2016unpermitted' on page 8 undefined on input 
-line 101.
-
-
-LaTeX Warning: Citation `hills2011zoning' on page 8 undefined on input line 101
-.
-
-[8]
+[7]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 103.
+(Font)              <10.95> on input line 109.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 103.
+(Font)              <9> on input line 109.
 
 
-LaTeX Warning: Citation `cellini2010schools' on page 9 undefined on input line 
-103.
+LaTeX Warning: Citation `cellini2010schools' on page 8 undefined on input line 
+109.
 
-<Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png, id=462, 857
-.604pt x 714.0276pt>
+<Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png, id=76, 857.
+604pt x 714.0276pt>
 File: Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png Graphic
  file (type png)
 <use Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png>
 Package pdftex.def Info: Figures/Track1_Predictive/Figures/Typology_Temporal_In
-cidence.png  used on input line 123.
+cidence.png  used on input line 129.
 (pdftex.def)             Requested size: 469.75502pt x 391.10391pt.
-[9]
+[8{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}
+]
 
-LaTeX Warning: Citation `shmueli2010' on page 10 undefined on input line 132.
+LaTeX Warning: Citation `shmueli2010' on page 9 undefined on input line 138.
 
 
-LaTeX Warning: Citation `mullainathan2017ml' on page 10 undefined on input line
- 132.
+LaTeX Warning: Citation `mullainathan2017ml' on page 9 undefined on input line 
+138.
 
-[10 <./Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png>]
+[9 <./Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png>]
 
-LaTeX Warning: Citation `kleinberg2015prediction' on page 11 undefined on input
- line 134.
+LaTeX Warning: Citation `kleinberg2015prediction' on page 10 undefined on input
+ line 140.
 
 
-LaTeX Warning: Citation `barocas2016' on page 11 undefined on input line 138.
+LaTeX Warning: Citation `athey2019ml' on page 10 undefined on input line 140.
 
+[10]
 
-LaTeX Warning: Citation `whittemore2014racial' on page 11 undefined on input li
-ne 138.
+LaTeX Warning: File `Chapter4/fig1_spatial_distribution.png' not found on input
+ line 163.
 
 
-LaTeX Warning: Citation `richardson2019dirty' on page 11 undefined on input lin
-e 138.
+! Package pdftex.def Error: File `Chapter4/fig1_spatial_distribution.png' not f
+ound: using draft setting.
 
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.163 ...]{Chapter4/fig1_spatial_distribution.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
 
-LaTeX Warning: Citation `chouldechova2017fair' on page 11 undefined on input li
-ne 140.
-
-[11{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:
-/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}]
-<Figures/Archive_Pipelines/fig1_spatial_distribution.png, id=485, 1433.8368pt x
- 1133.6754pt>
-File: Figures/Archive_Pipelines/fig1_spatial_distribution.png Graphic file (typ
-e png)
-<use Figures/Archive_Pipelines/fig1_spatial_distribution.png>
-Package pdftex.def Info: Figures/Archive_Pipelines/fig1_spatial_distribution.pn
-g  used on input line 163.
-(pdftex.def)             Requested size: 469.75502pt x 371.41548pt.
-
-[12]
-<Figures/Exploratory_EDA/waller_buffer_map.png, id=494, 491.436pt x 720.291pt>
-File: Figures/Exploratory_EDA/waller_buffer_map.png Graphic file (type png)
-<use Figures/Exploratory_EDA/waller_buffer_map.png>
-Package pdftex.def Info: Figures/Exploratory_EDA/waller_buffer_map.png  used on
- input line 190.
-(pdftex.def)             Requested size: 258.36668pt x 378.69698pt.
- [13 <./Figures/Archive_Pipelines/fig1_spatial_distribution.png>] [14 <./Figure
-s/Exploratory_EDA/waller_buffer_map.png>] (Tables/summary_stats_table.tex)
-[15]
-Underfull \hbox (badness 10000) in paragraph at lines 280--280
-[]|\T1/lmr/m/n/10.95 (+20) Measured threshold-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 280--281
-[]|\T1/lmr/m/n/10.95 (+20) Primary mod-eled out-come;
- []
-
-
-Underfull \hbox (badness 1292) in paragraph at lines 280--281
-\T1/lmr/m/n/10.95 (+20) op-er-a-tional-ized from ob-served
- []
-
-
-Underfull \hbox (badness 2452) in paragraph at lines 281--281
-[]|\T1/lmr/m/n/10.95 (+20) Observed-record hand
- []
-
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 2
-81.
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
-File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `lmtt' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
-Underfull \hbox (badness 10000) in paragraph at lines 281--281
-[]|$\T1/lmtt/m/n/10.95 registries / label _
- []
-
-[16] [17]
-<Figures/Chapter4/F12_Opposition_PR.png, id=529, 711.1368pt x 566.5968pt>
-File: Figures/Chapter4/F12_Opposition_PR.png Graphic file (type png)
-<use Figures/Chapter4/F12_Opposition_PR.png>
-Package pdftex.def Info: Figures/Chapter4/F12_Opposition_PR.png  used on input 
-line 325.
-(pdftex.def)             Requested size: 422.77664pt x 336.8483pt.
- [18 <./Figures/Chapter4/F12_Opposition_PR.png>]
-
-LaTeX Warning: Citation `prokhorenkova2018catboost' on page 19 undefined on inp
-ut line 333.
-
-(Tables/comprehensive_benchmark.tex) [19]
-
-LaTeX Warning: Citation `brier1950verification' on page 20 undefined on input l
-ine 350.
-
-
-LaTeX Warning: Citation `tcclerk2022' on page 20 undefined on input line 359.
-
-[20] (Tables/temporal_drift_analysis.tex
-
-LaTeX Warning: Float too large for page by 47.34593pt on input line 55.
-
-) [21] [22]
-<Figures/Chapter4/fig_combined_calibration_reliability.pdf, id=573, 1289.03212p
-t x 385.39355pt>
-File: Figures/Chapter4/fig_combined_calibration_reliability.pdf Graphic file (t
-ype pdf)
-<use Figures/Chapter4/fig_combined_calibration_reliability.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_combined_calibration_reliability.
-pdf  used on input line 417.
-(pdftex.def)             Requested size: 469.75502pt x 140.44695pt.
- (Tables/multi_horizon_results.tex)
-<Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf, id=577, 505.89pt x 361.35pt
->
-File: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf Graphic file (type pdf)
-
-<use Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf>
-Package pdftex.def Info: Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf  use
-d on input line 432.
-(pdftex.def)             Requested size: 225.4804pt x 161.05663pt.
-<Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf, id=578, 578.16pt x 361.35pt
->
-File: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf Graphic file (type pdf)
-
-<use Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf>
-Package pdftex.def Info: Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf  use
-d on input line 439.
-(pdftex.def)             Requested size: 225.4804pt x 140.92041pt.
- [23 <./Figures/Chapter4/fig_combined_calibration_reliability.pdf>]
-<Figures/Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf, id=677, 
-794.97pt x 578.16pt>
-File: Figures/Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf Grap
-hic file (type pdf)
-<use Figures/Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf>
-Package pdftex.def Info: Figures/Track1_Exhibits/fig_feature_importance_cluster
-ed_H0_Full.pdf  used on input line 453.
-(pdftex.def)             Requested size: 399.29463pt x 290.40259pt.
-<Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf, id=679, 698.7938pt x 57
-0.22974pt>
-File: Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf Graphic file (type 
-pdf)
-<use Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf>
-Package pdftex.def Info: Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf 
- used on input line 462.
-(pdftex.def)             Requested size: 399.29463pt x 325.83481pt.
-<Figures/Chapter4/fig_attribution_divergence_matrix.pdf, id=684, 1144.99461pt x
- 756.44295pt>
-File: Figures/Chapter4/fig_attribution_divergence_matrix.pdf Graphic file (type
- pdf)
-<use Figures/Chapter4/fig_attribution_divergence_matrix.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_attribution_divergence_matrix.pdf
-  used on input line 476.
-(pdftex.def)             Requested size: 469.75502pt x 310.33983pt.
- [24 <./Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf> <./Figures/Track1_Ex
-hibits/fig_policy_regimes_H0.pdf>] [25 <./Figures/Track1_Exhibits/fig_feature_i
-mportance_clustered_H0_Full.pdf>] [26 <./Figures/Track1_Exhibits/fig_shap_beesw
-arm_H0_Full.pdf>] [27 <./Figures/Chapter4/fig_attribution_divergence_matrix.pdf
->]
-<Figures/Track1_Exhibits/fig_attribution_stability_H0.pdf, id=1019, 684.24174pt
- x 494.282pt>
-File: Figures/Track1_Exhibits/fig_attribution_stability_H0.pdf Graphic file (ty
-pe pdf)
-<use Figures/Track1_Exhibits/fig_attribution_stability_H0.pdf>
-Package pdftex.def Info: Figures/Track1_Exhibits/fig_attribution_stability_H0.p
-df  used on input line 497.
-(pdftex.def)             Requested size: 422.77664pt x 305.41084pt.
-<Figures/Track1_Exhibits/fig_attribution_rank_stability_H0.pdf, id=1020, 564.07
-117pt x 349.15822pt>
-File: Figures/Track1_Exhibits/fig_attribution_rank_stability_H0.pdf Graphic fil
-e (type pdf)
-<use Figures/Track1_Exhibits/fig_attribution_rank_stability_H0.pdf>
-Package pdftex.def Info: Figures/Track1_Exhibits/fig_attribution_rank_stability
-_H0.pdf  used on input line 503.
-(pdftex.def)             Requested size: 422.77664pt x 261.69753pt.
-
-
-LaTeX Warning: Float too large for page by 26.61427pt on input line 508.
-
-<Figures/Track1_Exhibits/fig_multi_horizon_attribution.pdf, id=1021, 493.54953p
-t x 277.76398pt>
-File: Figures/Track1_Exhibits/fig_multi_horizon_attribution.pdf Graphic file (t
-ype pdf)
-<use Figures/Track1_Exhibits/fig_multi_horizon_attribution.pdf>
-Package pdftex.def Info: Figures/Track1_Exhibits/fig_multi_horizon_attribution.
-pdf  used on input line 512.
-(pdftex.def)             Requested size: 399.29463pt x 224.72481pt.
-[28] [29 <./Figures/Track1_Exhibits/fig_attribution_stability_H0.pdf> <./Figure
-s/Track1_Exhibits/fig_attribution_rank_stability_H0.pdf>]
-<../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf, id=
-1196, 871.22363pt x 775.68922pt>
-File: ../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf
- Graphic file (type pdf)
-<use ../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf>
-
-Package pdftex.def Info: ../../Analysis/Output/SHAP_MetaClustering/meta_attribu
-tion_clustermap.pdf  used on input line 528.
-(pdftex.def)             Requested size: 446.26582pt x 397.32434pt.
- [30 <./Figures/Track1_Exhibits/fig_multi_horizon_attribution.pdf>] [31 <../../
-Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf>]
-<Figures/Chapter5/F16_Petition_RD.png, id=1358, 566.5968pt x 422.0568pt>
-File: Figures/Chapter5/F16_Petition_RD.png Graphic file (type png)
-<use Figures/Chapter5/F16_Petition_RD.png>
-Package pdftex.def Info: Figures/Chapter5/F16_Petition_RD.png  used on input li
-ne 585.
-(pdftex.def)             Requested size: 399.29463pt x 297.43416pt.
- [32]
-
-LaTeX Warning: Citation `cameron2008bootstrap' on page 33 undefined on input li
-ne 596.
-
-[33 <./Figures/Chapter5/F16_Petition_RD.png>]
-
-LaTeX Warning: Citation `peters2016causal' on page 34 undefined on input line 6
-06.
-
-[34] [35]
-<Figures/Chapter4/F23_Spatial_Error.png, id=1380, 1144.7568pt x 570.933pt>
-File: Figures/Chapter4/F23_Spatial_Error.png Graphic file (type png)
-<use Figures/Chapter4/F23_Spatial_Error.png>
-Package pdftex.def Info: Figures/Chapter4/F23_Spatial_Error.png  used on input 
-line 657.
-(pdftex.def)             Requested size: 446.26582pt x 222.56714pt.
- [36 <./Figures/Chapter4/F23_Spatial_Error.png>]
-
-LaTeX Warning: Citation `hb24_2025' on page 37 undefined on input line 672.
-
-[37]
-Underfull \hbox (badness 10000) in paragraph at lines 690--690
-[]|$\T1/lmtt/m/n/10.95 registries / evaluation _
- []
-
-
-Underfull \hbox (badness 3128) in paragraph at lines 691--692
-[]|\T1/lmr/m/n/10.95 (+20) Within-sample stochas-tic vari-ance
- []
-
-
-Underfull \hbox (badness 2142) in paragraph at lines 692--692
-[]|\T1/lmr/m/n/10.95 (+20) In-distribution CV sum-
- []
-
-[38] (Tables/calibration_benchmark.tex) [39]
-(Tables/semantic_feature_mapping.tex) [40]
-<Figures/Track1_Predictive/Figures/fig_unclustered_dynamic.pdf, id=1410, 860.05
-98pt x 1079.72133pt>
-File: Figures/Track1_Predictive/Figures/fig_unclustered_dynamic.pdf Graphic fil
-e (type pdf)
-<use Figures/Track1_Predictive/Figures/fig_unclustered_dynamic.pdf>
-Package pdftex.def Info: Figures/Track1_Predictive/Figures/fig_unclustered_dyna
-mic.pdf  used on input line 729.
-(pdftex.def)             Requested size: 469.75502pt x 589.74625pt.
- [41]
-Overfull \vbox (30.91626pt too high) has occurred while \output is active []
-
-
-[42 <./Figures/Track1_Predictive/Figures/fig_unclustered_dynamic.pdf>]
-<Figures/Track1_Predictive/Figures/fig_clustered_dynamic.pdf, id=1566, 859.3449
-1pt x 1079.72133pt>
-File: Figures/Track1_Predictive/Figures/fig_clustered_dynamic.pdf Graphic file 
-(type pdf)
-<use Figures/Track1_Predictive/Figures/fig_clustered_dynamic.pdf>
-Package pdftex.def Info: Figures/Track1_Predictive/Figures/fig_clustered_dynami
-c.pdf  used on input line 738.
-(pdftex.def)             Requested size: 469.75502pt x 590.24051pt.
- [43]
-Overfull \vbox (4.21051pt too high) has occurred while \output is active []
-
-
-[44 <./Figures/Track1_Predictive/Figures/fig_clustered_dynamic.pdf>]
-(Tables/unclustered_stability.tex) [45] [46]
-<Figures/Qualitative_Appendix/project_overview.pdf, id=1727, page=1, 614.295pt 
-x 794.97pt>
-File: Figures/Qualitative_Appendix/project_overview.pdf Graphic file (type pdf)
-
-<use Figures/Qualitative_Appendix/project_overview.pdf, page 1>
-Package pdftex.def Info: Figures/Qualitative_Appendix/project_overview.pdf , pa
-ge1 used on input line 767.
-(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [47 <./Figures/Qualitative_Appendix/project_overview.pdf>]
-<Figures/Qualitative_Appendix/protocol_summary.pdf, id=1973, page=1, 614.295pt 
-x 794.97pt>
-File: Figures/Qualitative_Appendix/protocol_summary.pdf Graphic file (type pdf)
-
-<use Figures/Qualitative_Appendix/protocol_summary.pdf, page 1>
-Package pdftex.def Info: Figures/Qualitative_Appendix/protocol_summary.pdf , pa
-ge1 used on input line 777.
-(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [48 <./Figures/Qualitative_Appendix/protocol_summary.pdf>]
-<Figures/Qualitative_Appendix/interview_guide.pdf, id=2219, page=1, 614.295pt x
- 794.97pt>
-File: Figures/Qualitative_Appendix/interview_guide.pdf Graphic file (type pdf)
-<use Figures/Qualitative_Appendix/interview_guide.pdf, page 1>
-Package pdftex.def Info: Figures/Qualitative_Appendix/interview_guide.pdf , pag
-e1 used on input line 787.
-(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
- [49 <./Figures/Qualitative_Appendix/interview_guide.pdf>]
-
-pdfTeX warning: pdflatex.exe (file ./Figures/Qualitative_Appendix/sample_protes
-t_petition.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1
-.5> allowed
-<Figures/Qualitative_Appendix/sample_protest_petition.pdf, id=2414, page=1, 614
-.295pt x 794.97pt>
-File: Figures/Qualitative_Appendix/sample_protest_petition.pdf Graphic file (ty
-pe pdf)
-<use Figures/Qualitative_Appendix/sample_protest_petition.pdf, page 1>
-Package pdftex.def Info: Figures/Qualitative_Appendix/sample_protest_petition.p
-df , page1 used on input line 797.
-(pdftex.def)             Requested size: 399.29463pt x 516.73651pt.
-[50 <./Figures/Qualitative_Appendix/sample_protest_petition.pdf>]
-Overfull \hbox (65.74342pt too wide) in paragraph at lines 818--818
-[]\T1/lmtt/m/n/10 parcel_id     year  gross_site_area_acres  ldb_appraised_val 
- acs_owner_occupied_units  acs_race_white[] 
- []
-
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 818--818
-[]\T1/lmtt/m/n/10 0209060502    2008  1.42                   450000            
- 345                       0.58[] 
- []
-
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 818--818
-[]\T1/lmtt/m/n/10 0209060503    2008  0.85                   310000            
- 345                       0.58[] 
- []
-
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 818--818
-[]\T1/lmtt/m/n/10 0209060506    2008  2.10                   620000            
- 290                       0.45[] 
- []
-
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 818--818
-[]\T1/lmtt/m/n/10 0209060901    2008  5.00                   1250000           
- 120                       0.45[] 
- []
-
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 818--818
-[]\T1/lmtt/m/n/10 1911420101    2008  0.25                   180000            
- 410                       0.82[] 
- []
-
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 818--818
-[]\T1/lmtt/m/n/10 1911420102    2008  0.30                   210000            
- 410                       0.82[] 
- []
-
-[51]
-<Figures/Fig10_Hyperparameter_Sweeps.png, id=2429, 846.0408pt x 349.7868pt>
-File: Figures/Fig10_Hyperparameter_Sweeps.png Graphic file (type png)
-<use Figures/Fig10_Hyperparameter_Sweeps.png>
-Package pdftex.def Info: Figures/Fig10_Hyperparameter_Sweeps.png  used on input
- line 844.
-(pdftex.def)             Requested size: 469.75502pt x 194.21404pt.
- [52 <./Figures/Fig10_Hyperparameter_Sweeps.png>] [53]
-<Figures/Chapter6/F20_Stakeholder_Heatmap.png, id=2444, 792.0792pt x 566.5968pt
->
-File: Figures/Chapter6/F20_Stakeholder_Heatmap.png Graphic file (type png)
-<use Figures/Chapter6/F20_Stakeholder_Heatmap.png>
-Package pdftex.def Info: Figures/Chapter6/F20_Stakeholder_Heatmap.png  used on 
-input line 880.
-(pdftex.def)             Requested size: 399.29463pt x 285.632pt.
-<Figures/Chapter6/F19_TextFrame_Composition.png, id=2445, 711.1368pt x 422.0568
-pt>
-File: Figures/Chapter6/F19_TextFrame_Composition.png Graphic file (type png)
-<use Figures/Chapter6/F19_TextFrame_Composition.png>
-Package pdftex.def Info: Figures/Chapter6/F19_TextFrame_Composition.png  used o
-n input line 887.
-(pdftex.def)             Requested size: 399.29463pt x 236.98131pt.
- [54 <./Figures/Chapter6/F20_Stakeholder_Heatmap.png>] [55 <./Figures/Chapter6/
-F19_TextFrame_Composition.png>]
-<Figures/Chapter4/StageA_Figure3_PR_Curves.png, id=2459, 578.16pt x 433.62pt>
-File: Figures/Chapter4/StageA_Figure3_PR_Curves.png Graphic file (type png)
-<use Figures/Chapter4/StageA_Figure3_PR_Curves.png>
-Package pdftex.def Info: Figures/Chapter4/StageA_Figure3_PR_Curves.png  used on
- input line 922.
-(pdftex.def)             Requested size: 375.80544pt x 281.84966pt.
- [56]
-<../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png, id
-=2465, 855.6768pt x 874.467pt>
-File: ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.pn
-g Graphic file (type png)
-<use ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png
->
-Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/Figures/StageA
-_Figure4_Hotspot.png  used on input line 946.
-(pdftex.def)             Requested size: 469.75502pt x 480.07768pt.
- [57 <./Figures/Chapter4/StageA_Figure3_PR_Curves.png>] [58 <../../Analysis/Out
-put/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png>]
-Overfull \hbox (2.40701pt too wide) in paragraph at lines 966--981
- [][] 
- []
-
-[59{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc
-}]
-<Figures/Chapter4/fig_stage_b_continuous_seed_mae.pdf, id=2493, 491.8626pt x 27
-7.40512pt>
-File: Figures/Chapter4/fig_stage_b_continuous_seed_mae.pdf Graphic file (type p
-df)
-<use Figures/Chapter4/fig_stage_b_continuous_seed_mae.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_stage_b_continuous_seed_mae.pdf  
-used on input line 995.
-(pdftex.def)             Requested size: 352.31625pt x 198.70717pt.
- [60 <./Figures/Chapter4/fig_stage_b_continuous_seed_mae.pdf>] [61]
-<Figures/Chapter4/F22_Joint_Policy_Map.png, id=2567, 1144.5159pt x 1113.9216pt>
-
-File: Figures/Chapter4/F22_Joint_Policy_Map.png Graphic file (type png)
-<use Figures/Chapter4/F22_Joint_Policy_Map.png>
-Package pdftex.def Info: Figures/Chapter4/F22_Joint_Policy_Map.png  used on inp
-ut line 1020.
-(pdftex.def)             Requested size: 399.29463pt x 388.62062pt.
- [62 <./Figures/Chapter4/F22_Joint_Policy_Map.png>]
-<Figures/Chapter5/fig_causal_context_did.png, id=2575, 489.9906pt x 485.8953pt>
-
-File: Figures/Chapter5/fig_causal_context_did.png Graphic file (type png)
-<use Figures/Chapter5/fig_causal_context_did.png>
-Package pdftex.def Info: Figures/Chapter5/fig_causal_context_did.png  used on i
-nput line 1036.
-(pdftex.def)             Requested size: 352.31625pt x 349.38466pt.
-<Figures/Chapter5/Electoral_Placebo_DiD.png, id=2576, 712.1004pt x 424.9476pt>
-File: Figures/Chapter5/Electoral_Placebo_DiD.png Graphic file (type png)
-<use Figures/Chapter5/Electoral_Placebo_DiD.png>
-Package pdftex.def Info: Figures/Chapter5/Electoral_Placebo_DiD.png  used on in
-put line 1043.
-(pdftex.def)             Requested size: 469.75502pt x 280.32362pt.
- [63 <./Figures/Chapter5/fig_causal_context_did.png>]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 1053.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 1053.
- [64 <./Figures/Chapter5/Electoral_Placebo_DiD.png>]
-
-LaTeX Warning: Citation `callaway2021did' on page 65 undefined on input line 10
-74.
-
-
-LaTeX Warning: Citation `cinelli2020making' on page 65 undefined on input line 
-1076.
-
-<Figures/Chapter5/F17_DiD_EventStudy.png, id=2587, 711.1368pt x 422.0568pt>
-File: Figures/Chapter5/F17_DiD_EventStudy.png Graphic file (type png)
-<use Figures/Chapter5/F17_DiD_EventStudy.png>
-Package pdftex.def Info: Figures/Chapter5/F17_DiD_EventStudy.png  used on input
- line 1082.
-(pdftex.def)             Requested size: 399.29463pt x 236.98131pt.
-[65 <./Figures/Chapter5/F17_DiD_EventStudy.png>]
-(Tables/performance_integrity_audit.tex) [66]
-(Tables/alternative_architectures.tex) [67]
-<Figures/Chapter4/fig_attribution_longitudinal.pdf, id=2606, 1000.07501pt x 123
-7.03844pt>
-File: Figures/Chapter4/fig_attribution_longitudinal.pdf Graphic file (type pdf)
-
-<use Figures/Chapter4/fig_attribution_longitudinal.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_attribution_longitudinal.pdf  use
-d on input line 1120.
-(pdftex.def)             Requested size: 469.75502pt x 581.04951pt.
- [68] [69 <./Figures/Chapter4/fig_attribution_longitudinal.pdf>]
-<Figures/Chapter4/fig_fpr_fnr_longitudinal.pdf, id=2688, 1144.49213pt x 833.571
-73pt>
-File: Figures/Chapter4/fig_fpr_fnr_longitudinal.pdf Graphic file (type pdf)
-<use Figures/Chapter4/fig_fpr_fnr_longitudinal.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_fpr_fnr_longitudinal.pdf  used on
- input line 1135.
-(pdftex.def)             Requested size: 469.75502pt x 342.13548pt.
-<Figures/Chapter4/fig_ood_offset_decay.pdf, id=2690, 1143.99588pt x 833.77182pt
->
-File: Figures/Chapter4/fig_ood_offset_decay.pdf Graphic file (type pdf)
-<use Figures/Chapter4/fig_ood_offset_decay.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_ood_offset_decay.pdf  used on inp
-ut line 1144.
-(pdftex.def)             Requested size: 469.75502pt x 342.37027pt.
- [70 <./Figures/Chapter4/fig_fpr_fnr_longitudinal.pdf>] [71 <./Figures/Chapter4
-/fig_ood_offset_decay.pdf>]
-<Figures/Chapter4/fig_seed_stability.pdf, id=2898, 1289.08664pt x 709.46745pt>
-File: Figures/Chapter4/fig_seed_stability.pdf Graphic file (type pdf)
-<use Figures/Chapter4/fig_seed_stability.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_seed_stability.pdf  used on input
- line 1179.
-(pdftex.def)             Requested size: 469.75502pt x 258.53668pt.
- [72 <./Figures/Chapter4/fig_seed_stability.pdf>]
-<Figures/Chapter4/fig_ood_seed_variance.pdf, id=3009, 1289.03212pt x 434.6413pt
->
-File: Figures/Chapter4/fig_ood_seed_variance.pdf Graphic file (type pdf)
-<use Figures/Chapter4/fig_ood_seed_variance.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_ood_seed_variance.pdf  used on in
-put line 1188.
-(pdftex.def)             Requested size: 469.75502pt x 158.39404pt.
-<Figures/Chapter4/fig_all_stages_seed.pdf, id=3011, 1289.29678pt x 723.71294pt>
-
-File: Figures/Chapter4/fig_all_stages_seed.pdf Graphic file (type pdf)
-<use Figures/Chapter4/fig_all_stages_seed.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_all_stages_seed.pdf  used on inpu
-t line 1196.
-(pdftex.def)             Requested size: 469.75502pt x 263.6837pt.
- [73 <./Figures/Chapter4/fig_ood_seed_variance.pdf>]
-<Figures/Chapter4/fig_stage_b_perclass_boxplot.pdf, id=3100, 1289.27669pt x 709
-.25891pt>
-File: Figures/Chapter4/fig_stage_b_perclass_boxplot.pdf Graphic file (type pdf)
-
-<use Figures/Chapter4/fig_stage_b_perclass_boxplot.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_stage_b_perclass_boxplot.pdf  use
-d on input line 1206.
-(pdftex.def)             Requested size: 469.75502pt x 258.41739pt.
-
-[74 <./Figures/Chapter4/fig_all_stages_seed.pdf>]
-<Figures/Chapter4/fig_stage_b_perclass.pdf, id=3208, 1433.72528pt x 349.61742pt
->
-File: Figures/Chapter4/fig_stage_b_perclass.pdf Graphic file (type pdf)
-<use Figures/Chapter4/fig_stage_b_perclass.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_stage_b_perclass.pdf  used on inp
-ut line 1213.
-(pdftex.def)             Requested size: 469.75502pt x 114.54721pt.
-<Figures/Chapter4/fig_stage_b_seed.pdf, id=3209, 1433.05995pt x 402.47275pt>
-File: Figures/Chapter4/fig_stage_b_seed.pdf Graphic file (type pdf)
-<use Figures/Chapter4/fig_stage_b_seed.pdf>
-Package pdftex.def Info: Figures/Chapter4/fig_stage_b_seed.pdf  used on input l
-ine 1220.
-(pdftex.def)             Requested size: 469.75502pt x 131.93207pt.
- [75 <./Figures/Chapter4/fig_stage_b_perclass_boxplot.pdf> <./Figures/Chapter4/
-fig_stage_b_perclass.pdf>]
-[76 <./Figures/Chapter4/fig_stage_b_seed.pdf>]
-Overfull \hbox (168.55745pt too wide) in paragraph at lines 1233--1247
- [][] 
- []
-
-[77]
-Overfull \hbox (4.08568pt too wide) in paragraph at lines 1264--1278
- [][] 
- []
-
-[78]
-File: ../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf
- Graphic file (type pdf)
-<use ../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf>
-
-Package pdftex.def Info: ../../Analysis/Output/SHAP_MetaClustering/meta_attribu
-tion_clustermap.pdf  used on input line 1292.
-(pdftex.def)             Requested size: 446.26582pt x 397.32434pt.
- [79]
-No file Austin_NIMBY_Thesis_Draft.bbl.
-(Austin_NIMBY_Thesis_Draft.aux)
- ***********
-LaTeX2e <2025-11-01>
-L3 programming layer <2025-12-24>
- ***********
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package rerunfilecheck Info: File `Austin_NIMBY_Thesis_Draft.out' has not chang
-ed.
-(rerunfilecheck)             Checksum: EED30BA9742BE7954BFF541150EAE8FE;14685.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 27010 strings out of 467871
- 514108 string characters out of 5419344
- 924388 words of memory out of 5000000
- 54938 multiletter control sequences out of 15000+600000
- 729623 words of font info for 231 fonts, out of 8000000 for 9000
+ 25973 strings out of 467871
+ 482836 string characters out of 5419344
+ 891793 words of memory out of 5000000
+ 54195 multiletter control sequences out of 15000+600000
+ 719949 words of font info for 193 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,12n,104p,1412b,842s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
-, replaced by a fixed one
-
-<C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C
-:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/
-Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbxi10.pfb><C:/U
-sers/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmex10.pfb><C:/Use
-rs/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users
-/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi6.pfb><C:/Users/dh
-l/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Users/dhl/A
-ppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi9.pfb><C:/Users/dhl/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/dhl/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/dhl/AppData/Lo
-cal/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/dhl/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/lm/lmr6.pfb><C:/Users/dhl/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/dhl/AppData/Local/Program
-s/MiKTeX/fonts/type1/public/lm/lmr9.pfb><C:/Users/dhl/AppData/Local/Programs/Mi
-KTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKT
-eX/fonts/type1/public/lm/lmri9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/
-fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fo
-nts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts
-/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/ty
-pe1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1
-/public/lm/lmtt10.pfb>
-Output written on Austin_NIMBY_Thesis_Draft.pdf (79 pages, 45350971 bytes).
-PDF statistics:
- 3646 PDF objects out of 4296 (max. 8388607)
- 216 named destinations out of 1000 (max. 500000)
- 54954 words of extra memory for PDF output out of 61914 (max. 10000000)
-
+ 84i,8n,104p,1428b,453s stack positions out of 10000i,1000n,20000p,200000b,200000s
+!  ==> Fatal error occurred, no output PDF file produced!

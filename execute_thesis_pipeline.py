@@ -21,9 +21,12 @@ PIPELINE_STEPS = [
     ("07_evaluate_stage_c.py", "Evaluating Stage C ranking and calibration..."),
     ("08_run_meta_attribution.py", "Running meta-attribution interpretation sidecar..."),
     ("08b_run_ablation_suite.py", "Running semantic cluster ablations..."),
+    ("08c_run_did_causal.py", "Running Stijn DiD causal estimators..."),
     ("09_run_audits.py", "Running label-fidelity and data-quality audits..."),
     ("10_export_manuscript_artifacts.py", "Generating metrics manifest and LaTeX macros..."),
-    ("11_final_build_gate.py", "Running final submission build gate...")
+    ("11_final_build_gate.py", "Running final submission build gate..."),
+    ("12_generate_extracted_tables.py", "Exporting extracted table definitions directly to table path..."),
+    ("13_render_prose_figures.py", "Regenerating all qualitative and quantitative prose figures...")
 ]
 
 def run_step(script_name, description):
@@ -56,9 +59,12 @@ def create_script_wrapper(name):
         "07_evaluate_stage_c.py": "from src.models.evaluate_predictions import evaluate_predictions; evaluate_predictions()",
         "08_run_meta_attribution.py": "from src.interpretation.run_meta_attribution import run_meta_attribution; run_meta_attribution()",
         "08b_run_ablation_suite.py": "from src.interpretation.ablation_suite import run_ablation_suite; run_ablation_suite()",
+        "08c_run_did_causal.py": "import os; os.system('python Analysis/Scripts/Experiments/DiD/evaluate_stijn_did.py > results/stijn_did_results.txt')",
         "09_run_audits.py": "from src.labels.audit_label_fidelity import audit_label_fidelity; audit_label_fidelity()",
         "10_export_manuscript_artifacts.py": "from src.reporting.build_metrics_manifest import build_metrics_manifest; from src.reporting.export_metrics_tex import export_metrics_tex; build_metrics_manifest(); export_metrics_tex()",
         "11_final_build_gate.py": "from src.reporting.final_build_gate import run_final_build_gate; raise SystemExit(run_final_build_gate())",
+        "12_generate_extracted_tables.py": "",
+        "13_render_prose_figures.py": "import os, glob; [os.system(f'python \"{f}\"') for f in glob.glob('Analysis/Scripts/Visualization/Production_Figures/*.py') + glob.glob('Analysis/Scripts/Experiments/DiD/*.py') if 'electoral_placebo' in f or 'generate_' in f or 'plot_' in f]"
     }
     
     if name in mappings:

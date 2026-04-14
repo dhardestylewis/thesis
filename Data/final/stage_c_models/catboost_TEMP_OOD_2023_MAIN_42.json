@@ -1,0 +1,8 @@
+{
+  "model_family": "CatBoost",
+  "seed": 42,
+  "split_id": "TEMP_OOD_2023_MAIN",
+  "feature_count": 133,
+  "train_rows": 6200,
+  "test_rows": 583
+}

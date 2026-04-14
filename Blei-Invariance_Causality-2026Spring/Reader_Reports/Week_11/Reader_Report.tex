@@ -1,0 +1,89 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage[round,sort&compress]{natbib}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
+\usepackage{hyperref}
+
+% Approximation of JMLR style parameters
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3em}
+\titlespacing*{\section}{0pt}{0.6em}{0.3em}
+\titlespacing*{\subsection}{0pt}{0.5em}{0.2em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize STAT8101}
+\chead{\footnotesize \href{http://www.cs.columbia.edu/~blei/teaching.html}{Invariance, Causality, and Applications}}
+\rhead{\footnotesize \href{http://www.cs.columbia.edu/~blei/}{David M. Blei}}
+\cfoot{\thepage}
+
+\begin{document}
+\vspace*{-1.5cm}
+\begin{center}
+{\Large \textbf{Reader Report: Week 11}} \\
+\vspace{0.2em}
+{\large Bayesian Optimization: Regret, Scalability, and the Empirical Bayes Bridge} \\
+\vspace{0.3em}
+Daniel Hardesty Lewis (\texttt{dl3645}) $\cdot$ Spring 2026
+\end{center}
+\vspace{-1.5em}
+\thispagestyle{fancy}
+
+\section*{Summary}
+Building on last week's foundations, I focused on three areas from \citet{garnett2023bayesian}: (1) theoretical regret guarantees for GP-UCB, (2) high-dimensional scaling via random embeddings and trust regions, and (3) the link between marginal likelihood maximization and empirical Bayes.
+
+\textit{Regret bounds.} For the GP-UCB acquisition function $\mu_t(x) + \beta_t^{1/2}\sigma_t(x)$, \citet{srinivas2010ucb} establish a cumulative regret bound of $O(\gamma_T\sqrt{T})$, where $\gamma_T$ is the maximum information gain --- the entropy reduction achievable from $T$ observations of $f$. For RBF kernels $\gamma_T = O((\log T)^{d+1})$; for Matérn-$\nu$ kernels $\gamma_T = O(T^{d/(2\nu+d)}(\log T))$, making the smoothness parameter $\nu$ operationally decisive for convergence speed in spatial domains.
+
+\textit{High-dimensional BO.} Standard GP complexity scales cubically in $n$, rendering it prohibitive for the full joint evaluation of $d \gg 20$ inputs. REMBO \citep{wang2013rembo} projects the search space into a low-dimensional random linear subspace, exploiting effective dimensionality in practice. TuRBO \citep{eriksson2019turbo} alternatively maintains local trust regions with independent GP models, escaping the global stationarity assumption that pathologically homogenizes acquisition values across a large domain.
+
+\textit{Marginal likelihood and empirical Bayes.} GP hyperparameters (kernel length-scales, signal variance, noise) are typically estimated by maximizing the log marginal likelihood $\log p(\mathbf{y} \mid \mathbf{X}, \theta) = -\frac{1}{2}\mathbf{y}^\top K_\theta^{-1}\mathbf{y} - \frac{1}{2}\log|K_\theta| - \frac{n}{2}\log 2\pi$. This is precisely a Type-II maximum likelihood (empirical Bayes) procedure: treating hyperparameters as fixed point estimates rather than integrating them out. The connection to next week's topic is direct --- empirical Bayes is the mechanism by which BO adapts its prior to the observed function landscape.
+
+\section*{Critique}
+The regret analysis reveals a structural tension for causal applications. The bound $O(\gamma_T\sqrt{T})$ is derived under a fixed, stationary kernel --- yet in the zoning domain, the mechanism generating housing outcomes shifts after the 2022 municipal election. If the true structural causal model undergoes a discrete change-point, $\gamma_T$ is not a property of a single fixed kernel but of a \textit{sequence} of kernels. No regret bound I am aware of accommodates mid-sequence mechanism shifts of this type; dynamic bandits \citep{aglietti2021dcbo} address drift but not abrupt structural replacement.
+
+The empirical Bayes procedure for kernel hyperparameters is similarly fragile under mechanism shift. Maximizing the marginal likelihood globally averages over pre- and post-shift data, systematically miscalibrating the length-scale. A natural fix --- fitting separate GP models on pre- and post-change-point data --- reintroduces the small-$n$ problem that motivated a pooled GP in the first place. This points toward hierarchical Bayes over change-point location as the appropriate next step, though Garnett does not develop this explicitly.
+
+Finally, the REMBO embedding assumption (that the effective dimensionality of the optimum is low) is plausible for hyperparameter tuning but questionable for spatial policy: geographic spillovers couple dimensions explicitly, so the true intrinsic dimensionality may scale with the number of neighborhoods.
+
+\section*{Questions}
+\begin{enumerate}
+    \item The GP marginal likelihood is the canonical empirical Bayes objective for BO. But empirical Bayes shrinkage (as in James--Stein or Efron's nonparametric version) operates on a different statistical object --- a prior over many means. Is there a unified framework in which the BO marginal likelihood and Efron-style empirical Bayes are both special cases of the same hierarchical model? Or are they fundamentally different uses of the phrase ``empirical Bayes''?
+    \item TuRBO decomposes the global BO problem into local trust regions, each with its own GP. In a causal domain where the action $a$ represents a policy intervention with spillovers (i.e., $f(a_i)$ and $f(a_j)$ are not independent for neighboring regions $i,j$), local GP independence is violated. Are there principled methods for defining trust-region boundaries that respect known causal graph structure rather than Euclidean distance in the action space?
+\end{enumerate}
+
+\newpage
+\vspace{1em}
+\hrule
+\vspace{1em}
+\section*{Project Update: Simulating the Historical Zoning Sequence as a BO Trajectory}
+\thispagestyle{empty}
+
+\begin{abstract}
+Last week I proposed framing Austin's 7,074 discretionary zoning cases as a constrained Bayesian Optimization trajectory. This week I began operationalizing that framing: constructing the action space, defining the objective and constraint surrogates, and running a retrospective counterfactual comparing the historical approval sequence against an idealized GP-UCB policy.
+\end{abstract}
+
+\section*{Setup and Action Space}
+Each zoning case $t$ is an ``evaluation'' of the objective. I define the action $a_t \in \mathcal{A} \subset \mathbb{R}^d$ as a vector of case-level features: proposed density (FAR), parcel area, distance to CBD, zoning category ordinal, and council district indicator. The objective $f(a_t)$ is total permitted housing units (a proxy for yield). The safety constraint $g(a_t) \leq 0$ encodes whether a protest petition was filed; the latent margin $g$ is modeled as a GP as in last week's formulation.
+
+\section*{GP Surrogate Fitting}
+I fit separate GP surrogates $f$ and $g$ on the pre-2022 data ($n = 4{,}312$ cases) using a Matérn-$3/2$ kernel with automatic relevance determination (ARD), selecting hyperparameters via marginal likelihood maximization (\emph{empirical Bayes}). Post-2022 cases ($n = 2{,}762$) are held out as a test regime. The information gain $\hat{\gamma}_T$ computed empirically from the ARD kernel suggests effective dimensionality $\approx 3$ (density, distance, district), consistent with the REMBO hypothesis that the active subspace is low-dimensional despite the full feature vector.
+
+\section*{Counterfactual Comparison}
+I simulate what a GP-UCB policy (with $\beta_t$ scheduled per \citet{srinivas2010ucb}) would have recommended at each decision point, conditioning only on the cases previously approved. Preliminary results suggest the historical council was substantially \textit{more exploitative} than GP-UCB in the pre-2022 period (concentrating approvals in already-dense, low-protest corridors) and then abruptly shifted toward exploration in 2022--2023, consistent with the structural change-point hypothesis. The constraint GP $g$ shows a visible kernel miscalibration across the change-point, supporting last week's critique.
+
+\section*{Next Steps}
+Formalize the change-point detection within the GP framework (likely via a product kernel combining a stationary base and a change-point indicator \citep{aglietti2021dcbo}). Evaluate whether SAFEOPT \citep{sui2015safeopt} would have achieved a Pareto-superior trajectory (higher yield, lower protest rate) than the historical sequence, and quantify the regret gap attributable to the unmodeled structural shift.
+
+\vspace{-0.5em}
+{\scriptsize
+\setlength{\bibsep}{0pt}
+\bibliographystyle{plainnat}
+\bibliography{references}
+}
+\end{document}
