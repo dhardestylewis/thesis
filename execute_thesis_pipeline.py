@@ -26,7 +26,8 @@ PIPELINE_STEPS = [
     ("10_export_manuscript_artifacts.py", "Generating metrics manifest and LaTeX macros..."),
     ("11_final_build_gate.py", "Running final submission build gate..."),
     ("12_generate_extracted_tables.py", "Exporting extracted table definitions directly to table path..."),
-    ("13_render_prose_figures.py", "Regenerating all qualitative and quantitative prose figures...")
+    ("13_render_prose_figures.py", "Regenerating all qualitative and quantitative prose figures..."),
+    ("14_audit_prose_recency.py", "Running git-blame prose recency scan to flag stale paragraphs for manual review...")
 ]
 
 def run_step(script_name, description):
@@ -64,7 +65,8 @@ def create_script_wrapper(name):
         "10_export_manuscript_artifacts.py": "from src.reporting.build_metrics_manifest import build_metrics_manifest; from src.reporting.export_metrics_tex import export_metrics_tex; build_metrics_manifest(); export_metrics_tex()",
         "11_final_build_gate.py": "from src.reporting.final_build_gate import run_final_build_gate; raise SystemExit(run_final_build_gate())",
         "12_generate_extracted_tables.py": "",
-        "13_render_prose_figures.py": "import os, glob; [os.system(f'python \"{f}\"') for f in glob.glob('Analysis/Scripts/Visualization/Production_Figures/*.py') + glob.glob('Analysis/Scripts/Experiments/DiD/*.py') if 'electoral_placebo' in f or 'generate_' in f or 'plot_' in f]"
+        "13_render_prose_figures.py": "import os, glob; [os.system(f'python \"{f}\"') for f in glob.glob('Analysis/Scripts/Visualization/Production_Figures/*.py') + glob.glob('Analysis/Scripts/Experiments/DiD/*.py') if 'electoral_placebo' in f or 'generate_' in f or 'plot_' in f]",
+        "14_audit_prose_recency.py": "import os; os.system('python scripts/track_tex_recency.py')"
     }
     
     if name in mappings:

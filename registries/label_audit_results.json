@@ -1,14 +1,9 @@
 [
   {
-    "metric": "agreement",
-    "value": 1.0,
+    "agreement": 1.0,
     "sample_size": 200,
-    "audit_mode": "stub"
-  },
-  {
-    "metric": "disagreement_rate",
-    "value": 0.0,
-    "sample_size": 200,
-    "audit_mode": "stub"
+    "fp": 0,
+    "fn": 0,
+    "audit_mode": "observed"
   }
 ]

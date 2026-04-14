@@ -11,7 +11,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/case_universe.parquet",
-    "generated_at": "2026-04-14T04:46:38.577436+00:00"
+    "generated_at": "2026-04-14T05:01:15.919649+00:00"
   },
   {
     "metric_id": "metricNDistricts",
@@ -25,7 +25,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/case_universe.parquet",
-    "generated_at": "2026-04-14T04:46:38.579452+00:00"
+    "generated_at": "2026-04-14T05:01:15.921424+00:00"
   },
   {
     "metric_id": "metricBaseRate",
@@ -39,7 +39,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.928260+00:00"
   },
   {
     "metric_id": "metricBaseRateN",
@@ -53,7 +53,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.929800+00:00"
   },
   {
     "metric_id": "metricNTestTotal",
@@ -67,7 +67,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.934104+00:00"
   },
   {
     "metric_id": "metricNTestPositive",
@@ -81,7 +81,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.934104+00:00"
   },
   {
     "metric_id": "metricMeanProbTP",
@@ -95,7 +95,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.934104+00:00"
   },
   {
     "metric_id": "metricMeanProbTN",
@@ -109,7 +109,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.934104+00:00"
   },
   {
     "metric_id": "metricTopDecileTP",
@@ -123,7 +123,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricTopDecileN",
@@ -137,7 +137,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricHeadlinePRAUC",
@@ -151,7 +151,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricBootstrapFiling",
@@ -165,7 +165,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricTopDecilePrecision",
@@ -179,7 +179,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricTopDecileLift",
@@ -193,7 +193,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricHeadlineECE",
@@ -207,7 +207,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricECE",
@@ -221,7 +221,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricECEOODBootstrapCalibrated",
@@ -235,7 +235,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricACE",
@@ -249,7 +249,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricBrierScore",
@@ -263,7 +263,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricPrecisionAtThirty",
@@ -277,7 +277,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricRecallAtThirty",
@@ -291,7 +291,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricPrecisionAtFifty",
@@ -305,7 +305,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricRecallAtFifty",
@@ -319,7 +319,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricLabelFidelity",
@@ -333,7 +333,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_audit_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricLabelAuditN",
@@ -347,7 +347,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_audit_results.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricLargestClusterDelta",
@@ -361,7 +361,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/ablation_results.parquet",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricConsensusClusterCount",
@@ -375,7 +375,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/meta_attribution_object.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   },
   {
     "metric_id": "metricUnstableClusterCount",
@@ -389,6 +389,6 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/meta_attribution_object.json",
-    "generated_at": "2026-04-14T04:46:38.585733+00:00"
+    "generated_at": "2026-04-14T05:01:15.937983+00:00"
   }
 ]
