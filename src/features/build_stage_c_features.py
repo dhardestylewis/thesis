@@ -1,70 +1,117 @@
-import pandas as pd
-import numpy as np
+"""Build the canonical filing-date feature view for Stage C."""
+
+from __future__ import annotations
+
 from pathlib import Path
-import sys
-import os
+from typing import Any, Callable, Optional, cast
 
-# src/features/build_stage_c_features.py
-sys.path.append(str(Path(r"c:\Users\dhl\data\thesis\thesis") / "src"))
-from src.data_io.schema import ROOT_DIR, WAREHOUSE_DIR, save_registry
+import numpy as np
+import pandas as pd
 
-def build_stage_c_features():
-    print("[+] Building Stage C Feature Registry...")
-    path = WAREHOUSE_DIR / "H0_Filing_Master_Enriched.csv"
+from src.data_io.schema import REGISTRY_DIR, ROOT_DIR, WAREHOUSE_DIR, ensure_dirs, save_registry
+
+EXCLUDE_COLUMNS = {
+    "case_id",
+    "case_number",
+    "filing_date",
+    "date_filed",
+    "submitted_date",
+    "year",
+    "filing_year",
+    "is_protested",
+    "protested",
+    "petition_crossed",
+    "threshold_crossed",
+    "label_version",
+    "reconstructed_petition_share",
+    "clerk_validity_observed",
+    "procedural_defect_signal",
+}
+
+to_datetime = cast(Callable[..., Any], getattr(pd, "to_datetime"))
+to_numeric = cast(Callable[..., Any], getattr(pd, "to_numeric"))
+
+
+def _load_source_frame(source_path: Optional[str] = None) -> pd.DataFrame:
+    path = Path(source_path) if source_path else WAREHOUSE_DIR / "H0_Filing_Master_Enriched.csv"
     if not path.exists():
-        # Fallback for demo if warehouse is missing
-        print(f"    [!] Warning: Warehouse table missing at {path}. Creating synthetic features for demo.")
-        universe = pd.read_parquet(ROOT_DIR / "registries" / "case_universe.parquet")
-        X = universe[['case_id', 'filing_date']].copy()
-        X['as_of_date'] = X['filing_date']
-        X['feature_view'] = 'filing_date_public'
-        for i in range(10):
-            X[f'feat_{i}'] = np.random.randn(len(X))
-    else:
-        df = pd.read_csv(path, low_memory=False)
-        # Standardize
-        df = df.dropna(subset=['year', 'case_number'])
-        drop_cols = ['is_protested', 'case_number', 'year', 'council_district']
-        X = df.drop(columns=[c for c in drop_cols if c in df.columns], errors='ignore').select_dtypes(include=[np.number])
-        
-        X['case_id'] = df['case_number']
-        X['as_of_date'] = df['year'].apply(lambda x: f"{int(float(x))}-01-01")
-        X['feature_view'] = 'filing_date_public'
-    
-    # Save to interim for model training (contains numeric features)
-    interim_path = ROOT_DIR / "data" / "interim" / "stage_c_features_raw.parquet"
-    interim_path.parent.mkdir(parents=True, exist_ok=True)
-    X.to_parquet(interim_path, index=False)
-    
-    # Key-only map for the public registry
-    registry = X[['case_id', 'as_of_date', 'feature_view']].copy()
-    save_registry(registry, "feature_registry")
-    print(f"    Features built. Processed {len(X)} case-snapshots.")
+        raise FileNotFoundError(f"Source file not found: {path}")
+    if path.suffix.lower() == ".parquet":
+        return pd.read_parquet(path)
+    return pd.read_csv(path, low_memory=False)
 
-# src/splits/build_split_registry.py
-def build_split_registry():
-    print("[+] Building Split Registry...")
-    universe = pd.read_parquet(ROOT_DIR / "registries" / "case_universe.parquet")
-    
-    splits = []
-    
-    # TEMP_OOD_2023_MAIN
-    split_id = "TEMP_OOD_2023_MAIN"
-    tr = universe[universe['year'] < 2023].copy()
-    tr['split_id'] = split_id
-    tr['role'] = 'train'
-    tr['fold'] = 0
-    
-    te = universe[universe['year'] >= 2023].copy()
-    te['split_id'] = split_id
-    te['role'] = 'test'
-    te['fold'] = 0
-    splits.extend([tr, te])
-    
-    full_splits = pd.concat(splits, ignore_index=True)
-    save_registry(full_splits[['case_id', 'split_id', 'role', 'fold']], "split_registry")
-    print(f"    Saved splits for {split_id} to split_registry.parquet")
+
+def build_stage_c_features(
+    source_path: Optional[str] = None,
+    case_universe_path: Optional[str] = None,
+    output_path: Optional[str] = None,
+    feature_view_name: str = "filing_date_public",
+) -> pd.DataFrame:
+    """Export the canonical Stage C matrix and its feature registry."""
+
+    ensure_dirs()
+    source = _load_source_frame(source_path)
+    case_universe = None
+    if case_universe_path:
+        case_universe = pd.read_parquet(Path(case_universe_path))
+    else:
+        default_universe = REGISTRY_DIR / "case_universe.parquet"
+        if default_universe.exists():
+            case_universe = pd.read_parquet(default_universe)
+            case_universe = case_universe.drop_duplicates(subset=["case_id"], keep="first").reset_index(drop=True)
+
+    case_col = next((c for c in ["case_id", "case_number"] if c in source.columns), None)
+    if case_col is None:
+        raise ValueError("Could not identify a case identifier column for Stage C features.")
+
+    if "filing_date" in source.columns:
+        as_of = to_datetime(source["filing_date"], errors="coerce")
+    elif "date_filed" in source.columns:
+        as_of = to_datetime(source["date_filed"], errors="coerce")
+    elif "year" in source.columns:
+        as_of = to_datetime(source["year"].astype("Int64").astype(str) + "-01-01", errors="coerce")
+    else:
+        as_of = pd.Series(pd.NaT, index=source.index)
+
+    numeric = source.select_dtypes(include=[np.number]).copy()
+    numeric = numeric[[c for c in numeric.columns if c not in EXCLUDE_COLUMNS]].copy()
+    feature_matrix = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "case_id": source[case_col].astype(str),
+                    "as_of_date": as_of.dt.strftime("%Y-%m-%d") if hasattr(as_of, "dt") else pd.NA,
+                    "feature_view": feature_view_name,
+                },
+                index=source.index,
+            ),
+            numeric.reset_index(drop=True),
+        ],
+        axis=1,
+    )
+
+    # Add a small number of deterministic derived features if they can help the model.
+    if "year" in source.columns and "filing_year" not in feature_matrix.columns:
+        feature_matrix["filing_year"] = to_numeric(source["year"], errors="coerce")
+
+    if case_universe is not None and "council_district" in case_universe.columns:
+        district_map = case_universe[["case_id", "council_district"]].copy()
+        district_map["council_district"] = to_numeric(district_map["council_district"], errors="coerce")
+        district_map = district_map.drop_duplicates(subset=["case_id"])
+        feature_matrix = feature_matrix.merge(district_map, on="case_id", how="left")
+
+    feature_matrix = feature_matrix.drop_duplicates(subset=["case_id"], keep="first").reset_index(drop=True)
+
+    feature_matrix = feature_matrix.sort_values(["case_id", "as_of_date"]).reset_index(drop=True)
+
+    matrix_path = Path(output_path) if output_path else ROOT_DIR / "data" / "interim" / "stage_c_features_raw.parquet"
+    matrix_path.parent.mkdir(parents=True, exist_ok=True)
+    feature_matrix.to_parquet(matrix_path, index=False)
+
+    registry = feature_matrix[["case_id", "as_of_date", "feature_view"]].copy()
+    save_registry(registry.drop_duplicates(), "feature_registry")
+    return feature_matrix
+
 
 if __name__ == "__main__":
     build_stage_c_features()
-    build_split_registry()

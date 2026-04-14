@@ -71,13 +71,13 @@ The outcome under study is specific. Under the pre-2025 framework of Texas Local
 
 To answer this question, the research uses a staged workflow but limits headline inference to Stage~C. The chapter flow is intentionally compact: Introduction; outcome definition and as-of information setup; Stage~C primary results; limitations; and brief references to supporting analyses in appendices.
 
-The staged workflow includes four components:
+The workflow is intentionally asymmetric:
 
 \begin{itemize}
-    \item \textbf{Stage A---Development Occurrence:} Where housing development proposals are likely to emerge, modeled as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels.
-    \item \textbf{Stage B---Project Type and Scale:} Conditional on a development event, the expected project form and unit count.
-    \item \textbf{Stage C---Formal Protest Petition:} Conditional on a project entering the formal public process, the probability that a measured threshold-crossing petition is filed. \textit{This is the core of the thesis.}
-    \item \textbf{Stage D---Administrative Audit:} Descriptive documentation of structural data limits and high pre-council withdrawal among protested cases.
+    \item \textbf{Stage A---Selection correction sidecar:} estimates development occurrence only to construct inverse-probability weights for Stage~C.
+    \item \textbf{Stage C---Primary filing-date petition model:} predicts whether a measured threshold-crossing petition is filed at the filing-date horizon. \textit{This is the core of the thesis.}
+    \item \textbf{Interpretation sidecar:} documents attribution stability and meta-attribution patterns for audit purposes.
+    \item \textbf{Stage D---Descriptive audit:} reports downstream attrition and missingness descriptively, without treating it as a coequal prediction target.
 \end{itemize}
 
 Stages A, B, and D provide context for Stage~C. Stage~A is used to test whether inverse-probability weighting (IPW) can credibly adjust for spatial selection into the analytic sample; diagnostics reported below show this weighting strategy fails overlap and balance gates and is therefore retained only as a failed sensitivity analysis. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation centers on Stage~C under the unweighted primary specification: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration to support relative risk ranking.
@@ -108,14 +108,30 @@ In Austin, the protest petition creates institutional friction for land use: cas
 \centering
 \caption{Measured Threshold-Crossing Petition Incidence by Proposed Land Use in Austin (Mercatus Center)}
 \label{tab:mercatus_petitions}
+\begin{tabular}{lc}
+\toprule
+\textbf{Proposed Zoning Category} & \textbf{Rezonings Crossing Measured Threshold (\%)} \\
+\midrule
+Multifamily Residential & 25\% \\
+Commercial / Non-Residential & 5\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
+    \caption[Annual Petition Filing Rate by Project Type]{Annual petition filing rates by project type, 2007--2024. Consistent with the Mercatus Center pattern (Table~1), this timeline tracks the observed historical petition frequency within each development category over the study period. While high-density or specialized use categories historically experience greater petition volatility, missing-middle and standard residential rezonings---which comprise the vast majority of all discretionary cases---maintain a consistently low baseline filing rate throughout the dataset.}
+    \label{fig:typology_timeline}
+\end{figure}
+
+Because the process is fundamentally asymmetric---empowering opponents of development through a fixed statutory buffer geometry---it creates a bias toward the status quo, dragging contested housing applications into months of procedural delays. The Texas Legislature structurally altered this framework in 2025; under House Bill 24, the state established new \S~211.0061, which exempts proposed comprehensive zoning changes from the protest mechanism entirely and replaces the uniform 20\% trigger with a differentiated, multi-tier system. For qualifying residential protests under subsection~(b)(3), the vote consequence is a simple majority of all governing body members rather than the prior three-fourths supermajority; for other protest paths, three-fourths remains the threshold. Consequently, predicting whether a measured threshold-crossing petition will be filed against an application under the pre-HB\,24 regime forms the core empirical challenge of this thesis.
+
+\subsection{Prediction Framing in Spatial Planning}
+
 Traditional econometric scholarship in urban planning almost exclusively evaluates the causal effect of zoning---for instance, whether upzoning increases land values or whether a protest petition causes delay. However, addressing the localized gridlock of discretionary review requires anticipating \emph{where} opposition will emerge before political capital is expended. This intellectual justification builds on Shmueli's \cite{shmueli2010} foundational distinction between explanatory modeling (testing causal hypotheses) and predictive modeling (generating accurate forecasts of new observations), and on Mullainathan and Spiess \cite{mullainathan2017ml}, who argue that machine learning solves a fundamentally different problem than traditional econometrics: prediction ($\hat{y}$) rather than parameter estimation ($\hat{\beta}$).
 
 Kleinberg, Ludwig, Mullainathan, and Obermeyer \cite{kleinberg2015prediction} formalize this distinction by defining the ``predictive policy question,'' cases where optimal policy decisions depend not on understanding the causal mechanism of an outcome, but on accurately forecasting its occurrence. Predicting which zoning cases will meet the petition threshold is one such question. Planners and policymakers need to know which projects will trigger supermajority voting requirements to efficiently allocate political capital, engage in proactive community mediation, or design comprehensive reforms that bypass parcel-level friction \cite{athey2019ml}. This research tests whether administrative, spatial, and neighborhood features observable at the time of filing carry sufficient signal to anticipate this specific institutional event.
-
-\\subsubsection{Primary Model Selection and Fixed Benchmark Roster}
-The benchmark roster was fixed before final analysis and not expanded post hoc. The fixed roster contains Logistic Regression, Random Forest, XGBoost, LightGBM, CatBoost, Deep ERM, Deep V-REx, TabNet, FT-Transformer, ExcelFormer, and TabPFN. The model chosen for all primary filing-date analyses is \\textbf{CatBoost} because the explicit selection criterion prioritizes out-of-distribution filing-date PR-AUC subject to a calibration admissibility rule (lowest ECE among models with acceptable discrimination), with no architecture additions after this roster freeze.
-
-The full fixed-roster benchmark matrix is reported in Appendix~\\ref{app:alt_models} rather than the main text to keep the core narrative tied to one primary estimator and one decision rule.
 
 \section{Outcome Definition and As-of Information Setup}
 
@@ -132,7 +148,7 @@ The core analytics rely on the filing-date analytic dataset, which merges spatia
     \item \textbf{Institutional Calendar:} The 2022 council regime change; the HB 24 effective date (September 1, 2025).
 \end{enumerate}
 
-Because municipal databases frequently overwrite preliminary timestamps with final disposition dates, precise milestone dates are reconstructed through two methods. First, explicit dates are parsed from scraped historical council agendas and PDF case files. Second, where explicit text is unavailable, dates are imputed by back-calculating from end-dates using the minimum procedural constraints mandated by Texas Local Government Code and Austin municipal zoning ordinances, such as statutory 11-day mail notice minimums.
+Because municipal databases frequently overwrite preliminary timestamps with final disposition dates, milestone dates are reconstructed through two pathways. First, explicit dates are parsed from scraped historical council agendas and PDF case files. Second, where explicit text is unavailable, dates are imputed by back-calculating from end-dates using minimum procedural constraints mandated by Texas Local Government Code and Austin zoning ordinances (for example, statutory mail-notice minima). This parsed-versus-imputed distinction is carried into interpretation because timing uncertainty is part of the measurement-error structure.
 
 Supporting tables log meeting events (staff and commission recommendations), speech comments (speaker stance and segmented text), petition records (validity and signature counts), and vote records (case-by-councilmember dynamics).
 
@@ -223,7 +239,7 @@ Exclude cases with unusable or missing initial filing-year information & \metric
 
 The analytical samples vary by analytical goal. The primary predictive evaluation (Stage C) uses the full sample of \metricBaselineCases{} discretionary geographic cases from the legally relevant pre-HB\,24 petition regime (2007--2024). Supporting analyses are constrained to institutionally defensible windows rather than broad pooled periods. The electoral-transition descriptive panel ($N=518$) is limited to active single-member districts around the January~2022 through January~2023 representation transitions, with post windows ending in 2024. The HOME appendix analysis uses the same restricted district panel and is presented as non-identifying descriptive event tracking only. The Invariant Causal Prediction (ICP) analysis utilizes $N=1,186$ multi-parcel geometric environments to represent cohesive spatial clusters. Finally, the institutional geographic overlay appendix aggregates policy flags by council term ($N=20$ macro-observations) and marks designs with insufficient identifying variation as not estimable.
 
-Unlike approaches that require complete-case geometric intersections, this methodology uses CatBoost's native missing-value handling to build splits over absent variables, such as unmatched TCAD boundaries, without listwise deletion. This approach retains cases with partially missing covariates, reducing artificial attrition and the selection bias introduced by demanding full covariate coverage. Whether it also improves fairness metrics is a separate empirical question explored in Section~\ref{sec:limitations}.
+Unlike complete-case geometric intersection approaches, the filing-date model allows partially observed covariates and uses model-native missing-value routing to avoid wholesale listwise deletion. This design choice reduces artificial attrition but does not resolve the underlying missing-data problem: missingness can remain systematically patterned across space, project type, and administrative pathway. Missingness is therefore treated as an evidentiary limitation and reported descriptively rather than framed as solved by estimator choice.
 
 \subsection{Controlled Terminology Glossary}
 \label{sec:terminology_glossary}
@@ -252,6 +268,27 @@ All primary results report $y_0$. Sensitivity analyses replicate key findings us
 
 Note on stage-specific samples: the Stage C filing-date model uses the full \metricBaselineCases{}-case analytic sample regardless of whether a hearing transcript exists, since transcripts post-date the filing horizon and are not used as predictive features at that stage. Cases missing hearing transcripts or petition-database coverage are omitted only from later-horizon evaluations and secondary-outcome analyses where those records serve as inputs or outcome sources.
 
+\subsection{Label-Validity Object and Audit Trail}
+
+To separate observed labels from legal adjudication, this manuscript treats label validity as a formal object with three layers: (i) the reconstructed measured threshold-crossing indicator ($y_0$), (ii) an observed-record hand audit, and (iii) an unobserved legal-certification layer that remains outside the available administrative record.
+
+\begin{table}[H]
+\centering
+\caption{Label-Validity Object for Stage C Primary Outcome}
+\label{tab:label_validity_object}
+\begin{tabular}{@{}p{0.24\textwidth}p{0.23\textwidth}p{0.12\textwidth}p{0.33\textwidth}@{}}
+\toprule
+\textbf{Layer} & \textbf{Source Artifact} & \textbf{N} & \textbf{Interpretation Rule} \\
+\midrule
+Measured threshold-crossing label ($y_0$) & Reconstructed from petition filings and buffer-share geometry & \metricBaselineCases{} & Primary modeled outcome; operationalized from observed records, not legal certification \\
+Observed-record hand audit (v2026-04-13) & \path{registries/label_audit_results.json} & 200 & Agreement = 1.00; no observed false positives or false negatives in the audited sample \\
+Legal certification status & Not available in public record & --- & Treated as latent/unobserved; excluded from identification claims \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The hand-audit layer is used as a documentation and fidelity check, not as proof that reconstructed labels equal clerk-certified legal validity.
+
 \subsection{Feature Libraries: Policy Forecasting vs.\ Explanatory Research}
 
 The feature set is separated to prevent predictive models from leveraging sensitive attributes:
@@ -267,11 +304,11 @@ The feature set is separated to prevent predictive models from leveraging sensit
 \subsection{Supporting Stages (Methods Support Only): Stage A, Stage B, and Stage D}
 \label{sec:supporting_stages}
 
-The predictive evaluation centers on Stage~C (Formal Protest Petition). Three supporting stages provide context and methodological inputs:
+The predictive evaluation centers on Stage~C (Formal Protest Petition). The remaining components are bounded sidecars or descriptive checks:
 
 \textbf{Stage A---Development Occurrence} models where housing development proposals are likely to emerge as a discrete-time site hazard across \metricBaselineParcels{} candidate parcels. Stage A additionally provides a candidate inverse-probability weighting (IPW) sensitivity strategy for spatial selection into the analytic sample. However, as documented in the IPW diagnostics subsection, overlap, ESS, and balance checks do not pass pre-specified quality gates, so weighted Stage C estimates are not used in the main narrative. Full model details, target definitions, precision--recall curves, and hotspot maps are reported in Appendix~\ref{app:stagea}.
 
-\textbf{Stage B---Project Type and Scale (supporting context)} is treated as non-headline support. Stage~B performance tables and figures are moved to Appendix~\ref{app:stageb}.
+\textbf{Stage B---Project Type and Scale (supporting context)} is retained only as auxiliary descriptive context and is not treated as a headline predictive task.
 
 \textbf{Stage D---Administrative Audit (descriptive only)} documents structural missingness and pre-council withdrawal patterns conditional on petition filing. Stage~D is not treated as a predictive results track and is reported as a descriptive audit in Appendix~\ref{app:staged}.
 
@@ -330,9 +367,11 @@ The full fixed-roster benchmark matrix is reported in Appendix~\ref{app:alt_mode
 
 Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given the substantial class imbalance of the outcome. Following standard methodological practices in rare-event spatial forecasting, traditional Receiver Operating Characteristic (AUROC) metrics are omitted entirely, as the large number of true negatives artificially inflates the curve. PR-AUC explicitly isolates the minority class, forcing the model to balance recall against the precision cost of false alarms.
 
-\textbf{Primary evaluation.} The out-of-distribution bootstrap PR-AUC at the filing-date horizon is the primary evaluation metric, as it simulates realistic forward evaluation conditions. In-distribution 5-fold cross-validation PR-AUC is reported as an upper bound. Because this is a ranking model with limited calibration transportability, the emphasis is on ranking metrics (PR-AUC, top-decile lift), calibration plots, and decision-relevant review budgets rather than threshold-dependent classification metrics. To verify that reported metrics are not artifacts of pseudo-random seed selection, all stochastic models are validated across 20 independent seeds; the resulting confidence intervals ($\sigma_{\text{PR-AUC}} < 0.05$ for all architectures) are reported in Table~\ref{tab:comprehensive_benchmark} and Appendix~\ref{app:seed_stability}.
+\textbf{Primary evaluation.} The out-of-distribution bootstrap PR-AUC at the filing-date horizon is the primary evaluation object, as it approximates forward-like administrative use. In-distribution 5-fold cross-validation is retained only as an optimistic upper-bound object. Because this is primarily a ranking exercise, emphasis remains on ranking discrimination (PR-AUC, top-decile lift), with calibration and thresholded diagnostics treated as supporting information rather than coequal headline estimands. Seed-based audits are reported in Appendix~\ref{app:seed_stability} as variance diagnostics.
 
-Because the baseline opposition frequency is highly skewed, raw predicted probabilities from gradient boosting models suffer from persistent overconfidence. To address this, the evaluation applies out-of-fold Isotonic Regression, which fits a non-decreasing, non-parametric monotonic function mapping predicted probabilities to empirical outcome frequencies, enforcing calibration within the evaluation loop. Alongside standard Expected Calibration Error (ECE), the evaluation also reports the Brier Score and Adaptive Calibration Error (ACE = \metricACE{}).\footnote{At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}, flagging \metricNFlaggedAtFifty{} of \metricBaselineCases{} cases. However, this threshold is difficult to defend for a rare-event triage problem; ranking-based metrics are more appropriate.} The Brier score is \metricBrierScore{} (\metricCBFilingBrier{} across 20 seeds). 
+\textbf{Metric-object reconciliation.} The manuscript reports multiple metric objects for different inferential purposes, and they are not treated as interchangeable: (i) the headline Stage~C object is OOD bootstrap at filing date, (ii) the 20-seed mean characterizes within-sample stochastic variance, (iii) in-distribution cross-validation is an optimistic upper bound, and (iv) calibration-method comparisons in Appendix~\ref{app:alt_models} are method-screening objects, not headline estimates. A manifest reconciliation layer maps manuscript macros to the corresponding object metadata (task, split, model, calibration state, and source artifact) in \texttt{reporting/final\_metrics\_manifest.json}.
+
+Because the baseline opposition frequency is highly skewed, raw predicted probabilities are calibration-sensitive. The evaluation therefore applies out-of-fold Isotonic Regression and reports calibration summaries (ECE, Brier, ACE = \metricACE{}).\footnote{At a classification threshold of $P \geq 0.50$, the model achieves precision of \metricPrecisionAtFifty{} and recall of \metricRecallAtFifty{}. This threshold is included for diagnostics only; ranking-oriented review budgets are the primary decision frame for rare-event triage.} The Brier score is \metricBrierScore{}.
 
 Strictly proper scoring rules like the Brier Score \cite{brier1950verification} and Adaptive Calibration (which evaluates equal-mass rather than equal-width bins) are useful complementary calibration measures; standard ECE can be unstable under severe class imbalance because fixed-width probability bins at the highest confidence intervals routinely remain empty when predicting rare events, causing aggregate ECE weights to understate miscalibration for rare positive cases.
 
@@ -401,7 +440,7 @@ Table~\ref{tab:metrics_summary} reports the pre-specified discrimination and exp
 
 \begin{table}[H]
 \centering
-\caption{Filing-Date Predictive Performance for the Petition Model}
+\caption{Stage C Filing-Date Headline Metrics (Primary Object + Supporting Diagnostics)}
 \label{tab:metrics_summary}
 \renewcommand{\arraystretch}{1.3}
 \resizebox{0.8\textwidth}{!}{%
@@ -421,6 +460,7 @@ Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Unde
 \multicolumn{3}{l}{\footnotesize \quad These two rows use \textbf{different evaluation protocols and model checkpoints}; they} \\
 \multicolumn{3}{l}{\footnotesize \quad should not be directly compared. See Section~\ref{sec:results} reconciliation note.} \\
 \multicolumn{3}{l}{\footnotesize $^{\dagger}$Reported as exploratory diagnostics only; subgroup sample sizes are insufficient for formal fairness testing.} \\
+\multicolumn{3}{l}{\footnotesize All headline values correspond to Stage C filing-date OOD object definitions reconciled in Appendix~\ref{app:metric_manifest}.} \\
 \multicolumn{3}{l}{\footnotesize \textit{Note:} Filing-date horizon, $n = 7{,}074$ cases, CatBoost (Primary Model).} \\
 \end{tabular}
 }
@@ -520,14 +560,14 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
     \label{fig:shap_beeswarm}
 \end{figure}
 
-\subsection{Architecture Attribution Divergence}
+\subsection{Interpretation Sidecar: Attribution Stability and Meta-Attribution}
 \label{sec:attribution_divergence}
 
 \noindent \textit{Methods disclaimer: attribution analyses in this chapter describe model reliance patterns and ranking behavior. They do not identify causal effects.}
 
 As reported in the benchmark comparison (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) achieve higher raw discrimination than traditional tree-based gradients in the benchmark roster. This raises an interpretability question: do these architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
 
-To rigorously evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. Crucially, this matrix isolates the evaluation across the two dominant axes of the dataset: temporal severity (Pre-2022 vs. Post-2022 Housing Crises) and informational horizons (H0 Filing vs. H3 Pre-Council).
+To evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. The matrix is used only as an audit aid: it compares attribution profiles across model classes and temporal horizons, but it is not used to claim causal identification.
 
 \begin{figure}[htbp]
     \centering
@@ -574,7 +614,7 @@ This stability is consistent with the view that filing-date features provide a d
 
 \subsubsection{Meta-Attribution Clustering and Cross-Model Consensus Features}
 
-To definitively test whether learned attributions are dependent on the model architecture across eras, a meta-clustering framework extracts the semantic attribution vectors from simulated models (Deep ERM, natively-penalized Deep V-REx, CatBoost, and Random Forest) trained on out-of-distribution temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these feature importance vectors. 
+To test whether learned attributions are dependent on the model architecture across eras, a meta-clustering framework extracts semantic attribution vectors from models (Deep ERM, natively penalized Deep V-REx, CatBoost, and Random Forest) trained on out-of-distribution temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these feature-importance vectors.
 
 The vertical dendrogram indicates that tree architectures and deep attentive mechanisms consistently form distinct, separable clusters independent of the evaluation year, supporting the structural divergence previously visualized. However, this meta-clustering rejects the notion of a ``democratic'' structural average, where all models are treated as equally valid representations of the underlying data process. Traditional tree-based approaches (such as Gradient Boosting and Random Forests), while powerful for pure predictive triage, possess a greedy inductive bias: they optimize for immediate error reduction by latching onto high-utility spatial proxies (e.g., heavily weighting raw parcel footprints because they map cleanly to wealthy single-family neighborhoods).
 
@@ -631,7 +671,7 @@ The following analysis is included as institutional context that corroborates th
 
 To estimate the threshold-associated shift in processing timelines, the analysis applies a threshold-based reduced-form discontinuity on reconstructed petition share at the 20\% statutory margin under Texas LGC Chapter~211. The running variable is the reconstructed percentage of signed area within the 200-foot buffer.
 
-A triangular-kernel weighted least squares estimator yields an estimated shift of $\metricRDDelay{}$ days in council processing time at the threshold ($p < 0.001$, SE $= \metricRDSE{}$, 95\% CI: $\metricRDCI{}$). This corresponds to approximately \metricRDDelayWeeks{} weeks of additional delay associated with crossing the statutory margin.
+A triangular-kernel weighted least squares estimator indicates a positive discontinuity in council processing time at the measured threshold. Full numeric estimates are reported in registry-linked tables; the body text treats RD as supporting institutional context rather than a coequal headline estimand.
 
 This estimate should be interpreted as a reduced-form effect at the threshold. Because the dataset does not record whether the City Clerk formally certified each petition as legally compliant, the analysis relies on an unverified calculated area share. Rather than assuming the exact threshold acts as a deterministic sharp trigger, the specification simply estimates the shift in average processing time associated with crossing the statutory 20\% margin. Consequently, this is a threshold-based reduced-form model where institutional compliance remains unobserved.
 
@@ -660,7 +700,7 @@ Supplementary overlay estimates---Neighborhood Plan Areas, Historic Districts, T
 
 Exploratory HOME policy tracking is moved to Appendix~\ref{app:home} and treated as descriptive timing evidence only. The short post-policy window and lack of a defensible spatial control cohort make formal effect estimation non-estimable in this sample.
 
-An Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} using 1,186 multi-parcel geometric environments consistently rejected feature-set invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved factors play a substantial role. Full ICP results are reported in Appendix~\ref{app:icp}.
+An Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} using 1,186 multi-parcel geometric environments consistently rejected feature-set invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved factors play a substantial role. Full ICP results are reported in the supplementary appendix.
 
 \section{Qualitative Planning Context}
 \label{sec:interviews}
@@ -703,9 +743,9 @@ This study has several important limitations.
 
 \textbf{Calibration error context.} The opposition model produces a Layer C1 Expected Calibration Error of \metricECEOODBootstrapCalibrated{}. Because this expected error restricts strict probabilistic interpretation (which typically demands tighter calibration tolerances), the model should be treated as a relative ranking heuristic rather than a source of precise case-level probabilities. Regardless, the features generate spatial discrimination (top-decile lift of \metricTopDecileLift{}).
 
-\textbf{Proxy concerns and macro-level aggregation.} This study explicitly excludes individual-level demographic profiling algorithms, such as Bayesian Improved Surname Geocoding (BISG), from the predictive matrix. Because case-level predictions restrict features to macro-level aggregates (e.g., Census Tract demographics), the model intentionally cannot track highly localized 200ft-neighbor behavioral variations. Although other permitted macro variables proxy for these attributes, integrating exact individual-level demographics remains an area for future work but poses substantive empirical and defense concerns regarding spatial scaling.
+\textbf{Proxy concerns and macro-level aggregation.} This study excludes individual-level demographic profiling (for example, BISG) from the predictive matrix. Because case-level predictions use aggregate neighborhood covariates, the model cannot resolve fine-grained behavioral heterogeneity within the 200-foot petition geography. Proxy risk therefore remains an unresolved limitation rather than a solved design feature.
 
-\textbf{Fairness power.} The \metricFNRGap{} FNR gap across \metricNDistricts{} council districts should not be interpreted as evidence of equalized error rates. Positive cases per district range from \metricMinDistrictPositives{} to \metricMaxDistrictPositives{} (median: \metricMedianDistrictPositives{}), so the metric lacks statistical power to detect meaningful disparities.
+\textbf{Fairness power.} Subgroup-error gaps are underpowered and should not be interpreted as evidence of equalized error rates or calibrated parity.
 
 \textbf{Exploratory-only subgroup diagnostics.} Subgroup error diagnostics are exploratory and non-decisive. They are included to document transparency checks, not to support inferential claims, deployment gates, or operational decision rules.
 
@@ -730,11 +770,6 @@ These results point to a ceiling on what prediction from public records alone ca
 
 Future work should extend the observation window to capture HB~24 effects \cite{hb24_2025}, explore richer text features from pre-hearing public comments, and isolate the exact mechanisms of the 2021--2022 temporary covariate shock.
 
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{section}{References}
-\bibliographystyle{plainurl}
-\bibliography{references}
 \appendix
 
 \newpage
@@ -1114,7 +1149,7 @@ Because the underlying datasets systematically censor stalled and abandoned rezo
 \section{Institutional Geographic Overlay Analyses}
 \label{app:overlays}
 
-\noindent Additional analyses evaluate localized institutional overlays---Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 2015 transition to a 10-1 single-member council district system.
+\noindent Additional analyses evaluate localized institutional overlays---Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 10-1 council transition system.
 
 The ITS check for the 10-1 transition reports coefficient \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), and the NPA check reports coefficient \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlay designs are not estimable in this panel because outcome and/or treatment variation collapses once the legally relevant window restrictions are imposed. These outputs are retained only for transparency and are not interpreted substantively.
 
@@ -1340,6 +1375,12 @@ H0 (Filing) & Logistic (L2)  & $0.111 \pm 0.000$ & $0.782 \pm 0.000$ & $0.621 \p
 \end{table}
 
 \noindent The results in Table~\ref{tab:disqualification_matrix} reveal a nuance in the feature-restriction analysis. High taxonomic stability (as seen in Random Forest, $\rho=0.92$) does not guarantee that the features driving that stability are shared across model families. When juxtaposed against the feature-restriction survival ratios in Appendix~\ref{app:disqualification}, the audit indicates that Random Forest's stable top features are not those the broader model roster agrees on: it consistently prioritizes the same non-consensus spatial proxies (such as precise parcel geometries) across all administrative eras. Conversely, architectures like LightGBM and Logistic Regression exhibit lower aggregate stability ($\rho \approx 0.83$) but show higher survival under the cross-model consensus restriction, suggesting their predictions rely more heavily on features that generalize across architectures. For the primary analyses, CatBoost is the selected model on the basis of the pre-specified discrimination and calibration admissibility criteria.
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{plainurl}
+\bibliography{references}
 
 \end{document}
 

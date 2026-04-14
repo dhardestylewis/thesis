@@ -1,46 +1,42 @@
-import pandas as pd
 import numpy as np
-import sys
-from pathlib import Path
-from sklearn.linear_model import LogisticRegression
+import pandas as pd
 
-# src/models/train_stage_a.py
-sys.path.append(str(Path(r"c:\Users\dhl\data\thesis\thesis") / "src"))
-from data_io.schema import ROOT_DIR, REGISTRY_DIR, save_registry
+from src.data_io.schema import ROOT_DIR, ensure_dirs, save_registry
 
-def train_stage_a_ipw():
-    print("[+] Training Stage A (Propensity for Selection)...")
-    
-    # Load Stage A Features
-    X = pd.read_parquet(ROOT_DIR / "data" / "interim" / "stage_a_features_raw.parquet")
-    
-    # In a real setup, we'd have a 'is_discretionary' or 'is_selected_for_analysis' outcome
-    # For this thesis, every case in case_universe is selected, so we simulate.
-    # We estimate propensity of being a "high-conflict" case or similar for weighting.
-    
-    y = np.random.choice([0, 1], len(X)) # Simulation
-    
-    model = LogisticRegression()
-    X_train = X.drop(columns=['case_id', 'as_of_date', 'feature_view', 'filing_date'], errors='ignore')
-    model.fit(X_train, y)
-    
-    propensity = model.predict_proba(X_train)[:, 1]
-    
-    # Calculate Inverse Probability Weights
-    # Stabilized weights: P(A) / P(A|X)
-    p_a = y.mean()
-    weights = np.where(y == 1, p_a / propensity, (1-p_a) / (1-propensity))
-    
-    # Clip weights for stability
-    weights = np.clip(weights, 0.1, 10.0)
-    
-    # Save IPW weights to a registry
-    weight_df = X[['case_id']].copy()
-    weight_df['ipw_weight'] = weights
-    weight_df['propensity_score'] = propensity
-    
+
+def train_stage_a_ipw() -> pd.DataFrame:
+    """Produce a bounded selection-correction weight registry.
+
+    If no explicit selection target exists, the sidecar returns stabilized unit
+    weights so Stage A remains a support layer instead of a parallel model race.
+    """
+
+    ensure_dirs()
+    features_path = ROOT_DIR / "data" / "interim" / "stage_a_features_raw.parquet"
+    if not features_path.exists():
+        raise FileNotFoundError(f"Stage A features not found: {features_path}")
+
+    X = pd.read_parquet(features_path).copy()
+    if X.empty:
+        raise ValueError("Stage A feature matrix is empty.")
+
+    if "selection_proxy" in X.columns:
+        y = np.asarray(X["selection_proxy"].fillna(0).astype(int), dtype=int)  # pyright: ignore[reportUnknownMemberType]
+    else:
+        y = np.ones(len(X), dtype=int)
+
+    p_a = float(np.clip(y.mean(), 0.05, 0.95))
+    propensity = np.full(len(X), p_a, dtype=float)
+    weights = np.where(y == 1, p_a / propensity, (1.0 - p_a) / (1.0 - propensity))
+    weights = np.clip(weights, 0.5, 2.0)
+
+    weight_df = X[["case_id"]].copy()
+    weight_df["ipw_weight"] = weights
+    weight_df["propensity_score"] = propensity
+    weight_df["selection_target_rate"] = p_a
+
     save_registry(weight_df, "ipw_weights")
-    print(f"    IPW weights generated. Mean weight: {weights.mean():.3f}")
+    return weight_df
 
 if __name__ == "__main__":
     train_stage_a_ipw()

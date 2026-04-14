@@ -1,110 +1,130 @@
-import pandas as pd
-import numpy as np
+"""Evaluate registered Stage C predictions into a machine-readable metrics object."""
+
+from __future__ import annotations
+
 import json
 from pathlib import Path
-import sys
-from sklearn.metrics import average_precision_score, brier_score_loss, precision_score, recall_score
-from sklearn.calibration import calibration_curve
+from typing import Any, Callable, cast
 
-# src/models/evaluate_predictions.py
-sys.path.append(str(Path(__file__).resolve().parents[2]))
-from src.data_io.schema import ROOT_DIR, REGISTRY_DIR
+import numpy as np
+import numpy.typing as npt
+import pandas as pd
+import sklearn.metrics as skm
 
-_N_BOOTSTRAP = 2000
-_BOOTSTRAP_SEED = 12345
+from src.data_io.schema import REGISTRY_DIR, ensure_dirs
 
+PRIMARY_SPLIT_ID = "TEMP_OOD_2023_MAIN"
+PRIMARY_MODEL = "CatBoost"
+PRIMARY_TASK_ID = "STAGE_C_FILING_MAIN"
 
-def _bootstrap_prauc_ci(y_true, y_score, n_boot=_N_BOOTSTRAP, seed=_BOOTSTRAP_SEED, alpha=0.05):
-    """Compute bootstrap 95% CI for PR-AUC by resampling the evaluation set."""
-    rng = np.random.default_rng(seed)
-    n = len(y_true)
-    scores = []
-    for _ in range(n_boot):
-        idx = rng.choice(n, n, replace=True)
-        yt, ys = y_true[idx], y_score[idx]
-        if yt.sum() >= 2:
-            scores.append(average_precision_score(yt, ys))
-    scores = np.asarray(scores)
-    return float(np.percentile(scores, 100 * alpha / 2)), float(np.percentile(scores, 100 * (1 - alpha / 2)))
+average_precision = cast(Callable[..., float], getattr(skm, "average_precision_score"))
+brier_score = cast(Callable[..., float], getattr(skm, "brier_score_loss"))
+precision_metric = cast(Callable[..., float], getattr(skm, "precision_score"))
+recall_metric = cast(Callable[..., float], getattr(skm, "recall_score"))
 
 
-def _ece(y_true, y_prob, n_bins=10):
-    """10-bin uniform ECE."""
-    prob_true, prob_pred = calibration_curve(y_true, y_prob, n_bins=n_bins)
-    return float(np.mean(np.abs(prob_true - prob_pred)))
+def _ece(y_true: npt.NDArray[np.int_], y_prob: npt.NDArray[np.float64], n_bins: int = 10) -> float:
+    if len(y_true) == 0:
+        return float("nan")
+    bins = np.linspace(0.0, 1.0, n_bins + 1)
+    bin_ids = np.digitize(y_prob, bins, right=True) - 1
+    total = len(y_true)
+    out = 0.0
+    for i in range(n_bins):
+        idx = bin_ids == i
+        if not np.any(idx):
+            continue
+        acc = float(np.mean(y_true[idx]))
+        conf = float(np.mean(y_prob[idx]))
+        out += (np.sum(idx) / total) * abs(acc - conf)
+    return float(out)
 
 
-def evaluate_predictions():
-    print("[+] Executing Formal Evaluation Suite...")
+def _ace(y_true: npt.NDArray[np.int_], y_prob: npt.NDArray[np.float64], n_bins: int = 10) -> float:
+    if len(y_true) == 0:
+        return float("nan")
+    quantiles = np.unique(np.quantile(y_prob, np.linspace(0.0, 1.0, n_bins + 1)))
+    if len(quantiles) < 3:
+        return _ece(y_true, y_prob, n_bins=n_bins)
+    bin_ids = np.digitize(y_prob, quantiles, right=True) - 1
+    diffs: list[float] = []
+    for i in range(len(quantiles) - 1):
+        idx = bin_ids == i
+        if not np.any(idx):
+            continue
+        diffs.append(abs(float(np.mean(y_true[idx])) - float(np.mean(y_prob[idx]))))
+    return float(np.mean(diffs)) if diffs else float("nan")
 
-    preds_path = REGISTRY_DIR / "prediction_registry.parquet"
-    if not preds_path.exists():
-        print("    [!] Error: No predictions found.")
-        return
 
-    df = pd.read_parquet(preds_path)
-
-    # Primary task: CatBoost on TEMP_OOD_2023_MAIN
-    subset = df[(df['model_family'] == 'CatBoost') & (df['split_id'] == 'TEMP_OOD_2023_MAIN')]
-    if subset.empty:
-        print("    [!] No results found for CatBoost/OOD_2023.")
-        return
-
-    y_true = subset['y_true'].values
-    y_score_raw = subset['y_score_raw'].values
-    # Use properly calibrated scores when available; fall back to raw
-    y_score_cal = (
-        subset['y_score_calibrated'].values
-        if 'y_score_calibrated' in subset.columns
-        and subset['calibration_method'].iloc[0] == 'isotonic_oof'
-        else y_score_raw
-    )
-
-    # ── Path 1: Ranking (OOD point estimate + bootstrap CI) ─────────────────
-    prauc = float(average_precision_score(y_true, y_score_raw))
-    ci_low, ci_high = _bootstrap_prauc_ci(y_true, y_score_raw)
-
-    # ── Path 2: Calibration (raw and post-calibration ECE) ──────────────────
-    brier = float(brier_score_loss(y_true, y_score_cal))
-    ece_raw = _ece(y_true, y_score_raw)
-    ece_calibrated = _ece(y_true, y_score_cal)
-
-    # ── Path 3: Thresholded (at 0.30 and 0.50) ──────────────────────────────
-    prec30 = float(precision_score(y_true, y_score_raw >= 0.30, zero_division=0))
-    rec30  = float(recall_score(y_true, y_score_raw >= 0.30, zero_division=0))
-    prec50 = float(precision_score(y_true, y_score_raw >= 0.50, zero_division=0))
-    rec50  = float(recall_score(y_true, y_score_raw >= 0.50, zero_division=0))
-
-    results = {
-        'ranking': {
-            'pr_auc': prauc,
-            'pr_auc_ci_low': ci_low,
-            'pr_auc_ci_high': ci_high,
-            'n_test': int(len(y_true)),
-            'n_test_positive': int(y_true.sum()),
-        },
-        'calibration': {
-            'brier': brier,
-            'ece_raw': ece_raw,
-            'ece': ece_calibrated,         # post-calibration ECE (C1 layer)
-            'ece_pre_calibration': ece_raw,
-        },
-        'thresholded': {
-            'precision_30': prec30,
-            'recall_30': rec30,
-            'precision_50': prec50,
-            'recall_50': rec50,
-        },
+def _threshold_metrics(y_true: npt.NDArray[np.int_], y_prob: npt.NDArray[np.float64], threshold: float) -> dict[str, float]:
+    preds = (y_prob >= threshold).astype(int)
+    return {
+        f"precision_at_{threshold:.2f}".replace(".", "_"): float(precision_metric(y_true, preds, zero_division=0)),
+        f"recall_at_{threshold:.2f}".replace(".", "_"): float(recall_metric(y_true, preds, zero_division=0)),
     }
 
-    out_path = REGISTRY_DIR / "evaluation_results.json"
-    with open(out_path, 'w') as f:
-        json.dump(results, f, indent=4)
 
-    print(f"\n>>> EVALUATION PATHS (CatBoost OOD, n_test={len(y_true)}, n_pos={int(y_true.sum())}) <<<")
-    print(f"Path 1 (Ranking):     PR-AUC = {prauc:.3f}  95% CI [{ci_low:.3f}, {ci_high:.3f}]")
-    print(f"Path 2 (Calibration): Brier = {brier:.3f}, ECE_raw = {ece_raw:.3f}, ECE_calibrated = {ece_calibrated:.3f}")
-    print(f"Path 3 (Threshold):   P@0.30 = {prec30:.2f}, R@0.30 = {rec30:.2f}")
+def evaluate_predictions(
+    split_id: str = PRIMARY_SPLIT_ID,
+    model_family: str = PRIMARY_MODEL,
+    use_calibrated: bool = True,
+    output_path: str | None = None,
+) -> dict[str, object]:
+    """Evaluate the canonical Stage C prediction registry rows."""
+
+    ensure_dirs()
+    preds_path = REGISTRY_DIR / "prediction_registry.parquet"
+    if not preds_path.exists():
+        raise FileNotFoundError(f"Prediction registry not found: {preds_path}")
+
+    df = pd.read_parquet(preds_path)
+    subset = df[(df["split_id"] == split_id) & (df["model_family"] == model_family)].copy()
+    if subset.empty:
+        raise ValueError(f"No prediction rows found for split_id={split_id!r}, model_family={model_family!r}.")
+
+    y_true = cast(npt.NDArray[np.int_], np.asarray(subset["y_true"], dtype=int))
+    score_col = "y_score_calibrated" if use_calibrated and "y_score_calibrated" in subset.columns else "y_score_raw"
+    y_score = cast(npt.NDArray[np.float64], np.asarray(subset[score_col], dtype=float))
+
+    top_decile_mask = subset[score_col] >= subset[score_col].quantile(0.9)
+    top_decile = subset.loc[top_decile_mask]
+    top_decile_precision = float(top_decile["y_true"].mean()) if not top_decile.empty else None
+    baseline_rate = float(y_true.mean()) if len(y_true) else None
+    top_decile_lift = None
+    if top_decile_precision is not None and baseline_rate not in (None, 0.0):
+        top_decile_lift = float(top_decile_precision / baseline_rate)
+
+    ranking: dict[str, Any] = {
+        "pr_auc": float(average_precision(y_true, y_score)),
+        "top_decile_precision": top_decile_precision,
+        "top_decile_lift": top_decile_lift,
+    }
+    calibration: dict[str, Any] = {
+        "brier": float(brier_score(y_true, y_score)),
+        "ece": _ece(y_true, y_score),
+        "ace": _ace(y_true, y_score),
+        "calibration_slope": float(np.polyfit(y_score, y_true, deg=1)[0]) if np.unique(y_score).size > 1 else float("nan"),
+    }
+    thresholded: dict[str, float] = {}
+    thresholded.update(_threshold_metrics(y_true, y_score, 0.30))
+    thresholded.update(_threshold_metrics(y_true, y_score, 0.50))
+
+    metrics: dict[str, object] = {
+        "task_id": PRIMARY_TASK_ID,
+        "split_id": split_id,
+        "model_family": model_family,
+        "score_column": score_col,
+        "ranking": ranking,
+        "calibration": calibration,
+        "thresholded": thresholded,
+        "sample_size": int(len(subset)),
+        "positive_rate": float(y_true.mean()),
+        "generated_at": pd.Timestamp.utcnow().isoformat(),
+    }
+
+    out_path = Path(output_path) if output_path else REGISTRY_DIR / "evaluation_results.json"
+    out_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    return metrics
 
 
 if __name__ == "__main__":

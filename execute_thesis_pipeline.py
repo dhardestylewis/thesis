@@ -4,7 +4,7 @@ import time
 from pathlib import Path
 
 # execute_thesis_pipeline.py
-# The New Top-Level Orchestrator for the Refactored Thesis
+# Top-level orchestrator for the canonical Stage C pipeline.
 
 ROOT = Path(r"c:\Users\dhl\data\thesis\thesis")
 SCRIPTS_DIR = ROOT / "scripts"
@@ -12,17 +12,17 @@ SCRIPTS_DIR = ROOT / "scripts"
 # Define the sequence
 PIPELINE_STEPS = [
     ("00_build_case_universe.py", "Building analytic universe spine..."),
-    ("01_build_labels.py", "Generating and auditing threshold labels..."),
+    ("01_build_labels.py", "Generating the label-validity registry..."),
     ("02_build_features.py", "Engineering filing-date as-of features..."),
     ("03_build_splits.py", "Freezing evaluation split registry..."),
-    ("04_train_stage_a.py", "Training Stage A (IPW sidecar)..."),
-    ("05_train_stage_c.py", "Executing Canonical Stage C training..."),
+    ("04_train_stage_a.py", "Running Stage A selection-correction sidecar..."),
+    ("05_train_stage_c.py", "Training the canonical Stage C model..."),
     ("06_calibrate_stage_c.py", "Calibrating Stage C predictions..."),
-    ("07_evaluate_stage_c.py", "Running Stage C diagnostic suite..."),
-    ("08_run_meta_attribution.py", "Running meta-attribution consensus audit..."),
-    ("08b_run_ablation_suite.py", "Running cluster ablation sensitivity tests..."),
-    ("09_run_audits.py", "Running structural and fairness audits..."),
-    ("10_export_manuscript_artifacts.py", "Generating manifest and LaTeX macros..."),
+    ("07_evaluate_stage_c.py", "Evaluating Stage C ranking and calibration..."),
+    ("08_run_meta_attribution.py", "Running meta-attribution interpretation sidecar..."),
+    ("08b_run_ablation_suite.py", "Running semantic cluster ablations..."),
+    ("09_run_audits.py", "Running label-fidelity and data-quality audits..."),
+    ("10_export_manuscript_artifacts.py", "Generating metrics manifest and LaTeX macros..."),
     ("11_final_build_gate.py", "Running final submission build gate...")
 ]
 

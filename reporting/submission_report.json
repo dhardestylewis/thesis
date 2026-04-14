@@ -1,0 +1,18 @@
+{
+  "headline_metrics": [
+    "metricBootstrapFiling",
+    "metricECE",
+    "metricHeadlineECE",
+    "metricHeadlinePRAUC",
+    "metricTopDecileLift"
+  ],
+  "task_ids": [
+    "STAGE_C_FILING_MAIN"
+  ],
+  "split_ids": [
+    "TEMP_OOD_2023_MAIN"
+  ],
+  "model_families": [
+    "CatBoost"
+  ]
+}
