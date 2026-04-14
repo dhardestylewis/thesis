@@ -100,7 +100,7 @@ The core analytics rely on the filing-date analytic dataset, which merges spatia
     \item \textbf{Spatial Geometries:} Parcel IDs, geometries, acreage, frontage, and 200ft buffers used to aggregate nearby properties (council districts and overlapping geometries).
     \item \textbf{Parcel Appraisals:} Annually indexed TCAD appraisal variables for parcels used to compute variables within the 200-foot buffer: land value, structure age, homestead exemption rates, and owner-occupancy shares.
     \item \textbf{Neighborhood Demographics:} Tract and block group ACS variables constrained to their historical 5-year release dates: rent burdens, tenure splits, demographic composition, and displacement vulnerability indicators.
-    \item \textbf{Institutional Calendar:} The 2022 council regime change; HB 24 effective date (September 1, 2025); 2024 council elections maintaining pro-housing majority; continued implementation of Austin's 2023 Housing Affordability Act provisions through 2024-2025.
+    \item \textbf{Institutional Calendar:} The 2022 council representation transition; HB 24 effective date (September 1, 2025); 2024 council elections maintaining pro-housing majority; continued implementation of Austin's 2023 Housing Affordability Act provisions through 2024-2025.
 \end{enumerate}
 
 Because municipal databases frequently overwrite preliminary timestamps with final disposition dates, milestone dates are reconstructed through two pathways. First, explicit dates are parsed from scraped historical council agendas and PDF case files. Second, where explicit text is unavailable, dates are imputed by back-calculating from end-dates using minimum procedural constraints mandated by Texas Local Government Code and Austin zoning ordinances (for example, statutory mail-notice minima). This parsed-versus-imputed distinction is carried into interpretation because timing uncertainty is part of the measurement-error structure.
@@ -110,15 +110,13 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Figures/Archive_Pipelines/fig1_spatial_distribution.png}
-    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$). \textit{Generated: 2026-04-13}}
+    \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$).}
     \label{fig:spatial_dist}
 \end{figure}
 
 \begin{table}[H]
 \centering
 \caption[Annual Distribution of Discretionary Zoning Cases (2007--2024)]{Annual Distribution of Discretionary Zoning Cases (2007---2024)}
-\captionsetup{type=table}
-\caption*{\footnotesize \textit{Note:} Updated: 2026-04-13}
 \label{tab:annual_counts}
 \begin{tabular}{lc|lc|lc}
 \toprule
@@ -139,7 +137,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\textwidth]{Exploratory_EDA/waller_buffer_map.png}
-    \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer. \textit{Generated: 2026-04-13}}
+    \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer.}
     \label{fig:buffer_map}
 \end{figure}
 
@@ -232,8 +230,6 @@ To separate observed labels from legal adjudication, this manuscript treats labe
 \begin{table}[H]
 \centering
 \caption[Label-Validity Object for Stage C Primary Outcome]{Label-Validity Object for Stage C Primary Outcome}
-\captionsetup{type=table}
-\caption*{\footnotesize \textit{Note:} Updated: 2026-04-13}
 \label{tab:label_validity_object}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{@{}p{0.20\textwidth}p{0.22\textwidth}p{0.10\textwidth}p{0.40\textwidth}@{}}
@@ -346,9 +342,9 @@ The November 2022 council election is the primary period break in the analysis. 
 
 \textbf{Temporal Predictive Drift (Rolling Origin).} To quantify the model's predictive half-life, Table~\ref{tab:temporal_drift} tracks PR-AUC across expanding annual windows for three architectures: CatBoost, TabNet with structural sparse pruning (\texttt{LS+Pruning}), and TabNet with label smoothing only (\texttt{LS=0.1}). For each anchor year $t$, each model is trained on data before $t$ and evaluated forward across all subsequent evaluation years. Bold denotes the top-performing model for each (anchor, forecast year) pairing; horizontal rules separate the three model blocks to facilitate direct within-anchor comparison.
 
-CatBoost claims \textbf{19 of 28} comparable cells (68\%), and its margin of dominance is structurally consistent: across every anchor, CatBoost maintains discrimination in the 2022 and 2023 evaluation windows that both TabNet variants fail to sustain. TabNet's 9-cell minority is analytically interpretable rather than a sign of competitive parity. Two specific regimes account for virtually all of TabNet's wins. First, the \textit{pandemic trough}: TabNet(LS=0.1) outperforms CatBoost in the 2021--2022 evaluation windows from the Pre-2019 anchor (0.603 vs.\ 0.496 in 2021; 0.570 vs.\ 0.329 in 2022), suggesting that label smoothing confers short-term OOD robustness during acute covariate shift---a period when CatBoost's learned decision boundaries were most disrupted. Second, the \textit{recency-anchored 2024 recovery}: TabNet(LS+Pruning) leads in 2024 from the Pre-2021 and Pre-2022 anchors (0.836 and 0.839), suggesting that when the training window is restricted to the post-transition regime, TabNet's attention mechanism adapts its feature weighting faster than CatBoost. Critically, from older, longer-horizon anchors---where the V-shaped recovery is the primary descriptive pattern---CatBoost dominates the 2024 window by a wide margin (0.885 vs.\ 0.197 from the Pre-2019 anchor).
+CatBoost claims \textbf{19 of 28} comparable cells (68\%), and its margin of dominance is structurally consistent: across every anchor, CatBoost maintains discrimination in the 2022 and 2023 evaluation windows that both TabNet variants fail to sustain. TabNet's 9-cell minority is analytically interpretable rather than a sign of competitive parity. Two specific regimes account for virtually all of TabNet's wins. First, the \textit{pandemic trough}: TabNet(LS=0.1) outperforms CatBoost in the 2021--2022 evaluation windows from the Pre-2019 anchor (0.603 vs.\ 0.496 in 2021; 0.570 vs.\ 0.329 in 2022), suggesting that label smoothing confers short-term OOD robustness during acute covariate shift---a period when CatBoost's learned decision boundaries were most disrupted. Second, the \textit{recency-anchored 2024 recovery}: TabNet(LS+Pruning) leads in 2024 from the Pre-2021 and Pre-2022 anchors (0.836 and 0.839), suggesting that when the training window is restricted to the post-2022 period, TabNet's attention mechanism adapts its feature weighting faster than CatBoost. Critically, from older, longer-horizon anchors---where the V-shaped recovery is the primary descriptive pattern---CatBoost dominates the 2024 window by a wide margin (0.885 vs.\ 0.197 from the Pre-2019 anchor).
 
-This V-shaped recovery is the central temporal finding: CatBoost's Pre-2019 anchor decays from 0.659 at immediate horizon (2019, T+0) to 0.329 at the 2022 window (T+3)---a sharp predictive cliff---before rebounding to 0.885 in 2024 (T+5). This pattern is \textit{consistent with} a temporary out-of-distribution covariate shock during 2021--2022 rather than a permanent regime severance caused by the 2022 council flip, but this remains a descriptive interpretation rather than a causal identification claim. The evidence is also \textit{consistent with} temporary miscalibration under distributional shift, rather than definitive evidence of unchanged structural petition mechanisms. \textbf{The longitudinal attribution audit in Appendix~\ref{app:unclustered_dynamic} provides additional descriptive context.}
+This V-shaped recovery is the central temporal finding: CatBoost's Pre-2019 anchor decays from 0.659 at immediate horizon (2019, T+0) to 0.329 at the 2022 window (T+3)---a sharp predictive cliff---before rebounding to 0.885 in 2024 (T+5). This pattern is \textit{consistent with} a temporary out-of-distribution covariate shock during 2021--2022 rather than a permanent structural break caused by the 2022 council composition change, but this remains a descriptive interpretation rather than a causal identification claim. The evidence is also \textit{consistent with} temporary miscalibration under distributional shift, rather than definitive evidence of unchanged structural petition mechanisms. \textbf{The longitudinal attribution audit in Appendix~\ref{app:unclustered_dynamic} provides additional descriptive context.}
 
 \vspace{1em}
 \input{Tables/temporal_drift_analysis.tex}
@@ -400,7 +396,7 @@ Table~\ref{tab:metrics_summary} reports the pre-specified discrimination and exp
 
 \begin{table}[H]
 \centering
-\caption{Stage C Filing-Date Headline Metrics (Primary Object + Supporting Diagnostics)}
+\caption[Stage C Filing-Date Headline Metrics]{Stage C Filing-Date Headline Metrics (Primary Object + Supporting Diagnostics)}
 \label{tab:metrics_summary}
 \renewcommand{\arraystretch}{1.3}
 \resizebox{0.8\textwidth}{!}{%
@@ -410,20 +406,18 @@ Table~\ref{tab:metrics_summary} reports the pre-specified discrimination and exp
 Discrimination       & PR-AUC (Out-Dist Bootstrap)$^{\star}$ & \textbf{\metricBootstrapFiling{}} \\
 Discrimination       & PR-AUC (Benchmark Roster Seed Mean, 20 Seeds)$^{\ddagger}$ & \textbf{$0.528 \pm 0.042$} \\
 Discrimination       & Top-Decile Lift   & \textbf{\metricTopDecileLift{}} \\ \midrule
-
 Equity (exploratory)$^{\dagger}$     & Subgroup error diagnostics & \textit{Underpowered} \\ \bottomrule
-\multicolumn{3}{l}{\footnotesize $^{\star}$Primary evaluation: OOD temporal holdout (train $\leq$2022, test 2023--2024), single production model} \\
-\multicolumn{3}{l}{\footnotesize \quad (seed=42). 95\% CI: \metricBootstrapFilingCI{} via $N{=}2{,}000$ bootstrap resamples of the test set} \\
-\multicolumn{3}{l}{\footnotesize \quad ($n_{\text{test}}{=}\metricNTestTotal{}, n_{\text{pos}}{=}\metricNTestPositive{}$). Wide CI reflects sparse test-set positives.} \\
-\multicolumn{3}{l}{\footnotesize $^{\ddagger}$Mean across 20 seeds from the standardized benchmark roster evaluation} \\
-\multicolumn{3}{l}{\footnotesize \quad (in-distribution 3-fold CV, different model checkpoint; see Appendix~\ref{app:seed_stability}).} \\
-\multicolumn{3}{l}{\footnotesize \quad These two rows use \textbf{different evaluation protocols and model checkpoints}; they} \\
-\multicolumn{3}{l}{\footnotesize \quad should not be directly compared. See Section~\ref{sec:results} reconciliation note.} \\
-\multicolumn{3}{l}{\footnotesize $^{\dagger}$Reported as exploratory diagnostics only; subgroup sample sizes are insufficient for formal fairness testing.} \\
-\multicolumn{3}{l}{\footnotesize All headline values correspond to Stage C filing-date OOD object definitions reconciled in Appendix~\ref{app:metric_manifest}.} \\
-\multicolumn{3}{l}{\footnotesize \textit{Note:} Filing horizon (primary Stage~C object), analytic universe $N=\metricBaselineCases{}$, CatBoost (primary model).} \\
 \end{tabular}
 }
+\par\vspace{4pt}
+\begin{minipage}{0.8\textwidth}
+\footnotesize
+$^{\star}$Primary evaluation: OOD temporal holdout (train $\leq$2022, test 2023--2024), single production model (seed=42). 95\% CI: \metricBootstrapFilingCI{} via $N{=}2{,}000$ bootstrap resamples of the test set ($n_{\text{test}}{=}\metricNTestTotal{}, n_{\text{pos}}{=}\metricNTestPositive{}$). Wide CI reflects sparse test-set positives.
+
+$^{\ddagger}$Mean across 20 seeds from the standardized benchmark roster evaluation (in-distribution 3-fold CV, different model checkpoint; see Appendix~\ref{app:seed_stability}). These two rows use \textbf{different evaluation protocols and model checkpoints} and should not be directly compared. See Section~\ref{sec:results} reconciliation note.
+
+$^{\dagger}$Reported as exploratory diagnostics only; subgroup sample sizes are insufficient for formal fairness testing. All headline values correspond to Stage~C filing-date OOD object definitions reconciled in Appendix~\ref{app:metric_manifest}. \textit{Note:} Filing horizon (primary Stage~C object), analytic universe $N=\metricBaselineCases{}$, CatBoost (primary model).
+\end{minipage}
 \end{table}
 
 To prevent cross-design metric drift, calibration claims are bound to explicit reporting layers: \textbf{C1} (primary OOD bootstrap calibrated ECE), \textbf{C2} (in-distribution CV calibrated ECE), and \textbf{C3} (alternative calibration sensitivity ECE). Main-text calibration claims use only Layer C1; Layers C2--C3 are reported in Appendix~\ref{app:calibration_layers}.
@@ -486,8 +480,8 @@ These results provide one transparency diagnostic for feature reliance. The in-d
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_temporal_drift_H0.pdf}
-        \caption[Performance Across Temporal Holdouts]{Temporal performance decay (Rolling Origin: 2018--2024).}
+        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_temporal_drift_H3.pdf}
+        \caption[Performance Across Temporal Holdouts (Hearing Horizon)]{Temporal performance decay at the hearing-date horizon (Rolling Origin: 2018--2024).}
         \label{fig:temporal_rot}
     \end{subfigure}
     \hfill
@@ -514,14 +508,74 @@ Standard permutation importance for gradient boosting assesses the drop in predi
 
 Case-level SHAP attribution confirms that larger parcel sizes and higher neighborhood homeownership rates are associated with higher predicted petition probability, consistent with the clustered importance results (see Appendix~\ref{app:exploratory_attribution} for the full beeswarm decomposition).
 
-\subsection{Attribution Stability and Transparency Diagnostics}
+\subsection{Attribution Stability and Meta-Attribution}
 \label{sec:attribution_divergence}
 
 \noindent \textit{Methods disclaimer: attribution analyses describe model reliance patterns and ranking behavior. They do not identify causal effects.}
 
-Attribution audits across model architectures and temporal windows confirm that the feature hierarchy is broadly stable: neighborhood demographics (median household income) and project scale are the most consistently attributed predictors, with a full-span Spearman rank correlation of $\rho = 0.92$ ($p < 0.001$) between 2018 and 2024 evaluations. Tree-based and deep attentive architectures rely on structurally different feature profiles (parcel scale versus neighborhood composition), but cross-model consensus features---Neighborhood Demographics, Housing Tenure, and Neighborhood Income---are robust across architectures. These patterns are consistent with filing-date features providing a defensible basis for ranking petition risk, but they should not be interpreted as causal identification.
+As reported in the benchmark comparison (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) achieve higher raw discrimination than traditional tree-based gradients in the benchmark roster. This raises an interpretability question: do these architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
 
-Expanding-window attribution stability exhibits, multi-horizon attribution diagnostics, meta-attribution clustering, and longitudinal unclustered attribution exhibits are reported in Appendix~\ref{app:exploratory_attribution} and Appendix~\ref{app:unclustered_dynamic}. Attribution audits should accompany any operational use of the model to detect covariate drift over time.
+To evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. The matrix is used only as an audit aid: it compares attribution profiles across model classes and temporal horizons, but it is not used to claim causal identification.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Chapter4/fig_attribution_divergence_matrix.pdf}
+    \caption[Attribution Divergence Matrix: Gradient Boosting vs.\ Deep V-REx Penalization]{Comparison of semantic feature attribution between traditional tree architectures (Bagging/Boosting) and a natively-penalized Deep V-REx (Variance Risk Extrapolation) architecture. Identical spatial inputs map to distinctly different structural priors, a phenomenon that remains rigidly stable across all development horizons and policy eras.}
+    \label{fig:attribution_divergence_matrix}
+\end{figure}
+
+The divergence is stark, yet remarkably stable. Across every quadrant---regardless of the timeline or the horizon---the tree-based CatBoost and Random Forest models overwhelmingly index on contiguous parcel facts (Property Valuation, Parcel Scale, and Structure Age). Conversely, the Deep Attentive framework systematically ignores parcel constraints and directs its learning toward complex neighborhood distributions---specifically Demographic Composition, Housing Tenure, and combinations of Rent characteristics. The deep and tree-based models appear to rely on different attribution profiles, though these differences should not be interpreted as identifying distinct causal mechanisms.
+
+To check whether this pattern holds year-by-year and is not merely an artifact of merging the Pre/Post-2022 anchors, Appendix~\ref{app:longitudinal_divergence} provides a full longitudinal decomposition across every individual year from 2018 to 2024, showing that the cross-model attribution differences are consistent across years.
+
+\subsubsection{Attribution Stability Across Temporal Windows}
+
+To ensure that feature importance is robust to the significant institutional and market shifts between 2007 and 2024, an expanding-window attribution stability test evaluates how SHAP values evolve. This test recursively retrains the primary CatBoost model on expanding historical windows (anchored at 2018 through 2024) and extracts case-level TreeSHAP attributions on the immediately following out-of-distribution year.
+
+Figure~\ref{fig:attribution_stability} tracks the relative share of total SHAP attribution for the top predictor clusters over these windows at the filing date horizon ($H_0$). To avoid artifacts from dynamic correlation shifts, a frozen global clustering structure is used as a conceptual baseline across all anchors. The stability analysis yields three key findings. First, neighborhood demographics---specifically median household income---consistently emerged as the most structurally robust predictor (accounting for 18\% to 24\% of overall attribution), replacing parcel scale as the most determinative risk driver following data integration upgrades. Second, once clustering noise is neutralized, the rank ordering of feature clusters exhibits extremely high long-term persistence, with a full-span Spearman rank correlation of $\rho = 0.92$ ($p < 0.001$) between the 2018 and 2024 evaluations. Third, adjacent-anchor rank correlation remains consistently strong ($\text{mean } \rho = 0.76$), indicating that the model's feature hierarchy remained comparatively stable across the 2022 electoral period, though this cannot be distinguished from gradual covariate drift.
+
+This stability is consistent with the view that filing-date features provide a defensible basis for ranking petition risk. A multi-horizon diagnostic further shows that this pattern holds when forecasting the identical target year (2024) across varying training horizons. The feature hierarchy of an early model trained at a multi-year forecasting horizon (pre-2018 data) is broadly similar to the hierarchy of a near-term model at a one-year horizon (pre-2024 data). Both tend to emphasize physical project size indicators (like the Median Sqft Cluster) and neighborhood composition as leading risk factors.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_attribution_stability_H0.pdf}
+        \caption{Clustered Attribution Share}
+    \end{subfigure}
+    \par\vspace{0.3cm}
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_attribution_rank_stability_H0.pdf}
+        \caption{Adjacent-Window Rank Correlation}
+    \end{subfigure}
+    \caption[Expanding-Window Attribution Stability Test]{Expanding-window attribution stability for the filing-date ($H_0$) baseline. (a) Heatmap displaying the percentage share of total absolute SHAP attribution for top feature clusters when tested out-of-distribution on the holdout anchor year. (b) Spearman rank-order correlation ($\rho$) of top features across adjacent temporal windows.}
+    \label{fig:attribution_stability}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_multi_horizon_attribution.pdf}
+    \caption[Multi-Horizon Attribution Stability]{Multi-Horizon identical-target attribution stability. Left axis and line sequence represent the rank-order alignment of the attribution hierarchy for models trained with progressively older historical windows evaluated on identical 2024 zoning cases. Right axis and columns illustrate the stationary dominance of the top feature cluster across all horizons.}
+    \label{fig:multi_horizon_stability}
+\end{figure}
+
+\subsubsection{Meta-Attribution Clustering and Cross-Model Consensus Features}
+
+To test whether learned attributions are dependent on the model architecture across eras, a meta-clustering framework extracts semantic attribution vectors from models (Deep ERM, natively penalized Deep V-REx, CatBoost, and Random Forest) trained on out-of-distribution temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these feature-importance vectors.
+
+The vertical dendrogram indicates that tree architectures and deep attentive mechanisms consistently form distinct, separable clusters independent of the evaluation year, supporting the structural divergence previously visualized. However, this meta-clustering rejects the notion of a ``democratic'' structural average, where all models are treated as equally valid representations of the underlying data process. Traditional tree-based approaches (such as Gradient Boosting and Random Forests), while powerful for pure predictive triage, possess a greedy inductive bias: they optimize for immediate error reduction by latching onto high-utility spatial proxies (e.g., heavily weighting raw parcel footprints because they map cleanly to wealthy single-family neighborhoods).
+
+Conversely, architectures like V-REx are mathematically designed to penalize reliance on variables that shift across computational environments. Therefore, the goal of this meta-analysis is not to find a naive compromise between architectures, but to identify \textbf{cross-model consensus features}: features with high average attribution share and required uncertainty diagnostics (bootstrap intervals and rank-stability summaries). Under this framework, features such as Neighborhood Demographics, Housing Tenure, and Neighborhood Income are interpreted as recurring model-reliance patterns rather than causal determinants.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{SHAP_MetaClustering/meta_attribution_clustermap.pdf}
+    \caption[Meta-Attribution Structural Clustering]{Meta-Attribution Clustering. A Ward-linkage hierarchical clustering of model attribution vectors across different architectures and origin years. Tree algorithms and deep algorithms separate along the vertical axis, while the horizontal axis reveals feature clusters with consistently high attribution across models.}
+    \label{fig:meta_attribution_clustering}
+\end{figure}
+
+Attribution audits should accompany any operational use of the model to detect covariate drift over time. The longitudinal unclustered attribution exhibits are reported in Appendix~\ref{app:unclustered_dynamic}.
 
 
 \section{Institutional Context}
@@ -596,13 +650,13 @@ An Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} using 1,18
 \section{Qualitative Planning Context}
 \label{sec:interviews}
 
-The quantitative results and interview interpretations are reported as distinct forms of evidence. Quantitative models establish empirical claims about discrimination, calibration, and temporal regime change; interviews provide institutional context for how those patterns are experienced in practice. Semi-structured interviews with urban planning professionals and city staff (conducted under Columbia University IRB Protocol ACYY0820) surface dynamics that administrative data cannot capture.
+The quantitative results and interview interpretations are reported as distinct forms of evidence. Quantitative models establish empirical claims about discrimination, calibration, and temporal performance patterns; interviews provide institutional context for how those patterns are experienced in practice. Semi-structured interviews with urban planning professionals and city staff (conducted under Columbia University IRB Protocol ACYY0820) surface dynamics that administrative data cannot capture.
 
 \textbf{Methods note (interview scope and limits).} The interview sample is purposive, small-$N$, and not statistically representative of all Austin stakeholders. Interview material is therefore used for interpretive contextualization only and is not used to estimate effect sizes, test hypotheses, or justify policy deployment decisions.
 
 \textbf{Empirical model findings (separate from interview interpretation).}
 \begin{itemize}
-    \item The November 2022 council transition marks the primary regime break in the quantitative models.
+    \item The November 2022 council transition marks the primary temporal performance break in the predictive models.
     \item Petition-risk predictions retain ranking utility, but wide PR-AUC uncertainty and sparse positives still constrain formal operational use of case-level probabilities despite a numerically small Layer~C1 ECE on the evaluated score column ($\text{ECE}_{C1}=\metricECEOODBootstrapCalibrated{}$).
     \item Descriptive district-level declines in filing after representation changes remain suggestive rather than causal because of limited treated clusters and staggered timing.
 \end{itemize}
@@ -657,7 +711,7 @@ Filing-date administrative features can rank petition risk in Austin's pre-HB\,2
 
 This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is qualified: spatial, economic, and site characteristics carry predictive information about petition risk, but deployment remains constrained by joint uncertainty---wide PR-AUC bootstrap intervals on the temporal holdout, rare positives on the OOD test split, and limits on external validity---even when Layer~C1 calibration error is numerically small ($\text{ECE}_{C1}=\metricECEOODBootstrapCalibrated{}$). Under the primary evaluation at the filing horizon, the model achieves a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). In-distribution cross-validation provides an optimistic upper-bound PR-AUC of \metricPRAUC{}. A regression discontinuity at the 20\% petition threshold estimates a \metricRDDelay{}-day increase in council processing time, consistent with the institutional significance of the outcome measure. Descriptive evidence from the 2022 electoral transition suggests that petition filing rates declined in districts that changed political representation, though staggered treatment timing and few treated clusters preclude formal causal claims.
 
-These results point to a ceiling on what prediction from public records alone can achieve. Petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and the 2022 council regime change altered the relationship between petitions and outcomes. Interview interpretation further contextualizes an ethical limitation: the model cannot distinguish affluent exclusionary mobilization from community-driven anti-displacement resistance, a distinction that administrative data does not encode.
+These results point to a ceiling on what prediction from public records alone can achieve. Petition filing is partly driven by factors not observable at the time of filing---neighborhood social networks, informal political dynamics, media attention---and the 2022 council composition transition altered the relationship between petitions and outcomes. Interview interpretation further contextualizes an ethical limitation: the model cannot distinguish affluent exclusionary mobilization from community-driven anti-displacement resistance, a distinction that administrative data does not encode.
 
 Future work should extend the observation window to capture HB~24 effects \cite{hb24_2025}, explore richer text features from pre-hearing public comments, and isolate the exact mechanisms of the 2021--2022 temporary covariate shock.
 
@@ -720,13 +774,20 @@ Council district & \metricNDistricts{} districts & \metricMinDistrictPositives{}
 \input{Tables/semantic_feature_mapping.tex}
 
 \newpage
-\section{Exploratory Attribution Narratives}
+\section{Exploratory Attribution: SHAP Beeswarm Decomposition}
 \label{app:exploratory_attribution}
 
-\noindent This appendix contains speculative interpretation narratives about potential social or institutional mechanisms suggested by attribution patterns. These narratives are exploratory and are intentionally separated from the main results chapter. Attribution summaries in this thesis should be interpreted as model-reliance diagnostics, not as causal identification.
+\noindent This appendix provides the case-level SHAP beeswarm decomposition for the primary CatBoost filing-date model. Each point represents one test-set case; horizontal position encodes the SHAP value (contribution to predicted log-odds); color encodes the feature value (red = high, blue = low). Attribution summaries in this thesis should be interpreted as model-reliance diagnostics, not as causal identification. Any statements about why a feature receives high attribution are hypotheses for follow-up study.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf}
+    \caption[SHAP Beeswarm Plot: CatBoost Filing-Date Model (Full Sample)]{Case-level SHAP beeswarm decomposition for the CatBoost filing-date petition model (full analytic sample, $H_0$ horizon). Features are ordered by mean absolute SHAP value. Larger parcel sizes, higher homeownership rates, and higher median household income are the strongest positive predictors.}
+    \label{fig:shap_beeswarm}
+\end{figure}
 
 \vspace{1em}
-\noindent Any statements in this appendix about why a feature may receive high attribution are hypotheses for follow-up study and should be evaluated with dedicated causal designs or institutional process tracing.
+\noindent Any statements about why a feature may receive high attribution are hypotheses for follow-up study and should be evaluated with dedicated causal designs or institutional process tracing.
 
 \newpage
 \section{Unclustered Attribution Stability Across Expanding Windows}
@@ -1113,7 +1174,7 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \input{Tables/performance_integrity_audit.tex}
 \vspace{1em}
 
-\noindent The results demonstrate that in every year of the observation period, the locally-trained CatBoost model significantly outperformed the pre-trained foundation model. If leakage had occurred, the foundation model would have "absorbed" future labels and outperformed the local model on those years. Furthermore, both models shared a symmetric performance collapse during the 2022 regime shift, confirming that TabPFN is making decisions based on the structural administrative features provided, rather than memorized future outcomes.
+\noindent The results demonstrate that in every year of the observation period, the locally-trained CatBoost model significantly outperformed the pre-trained foundation model. If leakage had occurred, the foundation model would have "absorbed" future labels and outperformed the local model on those years. Furthermore, both models shared a symmetric performance collapse during the 2022 period, confirming that TabPFN is making decisions based on the structural administrative features provided, rather than memorized future outcomes.
 
 \newpage
 \section{Extended Architectural Search and Resampling Strategies}
