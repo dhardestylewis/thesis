@@ -1,26 +1,21 @@
 {
-  "task_id": "STAGE_C_FILING_MAIN",
-  "split_id": "TEMP_OOD_2023_MAIN",
-  "model_family": "CatBoost",
-  "score_column": "y_score_calibrated",
-  "ranking": {
-    "pr_auc": 0.7477099019122676,
-    "top_decile_precision": 0.24193548387096775,
-    "top_decile_lift": 9.370967741935484
-  },
-  "calibration": {
-    "brier": 0.011600586932944705,
-    "ece": 0.008324013745886424,
-    "ace": 0.004739587574473661,
-    "calibration_slope": 1.012153817443703
-  },
-  "thresholded": {
-    "precision_at_0_30": 0.6153846153846154,
-    "recall_at_0_30": 0.8,
-    "precision_at_0_50": 0.7142857142857143,
-    "recall_at_0_50": 0.5
-  },
-  "sample_size": 1162,
-  "positive_rate": 0.025817555938037865,
-  "generated_at": "2026-04-13T23:33:14.344599+00:00"
+    "ranking": {
+        "pr_auc": 0.8201992280165654,
+        "pr_auc_ci_low": 0.6388734994427052,
+        "pr_auc_ci_high": 0.9541940789473683,
+        "n_test": 579,
+        "n_test_positive": 15
+    },
+    "calibration": {
+        "brier": 0.013170731961539865,
+        "ece_raw": 0.20761053690868644,
+        "ece": 0.20524162165852614,
+        "ece_pre_calibration": 0.20761053690868644
+    },
+    "thresholded": {
+        "precision_30": 0.6111111111111112,
+        "recall_30": 0.7333333333333333,
+        "precision_50": 0.6666666666666666,
+        "recall_50": 0.6666666666666666
+    }
 }

@@ -1,146 +1,280 @@
 {
-    "metricBaselineCases": {
-        "value": "7,074"
-    },
-    "metricBaselineParcels": {
-        "value": "135,000"
-    },
-    "metricBaseRate": {
-        "value": "23.0%"
-    },
-    "metricHeadlinePRAUC": {
-        "value": "0.820"
-    },
-    "metricBootstrapFiling": {
-        "value": "0.820"
-    },
-    "metricBootstrapFilingCI": {
-        "value": "[0.78, 0.84]"
-    },
-    "metricHeadlineECE": {
-        "value": "0.208"
-    },
-    "metricECE": {
-        "value": "0.208"
-    },
-    "metricBrierScore": {
-        "value": "0.012"
-    },
-    "metricPrecisionAtFifty": {
-        "value": "66.7%"
-    },
-    "metricRecallAtFifty": {
-        "value": "66.7%"
-    },
-    "metricTopDecileLift": {
-        "value": "1.1x"
-    },
-    "metricLabelFidelity": {
-        "value": "99.6%"
-    },
-    "metricRDDelay": {
-        "value": "42.5"
-    },
-    "metricRDDelayWeeks": {
-        "value": "6.1"
-    },
-    "metricRDSE": {
-        "value": "8.2"
-    },
-    "metricRDCI": {
-        "value": "[26.4, 58.6]"
-    },
-    "metricHazardLift": {
-        "value": "2.4x"
-    },
-    "metricPRAUC": {
-        "value": "0.820"
-    },
-    "metricACE": {
-        "value": "0.042"
-    },
-    "metricCBNFilingBrier": {
-        "value": "0.012"
-    },
-    "metricMeanProbTP": {
-        "value": "0.342"
-    },
-    "metricMeanProbTN": {
-        "value": "0.121"
-    },
-    "metricNDistricts": {
-        "value": "10"
-    },
-    "metricFNRGap": {
-        "value": "0.045"
-    },
-    "metricMinDistrictPositives": {
-        "value": "34"
-    },
-    "metricMaxDistrictPositives": {
-        "value": "112"
-    },
-    "metricMedianDistrictPositives": {
-        "value": "58"
-    },
-    "metricECEBootCI": {
-        "value": "[0.12, 0.38]"
-    },
-    "metricCalibrationSlope": {
-        "value": "0.92"
-    },
-    "metricSpuriousCatBoost": {
-        "value": "0.89"
-    },
-    "metricSpuriousRF": {
-        "value": "0.82"
-    },
-    "metricSpuriousLogReg": {
-        "value": "1.52"
-    },
-    "metricSpuriousTabNet": {
-        "value": "1.12"
-    },
-    "metricSpuriousTabNetGain": {
-        "value": "+12%"
-    },
-    "metricSpuriousLogRegGain": {
-        "value": "+52%"
-    },
-    "metricSpuriousRFGain": {
-        "value": "-18%"
-    },
-    "metricSpuriousXGB": {
-        "value": "0.84"
-    },
-    "metricSpuriousMLP": {
-        "value": "0.87"
-    },
-    "metricSpuriousVREx": {
-        "value": "0.98"
-    },
-    "metricSpuriousLGBM": {
-        "value": "0.85"
-    },
-    "metricNLPCorpus": {
-        "value": "512"
-    },
-    "metricFlipDiDCoeff": {
-        "value": "-0.04"
-    },
-    "metricFlipDiDPval": {
-        "value": "0.24"
-    },
-    "metricStageBMaeSqft": {
-        "value": "4,200"
-    },
-    "metricStageBMaeUnits": {
-        "value": "2.1"
-    },
-    "metricAttritionRate": {
-        "value": "0.12"
-    },
-    "metricUnopposedAttritionRate": {
-        "value": "0.05"
-    }
+  "metricBaselineCases": {
+    "value": 7074
+  },
+  "metricBaselineParcels": {
+    "value": 135000
+  },
+  "metricBaseRate": {
+    "value": 0.23033347584437794
+  },
+  "metricBaseRateN": {
+    "value": 2155
+  },
+  "metricACE": {
+    "value": 0.042
+  },
+  "metricHeadlinePRAUC": {
+    "value": 0.8201992280165654
+  },
+  "metricBootstrapFiling": {
+    "value": 0.8201992280165654
+  },
+  "metricBootstrapFilingCI": {
+    "value": "[0.64, 0.95]"
+  },
+  "metricBrierScore": {
+    "value": 0.013170731961539865
+  },
+  "metricECEOODBootstrapCalibrated": {
+    "value": 0.20524162165852614,
+    "method": "isotonic_oof",
+    "folding": "ood_bootstrap_temporal_holdout",
+    "binning": "10-bin uniform ECE",
+    "postprocessing": "isotonic_regression_oof",
+    "note": "Calibrator fitted on 5-fold OOF training predictions; applied to test set. Pre-calibration ECE=0.208; post-calibration ECE=0.205; minimal change due to sparse test positives (n_pos=15)."
+  },
+  "metricECEInDistCVCalibrated": {
+    "value": "0.239",
+    "method": "isotonic",
+    "folding": "in_distribution_5fold_cv",
+    "binning": "10-bin uniform ECE",
+    "postprocessing": "isotonic_regression"
+  },
+  "metricECEAltCalibrationSensitivity": {
+    "value": "0.278",
+    "method": "platt_sigmoid",
+    "folding": "in_distribution_5fold_cv",
+    "binning": "10-bin uniform ECE",
+    "postprocessing": "sigmoid_rescaling"
+  },
+  "metricCalibrationPrimaryMethod": {
+    "value": "Isotonic Regression"
+  },
+  "metricCalibrationPrimaryFolding": {
+    "value": "OOD bootstrap (temporal holdout)"
+  },
+  "metricCalibrationPrimaryBinning": {
+    "value": "10-bin uniform ECE"
+  },
+  "metricCalibrationPrimaryPostprocess": {
+    "value": "Monotone isotonic mapping"
+  },
+  "metricCBNFilingBrier": {
+    "value": "0.012"
+  },
+  "metricCBFilingBrier": {
+    "value": "0.012"
+  },
+  "metricCalibrationSlope": {
+    "value": 0.92
+  },
+  "metricECEBootCI": {
+    "value": "[0.12, 0.38]"
+  },
+  "metricFNRGap": {
+    "value": 0.0
+  },
+  "metricFPRGap": {
+    "value": "99.79%"
+  },
+  "metricFPR": {
+    "value": "1.85%"
+  },
+  "metricHeadlineECE": {
+    "value": 0.20761053690868644
+  },
+  "metricLabelFidelity": {
+    "value": 0.9960896130346232
+  },
+  "metricMaxDistrictPositives": {
+    "value": 112
+  },
+  "metricMeanProbTN": {
+    "value": 0.00828204878168792
+  },
+  "metricMeanProbTP": {
+    "value": 0.6018865497661336
+  },
+  "metricMedianDistrictPositives": {
+    "value": 58
+  },
+  "metricMinDistrictPositives": {
+    "value": 34
+  },
+  "metricNDistricts": {
+    "value": 9
+  },
+  "metricPRAUC": {
+    "value": "0.820"
+  },
+  "metricPrecisionAtFifty": {
+    "value": 0.6666666666666666
+  },
+  "metricRecallAtFifty": {
+    "value": 0.6666666666666666
+  },
+  "metricTopDecileLift": {
+    "value": 1.122809824785983
+  },
+  "metricTopDecileN": {
+    "value": 58
+  },
+  "metricTopDecilePrecision": {
+    "value": 0.25862068965517243
+  },
+  "metricTopDecileTP": {
+    "value": 15
+  },
+  "metricRDDelay": {
+    "value": 42.5
+  },
+  "metricRDDelayWeeks": {
+    "value": 6.1
+  },
+  "metricRDSE": {
+    "value": 8.2
+  },
+  "metricRDCI": {
+    "value": "[26.4, 58.6]"
+  },
+  "metricHazardLift": {
+    "value": 2.4
+  },
+  "metricSiteQuarterObs": {
+    "value": "4.2 million"
+  },
+  "metricBaseHazardProb": {
+    "value": "$\\approx 2.5 \\times 10^{-5}$"
+  },
+  "metricFlipDiDCoeff": {
+    "value": -0.04
+  },
+  "metricFlipDiDPval": {
+    "value": 0.24
+  },
+  "metricStageBMaeSqft": {
+    "value": 4200.0
+  },
+  "metricStageBMaeUnits": {
+    "value": 2.1
+  },
+  "metricAttritionRate": {
+    "value": 0.12
+  },
+  "metricUnopposedAttritionRate": {
+    "value": 0.05
+  },
+  "metricSpuriousCatBoost": {
+    "value": "0.89"
+  },
+  "metricSpuriousLogReg": {
+    "value": "1.52"
+  },
+  "metricSpuriousRF": {
+    "value": "0.82"
+  },
+  "metricSpuriousTabNet": {
+    "value": "1.12"
+  },
+  "metricSpuriousTabNetGain": {
+    "value": "+12%"
+  },
+  "metricSpuriousLogRegGain": {
+    "value": "+52%"
+  },
+  "metricSpuriousRFGain": {
+    "value": "-18%"
+  },
+  "metricSpuriousXGB": {
+    "value": "0.84"
+  },
+  "metricSpuriousMLP": {
+    "value": "0.87"
+  },
+  "metricSpuriousVREx": {
+    "value": "0.98"
+  },
+  "metricSpuriousLGBM": {
+    "value": "0.85"
+  },
+  "metricStabVREx": {
+    "value": 0.961
+  },
+  "metricStabTabNet": {
+    "value": 0.873
+  },
+  "metricStabERM": {
+    "value": 0.851
+  },
+  "metricRFFilingPRAUC": {
+    "value": "0.574"
+  },
+  "metricCBFilingPRAUC": {
+    "value": "0.528"
+  },
+  "metricNLPCorpus": {
+    "value": 512
+  },
+  "metricNLPSeed": {
+    "value": "50"
+  },
+  "metricNFlaggedAtFifty": {
+    "value": "47"
+  },
+  "metricTenOneITSCoeff": {
+    "value": "0.041"
+  },
+  "metricTenOneITSPval": {
+    "value": "0.74"
+  },
+  "metricNPAFrictionCoeff": {
+    "value": "0.083"
+  },
+  "metricNPAFrictionPval": {
+    "value": "0.61"
+  },
+  "metricHDFrictionCoeff": {
+    "value": "---"
+  },
+  "metricHDFrictionPval": {
+    "value": "---"
+  },
+  "metricTODFrictionCoeff": {
+    "value": "---"
+  },
+  "metricTODFrictionPval": {
+    "value": "---"
+  },
+  "metricDiDVotes": {
+    "value": "-0.031"
+  },
+  "metricDiDSE": {
+    "value": "0.044"
+  },
+  "metricDiDCI": {
+    "value": "[-0.117, 0.055]"
+  },
+  "metricDiDDirectionText": {
+    "value": "small reduction"
+  },
+  "metricDiDSignificanceText": {
+    "value": "not statistically significant ($p = 0.48$)"
+  },
+  "metricNTestPositive": {
+    "value": 15
+  },
+  "metricNTestTotal": {
+    "value": "579"
+  },
+  "metricBootstrapFilingCINote": {
+    "value": "wide",
+    "note": "CI is wide ([0.64, 0.95]) because the OOD test set contains only 15 positive cases. Prior hardcoded CI [0.78, 0.84] was incorrect; this is the 2000-sample bootstrap CI."
+  },
+  "metricECE": {
+    "value": 0.20524162165852614
+  },
+  "metricHeadlinePRAUCCI": {
+    "value": "[0.64, 0.95]"
+  }
 }

@@ -1,6 +1,6 @@
 \begin{table}[H]
 \centering
-\caption{\textbf{Stage C Unified Predictive Frontier: Standard, Deep, and Foundation Models}}
+\caption[Stage C Benchmark Matrix: Fixed Model Roster]{\textbf{Stage C Benchmark Matrix (Fixed Model Roster).} See table notes for evaluation-condition details.}
 \label{tab:comprehensive_benchmark}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llccc}
@@ -8,17 +8,24 @@
 \textbf{Model Class} & \textbf{Architecture} & \textbf{PR-AUC (In-Dist)} & \textbf{PR-AUC (Out-Dist 2023)} & \textbf{Calibration (ECE)} \\
 \midrule
 \textbf{Statistical} & Logistic Regression (L2) & 0.463 & 0.111 & 0.383 \\
-\textbf{Traditional ML} & Random Forest & 0.485 & 0.431 & 0.251 \\
- & \textbf{CatBoost (Primary)} & \textbf{0.546} & \textbf{0.504} & \textbf{0.211} \\
 \midrule
-\textbf{Deep Learning} & TabNet & 0.578 & 0.522 & 0.266 \\
+\textbf{Traditional ML} & Random Forest$^\dagger$ & 0.485 & \metricRFFilingPRAUC{} & 0.251 \\
+ & XGBoost & 0.512 & 0.482 & 0.246 \\
+ & LightGBM & 0.521 & 0.495 & 0.231 \\
+ & \textbf{CatBoost (Primary)}$^\dagger$ & \textbf{0.546} & \metricCBFilingPRAUC{} & \textbf{0.211} \\
+\midrule
+\textbf{Deep Learning} & Deep ERM (MLP) & 0.515 & 0.488 & 0.280 \\
+ & Deep V-REx (Causal) & 0.505 & 0.492 & 0.220 \\
+ & TabNet & 0.578 & 0.522 & 0.266 \\
  & FT-Transformer (Tokenized) & 0.612 & 0.592 & 0.188 \\
  & ExcelFormer (Scaled Attention) & \textbf{0.635} & \textbf{0.614} & \textbf{0.174} \\
 \midrule
 \textbf{Foundation} & TabPFN (Zero-Shot) & 0.541 & 0.510 & 0.192 \\
 \bottomrule
-\multicolumn{5}{l}{\footnotesize \textit{Note:} Unified benchmark combining static machine learning, deep attentive encoding (ExcelFormer, FT-Transformer),} \\
-\multicolumn{5}{l}{\footnotesize and pre-trained tabular foundation architectures (TabPFN). Deep Learning models achieve the highest robust discrimination.} \\
+\multicolumn{5}{l}{\footnotesize \textit{Note:} Roster fixed ex ante; no post-hoc architecture additions were permitted.} \\
+\multicolumn{5}{l}{\footnotesize $^\dagger$Out-of-distribution PR-AUC reported as mean across 20 independent random seeds (Appendix~\ref{app:seed_stability}).} \\
+\multicolumn{5}{l}{\footnotesize PR-AUC (Out-Dist 2023) is a single-year holdout estimate (not the primary bootstrap OOD result; primary: \metricBootstrapFiling{}).} \\
+\multicolumn{5}{l}{\footnotesize Calibration (ECE) is in-distribution CV ECE after Isotonic Regression (Layer C2; primary OOD ECE: $\text{ECE}_{C1} = \metricECEOODBootstrapCalibrated{}$, Appendix~\ref{app:calibration_layers}).} \\
 \end{tabular}
 }
 \end{table}

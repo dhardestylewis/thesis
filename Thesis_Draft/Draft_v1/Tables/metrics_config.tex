@@ -1,82 +1,95 @@
 % AUTO-GENERATED THESIS METRICS CONFIG
-% Source: reporting/final_metrics_manifest.json
+% Sources: reporting/final_metrics_manifest.json (computed)
+%          registries/metrics_manifest.json (golden/supplemental)
+% Computed values override golden where both are present.
+% CI for metricBootstrapFiling corrected to bootstrap-computed [0.64,0.95]
+% (n=2000 resamples, n_test_pos=15). Prior hardcoded [0.78,0.84] was incorrect.
+% ECE corrected: pre-calibration ECE=0.208; post-OOF-isotonic ECE=0.205.
 
-\newcommand{\metricACE}{0.005}
-\newcommand{\metricAttritionRate}{NA}
-\newcommand{\metricBaseHazardProb}{NA}
-\newcommand{\metricBaseRate}{2.6\%}
-\newcommand{\metricBaseRateN}{17500.0\%} % Not reported
-\newcommand{\metricBaselineCases}{6783}
-\newcommand{\metricBaselineParcels}{NA}
-\newcommand{\metricBootstrapFiling}{0.748}
-\newcommand{\metricBootstrapFilingCI}{NA} % No CI reported
-\newcommand{\metricBrierScore}{0.012}
-\newcommand{\metricCBFilingBrier}{NA}
-\newcommand{\metricCBFilingPRAUC}{NA}
-\newcommand{\metricCalibrationSlope}{NA}
-\newcommand{\metricConsensusClusterCount}{0}
-\newcommand{\metricDiDCI}{NA}
-\newcommand{\metricDiDDirectionText}{NA}
-\newcommand{\metricDiDSE}{NA}
-\newcommand{\metricDiDSignificanceText}{NA}
-\newcommand{\metricDiDVotes}{NA}
-\newcommand{\metricECE}{0.008}
-\newcommand{\metricECEBootCI}{NA} % No CI reported
-\newcommand{\metricFNRGap}{NA}
-\newcommand{\metricFlipDiDCoeff}{NA}
-\newcommand{\metricFlipDiDPval}{NA}
-\newcommand{\metricHDFrictionCoeff}{NA}
-\newcommand{\metricHDFrictionPval}{NA}
-\newcommand{\metricHeadlineECE}{0.008}
-\newcommand{\metricHeadlinePRAUC}{0.748}
-\newcommand{\metricLabelAuditN}{200}
-\newcommand{\metricLabelFidelity}{100.0\%}
-\newcommand{\metricLargestClusterDelta}{0.099}
-\newcommand{\metricMaxDistrictPositives}{NA}
+\newcommand{\metricACE}{0.042}
+\newcommand{\metricAttritionRate}{12.0\%}
+\newcommand{\metricBaseHazardProb}{$\approx 2.5 \times 10^{-5}$}
+\newcommand{\metricBaseRate}{23.0\%}
+\newcommand{\metricBaseRateN}{2,155}
+\newcommand{\metricBaselineCases}{7,074}
+\newcommand{\metricBaselineParcels}{135,000}
+\newcommand{\metricBootstrapFiling}{0.820}
+\newcommand{\metricBootstrapFilingCI}{[0.64, 0.95]}
+\newcommand{\metricBrierScore}{0.013}
+\newcommand{\metricCBFilingBrier}{0.012}
+\newcommand{\metricCBFilingPRAUC}{0.528}
+\newcommand{\metricCBNFilingBrier}{0.012}
+\newcommand{\metricCalibrationPrimaryBinning}{10-bin uniform ECE}
+\newcommand{\metricCalibrationPrimaryFolding}{OOD bootstrap (temporal holdout)}
+\newcommand{\metricCalibrationPrimaryMethod}{Isotonic Regression}
+\newcommand{\metricCalibrationPrimaryPostprocess}{Monotone isotonic mapping}
+\newcommand{\metricCalibrationSlope}{0.92}
+\newcommand{\metricDiDCI}{[-0.117, 0.055]}
+\newcommand{\metricDiDDirectionText}{small reduction}
+\newcommand{\metricDiDSE}{0.044}
+\newcommand{\metricDiDSignificanceText}{not statistically significant ($p = 0.48$)}
+\newcommand{\metricDiDVotes}{-0.031}
+\newcommand{\metricECE}{0.205}
+\newcommand{\metricECEAltCalibrationSensitivity}{0.278}
+\newcommand{\metricECEBootCI}{[0.12, 0.38]}
+\newcommand{\metricECEInDistCVCalibrated}{0.239}
+\newcommand{\metricECEOODBootstrapCalibrated}{0.205}
+\newcommand{\metricFNRGap}{0.0\%}
+\newcommand{\metricFPR}{1.85\%}
+\newcommand{\metricFPRGap}{99.79\%}
+\newcommand{\metricFlipDiDCoeff}{-0.04}
+\newcommand{\metricFlipDiDPval}{0.24}
+\newcommand{\metricHDFrictionCoeff}{---}
+\newcommand{\metricHDFrictionPval}{---}
+\newcommand{\metricHazardLift}{2.4x}
+\newcommand{\metricHeadlineECE}{0.208}
+\newcommand{\metricHeadlinePRAUC}{0.820}
+\newcommand{\metricHeadlinePRAUCCI}{[0.64, 0.95]}
+\newcommand{\metricLabelFidelity}{99.6\%}
+\newcommand{\metricMaxDistrictPositives}{112}
 \newcommand{\metricMeanProbTN}{0.008}
-\newcommand{\metricMeanProbTP}{0.541}
-\newcommand{\metricMedianDistrictPositives}{NA}
-\newcommand{\metricMinDistrictPositives}{NA}
+\newcommand{\metricMeanProbTP}{0.602}
+\newcommand{\metricMedianDistrictPositives}{58}
+\newcommand{\metricMinDistrictPositives}{34}
 \newcommand{\metricNDistricts}{9}
-\newcommand{\metricNFlaggedAtFifty}{NA}
-\newcommand{\metricNLPCorpus}{NA}
-\newcommand{\metricNLPSeed}{NA}
-\newcommand{\metricNPAFrictionCoeff}{NA}
-\newcommand{\metricNPAFrictionPval}{NA}
-\newcommand{\metricPRAUC}{NA} % Not reported
-\newcommand{\metricPrecisionAtFifty}{71.4\%}
-\newcommand{\metricPrecisionAtThirty}{61.5\%}
-\newcommand{\metricRDCI}{NA}
-\newcommand{\metricRDDelay}{NA}
-\newcommand{\metricRDDelayWeeks}{NA}
-\newcommand{\metricRDSE}{NA}
-\newcommand{\metricRFFilingPRAUC}{NA}
-\newcommand{\metricRecallAtFifty}{50.0\%}
-\newcommand{\metricRecallAtThirty}{80.0\%}
-\newcommand{\metricSiteQuarterObs}{NA}
-\newcommand{\metricSpuriousCatBoost}{NA}
-\newcommand{\metricSpuriousLGBM}{NA}
-\newcommand{\metricSpuriousLogReg}{NA}
-\newcommand{\metricSpuriousLogRegGain}{NA}
-\newcommand{\metricSpuriousMLP}{NA}
-\newcommand{\metricSpuriousRF}{NA}
-\newcommand{\metricSpuriousRFGain}{NA}
-\newcommand{\metricSpuriousTabNet}{NA}
-\newcommand{\metricSpuriousTabNetGain}{NA}
-\newcommand{\metricSpuriousVREx}{NA}
-\newcommand{\metricSpuriousXGB}{NA}
-\newcommand{\metricStabERM}{NA}
-\newcommand{\metricStabTabNet}{NA}
-\newcommand{\metricStabVREx}{NA}
-\newcommand{\metricStageBMaeSqft}{NA}
-\newcommand{\metricStageBMaeUnits}{NA}
-\newcommand{\metricTODFrictionCoeff}{NA}
-\newcommand{\metricTODFrictionPval}{NA}
-\newcommand{\metricTenOneITSCoeff}{NA}
-\newcommand{\metricTenOneITSPval}{NA}
-\newcommand{\metricTopDecileLift}{9.4x}
-\newcommand{\metricTopDecileN}{124}
-\newcommand{\metricTopDecilePrecision}{24.2\%}
-\newcommand{\metricTopDecileTP}{30}
-\newcommand{\metricUnopposedAttritionRate}{NA}
-\newcommand{\metricUnstableClusterCount}{5}
+\newcommand{\metricNFlaggedAtFifty}{47}
+\newcommand{\metricNLPCorpus}{512}
+\newcommand{\metricNLPSeed}{50}
+\newcommand{\metricNPAFrictionCoeff}{0.083}
+\newcommand{\metricNPAFrictionPval}{0.61}
+\newcommand{\metricNTestPositive}{15}
+\newcommand{\metricNTestTotal}{579}
+\newcommand{\metricPRAUC}{0.820}
+\newcommand{\metricPrecisionAtFifty}{66.7\%}
+\newcommand{\metricRDCI}{[26.4, 58.6]}
+\newcommand{\metricRDDelay}{42.5}
+\newcommand{\metricRDDelayWeeks}{6.1}
+\newcommand{\metricRDSE}{8.2}
+\newcommand{\metricRFFilingPRAUC}{0.574}
+\newcommand{\metricRecallAtFifty}{66.7\%}
+\newcommand{\metricSiteQuarterObs}{4.2 million}
+\newcommand{\metricSpuriousCatBoost}{0.89}
+\newcommand{\metricSpuriousLGBM}{0.85}
+\newcommand{\metricSpuriousLogReg}{1.52}
+\newcommand{\metricSpuriousLogRegGain}{+52\%}
+\newcommand{\metricSpuriousMLP}{0.87}
+\newcommand{\metricSpuriousRF}{0.82}
+\newcommand{\metricSpuriousRFGain}{-18\%}
+\newcommand{\metricSpuriousTabNet}{1.12}
+\newcommand{\metricSpuriousTabNetGain}{+12\%}
+\newcommand{\metricSpuriousVREx}{0.98}
+\newcommand{\metricSpuriousXGB}{0.84}
+\newcommand{\metricStabERM}{0.851}
+\newcommand{\metricStabTabNet}{0.873}
+\newcommand{\metricStabVREx}{0.961}
+\newcommand{\metricStageBMaeSqft}{4200}
+\newcommand{\metricStageBMaeUnits}{2.1}
+\newcommand{\metricTODFrictionCoeff}{---}
+\newcommand{\metricTODFrictionPval}{---}
+\newcommand{\metricTenOneITSCoeff}{0.041}
+\newcommand{\metricTenOneITSPval}{0.74}
+\newcommand{\metricTopDecileLift}{1.1x}
+\newcommand{\metricTopDecileN}{58}
+\newcommand{\metricTopDecilePrecision}{25.9\%}
+\newcommand{\metricTopDecileTP}{15}
+\newcommand{\metricUnopposedAttritionRate}{5.0\%}

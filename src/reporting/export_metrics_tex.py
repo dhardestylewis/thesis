@@ -71,6 +71,7 @@ def _validate_ci_consistency(entries: List[Dict[str, Any]]) -> None:
 def export_metrics_tex() -> None:
     root = _repo_root()
     manifest_path = root / "reporting" / "final_metrics_manifest.json"
+    golden_path = root / "registries" / "metrics_manifest.json"
     tex_path = root / "Thesis_Draft" / "Draft_v1" / "Tables" / "metrics_config.tex"
 
     if not manifest_path.exists():
@@ -88,6 +89,22 @@ def export_metrics_tex() -> None:
     macro_values: Dict[str, str] = {}
     ci_macro_overrides = {"metricBootstrapFiling": "metricBootstrapFilingCI", "metricRDDelay": "metricRDCI"}
 
+    # ── Seed with golden manifest (supplemental metrics not computed from data) ──
+    # The golden manifest covers fixed/audited metrics that are not re-derived
+    # each run (e.g., hardcoded benchmark results, NLP corpus stats, DiD estimates).
+    # The computed manifest (final_metrics_manifest.json) overrides where available.
+    if golden_path.exists():
+        with golden_path.open("r", encoding="utf-8") as fh:
+            golden: Dict[str, Any] = json.load(fh)
+        # Internal-only keys (notes, CI-note metadata) are not TeX macros
+        _skip_suffixes = ("Note",)
+        for gid, gval in golden.items():
+            if any(gid.endswith(s) for s in _skip_suffixes):
+                continue
+            raw = gval.get("value", gval) if isinstance(gval, dict) else gval
+            macro_values[gid] = _escape_latex(str(raw))
+
+    # ── Override / add with freshly-computed records (authoritative) ──────────
     for row in manifest:
         metric_id = row["metric_id"]
         value = _format_metric(metric_id, row["value"])
@@ -175,7 +192,12 @@ def export_metrics_tex() -> None:
 
     lines = [
         "% AUTO-GENERATED THESIS METRICS CONFIG",
-        "% Source: reporting/final_metrics_manifest.json",
+        "% Sources: reporting/final_metrics_manifest.json (computed)",
+        "%          registries/metrics_manifest.json (golden/supplemental)",
+        "% Computed values override golden where both are present.",
+        "% CI for metricBootstrapFiling corrected to bootstrap-computed [0.64,0.95]",
+        "% (n=2000 resamples, n_test_pos=15). Prior hardcoded [0.78,0.84] was incorrect.",
+        "% ECE corrected: pre-calibration ECE=0.208; post-OOF-isotonic ECE=0.205.",
         "",
     ]
     for macro in sorted(macro_values):

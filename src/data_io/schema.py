@@ -12,7 +12,7 @@ from typing import Optional, TypedDict
 
 import pandas as pd
 
-ROOT_DIR = Path(r"c:\Users\dhl\data\Thesis\thesis")
+ROOT_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT_DIR / "data"
 REGISTRY_DIR = ROOT_DIR / "registries"
 CONFIG_DIR = ROOT_DIR / "configs"
