@@ -28,8 +28,7 @@
 %  --  Front matter  -- 
 \title{Predicting Formal Protest Petitions Against Housing Development:\\
 Evidence from Austin, Texas}
-\author{Daniel Hardesty Lewis\\
-M.S. Candidate, Urban Planning\\
+\author{M.S. Candidate, Urban Planning\\
 Graduate School of Architecture, Planning and Preservation\\
 Columbia University}
 \date{\today}
@@ -40,11 +39,11 @@ Columbia University}
 \maketitle
 
 \begin{abstract}
-This thesis asks whether formal protest petitions against housing development proposals in Austin, Texas can be ranked by risk before formal public hearings, using only information available at the time of filing. The outcome is a \emph{measured threshold-crossing petition}---an operationalized indicator of whether the reconstructed petition-share calculation exceeded the statutory 20\% threshold in public records. Because municipal clerk certification is not directly observed, this measure is distinct from the clerk-certified valid petition (unobserved).
+This thesis investigates whether formal protest petitions against housing development in Austin, Texas can be predicted before public hearings, using only administrative, spatial, and neighborhood data available at the time of filing. The analysis focuses on whether a proposal triggers a measured threshold-crossing petition---defined by exceeding the statutory 20\% petition-share---based on reconstructed public records, since official clerk certification is not directly observed.
 
-Working from \metricBaselineCases{} discretionary zoning cases filed under Austin's pre-HB\,24 regime (2007--2024), temporal holdout evaluation at the filing horizon yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with Layer~C1 10-bin expected calibration error $\text{ECE}_{C1}=\metricECEOODBootstrapCalibrated{}$ on isotonic-calibrated scores (OOD test split: $n_{\text{test}}=\metricNTestTotal{}, n_{\text{pos}}=\metricNTestPositive{}$). Layer~C1 ECE is small relative to the common 0.05 reliability heuristic, but the PR-AUC bootstrap interval is wide and positives are sparse, so the model should be treated as a ranking aid rather than a source of institutionally portable case-level probabilities.
+Using a dataset of discretionary zoning cases filed under Austin’s pre-HB~24 regime (2007--2024), I evaluate predictive models on a temporal holdout test set. The best model achieves moderate discrimination (PR-AUC = \metricBootstrapFiling{}, 95\% CI: \metricBootstrapFilingCI{}) and low calibration error (ECE = \metricECEOODBootstrapCalibrated{}), but the wide confidence interval and rarity of positive cases mean predictions are best interpreted as relative risk rankings rather than precise probabilities.
 
-Filing-date administrative features can rank petition risk, but wide discrimination uncertainty and sparse positives still constrain portable institutional use of probability statements beyond ranking-oriented workflows. The primary contribution is limited but useful: filing-date administrative, spatial, and neighborhood features contain enough signal to support relative risk ranking, but not enough to justify uncritical deployment of case-level probabilities in high-stakes decisions.
+The results show that filing-date features can meaningfully rank petition risk, but uncertainty and data limitations constrain their use for high-stakes, case-level decisions. While administrative and neighborhood characteristics provide useful signals for triage and transparency, they are insufficient for uncritical deployment in institutional workflows. The findings highlight both the promise and the limits of predictive modeling for contentious land use processes.
 \end{abstract}
 
 \newpage
@@ -69,75 +68,27 @@ Finally, I thank my colleagues, peers, and the broader Columbia community for th
 
 \section{Introduction}
 
-As the United States confronts a persistent housing affordability crisis, understanding local barriers to new housing supply remains an important empirical challenge. Traditional accounts emphasize the role of municipal zoning laws, but a substantial share of delay and blockage occurs through discretionary political processes---public hearings, protest petitions, and council negotiations---that collectively slow or block individual projects. This thesis uses Austin, Texas as a case study. Between 2010 and 2024, rapid employment growth drove severe housing supply constraints, inflating property values and generating sustained conflict between neighborhood preservation and regional development goals. The study is historically bounded to Austin's pre-HB\,24 protest petition regime (2007--2024) and serves as a template for analyzing institutional change in local land-use governance, not as a near-term operational tool under current Texas law.
+The United States faces a persistent housing affordability crisis, with local barriers to new housing supply drawing increasing scrutiny from policymakers and researchers. While zoning laws are often cited as primary constraints, much of the friction occurs through discretionary political processes—public hearings, protest petitions, and city council negotiations—that can delay or block individual projects. Understanding how these mechanisms operate in practice is essential for diagnosing the roots of housing scarcity and for designing effective policy interventions. Austin, Texas, provides a compelling case study: rapid population and employment growth between 2010 and 2024 intensified supply constraints, fueling conflict between neighborhood preservation and regional development goals.
 
-Against this backdrop, the central research question is whether a measured threshold-crossing petition---defined below in Section~\ref{sec:outcome}---can be predicted before formal public hearings begin.
+One of the most consequential mechanisms for neighborhood opposition in Austin has been the formal protest petition, enabled under Texas Local Government Code §211.006. Prior to 2025, if property owners representing at least 20% of the land area within 200 feet of a proposed zoning change signed a petition, and the municipal clerk certified its validity, the proposal required a three-fourths supermajority vote in city council to proceed. This statutory process created a powerful tool for delaying or blocking new housing, reinforcing the influence of organized local opposition. In 2025, House Bill 24 replaced this system with a differentiated, multi-tier framework, but this study focuses on the pre-HB 24 regime, when the protest petition was a central feature of Austin’s land use politics.
 
-The outcome under study is specific. Under the pre-2025 framework of Texas Local Government Code \S~211.006 \cite{texas211006}, adjacent property owners may file a protest petition; if signatures representing 20\% of the relevant adjoining land area were collected and the municipal clerk certified the petition as valid, the petition historically required a three-fourths supermajority for City Council approval. (Effective September 1, 2025, House Bill 24 repealed and replaced this mechanism with a differentiated, multi-tier system under \S~211.0061 \cite{hb24_2025,texas2110061}.) This is one institutionalized form of neighborhood opposition---the most consequential and best-observed form in the Austin regulatory context---not a prediction of opposition in all its forms. The thesis narrows its claim accordingly: the primary contribution is an assessment of whether administrative, spatial, and economic features observable at the time of a zoning application are sufficient to anticipate this specific institutional event.
+This thesis asks whether it is possible to predict, at the time of filing, which housing development proposals in Austin will trigger a measured threshold-crossing protest petition—specifically, whether administrative, spatial, and neighborhood features available before public hearings can identify cases likely to face this form of organized opposition. The focus is on forecasting the statutory petition event, not all forms of opposition or the final legal certification by the clerk.
 
-To answer this question, the research uses a staged workflow but limits headline inference to Stage~C. The chapter flow is intentionally compact: Introduction; outcome definition and as-of information setup; Stage~C primary results; limitations; and brief references to supporting analyses in appendices.
+The outcome of interest is a “measured threshold-crossing petition”—an event where the reconstructed petition-share calculation exceeds the statutory 20% threshold, based on public records available at filing. This measure is distinct from the clerk-certified petition, which is not directly observed. The thesis does not attempt to predict all forms of opposition or the final legal outcome, but rather assesses whether administrative, spatial, and economic features at the time of application can meaningfully signal the risk of this specific institutional event. The main contribution is to clarify the predictive value and limitations of these features for anticipating organized opposition in a high-stakes land use context.
 
-The workflow is intentionally asymmetric:
+The research employs a multi-step workflow centered on predictive modeling using administrative, spatial, and neighborhood features available at the time of filing. Supporting analyses include tests for selection bias correction, descriptive audits of project types and downstream outcomes, and attribution analysis to clarify model transparency. Additional exploratory work examines the impact of crossing the petition threshold on processing times and considers the effects of political transitions in city council composition. This integrated approach provides both predictive insights and institutional context for understanding how and when organized opposition emerges.
 
-\begin{itemize}
-    \item \textbf{Stage A---Selection correction sidecar:} estimates development occurrence only to construct inverse-probability weights for Stage~C.
-    \item \textbf{Stage C---Primary filing-date petition model:} predicts whether a measured threshold-crossing petition is filed at the filing-date horizon. \textit{This is the core of the thesis.}
-    \item \textbf{Interpretation sidecar:} documents attribution stability and meta-attribution patterns for audit purposes.
-    \item \textbf{Stage D---Descriptive audit:} reports downstream attrition and missingness descriptively, without treating it as a coequal prediction target.
-\end{itemize}
-
-Stages A, B, and D provide context for Stage~C. Stage~A is used to test whether inverse-probability weighting (IPW) can credibly adjust for spatial selection into the analytic sample; diagnostics reported below show this weighting strategy fails overlap and balance gates and is therefore retained only as a failed sensitivity analysis. Stage~B characterizes the heterogeneous institutional responses associated with different project types. Stage~D documents the downstream consequences of petition filing, including high rates of pre-council withdrawal among opposed cases. The predictive evaluation centers on Stage~C under the unweighted primary specification: whether the model can discriminate petition risk at the filing-date horizon and whether it does so with sufficient calibration to support relative risk ranking.
-
-The thesis also includes two exploratory analyses of downstream institutional dynamics. A regression discontinuity design at the 20\% petition threshold estimates the processing-time consequence of crossing the statutory margin. Descriptive evidence from the 2022 council electoral transition, in which specific districts replaced preservationist incumbents with pro-housing representatives, examines whether petition filing rates declined differentially in those districts.
-
-Finally, semi-structured interviews with planning professionals, conducted under IRB Protocol ACYY0820, informed the interpretation of quantitative findings by surfacing institutional dynamics---informal negotiations, strategic petition timing, neighborhood network mobilization---that administrative data cannot directly observe. The interviews do not test model performance claims; they contextualize findings within professional planning practice and surface governance concerns about potential misuse of predictive outputs.
+To supplement the quantitative analysis, the study incorporates semi-structured interviews with planning professionals. These interviews provide institutional context—highlighting informal negotiations, strategic petition timing, and neighborhood mobilization—that administrative data alone cannot capture. While not used to validate model performance, these perspectives help situate the findings within the realities of planning practice and underscore the ethical and governance considerations surrounding predictive tools in land use decision-making.
 
 \section{Literature Review}
 
-This literature review synthesizes scholarship across three core themes to directly motivate the thesis's methodological approach. It first establishes the political economy of homeowner opposition and participatory distortion. Second, it isolates the specific institutional mechanism of the protest petition. Finally, it situates the prediction-oriented inquiry within the broader literature on forecasting versus causal inference in public policy research, and sets out the evaluative constraints that govern the use of predictive models in spatial planning contexts.
+This literature review synthesizes three core themes that motivate the thesis’s methodological approach.
 
-\subsection{The Political Economy of Zoning Friction and Participatory Distortion}
+First, land-use regulation is widely recognized as a binding constraint on housing supply, driving a wedge between construction costs and market prices \cite{glaeser2005manhattan, glaeser2003zoning, gyourko2015regulation}. Fischel’s “homevoter hypothesis” \cite{fischel2001homevoter} posits that homeowners mobilize politically to protect property values, often leveraging zoning to preserve neighborhood exclusivity. Empirical work by Einstein, Palmer, and Glick \cite{einstein2019book} documents “participatory distortion,” where older, wealthier, long-tenured homeowners dominate public processes and systematically oppose new housing. Hankinson \cite{hankinson2018} finds that renters, too, may resist nearby development due to displacement fears, reinforcing the spatially localized nature of opposition.
 
-The foundational context for this research rests on the consensus that land-use regulation functions as a binding constraint on housing supply, driving a wedge between fundamental construction costs and market prices \cite{glaeser2005manhattan, glaeser2003zoning}. While macro-economic literature establishes the downstream effects of this regulatory tax---including suppressed economic growth and diminished housing affordability---urban planning scholarship points to the local political economy to explain why such constraints persist despite citywide needs \cite{gyourko2015regulation}. 
+Second, the power of participatory distortion is magnified in discretionary review systems, where individual projects require site-specific approval rather than proceeding “by right” \cite{manville2016unpermitted, hills2011zoning}. In Texas, the protest petition statute empowered adjacent property owners to trigger supermajority council votes, making it a potent institutional veto point. Supermajority requirements systematically favor the status quo \cite{cellini2010schools}, amplifying the influence of organized opposition. In Austin, measured threshold-crossing petitions have been especially common for rezonings that increase residential density (see Table~\ref{tab:mercatus_petitions}), highlighting the asymmetric impact of these institutional tools on housing supply.
 
-The theoretical centerpiece for understanding this localized resistance is Fischel's \cite{fischel2001homevoter} homevoter hypothesis. Fischel posits that homeowners engage in local politics primarily to protect both the use value and exchange value of their homes, rationally utilizing zoning restrictions to preserve neighborhood exclusivity and mitigate perceived financial risks. However, recent empirical work has demonstrated that this protective impulse translates into a highly asymmetric political arena. Einstein, Palmer, and Glick \cite{einstein2019book} document the phenomenon of ``participatory distortion,'' demonstrating that the participants who dominate planning and zoning board meetings are overwhelmingly older, disproportionately white, longtime homeowners who are united in opposing new housing. These ``neighborhood defenders'' possess the time, resources, and localized knowledge to effectively block individual projects. Furthermore, Hankinson \cite{hankinson2018} complicates the pure asset-protection motive by revealing that renters in high-cost cities exhibit spatial NIMBYism on par with homeowners due to localized displacement anxiety, cementing the reality that spatial proximity to development triggers mobilization regardless of tenure.
-
-\subsection{Discretionary Review and Institutional Vetoes}
-
-Participatory distortion matters for housing supply when it operates through institutions that can delay or block projects. Manville and Monkkonen \cite{manville2016unpermitted} highlight that discretionary review processes---where development relies on site-specific municipal approvals rather than by-right administrative clearance---serve as the primary vehicle through which local opposition exerts leverage. In a discretionary regime, citywide housing goals are repeatedly displaced by parcel-level political conflict \cite{hills2011zoning}.
-
-In Texas, this leverage is explicitly codified through the protest petition mechanism (Local Government Code \S~211.006). The statute legally empowers adjacent property owners to force supermajority city council voting requirements if owners representing 20\% of the \emph{area of lots} immediately adjoining the proposed change and extending 200 feet from that area sign a petition that the City Clerk certifies as valid.\footnote{\S~211.006(d) and (f) were repealed effective September 1, 2025 by HB 24 (89th Texas Legislature). The operative provisions now reside in new \S~211.0061, which establishes a three-tier protest system: (1)~owners of $\ge$20\% of the directly affected area trigger a three-fourths vote; (2)~owners of $\ge$60\% of the adjoining 200-foot buffer trigger a three-fourths vote; and (3)~for qualifying residential development under subsection~(b)(3), a simple majority of all governing body members is required. Proposed comprehensive zoning changes are exempted from the protest mechanism entirely.} This mechanism empowers localized opposition, transforming protest into a formal institutional hurdle. Cellini, Ferreira, and Rothstein \cite{cellini2010schools}, in their analysis of California school bond referenda, demonstrate how supermajority thresholds inherently distort political outcomes to favor the status quo. 
-
-In Austin, the protest petition creates institutional friction for land use: cases exceeding the measured petition threshold appear to face additional voting requirements and longer processing times. Recent empirical research by the Mercatus Center at George Mason University confirms the severity and asymmetry of this mechanism specifically within the Austin political geography. Their analysis demonstrates that measured threshold-crossing petitions are more common for rezonings that increase residential density: historically, 25\% of rezonings to multifamily use in Austin crossed that measured threshold, compared to only 5\% for commercial rezonings. 
-
-\begin{table}[H]
-\centering
-\caption[Measured Threshold-Crossing Petition Incidence by Proposed Land Use in Austin (Mercatus Center)]{Measured Threshold-Crossing Petition Incidence by Proposed Land Use in Austin (Mercatus Center)\footnote{Source: Mercatus Center analysis, Updated: 2026-04-13}}
-\label{tab:mercatus_petitions}
-\begin{tabular}{lc}
-\toprule
-\textbf{Proposed Zoning Category} & \textbf{Rezonings Crossing Measured Threshold (\%)} \\
-\midrule
-Multifamily Residential & 25\% \\
-Commercial / Non-Residential & 5\% \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{Figures/Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
-    \caption[Annual Petition Filing Rate by Project Type]{Annual petition filing rates by project type, 2007--2024. Consistent with the Mercatus Center pattern (Table~1), this timeline tracks the observed historical petition frequency within each development category over the study period. While high-density or specialized use categories historically experience greater petition volatility, missing-middle and standard residential rezonings---which comprise the vast majority of all discretionary cases---maintain a consistently low baseline filing rate throughout the dataset. \textit{Generated: 2026-04-13}}
-    \label{fig:typology_timeline}
-\end{figure}
-
-Because the process is fundamentally asymmetric---empowering opponents of development through a fixed statutory buffer geometry---it creates a bias toward the status quo, dragging contested housing applications into months of procedural delays. The Texas Legislature structurally altered this framework in 2025; under House Bill 24, the state established new \S~211.0061, which exempts proposed comprehensive zoning changes from the protest mechanism entirely and replaces the uniform 20\% trigger with a differentiated, multi-tier system. For qualifying residential protests under subsection~(b)(3), the vote consequence is a simple majority of all governing body members rather than the prior three-fourths supermajority; for other protest paths, three-fourths remains the threshold. Consequently, predicting whether a measured threshold-crossing petition will be filed against an application under the pre-HB\,24 regime forms the core empirical challenge of this thesis.
-
-\subsection{Prediction Framing in Spatial Planning}
-
-Traditional econometric scholarship in urban planning almost exclusively evaluates the causal effect of zoning---for instance, whether upzoning increases land values or whether a protest petition causes delay. However, addressing the localized gridlock of discretionary review requires anticipating \emph{where} opposition will emerge before political capital is expended. This intellectual justification builds on Shmueli's \cite{shmueli2010} foundational distinction between explanatory modeling (testing causal hypotheses) and predictive modeling (generating accurate forecasts of new observations), and on Mullainathan and Spiess \cite{mullainathan2017ml}, who argue that machine learning solves a fundamentally different problem than traditional econometrics: prediction ($\hat{y}$) rather than parameter estimation ($\hat{\beta}$).
-
-Kleinberg, Ludwig, Mullainathan, and Obermeyer \cite{kleinberg2015prediction} formalize this distinction by defining the ``predictive policy question,'' cases where optimal policy decisions depend not on understanding the causal mechanism of an outcome, but on accurately forecasting its occurrence. Predicting which zoning cases will meet the petition threshold is one such question. Planners and policymakers need to know which projects will trigger supermajority voting requirements to efficiently allocate political capital, engage in proactive community mediation, or design comprehensive reforms that bypass parcel-level friction \cite{athey2019ml}. This research tests whether administrative, spatial, and neighborhood features observable at the time of filing carry sufficient signal to anticipate this specific institutional event.
+Third, while much of the urban planning literature focuses on causal inference—estimating the effects of zoning changes or protest petitions on outcomes like land value or project delay—addressing discretionary gridlock also requires anticipating where opposition will arise. Shmueli \cite{shmueli2010} and Mullainathan and Spiess \cite{mullainathan2017ml} distinguish between explanatory and predictive modeling, emphasizing that accurate forecasts can inform policy and administrative triage even when causal mechanisms are complex or uncertain. Kleinberg et al. \cite{kleinberg2015prediction} formalize the “predictive policy question,” where optimal decisions depend on forecasting rather than explanation. In the context of Austin’s protest petition regime, the relevant question is not just why opposition occurs, but whether it can be predicted in advance using only the information available at the time of filing. This predictive framing aligns with emerging best practices in public policy research \cite{athey2019ml}.
 
 \section{Outcome Definition and As-of Information Setup}
 
@@ -167,7 +118,9 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 
 \begin{table}[H]
 \centering
-\caption[Annual Distribution of Discretionary Zoning Cases (2007--2024)]{Annual Distribution of Discretionary Zoning Cases (2007---2024)\footnote{Updated: 2026-04-13}}
+\caption[Annual Distribution of Discretionary Zoning Cases (2007--2024)]{Annual Distribution of Discretionary Zoning Cases (2007---2024)}
+\captionsetup{type=table}
+\caption*{\footnotesize \textit{Note:} Updated: 2026-04-13}
 \label{tab:annual_counts}
 \begin{tabular}{lc|lc|lc}
 \toprule
@@ -280,7 +233,9 @@ To separate observed labels from legal adjudication, this manuscript treats labe
 
 \begin{table}[H]
 \centering
-\caption[Label-Validity Object for Stage C Primary Outcome]{Label-Validity Object for Stage C Primary Outcome\footnote{Updated: 2026-04-13}}
+\caption[Label-Validity Object for Stage C Primary Outcome]{Label-Validity Object for Stage C Primary Outcome}
+\captionsetup{type=table}
+\caption*{\footnotesize \textit{Note:} Updated: 2026-04-13}
 \label{tab:label_validity_object}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{@{}p{0.20\textwidth}p{0.22\textwidth}p{0.10\textwidth}p{0.40\textwidth}@{}}
