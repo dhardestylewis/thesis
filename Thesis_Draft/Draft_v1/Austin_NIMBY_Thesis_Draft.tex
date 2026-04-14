@@ -283,31 +283,11 @@ The predictive evaluation centers on the Formal Protest Petition model. The rema
 
 \textbf{Project Type and Scale model (supporting context)} is retained only as auxiliary descriptive context and is not treated as a headline predictive task.
 
+
 \subsection{IPW Diagnostics and Sensitivity Protocol}
 \label{sec:ipw_diagnostics}
 
-To formally evaluate whether selection weighting is admissible, the Development Occurrence model estimates a propensity score $\hat e_i = \Pr(D_i=1\mid X_i)$ for inclusion in the petition model analytic sample. For observed cases ($D_i=1$), the stabilized weight is
-\begin{equation}
-  w_i^{\text{stab}} = \frac{\Pr(D=1)}{\hat e_i}.
-\end{equation}
-The covariate set $X_i$ is fixed ex ante and includes parcel area, parcel frontage, baseline zoning class, council-district fixed effects, ACS renter share, ACS median income, homestead share, lagged neighborhood petition rate, and year fixed effects.
-
-Primary truncation clips stabilized weights at empirical $[p_1,p_{99}]$ to limit variance inflation. Sensitivity bands additionally test $[p_{2.5},p_{97.5}]$ and $[p_{5},p_{95}]$. For each band, we report overlap, standardized mean differences (SMD), and effective sample size
-\begin{equation}
-  ESS = \frac{(\sum_i w_i)^2}{\sum_i w_i^2}.
-\end{equation}
-
-\input{Tables/ipw_diagnostics_summary.tex}
-\input{Tables/ipw_balance_diagnostics.tex}
-
-\begin{figure}[H]
-    \centering
-    \input{Figures/Chapter4/fig_ipw_overlap_balance.tex}
-    \caption[IPW overlap, ESS, and balance diagnostics]{IPW diagnostics for Stage A sensitivity weighting. The overlap and balance profile remains weak after truncation, and ESS remains well below the 40\% admissibility threshold.}
-    \label{fig:ipw_diag}
-\end{figure}
-
-All weighting bands fail the joint diagnostic gate (insufficient overlap, insufficient ESS retention, and residual imbalance), so weighted Stage C effects are excluded from primary claims and retained only as failed sensitivity analyses.
+Inverse-probability weighting (IPW) was evaluated as a potential correction for selection bias using the Development Occurrence model, but all tested weighting schemes failed standard diagnostics (overlap, effective sample size, and covariate balance). As a result, weighted estimates are excluded from primary claims and retained only as failed sensitivity analyses. Full details, including tables and diagnostics, are reported in Appendix~\ref{app:ipw_diagnostics}.
 
 \subsection{Formal Protest Petition}
 
@@ -317,6 +297,8 @@ P(y_0 = 1 \mid D=1, X_{i,t}, Z)
 \end{equation}
 
 At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. The primary petition model specification is intentionally unweighted because IPW diagnostics from the Development Occurrence model fail overlap and balance thresholds (Section~\ref{sec:ipw_diagnostics}). Weighted estimates are retained only as failed sensitivity checks and are not used for headline claims. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves}.
+At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is restricted to information observable by planners at the time of filing, including site geometry, requested zoning changes, buffer demographics, and historical petition rates. The primary petition model specification is intentionally unweighted because IPW diagnostics from the Development Occurrence model fail overlap and balance thresholds (Section~\ref{sec:ipw_diagnostics}). Weighted estimates are retained only as failed sensitivity checks and are not used for headline claims. Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx models are reported in Figure~\ref{fig:pr_curves} (see Results section).
+
 
 \begin{figure}[H]
     \centering
@@ -326,7 +308,15 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
 \end{figure}
 
 \subsubsection{Primary Model Selection and Fixed Benchmark Roster}
-The benchmark roster was fixed before final analysis and not expanded post hoc. The fixed roster contains Logistic Regression, Random Forest, XGBoost, LightGBM, CatBoost, Deep ERM, Deep V-REx, TabNet, FT-Transformer, ExcelFormer, and TabPFN. The model chosen for all primary filing-date analyses is \textbf{CatBoost} because the explicit selection criterion prioritizes out-of-distribution filing-date PR-AUC subject to a calibration admissibility rule (lowest ECE among models with acceptable discrimination), with no architecture additions after this roster freeze.
+
+The benchmark roster was fixed before final analysis and not expanded post hoc. The fixed roster contains Logistic Regression, Random Forest, XGBoost, LightGBM, CatBoost, Deep ERM, Deep V-REx, TabNet, FT-Transformer, ExcelFormer, and TabPFN. This selection was designed to ensure broad coverage of the major model families that have demonstrated strong performance in recent tabular machine learning research and applied data science. Specifically, the roster includes:
+\begin{itemize}
+    \item \textbf{Linear and generalized linear models} (Logistic Regression) as a baseline for interpretability and comparison.
+    \item \textbf{Ensemble tree-based models} (Random Forest, XGBoost, LightGBM, CatBoost), which are widely recognized as state-of-the-art for structured/tabular data.
+    \item \textbf{Deep learning models} (Deep ERM, Deep V-REx, TabNet) to capture potential nonlinearities and interactions beyond tree ensembles.
+    \item \textbf{Transformer-based and foundation models} (FT-Transformer, ExcelFormer, TabPFN) to reflect recent advances in tabular deep learning and zero-shot prediction.
+\end{itemize}
+This composition aligns with best practices in recent comparative studies and public ML benchmarks, ensuring that both classical and modern approaches are represented. The model chosen for all primary filing-date analyses is \textbf{CatBoost} because the explicit selection criterion prioritizes out-of-distribution filing-date PR-AUC subject to a calibration admissibility rule (lowest ECE among models with acceptable discrimination), with no architecture additions after this roster freeze.
 
 The full fixed-roster benchmark matrix is reported in Appendix~\ref{app:alt_models} rather than the main text to keep the core narrative tied to one primary estimator and one decision rule.
 
@@ -377,24 +367,27 @@ This V-shaped recovery is the central temporal finding: CatBoost's Pre-2019 anch
         \caption{Holdout-year comparison view (2D).}
         \label{fig:temporal_drift_2d_holdout}
     \end{subfigure}
-    \caption[Temporal Drift Evidence in 2D]{\textbf{Temporal drift evidence in 2D.} Left panel presents line-based trajectories by anchor year; right panel provides the complementary holdout-year view. Temporal interpretation is descriptive. For uncertainty context at each (anchor, holdout) cell, Table~\ref{tab:temporal_cell_support} reports the corresponding holdout-year support ($n$ and positive-event counts).}
-    \label{fig:temporal_drift_2d}
-\end{figure}
+    \caption[Temporal Drift Evidence in 2D]{\textbf{Temporal drift evidence in 2D.} Left panel presents line-based trajectories by anchor year; right panel provides the complementary holdout-year view. Temporal interpretation is descriptive.}
 
-\begin{table}[htbp]
-\centering
-\caption{Uncertainty annotation lookup for temporal cells (CatBoost H0 drift view).}
-\label{tab:temporal_cell_support}
-\small
-\begin{tabular}{lccccccc}
-\toprule
-\textbf{Holdout year} & 2018 & 2019 & 2020 & 2021 & 2022 & 2023 & 2024 \\
-\midrule
-$n$ (cases) & 197 & 210 & 177 & 214 & 216 & 201 & 215 \\
-Positives ($y=1$) & 30 & 25 & 14 & 14 & 4 & 10 & 5 \\
-\bottomrule
-\end{tabular}
-\end{table}
+    \label{fig:temporal_drift_2d}
+    \end{figure}
+
+    \noindent\textit{Uncertainty annotation and cell support:} To aid interpretation of the temporal drift matrix and associated figures, Table~\ref{tab:temporal_cell_support} provides an explicit uncertainty annotation for each (anchor year, holdout year) cell. It reports the number of cases ($n$) and the number of positive events ($y=1$) in each evaluation window for the CatBoost $H_0$ drift analysis. This lookup table is essential for understanding the reliability of PR-AUC values, especially in cells with sparse positives, and should be consulted alongside the drift figures to contextualize wide confidence intervals and the limits of inference in rare-event settings.
+
+    \begin{table}[htbp]
+    \centering
+    \caption{Uncertainty annotation lookup for temporal cells (CatBoost $H_0$ drift view).}
+    \label{tab:temporal_cell_support}
+    \small
+    \begin{tabular}{lccccccc}
+    	oprule
+    	extbf{Holdout year} & 2018 & 2019 & 2020 & 2021 & 2022 & 2023 & 2024 \\
+    \midrule
+    $n$ (cases) & 197 & 210 & 177 & 214 & 216 & 201 & 215 \\
+    Positives ($y=1$) & 30 & 25 & 14 & 14 & 4 & 10 & 5 \\
+    \bottomrule
+    \end{tabular}
+    \end{table}
 
 \textbf{Methodological Integrity and Pre-training Leakage.} The use of foundation models like TabPFN introduces a risk of "future leakage" if Austin's open data was inadvertently included in the model's original training corpus. To shield against this contamination, the foundation benchmarks were conducted under a strict \textit{Zero-Shot In-Context} enclosure. The internal model weights remained frozen, and the model was only permitted to "observe" the historically bounded pre-2022 training set as a prompt-context before predicting post-2022 outcomes. This protocol ensures that the model's 0.54 PR-AUC success is a result of structural pattern recognition, not historical memorization.
  
