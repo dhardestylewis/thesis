@@ -1,0 +1,58 @@
+\contentsline {section}{\numberline {1}Introduction}{7}{section.1}%
+\contentsline {section}{\numberline {2}Literature Review}{8}{section.2}%
+\contentsline {subsection}{\numberline {2.1}The Political Economy of Zoning Friction and Participatory Distortion}{8}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Discretionary Review and Institutional Vetoes}{8}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Prediction Framing in Spatial Planning}{11}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Evaluative Constraints on Predictive Governance}{11}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Outcome Definition and As-of Information Setup}{11}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Analytical Panel Structure}{11}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Selection}{14}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{16}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Label-Validity Object and Audit Trail}{16}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{17}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Modeling Strategy}{17}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Supporting Stages (Methods Support Only): Stage A, Stage B, and Stage D}{17}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Formal Protest Petition}{18}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Exploratory Comparison of Alternative Model Classes}{19}{subsubsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.3}Model Evaluation Strategy}{19}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Stage C Primary Results}{21}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{21}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{23}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Interpretation Sidecar: Attribution Stability and Meta-Attribution}{24}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Attribution Stability Across Temporal Windows}{28}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.2}Exploratory Meta-Attribution Analysis}{28}{subsubsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.3}The Non-Stationary City: Attribution Shifts Over Time}{30}{subsubsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.4}Institutional Context: Regression Discontinuity at the 20\% Petition Threshold}{30}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Descriptive Evidence from the 2022 Electoral Transition}{33}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Brief Support References (Non-Headline)}{33}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Qualitative Planning Context}{34}{section.6}%
+\contentsline {section}{\numberline {7}Limitations}{35}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{36}{section.8}%
+\contentsline {section}{\numberline {A}Metric Provenance Manifest}{38}{appendix.A}%
+\contentsline {section}{\numberline {B}Supplementary Calibration Comparison}{39}{appendix.B}%
+\contentsline {section}{\numberline {C}Semantic Feature Mapping}{40}{appendix.C}%
+\contentsline {section}{\numberline {D}Unclustered Attribution Stability Across Expanding Windows}{41}{appendix.D}%
+\contentsline {section}{\numberline {E}Interview Recruitment Overview}{47}{appendix.E}%
+\contentsline {section}{\numberline {F}IRB Protocol Summary}{48}{appendix.F}%
+\contentsline {section}{\numberline {G}Semi-Structured Interview Guide}{49}{appendix.G}%
+\contentsline {section}{\numberline {H}Sample Protest Petition}{50}{appendix.H}%
+\contentsline {section}{\numberline {I}Illustrative Support-Layer Panel Structure}{51}{appendix.I}%
+\contentsline {section}{\numberline {J}Methodological Appendix: Expanded Details}{52}{appendix.J}%
+\contentsline {subsection}{\numberline {J.1}Variable Dictionary}{52}{subsection.J.1}%
+\contentsline {subsection}{\numberline {J.2}Hyperparameter Search Grids}{52}{subsection.J.2}%
+\contentsline {subsection}{\numberline {J.3}Subgroup Definitions \& Fairness Testing}{53}{subsection.J.3}%
+\contentsline {subsection}{\numberline {J.4}Natural Language Processing Model: Exploratory Text Features}{53}{subsection.J.4}%
+\contentsline {section}{\numberline {K}Development Occurrence Model (Stage A)}{56}{appendix.K}%
+\contentsline {section}{\numberline {L}Project Type and Scale Model (Stage B)}{59}{appendix.L}%
+\contentsline {section}{\numberline {M}Analysis of Administrative Data Censorship (Stage D)}{61}{appendix.M}%
+\contentsline {section}{\numberline {N}Expected Contested Units (Composite Measure)}{62}{appendix.N}%
+\contentsline {section}{\numberline {O}Institutional Geographic Overlay Analyses}{63}{appendix.O}%
+\contentsline {section}{\numberline {P}HOME Initiative Event Study}{65}{appendix.P}%
+\contentsline {section}{\numberline {Q}Temporal Integrity and Leakage Audit}{66}{appendix.Q}%
+\contentsline {section}{\numberline {R}Extended Architectural Search and Resampling Strategies}{67}{appendix.R}%
+\contentsline {section}{\numberline {S}Longitudinal Architecture Attribution Divergence (2018--2024)}{68}{appendix.S}%
+\contentsline {section}{\numberline {T}Longitudinal Error Topology (FNR/FPR Tracking)}{70}{appendix.T}%
+\contentsline {section}{\numberline {U}Multi-Seed Stability Audit}{72}{appendix.U}%
+\contentsline {section}{\numberline {V}Exploratory Model Stability Audit}{77}{appendix.V}%
+\contentsline {section}{\numberline {W}Exploratory Feature-Restriction Analysis}{78}{appendix.W}%
+\contentsline {section}{\numberline {X}Exploratory Meta-Attribution Analysis}{79}{appendix.X}%
