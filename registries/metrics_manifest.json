@@ -32,7 +32,7 @@
     "folding": "ood_bootstrap_temporal_holdout",
     "binning": "10-bin uniform ECE",
     "postprocessing": "isotonic_regression_oof",
-    "note": "Calibrator fitted on 5-fold OOF training predictions; applied to test set. Pre-calibration ECE was 0.208; minimal change due to sparse test positives (n_pos=15)."
+    "note": "Calibrator fitted on 5-fold OOF training predictions; applied to test set. Pre-calibration ECE=0.208; post-calibration ECE=0.205; minimal change due to sparse test positives (n_pos=15)."
   },
   "metricECEInDistCVCalibrated": {
     "value": "0.239",
