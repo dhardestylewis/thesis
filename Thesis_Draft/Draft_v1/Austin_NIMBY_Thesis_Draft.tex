@@ -76,8 +76,6 @@ This thesis asks whether it is possible to predict, at the time of filing, which
 
 The outcome of interest is a “measured threshold-crossing petition”—an event where the reconstructed petition-share calculation exceeds the statutory 20% threshold, based on public records available at filing. This measure is distinct from the clerk-certified petition, which is not directly observed. The thesis does not attempt to predict all forms of opposition or the final legal outcome, but rather assesses whether administrative, spatial, and economic features at the time of application can meaningfully signal the risk of this specific institutional event. The main contribution is to clarify the predictive value and limitations of these features for anticipating organized opposition in a high-stakes land use context.
 
-The research employs a multi-step workflow centered on predictive modeling using administrative, spatial, and neighborhood features available at the time of filing. Supporting analyses include tests for selection bias correction, descriptive audits of project types and downstream outcomes, and attribution analysis to clarify model transparency. Additional exploratory work examines the impact of crossing the petition threshold on processing times and considers the effects of political transitions in city council composition. This integrated approach provides both predictive insights and institutional context for understanding how and when organized opposition emerges.
-
 To supplement the quantitative analysis, the study incorporates semi-structured interviews with planning professionals. These interviews provide institutional context—highlighting informal negotiations, strategic petition timing, and neighborhood mobilization—that administrative data alone cannot capture. While not used to validate model performance, these perspectives help situate the findings within the realities of planning practice and underscore the ethical and governance considerations surrounding predictive tools in land use decision-making.
 
 \section{Literature Review}
@@ -86,7 +84,7 @@ This literature review synthesizes three core themes that motivate the thesis’
 
 First, land-use regulation is widely recognized as a binding constraint on housing supply, driving a wedge between construction costs and market prices \cite{glaeser2005manhattan, glaeser2003zoning, gyourko2015regulation}. Fischel’s “homevoter hypothesis” \cite{fischel2001homevoter} posits that homeowners mobilize politically to protect property values, often leveraging zoning to preserve neighborhood exclusivity. Empirical work by Einstein, Palmer, and Glick \cite{einstein2019book} documents “participatory distortion,” where older, wealthier, long-tenured homeowners dominate public processes and systematically oppose new housing. Hankinson \cite{hankinson2018} finds that renters, too, may resist nearby development due to displacement fears, reinforcing the spatially localized nature of opposition.
 
-Second, the power of participatory distortion is magnified in discretionary review systems, where individual projects require site-specific approval rather than proceeding “by right” \cite{manville2016unpermitted, hills2011zoning}. In Texas, the protest petition statute empowered adjacent property owners to trigger supermajority council votes, making it a potent institutional veto point. Supermajority requirements systematically favor the status quo \cite{cellini2010schools}, amplifying the influence of organized opposition. In Austin, measured threshold-crossing petitions have been especially common for rezonings that increase residential density (see Table~\ref{tab:mercatus_petitions}), highlighting the asymmetric impact of these institutional tools on housing supply.
+Second, the power of participatory distortion is magnified in discretionary review systems, where individual projects require site-specific approval rather than proceeding “by right” \cite{manville2016unpermitted, hills2011zoning}. In Texas, the protest petition statute empowered adjacent property owners to trigger supermajority council votes, making it a potent institutional veto point. Supermajority requirements systematically favor the status quo \cite{cellini2010schools}, amplifying the influence of organized opposition. In Austin, measured threshold-crossing petitions have been especially common for rezonings that increase residential density, highlighting the asymmetric impact of these institutional tools on housing supply.
 
 Third, while much of the urban planning literature focuses on causal inference—estimating the effects of zoning changes or protest petitions on outcomes like land value or project delay—addressing discretionary gridlock also requires anticipating where opposition will arise. Shmueli \cite{shmueli2010} and Mullainathan and Spiess \cite{mullainathan2017ml} distinguish between explanatory and predictive modeling, emphasizing that accurate forecasts can inform policy and administrative triage even when causal mechanisms are complex or uncertain. Kleinberg et al. \cite{kleinberg2015prediction} formalize the “predictive policy question,” where optimal decisions depend on forecasting rather than explanation. In the context of Austin’s protest petition regime, the relevant question is not just why opposition occurs, but whether it can be predicted in advance using only the information available at the time of filing. This predictive framing aligns with emerging best practices in public policy research \cite{athey2019ml}.
 
@@ -514,100 +512,25 @@ Standard permutation importance for gradient boosting assesses the drop in predi
     \label{fig:feature_importance_clustered}
 \end{figure}
 
-A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:shap_beeswarm}) provides case-level attribution using tree path-dependent conditional expectations. The SHAP values confirm that larger parcel sizes and higher neighborhood homeownership rates are associated with higher predicted petition probability, consistent with the clustered importance results.
+Case-level SHAP attribution confirms that larger parcel sizes and higher neighborhood homeownership rates are associated with higher predicted petition probability, consistent with the clustered importance results (see Appendix~\ref{app:exploratory_attribution} for the full beeswarm decomposition).
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf}
-    \caption[SHAP Beeswarm Plot for the Opposition Model]{SHAP beeswarm plot for the opposition model at the filing baseline. Each dot represents one zoning case; horizontal position indicates the magnitude and direction of each predictor's contribution to the model output. The clustered importance in Figure~\ref{fig:feature_importance_clustered} provides the most robust correction for collinearity.}
-    \label{fig:shap_beeswarm}
-\end{figure}
-
-% [Moved to Appendix per CYCLE_01_EXHIBIT_AUDIT]
-
-\subsection{Interpretation Sidecar: Attribution Stability and Meta-Attribution}
+\subsection{Attribution Stability and Transparency Diagnostics}
 \label{sec:attribution_divergence}
 
-\noindent \textit{Methods disclaimer: attribution analyses in this chapter describe model reliance patterns and ranking behavior. They do not identify causal effects.}
+\noindent \textit{Methods disclaimer: attribution analyses describe model reliance patterns and ranking behavior. They do not identify causal effects.}
 
-As reported in the benchmark comparison (Table~\ref{tab:comprehensive_benchmark}), Deep Attentive and Foundation models (e.g., ExcelFormer, TabPFN) achieve higher raw discrimination than traditional tree-based gradients in the benchmark roster. This raises an interpretability question: do these architectures achieve higher performance by identifying entirely novel predictors of opposition, or by learning richer, non-linear representations of the same fundamental spatial constraints observed by CatBoost?
+Attribution audits across model architectures and temporal windows confirm that the feature hierarchy is broadly stable: neighborhood demographics (median household income) and project scale are the most consistently attributed predictors, with a full-span Spearman rank correlation of $\rho = 0.92$ ($p < 0.001$) between 2018 and 2024 evaluations. Tree-based and deep attentive architectures rely on structurally different feature profiles (parcel scale versus neighborhood composition), but cross-model consensus features---Neighborhood Demographics, Housing Tenure, and Neighborhood Income---are robust across architectures. These patterns are consistent with filing-date features providing a defensible basis for ranking petition risk, but they should not be interpreted as causal identification.
 
-To evaluate this, Figure~\ref{fig:attribution_divergence_matrix} maps the semantic SHAP attributions extracted from traditional tree frameworks (Gradient Boosting, Random Forest) against a PyTorch deep neural framework natively penalized via Variance Risk Extrapolation (V-REx CVAE), with gradients extracted via DeepExplainer. The matrix is used only as an audit aid: it compares attribution profiles across model classes and temporal horizons, but it is not used to claim causal identification.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{Chapter4/fig_attribution_divergence_matrix.pdf}
-    \caption[Attribution Divergence Matrix: Gradient Boosting vs. Deep V-REx Penalization]{Comparison of semantic feature attribution between traditional tree architectures (Bagging/Boosting) and a natively-penalized Deep V-REx (Variance Risk Extrapolation) architecture. Identical spatial inputs map to distinctly different structural priors, a phenomenon that remains rigidly stable across all development horizons and policy eras.}
-    \label{fig:attribution_divergence_matrix}
-\end{figure}
-
-The divergence is stark, yet remarkably stable. Across every quadrant—regardless of the timeline or the horizon—the tree-based CatBoost and Random Forest models overwhelmingly index on contiguous parcel facts (Property Valuation, Parcel Scale, and Structure Age). Conversely, the Deep Attentive framework systematically ignores parcel constraints and directs its learning toward complex neighborhood distributions—specifically Demographic Composition, Housing Tenure, and combinations of Rent characteristics. The deep and tree-based models appear to rely on different attribution profiles, though these differences should not be interpreted as identifying distinct causal mechanisms.
-
-To check whether this pattern holds year-by-year and is not merely an artifact of merging the Pre/Post-2022 anchors, Appendix~\ref{app:longitudinal_divergence} provides a full longitudinal decomposition across every individual year from 2018 to 2024, showing that the cross-model attribution differences are consistent across years.
-
-\subsubsection{Attribution Stability Across Temporal Windows}
-
-To ensure that feature importance is robust to the significant institutional and market shifts between 2007 and 2024, an expanding-window attribution stability test evaluates how SHAP values evolve. This test recursively retrains the primary CatBoost model on expanding historical windows (anchored at 2018 through 2024) and extracts case-level TreeSHAP attributions on the immediately following out-of-distribution year.
-
-Figure~\ref{fig:attribution_stability} tracks the relative share of total SHAP attribution for the top predictor clusters over these windows at the filing date horizon ($H_0$). To avoid artifacts from dynamic correlation shifts, a frozen global clustering structure is used as a conceptual baseline across all anchors. The stability analysis yields three key findings. First, neighborhood demographics---specifically median household income---consistently emerged as the most structurally robust predictor (accounting for 18\% to 24\% of overall attribution), replacing parcel scale as the most determinative risk driver following data integration upgrades. Second, once clustering noise is neutralized, the rank ordering of feature clusters exhibits extremely high long-term persistence, with a full-span Spearman rank correlation of $\rho = 0.92$ ($p < 0.001$) between the 2018 and 2024 evaluations. Third, adjacent-anchor rank correlation remains consistently strong ($\text{mean } \rho = 0.76$), indicating that the model's feature hierarchy remained comparatively stable across the 2022 electoral transition, though this cannot be distinguished from gradual covariate drift.
-
-This stability is consistent with the view that filing-date features provide a defensible basis for ranking petition risk. A multi-horizon diagnostic further shows that this pattern holds when forecasting the identical target year (2024) across varying training horizons. The feature hierarchy of an early model trained at a multi-year forecasting horizon (pre-2018 data) is broadly similar to the hierarchy of a near-term model at a one-year horizon (pre-2024 data). Both tend to emphasize physical project size indicators (like the Median Sqft Cluster) and neighborhood composition as leading risk factors. Notably, while the model's uncalibrated probability of a petition occurring decays across longer horizons, the relative ranking of feature clusters shows little change across horizons—though this pattern should be interpreted cautiously given the overlap in training windows.
-
-\begin{figure}[htbp]
-    \centering
-    \begin{subfigure}[b]{0.9\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_attribution_stability_H0.pdf}
-        \caption{Clustered Attribution Share}
-    \end{subfigure}
-    \par\vspace{0.3cm}
-    \begin{subfigure}[b]{0.9\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_attribution_rank_stability_H0.pdf}
-        \caption{Adjacent-Window Rank Correlation}
-    \end{subfigure}
-    \caption[Expanding-Window Attribution Stability Test]{Expanding-window attribution stability for the filing-date ($H_0$) baseline. (a) Heatmap displaying the percentage share of total absolute SHAP attribution for top feature clusters when tested out-of-distribution on the holdout anchor year. (b) Spearman rank-order correlation ($\rho$) of top features across adjacent temporal windows.}
-    \label{fig:attribution_stability}
-\end{figure}
-
-% [Moved to Appendix per CYCLE_01_EXHIBIT_AUDIT]
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_multi_horizon_attribution.pdf}
-    \caption[Multi-Horizon Attribution Stability]{Multi-Horizon identical-target attribution stability. Left axis and line sequence represent the rank-order alignment of the attribution hierarchy for models trained with progressively older historical windows evaluated on identical 2024 zoning cases. Right axis and columns illustrate the stationary dominance of the top feature cluster across all horizons.}
-    \label{fig:multi_horizon_stability}
-\end{figure}
-
-% [Moved to Appendix per CYCLE_01_EXHIBIT_AUDIT]
-
-\subsubsection{Meta-Attribution Clustering and Cross-Model Consensus Features}
-
-To test whether learned attributions are dependent on the model architecture across eras, a meta-clustering framework extracts semantic attribution vectors from models (Deep ERM, natively penalized Deep V-REx, CatBoost, and Random Forest) trained on out-of-distribution temporal splits (2018--2024). Figure~\ref{fig:meta_attribution_clustering} presents a Euclidean Ward-linkage hierarchical clustering of these feature-importance vectors.
-
-The vertical dendrogram indicates that tree architectures and deep attentive mechanisms consistently form distinct, separable clusters independent of the evaluation year, supporting the structural divergence previously visualized. However, this meta-clustering rejects the notion of a ``democratic'' structural average, where all models are treated as equally valid representations of the underlying data process. Traditional tree-based approaches (such as Gradient Boosting and Random Forests), while powerful for pure predictive triage, possess a greedy inductive bias: they optimize for immediate error reduction by latching onto high-utility spatial proxies (e.g., heavily weighting raw parcel footprints because they map cleanly to wealthy single-family neighborhoods).
-
-Conversely, architectures like V-REx are mathematically designed to penalize reliance on variables that shift across computational environments. Therefore, the goal of this meta-analysis is not to find a naive compromise between architectures, but to identify \textbf{cross-model consensus features}: features with high average attribution share and required uncertainty diagnostics (bootstrap intervals and rank-stability summaries). Under this framework, features such as Neighborhood Demographics, Housing Tenure, and Neighborhood Income are interpreted as recurring model-reliance patterns rather than causal determinants. Speculative mechanism-level narratives are moved to the exploratory appendix (Appendix~\ref{app:exploratory_attribution}).
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\textwidth]{../../Analysis/Output/SHAP_MetaClustering/meta_attribution_clustermap.pdf}
-    \caption[Meta-Attribution Structural Clustering]{Meta-Attribution Clustering. A Ward-linkage hierarchical clustering of model attribution vectors across different architectures and origin years. Tree algorithms and deep algorithms separate along the vertical axis, while the horizontal axis reveals feature clusters with consistently high attribution across models.}
-    \label{fig:meta_attribution_clustering}
-\end{figure}
-
-% [Moved to Appendix per CYCLE_01_EXHIBIT_AUDIT]
-
-\subsubsection{The Non-Stationary City: Attribution Shifts Over Time}
-
-This attribution stability analysis shows that feature cluster rankings shift across time periods, with the latent covariance structure of Austin's real estate data changing meaningfully between 2018 and 2024 (evidenced by the Adjusted Rand Index dropping below 0.62). Under post-pandemic market and institutional changes, different model architectures emphasize different interaction pathways---CatBoost tends toward socio-economic pairings while LightGBM draws on spatiotemporal coordinates.
-
-\textbf{The Policy Implication:} When municipal governments use risk-ranking models over time, monitoring predictive accuracy alone is insufficient. Attribution audits---tracking which features drive scores in each period against a frozen baseline---can reveal whether the model's implicit weighting has shifted in response to covariate drift. Detailed longitudinal exhibits in Appendix~\ref{app:unclustered_dynamic} (Figures~\ref{fig:unclustered_dynamic} and~\ref{fig:clustered_dynamic}) illustrate this by tracking how feature emphasis changes across anchor years.
+Expanding-window attribution stability exhibits, multi-horizon attribution diagnostics, meta-attribution clustering, and longitudinal unclustered attribution exhibits are reported in Appendix~\ref{app:exploratory_attribution} and Appendix~\ref{app:unclustered_dynamic}. Attribution audits should accompany any operational use of the model to detect covariate drift over time.
 
 
-\subsection{Institutional Context: Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share}
+\section{Institutional Context}
+\label{sec:institutional_context}
 
-The following analysis is included as institutional context that corroborates the significance of the outcome measure---a measured threshold-crossing petition---rather than as a parallel headline finding.
+This chapter presents bounded institutional evidence that contextualizes the Stage~C predictive findings. None of the analyses here constitute formal causal identification of the petition mechanism. The reduced-form threshold estimate characterizes the association between measured threshold-crossing and council processing time; the electoral-transition evidence is descriptive and suggestive only.
+
+\subsection{Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share}
+
 \begin{figure}[H]
 \centering
 
@@ -639,12 +562,11 @@ The following analysis is included as institutional context that corroborates th
 \label{fig:causal_dag}
 \end{figure}
 
-
 To estimate the threshold-associated shift in processing timelines, the analysis applies a threshold-based reduced-form discontinuity on reconstructed petition share at the 20\% statutory margin under Texas LGC Chapter~211. The running variable is the reconstructed percentage of signed area within the 200-foot buffer.
 
-A triangular-kernel weighted least squares estimator indicates a positive discontinuity in council processing time at the measured threshold. Full numeric estimates are reported in registry-linked tables; the body text treats RD as supporting institutional context rather than a coequal headline estimand.
+A triangular-kernel weighted least squares estimator indicates a positive discontinuity in council processing time at the measured threshold. Full numeric estimates are reported in registry-linked tables; this analysis is treated as supporting institutional context rather than a coequal headline estimand.
 
-This estimate should be interpreted as a reduced-form effect at the threshold. Because the dataset does not record whether the City Clerk formally certified each petition as legally compliant, the analysis relies on an unverified calculated area share. Rather than assuming the exact threshold acts as a deterministic sharp trigger, the specification simply estimates the shift in average processing time associated with crossing the statutory 20\% margin. Consequently, this is a threshold-based reduced-form model where institutional compliance remains unobserved.
+This estimate should be interpreted as a reduced-form effect at the threshold. Because the dataset does not record whether the City Clerk formally certified each petition as legally compliant, the analysis relies on an unverified calculated area share. Rather than assuming the exact threshold acts as a deterministic sharp trigger, the specification estimates the shift in average processing time associated with crossing the statutory 20\% margin. Consequently, this is a threshold-based reduced-form model where institutional compliance remains unobserved.
 
 Design limitations include potential manipulation of the running variable, since petition organizers may strategically target just above 20\%, and instability in the post-2022 council environment where the supermajority was routinely available. Robustness checks---a McCrary (2008) density test for running-variable manipulation ($p > 0.05$), symmetric donut exclusions, and covariate continuity checks---support the validity of the design at the threshold.
 
@@ -655,21 +577,19 @@ Design limitations include potential manipulation of the running variable, since
 \label{fig:f16_rd}
 \end{figure}
 
-
-
 \subsection{Descriptive Evidence from the 2022 Electoral Transition}
 
 The 2022 council elections provide suggestive descriptive evidence on the relationship between political representation and petition filing. Two districts changed representation in ways that constitute a clear ideological shift: District~4 replaced its incumbent in a special election on January~25, 2022 (Vela replacing Casar), while District~9 changed in the December~13, 2022 runoff (Qadri replacing Tovo, taking office January~6, 2023). These transitions are staggered by nearly 11 months, which undermines the use of a single ``Post-2022'' treatment indicator. Standard electoral turnover does not inherently constitute an institutional shock to zoning policy; the 2022 transitions were distinctive because they represented explicit ideological shifts from preservationist incumbents to pro-housing candidates.
 
 A difference-in-differences specification interacting a ``Flipped District'' indicator with a ``Post-2022'' temporal indicator yields a coefficient of \metricFlipDiDCoeff{} ($p=\metricFlipDiDPval{}$) on petition filing rates. However, formal causal inference is not feasible here: with only two treated districts, staggered treatment timing, a short post-treatment window, and sparse petition events per district, standard cluster-robust inference is known to over-reject \cite{cameron2008bootstrap}. Even wild-bootstrap corrections can fail with very few treated clusters. This estimate should be interpreted as suggestive descriptive evidence only.
 
-\subsection{Brief Support References (Non-Headline)}
+\subsection{Non-Headline Support Analyses}
 
 Several additional analyses examine downstream institutional dynamics. These are reported as exploratory context rather than as headline findings, given the inferential limitations of each design.
 
 Supplementary overlay estimates---Neighborhood Plan Areas, Historic Districts, Transit-Oriented Development deregulation, and the 10-1 council transition---are reported in Appendix~\ref{app:overlays} as transparency checks. Designs without usable identifying variation are labeled not estimable rather than interpreted as null effects.
 
-Exploratory HOME policy tracking is moved to Appendix~\ref{app:home} and treated as descriptive timing evidence only. The short post-policy window and lack of a defensible spatial control cohort make formal effect estimation non-estimable in this sample.
+Exploratory HOME policy tracking is reported in Appendix~\ref{app:home} as descriptive timing evidence only. The short post-policy window and lack of a defensible spatial control cohort make formal effect estimation non-estimable in this sample.
 
 An Invariant Causal Prediction (ICP) analysis \cite{peters2016causal} using 1,186 multi-parcel geometric environments consistently rejected feature-set invariance, suggesting that the observable administrative feature space does not contain a stable set of causal predictors across environments for petition filing---consistent with the thesis's broader finding that unobserved factors play a substantial role. Full ICP results are reported in the supplementary appendix.
 
@@ -1037,7 +957,11 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}
+    \IfFileExists{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}{%
+        \includegraphics[width=\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}%
+    }{%
+        \fbox{\parbox{0.9\textwidth}{\centering\vspace{1.5em}\textit{[Figure file not present in current build environment: StageA\_Figure4\_Hotspot.png]}\vspace{1.5em}}}%
+    }
     \caption[Predicted Geographic Occurrence vs. Realized Events]{Ex-ante predicted areas of high predicted incidence density vs.\ realized development events. The map filters for the top decile of parcels with the highest predicted development hazard.}
     \label{fig:stageA_hotspot}
 \end{figure}
