@@ -1,0 +1,2560 @@
+Learning to Optimize Via Information-Directed Sampling
+Daniel Russo1 and Benjamin Van Roy2
+1Northwestern University, daniel.russo@kellogg.northwestern.edu
+2Stanford University, bvr@stanford.edu
+July 10, 2017
+Abstract
+We proposeinformation-directed sampling– a new approach to online optimization problems
+in which a decision-maker must balance between exploration and exploitation while learning
+from partial feedback. Each action is sampled in a manner that minimizes the ratio between
+squaredexpectedsingle-periodregretandameasureofinformationgain: themutualinformation
+between the optimal action and the next observation.
+We establish an expected regret bound for information-directed sampling that applies across
+a very general class of models and scales with the entropy of the optimal action distribution.
+We illustrate through simple analytic examples how information-directed sampling accounts for
+kinds of information that alternative approaches do not adequately address and that this can
+lead to dramatic performance gains. For the widely studied Bernoulli, Gaussian, and linear
+bandit problems, we demonstrate state-of-the-art simulation performance.
+1 Introduction
+In the classical multi-armed bandit problem, a decision-maker repeatedly chooses from among a
+ﬁnite set of actions. Each action generates a random reward drawn independently from a proba-
+bility distribution associated with the action. The decision-maker is uncertain about these reward
+distributions, but learns about them as rewards are observed. Strong performance requires striking
+a balance betweenexploring poorly understood actions andexploiting previously acquired knowl-
+edge to attain high rewards. Because selecting one action generates no information pertinent to
+other actions, eﬀective algorithms must sample every action many times.
+There has been signiﬁcant interest in addressing problems with more complexinformation struc-
+tures, in which sampling one action can inform the decision-maker’s assessment of other actions.
+Eﬀective algorithms must take advantage of the information structure to learn more eﬃciently.
+The most popular approaches to such problems extendupper-conﬁdence-bound(UCB) algorithms
+and Thompson sampling, which were originally devised for the classical multi-armed bandit prob-
+lem. In some cases, such as the linear bandit problem, strong performance guarantees have been
+established for these approaches. For some problem classes, compelling empirical results have also
+been presented for UCB algorithms and Thompson sampling, as well as the knowledge gradient
+algorithm. However, as we will demonstrate through simple analytic examples, these approaches
+can perform very poorly when faced with more complex information structures. Shortcomings stem
+from the fact that they do not adequately account for particular kinds of information.
+In this paper, we propose a new approach – information-directed sampling (IDS) – that is
+designed to address this. IDS quantiﬁes the amount learned by selecting an action through an
+1
+arXiv:1403.5556v7  [cs.LG]  7 Jul 2017
+information-theoretic measure: the mutual information between the true optimal action and the
+next observation. Each action is sampled in a manner that minimizes the ratio between squared
+expected single-period regret and this measure of information gain. Through this information
+measure, IDS accounts for kinds of information that alternatives fail to address.
+As we will demonstrate through simple analytic examples, IDS can dramatically outperform
+UCB algorithms, Thompson sampling, and the knowledge-gradient algorithm. Further, by leverag-
+ing the tools of our recent information theoretic analysis of Thompson sampling [61], we establish
+an expected regret bound for IDS that applies across a very general class of models and scales with
+the entropy of the optimal action distribution. We also specialize this bound to several classes
+of online optimization problems, including problems with full feedback, linear optimization prob-
+lems with bandit feedback, and combinatorial problems with semi-bandit feedback, in each case
+establishing that bounds are order optimal up to a poly-logarithmic factor.
+We benchmark the performance of IDS through simulations of the widely studied Bernoulli,
+Gaussian, and linear bandit problems, for which UCB algorithms and Thompson sampling are
+known to be very eﬀective. We ﬁnd that even in these settings, IDS outperforms UCB algorithms
+and Thompson sampling. This is particularly surprising for Bernoulli bandit problems, where UCB
+algorithms and Thompson sampling are known to be asymptotically optimal in the sense proposed
+by Lai and Robbins [49].
+IDS solves a single-period optimization problem as a proxy to an intractable multi-period prob-
+lem. Solution of this single-period problem can itself be computationally demanding, especially
+in cases where the number of actions is enormous or mutual information is diﬃcult to evaluate.
+We develop numerical methods for particular classes of online optimization problems. In some
+cases, our numerical methods do not compute exact or near-exact solutions but generate eﬃcient
+approximations that are intended to capture key beneﬁts of IDS. There is much more work to be
+done to design eﬃcient algorithms for various problem classes and we hope that our analysis and
+initial collection of numerical methods will provide a foundation for further developments.
+It is worth noting that the problem formulation we work with, which is presented in Section
+3, is very general, encompassing not only problems with bandit feedback, but also a broad array
+of information structures for which observations can oﬀer information about rewards of arbitrary
+subsets of actions or factors that inﬂuence these rewards. Because IDS and our analysis accommo-
+date this level of generality, they can be specialized to problems that in the past have been studied
+individually, such as those involving pricing and assortment optimization (see, e.g., [14, 57, 65]),
+though in each case, developing a computationally eﬃcient version of IDS may require innovation.
+2 Literature review
+UCB algorithms are the primary approach considered in the segment of the stochastic multi-armed
+bandit literature that treats problems with dependent arms. UCB algorithms have been applied
+to problems where the mapping from action to expected reward is a linear [1, 24, 56], generalized
+linear [25], or sparse linear [2] model; is sampled from a Gaussian process [67] or has small norm
+in a reproducing kernel Hilbert space [67, 69]; or is a smooth (e.g. Lipschitz continuous) model
+[17, 45, 68]. Recently, an algorithm known as Thompson sampling has received a great deal of
+interest. Agrawal and Goyal [6] provided the ﬁrst analysis for linear contextual bandit problems.
+Russo and Van Roy [58, 59] consider a more general class of models, and show that standard
+analysis of upper conﬁdence bound algorithms leads to bounds on the expected regret of Thompson
+sampling. Very recent work of Gopalan et al. [33] provides asymptotic frequentist bounds on the
+growth rate of regret for problems with dependent arms. Both UCB algorithms and Thompson
+2
+sampling have been applied to other types of problems, like reinforcement learning [40, 53] and
+Monte Carlo tree search [10, 46].
+In one of the ﬁrst papers on multi-armed bandit problems with dependent arms, Agrawal et al.
+[3] consider a general model in which the reward distribution associated with each action depends
+on a common unknown parameter. When the parameter space is ﬁnite, they provide a lower bound
+on the asymptotic growth rate of the regret of any admissible policy as the time horizon tends to
+inﬁnity and show that this bound is attainable. These results were later extended by Agrawal et al.
+[4] and Graves and Lai [34] to apply to the adaptive control of Markov chains and to problems with
+inﬁnite parameter spaces. These papers provide results of fundemental importance, but seem to
+have been overlooked by much of the recent literature.
+Though the use of mutual information to guide sampling has been the subject of much research,
+dating back to the work of Lindley [50], to our knowledge, only two other papers [36, 70] have used
+the mutual information between the optimal action and the next observation to guide action selec-
+tion. Each focuses on optimization of expensive-to-evaluate black-box functions. Here,black–box
+indicates the absence of strong structural assumptions such as convexity and that the algorithm
+only has access to function evaluations, whileexpensive-to-evaluateindicates that the cost of evalu-
+ation warrants investing considerable eﬀort to determine where to evaluate. These papers focus on
+settings with low-dimensional continuous action spaces, and with a Gaussian process prior over the
+objective function, reﬂecting the belief that “smoother” objective functions are more plausible than
+others. This approach is often called “Bayesian optimization” in the machine learning community
+[13]. Both Villemonteix et al. [70] and Hennig and Schuler [36] propose selecting each sample to
+maximize the mutual information between the next observation and the optimal solution. Several
+papers [37, 38, 39] have extended this line of work since an initial version of our paper appeared
+online. The numerical routines in these papers use approximations to mutual information, and may
+give insight into how to design eﬃcient computational approximations to IDS.
+Several features distinguish our work from that of Villemonteix et al. [70] and Hennig and
+Schuler [36]. First, these papers focus on pure exploration problems: the objective is simply to learn
+about the optimal solution – not to attain high cumulative reward. Second, and more importantly,
+they focus only on problems with Gaussian process priors and continuous action spaces. For
+such problems, simpler approaches like UCB algorithms [67], probability of improvement [47], and
+expected improvement [51] are already extremely eﬀective. As noted by Brochu et al. [13], each
+of these algorithms simply chooses points with “potentially high values of the objective function:
+whether because the prediction is high, the uncertainty is great, or both.” By contrast, a major
+motivation of our work is that a richer information measure is needed to address problems with more
+complicated information structures. Finally, we provide a variety of general theoretical guarantees
+for information-directed sampling, whereas Villemonteix et al. [70] and Hennig and Schuler [36]
+propose their algorithms as heuristics without guarantees. Section 9.1 shows that our theoretical
+guarantees extend to pure exploration problems.
+The knowledge gradient (KG) algorithm uses a diﬀerent measure of information to guide action
+selection: the algorithm computes the impact of a single observation on the quality of the decision
+made by agreedyalgorithm, which simply selects the action with highest posterior expected reward.
+This measure was proposed by Mockus et al. [51] and studied further by Frazier et al. [29] and
+Ryzhov et al. [64]. KG seems natural since it explicitly seeks information that improves decision
+quality. Computational studies suggest that for problems with Gaussian priors, Gaussian rewards,
+and relatively short time horizons, KG performs very well. However, there are no general guarantees
+for KG, and even in some simple settings, it may not converge to optimality. In fact, it may select
+a suboptimal action inevery period, even as the time horizon tends to inﬁnity. IDS also measures
+the information provided by a single observation, but our results imply it converges to optimality.
+3
+KG is discussed further in Subsection 4.3.3.
+Our work also connects to a much larger literature on Bayesian experimental design (see [20] for
+a review). Contal et al. [22] study problems with Gaussian process priors and a method that guides
+exploration using the mutual information between the objective function and the next observation.
+This work provides a regret bound, though, as the authors’ erratum indicates, the proof of the
+regret bound is incorrect. Recent work has demonstrated the eﬀectiveness ofgreedy or myopic
+policies that always maximize a measure of the information gain from the next sample. Jedynak
+et al. [41] and Waeber et al. [71] consider problem settings in which this greedy policy is optimal.
+Another recent line of work [31, 32] shows that measures of information gain sometimes satisfy
+a decreasing returns property known as adaptive sub-modularity, implying the greedy policy is
+competitive with the optimal policy. Our algorithm also only considers the information gain due
+to thenext sample, even though the goal is to acquire information over many periods. Our results
+establish that the manner in which IDS encourages information gain leads to an eﬀective algorithm,
+even for the diﬀerent objective of maximizing cumulative reward.
+Finally, our work connects to the literature on partial monitoring. First introduced by [54]
+the partial monitoring problem encompasses a broad range of online optimization problems with
+limited or partial feedback. Recent work [11] has focused on classifying the minimax-optimal scaling
+of regret in the problem’s time horizon as a function of the level of feedback the agent receives.
+That work focuses most attention on cases where the agent receives very restrictive feedback, and
+in particular, cannot observe the reward their action generates. Our work also allows the agent to
+observe rich forms of feedback in response to actions they select, but we focus on a more standard
+decision-theoretic framework in which the agent associates their observations with a reward as
+speciﬁed by a utility function.
+The literature we have discussed primarily focuses on contexts where the goal is to converge on
+an optimal action in a manner that limits exploration costs. Such methods are not geared towards
+problems where time preference plays an important role. A notable exception is the KG algorithm,
+which takes a discount factor as input to account for time preference. Francetich and Kreps [26, 27]
+discuss a variety of heuristics for the discounted problem. Recent work [62] generalizes Thompson
+sampling to address discounted problems. We believe that IDS can also be extended to treat
+discounted problems, though we do not pursue that in this paper.
+The regret bounds we will present build on our information-theoretic analysis of Thompson
+sampling [61], which can be used to bound the regret of any policy in terms of its information
+ratio. The information ratio of IDS is always smaller than that of TS, and therefore, bounds on
+the information ratio of TS provided in Russo and Van Roy [61] yield regret bounds for IDS. This
+observation and a preliminary version of our results was ﬁrst presented in a conference paper [60].
+Recent work by Bubeck et al. [18] and Bubeck and Eldan [16] build on ideas from [61] in another
+direction by bounding the information ratio when the reward function is convex and using that
+bound to study the order of regret in adversarial bandit convex optimization.
+3 Problem formulation
+We consider a general probabilistic, or Bayesian, formulation in which uncertain quantities are
+modeled as random variables. The decision-maker sequentially chooses actions(At)t∈N from a ﬁnite
+action set Aand observes the corresponding outcomes (Yt,At)t∈N. There is a random outcome
+Yt,a ∈Y associated with each actiona ∈A and time t ∈N. Let Yt ≡(Yt,a)a∈A be the vector of
+outcomes at timet ∈N. There is a random variableθsuch that, conditioned onθ, (Yt)t∈N is an
+iid sequence. This can be thought of as a Bayesian formulation, where randomness inθcaptures
+4
+the decision-maker’s prior uncertainty about the true nature of the system, and the remaining
+randomness inYt captures idiosyncratic randomness in observed outcomes.
+The agent associates a reward R(y) with each outcome y ∈ Y, where the reward function
+R : Y→ R is ﬁxed and known. LetRt,a = R(Yt,a) denote the realized reward of actiona at time
+t. Uncertainty about θ induces uncertainty about the true optimal action, which we denote by
+A∗∈arg max
+a∈A
+E[R1,a|θ]. The T–period regretof the sequence of actionsA1,..,AT is the random
+variable
+Regret(T) :=
+T
+t=1
+(Rt,A∗−Rt,At) , (1)
+which measures the cumulative diﬀerence between the reward earned by an algorithm that always
+chooses the optimal action and actual accumulated reward up to timeT. In this paper we study
+expected regret
+E[Regret(T)] = E
+) T
+t=1
+(Rt,A∗−Rt,At)
+[
+, (2)
+where the expectation is taken over the randomness in the actionsAt and the outcomesYt, and
+over the prior distribution overθ. This measure of performance is commonly calledBayesian regret
+or Bayes risk.
+The actionAt is chosen based on the history of observationsFt = (A1,Y1,A1 ,...,At−1,Yt−1,At−1 )
+up to timet. Formally, arandomized policyπ = (πt)t∈N is a sequence of deterministic functions,
+where πt(Ft) speciﬁes a probability distribution over the action set A. Let D(A) denote the
+set of probability distributions overA. The action At is a selected by sampling independently
+from πt(Ft). With some abuse of notation, we will typically write this distribution asπt, where
+πt(a) = P(At = a|Ft) denotes the probability assigned to actiona given the observed history.
+We explicitly display the dependence of regret on the policyπ, lettingE[Regret(T,π)] denote the
+expected value given by (2) when the actions(A1,..,AT) are chosen according toπ.
+Further notation. Set αt(a) = P(A∗= a|Ft) to be the posterior distribution ofA∗. For two
+probability measuresP and Qover a common measurable space, ifP is absolutely continuous with
+respect toQ, theKullback-Leibler divergencebetween P and Q is
+DKL(P||Q) =
+ˆ
+log
+(dP
+dQ
+)
+dP (3)
+where dP
+dQ is the Radon–Nikodym derivative ofP with respect toQ. For a probability distribution
+P over a ﬁnite setX, theShannon entropyof P is deﬁned asH(P) = −∑
+x∈XP(x) log (P(x)). The
+mutual informationunder the posterior distribution between two random variablesX1 : Ω →X 1,
+and X2 : Ω →X 2, denoted by
+It(X1; X2) := DKL (P((X1,X2) ∈·|Ft) ||P(X1 ∈·|Ft) P(X2 ∈·|Ft)) , (4)
+is the Kullback-Leibler divergence between the joint posterior distribution ofX1 and X2 and the
+product of the marginal distributions. Note thatIt(X1; X2) is a random variable because of its
+dependence on the conditional probability measureP(·|Ft).
+To reduce notation, we deﬁne theinformation gainfrom an actionato begt(a) := It(A∗; Yt,a).
+As shown for example in Lemma 5.5.6 of Gray [35], this is equal to the expected reduction in
+entropy of the posterior distribution ofA∗due to observingYt(a):
+gt(a) = E[H(αt) −H(αt+1)|Ft,At = a] , (5)
+5
+which plays a crucial role in our results. Let ∆ t(a) := E[Rt,A∗−Rt,a|Ft] denote the expected
+instantaneous regret of actiona at timet.
+We use overloaded notation forgt(·) and ∆ t(·). For an action sampling distributionπ∈D(A),
+gt(π) := ∑
+a∈Aπ(a)gt(a) denotes the expected information gain when actions are selected according
+to π, and∆ t(π) = ∑
+a∈Aπ(a)∆ t(a) is deﬁned analogously. Finally, we sometimes use the shorthand
+notation Et[·] = Et[·|Ft] for conditional expectations under the posterior distribution, and similarly
+write Pt(·) = P(·|Ft).
+4 Algorithm design principles
+The primary contribution of this paper is information-directed sampling (IDS), a general princi-
+ple for designing action-selection algorithms. We will deﬁne IDS in this section, after discussing
+motivations underlying its structure. Further, through a set of examples, we will illustrate how
+alternative design principles fail to account for particular kinds of information and therefore can
+be dramatically outperformed by IDS.
+4.1 Motivation
+Our goal is to minimize expected regret over a time horizonT. This is achieved by aBayes-optimal
+policy, which, in principle, can be computed via dynamic programming. Unfortunately, computing,
+or even storing, this Bayes-optimal policy is generally infeasible. For this reason, there has been
+signiﬁcant interest in developing computationally eﬃcient heuristics.
+As with much of the literature, we are motivated by contexts where the time horizonT is
+“large.” For largeT and moderate timest≪ T, the mapping from belief state to action prescribed
+by the Bayes-optimal policy does not vary signiﬁcantly from one time period to the next. As such,
+it is reasonable to restrict attention to stationary heuristic policies. IDS falls in this category.
+IDS is motivated largely by a desire to overcome shortcomings of currently popular design
+principles. In particular, it accounts for kinds of information that alternatives fail to adequately
+address:
+1. Indirect information. IDS can select an action to obtain useful feedback about other
+actions even if there will be no useful feedback about the selected action.
+2. Cumulating information. IDS can select an action to obtain feedback that does not
+immediately enable higher expected reward but can eventually do so when combined with
+feedback from subsequent actions.
+3. Irrelevant information.IDS avoids investments in acquiring information that will not help
+to determine which actions ought to be selected.
+Examples presented in Section 4.3 aim to contrast the manner in which IDS and alternative ap-
+proaches treat these kinds of information.
+It is worth noting that we refer to IDS as adesign principle rather than analgorithm. The
+reason is that IDS does not specify steps to be carried out in terms of basic computational opera-
+tions but only an abstract objective to be optimized. As we will discuss later, for many problem
+classes of interest, like the Bernoulli bandit, the Gaussian bandit, and the linear bandit, one can
+develop tractable algorithms that implement IDS. The situation is similar for upper conﬁdence
+bounds, Thompson sampling, expected improvement maximization, and knowledge gradient; these
+are abstract design principles that lead to tractable algorithms for speciﬁc problem classes.
+6
+4.2 Information-directed sampling
+IDS balances between obtaining low expected regret in the current period and acquiring new in-
+formation about which action is optimal. It does this by minimizing over all action sampling
+distributions π ∈D(A) the ratio between the square of expected regret∆ t(π)2 and information
+gain gt(π) about the optimal actionA∗. In particular, the policyπIDS =
+(
+πIDS
+1 ,πIDS
+2 ,...
+)
+is deﬁned
+by:
+πIDS
+t ∈arg min
+π∈D(A)
+{
+Ψ t(π) := ∆ t(π)2
+gt(π)
+}
+. (6)
+We callΨ t(π) the information ratioof an action sampling distributionπ. It measures the squared
+regret incurred per-bit of information acquired about the optimum. IDS myopically minimizes this
+notion of cost-per-bit of information in each period.
+Note that IDS isstationary randomized policy: randomized in that each action is randomly
+sampled from a distribution and stationary in that this action distribution is determined by the
+posterior distribution ofθand otherwise independent of the time period. It is natural to wonder
+whether randomization plays a fundamental role or if a stationary deterministic policy can oﬀer
+similar behavior. The following example sheds light on this matter.
+Example 1 (A known standard). Consider a problem with two actionsA= {a1,a2}. Re-
+wards froma1 are known to be distributed Bernoulli(1/2). The distribution of rewards froma2 is
+Bernoulli(3/4) with prior probabilityp0 and is Bernoulli(1/4) with prior probability1 −p0.
+Consider a stationary deterministic policy for this problem. With such a policy, each action
+At is a deterministic function ofpt−1, the posterior probability conditioned on observations made
+through period t−1. Suppose that for somep0 > 0, the policy selectsA1 = a1. Since this is an
+uninformative action,pt = p0 and At = a1 for allt, and thus, expected regret grows linearly with
+time. If, on the other hand, A1 = a2 for all p0 > 0 then At = a2 for all t, which again results
+in expected regret that grows linearly with time. It follows that, for any deterministic stationary
+policy, there exists a prior probabilityp0 such that expected regret grows linearly with time.
+In Section 5, we will establish a sub-linear bound on expected regret of IDS. The result implies
+that, when applied to the preceding example, the expected regret of IDS does not grow linearly
+as does that of any stationary deterministic policy. This suggests that randomization plays a
+fundamental role.
+It may appear that the need for randomization introduces great complexity since the solution of
+the optimization problem (6) takes the form of a distribution over actions. However, an important
+property of this problem dramatically simpliﬁes solutions. In particular, as we will establish in
+Section 6, there is always a distribution with support of at most two actions that attains the
+minimum in (6).
+4.3 Alternative design principles
+Several alternative design principles have ﬁgured prominently in the literature. However, each of
+them fails to adequately address one or more of the categories of information enumerated in Section
+4.1. This motivated our development of IDS. In this section, we will illustrate through a set of
+examples how IDS accounts for such information while alternatives fail.
+4.3.1 Upper conﬁdence bounds and Thompson sampling
+Upper conﬁdence bound (UCB) and Thompson sampling (TS) are two of the most popular princi-
+ples for balancing between exploration and exploitation. As data is collected, both approaches do
+7
+not only estimate the rewards generated by diﬀerent actions, but carefully track the uncertainty in
+their estimates. They then continue to experiment with all actions that couldplausibly be optimal
+given the observed data. This guarantees actions are not prematurely discarded, but, in contrast
+to more naive approaches likes theϵ-greedy algorithm, also ensures that samples are not wasted on
+clearly suboptimal actions.
+With a UCB algorithm, actions are selected through two steps. First, for each actiona ∈A
+an upper conﬁdence bound Bt(a) is constructed. Then, the algorithm selects an action At ∈
+arg maxa∈ABt(a) with maximal upper conﬁdence bound. The upper conﬁdence boundBt(a) rep-
+resents the greatest mean reward value that is statistically plausible. In particular,Bt(a) is typically
+constructed to be optimistic(Bt(a) ≥E[Rt,a|θ]) and asymptotically consistent (Bt(a) → E[Rt,a|θ]
+as data about the actiona accumulates).
+A TS algorithm simply samples each actions according to the posterior probability that it is
+optimal. In particular, at each timet, an action is sampled fromπTS
+t = αt. This means that for
+each a∈A, P(At = a|Ft) = P(A∗= a|Ft) = αt(a). This algorithm is sometimes calledprobability
+matching because the action selection distribution ismatched to the posterior distribution of the
+optimal action.
+For some problem classes, UCB and TS lead to eﬃcient and empirically eﬀective algorithms with
+strong theoretical guarantees. Speciﬁc UCB and TS algorithms are known to be asymptotically
+eﬃcient for multi-armed bandit problems with independent arms [5, 19, 44, 48, 49] and satisfy
+strong regret bounds for some problems with dependent arms [17, 24, 25, 33, 56, 59, 67].
+Unfortunately, as the following examples demonstrate, UCB and TS do not pursue indirect
+information and because of that can perform very poorly relative to IDS for some natural problem
+classes. A common feature of UCB and TS that leads to poor performance in these examples is
+that they restrict attention to sampling actions that have some chance of being optimal. This is the
+case with TS because each action is selected according to the probability that it is optimal. With
+UCB, the upper-conﬁdence-bound of an action known to be suboptimal will always be dominated
+by others.
+Our ﬁrst example is somewhat contrived but designed to make the point transparent.
+Example 2. (a revealing action)LetA= {0,1,...,K}consist ofK+1 actions and suppose that
+θis drawn uniformly at random from a ﬁnite setΘ = {1,...,K}of K possible values. Consider a
+problem with bandit-feedbackYt,a = Rt,a. Under θ, the reward of actiona is
+Rt,a =
+
+}
+
+1 θ= a
+0 θ̸= a, a̸= 0
+1
+2θ a= 0.
+Note that action0 is known to never yield the maximal reward, and is therefore never selected
+by TS or UCB. Instead, these algorithms will select among actions{1,...,K}, ruling out only a
+single action at a time until a reward 1 is earned and the optimal action is identiﬁed. Their expected
+regret therefore grows linearly inK. IDS is able to recognize that much more is learned by drawing
+action 0 than by selecting one of the other actions. In fact, selecting action0 immediately identiﬁes
+the optimal action. IDS selects this action, learns which action is optimal, and selects that action
+in all future periods. Its regret is independent ofK.
+Our second example may be of greater practical signiﬁcance. It represents the simplest case of
+a sparse linear model.
+Example 3. (sparse linear model)Consider a linear bandit problem whereA⊂ Rd and the
+reward from an actiona ∈A is aTθ∗. The true parameterθ is known to be drawn uniformly at
+8
+random from the set of 1-sparse vectorsΘ = {θ′∈{0,1}d : ∥θ′∥0 = 1}. For simplicity, assume
+d = 2m for some m ∈N. The action set is taken to be the set of vectors in{0,1}d normalized to
+be a unit vector in theL1 norm: A=
+{
+x
+∥x∥1
+: x∈{0,1}d,x ̸= 0
+}
+.
+For this problem, when an actiona is selected andy = aTθ ∈{0,1/∥a∥0}is observed, each
+θ′∈Θ with aTθ′̸= y is ruled out. LetΘ t denote the set of all parameters inΘ that are consistent
+with the rewards observed up to timet and letIt = {i ∈{1,...,d}: θ′
+i = 1,θ′∈Θ t}denote the
+corresponding set of possible positive components.
+Note that A∗= θ. That is, if θ were known, choosing the actionθ would yield the highest
+possible reward. TS and UCB algorithms only choose actions from the support ofA∗and therefore
+will only sample actionsa∈A that, likeA∗, have only a single positive component. Unless that is
+also the positive component ofθ, the algorithm will observe a reward of zero and rule out only one
+element ofIt. In the worst case, the algorithm requiresd samples to identify the optimal action.
+Now, consider an application of IDS to this problem. The algorithm essentially performs binary
+search: it selectsa∈A with ai >0 for half of the componentsi∈It and ai = 0 for the other half
+as well as for anyi /∈It. After justlog2(d) time steps the true value of the parameter vectorθis
+identiﬁed.
+To see why this is the case, ﬁrst note that all parameters inΘ t are equally likely and hence
+the expected reward of an actiona is 1
+|It|
+∑
+i∈It ai. Since ai ≥0 and ∑
+iai = 1 for each a ∈A,
+every action whose positive components are inIt yields the highest possible expected reward of
+1/|It|. Therefore, binary search minimizes expected regret in periodtfor this problem. At the same
+time, binary search is assured to rule out half of the parameter vectors inΘ t at each timet. This
+is the largest possible expected reduction, and also leads to the largest possible information gain
+about A∗. Since binary search both minimizes expected regret in periodtand uniquely maximizes
+expected information gain in periodt, it is the sampling strategy followed by IDS.
+In this setting we can explicitly calculate the information ratio of each policy, and the diﬀerence
+between them highlights the advantages of information-directed sampling. We have
+Ψ 1(πTS
+1 ) = (d−1)2/d2
+log(d)
+d + d−1
+d log
+(
+d
+d−1
+)∼ d
+log(d) Ψ 1(πIDS
+1 ) = 1
+log(2)
+(
+1 −1
+d
+)2
+∼ 1
+log(2)
+where h(d) ∼f(d) if h(d)/f(d) → 1 as d→∞ . When the dimensiond is large,Ψ 1(πIDS
+1 ) is much
+smaller.
+Our ﬁnal example involves an assortment optimization problem.
+Example 4. (assortment optimization)Consider the problem of repeatedly recommending an
+assortment of products to a customer. The customer has unknown typeθ ∈Θ where |Θ |= n.
+Each product is geared toward customers of a particular type, and the assortmenta ∈A = Θ m
+of m products oﬀered is characterized by the vector of product typesa = (a1,...,am). We model
+customer responses through a random utility model in which customers are more likely to derive
+high value from a product geared toward their type. When oﬀered an assortment of productsa, the
+customer associates with theith product utilityU(t)
+θ,i(a) = β1{ai=θ}+ W(t)
+i , where Wt
+i follows an
+extreme–value distribution andβ ∈R is a known constant. This is a standard multinomial logit
+discrete choice model. The probability a customer of typeθchooses producti is given by
+exp{β1{ai=θ}}
+∑m
+j=1 exp{β1{aj=θ}}.
+When an assortmenta is oﬀered at timet, the customer makes a choiceIt = arg maxiU(t)
+θi (a) and
+leaves a reviewU(t)
+θIt(a) indicating the utility derived from the product, both of which are observed by
+9
+the recommendation system. The reward to the recommendation system is the normalized utility of
+the customerU(t)
+θIt(a)/β.
+If the typeθof the customer were known, then the optimal recommendation would beA∗=
+(θ,θ,...,θ), which consists only of products targeted at the customer’s type. Therefore, both TS
+and UCB would only oﬀer assortments consisting of a single type of product. Because of this, TS
+and UCB each require ordern samples to learn the customer’s true type. IDS will instead oﬀer a
+diverse assortment of products to the customer, allowing it to learn much more quickly.
+To render issues more transparent, suppose thatθis drawn uniformly at random fromΘ and
+consider the behavior of each type of algorithm in the limiting case whereβ→∞ . In this regime,
+theprobabilityacustomerchoosesaproductoftype θifitisavailabletendsto1, andthenormalized
+review β−1U(t)
+θIt(a) tends to1{aIt=θ}, an indicator for whether the chosen product is of typeθ. The
+initial assortment oﬀered by IDS will consist ofmdiﬀerent and previously untested product types.
+Such an assortment maximizes both the algorithm’s expected reward in the next period and the
+algorithm’s information gain, since it has the highest probability of containing a product of type
+θ. The customer’s response almost perfectly indicates whether one of those items was of typeθ.
+The algorithm continues oﬀering assortments containingm unique, untested, product types until
+a review nearU(t)
+θIt(a) ≈1 is received. With extremely high probability, this takes at most⌈n/m⌉
+time periods. By diversifying themproducts in the assortment, the algorithm learns a factor ofm
+times faster.
+As in the previous example, we can explicitly calculate the information ratio of each policy, and
+the diﬀerence between them highlights the advantages of IDS. The information ratio of IDS is more
+than m times smaller:
+Ψ 1(πTS
+1 ) =
+(
+1 −1
+n
+)2
+1
+n log(n) + n−1
+n log
+(
+n
+n−1
+)∼ n
+log(n) Ψ 1(πIDS
+1 ) =
+(
+1 −m
+n
+)2
+m
+n log( n
+m) + n−m
+n log
+(
+n
+n−m
+)≤ n
+mlog( n
+m).
+4.3.2 Other information-directed approaches
+Another natural information-directed algorithm aims to maximize the information acquired about
+the uncertain model parameter θ. In particular, consider an algorithm that selects the action
+at time t that maximizes the weighted combination of the expected reward the action generates
+and the information it generates about the uncertain model parameterθ: Et[Rt,a] + λIt(Yt,a; θ).
+Throughout this section we will refer to this algorithm asθ-IDS. While such an algorithm can
+perform well on particular examples, the next example highlights that it may invest in acquiring
+information aboutθthat is irrelevant to the decision problem.
+Example 5. (unconstrained assortment optimization)Consider again the problem of re-
+peatedly recommending assortments of products to a customer with unknown preferences. The
+recommendation system can choose any subset of productsa ⊂{1,..,n}to display. When oﬀered
+assortment a at time t, the customer chooses the itemJt = arg maxi∈aθi and leaves the review
+Rt,a = θJt where θi is the utility associated with producti. The recommendation system observes
+both Jt and the reviewRt,a, and has the goal of learning to oﬀer the assortment that yields the best
+outcome for the customer and maximizes the reviewRt,a. Suppose thatθis drawn as a uniformly
+random permutation of the vector(1,1
+2 ,1
+3 ,...,1
+n). The customer is known to assign utility 1 to
+her most preferred item, 1/2 to the next best item, 1/3 to the third best, and so on, but the rank
+ordering is unknown.
+10
+In this example, no learning is required to oﬀer an optimal assortment: since there is no
+constraint on the size of the assortment, it’s always best to oﬀer the full collection of products
+a= {1,...,n}andallowthecustomertochoosethemostpreferred. Oﬀeringthisassortmentreveals
+which item is most preferred by the customer, but it reveals nothing about her preferences about
+others. When applied to this problem,θ-IDS begins by oﬀering the full assortmentA1 = {1,...,n},
+whichyieldsarewardof1, and, byrevealingthetopitem, yieldsinformationof I1(Y1,A1 ; θ) = log(n).
+But, if1/2 < λlog(n−1), which is guaranteed for suﬃciently largen, it continues experimenting
+with suboptimal assortments. In the second period, it will oﬀer the assortmentA2 consisting of all
+products exceptarg maxiθi. Playing this assortment reveals the customer’s second most preferred
+item, and yields information gainI2(Y2,A2 ; θ) = log( n−1). This process continues until the ﬁrst
+period k where λlog(n+ 1 −k) <1 −1/k.
+In order to learn to oﬀer eﬀective assortments,θ-IDS tries to learn as much as possible about
+the customer’s preferences. In doing this, the algorithm inadvertently invests experimentation
+eﬀort in information that is irrelevant to choosing an optimal assortment. On the other hand, IDS
+recognizes that the optimal assortmentA∗= {1,...,n}does not depend on full knowledge of the
+vector θ, and therefore does not invest in identifyingθ.
+As shown in Section 9.2, our analysis can be adapted to provide regret bounds in for a version
+of IDS that uses information gain with respect toθ, rather than with respect toA∗. These regret
+bounds depends on the entropy ofθ, whereas the bound for IDS depends on the entropy ofA∗,
+which can be much smaller.
+4.3.3 Expected improvement and the knowledge gradient
+We now consider two algorithms which measure the quality of the best decision that can be made
+based on current information, and encourage gathering observations that are expected to imme-
+diately increase this measure. The ﬁrst is the expected improvement algorithm, which is one
+of the most widely used techniques in the active ﬁeld of Bayesian optimization (see [13]). Deﬁne
+µt,a = E[Rt,a|Ft] to be the expected reward generated byaunder the posterior, andVt = maxa′µt,a′
+to be the best objective value attainable given current information. The expected improvement
+of action a is deﬁned to beE[max{fθ(a),Vt}|Ft], where fθ(a) = E[Rt,a|θ] is the expected reward
+generated by actiona under the unknown true parameterθ. The EGO algorithm aims to identify
+high performing actions by sequentially sampling those that yield the highest expected improve-
+ment. Similar to UCB algorithms, this encourages the selection of actions that could potentially
+oﬀer great performance. Unfortunately, like these UCB algorithms, this measure of improvement
+does not place value on indirect information: it won’t select an action that provides useful feedback
+about other actions unless the mean-reward of that action might exceedVt. For example, the ex-
+pected improvement algorithm cannot treat the problem described in Example 2 in a satisfactory
+manner.
+The knowledge gradient algorithm [64] uses a modiﬁed improvement measure. At timet, it
+computes
+vKG
+t,a := E[Vt+1|Ft,At = a] −Vt
+for each actiona. If Vt measures the quality of the decision that can be made based on current
+information, then vKG
+t,a captures the immediate improvement in decision quality due to sampling
+action a and observing Yt,a. For a problem with time horizonT, the knowledge gradient (KG)
+policy selects an action in time periodt by maximizingµt,a + (T −t)vKG
+t,a over actionsa∈A.
+Unlike expected-improvement, the measurevKG
+t,a of the value of sampling an action places value
+on indirect information. In particular, even if an action is known to yield low expected reward,
+11
+sampling that action could lead to a signiﬁcant increase inVt by providing information about
+other actions. Unfortunately, there are no general guarantees for KG, and it sometimes struggles
+with cumulating information; individual observations that provide information aboutA∗may not
+be immediately useful for making decisions in the next period, and therefore may lead to no
+improvement inVt.
+Example 1 provides one simple illustration of this phenomenon. In that example, action 1 is
+known to yield a mean reward of 1/2. Whenp0 ≤1/4, upon sampling action 2 and observing a
+reward 1, the posterior expected reward of action 2 becomes
+E[R2,a2 |R1,a2 = 1] = p0(3/4)
+p0(3/4) + (1−p0)(1/4) ≤1/2.
+In particular, a single sample could never be inﬂuential enough to change which action has the
+highest posterior expected reward. Therefore,vKG
+t,a2 = 0, and the KG decision rule selects action 1
+in the ﬁrst period. Since nothing is learned from the resulting observation, it will continue selecting
+action 1 in all subsequent periods. Even as the time horizonT tends to inﬁnity, the KG policy
+would never select action 2. Its cumulative regret overT time periods is equal to(p0/4)T, which
+grows linearly withT.
+In this example, although sampling action 2 will not immediately shift the decision-maker’s
+prediction of the best action (arg maxaE[θa|F1]), these samples inﬂuences her posterior beliefs and
+reduce uncertainty about which action is optimal. As a result, IDS will always assign positive
+probability to sampling the second action. More broadly, IDS places value on information that is
+pertinent to the decision problem, even if that information won’t directly improve performance on
+its own. This is useful when one must combine multiple pieces of information in order to eﬀectively
+learn.
+To address problems like Example 1, Frazier and Powell [28] propose KG* – a modiﬁed form
+of KG that considers the value of sampling a single action many times. This helps to address
+some cases – those where a single sample of an action provides no value even though sampling
+the action several times could be quite valuable – but this modiﬁcation may not adequately assess
+information gain in more general problems. KG* may explore very ineﬃciently, for instance, in the
+sparse linear bandit problem considered in Example 3. However, the performance of KG* on this
+problem depends critically on how ties are broken among actions maximizingµt,a+ (T−t)vKG
+t,a . To
+avoid such ambiguity, we instead consider the following modiﬁcation to Example 3.
+Example 6. (sparse linear model with an outside option)Consider a modiﬁcation to Ex-
+ample 3 in which the agent has access to a outside option that generates known, but suboptimal,
+rewards. The action set isA= {O}∪A′, where the outside optionO is know to always yield reward
+1/2, and A′=
+{
+x
+∥x∥1
+: x∈{0,1}d,x ̸= 0
+}
+is the action space considered in Example 3. As before,
+the reward generated by actiona ∈A′is aTθwhere θis drawn uniformly at random from the set
+of 1-sparse vectorsΘ = {θ′∈{0,1}d : ∥θ′∥0 = 1}. As before, assume for simplicity thatd= 2m for
+some m∈N.
+When the horizonT is long, the inclusion of the outside option should be irrelevant. Indeed,
+nothing is learned by sampling the outside option, and it is known apriori to be suboptimal: it
+generates a reward of 1/2 whereas the optimal action generates a reward of1 = maxa∈A′aTθ. An
+optimal algorithm for Example 6 should sample actions inA′until the optimal action is identiﬁed
+and should do so in a manner that minimizes the expected regret incurred.
+Note that in the absence of observation noise, KG and KG* are equivalent, and so we will not
+distinguish between these two algorithms. We will see that whenT is large, KG always samples
+12
+actions in A′until the optimal action is identiﬁed. However, the expected number of samples
+required, and the expected regret incurred, both scale linearly with the dimensiond. IDS, on the
+other hand, identiﬁes the optimal action after onlylog2(d) steps.
+To see why, note that unless the agent has exactly identiﬁed the parameterθ, selecting the
+outside option will always generate the highest expected reward in the next period. Only selecting
+anactionwithasinglepositivecomponentcouldimmediatelyreveal θ, soinresponseKGonlyplaces
+value on the information generated by such actions. When the horizon is large, KG prioritizes such
+information over the safe reward oﬀered by the outside option. It therefore engages in exhaustive
+search, sequentially checking each componenti∈{1,...,d}of θuntil θi = 1 is observed.
+To show this more precisely, let us reintroduce some notation used in Example 3. As before,
+when an actiona∈A′is selected andy= aTθ∈{0,1/∥a∥0}is observed, eachθ′∈Θ with aTθ′̸= y
+is ruled out. Let Θ t denote the set of all parameters inΘ that are consistent with the rewards
+observed up to timetand letIt = {i∈{1,...,d}: θ′
+i = 1,θ′∈Θ t}denote the corresponding set of
+possible positive components.
+The best reward value attainable given current information is
+Vt = max
+{
+1/2, max
+a∈A′
+E[θTa|Ft]
+}
+= max
+{
+1/2, 1
+|Θ t|
+}
+.
+Therefore, Vt = 1/2 whenever |Θ t|>1. For remaining indicesi∈It, selecting the standard basis
+vector ei and observingθTei = 1 establishes thatθ= ei. As a result,vKG
+t,ei = (1/2)P(eT
+i θ= 1|Ft) =
+1
+2|Θ t|> 0. For other actions, observing aTθ ∈{0,1/∥a∥0}is not suﬃcient to identify θ, and so
+vKG
+t,a = 0. When the horizonT is large, KG always select one of the actions withvKG
+t,a >0, and so
+the algorithm selects only standard basis vectors untilθis revealed
+IDS, on the other hand, essentially performs binary search. In the ﬁrst period, it selects some
+permutation of the actiona = (2/d,...,2/d,0,...,0). By observing either aTθ= 0 or aTθ= 1, it
+rules out half the parameter vectors inΘ 1. Continuing this binary search process, the parameter
+is identiﬁed usingO(log2(d)) steps.
+To see why this is the case, let us focus on the ﬁrst period. As in Example 3, selecting an action
+with d/2 positive components, likea = (2/d,...,2/d,0,...,0), oﬀers strictly maximal information
+gain I1(A∗; aTθ) = log(2) and weakly maximal rewardE[aTθ] = 1/d among all actionsa∈A′. As
+a result, any action inA′that is not a permutation ofais strictly dominated and is never sampled
+by IDS. It turns out that IDS also has zero probability of selecting the outside option in this case.
+Indeed, IDS selectsO with probability1 −α∗, where α∗can be attained as the minimizer of the
+information ratio
+α∗= arg min
+α∈[0,1]
+((1 −α)/2 + α(1 −1/d))2
+αlog2(d) = arg min
+α∈[0,1]
+1
+2√α + √α
+(1
+2 −1
+d
+)
+= 1.
+This process continues inductively. Another step of binary search again rules out half the compo-
+nents in|Θ 1|, leading to an information gain oflog(2) bits. The regret incurred is even lower–now
+only (1 −2/d) –and hence the algorithm again has zero probability of selecting the outside option.
+Iterating this process, the true positive component ofθis identiﬁed afterlog2(d) steps.
+5 Regret bounds
+This section establishes regret bounds for information-directed sampling for several of the most
+widely studied classes of online optimization problems. These regret bounds follow from our recent
+information theoretic-analysis of Thompson sampling [61]. In the next subsection, we establish a
+13
+regret bound for any policy in terms of its information ratio. Because the information-ratio of IDS
+is always smaller than that of TS, the bounds on the information ratio of TS provided in Russo and
+Van Roy [61] immediately yield regret bounds for IDS for a number of important problem classes.
+5.1 General bound
+We begin with a general result that bounds the regret ofany policyin terms of its information ratio
+and the entropy of the optimal action distribution. Recall that we have deﬁned the information
+ratio of an action sampling distribution to beΨ t(π) := ∆ t(π)2/gt(π); it is the squared expected
+regret the algorithm incurs per-bit of information it acquires about the optimum. The entropy
+of the optimal action distributionH(α1) captures the magnitude of the decision-maker’s initial
+uncertainty about which action is optimal. One can then interpret the next result as a bound on
+regret that depends on the cost of acquiring new information and the total amount of information
+that needs to be acquired.
+Proposition 1. For any policyπ= (π1,π2,π3,...) and timeT ∈N,
+E[Regret (T,π)] ≤
+∑
+Ψ T(π)H(α1)T.
+where
+Ψ T(π) ≡ 1
+T
+T
+t=1
+Eπ[Ψ t(πt)]
+is the average expected information ratio underπ.
+We will use the following immediate corollary of Proposition 1, which relies on a uniform bound
+on the information ratio of the formΨ t(πt) ≤ λ rather than a bound on the average expected
+information ratio.
+Corollary 1.Fix a deterministicλ∈R and a policyπ= (π1,π2,...) such thatΨ t(πt) ≤λ almost
+surely for eacht∈{1,..,T}. Then,
+E[Regret (T,π)] ≤
+∑
+λH(α1)T.
+5.2 Specialized bounds on the minimal information ratio
+We now establish upper bounds on the information ratio of IDS in several important settings,
+which yields explicit regret bounds when combined with Corollary 1. These bounds show that, in
+any period, the algorithm’s expected regret can only be large if it is expected to acquire a lot of
+information about which action is optimal. In this sense, it eﬀectively balances between exploration
+and exploitation inevery period. For each problem setting, we will compare our upper bounds on
+expected regret with known lower bounds.
+The bounds on the information ratio also help to clarify the role it plays in our results: it
+roughly captures the extent to which sampling some actions allows the decision maker to make
+inferences about other actions. In the worst case, the ratio depends on the number of actions,
+reﬂecting the fact that actions could provide no information about others. For problems with full
+information, the information ratio is bounded by a numerical constant, reﬂecting that sampling
+one action perfectly reveals the rewards that would have been earned by selecting any other action.
+The problems of online linear optimization under “bandit feedback” and under “semi-bandit feed-
+back” lie between these two extremes, and the ratio provides a natural measure of each problem’s
+14
+information structure. In each case, our bounds reﬂect that IDS is able to automatically exploit
+this structure.
+The proofs of these bounds follow from our recent analysis of Thompson sampling, and the
+implied regret bounds are the same as those established for Thompson sampling. In particular,
+since Ψ t(πIDS
+t ) ≤ Ψ t(πTS
+t ) where πTS is the Thompson sampling policy, it is enough to bound
+Ψ t(πTS
+t ). Several bounds on the information-ratio of TS were provided by Russo and Van Roy [61],
+and we defer to that paper for the proofs. While the analysis is similar in the cases considered
+here, IDS outperforms Thompson sampling in simulation, and, as we highlighted in the previous
+section, is sometimes provably much more informationally eﬃcient.
+In addition to the bounds stated here, recent work by Bubeck et al. [18] and Bubeck and Eldan
+[16] bounds the information ratio when the reward function is convex, and uses this to study the
+order of regret in adversarial bandit convex optimization. This points to a broader potential of
+using information-ratio analysis to study the information-complexity of general online optimization
+problems.
+To simplify the exposition, our results are stated under the assumption that rewards are uni-
+formly bounded. This eﬀectively controls the worst-case variance of the reward distribution, and
+as shown in the appendix of Russo and Van Roy [61], our results can be extended to the case where
+reward distributions are sub-Gaussian.
+Assumption 1.sup
+y∈Y
+R(y) −inf
+y∈Y
+R(y) ≤1.
+5.2.1 Worst case bound
+The next proposition shows thatΨ t(πIDS
+t ) is never larger than|A|/2. That is, there is always an
+action sampling distributionπ ∈D(A) such that∆ t(π)2 ≤(|A|/2)gt(π). As we will show in the
+coming sections, the ratio between regret and information gain can be much smaller under speciﬁc
+information structures.
+Proposition 2. For anyt∈N, Ψ t(πIDS
+t ) ≤|A|/2 almost surely.
+Combining Proposition 2 with Corollary 1 shows thatE
+
+Regret
+(
+T,πIDS
+)
+≤
+∑
+1
+2 |A|H(α1)T.
+5.2.2 Full information
+Our focus in this paper is on problems withpartial feedback. For such problems, what the decision
+maker observes depends on the actions selected, which leads to a tension between exploration and
+exploitation. Problems with full information arise as an extreme point of our formulation where
+the outcomeYt,a is perfectly revealed by observingYt,˜a for some ˜a ̸= a; what is learned does not
+depend on the selected action. The next proposition shows that under full information, the minimal
+information ratio is bounded by1/2.
+Proposition 3. Suppose for eacht∈N there is a random variableZt : Ω →Z such that for each
+a∈A, Yt,a = (a,Zt). Then for allt∈N, Ψ t(πIDS
+t ) ≤1
+2 almost surely.
+Combining this result with Corollary 1 showsE
+
+Regret(T,πIDS)
+
+≤
+∑
+1
+2 H(α1)T. Further, a
+worst–case bound on the entropy ofα1 shows thatE
+
+Regret(T,πIDS)
+
+≤
+∑
+1
+2 log(|A|)T. Dani et al.
+[23] show this bound is order optimal, in the sense that for any time horizonT and number of actions
+|A|there exists a prior distribution overθunder whichinfπE[Regret(T,π)] ≥c0
+√
+log(|A|)T where
+c0 is a numerical constant that does not depend on|A|or T. The bound here improves upon this
+15
+worst case bound sinceH(α1) can be much smaller thanlog(|A|) when the prior distribution is
+informative.
+5.2.3 Linear optimization under bandit feedback
+The stochastic linear bandit problem has been widely studied (e.g. [1, 24, 56]) and is one of the
+most important examples of a multi-armed bandit problem with “correlated arms.” In this setting,
+each action is associated with a ﬁnite dimensional feature vector, and the mean reward generated
+by an action is the inner product between its known feature vector and some unknown parameter
+vector. Because of this structure, observations from taking one action allow the decision–maker to
+make inferences about other actions. The next proposition bounds the minimal information ratio
+for such problems.
+Proposition 4. If A⊂ Rd, Θ ⊂Rd, andE[Rt,a|θ] = aTθfor each actiona∈A, thenΨ t(πIDS
+t ) ≤
+d/2 almost surely for allt∈N.
+This result shows thatE
+
+Regret(T,πIDS)
+
+≤
+∑
+1
+2 H(α1)dT ≤
+∑
+1
+2 log(|A|)dT for linear bandit
+problems. Dani et al. [23] again show this bound is order optimal in the sense that, for any time
+horizon T and dimensiond, when the action set isA= {0,1}d there exists a prior distribution over
+θsuch thatinfπE[Regret(T,π)] ≥c0
+√
+log(|A|)dT where c0 is a constant that is independent ofd
+and T. The bound here improves upon this worst case bound sinceH(α1) can be much smaller
+than log(|A|) when the prior distribution in informative.
+5.2.4 Combinatorial action sets and “semi-bandit” feedback
+To motivate the information structure studied here, consider a simple resource allocation problem.
+There ared possible projects, but the decision–maker can allocate resources to at mostm ≤d of
+them at a time. At timet, projecti∈{1,..,d}yields a random rewardXt,i, and the reward from
+selecting a subset of projectsa∈A⊂{ a′⊂{0,1,...,d}: |a′|≤m}is m−1 ∑
+i∈AXt,i. In the linear
+bandit formulation of this problem, upon choosing a subset of projectsa the agent would only
+observe the overall rewardm−1 ∑
+i∈aXt,i. It may be natural instead to assume that the outcome
+of each selected project(Xt,i : i∈a) is observed. This type of observation structure is sometimes
+called “semi-bandit” feedback [8].
+A naive application of Proposition 4 to address this problem would showΨ ∗
+t ≤d/2. The next
+proposition shows that since the entire parameter vector(θt,i : i ∈a) is observed upon selecting
+action a, we can provide an improved bound on the information ratio.
+Proposition 5. Suppose A⊂{ a⊂{0,1,...,d}: |a|≤m}, and that there are random variables
+(Xt,i : t∈N,i ∈{1,...,d}) such that
+Yt,a = (Xt,i : i∈a) and Rt,a = 1
+m
+
+i∈a
+Xt,i.
+Assume that the random variables{Xt,i : i ∈{1,...,d}}are independent conditioned onFt and
+Xt,i ∈[−1
+2 ,1
+2 ] almost surely for each(t,i). Then for allt∈N, Ψ t(πIDS
+t ) ≤ d
+2m2 almost surely.
+In this problem, there are as many as
+(d
+m
+)
+actions, but because IDS exploits the structure
+relating actions to one another, its regret is only polynomial inm and d. In particular, combining
+Proposition5withCorollary1shows E
+
+Regret(T,πIDS)
+
+≤ 1
+m
+∑
+d
+2 H(α1)T. SinceH(α1) ≤log |A|=
+16
+O(mlog( d
+m)) this also yields a bound of order
+∏
+d
+m log
+(
+d
+m
+)
+T. As shown by Audibert et al. [8], the
+lower bound1 for this problem is of order
+∑
+d
+mT, so our bound is order optimal up to a
+∑
+log( d
+m)
+factor.
+6 Computational methods
+IDS oﬀers an abstract design principle that captures some key qualitative properties of the Bayes-
+optimal solution while accommodating tractable computation for many relevant problem classes.
+However, additional work is required to design eﬃcient computational methods that implement
+IDS for speciﬁc problem classes. In this section, we provide guidance and examples.
+We will focus in this section on the problem of generating an actionAt given the posterior
+distribution overθat timet. This sidesteps the problem of computing and representing a posterior
+distribution, which can present its own challenges. Though IDS could be combined with approx-
+imate Bayesian inference methods, we will focus here on the simpler context in which posterior
+distributions can be eﬃciently computed and stored, as is the case when working with tractable
+ﬁnite uncertainty sets or appropriately chosen conjugate priors. It is worth noting, however, that
+two of our algorithms approximate IDS using samples from the posterior distribution, and this
+may be feasible through the use of Markov chain Monte Carlo even in cases where the posterior
+distribution cannot be computed or even stored.
+6.1 Evaluating the information ratio
+Given a ﬁnite action setA= {1,...,K}, we can view an action distributionπ as aK-dimensional
+vector of probabilities. The information ratio can then be written as
+Ψ t(π) =
+(
+π⊤⃗∆
+)2
+π⊤⃗ g,
+where ⃗∆ and ⃗ gare K-dimensional vectors with components⃗∆ k = ∆ t(k) and ⃗ gk = gt(k) for k∈A.
+In this subsection, we discuss the computation of⃗∆ and ⃗ gfor use in evaluation of the information
+ratio.
+There is no general eﬃcient procedure for computing⃗∆ and ⃗ ggiven a posterior distribution,
+becausethatwouldrequirecomputingintegralsoverpossiblyhigh-dimensionalspaces. Suchcompu-
+tation can often be carried out eﬃciently by leveraging the functional form of the speciﬁc posterior
+distribution and often require numerical integration. In order to illustrate the design of problem-
+speciﬁc computational procedures, we will present two simple examples in this subsection.
+We begin with a conceptually simple model involving ﬁnite uncertainty sets.
+Example 7. (ﬁnite sets)Consider a problem in whichθ takes values in Θ = {1,...,L}, the
+action set is A= {1,...,K}, the observation set is Y = {1,...,N}, and the reward function
+1In their formulation, the reward from selecting action a is
+∑
+i∈a Xt,i, which is m times larger than in our
+formulation. The lower bound stated in their paper is therefore of order
+√
+mdT. They don’t provide a complete
+proof of their result, but note that it follows from standard lower bounds in the bandit literature. In the proof of
+Theorem 5 in that paper, they construct an example in which the decision maker playsm bandit games in parallel,
+each withd/m actions. Using that example, and the standard bandit lower bound (see Theorem 3.5 of Bubeck and
+Cesa-Bianchi [15]), the agent’s regret from each component must be at least
+√ d
+m T, and hence her overall expected
+regret is lower bounded by a term of orderm
+√ d
+m T =
+√
+mdT.
+17
+R : Y↦→R is arbitrary. Let p1 be the prior probability mass function ofθ and let qθ,a(y) be the
+probability, conditioned onθ, of observingy when actiona is selected.
+Note that the posterior probability mass functionpt, conditioned on observations made prior to
+period t, can be computed recursively via Bayes’ rule:
+pt+1(θ) ← pt(θ)qθ,At(Yt,At)∑
+θ′∈Θ pt(θ′)qθ′,At(Yt,At).
+Given the posterior distributionpt along with the model parameters(L,K,N,R,q ), Algorithm 1
+computes ⃗∆ and ⃗ g. Line 1 computes the optimal action for each value ofθ. Line 2 calculates the
+probability that each action is optimal. Line 3 computes the marginal distribution ofY1,a and line
+4 computes the joint probability mass function of(A∗,Y1,a). Lines 5 and 6 use the aforementioned
+probabilities to compute⃗∆ and ⃗ g.
+Algorithm 1ﬁniteIR(L,K,N,R,p,q )
+1: Θ a ←{θ|a= arg maxa′
+∑
+yqθ,a′(y)R(y)} ∀ θ
+2: p(a∗) ← ∑
+θ∈Θ a∗p(θ) ∀a∗
+3: pa(y) ← ∑
+θp(θ)qθ,a(y) ∀a,y,θ
+4: pa(a∗,y) ← 1
+p(a∗)
+∑
+θ∈Θ a∗qθ,a(y) ∀a,y,a ∗
+5: R∗← ∑
+a
+∑
+θ∈Θ a
+∑
+yp(θ)qθ,a(y)R(y)
+6: ⃗ ga ← ∑
+a∗,ypa(a∗,y) log pa(a∗,y)
+p(a∗)pa(y) ∀a
+7: ⃗∆ a ← R∗−∑
+θp(θ) ∑
+yqθ,a(y)R(y) ∀a
+8: return ⃗∆ ,⃗ g
+Next, we consider the beta-Bernoulli bandit.
+Example 8. (beta-Bernoulli bandit)Consider a multi-armed bandit problem with binary re-
+wards: A= {1,...,K}, Y= {0,1}, and R(y) = y. Model parameters θ∈RK specify the mean
+reward θa of each actiona. Components ofθare independent and each beta-distributed with prior
+parametersβ1
+1,β2
+1 ∈RK
++
+Because the beta distribution is a conjugate prior for the Bernoulli distribution, the posterior
+distribution of each θa is a beta distribution. The posterior parameters β1
+t,a,β2
+t,a ∈R+ can be
+computed recursively:
+(β1
+t+1,a,β2
+t+1,a) ←
+{
+(β1
+t,a + Yt,a,β2
+t,a + (1 −Yt,a)) if At = a
+(β1
+t,a,β2
+t,a) otherwise.
+Given the posterior parameters(β1
+t,β2
+t), Algorithm 2 computes⃗∆ and ⃗ g.
+Line 5 of the algorithm computes the posterior probability mass function ofA∗. It is easy to
+18
+derive the expression used:
+Pt(A∗= a) = Pt
+
+ ⋂
+a′̸=a
+{θa′≤θa}
+(
+(
+=
+ˆ 1
+0
+fa(x)Pt
+
+ ⋂
+a′̸=a
+{θa′≤x}
+⏐⏐⏐⏐θa = x
+(
+(dx
+=
+ˆ 1
+0
+fa(x)
+
+
+a′̸=a
+Fa′(x)
+(
+(dx
+=
+ˆ 1
+0
+fa(x)
+Fa(x)
+
+F(x)dx,
+where fa, Fa, andF are deﬁned as in lines 1-3 of the algorithm, with arguments(K,β1
+t,β2
+t). Using
+expressions that can be derived in a similar manner, for each pair of actions Lines 6-7 compute
+Ma′|a := Et[θa′|θa = maxa′′θa′′], the expected value ofθa′given that actionais optimal. Lines 8-9
+computes the expected reward of the optimal actionρ∗= Et[maxaθa] and uses that to compute,
+for each action,
+⃗∆ a = Et
+
+max
+a′
+θa −θa
+
+= ρ∗− β1
+t,a
+(β1
+t,a + β2
+t,a).
+Finally, line 10 computes⃗ g. The expression makes use of the following fact, which is a consequence
+of standard properties of mutual information2:
+It(A∗; Yt,a) =
+
+a∗∈A
+Pt(A∗= a∗)DKL (Pt(Yt,a = ·|A∗= a∗) ||Pt(Yt,a = ·)) . (7)
+That is, the mutual information betweenA∗and Yt,a is the expected Kullback-Leibler divergence
+between the posterior predictive distributionPt(Yt,a = ·) and the predictive distribution conditioned
+on the identity of the optimal actionPt(Yt,a = ·|A∗= a∗). For our beta-Bernoulli model, the
+information gain⃗ ga is the expected Kullback-Leibler divergence between a Bernoulli distribution
+with mean Ma|A∗ and the posterior distribution at actiona, which is Bernoulli with parameter
+β1
+t,a/(β1
+t,a + β2
+t,a).
+Algorithm 2, as we have presented it, is somewhat abstract and can not readily be implemented
+on a computer. In particular, lines 1-4 require computing and storing functions of a continu-
+ous variable and several lines require integration of continuous functions. However, near-exact
+approximations can be eﬃciently generated by evaluating integrands at discrete grid of points
+{x1,...,xn}⊂ [0,1]. The values offa(x),Fa(x),Ga(x) and F(x) can be computed and stored for
+each value in this grid. The compute time can also be reduced via memoization, since values change
+only for one action per time period. The compute time of such an implementation scales withK2n
+where K is the number of actions andnis the number of points used in the discretization of[0,1].
+The bottleneck is Line 7.
+2Some details related to the derivation of this fact whenYt,a is a general random variable can be found in the
+appendix of Russo and Van Roy [61].
+19
+Algorithm 2betaBernoulliIR(K,β1,β2)
+1: fa(x) ← beta.pdf(x|β1
+a,β2
+a) ∀a,x
+2: Fa(x) ← beta.cdf(x|β1
+a,β2
+a) ∀a,x
+3: F(x) ← 
+aFa(x) ∀x
+4: Ga(x) ←
+´ x
+0 yfa(y)dy ∀a,x
+5: p∗(a) ←
+´ 1
+0
+fa(x)
+Fa(x)
+
+F(x)dx ∀a
+6: Ma|a ← 1
+p∗(a)
+´ 1
+0
+xfa(x)
+Fa(x)
+
+F(x)dx ∀a
+7: Ma′|a ← 1
+p∗(a)
+´ 1
+0
+
+fa(x)F(x)
+Fa(x)Fa′(x)
+
+Ga′(x)dx ∀a,a′̸= a
+8: ρ∗← ∑
+ap∗(a)Ma|a
+9: ⃗∆ a ← ρ∗− β1
+a
+β1a+β2a
+∀a
+10: ⃗ ga ← ∑
+a′p∗(a′)
+(
+Ma|a′log
+(
+Ma|a′(β1
+a + β2
+a)/β1
+a
+)
++ (1 −Ma|a′) log
+(
+(1 −Ma|a′)(β1
+a + β2
+a)/β2
+a
+))
+∀a
+11: return ⃗∆ ,⃗ g
+6.2 Optimizing the information ratio
+Let us now discuss how to generate an action given⃗∆ and ⃗ g̸= 0. If ⃗ g= 0, the optimal action is
+known with certainty, and therefore the action selection problem is trivial. Otherwise, IDS selects
+an action by solving
+min
+π∈SK
+(
+π⊤⃗∆
+)2
+π⊤⃗ g (8)
+where SK = {π ∈RK
++ : ∑
+kπk = 1 }is the K-dimensional unit simplex, and samples from the
+resulting distributionπ.
+The following result establishes that (8) is a convex optimization problem and, surprisingly, has
+an optimal solution with at most two non-zero components. Therefore, while IDS is a randomized
+policy, it suﬃces to randomize over two actions.
+Proposition 6. For all ⃗∆ ,⃗ g∈RK
++ such that ⃗ g̸= 0, the function π ↦→
+(
+π⊤⃗∆
+)2
+/π⊤⃗ gis convex
+on
+{
+π∈RK : π⊤⃗ g >0
+}
+. Moreover, this function is minimized over SK by some π∗for which
+|{k: π∗
+k >0}|≤2.
+Algorithm 3 leverages Proposition 6 to eﬃciently choose an action in a manner that minimizes
+(6). The algorithm takes as input⃗∆ ∈RK
++ and ⃗ g∈RK
++ , which provide the expected regret and
+information gain of each action. The sampling distribution that minimizes (6) is computed by
+iterating over all pairs of actions(a,a′) ∈A×A , and for each, computing the probabilityq that
+minimizes the information ratio among distributions that samplea with probabilityq and a′with
+probability 1 −q. This one-dimensional optimization problem requires little computation since
+the objective is convex;q can be computed by solving for the ﬁrst-order necessary condition or
+approximated by a bisection method. The compute time of this algorithm scales withK2.
+20
+Algorithm 3IDSAction(K,⃗∆ ,⃗ g)
+1: qa,a′← arg minq′∈[0,1]
+
+q′⃗∆ a + (1 −q′)⃗∆ a′
+2
+/[q′⃗ ga + (1 −q′)⃗ ga′] ∀a<K,a ′>a
+2: (a∗,a∗∗) ← arg mina<K,a′>a
+
+qa,a′⃗∆ a + (1 −qa,a′)⃗∆ a′
+2
+/
+
+qa,a′⃗ ga + (1 −qa,a′)⃗ ga′
+
+3: Sample b∼Bernoulli(qa∗,a∗∗)
+4: return ba∗+ (1 −b)a∗∗
+6.3 Approximating the information ratio
+ThoughreasonablyeﬃcientalgorithmscanbedevisedtoimplementIDSforvariousproblemclasses,
+some applications, such as those arising in high-throughput web services, call for extremely fast
+computation. As such, it is worth considering approximations to the information ratio that re-
+tain salient features while enabling faster computation. In this section, we discuss some useful
+approximation concepts.
+The dominant source of complexity in computing⃗∆ and ⃗ gis in the calculation of requisite
+integrals, which can require integration over high-dimensional spaces. One approach to addressing
+thischallengeistoreplaceintegralswithsample-basedestimates. Algorithm4doesthis. Inaddition
+to the number of actionsK and routines for evaluationq and R, the algorithm takes as inputM
+representative samples of θ. In the simplest use scenario, these would be independent samples
+drawn from the posterior distribution. The steps correspond to those of Algorithm 1, but with the
+set of possible models approximated by the set of representative samples. For many problems, even
+when exact computation of⃗∆ and⃗ gis intractable due to required integration over high-dimensional
+spaces, Algorithm 1 can generate close approximations from a moderate number of samplesM.
+Algorithm 4SampleIR(K,q,R,M,θ 1,...,θM)
+1: ˆΘ a ←{m|a= arg maxa′
+∑
+yqθm,a′(y)R(y)}
+2: ˆp(a∗) ←|ˆΘ a∗|/M ∀a∗
+3: ˆpa(y) ← ∑
+mqa,θm(y)/M ∀y
+4: ˆpa(a∗,y) ← ∑
+m∈Θ a qa,θm(y)/M ∀a∗,y
+5: ˆR∗← ∑
+a,y ˆpa(a,y)R(y)
+6: ⃗ ga ← ∑
+a∗,y ˆpa(a∗,y) log ˆpa(a∗,y)
+ˆp(a∗)ˆpa(y) ∀a
+7: ⃗∆ a ← R∗−M−1 ∑
+m
+∑
+yqθm,a(y)R(y) ∀a
+8: return ⃗∆ ,⃗ g
+The information ratio is designed to eﬀectively address indirect information, cumulating infor-
+mation, and irrelevant information, for a very broad class of learning problems. It can sometimes
+be helpful to replace the information ratio with alternative information measures that adequately
+address these issues for more specialized classes of problems. As an example, we will introduce
+the variance-based information ratio, which is suitable for some problems with bandit feedback,
+satisﬁes our regret bounds for such problems, and can facilitate design of more eﬃcient numerical
+methods.
+To motivate the variance-based information ratio, note that when rewards our bounded, with
+21
+R(y) ∈[0,1] for ally, our information measure term is lower-bounded according to
+gt(a) = It(A∗; Yt,a)
+=
+
+a∗∈A
+Pt(A∗= a∗)DKL (Pt(Yt,a = ·|A∗= a∗) ||Pt(Yt,a = ·))
+≥
+
+a∗∈A
+Pt(A∗= a∗)DKL (Pt(Rt,a = ·|A∗= a∗) ||Pt(Rt,a = ·))
+(a)
+≥ 2
+
+a∗∈A
+Pt(A∗= a∗)(Et[Rt,a|A∗= a∗] −Et[Rt,a])2
+= 2 Et[(Et[Rt,a|A∗] −Et[Rt,a])2]
+= 2Var t(Et[Rt,a|A∗]),
+where Vart(X) = Et[(X −Et[X])2] denotes the variance ofX under the posterior distribution.
+Inequality (a) is a simple corollary of Pinsker’s inequality, and is given as Fact 9 in Russo and
+Van Roy [61]. Let vt(a) := Var t(Et[Rt,a|A∗]), which represents the variance of the conditional
+expectation Et[Rt,a|A∗] under the posterior distribution. This measures how much the expected
+reward generated by actionavaries depending on the identity of the optimal actionA∗. The above
+lower bound on mutual information indicates that actions with high variancevt(a) must yield
+substantial information about which action is optimal. It is natural to consider an approximation
+to IDS that uses a variance-based information ratio:
+min
+π∈SK
+(
+π⊤⃗∆
+)2
+π⊤⃗ v,
+where ⃗ va = vt(a).
+While variance-based IDS will not minimize the information ratio, the next proposition estab-
+lishes that it satisﬁes the bounds on the information ratio given by Propositions 2 and 4.
+Proposition 7. Suppose supyR(y) −infyR(y) ≤1 and
+πt ∈arg min
+π∈SK
+∆ t(π)2
+vt(π) .
+Then Ψ t(πt) ≤|A|/2. Moreover, ifA⊂ Rd, Θ ⊂Rd, andE[Rt,a|θ] = aTθfor each actiona∈A,
+then Ψ t(πt) ≤d/2.
+We now consider a couple examples that illustrate computation of⃗ vand beneﬁts of using this
+approximation. Our ﬁrst example is the independent Gaussian bandit problem.
+Example 9. (independent Gaussian bandit) Consider a multi-armed bandit problem with
+A= {1,...,K}, Y= R, and R(y) = y. Model parameters θ ∈RK specify the mean rewardθa
+of each actiona. Components of θ are independent and Gaussian-distributed, with prior means
+µ1 ∈RK and covariancesσ2
+1 ∈RK. When an action At is applied, the observationYt is drawn
+independently fromN(θAt,η2).
+The posterior distribution of θ is Gaussian, with independent components. Parameters can be
+22
+computed recursively according to
+µt+1,a ←
+
+}
+
+(
+µt,a
+σ2
+t,a
++ Yt,a
+η2
+)
+/
+(
+1
+σ2
+t,a
++ 1
+η2
+)
+if At = a
+µt,a otherwise.
+σt+1,a ←
+
+}
+
+(
+1
+σ2
+t,a
++ 1
+η2
+)−1
+if At = a
+σt,a otherwise.
+Given arguments(K,µt,σt), Algorithm 5 computes⃗∆ and ⃗ vfor the independent Gaussian bandit
+problem. Note that this algorithm is very similar to Algorithm 2, which was designed for the
+beta-Bernoulli bandit. One diﬀerence is that Algorithm 5 computes the variance-based informa-
+tion measure. In addition, the Gaussian distribution exhibits special structure that simpliﬁes the
+computation ofMa′|a := Et[θa′|θa = maxa′′θa′′] .In particular, the computation ofMa′|a uses the
+following closed form expression for the expected value of a truncated Gaussian distribution with
+mean ˜µ and variance˜σ2:
+E[X|X ≤x] = ˜µ−˜σφ
+(x−˜µ
+˜σ
+)
+/Φ
+(x−˜µ
+˜σ
+)
+= ˜µ−˜σ2f(x)/F(x),
+where X ∼N(˜µ,˜σ2) and f and F are the probability density and cumulative distribution functions.
+The analogous calculation that would be required to compute the standard information ratio is
+more complex.
+Algorithm 5independentGaussianVIR(K,µ,σ )
+1: fa(x) ← Gaussian.pdf(x|µa,σ2
+a) ∀a,x
+2: Fa(x) ← Gaussian.cdf(x|µa,σ2
+a) ∀a,x
+3: F(x) ← 
+aFa(x) ∀x
+4: p∗(a) ←
+´ 1
+0
+fa(x)
+Fa(x)
+
+F(x)dx ∀a
+5: Ma|a ← 1
+p∗(a)
+´ ∞
+−∞
+xfa(x)
+Fa(x)
+
+F(x)dx ∀a
+6: Ma′|a ← µa′−
+σ2
+a′
+p∗(a)
+´ ∞
+−∞
+fa(x)fa′(x)
+Fa(x)Fa′(x)
+
+F(x)dx ∀a,a′̸= a
+7: ρ∗← ∑
+ap∗(a)Ma|a
+8: ∆ a ← ρ∗−µa ∀a
+9: va ← ∑
+a′p∗(a′)
+(
+Ma|a′−µa
+)2
+∀a
+10: return ⃗∆ ,⃗ v
+We next consider the linear bandit problem.
+Example 10. (linear bandit) Consider a multi-armed bandit problem withA = {1,...,K},
+Y= R, andR(y) = y. Model parametersθ∈RK are drawn from a Gaussian prior with meanµ1
+and covariance matrixΣ 1. There is a known matrixΦ = [Φ 1,···,Φ K] ∈Rd×K such that, when
+an actionAt is applied, the observationYt,At is drawn independently fromN(Φ Atθ,η2), whereΦ At
+denotes theAtth column ofΦ .
+The posterior distribution ofθis Gaussian and can be computed recursively:
+µt+1 = (Σ −1
+t + ΦAtΦ ⊤
+At/η2)−1(Σ −1
+t µt + Yt,AtΦ At/η2)
+23
+Σ t+1 = (Σ −1
+t + ΦAtΦ ⊤
+At/η2)−1.
+We will develop an algorithm that leverages the fact that, for the linear bandit,vt(a) takes on
+a particularly simple form:
+vt(a) = Var t(Et[Rt,a|A∗])
+= Var t(Et[Φ ⊤
+aθ|A∗])
+= Var t(Φ ⊤
+aEt[θ|A∗])
+= Φ ⊤
+aEt[(µA∗
+t −µt)(µA∗
+t −µt)⊤]Φ a
+= Φ ⊤
+aLtΦ a,
+where µa
+t = Et[θ|A∗= a] and Lt = Et[(µA∗
+t −µt)(µA∗
+t −µt)⊤]. Algorithm 6 presents a sample-based
+approach to computing ⃗∆ and ⃗ v. In addition to model dimensions K and d and the problem
+data matrix Φ , the algorithm takes as inputM representative values ofθ, which in the simplest
+use scenario, would be independent samples drawn from the posterior distributionN(µt,Σ t). The
+algorithm approximates posterior meansµt and µa
+t as well asLt by averaging suitable expressions
+over these samples. Due to the quadratic structure ofvt(a), these calculations are substantially
+simpler than those that would be carried out by Algorithm 4, specialized to this context.
+Algorithm 6linearSampleVIR(K,d,M,θ 1,...,θM)
+1: ˆµ← ∑
+mθm/M
+2: ˆΘ a ←{m: (Φ ⊤θm)a = maxa′(Φ θm)a′} ∀ a
+3: ˆp∗(a) ←|ˆΘ a|/M ∀a
+4: ˆµa ← ∑
+θ∈ˆΘ a
+θ/|ˆΘ a| ∀a
+5: ˆL← ∑
+a ˆp∗(a) (ˆµa −ˆµ) (ˆµa −ˆµ)⊤
+6: ρ∗← ∑
+a ˆp∗(a)Φ ⊤
+a ˆµa
+7: ⃗ va ← Φ ⊤
+a ˆLΦ ⊤
+a ∀a
+8: ⃗∆ a ← ρ∗−Φ ⊤
+a ˆµ ∀a
+9: return ⃗∆ ,⃗ v
+It is interesting to note that Algorithms 4 and 6 do not rely on any special structure in the
+posterior distribution. Indeed, these algorithms should prove eﬀective regardless of the form taken
+by the posterior. This points to a broader opportunity to use IDS or approximations to address
+complex models for which posteriors can not be eﬃciently computed or even stored, but for which
+it is possible to generate posterior samples via Markov chain Monte Carlo methods. We leave this
+as a future research opportunity.
+7 Computational results
+This section presents computational results from experiments that evaluate the eﬀectiveness of
+information-directed sampling in comparison to alternative algorithms. In Section 4.3, we showed
+that alternative approaches like UCB algorithms, Thompson sampling, and the knowledge gradient
+algorithm can perform very poorly when faced with complicated information structures and for
+this reason can be dramatically outperformed by IDS. In this section, we focus instead on simpler
+settings where current approaches are extremely eﬀective. We ﬁnd that even for these simple and
+widely studied settings, information-directed sampling displays state-of-the-art performance. For
+each experiment, the algorithm used to implement IDS is presented in the previous section.
+24
+IDS, Thompson sampling (TS), and some UCB algorithms, do not take the horizonT as input,
+and are instead designed to work well for all suﬃciently long horizons. Other algorithms we simulate
+were optimized for the particular horizon of the simulation trial. The KG and KG* algorithms in
+particular, treat the simulation horizon as known, and explore less aggressively in later periods. We
+have tried to clearly delineate which algorithms are optimized for simulation horizon. We believe
+one can also design variants of IDS, TS, and UCB algorithms that reduce exploration as the time
+remaining diminishes, but leave this for future work.
+7.1 Beta-Bernoulli bandit
+Our ﬁrst experiment involves a multi-armed bandit problem with independent arms and binary
+rewards. The mean reward of each arm is drawn fromBeta(1,1), which is the uniform distribution,
+and the means of separate arms are independent. Figure 1a and Table 1 present the results of 1000
+independent trials of an experiment with 10 arms and a time horizon of 1000. We compared the
+performance of IDS to that of six other algorithms, and found that it had the lowest average regret
+of 18.0.
+The UCB1 algorithm of Auer et al. [9] selects the actionawhich maximizes the upper conﬁdence
+bound ˆθt(a)+
+√
+2 log(t)/Nt(a) where ˆθt(a) is the empirical average reward from samples of actiona
+and Nt(a) is the number of samples of actionaup to timet. The average regret of this algorithm is
+130.7, which is dramatically larger than that of IDS. For this reason UCB1 is omitted from Figure
+1a.
+The conﬁdence bounds of UCB1 are constructed to facilitate theoretical analysis. For practical
+performance Auer et al. [9] proposed using an algorithm called UCB-Tuned. This algorithm selects
+the actionawhich maximizes the upper conﬁdence boundˆθt(a) +
+∑
+min{1/4 , Vt(a)}log(t)/Nt(a),
+where Vt(a) is an upper bound on the variance of the reward distribution at actiona. While this
+method dramatically outperforms UCB1, it is still outperformed by IDS. The MOSS algorithm of
+Audibert and Bubeck [7] is similar to UCB1 and UCB–Tuned, but uses slightly diﬀerent conﬁdence
+bounds. It is known to satisfy regret bounds for this problem that are minimax optimal up to a
+numerical constant factor.
+In previous numerical experiments [21, 43, 44, 66], Thompson sampling and Bayes UCB exhib-
+ited state-of-the-art performance for this problem. Each also satisﬁes strong theoretical guarantees,
+and is known to be asymptotically optimal in the sense deﬁned by Lai and Robbins [49]. Unsur-
+prisingly, they are the closest competitors to IDS. The Bayes UCB algorithm, studied in kaufmann
+et al. [43], constructs upper conﬁdence bounds based on the quantiles of the posterior distribu-
+tion: at time stept the upper conﬁdence bound at an action is the1 −1
+t quantile of the posterior
+distribution of that action3.
+A somewhat diﬀerent approach is the knowledge gradient (KG) policy of Powell and Ryzhov
+[55], which uses a one-step lookahead approximation to the value of information to guide exper-
+imentation. For reasons described in Section 4.3.3, KG does not explore suﬃciently to identify
+the optimal arm in this problem, and therefore its regret grows linearly with time. Because KG
+explores very little, its realized regret is highly variable, as depicted in Table 1. In 200 out of the
+2000 trials, the regret of KG was lower than .7, reﬂecting that the best arm was almost always
+chosen. In the worst 200 out of the 2000 trials, the regret of KG was larger than 159.
+KG is particularly poorly suited to problems with discrete observations and long time horizons.
+The KG* heuristic of Ryzhov et al. [63] oﬀers much better performance in some of these problems.
+3Their theoretical guarantees require choosing a somewhat higher quantile, but the authors suggest choosing this
+quantile, and use it in their own numerical experiments.
+25
+Time Horizon Agnostic Optimized For
+Time Horizon
+Algorithm IDS V-IDS TS Bayes
+UCB UCB1 UCB-
+Tuned MOSS KG KG*
+Mean Regret 18.0 18.1 28.1 22.8 130.7 36.3 46.7 51.0 18.4
+Standard Error 0.4 0.4 0.3 0.3 0.4 0.3 0.2 1.5 0.6
+Quantile .10 3.6 5.2 13.6 8.5 104.2 24.0 36.2 0.7 2.9
+Quantile .25 7.4 8.1 18.0 12.5 117.6 29.2 40.0 2.9 5.4
+Quantile .50 13.3 13.5 25.3 20.1 131.6 35.2 45.2 11.9 8.7
+Quantile .75 22.5 22.3 35.0 30.6 144.8 41.9 51.0 82.3 16.3
+Quantile .90 35.6 36.5 46.4 40.5 154.9 49.5 57.9 159.0 46.9
+Quantile .95 51.9 48.8 53.9 47.0 160.4 54.9 64.3 204.2 76.6
+Table 1: Realized regret over 2000 trials in Bernoulli experiment
+At timet, KG* calculates the value of sampling an arm forM ∈{1,..,T−t}periods and choosing
+the arm with the highest posterior mean in subsequent periods. It selects an action by maximizing
+this quantity over all possible arms and possible exploration lengthsM. Our simulations require
+computing T = 1 ,000 decisions per trial, and a direct implementation of KG* requires order
+T3 basic operations per decision. To enable eﬃcient simulation, we use a heuristic approach to
+computing KG* proposed by Kamiński [42]. The approximate KG* algorithm we implement uses
+golden section search to maximize a non-concave function, but is still empirically eﬀective.
+Finally, as demonstrated in Figure 1a, variance-based IDS oﬀers performance very similar to
+standard IDS for this problem.
+It is worth pointing out that, although Gittins’ indices characterize the Bayes optimal policy
+for inﬁnite horizon discounted problems, the ﬁnite horizon formulation considered here is compu-
+tationally intractable [30]. A similar index policy [52] designed for ﬁnite horizon problems could
+be applied as a heuristic in this setting. However, with long time horizons, the associated compu-
+tational requirements become onerous.
+0 200 400 600 800 1000Time Period
+0
+10
+20
+30
+40
+50
+60Cumulative Regret
+KGApproximate KG*IDSThompson SamplingBayes UCBUCB-TunedMOSS
+(a) Binary rewards
+0 200 400 600 800 1000Time Period
+0
+50
+100
+150
+200Cumulative Regret
+KGKG*Bayes UCBThompson SamplingIDSGPUCBTuned GPUCB (b) Gaussian rewards
+Figure 1: Average cumulative regret over 1000 trials
+26
+Time Horizon Agnostic Optimized For
+Time Horizon
+Algorithm V-IDS TS Bayes
+UCB GPUCB Tuned
+GPUCB KG KG*
+Mean Regret 58.4 69.1 63.8 157.6 53.8 65.5 50.3
+Standard Error 1.7 0.8 0.7 0.9 1.4 2.9 1.9
+Quantile .10 24.0 39.2 34.7 108.2 24.2 16.7 19.4
+Quantile .25 30.3 47.6 43.2 130.0 30.1 20.8 24.0
+Quantile .50 39.2 61.8 57.5 156.5 41.0 25.9 29.9
+Quantile .75 56.3 80.6 76.5 184.2 58.9 36.4 40.3
+Quantile .90 104.6 104.5 97.5 207.2 86.1 155.3 74.7
+Quantile .95 158.1 126.5 116.7 222.7 112.2 283.9 155.6
+Table 2: Realized regret over 2000 trials in independent Gaussian experiment
+Time HorizonT 10 25 50 75 100 250 500 750 1000 2000
+Regret of V-IDS 9.8 16.1 21.1 24.5 27.3 36.7 48.2 52.8 58.3 68.4
+Regret of KG(T) 9.2 15.3 20.5 22.9 25.4 35.2 45.3 52.3 62.9 80.0
+Table 3: Competitive performance without knowing the time horizon. Average cumulative regret
+over 2000 trials in the independent Gaussian experiment.
+7.2 Independent Gaussian bandit
+Our second experiment treats a diﬀerent multi-armed bandit problem with independent arms.
+The reward value at each action a follows a Gaussian distribution N(θa,1). The mean θa ∼
+N(0,1) is drawn from a Gaussian prior, and the means of diﬀerent reward distributions are drawn
+independently. We ran 2000 simulation trials of a problem with 10 arms. The results are displayed
+in Figure 1b and Table 2.
+For this problem, we compare variance-based IDS against Thompson sampling, Bayes UCB,
+and KG. We use the variance-based variant of IDS because it aﬀords us computational advantages.
+We also simulated the GPUCB of Srinivas et al. [67]. This algorithm maximizes the upper
+conﬁdence bound µt(a) + √βtσt(a) where µt(a) and σt(a) are the posterior mean and standard
+deviation ofθa. They provide regret bounds that hold with probability at least1 −δwhen βt =
+2 log
+(
+|A|t2π2/6δ
+)
+.This value ofβt is far too large for practical performance, at least in this problem
+setting. The average regret of GPUCB4 is 157.6, which is roughly almost three times that of V-IDS.
+For this reason, we considered a tuned version of GPUCB that setsβt = clog(t). We ran 1000
+trials of many diﬀerent values ofc to ﬁnd the valuec= .9 with the lowest average regret for this
+problem. This tuned version of GPUCB had average regret of 53.8, which is slight better than IDS.
+The work on knowledge gradient (KG) focuses almost entirely on problems with Gaussian
+reward distributions and Gaussian priors. We ﬁnd KG performs better in this experiment than it
+did in the Bernoulli setting, and its average regret is competitive with that of IDS.
+As in the Bernoulli setting, KG’s realized regret is highly variable. The median regret of KG
+is the lowest of any algorithm, but in 100 of the 2000 trials its regret exceeded 283 – seemingly
+reﬂecting that the algorithm did not explore enough to identify the best action. The KG* heuristic
+explores more aggressively, and performs very well in this experiment.
+4We setδ= 0 in the deﬁnition ofβt, as this choice leads to a lower value ofβt and stronger performance.
+27
+KG is particularly eﬀective over short time spans. Unlike information-directed sampling, KG
+takes the time horizonT as an input, and explores less aggressively when there are fewer time
+periods remaining. Table 3 compares the regret of KG and IDS over diﬀerent time horizons. Even
+though IDS does not take the time horizon into account, it is competitive with KG, even over short
+horizons. We believe that IDS can be modiﬁed to exploit ﬁxed and known time horizons more
+eﬀectively, though we leave the matter for future research.
+7.3 Asymptotic optimality
+The previous subsections present numerical examples in which IDS outperforms Bayes UCB and
+Thompson sampling for some problems with independent arms. This is surprising since each of
+these algorithms is known, in a sense we will soon formalize, to be asymptotically optimal for these
+problems. This section presents simulation results over a much longer time horizon that suggest
+IDS scales in the same asymptotically optimal way.
+We consider again a problem with binary rewards and independent actions. The actionai ∈
+{a1,...,aK}yields in each time period a reward that is 1 with probabilityθi and 0 otherwise. The
+seminal work of Lai and Robbins [49] provides the following asymptotic lower bound on regret of
+any policyπ:
+lim inf
+T→∞
+E[Regret(T,π)|θ]
+log T ≥
+
+a̸=A∗
+θA∗−θa
+DKL(θA∗||θa) := c(θ).
+Note that we have conditioned on the parameter vectorθ, indicating that this is a frequentist lower
+bound. Nevertheless, when applied with an independent uniform prior overθ, both Bayes UCB
+and Thompson sampling are known to attain this lower bound [43, 44].
+Our next numerical experiment ﬁxes a problem with three actions and withθ= (.3,.2,.1).We
+compare algorithms over a 10,000 time periods. Due to the expense of running this experiment,
+we were only able to execute 200 independent trials. Each algorithm uses a uniform prior over
+θ. Our results, along with the asymptotic lower bound ofc(θ) log(T), are presented in Figure 2.
+0 2 4 6 8 10
+x 10
+4
+0
+10
+20
+30
+40
+50
+60Cumulative Regret
+Time Period
+ 
+ 
+IDS
+Thompson Sampling
+Bayes UCB
+Lower Bound
+Figure 2: Cumulative regret over 200 trials.
+7.4 Linear bandit problems
+Our ﬁnal numerical experiment treats a linear
+bandit problem. Each action a ∈ R5 is de-
+ﬁned by a 5 dimensional feature vector. The
+reward of actiona at time t is aTθ+ ϵt where
+θ ∼ N(0,10I) is drawn from a multivariate
+Gaussian prior distribution, and ϵt ∼ N(0,1)
+is independent Gaussian noise. In each period,
+only the reward of the selected action is ob-
+served. In our experiment, the action set A
+contains 30 actions, each with features drawn
+uniformly at random from[−1/
+√
+5,1/
+√
+5]. The
+results displayed in Figure 3 and Table 5 com-
+pare regret across 2,000 independent trials.
+We simulate variance-based IDS using the
+implementation presented in Algorithm 6. We
+28
+Time Horizon Agnostic Optimized For
+Time Horizon
+Algorithm V-IDS TS Bayes
+UCB GPUCB Tuned
+GPUCB KG KG*
+Mean Regret 29.2 38.0 32.9 58.7 29.1 33.2 30.0
+Standard Error 0.5 0.4 0.4 0.3 0.4 0.7 1.4
+Quantile .10 13.0 22.6 18.9 41.3 14.5 12.7 11.9
+Quantile .25 17.6 27.6 23.1 48.9 18.4 17.5 16.1
+Quantile .50 23.2 34.3 29.2 57.9 24.0 24.1 20.6
+Quantile .75 32.1 43.7 39.0 67.4 32.9 34.5 28.5
+Quantile .90 49.5 56.5 48.7 77.1 46.6 60.9 55.6
+Quantile .95 67.5 67.5 58.4 82.7 59.9 94.5 96.1
+Table 4: Realized regret over 2000 trials in linear experiment. KG* results are over 500 trails.
+Time HorizonT 10 25 50 75 100 250 500
+Regret of V-IDS 11.8 16.2 19.6 21.6 23.3 31.1 34.7
+Regret of KG(T) 11.1 15.1 19.0 22.5 24.1 34.4 43.0
+Table 5: Competitive performance without knowing the time horizon Average cumulative regret
+over 2000 trials in linear Gaussian experiment.
+compare its regret to six competing algorithms. Like IDS, GP-UCB and Thompson sampling satisfy
+strong regret bounds for this problem5. Both algorithms are signiﬁcantly outperformed by IDS.
+We also include Bayes UCB [43] and a version of GP-UCB that was tuned, as in Subsection
+7.2, to minimize its average regret. Each of these displays performance that is competitive with
+that of IDS. These algorithms are heuristics, in the sense that the way their conﬁdence bounds
+are constructed diﬀer signiﬁcantly from those of linear UCB algorithms that are known to satisfy
+theoretical guarantees.
+0 50 100 150 200 250Time Period
+0
+10
+20
+30
+40
+50
+60Cumulative Regret
+Bayes UCBThompson SamplingGPUCBTuned GPUCBIDSKGKG*
+Figure 3: Regret in linear–Gaussian model.
+As discussed in Subsection 7.2, unlike IDS,
+KG takes the time horizon T as an input,
+and explores less aggressively when there are
+fewertimeperiodsremaining. Table5compares
+IDS to KG over several diﬀerent time horizons.
+Even though IDS does not exploit knowledge
+of the time horizon, it is competitive with KG
+over short time horizons.
+In this experiment, KG* appears to oﬀer a
+small improvement over standard KG, but as
+shown in the next subsection, it is much more
+computationally burdensome. To save compu-
+tational resources, we have only executed 500
+independent trails of the KG* algorithm.
+5Regret analysis of GP-UCB can be found in [67]. Regret bounds for Thompson sampling can be found in [6, 59, 61]
+29
+Arms IDS V-IDS TS Bayes UCB UCB1 KG Approx KG*
+10 0.011013 0.01059 0.000025 0.000126 0.000008 0.000036 0.074618
+30 0.047021 0.047529 0.000023 0.000147 0.000005 0.000017 0.215145
+50 0.104328 0.10203 0.000024 0.000176 0.000005 0.000017 0.358505
+70 0.18556 0.178689 0.000028 0.000167 0.000005 0.000017 0.494455
+Table 6: Bernoulli Experiment: Compute time per-decision in seconds.
+Arms V-IDS TS Bayes UCB GPUCB KG KG*
+10 0.00298 0.000008 0.00002 0.00001 0.000146 0.001188
+30 0.012597 0.000005 0.000009 0.000005 0.000097 0.003157
+50 0.023084 0.000006 0.000009 0.000005 0.000094 0.005146
+70 0.03913 0.000006 0.000009 0.000005 0.000098 0.006364
+Table 7: Independent Gaussian Experiment: Compute time per-decision in seconds.
+7.5 Runtime Comparison
+We now compare the time required to compute decisions using the algorithms we have applied. In
+our experiments, Thompson sampling and UCB algorithms are extremely fast, sometimes requiring
+only a few microseconds to reach a decision. As expected, our implementation of IDS requires
+signiﬁcantly more compute time. However, IDS often reaches a decision in only a small fraction
+of second, which is tolerable in many application areas. In addition, IDS may be accelerated
+considerably via parallel processing or an optimized implementation.
+The results for KG are mixed. For independent Gaussian models, certain integrals can be
+computed via closed form expressions, allowing KG to execute quickly. There is also a specialized
+numerical procedure for implementing KG for correlated (or linear) Gaussian models, but com-
+putation is an order of magnitude slower than in the independent case. For correlated Gaussian
+models, the KG* policy is much slower than both KG and IDS. For beta-Bernoulli problems, KG
+can be computed very easily, but yields poor performance. A direct implementation of the KG*
+policy was too slow to simulate, and so we have used a heuristic approach presented in [42], which
+uses golden section search to maximize a function that is not necessarily unimodal. This method
+is labeled “Approx KG*” in Table 6.
+Table 6 displays results for the Bernoulli experiment described in Subsection 7.1. It shows the
+average time required to compute a decision in a 1000 period problem with10,30,50 and 70 arms.
+IDS was implementing using Algorithm 2 to evaluate the information ratio, and Algorithm 3 to
+optimize it. The numerical integrals in Algorithm 2 were approximated using quadrature with 1000
+equally spaced points. Table 7 presents results of the corresponding experiment in the Gaussian
+case. Finally, Table 8 displays results for the linear bandit experiments described in Subsection 7.4,
+which make use of Algorithm 6 and Markov chain Monte Carlo sampling withM = 10,000 samples.
+The table provides the average time required to compute a decision in a 250 period problem.
+8 Conclusion
+This paper has proposed information-directed sampling – a new algorithm for online optimization
+problems in which a decision maker must learn from partial feedback. We establish a general
+regret bound for the algorithm, and specialize this bound to several widely studied problem classes.
+We show that it sometimes greatly outperforms other popular approaches, which don’t carefully
+30
+Arms Dimension V-IDS TS Bayes UCB GPUCB KG KG*
+15 3 0.004305 0.000178 0.000139 0.000048 0.002709 0.311935
+30 5 0.008635 0.000064 0.000048 0.000038 0.004789 0.589998
+50 20 0.026222 0.000077 0.000083 0.000068 0.008356 1.051552
+100 30 0.079659 0.000115 0.000148 0.00013 0.017034 2.067123
+Table 8: Linear Gaussian Experiment: Compute time per-decision in seconds.
+measure the information provided by sampling actions. Finally, for some simple and widely studied
+classes of multi-armed bandit problems we demonstrate simulation performance surpassing popular
+approaches.
+Many important open questions remain, however. IDS solves a single-period optimization prob-
+lem as a proxy to an intractable multi-period problem. Solution of this single-period problem can
+itself be computationally demanding, especially in cases where the number of actions is enormous or
+mutual information is diﬃcult to evaluate. An important direction for future research concerns the
+development of computationally elegant procedures to implement IDS in important cases. Even
+when the algorithm cannot be directly implemented, however, one may hope to develop simple
+algorithms that capture its main beneﬁts. Proposition 1 shows that any algorithm with small in-
+formation ratio satisﬁes strong regret bounds. Thompson sampling is a simple algorithm that, we
+conjecture, sometimes has nearly minimal information ratio. Perhaps simple schemes with small
+information ratio could be developed for other important problem classes, like the sparse linear
+bandit problem.
+In addition to computational considerations, a number of statistical questions remain open.
+One question raised is whether IDS attains the lower bound of Lai and Robbins [49] for some
+bandit problems with independent arms. Beyond the empirical evidence presented in Subsection
+7.3, there are some theoretical reasons to conjecture this is true. Next, a more precise understanding
+of problem’sinformation complexityremains an important open question for the ﬁeld. Our regret
+bound depends on the problem’s information complexity through a term we call the information
+ratio, but it’s unclear if or when this is the right measure. Finally, it may be possible to derive
+lower bounds using the same information theoretic style of argument used in the derivation of our
+upper bounds.
+9 Extensions
+This section presents a number of ways in which the results and ideas discussed throughout this
+paper can be extended. We will consider the use of algorithms like information-directed sam-
+pling for pure–exploration problems, a form of information-directed sampling that aims to acquire
+information aboutθinstead ofA∗, and a version of information directed-sampling that uses a tun-
+ing parameter to control how aggressively the algorithm explores. In each case, new theoretical
+guarantees can be easily established by leveraging our analysis of information-directed sampling.
+9.1 Pure exploration problems
+Consider the problem of adaptively gathering observations
+(
+A1,Y1,A1 ,...,AT−1,YT−1,AT−1
+)
+so as
+to minimize the expected loss of the best decision at timeT,
+E
+
+min
+a∈A
+∆ T(a)
+
+. (9)
+31
+Recall that we have deﬁned∆ t(a) := E[Rt,A∗−Rt,a|Ft] to be the expected regret of actiona at
+time t. This is a “pure exploration problem,” in the sense that one is interested only in the terminal
+regret (9) and not in the algorithm’s cumulative regret. However, the next proposition shows that
+bounds on the algorithm’s cumulative expected regret imply bounds onE[mina∈A∆ T(a)].
+Proposition 8. If actions are selected according to a policyπ, then
+E
+
+min
+a∈A
+∆ T(a)
+
+≤E[Regret (T,π)]
+T .
+Proof. By the tower property of conditional expectation, E[∆ t+1(a)|Ft] = ∆ t(a). Therefore,
+Jensen’s inequality showsE[mina∈A∆ t+1(a)|Ft] ≤mina∈A∆ t(a) ≤∆ t(πt). Taking expectations
+and iterating this relation shows that
+E
+
+min
+a∈A
+∆ T(a)
+
+≤E
+
+min
+a∈A
+∆ t(a)
+
+≤E[∆ t(πt)] ∀t∈{1,...,T}. (10)
+The result follows by summing both sides of (10) overt∈{1,...,T}and dividing each byT.
+Information-directed sampling is designed to have low cumulative regret, and therefore balances
+between acquiring information and taking actions with low expected regret. For pure exploration
+problems, it’s natural instead to consider an algorithm that always acquires as much information
+about A∗as possible. The next proposition provides a theoretical guarantee for an algorithm of
+this form. The proof of this result combines our analysis of information-directed sampling with
+Proposition 8.
+Proposition 9. If actions are selected so that
+At ∈arg max
+a∈A
+gt(a),
+and Ψ ∗
+t ≤λ almost surely for eacht∈{1,...,T}, then
+E
+
+min
+a∈A
+∆ T(a)
+
+≤
+√
+λH(α1)
+T .
+Proof. To simplify notation, let∆ ∗
+t = mina∈A∆ t(a) denote the minimal expected regret at timet,
+and g∗
+t = maxa∈Agt(a) denote the information gain under the current algorithm.
+Since ∆ t(πIDS
+t )2 ≤λgt(πIDS
+t ), it is immediate that∆ ∗
+t ≤
+√
+λg∗
+t. Therefore
+E[∆ ∗
+T]
+(a)
+≤
+(1
+T
+)
+E
+T
+t=1
+∆ ∗
+t ≤
+(√
+λ
+T
+(
+E
+T
+t=1
+∑
+g∗
+t
+(b)
+≤
+(√
+λ
+T
+(√TE
+T
+t=1
+g∗
+t
+(c)
+≤
+√
+λH(α1)
+T .
+Inequality (a) uses equation (10) in the proof of Proposition 8, (b) uses the Cauchy-Schwartz
+inequality, and (c) follows as in the proof of Proposition 1.
+9.2 Using information gain aboutθ
+Information-directed sampling optimizes a single-period objective that balances earning high im-
+mediate reward and acquiring information. Information is quantiﬁed using the mutual information
+between the true optimal action A∗and the algorithm’s next observationYt,a. In this subsec-
+tion, we will consider an algorithm that instead quantiﬁes the amount learned through selecting
+32
+an actiona using the mutual informationIt(θ; Yt,a) between the algorithm’s next observation and
+the unknown parameterθ. As highlighted in Subsection 4.3.2, such an algorithm could invest in
+acquiring information that is irrelevant to the decision problem. However, in some cases, such an
+algorithm can be computationally simple while oﬀering reasonable statistically eﬃciency.
+We introduce a modiﬁed form of the information ratio
+Ψ θ
+t(π) := ∆ t(π)2
+∑
+a∈Aπ(a)It(θ; Yt,a) (11)
+which replaces the expected information gain aboutA∗, gt(π) = ∑
+a∈Aπ(a)It(A∗; Yt,a), with the
+expected information gain aboutθ.
+Proposition 10. For any action sampling distribution˜π∈D(A),
+Ψ θ
+t(˜π) ≤Ψ t(˜π). (12)
+Furthermore, ifΘ is ﬁnite, and there is someλ∈R and policyπ= (π1,π2,...) satisfying Ψ θ
+t(πt) ≤λ
+almost surely, then
+E[Regret(T,π)] ≤
+∑
+λH(θ)T. (13)
+Equation (12) relies on the inequalityIt(A∗; Yt,a) ≤It(θ; Yt,a), which itself follows from the
+data processing inequality of mutual information becauseA∗is a function ofθ. The proof of the
+second part of the proposition is almost identical to the proof of Proposition 1, and is omitted.
+We have provided several bounds on the information ratio ofπIDS of the formΨ t(πIDS
+t ) ≤λ.
+By this proposition, such bounds imply that ifπ= (π1,π2,...) satisﬁes
+πt ∈arg min
+π∈D(A)
+Ψ θ
+t(π)
+then, Ψ θ
+t(πt) ≤Ψ θ
+t(πIDS
+t ) ≤Ψ t(πIDS
+t ) ≤λ, and the regret bound (13) applies.
+9.3 A tunable version of information-directed sampling
+In this section, we present an alternative form of information-directed sampling that depends on a
+tuning parameterλ∈R. Asλvaries, the algorithm strikes a diﬀerent balance between exploration
+and exploration. The following proposition provides regret bounds for this algorithm providedλis
+suﬃciently large.
+Proposition 11. Fix anyλ∈R such thatΨ t(πIDS
+t ) ≤λ almost surely for eacht∈{1,...,T}. If
+π= (π1,π2,..) is deﬁned so that
+πt ∈arg min
+π∈D(A)
+{
+ρ(π) := ∆ t(π)2 −λgt(π)
+}
+, (14)
+then
+E[Regret(T,π)] ≤
+∑
+λH(α)T.
+Proof. We have that
+ρ(πt)
+(a)
+≤ρ(πIDS
+t )
+(b)
+≤0,
+where (a) follows sinceπIDS
+t is feasible for the optimization problem (14), and (b) follows since
+0 = ∆ t(πIDS
+t )2 −Ψ t(πIDS
+t )gt(πIDS
+t ) ≥∆ t(πIDS
+t )2 −λgt(πIDS
+t ).
+Since ρt(πt) ≤0, it must be the case thatλ ≥∆ t(πt)2/gt(πt) Def= Ψ t(πt). The result then follows
+by applying Proposition 1.
+33
+Acknowledgements
+We thank the anonymous referees for feedback and stimulating exchanges, Junyang Qian for cor-
+recting miscalculations in an earlier draft pertaining to Examples 3 and 4, and Eli Gutin and
+Yashodan Kanoria for helpful suggestions. This work was generously supported by a research
+grant from Boeing, a Marketing Research Award from Adobe, and the Burt and Deedee McMurty
+Stanford Graduate Fellowship.
+A Proof of Proposition 6
+Proposition 6. For all ⃗∆ ,⃗ g∈RK
++ such that ⃗ g̸= 0 , the function π ↦→
+(
+π⊤⃗∆
+)2
+/π⊤⃗ gis convex
+on
+{
+π∈RK : π⊤⃗ g >0
+}
+. Moreover, this function is minimized over SK by some π∗for which
+|{k: π∗
+k >0}|≤2.
+Proof. First, we show the functionΨ : π ↦→
+(
+πT∆
+)2
+/πTg is convex on
+{
+π∈RK|πTg >0
+}
+. As
+shown in Chapter 3 of Boyd and Vandenberghe [12],f : (x,y) ↦→x2/y is convex over{(x,y) ∈
+R2 : y >0}. The function h : π ↦→(πT∆ ,πTg) ∈R2 is aﬃne. Since convexity is preserved under
+composition with an aﬃne function, the functionΨ = g◦h is convex.
+We now prove the second claim. Consider the optimization problems
+minimize Ψ( π) subject toπTe= 1,π ≥0 (15)
+minimize ρ(π) subject toπTe= 1,π ≥0 (16)
+where
+ρ(π) :=
+(
+πT∆
+)2
+−
+(
+πTg
+)
+Ψ ∗,
+and Ψ ∗∈R denotes the optimal objective value for the minimization problem (15). The set of
+optimal solutions to (15) and (16) correspond. Note that
+Ψ( π) = Ψ ∗ =⇒ ρ(π) = 0
+but for any feasibleπ, ρ(π) ≥0 since ∆( π)2 ≥Ψ ∗g(π). Therefore, any optimal solutionπ0 to (15)
+is an optimal solutions to (16) and satisﬁesρ(π0) = 0. Similarly, ifρ(π) = 0 then simple algebra
+shows thatΨ( π) = Ψ ∗and hence thatπ is an optimal solution to (15)
+We will now show that there is a minimizer ofρ(·) with at most two nonzero components, which
+implies the same is true ofΨ( ·). Fix a minimizerπ∗of ρ(·). Diﬀerentiating ρ(π) with respect toπ
+at π= π∗yields
+∂
+∂πρ(π∗) = 2
+(
+∆ Tπ∗
+)
+∆ −Ψ ∗g
+= 2 L∗∆ −Ψ ∗g
+where L∗ = ∆ Tπ∗is the expected instantaneous regret of the sampling distribution π∗. Let
+d∗= mini ∂
+∂πi
+ρ(π∗) denote the smallest partial derivative ofρat π∗. It must be the case that anyi
+with π∗
+i >0 satisﬁes d∗= ∂
+∂πi
+ρ(π∗), as otherwise transferring probability from actionai could lead
+to strictly lower cost. This shows that
+π∗
+i >0 =⇒ gi = −d∗
+Ψ ∗ + 2L∗
+Ψ ∗∆ i. (17)
+34
+Let i1,..,im be the indices such thatπ∗
+ik > 0 ordered so thatgi1 ≥gi2 ≥···≥gim.Then we can
+choose aβ∈[0,1] so that
+m
+k=1
+π∗
+ikgik = βgi1 + (1 −β)gim.
+By equation (17), this implies as well that∑m
+k=1 π∗
+ik∆ ik = β∆ i1 + (1 −β)∆ im, and hence that
+the sampling distribution that playsai1 with probability β and aim otherwise has the same in-
+stantaneous expected regret and the same expected information gain asπ∗. That is, starting with
+a general sampling distributionπ∗that maximizes ρ(π), we showed there is a sampling distribu-
+tion with support over at most two actions attains the same objective value and hence that also
+maximizes ρ(π).
+B Proof of Proposition 1
+The following fact expresses the mutual information betweenA∗and Yt,a as the as the expected
+reduction in the entropy ofA∗due to observingYt,a.
+Fact 1.(Lemma 5.5.6 of Gray [35])
+It(A∗; Yt,a) = E[H(αt) −H(αt+1)|At = a,Ft]
+Proposition 1.For any policyπ= (π1,π2,π3,...) and timeT ∈N,
+E[Regret (T,π)] ≤
+∑
+Ψ T(π)H(α1)T.
+where
+Ψ T(π) ≡ 1
+T
+T
+t=1
+Eπ[Ψ t(πt)]
+is the average expected information ratio underπ.
+Proof. Since the policy π is ﬁxed throughout, we will simplify notation and writeΨ t ≡Ψ t(πt),
+∆ t ≡∆ t(πt) and gt = gt(πt) throughout this proof. First observe that entropy bounds expected
+cumulative information gain:
+E
+T
+t=1
+gt = E
+T
+t=1
+E[H(αt) −H(αt+1)|Ft] = E
+T
+t=1
+(H(αt) −H(αt+1)) = H(α1) −H(αT+1) ≤H(α1),
+where the ﬁrst equality relies on Fact 1 and the tower property of conditional expectation and the
+ﬁnal inequality follows from the non-negativity of entropy. Then,
+E[Regret (T,π)] = E
+T
+t=1
+∆ t = E
+T
+t=1
+√
+Ψ t
+∑
+gt
+(
+πIDS
+t
+)
+≤
+√E
+T
+t=1
+Ψ t
+√E
+T
+t=1
+gt
+≤
+∑
+H(α1)
+√E
+T
+t=1
+Ψ t
+=
+√
+(
+1
+TE
+T
+t=1
+Ψ t
+(
+H(α1)T,
+where the ﬁrst inequality follows from Holder’s inequality.
+35
+C Proof of Proposition 7
+Proposition 7.Suppose supyR(y) −infyR(y) ≤1 and
+πt ∈arg min
+π∈SK
+∆ t(π)2
+vt(π) ,
+Then the following hold:
+1. Ψ t(πt) ≤|A|/2.
+2. Ψ t(πt) ≤d/2 when A⊂ Rd, Θ ⊂Rd, andE[Rt,a|θ] = aTθfor each actiona∈A.
+The proof of this proposition essentially reduces to techniques in Russo and Van Roy [61], but
+some new analysis is required to show the results in that paper apply to variance-based IDS. A full
+proof is provided below.
+We will make use of the following fact, which is a matrix-analogue of the Cauchy-Schwartz
+inequality. For any rankr matrix M ∈Rn×n with singular valuesσ1,...,σr, let
+∥M∥∗:=
+r
+i=1
+σi, ∥M∥F :=
+∑∑n
+k=1
+∑n
+j=1 M2
+i,j =
+∑∑r
+i=1 σ2
+i, Trace(M) :=
+n
+i=1
+Mii,
+denote respectively the Nuclear norm, Frobenius norm and trace ofM.
+Fact 2.For any matrixM ∈Rk×k,
+Trace (M) ≤
+∑
+Rank(M)∥M∥F.
+We now prove Proposition 7
+Proof.
+Preliminaries: As noted in Section 6.3,gt(a) ≥2vt(a) for alltand a. Therefore for anyπ∈D(A)
+Ψ t(π) = ∆ t(π)2
+gt(π) ≤∆ t(π)2
+2vt(π) .
+Therefore, if
+πt = arg min
+π∈D(A)
+∆ t(π)2
+vt(π)
+is the action-sampling distribution chosen by variance based IDS, then
+Ψ t(πt) ≤∆ t(πt)2
+2vt(πt) ≤∆ t(πTS
+t )2
+2vt(πTS
+t ) ,
+where πTS
+t is the action-sampling distribution of Thompson sampling at timet.
+As a result, to showΨ t(πt) ≤λ/2, it’s enough to show∆ t(πTS
+t )2 ≤λvt(πTS
+t ). We show that
+this holds always forλ = |A|, and then show it holds forλ = d when A⊂ Rd, Θ ⊂ Rd, and
+E[Rt,a|θ] = aTθfor alla∈A.
+36
+Recall that by deﬁnition,πTS
+t (a) = Pt(A∗= a) for eacha∈A. Therefore
+∆ t(πTS
+t ) = Et[Rt,A∗] −
+
+a∈A
+πTS
+t (a)Et[Rt,a]
+=
+
+a∗∈A
+Pt(A∗= a∗)E[Rt,a∗|A∗= a∗] −
+
+a∈A
+Pt(A∗= a)Et[Rt,a]
+=
+
+a∈A
+Pt(A∗= a) (Et[Rt,a|A∗= a] −Et[Rt,a]) (18)
+and
+vt(πTS
+t ) =
+
+a∈A
+πTS
+t (a)Vart(E[Rt,a|A∗])
+=
+
+a∈A
+πTS
+t (a)
+
+a∗∈A
+Pt(A∗= a∗) (Et[Rt,a|A∗= a∗] −Et[Rt,a])2
+=
+
+a,a∗∈A
+Pt(A∗= a)Pt(A∗= a∗) (Et[Rt,a|A∗= a∗] −Et[Rt,a])2 . (19)
+Proof part 1:By the Cauchy-Schwartz inequality, we conclude
+∆ t(πTS
+t )2 =
+(
+a∈A
+Pt(A∗= a) (Et[Rt,a|A∗= a] −Et[Rt,a])
+(2
+≤ |A|
+
+a∈A
+Pt(A∗= a)2 (Et[Rt,a|A∗= a] −Et[Rt,a])2
+≤ |A|
+
+a,a′∈A
+Pt(A∗= a)Pt(A∗= a′)
+(
+Et[Rt,a|A∗= a′] −Et[Rt,a]
+)2
+= |A|vt(πTS
+t ).
+As argued above, this impliesΨ t(πt) ≤|A|/2.
+Proof of part 2: This argument can be extended to provide a tighter bound under a linear-
+ity assumption. Now assumeA⊂ Rd, Θ ⊂Rd, andE[Rt,a|θ] = aTθ. WriteA= {a1,...,aK}and
+deﬁne M ∈RK×K by
+Mi,j =
+∑
+Pt(A∗= ai)Pt(A∗= aj) (Et[Rt,ai|A∗= aj] −Et[Rt,ai])
+=
+∑
+αt(ai)αt(aj) (Et[Rt,ai|A∗= aj] −Et[Rt,ai])
+for alli,j ∈{1,..,K}. Then, by (18) and (19),
+∆ t(πTS
+t ) = Trace(M),
+and
+vt(πTS
+t ) = ∥M∥2
+F.
+This shows, by Fact 2 that
+∆ t(πTS
+t )2 ≤Rank(M)vt(πTS
+t )
+We now showRank(M) ≤d. Deﬁne
+µ = E[θ|Ft]
+µj = E[θ|Ft,A∗= aj] .
+37
+Then, by the linearity of the expectation operator,Et[Rt,ai|A∗= aj] −Et[Rt,ai] = ( µj −µ)Tai.
+Therefore, Mi,j =
+∑
+αt(ai)αt(aj)((µj −µ)Tai) and
+M =
+)
+]]]]]])
+√
+αt(a1)
+(
+µ1 −µ
+)T
+...
+...
+√
+αt(aK))
+(
+µk −µ
+)T
+(
+[
+√
+αt(a1)a1 ··· ···
+√
+αt(aK)aK
+
+.
+Since M is the product of aK by d matrix and ad by K matrix, it has rank at mostd.
+References
+[1] Y. Abbasi-Yadkori, D. Pál, and C. Szepesvári. Improved algorithms for linear stochastic
+bandits. Advances in Neural Information Processing Systems, 24, 2011.
+[2] Y. Abbasi-Yadkori, D. Pál, and C. Szepesvári. Online-to-conﬁdence-set conversions and ap-
+plication to sparse stochastic bandits. InConference on Artiﬁcial Intelligence and Statistics
+(AISTATS), 2012.
+[3] R. Agrawal, D. Teneketzis, and V. Anantharam. Asymptotically eﬃcient adaptive allocation
+schemes for controlled iid processes: Finite parameter space.IEEE Transactions on Automatic
+Control, 34(3):258–267, 1989.
+[4] R. Agrawal, D. Teneketzis, and V. Anantharam. Asymptotically eﬃcient adaptive alloca-
+tion schemes for controlled Markov chains: Finite parameter space.IEEE Transactions on
+Automatic Control, 34(12):1249–1259, 1989.
+[5] S. Agrawal and N. Goyal. Further optimal regret bounds for Thompson sampling. InProceed-
+ings of the Sixteenth International Conference on Artiﬁcial Intelligence and Statistics, pages
+99–107, 2013.
+[6] S. Agrawal and N. Goyal. Thompson sampling for contextual bandits with linear payoﬀs.
+In Proceedings of the 30th International Conference on Machine Learning (ICML-13), pages
+127–135, 2013.
+[7] J.-Y. Audibert and S. Bubeck. Minimax policies for adversarial and stochastic bandits. In
+Proceedings of the 22nd Annual Conference on Learning Theory (COLT), pages 217–226, 2009.
+[8] J.-Y. Audibert, S. Bubeck, and G. Lugosi. Regret in online combinatorial optimization.Math-
+ematics of Operations Research, 2013.
+[9] P. Auer, N. Cesa-Bianchi, and P. Fischer. Finite-time analysis of the multiarmed bandit
+problem. Machine learning, 47(2):235–256, 2002.
+[10] A. Bai, F. Wu, and X. Chen. Bayesian mixture modelling and inference based Thompson
+sampling in Monte-Carlo tree search. InAdvances in Neural Information Processing Systems
+26. Curran Associates, Inc., 2013.
+[11] G. Bartók, D. P. Foster, D. Pál, A. Rakhlin, and C. Szepesvári. Partial monitoring-
+classiﬁcation, regret bounds, and algorithms. Mathematics of Operations Research, 39(4):
+967–997, 2014.
+[12] S.P. Boyd and L. Vandenberghe.Convex optimization. Cambridge university press, 2004.
+38
+[13] E. Brochu, V.M. Cora, and N. de Freitas. A tutorial on Bayesian optimization of expensive
+cost functions, with application to active user modeling and hierarchical reinforcement learn-
+ing. Technical Report TR-2009-23, Department of Computer Science, University of British
+Columbia, November 2009.
+[14] J. Broder and P. Rusmevichientong. Dynamic pricing under a general parametric choice model.
+Operations Research, 60(4):965–980, 2012.
+[15] S. Bubeck and N. Cesa-Bianchi. Regret analysis of stochastic and nonstochastic multi-armed
+bandit problems. Foundations and trends in machine learning, 5(1):1–122, 2012.
+[16] S. Bubeck and R. Eldan. Multi-scale exploration of convex functions and bandit convex opti-
+mization. In Proceedings of the 29th Annual Conference on Learning Theory (COLT), pages
+583–589, 2016.
+[17] S. Bubeck, R. Munos, G. Stoltz, and C. Szepesvári. X-armed bandits.Journal of Machine
+Learning Research, 12:1655–1695, June 2011.
+[18] S. Bubeck, O. Dekel, T. Koren, and Y. Peres. Bandit convex optimization:
+√
+T regret in one
+dimension. In Proceedings of the 28st Annual Conference on Learning Theory (COLT), 2015.
+[19] O. Cappé, A. Garivier, O.-A. Maillard, R. Munos, and G. Stoltz. Kullback-Leibler upper
+conﬁdence bounds for optimal sequential allocation. Annals of Statistics, 41(3):1516–1541,
+2013.
+[20] K. Chaloner, I. Verdinelli, et al. Bayesian experimental design: A review.Statistical Science,
+10(3):273–304, 1995.
+[21] O. Chapelle and L. Li. An empirical evaluation of Thompson sampling. InNeural Information
+Processing Systems (NIPS), 2011.
+[22] E. Contal, V. Perchet, and N. Vayatis:. Gaussian process optimization with mutual informa-
+tion. In Proceedings of the 31st International Conference on Machine Learning (ICML-14),
+2014.
+[23] V.Dani, S.M.Kakade, andT.P.Hayes. Thepriceofbanditinformationforonlineoptimization.
+In Advances in Neural Information Processing Systems, pages 345–352, 2007.
+[24] V. Dani, T.P. Hayes, and S.M. Kakade. Stochastic linear optimization under bandit feedback.
+In Proceedings of the 21st Annual Conference on Learning Theory (COLT), pages 355–366,
+2008.
+[25] S. Filippi, O. Cappé, A. Garivier, and C. Szepesvári. Parametric bandits: The generalized
+linear case. Advances in Neural Information Processing Systems, 23:1–9, 2010.
+[26] A. Francetich and D. M. Kreps. Choosing a good toolkit, I: Formulation, heuristics, and
+asymptotic properties. preprint, 2016.
+[27] A. Francetich and D. M. Kreps. Choosing a good toolkit, II: Simulations and conclusions.
+preprint, 2016.
+[28] P.I. Frazier and W.B. Powell. Paradoxes in learning and the marginal value of information.
+Decision Analysis, 7(4):378–403, 2010.
+[29] P.I. Frazier, W.B. Powell, and S. Dayanik. A knowledge-gradient policy for sequential infor-
+mation collection. SIAM Journal on Control and Optimization, 47(5):2410–2439, 2008.
+[30] J. Gittins, K. Glazebrook, and R. Weber.Multi-Armed Bandit Allocation Indices. John Wiley
+& Sons, Ltd, 2011. ISBN 9780470980033.
+[31] D.GolovinandA.Krause. Adaptivesubmodularity: Theoryandapplicationsinactivelearning
+and stochastic optimization.Journal of Artiﬁcial Intelligence Research, 42(1):427–486, 2011.
+39
+[32] D. Golovin, A. Krause, and D. Ray. Near-optimal bayesian active learning with noisy obser-
+vations. InAdvances in Neural Information Processing Systems, pages 766–774, 2010.
+[33] A. Gopalan, S. Mannor, and Y. Mansour. Thompson sampling for complex online problems. In
+Proceedings of The 31st International Conference on Machine Learning, pages 100–108, 2014.
+[34] T.L. Graves and T.L. Lai. Asymptotically eﬃcient adaptive choice of control laws in controlled
+Markov chains.SIAM journal on control and optimization, 35(3):715–743, 1997.
+[35] R.M. Gray.Entropy and information theory. Springer, 2011.
+[36] P. Hennig and C.J. Schuler. Entropy search for information-eﬃcient global optimization.The
+Journal of Machine Learning Research, 98888(1):1809–1837, 2012.
+[37] D. Hernández-Lobato, J. M. Hernández-Lobato, A. Shah, and R. P. Adams. Predictive entropy
+search for multi-objective Bayesian optimization.arXiv preprint arXiv:1511.05467, 2015.
+[38] J. M. Hernández-Lobato, M. W. Hoﬀman, and Z. Ghahramani. Predictive entropy search
+for eﬃcient global optimization of black-box functions. In Advances in neural information
+processing systems, pages 918–926, 2014.
+[39] J. M. Hernández-Lobato, M. A. Gelbart, M. W. Hoﬀman, R. P. Adams, and Z. Ghahramani.
+Predictive entropy search for Bayesian optimization with unknown constraints. InProceedings
+of the 32nd International Conference on Machine Learning, Lille, France, 2015.
+[40] T. Jaksch, R. Ortner, and P. Auer. Near-optimal regret bounds for reinforcement learning.
+Journal of Machine Learning Research, 11:1563–1600, 2010.
+[41] B. Jedynak, P.I. Frazier, R. Sznitman, et al. Twenty questions with noise: Bayes optimal
+policies for entropy loss.Journal of Applied Probability, 49(1):114–136, 2012.
+[42] B.Kamiński. Reﬁnedknowledge-gradientpolicyforlearningprobabilities. Operations Research
+Letters, 43(2):143–147, 2015.
+[43] E. kaufmann, O. Cappé, and A. Garivier. On Bayesian upper conﬁdence bounds for bandit
+problems. In Conference on Artiﬁcial Intelligence and Statistics (AISTATS), 2012.
+[44] E. Kaufmann, N. Korda, and R. Munos. Thompson sampling: an asymptotically optimal ﬁnite
+time analysis. InInternational Conference on Algorithmic Learning Theory, 2012.
+[45] R. Kleinberg, A. Slivkins, and E. Upfal. Multi-armed bandits in metric spaces. InProceedings
+of the 40th ACM Symposium on Theory of Computing, 2008.
+[46] L. Kocsis and Cs. Szepesvári. Bandit based Monte-Carlo planning. InECML, 2006.
+[47] H.J. Kushner. A new method of locating the maximum point of an arbitrary multipeak curve
+in the presence of noise.Journal of Basic Engineering, 86(1):97–106, 1964.
+[48] T.L. Lai. Adaptive treatment allocation and the multi-armed bandit problem.The Annals of
+Statistics, pages 1091–1114, 1987.
+[49] T.L. Lai and H. Robbins. Asymptotically eﬃcient adaptive allocation rules. Advances in
+applied mathematics, 6(1):4–22, 1985.
+[50] D. V. Lindley. On a measure of the information provided by an experiment. Annals of
+Mathematical Statistics, 78(4):986–1005, 1956.
+[51] J. Mockus, V. Tiesis, and A. Zilinskas. The application of Bayesian methods for seeking the
+extremum. Towards Global Optimization, 2(117-129):2, 1978.
+[52] J. Nińo-Mora. Computing a classic index for ﬁnite-horizon bandits.INFORMS Journal on
+Computing, 23(2):254–267, 2011.
+[53] I. Osband, D. Russo, and B. Van Roy. (More) eﬃcient reinforcement learning via posterior
+40
+sampling. InAdvances in Neural Information Processing Systems 26. Curran Associates, Inc.,
+2013.
+[54] A. Piccolboni and C. Schindelhauer. Discrete prediction games with arbitrary feedback and
+loss. InInternational Conference on Computational Learning Theory, pages 208–223. Springer,
+2001.
+[55] W.B. Powell and I.O. Ryzhov.Optimal learning, volume 841. John Wiley & Sons, 2012.
+[56] P. Rusmevichientong and J.N. Tsitsiklis. Linearly parameterized bandits. Mathematics of
+Operations Research, 35(2):395–411, 2010.
+[57] P. Rusmevichientong, Z.-J. M. Shen, and D.B. Shmoys. Dynamic assortment optimization
+with a multinomial logit choice model and capacity constraint.Operations research, 58(6):
+1666–1680, 2010.
+[58] D. Russo and B. Van Roy. Eluder dimension and the sample complexity of optimistic explo-
+ration. In C. J. C. Burges, L. Bottou, M. Welling, Z. Ghahramani, and K. Q. Weinberger,
+editors, Advances in Neural Information Processing Systems 26, pages 2256–2264. Curran As-
+sociates, Inc., 2013.
+[59] D. Russo and B. Van Roy. Learning to optimize via posterior sampling. Mathematics of
+Operations Research, 39(4):1221–1243, 2014.
+[60] D. Russo and B. Van Roy. Learning to optimize via information-directed sampling. In
+Z. Ghahramani, M. Welling, C. Cortes, N. D. Lawrence, and K. Q. Weinberger, editors,Ad-
+vances in Neural Information Processing Systems 27, pages 1583–1591. Curran Associates,
+Inc., 2014.
+[61] D. Russo and B. Van Roy. An information-theoretic analysis of Thompson sampling.Journal
+of Machine Learning Research, 17(68):1–30, 2016.
+[62] D. Russo, D. Tse, and B. Van Roy. Time-sensitive bandit learning and satisﬁcing Thompson
+sampling. arXiv preprint arXiv:1704.09028.
+[63] I. Ryzhov, P. Frazier, and W. Powell. On the robustness of a one-period look-ahead policy in
+multi-armed bandit problems.Procedia Computer Science, 1(1):1635–1644, 2010.
+[64] I.O. Ryzhov, W.B. Powell, and P.I. Frazier. The knowledge gradient algorithm for a general
+class of online learning problems.Operations Research, 60(1):180–195, 2012.
+[65] D. Sauré and A. Zeevi. Optimal dynamic assortment planning with demand learning.Manu-
+facturing & Service Operations Management, 15(3):387–404, 2013.
+[66] S.L. Scott. A modern Bayesian look at the multi-armed bandit.Applied Stochastic Models in
+Business and Industry, 26(6):639–658, 2010.
+[67] N. Srinivas, A. Krause, S.M. Kakade, and M. Seeger. Information-theoretic regret bounds
+for Gaussian process optimization in the bandit setting.IEEE Transactions on Information
+Theory, 58(5):3250 –3265, may 2012.
+[68] M. Valko, A. Carpentier, and R. Munos. Stochastic simultaneous optimistic optimization.
+In Proceedings of the 30th International Conference on Machine Learning (ICML-13), pages
+19–27, 2013.
+[69] M. Valko, N. Korda, R. Munos, I. Flaounas, and N. Cristianini. Finite-time analysis of ker-
+nelised contextual bandits. InConference on Uncertainty in Artiﬁcial Intelligence, 2013.
+[70] J. Villemonteix, E. Vazquez, and E. Walter. An informational approach to the global opti-
+mization of expensive-to-evaluate functions. Journal of Global Optimization, 44(4):509–534,
+2009.
+41
+[71] R. Waeber, P.I. Frazier, and S.G. Henderson. Bisection search with noisy responses.SIAM
+Journal on Control and Optimization, 51(3):2261–2279, 2013.
+42

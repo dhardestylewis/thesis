@@ -1,0 +1,933 @@
+Scalable Global Optimization via
+Local Bayesian Optimization
+David Eriksson
+Uber AI
+eriksson@uber.com
+Michael Pearce∗
+University of Warwick
+m.a.l.pearce@warwick.ac.uk
+Jacob R Gardner
+Uber AI
+jake.gardner@uber.com
+Ryan Turner
+Uber AI
+ryan.turner@uber.com
+Matthias Poloczek
+Uber AI
+poloczek@uber.com
+Abstract
+Bayesian optimization has recently emerged as a popular method for the sample-
+efﬁcient optimization of expensive black-box functions. However, the application
+to high-dimensional problems with several thousand observations remains chal-
+lenging, and on difﬁcult problems Bayesian optimization is often not competitive
+with other paradigms. In this paper we take the view that this is due to the implicit
+homogeneity of the global probabilistic models and an overemphasized exploration
+that results from global acquisition. This motivates the design of a local probabilis-
+tic approach for global optimization of large-scale high-dimensional problems. We
+propose the TuRBO algorithm that ﬁts a collection of local models and performs a
+principled global allocation of samples across these models via an implicit bandit
+approach. A comprehensive evaluation demonstrates that TuRBO outperforms state-
+of-the-art methods from machine learning and operations research on problems
+spanning reinforcement learning, robotics, and the natural sciences.
+1 Introduction
+The global optimization of high-dimensional black-box functions—where closed form expressions
+and derivatives are unavailable—is a ubiquitous task arising in hyperparameter tuning [ 43]; in
+reinforcement learning, when searching for an optimal parametrized policy [7]; in simulation, when
+calibrating a simulator to real world data; and in chemical engineering and materials discovery, when
+selecting candidates for high-throughput screening [ 20]. While Bayesian optimization (BO) has
+emerged as a highly competitive tool for problems with a small number of tunable parameters (e.g.,
+see [14, 42]), it often scales poorly to high dimensions and large sample budgets. Several methods
+have been proposed for high-dimensional problems with small budgets of a few hundred samples (see
+the literature review below). However, these methods make strong assumptions about the objective
+function such as low-dimensional subspace structure. The recent algorithms of Wang et al. [53]
+and Hernández-Lobato et al. [20] are explicitly designed for a large sample budget and do not make
+these assumptions. However, they do not compare favorably with state-of-the-art methods from
+stochastic optimization like CMA-ES [19] in practice.
+The optimization of high-dimensional problems is hard for several reasons. First, the search space
+grows exponentially with the dimension, and while local optima may become more plentiful, global
+optima become more difﬁcult to ﬁnd. Second, the function is often heterogeneous, making the task of
+∗This work was conducted while Michael Pearce was visiting Uber AI.
+33rd Conference on Neural Information Processing Systems (NeurIPS 2019), Vancouver, Canada.
+arXiv:1910.01739v4  [cs.LG]  24 Feb 2020
+ﬁtting a global surrogate model challenging. For example, in reinforcement learning problems with
+sparse rewards, we expect the objective function to be nearly constant in large parts of the search
+space. For the latter, note that the commonly used global Gaussian process (GP) models [ 14, 54]
+implicitly suppose that characteristic lengthscales and signal variances of the function are constant in
+the search space. Previous work on non-stationary kernels does not make this assumption, but these
+approaches are too computationally expensive to be applicable in our large-scale setting [44, 47, 3].
+Finally, the fact that search spaces grow considerably faster than sampling budgets due to the curse of
+dimensionality implies the inherent presence of regions with large posterior uncertainty. For common
+myopic acquisition functions, this results in an overemphasized exploration and a failure to exploit
+promising areas.
+To overcome these challenges, we adopt a local strategy for BO. We introduce trust region BO
+(TuRBO), a technique for global optimization, that uses a collection of simultaneouslocal optimization
+runs using independent probabilistic models. Each local surrogate model enjoys the typical beneﬁts of
+Bayesian modeling —robustness to noisy observations and rigorous uncertainty estimates— however,
+these local surrogates allow for heterogeneous modeling of the objective function and do not suffer
+from over-exploration. To optimize globally, we leverage an implicit multi-armed bandit strategy at
+each iteration to allocate samples between these local areas and thus decide which local optimization
+runs to continue.
+We provide a comprehensive experimental evaluation demonstrating that TuRBO outperforms the
+state-of-the-art from BO, evolutionary methods, simulation optimization, and stochastic optimization
+on a variety of benchmarks that span from reinforcement learning to robotics and natural sciences.
+An implementation of TuRBO is available at https://github.com/uber-research/TuRBO.
+1.1 Related work
+BO has recently become the premier technique for global optimization of expensive functions,
+with applications in hyperparameter tuning, aerospace design, chemical engineering, and materials
+discovery; see [ 14, 42] for an overview. However, most of BO’s successes have been on low-
+dimensional problems and small sample budgets. This is not for a lack of trying; there have been
+many attempts to scale BO to more dimensions and observations. A common approach is to replace
+the GP model: Hutter et al. [21] uses random forests, whereas Snoek et al. [45] applies Bayesian
+linear regression on features from neural networks. This neural network approach was reﬁned by
+Springenberg et al. [46] whose BOHAMIANN algorithm uses a modiﬁed Hamiltonian Monte Carlo
+method, which is more robust and scalable than standard Bayesian neural networks. Hernández-
+Lobato et al. [20] combines Bayesian neural networks with Thompson sampling (TS), which easily
+scales to large batch sizes. We will return to this acquisition function later.
+There is a considerable body of work in high-dimensional BO [ 8, 25, 5, 52, 15, 53, 39, 31, 32, 6].
+Many methods exist that exploit potential additive structure in the objective function [ 25, 15, 53].
+These methods typically rely on training a large number of GPs (corresponding to different additive
+structures) and therefore do not scale to large evaluation budgets. Other methods exist that rely on a
+mapping between the high-dimensional space and an unknown low-dimensional subspace to scale to
+large numbers of observations [52, 32, 17]. The BOCK algorithm of Oh et al. [34] uses a cylindrical
+transformation of the search space to achieve scalability to high dimensions. Ensemble Bayesian
+optimization (EBO) [53] uses an ensemble of additive GPs together with a batch acquisition function
+to scale BO to tens of thousands of observations and high-dimensional spaces. Recently, Nayebi
+et al. [32] have proposed the general HeSBO framework that extends GP-based BO algorithms to
+high-dimensional problems using a novel subspace embedding that overcomes the limitations of the
+Gaussian projections used in [52, 5, 6]. From this area of research, we compare to BOCK, BOHAMIANN,
+EBO, and HeSBO.
+To acquire large numbers of observations, large-scale BO usually selects points in batches to be
+evaluated in parallel. While several batch acquisition functions have recently been proposed [ 9,
+41, 51, 55, 56, 28, 18], these approaches do not scale to large batch sizes in practice. TS [49] is
+particularly lightweight and easy to implement as a batch acquisition function as the computational
+cost scales linearly with the batch size. Although originally developed for bandit problems [40], it
+has recently shown its value in BO [20, 4, 26]. In practice, TS is usually implemented by drawing a
+realization of the unknown objective function from the surrogate model’s posterior on a discretized
+search space. Then, TS ﬁnds the optimum of the realization and evaluates the objective function at
+2
+that location. This technique is easily extended to batches by drawing multiple realizations as (see
+the supplementary material for details).
+Evolutionary algorithms are a popular approach for optimizing black-box functions when thousands
+of evaluations are available, see Jin et al. [22] for an overview in stochastic settings. We compare
+to the successful covariance matrix adaptation evolution strategy (CMA-ES) of Hansen [19]. CMA-ES
+performs a stochastic search and maintains a multivariate normal sampling distribution over the
+search space. The evolutionary techniques of recombination and mutation correspond to adaptions of
+the mean and covariance matrix of that distribution.
+High-dimensional problems with large sample budgets have also been studied extensively in opera-
+tions research and simulation optimization, see [12] for a survey. Here the successful trust region (TR)
+methods are based on a local surrogate model in a region (often a sphere) around the best solution.
+The trust region is expanded or shrunk depending on the improvement in obtained solutions; see Yuan
+[57] for an overview. We compare to BOBYQA [36], a state-of-the-art TR method that uses a quadratic
+approximation of the objective function. We also include the Nelder-Mead (NM) algorithm [33]. For
+a d-dimensional space, NM creates a (d+ 1)-dimensional simplex that adaptively moves along the
+surface by projecting the vertex of the worst function value through the center of the simplex spanned
+by the remaining vertices. Finally, we also consider the popular quasi-Newton method BFGS [58],
+where gradients are obtained using ﬁnite differences. For other work that uses local surrogate models,
+see e.g., [27, 50, 1, 2, 30].
+2 The trust region Bayesian optimization algorithm
+In this section, we propose an algorithm for optimizing high-dimensional black-box functions. In
+particular, suppose that we wish to solve:
+Find x∗∈Ω such that f(x∗) ≤f(x), ∀x ∈Ω,
+where f : Ω →R and Ω = [0,1]d. We observe potentially noisy values y(x) = f(x) + ε, where
+ε ∼N (0,σ2). BO relies on the ability to construct a global model that is eventually accurate
+enough to uncover a global optimizer. As discussed previously, this is challenging due to the curse
+of dimensionality and the heterogeneity of the function. To address these challenges, we propose
+to abandon global surrogate modeling, and achieve global optimization by maintaining several
+independent local models, each involved in a separate local optimization run. To achieve global
+optimization in this framework, we maintain multiple local models simultaneously and allocate
+samples via an implicit multi-armed bandit approach. This yields an efﬁcient acquisition strategy
+that directs samples towards promising local optimization runs. We begin by detailing a single local
+optimization run, and then discuss how multiple runs are managed.
+Local modeling. To achieve principled local optimization in the gradient-free setting, we draw
+inspiration from a class of TR methods from stochastic optimization [ 57]. These methods make
+suggestions using a (simple) surrogate model inside a TR. The region is often a sphere or a polytope
+centered at the best solution, within which the surrogate model is believed to accurately model the
+function. For example, the popular COBYLA [35] method approximates the objective function using
+a local linear model. Intuitively, while linear and quadratic surrogates are likely to be inadequate
+models globally, they can be accurate in a sufﬁciently small TR. However, there are two challenges
+with traditional TR methods. First, deterministic examples such as COBYLA are notorious for handling
+noisy observations poorly. Second, simple surrogate models might require overly small trust regions
+to provide accurate modeling behavior. Therefore, we will use GP surrogate models within a TR.
+This allows us to inherit the robustness to noise and rigorous reasoning about uncertainty that global
+BO enjoys.
+Trust regions. We choose our TR to be a hyperrectangle centered at the best solution found so far,
+denoted by x⋆. In the noise-free case, we set x⋆ to the location of the best observation so far. In
+the presence of noise, we use the observation with the smallest posterior mean under the surrogate
+model. At the beginning of a given local optimization run, we initialize the base side length of the
+TR to L←Linit. The actual side length for each dimension is obtained from this base side length
+by rescaling according to its lengthscale λi in the GP model while maintaining a total volume of
+Ld. That is, Li = λiL/(∏d
+j=1 λj)1/d. To perform a single local optimization run, we utilize an
+3
+acquisition function at each iteration tto select a batch of qcandidates {x(t)
+1 ,..., x(t)
+q }, restricted
+to be within the TR. If Lwas large enough for the TR to contain the whole space, this would be
+equivalent to running standard global BO. Therefore, the evolution of Lis critical. On the one hand,
+a TR should be sufﬁciently large to contain good solutions. On the other hand, it should be small
+enough to ensure that the local model is accurate within the TR. The typical behavior is to expand a
+TR when the optimizer “makes progress”, i.e., it ﬁnds better solutions in that region, and shrink it
+when the optimizer appears stuck. Therefore, following, e.g., Nelder and Mead [33], we will shrink
+a TR after too many consecutive “failures”, and expand it after many consecutive “successes”. We
+deﬁne a “success” as a candidate that improves upon x⋆, and a “failure” as a candidate that does not.
+After τsucc consecutive successes, we double the size of the TR, i.e., L←min{Lmax,2L}. After τfail
+consecutive failures, we halve the size of the TR:L←L/2. We reset the success and failure counters
+to zero after we change the size of the TR. Whenever Lfalls below a given minimum threshold Lmin,
+we discard the respective TR and initialize a new one with side length Linit. Additionally, we do not
+let the side length expand to be larger than a maximum threshold Lmax. Note that τsucc, τfail, Lmin,
+Lmax, and Linit are hyperparameters of TuRBO; see the supplementary material for the values used in
+the experimental evaluation.
+Trust region Bayesian optimization. So far, we have detailed a single local BO strategy using a
+TR method. Intuitively, we could make this algorithm (more) global by random restarts. However,
+from a probabilistic perspective, this is likely to utilize our evaluation budget inefﬁciently. Just as we
+reason about which candidates are most promising within a local optimization run, we can reason
+about which local optimization run is “most promising.”
+Therefore, TuRBO maintains m trust regions simultaneously. Each trust region TRℓ with ℓ ∈
+{1,...,m }is a hyperrectangle of base side length Lℓ ≤Lmax, and utilizes an independent lo-
+cal GP model. This gives rise to a classical exploitation-exploration trade-off that we model by a
+multi-armed bandit that treats each TR as a lever. Note that this provides an advantage over traditional
+TR algorithms in that TuRBO puts a stronger emphasis on promising regions.
+In each iteration, we need to select a batch of qcandidates drawn from the union of all trust regions,
+and update all local optimization problems for which candidates were drawn. To solve this problem,
+we ﬁnd that TS provides a principled solution to both the problem of selecting candidates within
+a single TR, and selecting candidates across the set of trust regions simultaneously. To select the
+i-th candidate from across the trust regions, we draw a realization of the posterior function from the
+local GP within each TR: f(i)
+ℓ ∼GP(t)
+ℓ (µℓ(x),kℓ(x,x′)), where GP(t)
+ℓ is the GP posterior for TRℓ
+at iteration t. We then select the i-th candidate such that it minimizes the function value across all m
+samples and all trust regions:
+x(t)
+i ∈argmin
+ℓ
+argmin
+x∈TRℓ
+f(i)
+ℓ where f(i)
+ℓ ∼GP(t)
+ℓ (µℓ(x),kℓ(x,x′)).
+That is, we select as point with the smallest function value after concatenating a Thompson sample
+from each TR for i= 1,...,q . We refer to the supplementary material for additional details.
+3 Numerical experiments
+In this section, we evaluate TuRBO on a wide range of problems: a 14D robot pushing problem, a 60D
+rover trajectory planning problem, a 12D cosmological constant estimation problem, a 12D lunar
+landing reinforcement learning problem, and a 200D synthetic problem. All problems are multimodal
+and challenging for many global optimization algorithms. We consider a variety of batch sizes and
+evaluation budgets to fully examine the performance and robustness ofTuRBO. The values of τsucc,
+τfail, Lmin, Lmax, and Linit are given in the supplementary material.
+We compare TuRBO to a comprehensive selection of state-of-the-art baselines: BFGS, BOCK,
+BOHAMIANN, CMA-ES, BOBYQA, EBO, GP-TS, HeSBO-TS, Nelder-Mead (NM), and random search (RS).
+Here, GP-TS refers to TS with a global GP model using the Matérn-5/2 kernel. HeSBO-TS combines
+GP-TS with a subspace embedding and thus effectively optimizes in a low-dimensional space; this
+target dimension is set by the user. Therefore, a small sample budget may sufﬁce, which allows
+to run p invocations in parallel, following [ 52]. This may improve the performance, since each
+embedding may "fail" with some probability [32], i.e., it does not contain the active subspace even
+if it exists. Note that HeSBO-TS-p recommends a point of optimal posterior mean among the p
+4
+Trust 
+Region 
+Update
+GP 
+Model
+True 
+Function
+Figure 1: Illustration of the TuRBO algorithm. (Left) The true contours of the Branin function.
+(Middle left) The contours of the GP model ﬁtted to the observations depicted by black dots. The
+current TR is shown as a red square. The global optima are indicated by the green stars. (Middle
+right) During the execution of the algorithm, the TR has moved towards the global optimum and has
+reduced in size. The area around the optimum has been sampled more densely in effect. (Right) The
+local GP model almost exactly ﬁts the underlying function in the TR, despite having a poor global ﬁt.
+GP-models; we use that point for the evaluation. The standard acquisition criterion EI used in BOCK
+and BOHAMIANN is replaced by (batch) TS, i.e., all methods use the same criterion which allows for a
+direct comparison. Methods that attempt to learn an additive decomposition lack scalability and are
+thus omitted. BFGS approximates the gradient via ﬁnite differences and thus requires d+1 evaluations
+for each step. Furthermore, NM, BFGS, and BOBYQA are inherently sequential and therefore have an
+edge by leveraging all gathered observations. However, they are considerably more time consuming
+on a per-wall-time evaluation basis since we are working with large batches.
+We supplement the optimization test problems with three additional experiments: i) one that shows
+that TuRBO achieves a linear speed-up from large batch sizes, ii) a comparison of local GPs and global
+GPs on a control problem, and iii) an analytical experiment demonstrating the locality of TuRBO.
+Performance plots show the mean performances with one standard error. Overall, we observe that
+TuRBO consistently ﬁnds excellent solutions, outperforming the other methods on most problems.
+Experimental results for a small budget experiment on four synthetic functions are shown in the
+supplement, where we also provide details on the experimental setup and runtimes for all algorithms.
+3.1 Robot pushing
+The robot pushing problem is a noisy 14D control problem considered in Wang et al. [53]. We run
+each method for a total of 10K evaluations and batch size of q= 50. TuRBO-1 and all other methods
+are initialized with 100 points except for TuRBO-20 where we use 50 initial points for each trust
+region. This is to avoid having TuRBO-20 consume its full evaluation budget on the initial points. We
+use HeSBO-TS-5 with target dimension 8. TuRBO-mdenotes the variant of TuRBO that maintains m
+local models in parallel. Fig. 2 shows the results: TuRBO-1 and TuRBO-20 outperform the alternatives.
+TuRBO-20 starts slower since it is initialized with 1K points, but eventually outperforms TuRBO-1.
+CMA-ES and BOBYQA outperform the other BO methods. Note that Wang et al. [53] reported a median
+value of 8.3 for EBO after 30K evaluations, while TuRBO-1 achieves a mean and median reward of
+around 9.4 after only 2K samples.
+3.2 Rover trajectory planning
+Here the goal is to optimize the locations of 30 points in the 2D-plane that determine the trajectory of
+a rover [53]. Every algorithm is run for 200 steps with a batch size of q= 100, thus collecting a total
+of 20K evaluations. We use 200 initial points for all methods except for TuRBO-20, where we use
+100 initial points for each region. Fig. 2 summarizes the performance. We observe that TuRBO-1 and
+TuRBO-20 outperform all other algorithms after a few thousand evaluations. TuRBO-20 once again
+starts slowly because of the initial 2K random evaluations. Wang et al. [53] reported a mean value
+of 1.5 for EBO after 35K evaluations, while TuRBO-1 achieves a mean and median reward of about 2
+after only 1K evaluations. We use a target dimension of 10 for HeSBO-TS-15 in this experiment.
+5
+0 2000 4000 6000 8000 10000
+Number of evaluations
+4
+5
+6
+7
+8
+9
+10
+11Reward
+14D Robot pushing
+0 5000 10000 15000 20000
+Number of evaluations
+−7
+−6
+−5
+−4
+−3
+−2
+−1
+0
+1
+2
+3
+4
+5
+Reward
+60D Rover trajectory planning
+TuRBO-20
+TuRBO-1
+EBO
+Thompson
+BOCK
+Bohamiann
+HeSBO
+CMA-ES
+BOBYQA
+Nelder-Mead
+BFGS
+Random search
+Figure 2: 14D Robot pushing (left): TuRBO-1 and TuRBO-20 perform well after a few thousand
+evaluations. 60D Rover trajectory planning (right): TuRBO-1 and TuRBO-20 achieve close to
+optimal objective values after 10K evaluations. In both experiments CMA-ES and BOBYQA are the
+runners up, and HeSBO-TS and EBO perform best among the other BO methods.
+3.3 Cosmological constant learning
+In the “cosmological constants” problem, the task is to calibrate a physics simulator2 to observed
+data. The tunable parameters include various physical constants like the density of certain types of
+matter and Hubble’s constant. In this paper, we use a more challenging version of the problem in
+[25] by tuning 12 parameters rather than 9, and by using substantially larger parameter bounds. We
+used 2K evaluations, a batch size of q= 50, and 50 initial points. TuRBO-5 uses 20 initial points for
+each local model and HeSBO-TS-4 uses a target dimension of 8. Fig. 3 (left) shows the results, with
+TuRBO-5 performing the best, followed by BOBYQA and TuRBO-1. TuRBO-1 sometimes converges to a
+bad local optimum, which deteriorates the mean performance and demonstrates the importance of
+allocating samples across multiple trust regions.
+3.4 Lunar landing reinforcement learning
+Here the goal is to learn a controller for a lunar lander implemented in the OpenAI gym3. The state
+space for the lunar lander is the position, angle, time derivatives, and whether or not either leg is in
+contact with the ground. There are four possible action for each frame, each corresponding to ﬁring a
+booster engine left, right, up, or doing nothing. The objective is to maximize the average ﬁnal reward
+over a ﬁxed constant set of 50 randomly generated terrains, initial positions, and velocities. We
+observed that the simulation can be sensitive to even tiny perturbations. Fig. 3 shows the results for a
+total of 1500 function evaluations, batch size q= 50, and 50 initial points for all algorithms except
+for TuRBO-5 which uses 20 initial points for each local region. For this problem, we use HeSBO-TS-3
+in an 8-dimensional subspace. TuRBO-5 and TuRBO-1 learn the best controllers; and in particular
+achieves better rewards than the handcrafted controller provided by OpenAI whose performance is
+depicted by the blue horizontal line.
+3.5 The 200-dimensional Ackley function
+We examine performances on the 200-dimensional Ackley function in the domain [−5,10]200. We
+only consider TuRBO-1 because of the large number of dimensions where there may not be a beneﬁt
+from using multiple TRs. EBO is excluded from the plot since its computation time exceeded 30
+days per replication. HeSBO-TS-5 uses a target dimension of 20. Fig. 4 shows the results for a total
+of 10K function evaluations, batch size q= 100, and 200 initial points for all algorithms.
+2https://lambda.gsfc.nasa.gov/toolbox/lrgdr/
+3https://gym.openai.com/envs/LunarLander-v2
+6
+0 500 1000 1500 2000
+Number of evaluations
+−40
+−35
+−30
+−25
+−20
+Log Likelihood
+12D Cosmological constant learning
+0 250 500 750 1000 1250 1500
+Number of evaluations
+50
+100
+150
+200
+250
+300Reward
+12D Lunar landing reinforcement learning
+TuRBO-5
+TuRBO-1
+EBO
+Thompson
+BOCK
+Bohamiann
+Hesbo
+CMA-ES
+BOBYQA
+Nelder-Mead
+BFGS
+Random search
+Figure 3: 12D Cosmological constant (left): TuRBO-5 provides an improvement over BOBYQA and
+TuRBO-1. BO methods are distanced, with TS performing best among them. 12D Lunar lander
+(right): TuRBO-5, TuRBO-1, EBO, and CMA-ES learn better controllers than the original OpenAI
+controller (solid blue horizontal line).
+0 2000 4000 6000 8000 10000
+Number of evaluations
+4
+6
+8
+10
+12
+14
+16Value
+TuRBO-1
+Thompson
+BOCK
+Bohamiann
+HeSBO
+CMA-ES
+BOBYQA
+Nelder-Mead
+BFGS
+Random
+Figure 4: 200D Ackley function: TuRBO-1 clearly outperforms the other baselines. BOBYQA makes
+good initial progress but consistently converges to sub-optimal local minima.
+HeSBO-TS-5, with a target dimension of 20, and BOBYQA perform well initially, but are eventually
+outperformed by TuRBO-1 that achieves the best solutions. The good performance of HeSBO-TS
+is particularly interesting, since this benchmark has no redundant dimensions and thus should be
+challenging for that embedding-based approach. This conﬁrms similar ﬁndings in [ 32]. BO methods
+that use a global GP model over-emphasize exploration and make little progress.
+3.6 The advantage of local models over global models
+We investigate the performance of local and global GP models on the14D robot pushing problem
+from Sect. 3.1. We replicate the conditions from the optimization experiments as closely as possible
+for a regression experiment, including for example parameter bounds. We choose 20 uniformly
+distributed hypercubes of (base) side length 0.4, each containing 200 uniformly distributed training
+points. We train a global GP on all 4000 samples, as well as a separate local GP for each hypercube.
+For the sake of illustration, we used an isotropic kernel for these experiments. The local GPs have the
+advantage of being able to learn different hyperparameters in each region while the global GP has
+the advantage of having access to all of the data. Fig. 5 shows the predictive performance (in log
+loss) on held-out data. We also show the distribution of ﬁtted hyperparameters for both the local and
+global GPs. We see that the hyperparameters (especially the signal variance) vary substantially across
+regions. Furthermore, the local GPs perform better than the global GP in every repeated trial. The
+global model has an average log loss of 1.284 while the local model has an average log loss of 1.174
+7
+0 10 20 30 40 50
+Trial
+0.0
+0.1
+0.2
+0.3
+Local log loss improvement
+0.0 0.2 0.4 0.6
+Lengthscales
+0 1 2 3
+Signal variances
+0 0.05 0.1
+Noises variances
+Local GP
+Global GP
+Figure 5: Local and global GPs on log loss (left): We show the improvement in test set log loss
+(nats/test point) of the local model over the global model by repeated trial. The local GP increases in
+performance in every trial. Trials are sorted in order of performance gain. This shows a substantial
+mean improvement of 0.110 nats. Learned hypers (right three ﬁgures): A histogram plot of the
+hyperparameters learned by the local (blue) and global (orange) GPs pooled across all repeated trials.
+The local GPs show a much wider range of hyperparameters that can specialize per region.
+across 50 trials; the improvement is signiﬁcant under a t-test at p< 10−4. This experiment conﬁrms
+that we improve the predictive power of the models and also reduce the computational overhead of
+the GP by using the local approach. The learned local noise variance in Fig. 5 is bimodal, conﬁrming
+the heteroscedasticity in the objective across regions. The global GP is required to learn the high
+noise value to avoid a penalty for outliers.
+3.7 Why high-dimensional spaces are challenging
+In this section, we illustrate why the restarting and banditing strategy of TuRBO is so effective. Each
+TR restart ﬁnds distant solutions of varying quality, which highlights the multimodal nature of the
+problem. This gives TuRBO-ma distinct advantage.
+We ran TuRBO-1 (with a single trust region) for 50 restarts on the 60D rover trajectory planning
+problem from Sect. 3.2 and logged the volume of the TR and its center after each iteration. Fig. 6
+shows the volume of the TR, the arclength of the TR center’s trajectory, the ﬁnal objective value, and
+the distance each ﬁnal solution has to its nearest neighbor. The left two plots conﬁrm that, within a
+trust region, the optimization is indeed highly local. The volume of any given trust region decreases
+rapidly and is only a small fraction of the total search space. From the two plots on the right, we
+see that the solutions found by TuRBO are far apart with varying quality, demonstrating the value of
+performing multiple local search runs in parallel.
+0 10 20 30 40 50 60
+Iteration
+10−100
+10−75
+10−50
+10−25
+100
+Volume of TR
+0 10 20 30 40 50 60
+Iteration
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+15.0
+Total center distance
+1 2 3 4 5
+Best value for each TR
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+Count
+2.25 2.50 2.75 3.00 3.25
+Distance between ﬁnal centers
+0
+2
+4
+6
+8Count
+Figure 6: Performance statistics for 50 restarts of TuRBO-1 on the 60D rover trajectory planning
+problem. The domain is scaled to [0,1]60. Trust region volume (left): We see that the volume of
+the TR decreases with the iterations. Each TR is shown by a light blue line, and their average in
+solid blue. Total center distance (middle left): The cumulative Euclidean distance that each TR
+center has moved (trajectory arc length). This conﬁrms the balance between initial exploration and
+ﬁnal exploitation. Best value found (middle right): The best function value found during each run
+of TuRBO-1. The solutions vary in quality, which explains why our bandit approach works well.
+Distance between ﬁnal TR centers (right): Minimum distances between ﬁnal TR centers, which
+shows that each restart leads to a different part of the space.
+8
+3.8 The efﬁciency of large batches
+Recall that combining multiple samples into single batches provides substantial speed-ups in terms of
+wall-clock time but poses the risk of inefﬁciencies since sequential sampling has the advantage of
+leveraging more information. In this section, we investigate whether large batches are efﬁcient for
+TuRBO. Note that Hernández-Lobato et al. [20] and Kandasamy et al. [26] have shown that the TS
+acquisition function is efﬁcient for batch acquisition with a single global surrogate model. We study
+TuRBO-1 on the robot pushing problem from Sect. 3.1 with batch sizes q ∈{1,2,4,..., 64}. The
+algorithm takes max{200q,6400}samples for each batch size and we average the results over 30
+replications. Fig. 7 (left) shows the reward for each batch size with respect to the number of batches:
+we see that larger batch sizes obtain better results for the same number of iterations. Fig. 7 (right)
+shows the performance as a function of evaluations. We see that the speed-up is essentially linear.
+0 50 100 150 200
+Number of batches
+4
+5
+6
+7
+8
+9
+10
+11Reward
+0 1000 2000 3000 4000 5000 6000
+Number of evaluations
+4
+5
+6
+7
+8
+9
+10
+11Reward
+Batch size 1 Batch size 2 Batch size 4 Batch size 8 Batch size 16 Batch size 32 Batch size 64
+Figure 7: We evaluate TuRBO for different batch sizes. On the left, we see that larger batches provide
+better solutions at the same number of steps. On the right, we see that this reduction in wall-clock
+time does not come at the expense of efﬁcacy, with large batches providing nearly linear speed up.
+4 Conclusions
+The global optimization of computationally expensive black-box functions in high-dimensional
+spaces is an important and timely topic [14, 32]. We proposed the TuRBO algorithm which takes a
+novel local approach to global optimization. Instead of ﬁtting a global surrogate model and trading
+off exploration and exploitation on the whole search space, TuRBO maintains a collection of local
+probabilistic models. These models provide local search trajectories that are able to quickly discover
+excellent objective values. This local approach is complemented with a global bandit strategy that
+allocates samples across these trust regions, implicitly trading off exploration and exploitation. A
+comprehensive experimental evaluation demonstrates that TuRBO outperforms the state-of-the-art
+Bayesian optimization and operations research methods on a variety of real-world complex tasks.
+In the future, we plan on extending TuRBO to learn local low-dimensional structure to improve the
+accuracy of the local Gaussian process model. This extension is particularly interesting in high-
+dimensional optimization when derivative information is available [10, 13, 56]. This situation often
+arises in engineering, where objectives are often modeled by PDEs solved by adjoint methods, and in
+machine learning where gradients are available via automated differentiation. Ultimately, it is our
+hope that this work spurs interest in the merits of Bayesian local optimization, particularly in the
+high-dimensional setting.
+References
+[1] L. Acerbi and W. Ji. Practical Bayesian optimization for model ﬁtting with Bayesian adaptive
+direct search. In Advances in neural information processing systems, pages 1836–1846, 2017.
+[2] R. Akrour, D. Sorokin, J. Peters, and G. Neumann. Local Bayesian optimization of motor skills.
+In Proceedings of the 34th International Conference on Machine Learning-Volume 70, pages
+41–50. JMLR. org, 2017.
+9
+[3] J.-A. M. Assael, Z. Wang, B. Shahriari, and N. de Freitas. Heteroscedastic treed Bayesian
+optimisation. arXiv preprint arXiv:1410.7172, 2014.
+[4] R. Baptista and M. Poloczek. Bayesian optimization of combinatorial structures. InInternational
+Conference on Machine Learning, pages 462–471, 2018.
+[5] M. Binois, D. Ginsbourger, and O. Roustant. A warped kernel improving robustness in Bayesian
+optimization via random embeddings. In International Conference on Learning and Intelligent
+Optimization, pages 281–286. Springer, 2015.
+[6] M. Binois, D. Ginsbourger, and O. Roustant. On the choice of the low-dimensional domain for
+global optimization via random embeddings. Journal of Global Optimization, 2019 (to appear).
+[7] R. Calandra, A. Seyfarth, J. Peters, and M. P. Deisenroth. Bayesian optimization for learning
+gaits under uncertainty. Annals of Mathematics and Artiﬁcial Intelligence, 76(1-2):5–23, 2016.
+[8] B. Chen, R. M. Castro, and A. Krause. Joint optimization and variable selection of high-
+dimensional Gaussian processes. In Proceedings of the International Conference on Machine
+Learning, pages 1379–1386. Omnipress, 2012.
+[9] C. Chevalier and D. Ginsbourger. Fast computation of the multi-points expected improvement
+with applications in batch selection. In International Conference on Learning and Intelligent
+Optimization, pages 59–69. Springer, 2013.
+[10] P. G. Constantine. Active subspaces: Emerging ideas for dimension reduction in parameter
+studies, volume 2. SIAM, 2015.
+[11] K. Dong, D. Eriksson, H. Nickisch, D. Bindel, and A. G. Wilson. Scalable log determinants
+for Gaussian process kernel learning. In Advances in Neural Information Processing Systems,
+pages 6327–6337, 2017.
+[12] N. A. Dong, D. J. Eckman, X. Zhao, S. G. Henderson, and M. Poloczek. Empirically compar-
+ing the ﬁnite-time performance of simulation-optimization algorithms. In Winter Simulation
+Conference, pages 2206–2217. IEEE, 2017.
+[13] D. Eriksson, K. Dong, E. Lee, D. Bindel, and A. G. Wilson. Scaling Gaussian process regression
+with derivatives. In Advances in Neural Information Processing Systems, pages 6867–6877,
+2018.
+[14] P. I. Frazier. A tutorial on Bayesian optimization. arXiv preprint arXiv:1807.02811, 2018.
+[15] J. Gardner, C. Guo, K. Weinberger, R. Garnett, and R. Grosse. Discovering and exploiting addi-
+tive structure for Bayesian optimization. In International Conference on Artiﬁcial Intelligence
+and Statistics, pages 1311–1319, 2017.
+[16] J. Gardner, G. Pleiss, K. Q. Weinberger, D. Bindel, and A. G. Wilson. GPyTorch: Blackbox
+matrix-matrix Gaussian process inference with GPU acceleration. In Advances in Neural
+Information Processing Systems, pages 7576–7586, 2018.
+[17] R. Garnett, M. Osborne, and P. Hennig. Active learning of linear embeddings for Gaussian
+processes. In 30th Conference on Uncertainty in Artiﬁcial Intelligence (UAI 2014) , pages
+230–239, 2014.
+[18] J. González, Z. Dai, P. Hennig, and N. Lawrence. Batch Bayesian optimization via local
+penalization. In Artiﬁcial intelligence and statistics, pages 648–657, 2016.
+[19] N. Hansen. The CMA evolution strategy: A comparing review. In Towards a New Evolutionary
+Computation, pages 75–102. Springer, 2006.
+[20] J. M. Hernández-Lobato, J. Requeima, E. O. Pyzer-Knapp, and A. Aspuru-Guzik. Parallel and
+distributed Thompson sampling for large-scale accelerated exploration of chemical space. In
+Proceedings of the International Conference on Machine Learning, pages 1470–1479, 2017.
+10
+[21] F. Hutter, H. H. Hoos, and K. Leyton-Brown. Sequential model-based optimization for general
+algorithm conﬁguration. In International Conference on Learning and Intelligent Optimization,
+pages 507–523. Springer, 2011.
+[22] Y . Jin, J. Branke, et al. Evolutionary optimization in uncertain environments-a survey.IEEE
+Transactions on Evolutionary Computation, 9(3):303–317, 2005.
+[23] S. G. Johnson. The nlopt nonlinear-optimization package, 2014. URL: http://ab-
+initio.mit.edu/nlopt, 2014.
+[24] E. Jones, T. Oliphant, and P. Peterson. SciPy: Open source scientiﬁc tools for Python. 2014.
+[25] K. Kandasamy, J. Schneider, and B. Póczos. High dimensional Bayesian optimisation and
+bandits via additive models. In International Conference on Machine Learning, pages 295–304,
+2015.
+[26] K. Kandasamy, A. Krishnamurthy, J. Schneider, and B. Póczos. Parallelised Bayesian opti-
+misation via Thompson sampling. In International Conference on Artiﬁcial Intelligence and
+Statistics, pages 133–142, 2018.
+[27] T. Krityakierne and D. Ginsbourger. Global optimization with sparse and local Gaussian process
+models. In International Workshop on Machine Learning, Optimization and Big Data, pages
+185–196. Springer, 2015.
+[28] S. Marmin, C. Chevalier, and D. Ginsbourger. Differentiating the multipoint expected improve-
+ment for optimal batch design. In International Workshop on Machine Learning, Optimization
+and Big Data, pages 37–48. Springer, 2015.
+[29] M. D. McKay, R. J. Beckman, and W. J. Conover. Comparison of three methods for selecting
+values of input variables in the analysis of output from a computer code. Technometrics, 21(2):
+239–245, 1979.
+[30] M. McLeod, S. Roberts, and M. A. Osborne. Optimization, fast and slow: Optimally switching
+between local and Bayesian optimization. In International Conference on Machine Learning,
+pages 3440–3449, 2018.
+[31] M. Mutny and A. Krause. Efﬁcient high dimensional Bayesian optimization with additivity
+and quadrature Fourier features. In Advances in Neural Information Processing Systems, pages
+9005–9016, 2018.
+[32] A. Nayebi, A. Munteanu, and M. Poloczek. A framework for bayesian optimization in embedded
+subspaces. In International Conference on Machine Learning, pages 4752–4761, 2019. The
+code is available at https://github.com/aminnayebi/HesBO.
+[33] J. A. Nelder and R. Mead. A simplex method for function minimization. The Computer Journal,
+7(4):308–313, 1965.
+[34] C. Oh, E. Gavves, and M. Welling. BOCK : Bayesian optimization with cylindrical kernels.
+In Proceedings of the 35th International Conference on Machine Learning, volume 80, pages
+3868–3877, 2018.
+[35] M. J. Powell. A direct search optimization method that models the objective and constraint
+functions by linear interpolation. In Advances in Optimization and Numerical Analysis, pages
+51–67. Springer, 1994.
+[36] M. J. Powell. A view of algorithms for optimization without derivatives. Mathematics Today-
+Bulletin of the Institute of Mathematics and its Applications, 43(5):170–174, 2007.
+[37] R. G. Regis and C. A. Shoemaker. A stochastic radial basis function method for the global
+optimization of expensive functions. INFORMS Journal on Computing, 19(4):497–509, 2007.
+[38] R. G. Regis and C. A. Shoemaker. Combining radial basis function surrogates and dynamic coor-
+dinate search in high-dimensional expensive black-box optimization. Engineering Optimization,
+45(5):529–555, 2013.
+11
+[39] P. Rolland, J. Scarlett, I. Bogunovic, and V . Cevher. High-dimensional Bayesian optimization via
+additive models with overlapping groups. In International Conference on Artiﬁcial Intelligence
+and Statistics, pages 298–307, 2018.
+[40] D. J. Russo, B. Van Roy, A. Kazerouni, I. Osband, Z. Wen, et al. A tutorial on Thompson
+sampling. Foundations and Trends in Machine Learning, 11(1):1–96, 2018.
+[41] A. Shah and Z. Ghahramani. Parallel predictive entropy search for batch global optimization of
+expensive objective functions. In Advances in Neural Information Processing Systems, pages
+3330–3338, 2015.
+[42] B. Shahriari, K. Swersky, Z. Wang, R. P. Adams, and N. De Freitas. Taking the human out of
+the loop: A review of Bayesian optimization. Proceedings of the IEEE, 104(1):148–175, 2016.
+[43] J. Snoek, H. Larochelle, and R. P. Adams. Practical Bayesian optimization of machine learning
+algorithms. In Advances in Neural Information Processing Systems, pages 2951–2959, 2012.
+[44] J. Snoek, K. Swersky, R. Zemel, and R. Adams. Input warping for Bayesian optimization of
+non-stationary functions. In International Conference on Machine Learning, pages 1674–1682,
+2014.
+[45] J. Snoek, O. Rippel, K. Swersky, R. Kiros, N. Satish, N. Sundaram, M. Patwary, M. Prabhat,
+and R. Adams. Scalable Bayesian optimization using deep neural networks. In International
+Conference on Machine Learning, pages 2171–2180, 2015.
+[46] J. T. Springenberg, A. Klein, S. Falkner, and F. Hutter. Bayesian optimization with robust
+Bayesian neural networks. In Advances in Neural Information Processing Systems , pages
+4134–4142, 2016.
+[47] M. A. Taddy, H. K. Lee, G. A. Gray, and J. D. Grifﬁn. Bayesian guided pattern search for robust
+local optimization. Technometrics, 51(4):389–401, 2009.
+[48] M. Tegmark, D. J. Eisenstein, M. A. Strauss, D. H. Weinberg, M. R. Blanton, J. A. Frieman,
+M. Fukugita, J. E. Gunn, A. J. Hamilton, G. R. Knapp, et al. Cosmological constraints from the
+SDSS luminous red galaxies. Physical Review D, 74(12):123507, 2006.
+[49] W. R. Thompson. On the likelihood that one unknown probability exceeds another in view of
+the evidence of two samples. Biometrika, 25(3/4):285–294, 1933.
+[50] K. P. Wabersich and M. Toussaint. Advancing Bayesian optimization: The mixed-global-local
+(MGL) kernel and length-scale cool down. arXiv preprint arXiv:1612.03117, 2016.
+[51] J. Wang, S. C. Clark, E. Liu, and P. I. Frazier. Parallel Bayesian global optimization of expensive
+functions. arXiv preprint arXiv:1602.05149, 2016.
+[52] Z. Wang, F. Hutter, M. Zoghi, D. Matheson, and N. de Freitas. Bayesian optimization in a
+billion dimensions via random embeddings. Journal of Artiﬁcial Intelligence Research, 55:
+361–387, 2016.
+[53] Z. Wang, C. Gehring, P. Kohli, and S. Jegelka. Batched large-scale Bayesian optimization in
+high-dimensional spaces. In International Conference on Artiﬁcial Intelligence and Statistics,
+pages 745–754, 2018.
+[54] C. K. Williams and C. E. Rasmussen. Gaussian processes for machine learning, volume 2. MIT
+Press, 2006.
+[55] J. Wu and P. Frazier. The parallel knowledge gradient method for batch Bayesian optimization.
+In Advances in Neural Information Processing Systems, pages 3126–3134, 2016.
+[56] J. Wu, M. Poloczek, A. G. Wilson, and P. Frazier. Bayesian optimization with gradients. In
+Advances in Neural Information Processing Systems, pages 5267–5278, 2017.
+[57] Y . Yuan. A review of trust region algorithms for optimization. In International Council for
+Industrial and Applied Mathematics, volume 99, pages 271–282, 2000.
+12
+[58] C. Zhu, R. H. Byrd, P. Lu, and J. Nocedal. Algorithm 778: L-BFGS-B: Fortran subroutines
+for large-scale bound-constrained optimization. ACM Transactions on Mathematical Software
+(TOMS), 23(4):550–560, 1997.
+Supplementary material
+In Sect. A we provide additional benchmarking results on synthetic problems. We explain the
+algorithms considered in this paper in more detail in Sect. B. Then we describe how we leverage
+scalable GP regression in Sect. C. We summarize the hyperparameters of TuRBO in Sect. D and give
+additional details on how we shrink and expand the trust regions. Thompson sampling is summarized
+in Sect. E. Finally, we describe the test problems in Sect. F and provide runtimes for all benchmark
+problems in Sect. G.
+A Synthetic experiments
+We present results on four popular synthetic problems: Ackley with domain [−5,10]10, Levy with
+domain [−5,10]10, Rastrigin with domain [−3,4]10, and the 6D Hartmann function with domain
+[0,1]6. The optimizers are given a budget of 50 batches of size q = 10 which results in a total of
+n = 500 function evaluations. All methods use 20 initial points from a Latin hypercube design
+(LHD) [29] except for TuRBO-5, where we use 10 initial points in each local region. To compute
+conﬁdence intervals on the results, we use 30 runs. For HeSBO-TS we used target dimension 4 for
+Hartmann6 and 6 for the other benchmarks.
+0 100 200 300 400 500
+Number of evaluations
+0
+2
+4
+6
+8
+10
+12
+14Value
+10D Ackley function
+0 100 200 300 400 500
+Number of evaluations
+0
+5
+10
+15
+20
+25
+30Value
+10D Levy function
+0 100 200 300 400 500
+Number of evaluations
+0
+20
+40
+60
+80
+100
+120
+140Value
+10D Rastrigin function
+0 100 200 300 400 500
+Number of evaluations
+−3.5
+−3.0
+−2.5
+−2.0
+−1.5
+−1.0
+−0.5
+0.0
+Value
+6D Hartmann function
+TuRBO-5
+TuRBO-1
+EBO
+Thompson sampling
+BOCK
+Bohamiann
+HeSBO
+CMA-ES
+BOBYQA
+Nelder-Mead
+BFGS
+Random search
+Figure 8: TuRBO and TuRBO-5 perform well on all synthetic benchmark problems. HeSBO-TS
+performs well on Levy and Rastrigin. BOBYQA and BFGS are competitive on Rastrigin and Hartmann6,
+showing that local optimization can outperform global optimization on multimodal functions.
+13
+Fig. 8 summarizes the results. We observed a good performance for TuRBO-1 and TuRBO-5 on all
+test problems. TuRBO-1 and TuRBO-5 outperform other methods on Ackley and consistently ﬁnd
+solutions close to the global optimum. The results for Levy also show that TuRBO-5 clearly performs
+best. However, TuRBO-1 found solutions close to the global optimum in some trials but struggled in
+others, which shows that a good starting position is important. On Rastrigin, TuRBO-5 performs the
+best. BOBYQA and BFGS perform comparably to TuRBO-1. In contrast, the 6D Hartmann function is
+much easier and most methods converge quickly.
+Interestingly, the embedding-based HeSBO-TS algorithm performs well on Levy and Rastrigin. On
+the other hand, BOHAMIANN struggles compared to other BO methods, suggesting that its model ﬁt
+is inaccurate compared to GP-based methods. We also observe that CMA-ES ﬁnds good solutions
+eventually for Ackley, Rastrigin, and Hartmann, albeit considerably slower than TuRBO. For Levy
+CMA-ES seems stuck with suboptimal solutions.
+B Algorithms background
+In this section, we provide additional background on the three categories of competing optimization
+methods: traditional local optimizers, evolutionary algorithms, and other recent works in large-scale
+BO. Namely, we compare TuRBO to Nelder-Mead (NM), BOBYQA, BFGS, EBO, Bayesian optimization
+with cylindrical kernels ( BOCK), HeSBO-TS, BOHAMIANN, Thompson sampling with a global GP
+(GP-TS), CMA-ES, and random search (RS). This is an extensive set of state-of-the-art optimization
+algorithms from both local and global optimization.
+For local optimization, we use the popular NM, BOBYQA, and BFGS methods with multiple restarts.
+They are all initialized from the best of a few initial points. We use the Scipy [24] implementations
+of NM and BFGS and the nlopt [23] implementation of BOBYQA.
+Evolutionary algorithms often perform well for black-box optimization with a large number of
+function evaluations. These methods are appropriate for large batch sizes since they evaluate a
+population in parallel. We compare to CMA-ES [19] as it outperforms differential evolution, genetic
+algorithms, and particle swarms in most of our experiments. We use the pycma4 implementation with
+the default settings and a population size equal to the batch size. The population is initialized from
+the best of a few initial points.
+To the best of our knowledge, EBO is the only BO algorithm that has been applied to problems
+with large batch sizes and tens of thousands of evaluations. We also compare to GP-TS, BOCK,
+HeSBO-TS, and BOHAMIANN, all using Thompson sampling as the acquisition function. The original
+implementations of BOCK and BOHAMIANN often take hours to suggest a single point and do not
+support batch suggestions. This necessitated changes to use them for our high-dimensional setting
+with large batch sizes. To generate a discretized candidate set, we generate a set of scrambled Sobol
+sequences with 5000 points for each batch.
+C Gaussian process regression
+We further provide details on both the computational scaling and modeling setup for the GP. To
+address computational issues, we use GPyTorch [16] for scalable GP regression. GPyTorch follows
+Dong et al. [11] to solve linear systems using the conjugate gradient (CG) method and approximates
+the log-determinant via the Lanczos process. Without GPyTorch, running BO with a GP model for
+more than a few thousand evaluations would be infeasible as classical approaches to GP regression
+scale cubically in the number of data points.
+On the modeling side, the GP is parameterized using a Matérn-5/2 kernel with ARD and a constant
+mean function for all experiments. The GP hyperparameters are ﬁtted before proposing a new batch
+by optimizing the log-marginal likelihood. The domain is rescaled to [0,1]d and the function values
+are standardized before ﬁtting the GP. We use a Matérn- 5/2 kernel with ARD for TuRBO and use
+the following bounds for the hyperparameters: (lengthscale) λi ∈[0.005,2.0 ], (signal variance)
+s2 ∈[0.05,20.0], (noise variance) σ2 ∈[0.0005,0.1].
+4https://github.com/CMA-ES/pycma
+14
+D TuRBO details
+In all experiments, we use the following hyperparameters for TuRBO-1: τsucc = 3, τfail = ⌈d/q⌉,
+Lmin = 2−7, Lmax = 1.6, and Linit = 0.8, where dis the number of dimensions and qis the batch
+size. Note that this assumes the domain has been scaled to the unit hypercube [0,1]d. When using
+TuRBO-1, we consider an improvement from at least one evaluation in the batch a success [37]. In
+this case, we increment the success counter and reset the failure counter to zero. If no point in the
+batch improves the current best solution we set the success counter to zero and increment the failure
+counter.
+When using TuRBO with more than one TR, we use the same tolerances as in the sequential case
+(q= 1) as the number of evaluations allocated by each TR may differ in each batch. We use separate
+success and failure counters for each TR. We consider a batch a success for TRℓ if qℓ >0 points are
+selected from this TR and at least one is better than the best solution in this TR. The counters for this
+TR are updated just as for TuRBO-1 in this case. If all qℓ >0 evaluations are worse than the current
+best solution we consider this a failure and set the success counter to zero and add qℓ to the failure
+counter. The failure counter is set to τfail if we increment past this tolerance, which will trigger a
+halving of its side length.
+For each TR, we initialize L←Linit and terminate the TR when L<L min. Each TR in TuRBO uses
+a candidate set of size min{100d,5000}on which we generate each Thompson sample. We create
+each candidate set by ﬁrst generating a scrambled Sobol sequence within the intersection of the TR
+and the domain [0,1]d. A new candidate set is generated for each batch. In order to not perturb all
+coordinates at once, we use the value in the Sobol sequence with probability min{1,20/d}for a
+given candidate and dimension, and the value of the center otherwise. A similar strategy is used by
+Regis and Shoemaker [38] where perturbing only a few dimensions at a time showed to substantially
+improve the performance for high-dimensional functions.
+E Thompson sampling
+In this section, we provide details and pseudo-code that makes the background on Thompson sampling
+(TS) with GPs precise. Conceptually,TS [49] for BO works by drawing a functionffrom the surrogate
+model (GP) posterior. It then makes a suggestion by reporting the optimum of the function f. This
+process is repeated independently for multiple suggestions ( q >1). The exploration-exploitation
+trade off is naturally handled by the stochasticity in sampling.
+Furthermore, parallel batching is naturally handled by the marginalization coherence of GPs. Many
+acquisition functions handle batching by imputing function evaluations for the other suggested (but
+unobserved) points via sampling from the posterior. Independent TS for parallel batches is exactly
+equivalent to conditioning on imputed values for unobserved suggestions. This meansTS also trivially
+handles asynchronous batch sampling [20, 26].
+Note that we cannot sample an entire function f from the GP posterior in practice. We therefore work
+in a discretized setting by ﬁrst drawing a ﬁnite candidate set; this puts us in the same setting as the
+traditional multi-arm bandit literature. To do so, we sample the GP marginal on the candidate set, and
+then apply regular Thompson sampling.
+F Test problems
+In this section we provide some brief additional details for the test problems. We refer the reader to
+the original papers for more details.
+F.1 Robot pushing
+The robot pushing problem was ﬁrst considered in Wang et al. [53]. The goal is to tune a controller
+for two robot hands to push two objects to given target locations. The robot controller has d= 14
+parameters that specify the location and rotation of the hands, pushing speed, moving direction, and
+pushing time. The reward function is f(x) = ∑2
+i=1 ∥xgi −xsi∥−∥xgi −xfi ∥, where xsi are the
+initial positions of the objects, xfi are the ﬁnal positions of the objects, and xgi are the goal locations.
+15
+F.2 Rover trajectory planning
+This problem was also considered in Wang et al. [53]. The goal is to optimize the trajectory of a
+rover over rough terrain, where the trajectory is determined by ﬁtting a B-spline to 30 points in a 2D
+plane. The reward function is f(x) = c(x) −10(∥x1,2 −xs∥1 + ∥x59,60 −xg∥1) + 5, where c(x)
+penalizes any collision with an object along the trajectory by −20. Here, xs and xg are the desired
+start and end positions of the trajectory. The cost function hence adds a penalty when the start and
+end positions of the trajectory are far from the desired locations.
+F.3 Cosmological constant learning
+The cosmological constant experiment uses luminous red galaxy data from the Sloan Digital Sky
+Survey [48]. The objective function is a likelihood estimate of a simulation based astrophysics model
+of the observed data. The parameters include various physical constants, such as Hubble’s constant,
+the densities of baryonic and other forms of matter. We use the nine parameters tuned in previous
+papers, plus three additional parameters chosen from the many available to the simulator.
+F.4 Lunar lander reinforcement learning
+The lunar lander problem is taken from the OpenAI gym5. The objective is to learn a controller for a
+lunar lander that minimizes fuel consumption and distance to a landing target, while also preventing
+crashes. At any time, the state of the lunar lander is its angle and position, and their respective time
+derivatives. This 8-dimensional state vector s is passed to a handcrafted parameterized controller
+that determines which of 4 actions a to take. Each corresponds to ﬁring a booster engine: a ∈
+{nothing, left, right, down}. The handcrafted control policy has d= 12 parameters that parameterize
+linear score functions of the state vector and also the thresholds that determine which action to
+prioritize. The objective is the average ﬁnal reward over a ﬁxed constant set of50 randomly generated
+terrains, initial positions, and initial velocities. Simulation runs were capped at 1000 time steps, after
+which failure to land was scored as a crash.
+G Runtimes
+In Table 1, we provide the algorithmic runtime for the numerical experiments. This is the total
+runtime for one optimization run, excluding the time spent evaluating the objective function. We see
+that the local optimizers and the evolutionary methods run with little to no overhead on all problems.
+The BO methods with a global GP model become computationally expensive when the number of
+evaluations increases and we leverage scalable GPs on an NVIDIA RTX2080 TI. TuRBO does not
+only outperform the other BO methods, but runs in minutes on all test problems and is in fact more
+than 2000×faster than the slowest BO method.
+SyntheticLunar landingCosmological constantRobot pushingRover trajectoryAckley-200
+Evaluationsn 500 1500 2000 10,000 20,000 10,000
+Dimensionsd 6or10 12 12 14 60 200
+TuRBO <1 min <1 min <1 min 8 min 22 min 10 min
+EBO 4 min 23 min 1 h 11 d >30 d NA
+GP-TS 3 min 6 min 11 min 1 h 3 h 1 h
+BOCK 6 min 10 min 19 min 2 h 7 h 2 h
+BOHAMIANN 2 h 5 h 7 h 20 h 2 d 25 h
+NM <1 min <1 min <1 min <1 min <1 min <1 min
+CMA-ES <1 min <1 min <1 min <1 min <1 min <1 min
+BOBYQA <1 min <1 min <1 min <1 min <1 min <1 min
+BFGS <1 min <1 min <1 min <1 min <1 min <1 min
+RS <1 min <1 min <1 min <1 min <1 min <1 min
+Table 1: Algorithmic overhead for one optimization run for each test problem. The times are rounded
+to minutes, hours, or days.
+5gym.openai.com/envs/LunarLander-v2/
+16

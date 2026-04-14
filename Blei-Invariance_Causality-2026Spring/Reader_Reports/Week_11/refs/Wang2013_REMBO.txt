@@ -1,0 +1,1515 @@
+Bayesian Optimization in a Billion Dimensions
+Bayesian Optimization in a Billion Dimensions
+via Random Embeddings
+Ziyu Wang ziyu.wang@cs.ox.ac.uk
+Department of Computer Science, University of Oxford
+Frank Hutter fh@cs.uni-freiburg.de
+Department of Computer Science, University of Freiburg
+Masrour Zoghi m.zoghi@uva.nl
+Department of Computer Science, University of Amsterdam
+David Matheson davidm@cs.ubc.ca
+Department of Computer Science, University of British Columbia
+Nando de Freitas nando@cs.ox.ac.uk
+Department of Computer Science, University of Oxford
+Canadian Institute for Advanced Research
+Abstract
+Bayesian optimization techniques have been successfully applied to robotics, planning,
+sensor placement, recommendation, advertising, intelligent user interfaces and automatic
+algorithm conﬁguration. Despite these successes, the approach is restricted to problems of
+moderate dimension, and several workshops on Bayesian optimization have identiﬁed its
+scaling to high-dimensions as one of the holy grails of the ﬁeld. In this paper, we introduce
+a novel random embedding idea to attack this problem. The resulting Random EMbedding
+Bayesian Optimization (REMBO) algorithm is very simple, has important invariance prop-
+erties, and applies to domains with both categorical and continuous variables. We present
+a thorough theoretical analysis of REMBO. Empirical results conﬁrm that REMBO can
+eﬀectively solve problems with billions of dimensions, provided the intrinsic dimensionality
+is low. They also show that REMBO achieves state-of-the-art performance in optimizing
+the 47 discrete parameters of a popular mixed integer linear programming solver.
+1. Introduction
+Let f : X→ R be a function on a compact subset X⊆ RD. We address the following global
+optimization problem
+x⋆ = arg max
+x∈X
+f(x).
+We are particularly interested in objective functions f that may satisfy one or more of the
+following criteria: they do not have a closed-form expression, are expensive to evaluate, do
+not have easily available derivatives, or are non-convex. We treat f as a blackbox function
+that only allows us to query its function value at arbitrary x∈X. To address objectives of
+this challenging nature, we adopt the Bayesian optimization framework.
+In a nutshell, in order to optimize a blackbox function f, Bayesian optimization uses a
+prior distribution that captures our beliefs about the behavior of f, and updates this prior
+with sequentially acquired data. Speciﬁcally, it iterates the following phases: (1) use the
+1
+arXiv:1301.1942v2  [stat.ML]  10 Jan 2016
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+acquisition max
+acquisition function (u( ·))
+observation (x)
+objective fn (f( ·))
+t = 2
+new observation (xt)
+t = 3
+posterior mean (µ( ·))
+posterior uncertainty
+(µ( ·) ± σ( ·))
+t = 4
+Figure 1: Three consecutive iterations of Bayesian optimization for a toy one-dimensional
+problem. The unknown objective function is approximated with at Gaussian pro-
+cess (GP) at each iteration. The ﬁgure shows the mean and conﬁdence intervals
+for this process. It also shows the acquisition function in the lower green shaded
+plots. The acquisition is high where the GP predicts a high objective (exploita-
+tion) and where the prediction uncertainty is high (exploration). Note that the
+area on the far left remains under-sampled, as (despite having high uncertainty)
+it is correctly predicted to be unlikely to improve over the highest observation.
+prior to decide at which input x ∈X to query f next; (2) evaluate f(x); and (3) update
+the prior based on the new data ⟨x,f(x)⟩. Step 1 uses a so-called acquisition function that
+quantiﬁes the expected value of learning the value of f(x) for each x∈X. This procedure
+is illustrated in Figure 1.
+2
+Bayesian Optimization in a Billion Dimensions
+The role of the acquisition function is to trade oﬀ exploration and exploitation; popular
+choices include Thompson sampling (Thompson, 1933; Hoﬀman, Shahriari, & de Freitas,
+2014), probability of improvement (Jones, 2001), expected improvement (Moˇ ckus, 1994),
+upper-conﬁdence-bounds (Srinivas, Krause, Kakade, & Seeger, 2010), and online portfolios
+of these (Hoﬀman, Brochu, & de Freitas, 2011). These are typically optimized by choosing
+points where the predictive mean is high (exploitation) and where the variance is large
+(exploration). Since they typically have an analytical expression that is easy to evaluate,
+they are much easier to optimize than the original objective function, using oﬀ-the-shelf
+numerical optimization algorithms.1
+The term Bayesian optimization was coined several decades ago by Jonas Moˇ ckus (1982).
+A popular version of the method is known aseﬃcient global optimization in the experimental
+design literature since the 1990s (Jones, Schonlau, & Welch, 1998). Often, the approxima-
+tion of the objective function is obtained using Gaussian process (GP) priors. For this
+reason, the technique is also referred to as GP bandits (Srinivas et al., 2010). However,
+many other approximations of the objective have been proposed, including Parzen esti-
+mators (Bergstra, Bardenet, Bengio, & K´ egl, 2011), Bayesian parametric models (Wang
+& de Freitas, 2011), treed GPs (Gramacy, Lee, & Macready, 2004) and random forests
+(Brochu, Cora, & de Freitas, 2009; Hutter, 2009; Hutter, Hoos, & Leyton-Brown, 2011).
+These may be more suitable than GPs when the number of iterations grows without bound,
+or when the objective function is believed to have discontinuities. We also note that often
+assumptions on the smoothness of the objective function are encoded without use of the
+Bayesian paradigm, while leading to similar algorithms and theoretical guarantees (see, for
+example, Bubeck, Munos, Stoltz, & Szepesvari, 2011, and the references therein). There is
+a rich literature on Bayesian optimization, and for further details we refer readers to more
+tutorial treatments (Brochu et al., 2009; Jones et al., 1998; Jones, 2001; Lizotte, Greiner,
+& Schuurmans, 2011; Moˇ ckus, 1994; Osborne, Garnett, & Roberts, 2009) and recent theo-
+retical results (Srinivas et al., 2010; Bull, 2011; de Freitas, Smola, & Zoghi, 2012).
+Bayesian optimization has been demonstrated to outperform other state-of-the-art black-
+box optimization techniques when function evaluations are expensive and the number of
+allowed function evaluations is therefore low (Hutter, Hoos, & Leyton-Brown, 2013). In
+recent years, it has found increasing use in the machine learning community (Rasmussen,
+2003; Brochu, de Freitas, & Ghosh, 2007; Martinez-Cantin, de Freitas, Doucet, & Castel-
+lanos, 2007; Lizotte, Wang, Bowling, & Schuurmans, 2007; Frazier, Powell, & Dayanik,
+2009; Azimi, Fern, & Fern, 2010; Hamze, Wang, & de Freitas, 2013; Azimi, Fern, & Fern,
+2011; Hutter et al., 2011; Bergstra et al., 2011; Gramacy & Polson, 2011; Denil, Bazzani,
+Larochelle, & de Freitas, 2012; Mahendran, Wang, Hamze, & de Freitas, 2012; Azimi, Jalali,
+& Fern, 2012; Hennig & Schuler, 2012; Marchant & Ramos, 2012; Snoek, Larochelle, &
+Adams, 2012; Swersky, Snoek, & Adams, 2013; Thornton, Hutter, Hoos, & Leyton-Brown,
+1. This optimization step can in fact be circumvented when using treed multi-scale optimistic optimization
+as recently demonstrated by Wang and de Freitas (2014). There also exist several more involved Bayesian
+non-linear experimental design approaches for constructing the acquisition function, where the utility to
+be optimized involves an entropy of an aspect of the posterior. This includes the work of Hennig and
+Schuler (2012) for ﬁnding maxima of functions, the works of Kueck, de Freitas, and Doucet (2006) and
+Kueck, Hoﬀman, Doucet, and de Freitas (2009) for learning functions, and the work of Hoﬀman, Kueck,
+de Freitas, and Doucet (2009) for estimating Markov decision processes. These works rely on expensive
+approximate inference methods for computing intractable integrals.
+3
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+2013). Despite many success stories, the approach is restricted to problems of moderate
+dimension, typically up to about 10. Of course, for a great many problems this is all that
+is needed. However, to advance the state of the art, we need to scale the methodology to
+high-dimensional parameter spaces. This is the goal of this paper.
+It is diﬃcult to scale Bayesian optimization to high dimensions. To ensure that a global
+optimum is found, we require good coverage of X, but as the dimensionality increases, the
+number of evaluations needed to coverXincreases exponentially. As a result, there has been
+little progress on this challenging problem, with a few exceptions. Bergstra et al. (2011) in-
+troduced a non-standard Bayesian optimization method based on a tree of one-dimensional
+density estimators and applied it successfully to optimize the 238 parameters of a complex vi-
+sion architecture (Bergstra, Yamins, & Cox, 2013). Hutter et al. (2011) used random forests
+models in Bayesian optimization to achieve state-of-the-art performance in optimizing up
+to 76 mixed discrete/continuous parameters of algorithms for solving hard combinatorial
+problems, and to successfully carry out combined model selection and hyperparameter op-
+timization for the 768 parameters of the Auto-WEKA framework (Thornton et al., 2013).
+Eggensperger, Feurer, Hutter, Bergstra, Snoek, Hoos, and Leyton-Brown (2013) showed
+that these two methods indeed yielded the best performance for high-dimensional hyper-
+parameter optimization (e.g., in deep belief networks). However, both are based on weak
+uncertainty estimates that can fail even for the optimization of very simple functions and
+lack theoretical guarantees.
+In the linear bandits case, Carpentier and Munos (2012) recently proposed a compressed
+sensing strategy to attack problems with a high degree of sparsity. Also recently, Chen,
+Castro, and Krause (2012) made signiﬁcant progress by introducing a two stage strategy
+for optimization and variable selection of high-dimensional GPs. In the ﬁrst stage, sequential
+likelihood ratio tests, with a couple of tuning parameters, are used to select the relevant
+dimensions. This, however, requires the relevant dimensions to be axis-aligned with an
+ARD kernel. Chen and colleagues provide empirical results only for synthetic examples (of
+up to 400 dimensions), but they provide key theoretical guarantees.
+Many researchers have noted that for certain classes of problems most dimensions do not
+change the objective function signiﬁcantly; examples include hyper-parameter optimization
+for neural networks and deep belief networks (Bergstra & Bengio, 2012), as well as other
+machine learning algorithms and various state-of-the-art algorithms for solving NP-hard
+problems (Hutter, Hoos, & Leyton-Brown, 2014). That is to say these problems have “low
+eﬀective dimensionality”. To take advantage of this property, Bergstra and Bengio (2012)
+proposed to simply use random search for optimization – the rationale being that points
+sampled uniformly at random in each dimension can densely cover each low-dimensional
+subspace. As such, random search can exploit low eﬀective dimensionality without knowing
+which dimensions are important . In this paper, we exploit the same property in a new
+Bayesian optimization variant based on random embeddings.
+Figure 2 illustrates the idea behind random embeddings in a nutshell. Assume we know
+that a given D = 2 dimensional black-box function f(x1,x2) only has d = 1 important
+dimensions, but we do not know which of the two dimensions is the important one. We
+can then perform optimization in the embedded 1-dimensional subspace deﬁned by x1 = x2
+since this is guaranteed to include the optimum.
+4
+Bayesian Optimization in a Billion Dimensions
+xx1 2
+x
+1
+2
+x
+Embedding
+Unimportant
+Important
+x
+x*
+*
+Figure 2: This function in D=2 dimesions only has d=1 eﬀective dimension : the vertical
+axis indicated with the word important on the right hand side ﬁgure. Hence,
+the 1-dimensional embedding includes the 2-dimensional function’s optimizer.
+It is more eﬃcient to search for the optimum along the 1-dimensional random
+embedding than in the original 2-dimensional space.
+As we ﬁrst demonstrated in a recent IJCAI conference paper (Wang, Zoghi, Hutter,
+Matheson, & de Freitas, 2013), random embeddings enable us to scale Bayesian optimization
+to arbitrary Dprovided the objective function has low intrinsic dimensionality. Importantly,
+the algorithm associated with this idea, which we called REMBO, is not restricted to cases
+with axis-aligned intrinsic dimensions but applies to any d-dimensional linear subspace.
+Djolonga, Krause, and Cevher (2013) recently proposed an adaptive, but more expensive,
+variant of REMBO with theoretical guarantees.
+In this journal version of our work, we expand the presentation to provide more de-
+tails throughout. In particular, we expand our description of the strategy for selecting the
+boundaries of the low-dimensional space and for setting the kernel length scale parameter;
+we show by means of an additional application (automatic conﬁguration of random forest
+body-part classiﬁers) that the performance of our technique does not collapse when the
+problem does not have an obvious low eﬀective dimensionality. Our experiments (Section
+4) also show that REMBO can solve problems of previously untenable high extrinsic di-
+mensions, and that REMBO can achieve state-of-the-art performance for optimizing the 47
+discrete parameters of a popular mixed integer linear programming solver.
+2. Bayesian Optimization
+As mentioned in the introduction, Bayesian optimization has two ingredients that need to
+be speciﬁed: The prior and the acquisition function. In this work, we adopt GP priors.
+We review GPs very brieﬂy and refer the interested reader to the book by Rasmussen and
+Williams (2006). A GP is a distribution over functions speciﬁed by its mean function m(·)
+5
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+and covariance k(·,·). More speciﬁcally, given a set of points x1:t, with xi ∈RD, we have
+f(x1:t) ∼N(m(x1:t),K(x1:t,x1:t)),
+where K(x1:t,x1:t)i,j = k(xi,xj) serves as the covariance matrix. A common choice of k is
+the squared exponential function (see Deﬁnition 7 on page 11), but many other choices are
+possible depending on our degree of belief about the smoothness of the objective function.
+An advantage of using GPs lies in their analytical tractability. In particular, given
+observations x1:t with corresponding values f1:t, where fi = f(xi), and a new point x∗, the
+joint distribution is given by:
+[f1:t
+f∗
+]
+∼N
+([m(x1:t)
+m∗
+]
+,
+[K(x1:t,x1:t) k(x1:t,x∗)
+k(x∗,x1:t) k(x∗,x∗)
+])
+.
+For simplicity, we assume that m(x1:t) = 0 and m∗ = 0. Using the Sherman-Morrison-
+Woodbury formula, one can easily arrive at the posterior predictive distribution:
+f∗|Dt,x∗∼N(µ(x∗|Dt),σ(x∗|Dt)),
+with data Dt = {x1:t,f1:t}, and mean and variance
+µ(x∗|Dt) = k(x∗,x1:t)K(x1:t,x1:t)−1f1:t
+σ(x∗|Dt) = k(x∗,x∗) −k(x∗,x1:t)K(x1:t,x1:t)−1k(x1:t,x∗).
+That is, we can compute the posterior predictive mean µ(·) and variance σ(·) exactly for
+any point x∗.
+At each iteration of Bayesian optimization, one has to re-compute the predictive mean
+and variance. These two quantities are used to construct the second ingredient of Bayesian
+optimization: The acquisition function. In this work, we report results for the expected
+improvement acquisition function (Moˇ ckus, 1982; Vazquez & Bect, 2010; Bull, 2011):
+u(x|Dt) = E(max{0,ft+1(x) −f(x+)}|Dt).
+In this deﬁnition, x+ = arg maxx∈{x1:t}f(x) is the element with the best objective value in
+the ﬁrst t steps of the optimization process. The next query is:
+xt+1 = arg max
+x∈X
+u(x|Dt).
+Note that this utility favors the selection of points with high variance (points in regions
+not well explored) and points with high mean value (points worth exploiting). We also
+experimented with the UCB acquisition function (Srinivas et al., 2010; de Freitas et al.,
+2012) and found it to yield similar results. The optimization of the closed-form acquisition
+function can be carried out by oﬀ-the-shelf numerical optimization procedures, such as DI-
+RECT (Jones, Perttunen, & Stuckman, 1993) and CMA-ES (Hansen & Ostermeier, 2001);
+it is only based on the GP model of the blackbox function f and does not require additional
+evaluations of f.
+The Bayesian optimization procedure is shown in Algorithm 1.
+6
+Bayesian Optimization in a Billion Dimensions
+Algorithm 1 Bayesian Optimization
+1: Initialize D0 as ∅.
+2: for t= 1,2,... do
+3: Find xt+1 ∈RD by optimizing the acquisition function u: xt+1 =arg maxx∈Xu(x|Dt).
+4: Augment the data Dt+1 = Dt ∪{(xt+1,f(xt+1))}.
+5: Update the kernel hyper-parameters.
+6: end for
+3. Random Embedding for Bayesian Optimization
+Before introducing our new algorithm and its theoretical properties, we need to deﬁne what
+we mean by eﬀective dimensionality formally.
+Deﬁnition 1. A function f : RD →R is said to have eﬀective dimensionality de, with
+de ≤D, if
+•there exists a linear subspace T of dimension de such that for all x⊤∈T ⊂RD and
+x⊥ ∈T ⊥ ⊂RD, we have f(x⊤+ x⊥) = f(x⊤), where T⊥ denotes the orthogonal
+complement of T; and
+•de is the smallest integer with this property.
+We call T the eﬀective subspace of f and T⊥ the constant subspace.
+This deﬁnition simply states that the function does not change along the coordinates
+x⊥, and this is why we refer to T⊥ as the constant subspace. Given this deﬁnition, the
+following theorem shows that problems of low eﬀective dimensionality can be solved via
+random embedding.
+Theorem 2. Assume we are given a function f : RD →R with eﬀective dimensionality
+de and a random matrix A ∈RD×d with independent entries sampled according to N(0,1)
+and d ≥de. Then, with probability 1, for any x ∈RD, there exists a y ∈Rd such that
+f(x) = f(Ay).
+Proof. Please refer to the appendix.
+Theorem 2 says that given anyx ∈RD and a random matrixA ∈RD×d, with probability
+1, there is a point y ∈Rd such that f(x) = f(Ay). This implies that for any optimizer x⋆ ∈
+RD, there is a point y⋆ ∈Rd with f(x⋆) = f(Ay⋆). Therefore, instead of optimizing in the
+high dimensional space, we can optimize the functiong(y) = f(Ay) in the lower dimensional
+space. This observation gives rise to our new Random EMbedding Bayesian Optimization
+(REMBO) algorithm (see Algorithm 2). REMBO ﬁrst draws a random embedding (given
+by A) and then performs Bayesian optimization in this embedded space.
+In many practical optimization tasks, the goal is to optimize f over a compact subset
+X⊂ RD (typically a box), and f can often not be evaluated outside of X. Therefore, when
+REMBO selects a point y such that Ay is outside the box X, it projects Ay onto Xbefore
+evaluating f. That is, g(y) = f(pX(Ay)), where pX : RD →RD is the standard projection
+operator for our box-constraint: pX(y) = arg minz∈X∥z −y∥2; see Figure 3. We still need
+to describe how REMBO chooses the bounded region Y ⊂Rd, inside which it performs
+7
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Algorithm 2 REMBO: Bayesian Optimization with Random Embedding. Blue text de-
+notes parts that are changed compared to standard Bayesian Optimization.
+1: Generate a random matrix A ∈RD×d
+2: Choose the bounded region set Y⊂ Rd
+3: Initialize D0 as ∅.
+4: for t= 1,2,... do
+5: Find yt+1 ∈Rd by optimizing the acquisition function u: yt+1 = arg maxy∈Yu(y|Dt).
+6: Augment the data Dt+1 = Dt ∪{(yt+1,f(Ayt+1))}.
+7: Update the kernel hyper-parameters.
+8: end for
+Embedding
+D=2
+d=1y
+Convex projection of to
+Figure 3: Embedding from d= 1 into D= 2. The box illustrates the 2D constrained space
+X, while the thicker red line illustrates the 1D constrained space Y. Note that if
+Ay is outside X, it is projected onto X. The set Ymust be chosen large enough
+so that the projection of its image, AY, onto the eﬀective subspace (vertical axis
+in this diagram) covers the vertical side of the box.
+Bayesian optimization. This is important because REMBO’s eﬀectiveness depends on the
+size of Y. Locating the optimum within Yis easier if Yis small, but if we set Ytoo small it
+may not actually contain the global optimizer. In the following theorem, we show that we
+can choose Yin a way that only depends on the eﬀective dimensionality de such that the
+optimizer of the original problem is contained in the low dimensional space with constant
+probability.
+Theorem 3. Suppose we want to optimize a function f : RD →R with eﬀective dimension
+de ≤d subject to the box constraint X ⊂RD, where X is centered around 0. Suppose
+further that the eﬀective subspace T of f is such that T is the span of de basis vectors,
+and let x⋆
+⊤ ∈ T ∩Xbe an optimizer of f inside T. If A is a D ×d random matrix
+with independent standard Gaussian entries, there exists an optimizer y⋆ ∈Rd such that
+f(Ay⋆) = f(x⋆
+⊤) and ∥y⋆∥2 ≤
+√de
+ϵ ∥x⋆
+⊤∥2 with probability at least 1 −ϵ.
+Proof. Please refer to the appendix.
+8
+Bayesian Optimization in a Billion Dimensions
+Theorem 3 says that if the set X in the original space is a box constraint, then there
+exists an optimizer x⋆
+⊤ ∈ Xthat is de-sparse such that with probability at least 1 −ϵ,
+∥y⋆∥2 ≤
+√de
+ϵ ∥x⋆
+⊤∥2 where f(Ay⋆) = f(x⋆
+⊤). If the box constraint is X= [−1,1]D (which is
+always achievable through rescaling), we have with probability at least 1 −ϵ that
+∥y⋆∥2 ≤
+√de
+ϵ ∥x⋆
+⊤∥2 ≤
+√de
+ϵ
+√
+de.
+Hence, to choose Y, we must ensure that the ball of radius de/ϵ, centred at the origin, lies
+inside Y.
+In practice, we have found that it is very unlikely that the optimizer falls on the corner of
+the box constraint, implying that ∥x⋆
+⊤∥<√de. Thus setting Ytoo big may be unnecessarily
+wasteful. To improve our understanding of this eﬀect, we developed a simulation study, in
+which we drew random Gaussian matrices, used them to map various potential optimizers
+x⋆
+⊤to their corresponding points y⋆
+⊤∈Y, and studied the norms of y⋆
+⊤.
+Assume for simplicity of presentation that Y is axis-aligned and de-dimensional (the
+argument applies when d > de). The section of the random matrix A that maps points
+in Yto T is a random Gaussian matrix of dimension de ×de. Let us call this section of
+the matrix B. Since random Gaussian matrices are rotationally invariant in distribution,
+we have for any orthonormal matrix O and a random Gaussian matrix B, OB d= B. That
+is, OB and B are equal in distribution. Similarly, for B−1, OB−1 =
+(
+BOT)−1 d= B−1.
+Therefore, B−1 is also rotationally invariant. Hence, ∥B−1x⊤∥∞
+d= ∥B−1x′
+⊤∥∞ as long as
+∥x⊤∥2 = ∥x′
+⊤∥2. Following this equivalence for the supremum norm of projected vectors, it
+suﬃces to choose a point with the largest norm in [ −1,1]de in our simulations. We chose
+x⊤= [1,1,··· ,1].
+We conducted simulations for several embedding dimensions, de ∈{1,2,··· ,50}, by
+drawing 10000 random Gaussian matrices and computing ∥B−1x∥∞. We found that with
+empirical probability above 1 −ϵ (for decreasing values of ϵ), it was the case that
+∥B−1x∥∞< 1
+ϵmax{log(de),1}.
+These simulations indicate that we could setY=
+[
+−1
+ϵ max{log(de),1},1
+ϵ max{log(de),1}
+]de
+.
+We did this in our experiments and in particular chose ϵ = log( d)/
+√
+d, so that Y was
+[−
+√
+d,
+√
+d]d. Note that Theorem 3 is not useful for this choice, which suggests that there is
+room to improve this aspect of our theory.
+Some careful readers may wonder about the eﬀect of the extrinsic dimensionality D.
+In the following theorem, we show that given the same intrinsic dimensions, the extrinsic
+dimensionality does not have an eﬀect at all; in other words, REMBO is invariant to the
+addition of unimportant dimensions.
+Theorem 4 (Invariance to addition of unimportant dimensions) . Let f : Rde →R and for
+any D ∈N, D ≥de, deﬁne fD : RD →R such that fD adds D−de truly unimportant
+dimensions to f: fD(z) = f(z1:de). Let A1 ∈RD1×d and A0 ∈R(D2−D1)×d be random
+Gaussian matrices with D2 ≥D1 ≥d and let A2 =
+[A1
+A0
+]
+. Then, REMBO run using the
+9
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+same dimension d≥de and bounded region Yyields exactly the same function values when
+run with A1 on fD1 as when run with A2 on fD2 .
+Proof. We only need to show that for each y ∈Rd, we have fD1 (A1y) = fD2 (A2y) since
+this step of REMBO (line 6 of Algorithm 2) is the only one that diﬀers between the two
+algorithm runs. When this function evaluation step yields the same results for everyy ∈Rd,
+then the two REMBO runs behave identically since the algorithm is otherwise identical and
+deterministic after the selection of A in Step 1. Since A2 =
+[A1
+A0
+]
+, we have A2y =
+[A1y
+A0y
+]
+.
+Since D2 ≥D1 ≥de, the ﬁrst de entries of this D2 ×1 vector A2y are the ﬁrst de entries of
+A1y. We thus have fD1 (A1y) = f([A1y]1:de) = f([A2y]1:de) = fD2 (A2y).
+Finally, we show that REMBO is also invariant to rotations in the sense that given diﬀer-
+ent rotation matrices, running REMBO would result in the same distributions of observed
+function values. The argument is made concise in the following results.
+Lemma 5. Consider function f : RD →R. Let fR : RD →R be such that fR(x) = f(Rx)
+for some orthonormal matrix R ∈RD×D. Then, REMBO run in bounded region Yyields
+exactly the same sequence of function values when run with A on f as when run with R−1A
+on fR for a matrix A ∈RD×d.
+Proof. REMBO uses f and A (resp. fR and R−1A) only in one spot (in line 6). Thus, the
+proof is trivial by showing that f(Ayt+1) = fR(R−1Ayt+1) through simple algebra:
+fR(R−1Ayt+1) = f(RR−1Ayt+1) = f(Ayt+1).
+Theorem 6 (Invariance to rotations). Consider function f : RD →R. Let fR : RD →R
+be such that fR(x) = f(Rx) for some orthonormal matrix R ∈RD×D. Then, given random
+Gaussian matrices A1 ∈RD×d and A2 ∈RD×d, REMBO run in bounded region Yyields
+in distribution the same sequence of function values when run with A1 on f as when run
+with A2 on fR.
+Proof. Since R is orthonormal, we have R−1A1
+d= A2. Therefore, REMBO run in bounded
+region Yyields in distribution the same sequence of function values when run with R−1A1
+on fR as when run with A2 on fR. We have also by Lemma 5 that REMBO run in bounded
+region Yyields exactly the same sequence of function values when run withA1 on f as when
+run with R−1A1 on fR. The conclusion follows from combining the previous arguments.
+3.1 Increasing the Success Rate of REMBO
+Theorem 3 only guarantees thatYcontains the optimum with probability at least 1−ϵ; with
+probability δ ≤ϵ the optimizer lies outside of Y. There are several ways to guard against
+this problem. One is to simply run REMBO multiple times with diﬀerent independently
+drawn random embeddings. Since the probability of failure with each embedding is δ, the
+probability of the optimizer not being included in the considered space of k independently
+drawn embeddings is δk. Thus, the failure probability vanishes exponentially quickly in
+10
+Bayesian Optimization in a Billion Dimensions
+the number of REMBO runs, k. Note also that these independent runs can be trivially
+parallelized to harness the power of modern multi-core machines and large compute clusters.
+Another way of increasing REMBO’s success rate is to increase the dimensionality d
+it uses internally. When d > de, with probability 1 we have
+(d
+de
+)
+diﬀerent embeddings of
+dimensionality de. That is, we only need to select de columns of A ∈RD×d to represent
+the de relevant dimensions of x. The algorithm can achieve this by setting the remaining
+d−de sub-components of the d-dimensional vector y to zero. Informally, since we have
+more embeddings, it is more likely that one of these will include the optimizer. In our
+experiments, we will assess the merits and shortcomings of these two strategies.
+3.2 Choice of Kernel
+Since REMBO uses GP-based Bayesian optimization to search in the region Y⊂ Rd, we
+need to deﬁne a kernel between two points y(1),y(2) ∈Y . We begin with the standard
+deﬁnition of the squared exponential kernel:
+Deﬁnition 7. Let KSE(y) = exp( −∥y∥2/2). Given a length scale ℓ >0, we deﬁne the
+corresponding squared exponential kernel as
+kd
+ℓ(y(1),y(2)) = KSE
+(
+y(1) −y(2)
+ℓ
+)
+It is possible to work with two variants of this kernel. First, we can use kd
+ℓ(y1,y2) as in
+Deﬁnition 7. We refer to this kernel as the low-dimensional kernel. We can also adopt an
+implicitly deﬁned high-dimensional kernel on X:
+kD
+ℓ (y(1),y(2)) = KSE
+(
+pX(Ay(1)) −pX(Ay(2))
+ℓ
+)
+,
+where pX : RD → RD is the projection operator for our box-constraint as above (see
+Figure 3).
+Note that when using this high-dimensional kernel, we are ﬁtting the GP in D dimen-
+sions. However, the search space is no longer the box X, but it is instead given by the much
+smaller subspace {pX(Ay) : y ∈Y}. Importantly, in practice it is easier to maximize the
+acquisition function in this subspace.
+Both kernel choices have strengths and weaknesses. The low-dimensional kernel has the
+beneﬁt of only requiring the construction of a GP in the space of intrinsic dimensionality
+d, whereas the high-dimensional kernel requires the GP to be constructed in a space of
+extrinsic dimensionality D. However, the low-dimensional kernel may waste time exploring
+in the region of the embedding outside of X (see Figure 2) because two points far apart
+in this region may be projected via pX to nearby points on the boundary of X. The high-
+dimensional kernel is not aﬀected by this problem because the search is conducted directly
+on {pX(Ay) : y ∈Y} with distances calculated in Xand not in Y.
+The choice of kernel also depends on whether our variables are continuous, integer or
+categorical. The categorical case is important because we often encounter optimization
+11
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Algorithm 3 Bayesian Optimization with Hyper-parameter Optimization.
+input Threshold tσ.
+input Upper and lower bounds U >L> 0 for hyper-parameter.
+input Initial length scale hyper-parameter ℓ∈[L,U].
+1: Initialize C = 0
+2: for t= 1,2,... do
+3: Find xt+1 by optimizing the acquisition function u: xt+1 = arg maxx∈Xu(x|Dt).
+4: if
+√
+σ2(xt+1) <tσ then
+5: C = C+ 1
+6: else
+7: C = 0
+8: end if
+9: Augment the data Dt+1 = {Dt,(xt+1,f(xt+1))}
+10: if t mod 20 = 0 or C = 5 then
+11: if C = 5 then
+12: U = max{0.9ℓ,L}
+13: C = 0
+14: end if
+15: Learn the hyper-parameter by optimizing the log marginal likelihood by using
+DIRECT and CMA-ES: ℓ= arg maxl∈[L,U] log p(f1:t+1|x1:t+1,l)
+16: end if
+17: end for
+problems that contain discrete choices. We deﬁne our kernel for categorical variables as:
+kD
+λ (y(1),y(2)) = exp
+(
+−λ
+2 h(s(Ay(1)),s(Ay(2)))2
+)
+,
+where y(1),y(2) ∈Y⊂ Rd, the function smaps continuous d-dimensional vectors to discrete
+D-dimensional vectors, and h deﬁnes the distance between two discrete vectors. In more
+detail, s(x) ﬁrst uses pX to project x to ¯x ∈[−1,1]D. For each dimension ¯xi of ¯x, s then
+maps ¯xi to a discrete value by scaling and rounding. In our experiments, following Hutter
+(2009), we deﬁned h(x(1),x(2)) = |{i: x(1)
+i ̸= x(2)
+i }|so as not to impose an artiﬁcial ordering
+between the values of categorical parameters. In essence, we measure the distance between
+two points in the low-dimensional space as the Hamming distance between their mappings
+in the high-dimensional space.
+3.3 Hyper-parameter Optimization
+For Bayesian optimization (and therefore REMBO), it is diﬃcult to manually estimate
+the true length scale hyper-parameter of a problem at hand. To avoid any manual steps and
+to achieve robust performance across diverse sets of objective functions, in this paper we
+adopted an adaptive hyper-parameter optimization scheme. The length scale of GPs is often
+set by maximizing marginal likelihood (Rasmussen & Williams, 2006; Jones et al., 1998).
+However, as demonstrated by Bull (2011), this approach, when implemented naively, may
+not guarantee convergence. This is not only true of approaches that maximize the marginal
+12
+Bayesian Optimization in a Billion Dimensions
+likelihood, but also of approaches that rely on Monte Carlo sampling from the posterior
+distribution (Brochu, Brochu, & de Freitas, 2010; Snoek et al., 2012) when the number of
+data is very small, unless the prior is very informative.
+Here, we propose to optimize the length scale parameter ℓ by maximizing the marginal
+likelihood subject to an upper bound U which is decreased when the algorithm starts
+exploiting too much. Full details are given in Algorithm 3. We say that the algorithm
+is exploiting when the standard deviation at the maximizer of the acquisition function√
+σ(xt+1) is less than some threshold tσ for 5 consecutive iterations. Intuitively, this means
+that the algorithm did not emphasize exploration (searching in new parts of the space,
+where the predictive uncertainty is high) for 5 consecutive iterations. When this criterion
+is met, the algorithm decreases its upper bound U multiplicatively and re-optimizes the
+hyper-parameter subject to the new bound. Even when the criterion is not met the hyper-
+parameter is re-optimized every 20 iterations. For each optimization of the acquisition
+function, the algorithm runs both DIRECT (Jones et al., 1993) and CMA-ES (Hansen &
+Ostermeier, 2001) and uses the result of the best of the two options. The astute reader may
+wonder about the diﬃculty of optimizing the acquisition functions. For REMBO, however,
+we have not found the optimization of the acquisition function to be a problem since we only
+need to optimize it in the low-dimensional space and our acquisition function evaluations
+are cheap, allowing us tens of thousands of evaluations in seconds that (empirically) suﬃce
+to cover the low-dimensional space well.
+The motivation of this algorithm is to rather err on the side of having too small a length
+scale: given a squared exponential kernel kℓ, with a smaller length scale than another kernel
+k, one can show that any functionf in the RKHS characterized bykis also an element of the
+RKHS characterized by kℓ. Thus, when running expected improvement, one can safely use
+kℓ instead of kas the kernel of the GP and still preserve convergence (Bull, 2011). We argue
+that (with a small enough lower bound L) the algorithm would eventually reduce the upper
+bound enough to allow convergence. Also, the algorithm would not explore indeﬁnitely as
+L is required to be positive. In our experiments, we set the initial constraint [ L,U] to be
+[0.01,50] and set tσ = 0.002.
+We want to stress the fact that the above argument is only known to hold for a class
+of kernels over continuous domains (e.g. squared exponential and Mat´ ern class kernels).
+Although we believe that a similar argument could be made for integer and categorical
+kernels, rigorous arguments concerning convergence under these kernels remain a challenge
+in Bayesian optimization.
+4. Experiments
+We now study REMBO empirically. We ﬁrst use synthetic functions of small intrinsic di-
+mensionality de = 2 but extrinsic dimension D up to 1 billion to demonstrate REMBO’s
+independence of D. Then, we apply REMBO to automatically optimize the 47 param-
+eters of a widely-used mixed integer linear programming solver and demonstrate that it
+achieves state-of-the-art performance. However, we also warn against the blind application
+of REMBO. To illustrate this, we study REMBO’s performance for tuning the 14 param-
+eters of a random forest body part classiﬁer used by Kinect. In this application, all the
+D = 14 parameters appear to be important, and while REMBO (based on d = 3) ﬁnds
+13
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+reasonable solutions (better than random search and comparable to what domain experts
+achieve), standard Bayesian optimization can outperform REMBO (and the domain ex-
+perts) in such moderate-dimensional spaces. More optimistically, this random forest tuning
+application shows that REMBO does not fail catastrophically when it is not clear that the
+optimization problem has low eﬀective dimensionality.
+4.1 Experimental Setup
+For all our experiments, we used a single robust version of REMBO that automatically sets
+its GP’s length scale parameter as described in Section 3.3. The code for REMBO, as well as
+all data used in our experiments is publicly available athttps://github.com/ziyuw/rembo.
+Some of our experiments required substantial computational resources, with the com-
+putational expense of each experiment depending mostly on the cost of evaluating the
+respective black-box function. While the synthetic experiments in Section 4.2 only required
+minutes for each run of each method, optimizing the mixed integer programming solver
+in Section 4.4 required 4-5 hours per run, and optimizing the random forest classiﬁer in
+Section 4.5 required 4-5 days per run. In total, we used over half a year of CPU time for
+the experiments in this paper. In the ﬁrst two experiments, we study the eﬀect of our
+two methods for increasing REMBO’s success rate (see Section 3.1) by running diﬀerent
+numbers of independent REMBO runs with diﬀerent settings of its internal dimensionality
+d.
+4.2 Bayesian Optimization in a Billion Dimensions
+The experiments in this section employ a standard de = 2-dimensional benchmark function
+for Bayesian optimization, embedded in a D-dimensional space. That is, we add D−2
+additional dimensions which do not aﬀect the function at all. More precisely, the function
+whose optimum we seek is f(x1:D) = g(xi,xj), where g is the Branin function
+g(x1,x2) = (x2 −5.1
+4π2 x2
+1 + 5
+πx1 −6)2 + 10(1 − 1
+8π) cos(x1) + 10
+and where i and j are selected once using a random permutation. To measure the perfor-
+mance of each optimization method, we used the optimality gap : the diﬀerence of the best
+function value it found and the optimal function value.
+We evaluate REMBO using a ﬁxed budget of 500 function evaluations that is spread
+across multiple interleaved runs — for example, when usingk= 4 interleaved REMBO runs,
+each of them was only allowed 125 function evaluations. We study the choices of kand dby
+considering several combinations of these values. The results in Table 1 demonstrate that
+interleaved runs helped improve REMBO’s performance. We note that in 13/50 REMBO
+runs, the global optimum was indeed not contained in the box YREMBO searched with
+d= 2; this is the reason for the poor mean performance of REMBO with d= 2 and k= 1.
+However, the remaining 37 runs performed very well, and REMBO thus performed well
+when using multiple interleaved runs: with a failure rate of 13/50=0.26 per independent
+run, the failure rate using k = 4 interleaved runs is only 0 .264 ≈0.005. One could easily
+achieve an arbitrarily small failure rate by using many independent parallel runs. Using a
+larger dis also eﬀective in increasing the probability of the optimizer falling into REMBO’s
+14
+Bayesian Optimization in a Billion Dimensions
+Figure 4: Comparison of random search (RANDOM), Bayesian optimization (BO), method
+by Chen et al. (2012) (HD BO), and REMBO. Left: D= 25 extrinsic dimensions;
+Right: D = 25, with a rotated objective function; Bottom: D = 109 extrinsic
+dimensions. We plot means and 1 /4 standard deviation conﬁdence intervals of
+the optimality gap across 50 trials.
+box Y but at the same time slows down REMBO’s convergence (such that interleaving
+several short runs loses its eﬀectiveness).
+Next, we compared REMBO to standard Bayesian optimization (BO) and to random
+search, for an extrinsic dimensionality of D = 25. Standard BO is well known to perform
+well in low dimensions, but to degrade above a tipping point of about 15-20 dimensions.
+Our results for D = 25 (see Figure 4, left) conﬁrm that BO performed rather poorly just
+above this critical dimensionality (merely tying with random search). REMBO, on the
+other hand, still performed very well in 25 dimensions.
+One important advantage of REMBO is that — in contrast to the approach of Chen
+et al. (2012) — it does not require the eﬀective dimension to be coordinate aligned. To
+demonstrate this fact empirically, we rotated the embedded Branin function by an orthog-
+onal rotation matrix R ∈RD×D. That is, we replaced f(x) by f(Rx). Figure 4 (middle)
+shows that REMBO’s performance is not aﬀected by this rotation.
+Finally, since REMBO is independent of the extrinsic dimensionality D as long as the
+intrinsic dimensionality de is small, it performed just as well inD= 1 000 000 000 dimensions
+15
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+k d= 2 d= 4 d= 6
+10 0.0022 ±0.0035 0.1553 ±0.1601 0.4865 ±0.4769
+5 0.0004 ±0.0011 0.0908 ±0.1252 0.2586 ±0.3702
+4 0.0001 ±0.0003 0.0654 ±0.0877 0.3379 ±0.3170
+2 0.1514 ±0.9154 0.0309 ±0.0687 0.1643 ±0.1877
+1 0.7406 ±1.8996 0.0143 ±0.0406 0.1137 ±0.1202
+Table 1: Optimality gap for de = 2-dimensional Branin function embedded in D = 25
+dimensions, for REMBO variants using a total of 500 function evaluations. The
+variants diﬀered in the internal dimensionality dand in the number of interleaved
+runs k (each such run was only allowed 500 /k function evaluations). We show
+mean and standard deviations of the optimality gap achieved after 500 function
+evaluations.
+(see Figure 4, right). To the best of our knowledge, the only other existing method that
+can be run in such high dimensionality is random search.
+For reference, we also evaluated the method of Chen et al. (2012) for these functions,
+conﬁrming that it does not handle rotation gracefully: while it performed best in the non-
+rotated case for D = 25, it performed worst in the rotated case. It could not be used
+eﬃciently for more than D = 1,000. Based on a Mann-Whitney U test with Bonferroni
+multiple-test correction, all performance diﬀerences were statistically signiﬁcant, except
+Random vs. standard BO. Finally, comparing REMBO to the method of Chen et al. (2012),
+we also note that REMBO is much simpler to implement and that its results are very reliable
+(with interleaved runs).
+4.3 Synthetic Discrete Experiment
+In this section, we test the high-dimensional kernel with a synthetic experiment. Speciﬁcally,
+we again optimize the Branin function, but restrict its domain to 225 discrete points on a
+regular grid. As above, we added 23 additional irrelevant dimensions to make the problem
+25-dimensional in total.
+We used a small ﬁxed budget of 100 function evaluations for all algorithms involved
+as the problem would require no more than 225 evaluations to be solved completely. We
+used k = 4 interleaved runs for REMBO. We again compare REMBO to random search
+and standard BO. For REMBO, we use the high-dimensional kernel to handle the discrete
+nature of the problem. The result of the comparison is summarized in Figure 5. Standard
+BO again suﬀered from the high extrinsic dimensionality and performed slightly worse than
+random search. REMBO, on the other hand, performed well in this setting.
+4.4 Automatic Conﬁguration of a Mixed Integer Linear Programming Solver
+State-of-the-art algorithms for solving hard computational problems tend to parameterize
+several design choices in order to allow a customization of the algorithm to new prob-
+lem domains. Automated methods for algorithm conﬁguration have recently demonstrated
+that substantial performance gains of state-of-the-art algorithms can be achieved in a fully
+16
+Bayesian Optimization in a Billion Dimensions
+Figure 5: Comparison of random search (RANDOM), Bayesian optimization (BO), and
+REMBO. D = 25 extrinsic dimensions. We plot means and 1 /4 standard devia-
+tion conﬁdence intervals of the optimality gap across 50 trials.
+automated fashion (Moˇ ckus, Moˇ ckus, & Moˇ ckus, 1999; Hutter, Hoos, Leyton-Brown, &
+St¨ utzle, 2009; Hutter, Hoos, & Leyton-Brown, 2010; Vallati, Fawcett, Gerevini, Hoos, &
+Saetti, 2011; Bergstra et al., 2011; Wang & de Freitas, 2011). These successes have led
+to a paradigm shift in algorithm development towards the active design of highly param-
+eterized frameworks that can be automatically customized to particular problem domains
+using optimization (Hoos, 2012; Bergstra et al., 2013; Thornton et al., 2013). The result-
+ing algorithm conﬁguration problems have been shown to have low dimensionality (Hutter
+et al., 2014), and here, we demonstrate that REMBO can exploit this low dimensionality
+even in the discrete spaces typically encountered in algorithm conﬁguration. We use a con-
+ﬁguration problem obtained from Hutter et al. (2010), aiming to conﬁgure the 40 binary
+and 7 categorical parameters of lpsolve (Berkelaar, Eikland, & Notebaert, 2016) , a popular
+mixed integer programming (MIP) solver that has been downloaded over 40 000 times in
+the last year. The objective is to minimize the optimality gap lpsolve can obtain in a time
+limit of ﬁve seconds for a MIP encoding of a wildlife corridor problem from computational
+sustainability (Gomes, van Hoeve, & Sabharwal, 2008). Algorithm conﬁguration usually
+aims to improve performance for a representative set of problem instances, and eﬀective
+methods need to solve two orthogonal problems: searching the parameter space eﬀectively
+and deciding how many instances to use in each evaluation (to trade oﬀ computational over-
+head and over-ﬁtting). Our contribution is for the ﬁrst of these problems; to focus on how
+eﬀectively the diﬀerent methods search the parameter space, we only consider conﬁguration
+on a single problem instance.
+Due to the discrete nature of this optimization problem, we could only apply REMBO
+using the high-dimensional kernel for categorical variables kD
+λ (y(1),y(2)) described in Sec-
+tion 3.2. While we have not proven any theoretical guarantees for discrete optimization
+17
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Figure 6: Performance of various methods for conﬁguration of lpsolve; we show the opti-
+mality gap lpsolve achieved with the conﬁgurations found by the various meth-
+ods (lower is better). Left: a single run of each method; Right: performance with
+k= 4 interleaved runs.
+problems, REMBO appears to eﬀectively exploit the low eﬀective dimensionality of at least
+this particular optimization problem.
+Figure 6 (left) compares BO, REMBO, and the baseline random search against ParamILS
+(Hutter et al., 2009) and SMAC (Hutter et al., 2011). ParamILS and SMAC were speciﬁcally
+designed for the conﬁguration of algorithms with many discrete parameters and deﬁne the
+current state of the art for this problem. Nevertheless, here SMAC and our vanilla REMBO
+method performed best. Based on a Mann-Whitney U test with Bonferroni multiple-test
+correction, they both yielded statistically signiﬁcantly better results than both Random
+and standard BO; no other performance diﬀerences were signiﬁcant. The ﬁgure only shows
+REMBO with d = 5 to avoid clutter, but we did not optimize this parameter; the only
+other value we tried (d= 3) resulted in indistinguishable .
+As in the synthetic experiment, REMBO’s performance could be further improved by
+using multiple interleaved runs. However, as shown by Hutter, Hoos, and Leyton-Brown
+(2012), multiple independent runs can also improve the performance of SMAC and especially
+ParamILS. Thus, to be fair, we re-evaluated all approaches using interleaved runs. Figure
+6 (right) shows that ParamILS and REMBO beneﬁtted most from interleaving k= 4 runs.
+However, the statistical test results did not change, still showing that SMAC and REMBO
+outperformed Random and BO, with no other signiﬁcant performance diﬀerences.
+4.5 Automatic Conﬁguration of Random Forest Kinect Body Part Classiﬁer
+We now evaluate REMBO’s performance for optimizing the 14 parameters of a random
+forest body part classiﬁer. This classiﬁer closely follows the proprietary system used in the
+Microsoft Kinect (Shotton, Fitzgibbon, Cook, Sharp, Finocchio, Moore, Kipman, & Blake,
+2011) and is available at https://github.com/david-matheson/rftk.
+18
+Bayesian Optimization in a Billion Dimensions
+Figure 7: Left: ground truth depth, ground truth body parts and predicted body parts;
+Right: features speciﬁed by oﬀsets u and v.
+We begin by describing some details of the dataset and classiﬁer in order to build
+intuition for the objective function and the parameters being optimized. The data we
+used consists of pairs of depth images and ground truth body part labels. Speciﬁcally,
+we used 1 500 pairs of 320x240 resolution depth and body part images, each of which was
+synthesized from a random pose of the CMU mocap dataset. Depth, ground truth body
+parts and predicted body parts (as predicted by the classiﬁer described below) are visualized
+for one pose in Figure 7 (left). There are 19 body parts plus one background class. For each
+of these 20 possible labels, the training data contained 25 000 pixels, randomly selected from
+500 training images. Both validation and test data contained all pixels in the 500 validation
+and test images, respectively.
+The random forest classiﬁer is applied to one pixel P at a time. At each node of each of
+its decision trees, it computes the depth diﬀerence between two pixels described by oﬀsets
+from P and compares this to a threshold. At training time, many possible pairs of oﬀsets
+are generated at random, and the pair yielding highest information gain for the training
+data points is selected. Figure 7 (right) visualizes a potential feature for the pixel in the
+green box: it computes the depth diﬀerence between the pixels in the red box and the white
+box, speciﬁed by respective oﬀsets u and v. At training time, u and v are drawn from two
+independent 2-dimensional Gaussian distributions, each of which is parameterized by its
+two mean parameters µ1 and µ2 and three covariance terms Σ 11, Σ12, and Σ22 (Σ21 = Σ12
+because of symmetry). These constitute 10 of the parameters that need to be optimized,
+with range [-50,50] for the mean components and [1, 200] for the covariance terms. Low
+covariance terms yield local features, while high terms yield global features. Next to these
+ten parameters, the random forest classiﬁer has four other standard parameters, outlined
+in Table 2. It is well known in computer vision that many of the parameters described here
+are important. Much research has been devoted to identifying their best values, but results
+are dataset speciﬁc, without deﬁnitive general answers.
+The objective in optimizing these RF classiﬁer parameters is to ﬁnd a parameter setting
+that learns the best classiﬁer in a given time budget of ﬁve minutes. To enable competitive
+performance in this short amount of time, at each node of the tree only a random subset of
+19
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Table 2: Parameter ranges for random forest classiﬁer. For the purpose of optimization,
+the maximum tree depth and the number of potential oﬀsets were transformed to
+log space.
+Parameter Range
+Max. tree depth [1 60]
+Min. No. samples for non leaf nodes [1 100]
+No. potential oﬀsets to evaluate [1 5000]
+Bootstrap for per tree sampling [T F]
+data points is considered. Also note that the above parameters do not include the number
+of trees T in the random forest; since performance improves monotonically in T, we created
+as many trees as possible in the time budget. Trees are constructed depth ﬁrst and returned
+in their current state when the time budget is exceeded. Using a ﬁxed budget results in
+a subtle optimization problem because of the complex interactions between the various
+parameters (maximum depth, number of potential oﬀsets, number of trees and accuracy).
+It is unclear a priori whether a low-dimensional subspace of these 14 interacting pa-
+rameters exists that captures the classiﬁcation accuracy of the resulting random forests.
+We performed large-scale computational experiments with REMBO, random search, and
+standard Bayesian optimization (BO) to study this question. In this experiment, we used
+the high-dimensional kernel for REMBO to avoid the potential over-exploration problems
+of the low-dimensional kernel described in Section 3.2. We believed that D= 14 dimensions
+would be small enough to avoid ineﬃciencies in ﬁtting the GP in D dimensions. This belief
+was conﬁrmed by the observation that standard BO (which operates in D= 14 dimensions)
+performed well for this problem.
+Figure 8 (left) shows the results that can be obtained by a single run of random search,
+BO, and REMBO. Remarkably, REMBO clearly outperformed random search, even based
+on as few as d = 3 dimensions. 2 However, since the extrinsic dimensionality was “only”
+a moderate D = 14, standard Bayesian optimization performed well, and since it was
+not limited to a low-dimensional subspace it outperformed REMBO. Nevertheless, several
+REMBO runs actually performed very well, comparably with the best runs of BO. Conse-
+quently, when running k = 4 interleaved runs of each method, REMBO performed almost
+as well as BO, matching its performance up to about 450 function evaluations (see Figure
+8, right).
+We conclude that the parameter space of this RF classiﬁer does not appear to have a
+clear low eﬀective dimensionality; since the extrinsic dimensionality is only moderate, this
+leads REMBO to perform somewhat worse than standard Bayesian optimization, but it is
+still possible to achieve reasonable performance based on as little as d= 3 dimensions.
+2. Due to the large computational expense of this experiment (in total over half a year of CPU time), we
+only performed conclusive experiments with d = 3; preliminary runs of REMBO with d = 4 performed
+somewhat worse than those with d = 3 for a budget of 200 function evaluations, but were still improving
+at that point.
+20
+Bayesian Optimization in a Billion Dimensions
+Figure 8: Performance of various methods for optimizing RF parameters for body part
+classiﬁcation. For all methods, we show RF accuracy (mean ±1/4 standard
+deviation across 10 runs) for all 2.2 million non background pixels in the 500-
+pose validation set, using the RF parameters identiﬁed by the method. The
+results on the test set were within 1% of the results on the validation set. Left:
+performance with a single run of each method; Right: performance with k = 4
+interleaved runs.
+5. Conclusion
+We have demonstrated that it is possible to use random embeddings in Bayesian opti-
+mization to optimize functions of extremely high extrinsic dimensionality D provided that
+they have low intrinsic dimensionality de. Moreover, our resulting REMBO algorithm is
+coordinate independent and it only requires a simple modiﬁcation of the original Bayesian
+optimization algorithm; namely multiplication by a random matrix. We proved REMBO’s
+independence of Dtheoretically and empirically validated it by optimizing low-dimensional
+functions embedded in previously untenable extrinsic dimensionalities of up to 1 billion.
+We also theoretically and empirically showed REMBO’s rotational invariance. Finally, we
+demonstrated that REMBO achieves state-of-the-art performance for optimizing the 47 dis-
+crete parameters of a popular mixed integer programming solver, thereby providing further
+evidence for the observation (already put forward by Bergstra, Hutter and colleagues) that,
+for many problems of great practical interest, the number of important dimensions indeed
+appears to be much lower than their extrinsic dimensionality.
+We note that the central idea of our work – using an otherwise unmodiﬁed optimiza-
+tion procedure in a randomly embedded space – in principle could be applied to arbitrary
+optimization procedures. Evaluating the eﬀciency of this technique for other procedures is
+an interesting topic for future work.
+Acknowledgements
+We thank Christof Sch¨ otz for proofreading a draft of this article.
+21
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+References
+Azimi, J., Fern, A., & Fern, X. (2010). Batch Bayesian optimization via simulation matching.
+In Advances in Neural Information Processing Systems , pp. 109–117.
+Azimi, J., Fern, A., & Fern, X. (2011). Budgeted optimization with concurrent stochastic-
+duration experiments. In Advances in Neural Information Processing Systems , pp.
+1098–1106.
+Azimi, J., Jalali, A., & Fern, X. (2012). Hybrid batch Bayesian optimization. In Interna-
+tional Conference on Machine Learning .
+Bergstra, J., Bardenet, R., Bengio, Y., & K´ egl, B. (2011). Algorithms for hyper-parameter
+optimization. In Advances in Neural Information Processing Systems, pp. 2546–2554.
+Bergstra, J., & Bengio, Y. (2012). Random search for hyper-parameter optimization. Jour-
+nal of Machine Learning Research , 13, 281–305.
+Bergstra, J., Yamins, D., & Cox, D. D. (2013). Making a science of model search: Hy-
+perparameter optimization in hundreds of dimensions for vision architectures. In
+International Conference on Machine Learning , pp. 115–123.
+Berkelaar, M., Eikland, K., & Notebaert, P. (2016). lpsolve : Open source (Mixed-Integer)
+Linear Programming system. http://lpsolve.sourceforge.net/.
+Brochu, E., Brochu, T., & de Freitas, N. (2010). A Bayesian interactive optimization
+approach to procedural animation design. In Proceedings of the 2010 ACM SIG-
+GRAPH/Eurographics Symposium on Computer Animation , pp. 103–112.
+Brochu, E., Cora, V. M., & de Freitas, N. (2009). A tutorial on Bayesian optimization of
+expensive cost functions, with application to active user modeling and hierarchical
+reinforcement learning. Tech. rep. UBC TR-2009-23 and arXiv:1012.2599v1, Dept. of
+Computer Science, University of British Columbia.
+Brochu, E., de Freitas, N., & Ghosh, A. (2007). Active preference learning with discrete
+choice data. In Advances in Neural Information Processing Systems , pp. 409–416.
+Bubeck, S., Munos, R., Stoltz, G., & Szepesvari, C. (2011). X-armed bandits. Journal of
+Machine Learning Research, 12, 1655–1695.
+Bull, A. D. (2011). Convergence rates of eﬃcient global optimization algorithms. Journal
+of Machine Learning Research, 12, 2879–2904.
+Carpentier, A., & Munos, R. (2012). Bandit theory meets compressed sensing for high
+dimensional stochastic linear bandit. In Artiﬁcial Intelligence and Statistics , pp. 190–
+198.
+Chen, B., Castro, R., & Krause, A. (2012). Joint optimization and variable selection of high-
+dimensional Gaussian processes. In International Conference on Machine Learning .
+de Freitas, N., Smola, A., & Zoghi, M. (2012). Exponential regret bounds for Gaussian pro-
+cess bandits with deterministic observations. In International Conference on Machine
+Learning.
+Denil, M., Bazzani, L., Larochelle, H., & de Freitas, N. (2012). Learning where to attend
+with deep architectures for image tracking. Neural Computation, 24 (8), 2151–2184.
+22
+Bayesian Optimization in a Billion Dimensions
+Djolonga, J., Krause, A., & Cevher, V. (2013). High dimensional Gaussian process bandits.
+In Advances in Neural Information Processing Systems , pp. 1025–1033.
+Eggensperger, K., Feurer, M., Hutter, F., Bergstra, J., Snoek, J., Hoos, H., & Leyton-Brown,
+K. (2013). Towards an empirical foundation for assessing Bayesian optimization of
+hyperparameters. In NIPS Workshop on Bayesian Optimization in Theory and Prac-
+tice.
+Frazier, P., Powell, W., & Dayanik, S. (2009). The knowledge-gradient policy for correlated
+normal beliefs. INFORMS journal on Computing , 21 (4), 599–613.
+Gomes, C. P., van Hoeve, W., & Sabharwal, A. (2008). Connections in networks: A hybrid
+approach. In International Conference on Integration of Artiﬁcial Intelligence and
+Operations Research, Vol. 5015, pp. 303–307.
+Gramacy, R. B., Lee, H. K. H., & Macready, W. G. (2004). Parameter space exploration
+with Gaussian process trees. In International Conference on Machine Learning , pp.
+45–52.
+Gramacy, R., & Polson, N. (2011). Particle learning of gaussian process models for sequential
+design and optimization. Journal of Computational and Graphical Statistics , 20 (1),
+102–118.
+Hamze, F., Wang, Z., & de Freitas, N. (2013). Self-avoiding random dynamics on integer
+complex systems. ACM Transactions on Modelling and Computer Simulation , 23 (1),
+9:1–9:25.
+Hansen, N., & Ostermeier, A. (2001). Completely derandomized self-adaptation in evolution
+strategies. Evolutionary Computation, 9 (2), 159–195.
+Hennig, P., & Schuler, C. (2012). Entropy search for information-eﬃcient global optimiza-
+tion. Journal of Machine Learning Research , 98888, 1809–1837.
+Hoﬀman, M., Brochu, E., & de Freitas, N. (2011). Portfolio allocation for Bayesian opti-
+mization. In Uncertainty in Artiﬁcial Intelligence , pp. 327–336.
+Hoﬀman, M., Kueck, H., de Freitas, N., & Doucet, A. (2009). New inference strategies for
+solving Markov decision processes using reversible jump MCMC. In Uncertainty in
+Artiﬁcial Intelligence, pp. 223–231.
+Hoﬀman, M., Shahriari, B., & de Freitas, N. (2014). On correlation and budget constraints
+in model-based bandit optimization with application to automatic machine learning.
+In Artiﬁcial Intelligence and Statistics .
+Hoos, H. H. (2012). Programming by optimization. Communications of the ACM , 55 (2),
+70–80.
+Hutter, F. (2009). Automated Conﬁguration of Algorithms for Solving Hard Computational
+Problems. Ph.D. thesis, University of British Columbia, Vancouver, Canada.
+Hutter, F., Hoos, H., & Leyton-Brown, K. (2014). An eﬃcient approach for assessing
+hyperparameter importance. In International Conference on Machine Learning .
+Hutter, F., Hoos, H. H., & Leyton-Brown, K. (2010). Automated conﬁguration of mixed
+integer programming solvers. In Conference on Integration of Artiﬁcial Intelligence
+and Operations Research, pp. 186–202.
+23
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Hutter, F., Hoos, H. H., & Leyton-Brown, K. (2011). Sequential model-based optimization
+for general algorithm conﬁguration. In Learning and Intelligent Optimization , pp.
+507–523.
+Hutter, F., Hoos, H. H., & Leyton-Brown, K. (2012). Parallel algorithm conﬁguration. In
+Learning and Intelligent Optimization , pp. 55–70.
+Hutter, F., Hoos, H. H., & Leyton-Brown, K. (2013). An evaluation of sequential model-
+based optimization for expensive blackbox functions. In Proceedings of GECCO-13
+Workshop on Blackbox Optimization Benchmarking (BBOB’13) .
+Hutter, F., Hoos, H. H., Leyton-Brown, K., & St¨ utzle, T. (2009). ParamILS: an automatic
+algorithm conﬁguration framework. Journal of Artiﬁcial Intelligence Research , 36,
+267–306.
+Jones, D. R., Perttunen, C. D., & Stuckman, B. E. (1993). Lipschitzian optimization without
+the Lipschitz constant. J. of Optimization Theory and Applications , 79 (1), 157–181.
+Jones, D. (2001). A taxonomy of global optimization methods based on response surfaces.
+Journal of Global Optimization , 21 (4), 345–383.
+Jones, D., Schonlau, M., & Welch, W. (1998). Eﬃcient global optimization of expensive
+black-box functions. Journal of Global optimization , 13 (4), 455–492.
+Kueck, H., de Freitas, N., & Doucet, A. (2006). SMC samplers for Bayesian optimal non-
+linear design. In IEEE Nonlinear Statistical Signal Processing Workshop , pp. 99–102.
+Kueck, H., Hoﬀman, M., Doucet, A., & de Freitas, N. (2009). Inference and learning for
+active sensing, experimental design and control. In Pattern Recognition and Image
+Analysis, Vol. 5524, pp. 1–10.
+Lizotte, D., Greiner, R., & Schuurmans, D. (2011). An experimental methodology for
+response surface optimization methods. Journal of Global Optimization , 53 (4), 1–38.
+Lizotte, D., Wang, T., Bowling, M., & Schuurmans, D. (2007). Automatic gait optimization
+with Gaussian process regression. In International Joint Conference on Artiﬁcial
+Intelligence, pp. 944–949.
+Mahendran, N., Wang, Z., Hamze, F., & de Freitas, N. (2012). Adaptive MCMC with
+Bayesian optimization. Journal of Machine Learning Research - Proceedings Track ,
+22, 751–760.
+Marchant, R., & Ramos, F. (2012). Bayesian optimisation for intelligent environmental
+monitoring. In NIPS workshop on Bayesian Optimization and Decision Making .
+Martinez-Cantin, R., de Freitas, N., Doucet, A., & Castellanos, J. A. (2007). Active policy
+learning for robot planning and exploration under uncertainty. In Robotics, Science
+and Systems.
+Moˇ ckus, J. (1982). The Bayesian approach to global optimization. In Systems Modeling
+and Optimization, Vol. 38, pp. 473–481. Springer.
+Moˇ ckus, J. (1994). Application of Bayesian approach to numerical methods of global and
+stochastic optimization. J. of Global Optimization , 4 (4), 347–365.
+24
+Bayesian Optimization in a Billion Dimensions
+Moˇ ckus, J., Moˇ ckus, A., & Moˇ ckus, L. (1999).Bayesian approach for randomization of
+heuristic algorithms of discrete programming . American Math. Society.
+Osborne, M. A., Garnett, R., & Roberts, S. J. (2009). Gaussian processes for global opti-
+misation. In Learning and Intelligent Optimization , pp. 1–15.
+Rasmussen, C. E. (2003). Gaussian processes to speed up hybrid Monte Carlo for expensive
+Bayesian integrals. In Bayesian Statistics 7 .
+Rasmussen, C. E., & Williams, C. K. I. (2006). Gaussian Processes for Machine Learning .
+The MIT Press.
+Rudelson, M., & Vershynin, R. (2010). Non-asymptotic theory of random matrices: Extreme
+singular values. In International Congress of Mathematicians , pp. 1576–1599.
+Sankar, A., Spielman, D., & Teng, S. (2003). Smoothed analysis of the condition numbers
+and growth factors of matrices. Tech. rep. Arxiv preprint cs/0310022, MIT.
+Shotton, J., Fitzgibbon, A., Cook, M., Sharp, T., Finocchio, M., Moore, R., Kipman, A.,
+& Blake, A. (2011). Real-time human pose recognition in parts from single depth
+images. In IEEE Computer Vision and Pattern Recognition , pp. 1297–1304.
+Snoek, J., Larochelle, H., & Adams, R. P. (2012). Practical Bayesian optimization of ma-
+chine learning algorithms. In Advances in Neural Information Processing Systems ,
+pp. 2960–2968.
+Srinivas, N., Krause, A., Kakade, S. M., & Seeger, M. (2010). Gaussian process optimization
+in the bandit setting: No regret and experimental design. In International Conference
+on Machine Learning, pp. 1015–1022.
+Steinwart, I., & Christmann, A. (2008). Support Vector Machines. Springer.
+Swersky, K., Snoek, J., & Adams, R. P. (2013). Multi-task Bayesian optimization. In
+Advances in Neural Information Processing Systems , pp. 2004–2012.
+Thompson, W. R. (1933). On the likelihood that one unknown probability exceeds another
+in view of the evidence of two samples. Biometrika, 25 (3/4), 285–294.
+Thornton, C., Hutter, F., Hoos, H. H., & Leyton-Brown, K. (2013). Auto-WEKA: Com-
+bined selection and hyperparameter optimization of classiﬁcation algorithms. In ACM
+SIGKDD Conference on Knowledge Discovery and Data Mining , pp. 847–855.
+Vallati, M., Fawcett, C., Gerevini, A. E., Hoos, H. H., & Saetti, A. (2011). Generating
+fast domain-optimized planners by automatically conﬁguring a generic parameterised
+planner. In ICAPS Planning and Learning Workshop .
+Vazquez, E., & Bect, J. (2010). Convergence properties of the expected improvement algo-
+rithm with ﬁxed mean and covariance functions. Journal of Statistical Planning and
+Inference, 140, 3088–3095.
+Wang, Z., & de Freitas, N. (2011). Predictive adaptation of hybrid Monte Carlo with
+Bayesian parametric bandits. InNIPS Deep Learning and Unsupervised Feature Learn-
+ing Workshop.
+Wang, Z., & de Freitas, N. (2014). Bayesian multiscale optimistic optimization. InArtiﬁcial
+Intelligence and Statistics .
+25
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Wang, Z., Zoghi, M., Hutter, F., Matheson, D., & de Freitas, N. (2013). Bayesian optimiza-
+tion in high dimensions via random embeddings. In International Joint Conference
+on Artiﬁcial Intelligence , pp. 1778–1784.
+Appendix A. Proof of Theorem 2
+Proof. Since f has eﬀective dimensionality de, there exists an eﬀective subspace T ⊂RD,
+such that rank( T) = de. Furthermore, any x ∈RD decomposes as x = x⊤+ x⊥, where
+x⊤ ∈T and x⊥ ∈T ⊥. Hence, f(x) = f(x⊤+ x⊥) = f(x⊤). Therefore, without loss of
+generality, it will suﬃce to show that for all x⊤ ∈ T, there exists a y ∈Rd such that
+f(x⊤) = f(Ay).
+Let Φ ∈RD×de be a matrix, whose columns form an orthonormal basis for T. Hence,
+for each x⊤ ∈T , there exists a c ∈Rde such that x⊤ = Φc. Let us for now assume that
+ΦTA has rank de. If ΦTA has rank de, there exists a y such that ( ΦTA)y = c. The
+orthogonal projection of Ay onto T is given by
+ΦΦTAy = Φc = x⊤.
+Thus Ay = x⊤+ x′for some x′∈T ⊥since x⊤is the projection Ay onto T. Consequently,
+f(Ay) = f(x⊤+ x′) = f(x⊤).
+It remains to show that, with probability one, the matrix ΦTA has rank de. Let
+Ae ∈RD×de be a submatrix of A consisting of any de columns of A, which are i.i.d. sam-
+ples distributed according to N(0,I). Then, ΦTai are i.i.d. samples from N(0,ΦTΦ) =
+N(0de,Ide×de), and so we have ΦTAe, when considered as an element of Rd2
+e, is a sample
+from N(0d2e,Id2e×d2e ). On the other hand, the set of singular matrices in Rd2
+e has Lebesgue
+measure zero, since it is the zero set of a polynomial (i.e. the determinant function) and
+polynomial functions are Lebesgue measurable. Moreover, the Normal distribution is ab-
+solutely continuous with respect to the Lebesgue measure, so our matrix ΦTAe is almost
+surely non-singular, which means that it has rank de and so the same is true of ΦTA, whose
+columns contain the columns of ΦTAe.
+Appendix B. Proof of Theorem 3
+Proof. Since Xis a box constraint, by projecting x⋆ to T we get x⋆
+⊤∈T ∩X. Also, since
+x⋆ = x⋆
+⊤+ x⊥ for some x⊥∈T ⊥, we have f(x⋆) = f(x⋆
+⊤). Hence, x⋆
+⊤ is an optimizer. By
+using the same argument as appeared in Proposition 1, it is easy to see that with probability
+1 ∀x ∈T ∃y ∈Rd such that Ay = x + x⊥ where x⊥ ∈T ⊥. Let Φ be the matrix whose
+columns form a standard basis for T. Without loss of generality, we can assume that
+Φ =
+[Ide
+0
+]
+Then, as shown in Proposition 2, there exists a y⋆ ∈Rd such that ΦΦTAy⋆ = x⋆
+⊤. Note
+that for each column of A, we have
+ΦΦTai ∼N
+(
+0,
+[Ide 0
+0 0
+])
+.
+26
+Bayesian Optimization in a Billion Dimensions
+Therefore ΦΦTAy⋆ = x⋆
+⊤is equivalent to By⋆ = ¯x⋆
+⊤where B ∈Rde×de is a random matrix
+with independent standard Gaussian entries and ¯x⋆
+⊤is the vector that contains the ﬁrst de
+entries of x⋆
+⊤ (the rest are 0’s). By Theorem 3.4 of (Sankar, Spielman, & Teng, 2003), we
+have
+P
+[
+∥B−1∥2 ≥
+√de
+ϵ
+]
+≤ϵ.
+Thus, with probability at least 1−ϵ, ∥y⋆∥≤∥ B−1∥2∥¯x⋆
+⊤∥2 = ∥B−1∥2∥x⋆
+⊤∥2 ≤
+√de
+ϵ ∥x⋆
+⊤∥2.
+Appendix C. Regret Bounds
+In this section, we provide regret results for REMBO in the special case that (1) the em-
+bedded subspace has the same dimension as the eﬀective dimension and (2) the embedded
+subspace contains a maximum of the function f inside the box X. More speciﬁcally, here
+we will analyze a simpliﬁed version of the algorithm that performs Bayesian optimization
+only inside the box Xrather than considering its extension beyond Xand projecting onto
+the boundary of Xas done in our actual implementation.
+We acknowledge that this mismatch between the theoretical results and our actual
+algorithm is rather unsatisfactory. However, some of the obstacles that stand in the way of
+a complete analysis of the algorithm are currently insurmountable, since they would require
+the development of new tools that are far beyond the scope of this paper. We point these
+out at the end of this section and hope that our partial result will motivate the development
+of such tools, which might not otherwise receive any attention from the community.
+We begin our mathematical treatment with the deﬁnitions of simple regret and the skew
+squared exponential (SSE) kernel.
+Deﬁnition 8. Given a function f : X →R and a sequence of points {xt}∞
+t=1 ⊆X , the
+simple regret with respect to the set X at time T is deﬁned to be rf(T) = sup Xf −
+T
+max
+t=1
+f(xt).
+Deﬁnition 9. Given a symmetric, positive-deﬁnite matrix ∆ and KSE, we deﬁne the cor-
+responding skew squared exponential kernel as
+k∆(y(1),y(2)) = KSE
+(
+∆−1/2(y(1) −y(2))
+)
+.
+Given ∆, and X ⊆Rd, we denote the Reproducing Kernel Hilbert Spaces (RKHSs)
+corresponding to k∆ by Hk∆ (Steinwart & Christmann, 2008, Deﬁnition 4.18). Note that
+for the setting ∆ = ℓ2I we recover the squared exponential kernel kd
+ℓ introduced earlier. To
+simplify notation, we introduce yet another deﬁnition.
+Deﬁnition 10. Consider the function f : S →R, where S ⊂RD is a d-dimensional
+subspace of RD. Let Φ ∈RD×d be a matrix whose columns form an orthonormal basis for
+S. We deﬁne the canonical representation f : Rd →R of f as f(x) = f(Φx).
+Our main result below shows that the simple regret of a variation of REMBO vanishes
+with rate O(t−1
+d ) with high probability. This REMBO variant uses a ﬁxed kernel parameter
+length scale ℓand, more importantly, restricts its search to its embedding inside the box X.
+27
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+We only make the assumption that the cost function restricted to T is governed by a
+skew squared exponential kernel, a much weaker assumption than the standard assumption
+that the cost function is governed by an axis aligned kernel in Ddimensions (see, e.g., Bull,
+2011). Despite the fact that the cost function restricted to T is governed by a skew squared
+exponential kernel, the result shows that we can control the regret using the low-dimensional
+squared exponential kernel.
+Theorem 11. Let X ⊂RD be a compact subset with non-empty interior that is convex
+and contains the origin and f : RD →R, a function with eﬀective dimension d. Suppose
+that the canonical representation of the restriction of f to its eﬀective subspace T, denoted
+f|T, is an element of the RKHS Hk∆(Rd) with ∆ symmetric and positive deﬁnite and also
+satisfying 0 < r2 < λmin(∆) ≤λmax(∆) < R2 for constants r and R, where λmin(∆) and
+λmax(∆) are the extreme eigenvalues of ∆.
+Let A be a D×dmatrix, whose elements are drawn from the normal distribution N(0,1).
+Then, given any ϵ >0, we can choose a length-scale ℓ = ℓ(ϵ) such that running REMBO
+with kernel kd
+ℓ on the restriction of f to the image of A inside X has simple regret with
+respect to the set Im A ∩X in O(t−1
+d ) with probability 1 −ϵ.
+This theorem does not follow directly from the results of Bull (2011), since the kernel
+is not aligned with the axes, both in the high-dimensional space and the lower dimensional
+embedding.
+Please refer to Appendix D for the proof of this theorem. The general idea of the proof
+is as follows. If we have a squared exponential kernel kℓ, with a smaller length scale than a
+given kernel k∆, then an element f of the RKHS of k∆ is also an element of the RKHS of kℓ
+(see Lemma 15 in the Appendix for more details). So, when running expected improvement,
+one can safely use kℓ instead of k∆ as the kernel and still obtain a regret bound. Most of
+the proof is dedicated to ﬁnding a length scale ℓ that ﬁts “underneath” our kernel, so we
+can replace our kernel with kℓ, to which we can apply the results of Bull (2011).
+Note that in the above theorem we make the assumption that the embedded dimension
+and the eﬀective dimension are equal to each other. Given bounds such as Proposition 1 of
+de Freitas et al. (2012), we strongly believe that a similar result holds when the embedded
+dimension is higher than the eﬀective dimension; however, the analysis of that setting
+remains elusive due to the fact that none of the methods available in the literature on regret
+bounds for Bayesian optimization algorithms can handle kernels that have ﬂat dimensions
+(i.e. when ∆ is not positive-deﬁnite), and adapting them to such a case requires tools from
+statistics that have yet to be developed. Given that, theoretical bounds for the case with
+de <d are outside the scope of this work.
+Moreover, note that this theorem provides a sublinear regret result for REMBO with
+respect to the whole set X only in the situation that Im A intersects the maximum locus
+of the function f inside the set X. Note that Theorem 3 provides a lower bound on the
+probability of this happening in the special case that the eﬀective subspace is axis-aligned.
+Proving regret bounds for situations in which the image of A only contains a maximum
+outside of Xwould require dealing with the RKHS of non-stationary kernels, since the pro-
+jection operator pX can have non-constant Jacobian. This is related to the situation with
+treed GPs (Gramacy et al., 2004), with the additional, immensely complicating ingredient
+that is the continuity assumption imposed along the boundaries of the various partitions of
+28
+Bayesian Optimization in a Billion Dimensions
+the space (since pX is continuous). Similar to the theory of Partial Diﬀerential Equations,
+where boundary conditions are the hardest part of the problem, we anticipate this mod-
+iﬁcation to be a non-trivial, albeit very interesting, undertaking, and pose it as an open
+problem to the community.
+Remark 12. The above theorem would also hold for a class of stationary kernels which
+includes the popular Mat´ ern kernel. For conciseness of presentation, we do not include this
+result, but refer the curious reader to Bull (2011) for more details.
+Appendix D. Proof of Theorem 11
+Before embarking on the proof of Theorem 11, we introduce some deﬁnitions and state a
+few preliminary results, which we quote from Bull (2011) to facilitate the reading of this
+exposition.
+We denote the Fourier transform of any function φ(x) as ˆφ(ξ) =
+∫
+Rd e−2πixT ξφ(x)dx. In
+this section we consider kernels of the form
+k∆(x(1),x(2)) = K∆(x(1) −x(2)) = K(∆−1
+2 (x(1) −x(2)))
+where ∆ is a positive deﬁnite matrix andKhas Fourier transform ˆKsuch that ˆKis isotropic
+and radially non-increasing. Notice that both the squared exponential kernel and the skew
+squared exponential kernel introduced in Deﬁnition 9 of the main text are represented in
+the form above. The popular kernels from the Mat´ ern class can also be represented in this
+form. In general, the results in this section would follow for any kernel that satisﬁes the
+four assumptions detailed by Bull (2011).
+Lemma 13 (Lemma 1 of Bull (2011)) . H(Rd) is the space of real continuous functions
+f ∈L2(Rd) whose norm
+∥f∥2
+H(Rd) :=
+∫ |ˆf(ξ)|2
+ˆK(ξ)
+dξ
+is ﬁnite, taking 0/0 = 0.
+Lemma 14 (Lemma 2 of Bull (2011)). Given a set S⊆ Rd, H(S) is the space of functions
+f = g|S(f is g restricted to S) for some g∈H(Rd), with norm
+∥f∥H(S) := inf
+g|S=f
+∥g∥H(Rd),
+and there is a unique g minimizing this expression.
+Lemma 15 (Lemma 4 of Bull (2011), extended to our setting) . Let S⊆ Rd and ∆ and
+∆′ be two symmetric positive deﬁnite matrices. Let λmax(∆′), λmin(∆) be the largest and
+the smallest eigenvalues of ∆′, ∆ respectively such that λmax(∆′) ≤λmin(∆). Then f ∈
+Hk∆(S) implies f ∈Hk∆′(S) and also
+∥f∥Hk∆′(S) ≤
+(|∆|
+|∆′|
+)1
+2
+∥f∥Hk∆(S)
+where |∆|is the determinant of ∆.
+29
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Proof. Since ∆ and ∆′ are positive deﬁnite we can write ∆ = QTΣQ and ∆′= Q′TΣ′Q′
+where Q and Q′ are orthonormal. Let C =
+(
+|∆′|
+|∆|
+)1
+2
+. Since λmax(∆′) ≤λmin(∆), we know
+that
+∥Σ′1
+2 Q′ξ∥2 = ξT∆′ξ ≤ξT∆ξ = ∥Σ
+1
+2 Qξ∥2.
+As ˆK is isotropic and radially non-increasing, we have that
+ˆK∆′(ξ) = |∆′|
+1
+2 ˆK(Σ′1
+2 Q′ξ) ≥|∆′|
+1
+2 ˆK(Σ
+1
+2 Qξ) = |∆′|
+1
+2 |∆|−1
+2 ˆK∆(ξ) = CˆK∆(ξ)
+where the ﬁrst and the second last equality follows from the following property of Fourier
+transforms: ˆh(ξ) = 1
+|M|
+ˆf(M−Tξ) if h(x) = f(Mx) given a non-singular matrix M. Given
+f ∈Hk∆(S), let g ∈Hk∆(Rd) be its minimum norm extension, as in Lemma 14. By the
+deﬁnition of RKHS norm in Lemma 13,
+∥f∥2
+Hk∆′(S) = ∥g∥2
+Hk∆′(Rd) =
+∫ |ˆg|2
+ˆK∆′
+≤
+∫ |ˆg|2
+CˆK∆
+= C−1∥f∥2
+Hk∆(S).
+Since C is ﬁnite, by Lemma 13 we have that f ∈Hk∆(S) implies f ∈Hk∆′(S).
+Deﬁnition 16. Given a map π : S →T between any two sets S and T, and any map
+f : T ×···×T  
+n-times
+→R, with n≥1, we deﬁne the pull-back of f under π as follows:
+π∗f(s1,...,s n) := f(π(s1),...,π (sn)) .
+That is, one evaluates the pull-back π∗f on points in S by ﬁrst “pushing them forward”
+onto T and then using f to get a number.
+If the map π is given by a matrix A, we will use the notation A∗f for the pull-back of f
+under the linear map induced by A. Moreover, given a matrix A and a set Sin its target
+space, we will denote by A−1(S) the set of all points that are mapped into Sby A.
+Proposition 17 (Theorem 2 by Bull (2011), paraphrased for our particular setting). Given
+a squared exponential kernel kℓ on a compact subset Y ⊂Rd and a function f ∈Hℓ(Y),
+then applying Expected Improvement to f results in simple regret that diminishes according
+to O
+(
+t−1
+d
+)
+, with the constants worsening as the norm ∥f∥Hℓ(Y) increases.
+Proof of Theorem 11. The proof of this result is structured into two parts. In the ﬁrst part
+of the proof, we give an analytic expression for the true kernel k∆d in the low dimensional
+space over which we optimize. In the second part of the proof, we show that this kernel is
+well-behaved with high probability (speciﬁcally the maximum and minimum eigenvalues of
+∆d are bounded above and below by constants depending on the probability of failure) and
+apply Proposition 17 to acquire the convergence rate.
+Let Φ ∈RD×d be a matrix, whose columns form an orthonormal basis for T. Let
+Π = ΦTΦΦT : X→ Rd. Note that Π is composed of an orthogonal projection from Xto
+T and a bijective map from T to Rd. We will also denote the corresponding matrix by Π.
+Recall from the theorem statement that f|T is assumed to be an element of the RKHS
+Hk∆, and that we have f = Π∗f|T, i.e. f is obtained from “stretching f|T open” along the
+orthogonal subspace of T. We can also deﬁne the kernel over RD by kD := Π∗k∆.
+30
+Bayesian Optimization in a Billion Dimensions
+D=2
+d=1y
+d=1
+Embedding
+Figure 9: A illustration of the diﬀerent kernels deﬁned in this proof. In this ﬁgure, the
+red line represents the one-dimensional space Y over which we optimize. The
+blue region is the original high-dimensional space. The green line represents the
+eﬀective subspace T projected to a one-dimensional space through Π. The true
+kernel K∆ is deﬁned on the green region. The true kernel on the high-dimensional
+space is then naturally kD = Π∗k∆ and the true kernel on Yis K∆d = A∗kD.
+To optimize without the knowledge of K∆d, we use a kernel kℓ which with high
+probability is thinner than K∆d in all directions thus preserving convergence
+properties.
+Now, given the embedding Rd ↪→RD deﬁned by the matrix A, the pull-back function
+A∗f is an element of the RKHS HA∗kD : Henceforth, we will use the notation
+k∆d := A∗kD = A∗Π∗k∆ = (ΠA)∗k∆.
+In more detail, for y(1),y(2) ∈Rd
+k∆d(y(1),y(2)) = K
+(
+(y(1) −y(2))⊤A⊤Π⊤∆−1ΠA(y(1) −y(2))
+)
+.
+For a pictorial illustration of the diﬀerent kernels deﬁned in this proof, please refer to
+Figure 9.
+Since Π is an orthogonal projection matrix, it has an SVD decomposition Π = USV
+consisting of an orthogonal d×d matrix U, an orthogonal D×D matrix V and a d×D
+matrix S that has the following form:
+S =
+
+
+1 0 ··· 0 0 ··· 0
+0 1 ··· 0 0 ··· 0
+... ... ... ... ... ... ...
+0 0 ··· 1 0 ··· 0
+
+.
+31
+Wang, Hutter, Zoghi, Matheson, & de Freitas
+Now, given a ﬁxed orthogonal matrix O ∈ RD×D and a random Gaussian vector v ∼
+N(0,ID×D), due to the rotational symmetry of the normal distribution, the vector Ov is
+also a sample from N(0,ID×D). Therefore, given a random Gaussian matrix Γ, OΓ is also
+a random Gaussian matrix with the same distribution of entries. Moreover, given S as
+above, SΓ is a d×D random Gaussian matrix, since multiplying any matrix by S on the
+left simply extracts the ﬁrst d rows of the matrix.
+Given this, if we ﬁx an orthogonal decomposition ∆−1 = P⊤D−1P, where P is or-
+thogonal and D is a diagonal matrix with the eigenvalues of ∆ along the diagonal, we can
+conclude that
+G := PΠA = PUSVA
+is a random Gaussian matrix, and so the matrix ∆d = A⊤Π⊤∆−1ΠA can be decomposed
+into random Gaussian and diagonal matrices as follows:
+∆−1
+d = G⊤D−1G.
+Since random Gaussian matrices, as argued in the proof of Theorem 2, have full rank almost
+surely, ∆−1
+d is of full rank and is positive deﬁnite.
+In the remainder of this proof, we replace k∆d with a kernel kℓ that is “thinner” than
+k∆d and so A∗f is also an element of the RKHS of kℓ. By showing that this is true,
+REMBO (which uses kℓ) has enough approximation power. Moreover, the statement of
+Proposition 17 applies.
+Let smin(M) and smax(M) denote the smallest and the largest singular values of a matrix
+M. With this notation in hand, we point out the following two facts about concentration
+of singular values:
+I. Since for any pair of matrices A and B, we have smax(AB) ≤smax(A)smax(B), we
+get
+1
+λmin(∆d) = λmax(∆−1
+d ) ≤smax(G)2smax(D−1) ≤smax(G)2
+r2
+and since G is a random matrix with Gaussian entries, we have (cf. Equation 2.3 by
+Rudelson and Vershynin (2010))
+P
+(
+smax(G) <2
+√
+d+ t
+)
+≤1 −2e−t2/2,
+and so with probability 1 −ϵ
+2 , we have
+smax(G) <2
+√
+d+
+√
+2 ln 4
+ϵ.
+Therefore, with probability 1 −ϵ
+2 , we have
+λmin(∆d) >
+
+ r
+2
+√
+d+
+√
+2 ln 4
+ϵ
+
+
+2
+. (1)
+Henceforth, we will use the notation
+ℓ= ℓ(ϵ) := r
+2
+√
+d+
+√
+2 ln 4
+ϵ
+32
+Bayesian Optimization in a Billion Dimensions
+II. On the other hand, we have
+1
+λmax(∆d) = λmin(∆−1
+d ) ≥smin(G)2smin(D−1) ≥smin(G)2
+R2
+together with the following probabilistic bound on smin(G) (cf. Equation 3.2 by
+Rudelson and Vershynin (2010)):
+P
+(
+smin(G) > δ√
+d
+)
+>1 −δ.
+So, with probability 1 −ϵ
+2 , we have
+smin(G) > ϵ
+2
+√
+d
+,
+and so
+λmax(∆d) < 4dR2
+ϵ2 (2)
+holds with probability 1 −ϵ
+2 .
+In what follows, we will use the notation:
+U = U(ϵ) := 2R
+√
+d
+ϵ
+Now, with these estimates in hand, we have that by Lemma 14 and Lemma 15 the
+following bound holds with probability 1 −ϵ:
+∥A∗f∥Hℓ(A−1(X)) ≤∥A∗f∥Hℓ(Rd) ≤
+(U(ϵ)
+ℓ(ϵ)
+)d
+2
+∥A∗f∥H∆d(Rd) (3)
+Since the transformation ΠA is invertible, we have that the map ( ΠA)∗: H∆(Rd) →
+H∆d(Rd) (recall that k∆d = k(ΠA)∗∆) that sends g∈H∆ to (ΠA)∗g is an isomorphism of
+Hilbert spaces and so f|T
+
+H∆(Rd)
+= ∥A∗f∥H∆d(Rd) (4)
+since we have A∗f = A∗
+(
+Π∗f|T
+)
+= (ΠA)∗f|T.
+By combining 3 and 4, we have that
+∥A∗f∥Hℓ(A−1(X)) ≤
+(U(ϵ)
+ℓ(ϵ)
+)d
+2 f|T
+
+H∆(Rd)
+.
+Now that we know that the Hℓ(Rd) norm of A∗f is ﬁnite, we can apply the Expected
+Improvement algorithm to it on the set A−1(X) with kernel kℓ, instead of the unknown
+kernel k∆d, and then Proposition 17 tells us that the simple regret would be in O
+(
+t−1
+d
+)
+.
+33
