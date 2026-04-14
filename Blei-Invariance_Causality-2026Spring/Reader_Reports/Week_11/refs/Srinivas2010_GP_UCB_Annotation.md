@@ -9,7 +9,7 @@
 ## High-Level Framing
 - **Problem:** Optimizing an unknown, noisy, expensive-to-evaluate function $f$ over a compact domain — framed as a multi-armed bandit problem with structured payoffs.
 - **Contribution:** First sublinear regret bounds for GP optimization. Introduces GP-UCB and connects BO to experimental design via the maximum information gain $\gamma_T$.
-- **Key result:** Cumulative regret $R_T = O^*(\sqrt{T \gamma_T \beta_T})$ where $\gamma_T$ measures the information capacity of the kernel class and $\beta_T$ is the exploration parameter.
+- **Key result:** Cumulative regret $R_T \leq \sqrt{C_1 T \beta_T \gamma_T}$ with high probability, i.e.\ $O^*(\sqrt{T\gamma_T})$ suppressing log factors in $\beta_T$, where $C_1 = 8/\log(1+\sigma^{-2})$.
 
 ---
 
@@ -27,7 +27,7 @@
 - **Key bounds on $\gamma_T$** (Table 1 in paper):
   - **Linear kernel:** $\gamma_T = O(d \log T)$
   - **RBF/SE kernel:** $\gamma_T = O((\log T)^{d+1})$ — nearly dimension-free for large $T$
-  - **Matérn-$\nu$ kernel:** $\gamma_T = O(T^{d/(2\nu+d)} (\log T))$ — slower if $\nu$ is small (rough functions)
+  - **Matérn-$\nu$ kernel:** $\gamma_T = O(T^{d(d+1)/(2\nu+d(d+1))} (\log T))$ — slower if $\nu$ is small (rough functions). Note: $d/(2\nu+d)$ is the exponent for the *expected* information gain $E[I(y_T;f_T)]$, a different quantity.
 - The proof uses submodularity of the information gain function, which allows greedy selection to approximate the optimum.
 
 ---
