@@ -219,9 +219,36 @@ Prior commits this cycle:
 
 ---
 
+## Cycle 02 Progress (2026-04-14, commit 633e9eb)
+
+**Structural fixes completed:**
+- Removed 4 auto-generated timestamps from figure/table captions
+- Resolved duplicate `fig_temporal_drift_H0.pdf` (second occurrence swapped to H3)
+- Fixed Table 9 (tab:metrics_summary): long footnotes moved outside `\resizebox` into `\minipage`
+- Fixed Table 10 (calibration_primary_ood): unbounded footer replaced with `\minipage`
+- Softened all "regime change/break/severance/shift" language to "transition," "performance break," or "descriptive" framing (6 instances across §3, §6, §7, §9, and appendix)
+- Added short LoT caption for Table 9 to prevent multiline LoT entry
+
+**Content restoration (user-directed):**
+- Restored full **Attribution Stability and Meta-Attribution** section (§5.4) to main body: attribution divergence matrix, expanding-window stability heatmap + rank-correlation subfigures, multi-horizon attribution, and meta-attribution clustermap (Ward-linkage hierarchical clustering)
+- Copied `meta_attribution_clustermap.pdf` into `Figures/SHAP_MetaClustering/` so `\graphicspath` resolves it in the worktree
+- Populated Appendix F (app:exploratory_attribution) with SHAP beeswarm figure (`fig_shap_beeswarm_H0_Full.pdf`) that was cross-referenced from main text but missing from the appendix
+
+**Build: 78 pages, clean 3-pass compile**
+
+---
+
 ## Remaining Issues for Cycle 02
 
 1. **Sentence-level prose polish** across all main-text sections (deferred; Cycle 01 scope excluded this).
 2. **Seed mean discrepancy** — `$0.528 \pm 0.042$` in main text vs `$0.528 \pm 0.017$` in `Tables/seed_summary.tex` — needs reconciliation against canonical evaluation registry.
-3. **Attribution Stability §5.3** could be further compressed in a future pass.
-4. **Stage A hotspot figure** (`StageA_Figure4_Hotspot.png`) is missing from the build environment; currently guarded with a placeholder. Should be regenerated or the figure should be removed from the appendix.
+3. **Stage A hotspot figure** (`StageA_Figure4_Hotspot.png`) is missing from the build environment; currently guarded with a placeholder. Should be regenerated or the figure should be removed from the appendix.
+4. **User PDF review decisions still pending** (from user message cut off mid-sentence):
+   - Table 4 (Label-Validity Object): keep, reformat, or remove?
+   - Stage A/B/C/D naming: keep or change?
+   - IPW Diagnostics §4.2: main body vs appendix?
+   - Second DID causal DAG (Panel B): restore from archive or leave removed?
+   - Table 17: keep or remove as duplicative?
+   - Appendices O+P: combine?
+   - Appendix P (Stage D): keep or expunge?
+   - User question about post-2022 model performance (message cut off): needs completion
