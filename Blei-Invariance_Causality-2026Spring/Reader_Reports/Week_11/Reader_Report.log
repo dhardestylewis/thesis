@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 23:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  13 APR 2026 23:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -780,7 +780,7 @@ Here is how much of TeX's memory you used:
  50561 multiletter control sequences out of 15000+600000
  637137 words of font info for 75 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 102i,12n,107p,1204b,599s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 102i,12n,107p,1204b,595s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\dhl\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm10
 95.pk><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
 m/cmbx10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
@@ -800,7 +800,7 @@ mti8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfont
 s/cm/cmtt10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmtt8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/amsfonts/symbols/msbm10.pfb>
-Output written on Reader_Report.pdf (4 pages, 227633 bytes).
+Output written on Reader_Report.pdf (4 pages, 227704 bytes).
 PDF statistics:
  145 PDF objects out of 1000 (max. 8388607)
  13 named destinations out of 1000 (max. 500000)
