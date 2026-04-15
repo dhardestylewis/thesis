@@ -19,13 +19,6 @@ Brantly Callaway and Pedro~H.C. Sant'Anna.
 \newblock \href {https://doi.org/10.1016/j.jeconom.2020.12.001}
   {\path{doi:10.1016/j.jeconom.2020.12.001}}.
 
-\bibitem{cameron2008bootstrap}
-A.~Colin Cameron, Jonah~B. Gelbach, and Douglas~L. Miller.
-\newblock Bootstrap-based improvements for inference with clustered errors.
-\newblock {\em The Review of Economics and Statistics}, 90(3):414--427, 2008.
-\newblock \href {https://doi.org/10.1162/rest.90.3.414}
-  {\path{doi:10.1162/rest.90.3.414}}.
-
 \bibitem{cellini2010schools}
 Stephanie~Riegg Cellini, Fernando Ferreira, and Jesse Rothstein.
 \newblock The value of school facility investments: Evidence from a dynamic
@@ -41,6 +34,12 @@ Carlos Cinelli and Chad Hazlett.
   Methodology)}, 82(1):39--67, 2020.
 \newblock \href {https://doi.org/10.1111/rssb.12347}
   {\path{doi:10.1111/rssb.12347}}.
+
+\bibitem{coadata2024}
+{City of Austin}.
+\newblock Zoning cases and land use inventory datasets.
+\newblock City of Austin Open Data Portal, 2024.
+\newblock URL: \url{https://data.austintexas.gov}.
 
 \bibitem{einstein2019book}
 Katherine~Levine Einstein, David~M. Glick, and Maxwell Palmer.
@@ -114,15 +113,6 @@ Sendhil Mullainathan and Jann Spiess.
 \newblock \href {https://doi.org/10.1257/jep.31.2.87}
   {\path{doi:10.1257/jep.31.2.87}}.
 
-\bibitem{peters2016causal}
-Jonas Peters, Peter B{\"u}hlmann, and Nicolai Meinshausen.
-\newblock Causal inference by using invariant prediction: Identification and
-  confidence intervals.
-\newblock {\em Journal of the Royal Statistical Society Series B: Statistical
-  Methodology}, 78(5):947--1012, 2016.
-\newblock \href {https://doi.org/10.1111/rssb.12167}
-  {\path{doi:10.1111/rssb.12167}}.
-
 \bibitem{shmueli2010}
 Galit Shmueli.
 \newblock To explain or to predict?
@@ -138,17 +128,11 @@ Galit Shmueli.
 \newblock URL:
   \url{https://capitol.texas.gov/BillLookup/History.aspx?LegSess=89R&Bill=HB24}.
 
-\bibitem{texas211006}
-{Texas State Legislature}.
-\newblock Texas local government code {\S}~211.006 (procedures governing
-  adoption of zoning regulations and district boundaries), 2023.
-\newblock URL: \url{https://statutes.capitol.texas.gov/Docs/LG/htm/LG.211.htm}.
-
-\bibitem{texas2110061}
-{Texas State Legislature}.
-\newblock Texas local government code {\S}~211.0061 (protests and supermajority
-  voting), 2025.
-\newblock URL: \url{https://statutes.capitol.texas.gov/Docs/LG/htm/LG.211.htm}.
+\bibitem{tcad2025ears}
+{Travis Central Appraisal District}.
+\newblock Electronic appraisal roll submission ({EARS}), 2018--2025.
+\newblock Texas Comptroller of Public Accounts Property Tax Data Portal, 2025.
+\newblock URL: \url{https://comptroller.texas.gov/taxes/property-tax/}.
 
 \bibitem{tcclerk2022}
 {Travis County Clerk}.
@@ -156,5 +140,11 @@ Galit Shmueli.
 \newblock Technical report, Travis County, TX, 2022.
 \newblock URL:
   \url{https://www.traviscountyclerk.org/eclerk/content/election-results}.
+
+\bibitem{census2023acs}
+{U.S. Census Bureau}.
+\newblock American community survey 5-year estimates (2009--2023).
+\newblock Technical report, U.S. Department of Commerce, 2023.
+\newblock URL: \url{https://data.census.gov}.
 
 \end{thebibliography}

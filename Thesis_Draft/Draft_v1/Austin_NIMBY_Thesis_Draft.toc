@@ -2,58 +2,52 @@
 \contentsline {section}{\numberline {2}Literature Review}{7}{section.2}%
 \contentsline {section}{\numberline {3}Outcome Definition and As-of Information Setup}{8}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Analytical Panel Structure}{8}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Selection}{10}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Controlled Terminology Glossary}{12}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Primary Outcome Definition}{12}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}Label-Validity Object and Audit Trail}{13}{subsection.3.5}%
-\contentsline {subsection}{\numberline {3.6}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{13}{subsection.3.6}%
-\contentsline {section}{\numberline {4}Modeling Strategy}{13}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Supporting Stages (Methods Support Only): Stage A, Stage B, and Stage D}{13}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}IPW Diagnostics and Sensitivity Protocol}{14}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Formal Protest Petition}{15}{subsection.4.3}%
-\contentsline {subsubsection}{\numberline {4.3.1}Primary Model Selection and Fixed Benchmark Roster}{16}{subsubsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.4}Model Evaluation Strategy}{16}{subsection.4.4}%
-\contentsline {section}{\numberline {5}Stage C Primary Results}{18}{section.5}%
+\contentsline {subsection}{\numberline {3.2}Case Universe and Sample Selection}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Primary Outcome Definition}{13}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Feature Libraries: Policy Forecasting vs.\ Explanatory Research}{14}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Modeling Strategy}{14}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Supporting Components (Methods Support Only)}{14}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Formal Protest Petition}{15}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Primary Model Selection and Fixed Benchmark Roster}{16}{subsubsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.3}Model Evaluation Strategy}{16}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Filing-Date Primary Results}{18}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Predictive Performance Across All Horizons}{18}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Predictors of Petition Filing}{22}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Attribution Stability and Meta-Attribution}{23}{subsection.5.3}%
-\contentsline {section}{\numberline {6}Institutional Context}{23}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share}{24}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Descriptive Electoral Correlates (Non-Identifying)}{25}{subsection.6.2}%
-\contentsline {section}{\numberline {7}Qualitative Planning Context}{25}{section.7}%
-\contentsline {section}{\numberline {8}Limitations}{27}{section.8}%
-\contentsline {section}{\numberline {9}Conclusion}{27}{section.9}%
-\contentsline {section}{References}{29}{section*.22}%
-\contentsline {section}{\numberline {A}Quantitative Supplement}{32}{appendix.A}%
-\contentsline {subsection}{\numberline {A.1}Benchmark and Calibration Comparison}{32}{subsection.A.1}%
-\contentsline {subsection}{\numberline {A.2}Supplementary Calibration Layers and Sensitivity Variants}{32}{subsection.A.2}%
-\contentsline {subsection}{\numberline {A.3}Subgroup Diagnostics (Transparency-Only)}{35}{subsection.A.3}%
-\contentsline {subsection}{\numberline {A.4}Semantic Feature Mapping}{36}{subsection.A.4}%
-\contentsline {subsection}{\numberline {A.5}Exploratory Attribution: SHAP Beeswarm Decomposition and Narrative Notes}{37}{subsection.A.5}%
-\contentsline {subsection}{\numberline {A.6}Unclustered Attribution Stability Across Expanding Temporal Windows}{38}{subsection.A.6}%
-\contentsline {subsection}{\numberline {A.7}Selection Rule and Feature-Restriction Support}{44}{subsection.A.7}%
-\contentsline {section}{\numberline {B}Qualitative Documentation}{45}{appendix.B}%
-\contentsline {subsection}{\numberline {B.1}Interview Recruitment Overview}{45}{subsection.B.1}%
-\contentsline {subsection}{\numberline {B.2}IRB Protocol Summary}{46}{subsection.B.2}%
-\contentsline {subsection}{\numberline {B.3}Semi-Structured Interview Guide}{47}{subsection.B.3}%
-\contentsline {subsection}{\numberline {B.4}Sample Protest Petition}{48}{subsection.B.4}%
-\contentsline {subsection}{\numberline {B.5}Illustrative Support-Layer Panel Structure}{49}{subsection.B.5}%
-\contentsline {section}{\numberline {C}Expanded Methods and Robustness}{50}{appendix.C}%
-\contentsline {subsection}{\numberline {C.1}Expanded Methods Appendix: Technical Details}{50}{subsection.C.1}%
-\contentsline {subsubsection}{\numberline {C.1.1}Variable Dictionary}{50}{subsubsection.C.1.1}%
-\contentsline {subsubsection}{\numberline {C.1.2}Hyperparameter Search Grids}{50}{subsubsection.C.1.2}%
-\contentsline {subsubsection}{\numberline {C.1.3}Subgroup Definitions \& Fairness Testing}{51}{subsubsection.C.1.3}%
-\contentsline {subsubsection}{\numberline {C.1.4}Natural Language Processing Model: Exploratory Text Features}{51}{subsubsection.C.1.4}%
-\contentsline {subsubsection}{\numberline {C.1.5}Claim-to-Evidence Map}{53}{subsubsection.C.1.5}%
-\contentsline {subsection}{\numberline {C.2}Development Occurrence Model (Stage A)}{54}{subsection.C.2}%
-\contentsline {subsection}{\numberline {C.3}Project Type and Scale Model (Stage B)}{57}{subsection.C.3}%
-\contentsline {subsection}{\numberline {C.4}Deprecated Stage D Note: Administrative Data Censorship}{59}{subsection.C.4}%
-\contentsline {subsection}{\numberline {C.5}Expected Contested Units (Composite Measure)}{60}{subsection.C.5}%
-\contentsline {subsection}{\numberline {C.6}Institutional Geographic Overlay Analyses}{61}{subsection.C.6}%
-\contentsline {subsection}{\numberline {C.7}HOME Initiative Event Study}{64}{subsection.C.7}%
-\contentsline {subsection}{\numberline {C.8}Temporal Integrity and Leakage Audit}{65}{subsection.C.8}%
-\contentsline {subsection}{\numberline {C.9}Extended Architectural Search and Resampling Strategies}{67}{subsection.C.9}%
-\contentsline {subsection}{\numberline {C.10}Longitudinal Architecture Attribution Divergence (2018 to 2024)}{68}{subsection.C.10}%
-\contentsline {subsection}{\numberline {C.11}Longitudinal Error Topology (FNR/FPR Temporal Tracking)}{70}{subsection.C.11}%
-\contentsline {subsection}{\numberline {C.12}Multi-Seed Stability Audit}{73}{subsection.C.12}%
-\contentsline {subsection}{\numberline {C.13}Exploratory Model Stability Audit}{78}{subsection.C.13}%
+\contentsline {subsection}{\numberline {5.3}Attribution Stability and Meta-Attribution}{22}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Institutional Context}{25}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share}{25}{subsection.6.1}%
+\contentsline {section}{\numberline {7}Qualitative Planning Context}{26}{section.7}%
+\contentsline {section}{\numberline {8}Limitations}{28}{section.8}%
+\contentsline {section}{\numberline {9}Conclusion}{29}{section.9}%
+\contentsline {section}{References}{30}{section*.18}%
+\contentsline {section}{\numberline {A}Quantitative Supplement}{36}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Benchmark and Calibration Comparison}{36}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Supplementary Calibration Layers and Sensitivity Variants}{36}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Subgroup Diagnostics (Transparency-Only)}{38}{subsection.A.3}%
+\contentsline {subsection}{\numberline {A.4}Semantic Feature Mapping}{39}{subsection.A.4}%
+\contentsline {subsection}{\numberline {A.5}SHAP Beeswarm Exhibit}{40}{subsection.A.5}%
+\contentsline {subsection}{\numberline {A.6}Unclustered Attribution Stability Across Expanding Temporal Windows}{41}{subsection.A.6}%
+\contentsline {subsection}{\numberline {A.7}Selection Rule and Feature-Restriction Support}{46}{subsection.A.7}%
+\contentsline {section}{\numberline {B}Qualitative Documentation}{47}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}Interview Recruitment Overview}{47}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}IRB Protocol Summary}{48}{subsection.B.2}%
+\contentsline {subsection}{\numberline {B.3}Semi-Structured Interview Guide}{49}{subsection.B.3}%
+\contentsline {subsection}{\numberline {B.4}Sample Protest Petition}{50}{subsection.B.4}%
+\contentsline {subsection}{\numberline {B.5}Illustrative Support-Layer Panel Structure}{51}{subsection.B.5}%
+\contentsline {section}{\numberline {C}Expanded Methods and Robustness}{52}{appendix.C}%
+\contentsline {subsection}{\numberline {C.1}Expanded Methods Appendix: Technical Details}{52}{subsection.C.1}%
+\contentsline {subsubsection}{\numberline {C.1.1}Variable Dictionary}{52}{subsubsection.C.1.1}%
+\contentsline {subsubsection}{\numberline {C.1.2}Hyperparameter Search Grids}{52}{subsubsection.C.1.2}%
+\contentsline {subsubsection}{\numberline {C.1.3}Subgroup Definitions \& Fairness Testing}{53}{subsubsection.C.1.3}%
+\contentsline {subsubsection}{\numberline {C.1.4}Natural Language Processing Model: Exploratory Text Features}{53}{subsubsection.C.1.4}%
+\contentsline {subsection}{\numberline {C.2}Development Occurrence Model}{56}{subsection.C.2}%
+\contentsline {subsection}{\numberline {C.3}Selection-Weighting Sensitivity Audit}{57}{subsection.C.3}%
+\contentsline {subsection}{\numberline {C.4}Project Type and Scale Model}{59}{subsection.C.4}%
+\contentsline {subsection}{\numberline {C.5}Expected Contested Units (Composite Measure)}{61}{subsection.C.5}%
+\contentsline {subsection}{\numberline {C.6}Institutional Geographic Overlay Analyses}{62}{subsection.C.6}%
+\contentsline {subsection}{\numberline {C.7}HOME Initiative Event Study}{65}{subsection.C.7}%
+\contentsline {subsection}{\numberline {C.8}Temporal Integrity and Leakage Audit}{66}{subsection.C.8}%
+\contentsline {subsection}{\numberline {C.9}Extended Architectural Search and Resampling Strategies}{68}{subsection.C.9}%
+\contentsline {subsection}{\numberline {C.10}Longitudinal Error Topology (FNR/FPR Temporal Tracking)}{69}{subsection.C.10}%
+\contentsline {subsection}{\numberline {C.11}Multi-Seed Stability Audit}{72}{subsection.C.11}%
+\contentsline {subsection}{\numberline {C.12}Exploratory Model Stability Audit}{77}{subsection.C.12}%

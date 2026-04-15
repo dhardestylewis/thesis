@@ -1,5 +1,11 @@
 \begin{thebibliography}{10}
 
+\bibitem{arik2021tabnet}
+Sercan~O. Arik and Tomas Pfister.
+\newblock {TabNet}: Attentive interpretable tabular learning.
+\newblock In {\em Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~35, pages 6679--6687, 2021.
+
 \bibitem{athey2019ml}
 Susan Athey and Guido~W. Imbens.
 \newblock Machine learning methods that economists should know about.
@@ -7,10 +13,44 @@ Susan Athey and Guido~W. Imbens.
 \newblock \href {https://doi.org/10.1146/annurev-economics-080217-053433}
   {\path{doi:10.1146/annurev-economics-080217-053433}}.
 
+\bibitem{barocas2016}
+Solon Barocas and Andrew~D. Selbst.
+\newblock Big data's disparate impact.
+\newblock {\em California Law Review}, 104(3):671--732, 2016.
+\newblock \href {https://doi.org/10.15779/Z38BG31}
+  {\path{doi:10.15779/Z38BG31}}.
+
+\bibitem{interview_beaudet2025}
+Annick Beaudet.
+\newblock Interview with annick beaudet, {APA}-certified urban planner, 2025.
+\newblock Semi-structured interview conducted by Daniel Hardesty Lewis,
+  transcribed via Read.ai.
+
+\bibitem{been2019supply}
+Vicki Been, Ingrid~Gould Ellen, and Katherine O'Regan.
+\newblock Supply skepticism: Housing supply and affordability.
+\newblock {\em Housing Policy Debate}, 29(1):25--40, 2019.
+\newblock \href {https://doi.org/10.1080/10511482.2018.1476899}
+  {\path{doi:10.1080/10511482.2018.1476899}}.
+
+\bibitem{benjamin2019race}
+Ruha Benjamin.
+\newblock {\em Race After Technology: Abolitionist Tools for the New {Jim}
+  Code}.
+\newblock Polity Press, 2019.
+
 \bibitem{brier1950verification}
 Glenn~W Brier.
 \newblock Verification of forecasts expressed in terms of probability.
 \newblock {\em Monthly weather review}, 78(1):1--3, 1950.
+
+\bibitem{brouwer2024nimbys}
+Nadia~R. Brouwer and Jessica Trounstine.
+\newblock {NIMBYs}, {YIMBYs}, and the politics of land use in {American}
+  cities.
+\newblock {\em Annual Review of Political Science}, 27:165--184, 2024.
+\newblock \href {https://doi.org/10.1146/annurev-polisci-041322-044444}
+  {\path{doi:10.1146/annurev-polisci-041322-044444}}.
 
 \bibitem{callaway2021did}
 Brantly Callaway and Pedro~H.C. Sant'Anna.
@@ -18,6 +58,14 @@ Brantly Callaway and Pedro~H.C. Sant'Anna.
 \newblock {\em Journal of Econometrics}, 225(2):200--230, 2021.
 \newblock \href {https://doi.org/10.1016/j.jeconom.2020.12.001}
   {\path{doi:10.1016/j.jeconom.2020.12.001}}.
+
+\bibitem{calonico2014rdrobust}
+Sebastian Calonico, Matias~D. Cattaneo, and Roc{\'\i}o Titiunik.
+\newblock Robust nonparametric confidence intervals for
+  regression-discontinuity designs.
+\newblock {\em Econometrica}, 82(6):2295--2326, 2014.
+\newblock \href {https://doi.org/10.3982/ECTA11757}
+  {\path{doi:10.3982/ECTA11757}}.
 
 \bibitem{cellini2010schools}
 Stephanie~Riegg Cellini, Fernando Ferreira, and Jesse Rothstein.
@@ -27,6 +75,29 @@ Stephanie~Riegg Cellini, Fernando Ferreira, and Jesse Rothstein.
 \newblock \href {https://doi.org/10.1162/qjec.2010.125.1.215}
   {\path{doi:10.1162/qjec.2010.125.1.215}}.
 
+\bibitem{chawla2002smote}
+Nitesh~V. Chawla, Kevin~W. Bowyer, Lawrence~O. Hall, and W.~Philip Kegelmeyer.
+\newblock {SMOTE}: Synthetic minority over-sampling technique.
+\newblock {\em Journal of Artificial Intelligence Research}, 16:321--357, 2002.
+\newblock \href {https://doi.org/10.1613/jair.953}
+  {\path{doi:10.1613/jair.953}}.
+
+\bibitem{chen2016xgboost}
+Tianqi Chen and Carlos Guestrin.
+\newblock {XGBoost}: A scalable tree boosting system.
+\newblock In {\em Proceedings of the 22nd ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pages 785--794. ACM, 2016.
+\newblock \href {https://doi.org/10.1145/2939672.2939785}
+  {\path{doi:10.1145/2939672.2939785}}.
+
+\bibitem{chouldechova2017fair}
+Alexandra Chouldechova.
+\newblock Fair prediction with disparate impact: A study of bias in recidivism
+  prediction instruments.
+\newblock {\em Big Data}, 5(2):153--163, 2017.
+\newblock \href {https://doi.org/10.1089/big.2016.0047}
+  {\path{doi:10.1089/big.2016.0047}}.
+
 \bibitem{cinelli2020making}
 Carlos Cinelli and Chad Hazlett.
 \newblock Making sense of sensitivity: {Extending} omitted variable bias.
@@ -34,6 +105,39 @@ Carlos Cinelli and Chad Hazlett.
   Methodology)}, 82(1):39--67, 2020.
 \newblock \href {https://doi.org/10.1111/rssb.12347}
   {\path{doi:10.1111/rssb.12347}}.
+
+\bibitem{cityaustin2010}
+{City of Austin}.
+\newblock City of austin charter.
+\newblock Technical report, City of Austin, Austin, TX, 2010.
+\newblock URL: \url{https://www.austintexas.gov/department/city-charter}.
+
+\bibitem{cityaustin2017codenext}
+{City of Austin}.
+\newblock {CodeNEXT} draft 3.
+\newblock Technical report, City of Austin, 2017.
+\newblock URL: \url{https://www.austintexas.gov/codenext}.
+
+\bibitem{pool2023}
+{City of Austin}.
+\newblock Resolution no.\ 20230720-126: Initiating the {HOME} ({Home Options
+  for Mobility and Equity}) initiative.
+\newblock Austin City Council, July 2023.
+\newblock Sponsored by Council Member Leslie Pool. Adopted July 20, 2023.
+\newblock URL: \url{https://www.austintexas.gov/department/home-initiative}.
+
+\bibitem{coadata2024}
+{City of Austin}.
+\newblock Zoning cases and land use inventory datasets.
+\newblock City of Austin Open Data Portal, 2024.
+\newblock URL: \url{https://data.austintexas.gov}.
+
+\bibitem{interview_marla2025}
+{City of Austin Displacement Prevention Division}.
+\newblock Interview with marla t., city of {Austin} displacement prevention
+  division, 2025.
+\newblock Semi-structured interview conducted by Daniel Hardesty Lewis,
+  transcribed via Read.ai.
 
 \bibitem{einstein2019book}
 Katherine~Levine Einstein, David~M. Glick, and Maxwell Palmer.
@@ -43,6 +147,19 @@ Katherine~Levine Einstein, David~M. Glick, and Maxwell Palmer.
 \newblock \href {https://doi.org/10.1017/9781108769495}
   {\path{doi:10.1017/9781108769495}}.
 
+\bibitem{eubanks2018}
+Virginia Eubanks.
+\newblock {\em Automating Inequality: How High-Tech Tools Profile, Police, and
+  Punish the Poor}.
+\newblock St. Martin's Press, 2018.
+
+\bibitem{fredmacro}
+{Federal Reserve Bank of St.\ Louis}.
+\newblock Federal funds effective rate ({FEDFUNDS}) and 30-year fixed rate
+  mortgage average ({MORTGAGE30US}).
+\newblock FRED Economic Data, 2024.
+\newblock URL: \url{https://fred.stlouisfed.org}.
+
 \bibitem{fischel2001homevoter}
 William~A. Fischel.
 \newblock {\em The Homevoter Hypothesis: How Home Values Influence Local
@@ -50,6 +167,21 @@ William~A. Fischel.
 \newblock Harvard University Press, 2001.
 \newblock \href {https://doi.org/10.4159/9780674036901}
   {\path{doi:10.4159/9780674036901}}.
+
+\bibitem{furth2023invisible}
+Salim Furth and C.~Whit Ewen.
+\newblock Mostly invisible: The cost of valid petitions in {Texas}.
+\newblock Policy brief, Mercatus Center at George Mason University, February
+  2023.
+\newblock URL:
+  \url{https://www.mercatus.org/research/policy-briefs/mostly-invisible-cost-valid-petitions-texas}.
+
+\bibitem{gama2014conceptdrift}
+Jo{\~a}o Gama, Indr{\.e} {\v{Z}}liobait{\.e}, Albert Bifet, Mykola Pechenizkiy,
+  and Abdelhamid Bouchachia.
+\newblock A survey on concept drift adaptation.
+\newblock {\em ACM Computing Surveys}, 46(4):1--37, 2014.
+\newblock \href {https://doi.org/10.1145/2523813} {\path{doi:10.1145/2523813}}.
 
 \bibitem{glaeser2003zoning}
 Edward~L. Glaeser and Joseph Gyourko.
@@ -64,6 +196,21 @@ Edward~L. Glaeser, Joseph Gyourko, and Raven Saks.
 \newblock {\em Journal of Law and Economics}, 48(2):331--369, 2005.
 \newblock \href {https://doi.org/10.1086/429979} {\path{doi:10.1086/429979}}.
 
+\bibitem{goodmanbacon2021did}
+Andrew Goodman-Bacon.
+\newblock Difference-in-differences with variation in treatment timing.
+\newblock {\em Journal of Econometrics}, 225(2):254--277, 2021.
+\newblock \href {https://doi.org/10.1016/j.jeconom.2021.03.014}
+  {\path{doi:10.1016/j.jeconom.2021.03.014}}.
+
+\bibitem{gyourko2021local}
+Joseph Gyourko, Jonathan Hartley, and Jacob Krimmel.
+\newblock The local residential land use regulatory environment across {US}
+  housing markets: Evidence from a new {Wharton} index.
+\newblock {\em Journal of Urban Economics}, 124:103337, 2021.
+\newblock \href {https://doi.org/10.1016/j.jue.2021.103337}
+  {\path{doi:10.1016/j.jue.2021.103337}}.
+
 \bibitem{gyourko2015regulation}
 Joseph Gyourko and Raven Molloy.
 \newblock Regulation and housing supply.
@@ -71,6 +218,21 @@ Joseph Gyourko and Raven Molloy.
   1289--1337. Elsevier, 2015.
 \newblock \href {https://doi.org/10.1016/B978-0-444-59531-7.00019-3}
   {\path{doi:10.1016/B978-0-444-59531-7.00019-3}}.
+
+\bibitem{gyourko2008wrluri}
+Joseph Gyourko, Albert Saiz, and Anita Summers.
+\newblock A new measure of the local regulatory environment for housing
+  markets: The {Wharton} residential land use regulatory index.
+\newblock {\em Urban Studies}, 45(3):693--729, 2008.
+\newblock \href {https://doi.org/10.1177/0042098007087341}
+  {\path{doi:10.1177/0042098007087341}}.
+
+\bibitem{hamilton2023reform}
+Emily Hamilton and Salim Furth.
+\newblock Housing reform in the states: A menu of options.
+\newblock Policy brief, Mercatus Center at George Mason University, 2023.
+\newblock URL:
+  \url{https://www.mercatus.org/research/policy-briefs/housing-reform-states}.
 
 \bibitem{hankinson2018}
 Michael Hankinson.
@@ -85,12 +247,46 @@ Roderick~M. Hills, Jr. and David Schleicher.
 \newblock Balancing the ``zoning budget''.
 \newblock {\em Case Western Reserve Law Review}, 62(1):81--133, 2011.
 
+\bibitem{ke2017lightgbm}
+Guolin Ke, Qi~Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei
+  Ye, and Tie-Yan Liu.
+\newblock {LightGBM}: A highly efficient gradient boosting decision tree.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~30, pages 3146--3154, 2017.
+
 \bibitem{kleinberg2015prediction}
 Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer.
 \newblock Prediction policy problems.
 \newblock {\em American Economic Review}, 105(5):491--495, 2015.
 \newblock \href {https://doi.org/10.1257/aer.p20151023}
   {\path{doi:10.1257/aer.p20151023}}.
+
+\bibitem{cityaustin1928}
+{Koch and Fowler}.
+\newblock A city plan for austin, texas.
+\newblock Technical report, City of Austin, 1928.
+
+\bibitem{lee2010rd}
+David~S. Lee and Thomas Lemieux.
+\newblock Regression discontinuity designs in economics.
+\newblock {\em Journal of Economic Literature}, 48(2):281--355, 2010.
+\newblock \href {https://doi.org/10.1257/jel.48.2.281}
+  {\path{doi:10.1257/jel.48.2.281}}.
+
+\bibitem{lundberg2020treeshap}
+Scott~M. Lundberg, Gabriel Erion, Hugh Chen, Alex DeGrave, Jordan~M. Prutkin,
+  Bala Nair, Ronit Katz, Jonathan Himmelfarb, Nisha Bansal, and Su-In Lee.
+\newblock From local explanations to global understanding with explainable {AI}
+  for trees.
+\newblock {\em Nature Machine Intelligence}, 2(1):56--67, 2020.
+\newblock \href {https://doi.org/10.1038/s42256-019-0138-9}
+  {\path{doi:10.1038/s42256-019-0138-9}}.
+
+\bibitem{lundberg2017shap}
+Scott~M. Lundberg and Su-In Lee.
+\newblock A unified approach to interpreting model predictions.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~30, pages 4766--4777, 2017.
 
 \bibitem{manville2016unpermitted}
 Michael Manville.
@@ -100,12 +296,129 @@ Michael Manville.
 \newblock \href {https://doi.org/10.1080/01944363.2015.1111666}
   {\path{doi:10.1080/01944363.2015.1111666}}.
 
+\bibitem{interview_maxwell2026}
+Felicity Maxwell.
+\newblock Executive director, texans for housing. semi-structured interview
+  regarding protest tactics and the legislative impact of hb 24.
+\newblock Personal communication, February 2026.
+
+\bibitem{mccabe2016}
+Brian~J. McCabe.
+\newblock {\em No Place Like Home: Wealth, Community, and the Politics of
+  Homeownership}.
+\newblock Oxford University Press, 2016.
+\newblock \href {https://doi.org/10.1093/acprof:oso/9780190270469.001.0001}
+  {\path{doi:10.1093/acprof:oso/9780190270469.001.0001}}.
+
+\bibitem{mccrary2008manipulation}
+Justin McCrary.
+\newblock Manipulation of the running variable in the regression discontinuity
+  design: A density test.
+\newblock {\em Journal of Econometrics}, 142(2):698--714, 2008.
+\newblock \href {https://doi.org/10.1016/j.jeconom.2007.05.005}
+  {\path{doi:10.1016/j.jeconom.2007.05.005}}.
+
+\bibitem{mitchell2019modelcards}
+Margaret Mitchell, Simone Wu, Andrew Zaldivar, Parker Barnes, Lucy Vasserman,
+  Ben Hutchinson, Elena Spitzer, Inioluwa~Deborah Raji, and Timnit Gebru.
+\newblock Model cards for model reporting.
+\newblock In {\em Proceedings of the Conference on Fairness, Accountability,
+  and Transparency (FAT* '19)}, pages 220--229. ACM, 2019.
+\newblock \href {https://doi.org/10.1145/3287560.3287596}
+  {\path{doi:10.1145/3287560.3287596}}.
+
 \bibitem{mullainathan2017ml}
 Sendhil Mullainathan and Jann Spiess.
 \newblock Machine learning: An applied econometric approach.
 \newblock {\em Journal of Economic Perspectives}, 31(2):87--106, 2017.
 \newblock \href {https://doi.org/10.1257/jep.31.2.87}
   {\path{doi:10.1257/jep.31.2.87}}.
+
+\bibitem{nist2023airm}
+{National Institute of Standards and Technology}.
+\newblock Artificial intelligence risk management framework ({AI RMF} 1.0).
+\newblock Technical Report NIST AI 100-1, U.S. Department of Commerce, 2023.
+\newblock URL:
+  \url{https://www.nist.gov/artificial-intelligence/executive-order-safe-secure-and-trustworthy-artificial-intelligence},
+  \href {https://doi.org/10.6028/NIST.AI.100-1}
+  {\path{doi:10.6028/NIST.AI.100-1}}.
+
+\bibitem{obermeyer2019racial}
+Ziad Obermeyer, Brian Powers, Christine Vogeli, and Sendhil Mullainathan.
+\newblock Dissecting racial bias in an algorithm used to manage the health of
+  populations.
+\newblock {\em Science}, 366(6464):447--453, 2019.
+\newblock \href {https://doi.org/10.1126/science.aax2342}
+  {\path{doi:10.1126/science.aax2342}}.
+
+\bibitem{oneil2016weapons}
+Cathy O'Neil.
+\newblock {\em Weapons of Math Destruction: How Big Data Increases Inequality
+  and Threatens Democracy}.
+\newblock Crown Publishers, 2016.
+
+\bibitem{pendall1999opposition}
+Rolf Pendall.
+\newblock Opposition to housing: {NIMBY} and beyond.
+\newblock {\em Urban Affairs Review}, 35(1):112--136, 1999.
+\newblock \href {https://doi.org/10.1177/107808749903500106}
+  {\path{doi:10.1177/107808749903500106}}.
+
+\bibitem{prokhorenkova2018catboost}
+Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna~Veronika Dorogush,
+  and Andrey Gulin.
+\newblock {CatBoost}: Unbiased boosting with categorical features.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~31, pages 6639--6649, 2018.
+
+\bibitem{quigley2005effects}
+John~M. Quigley and Larry~A. Rosenthal.
+\newblock The effects of land-use regulation on the price of housing: What do
+  we know? what can we learn?
+\newblock {\em Cityscape}, 8(1):69--137, 2005.
+
+\bibitem{raji2020smactr}
+Inioluwa~Deborah Raji, Andrew Smart, Rebecca~N. White, Margaret Mitchell,
+  Timnit Gebru, Ben Hutchinson, Jamila Smith-Loud, Daniel Theron, and Parker
+  Barnes.
+\newblock Closing the {AI} accountability gap: Defining an end-to-end framework
+  for internal algorithmic auditing.
+\newblock In {\em Proceedings of the 2020 Conference on Fairness,
+  Accountability, and Transparency (FAT* '20)}, pages 33--44. ACM, 2020.
+\newblock \href {https://doi.org/10.1145/3351095.3372873}
+  {\path{doi:10.1145/3351095.3372873}}.
+
+\bibitem{richardson2019dirty}
+Jason Richardson, Bruce Mitchell, and Juan Franco.
+\newblock Dirty deeds: {The} past and future of redlining.
+\newblock Technical report, National Community Reinvestment Coalition, 2019.
+\newblock URL:
+  \url{https://ncrc.org/wp-content/uploads/2019/04/NCRC-Dirty-Deeds-The-Past-And-Future-Of-Redlining.pdf}.
+
+\bibitem{roth2023did}
+Jonathan Roth, Pedro~H.C. Sant'Anna, Alyssa Bilinski, and John Poe.
+\newblock What's trending in difference-in-differences? a synthesis of the
+  recent econometrics literature.
+\newblock {\em Journal of Econometrics}, 235(2):2218--2244, 2023.
+\newblock \href {https://doi.org/10.1016/j.jeconom.2023.03.008}
+  {\path{doi:10.1016/j.jeconom.2023.03.008}}.
+
+\bibitem{schively2007nimby}
+Carissa Schively.
+\newblock Understanding the {NIMBY} and {LULU} phenomena: Reassessing our
+  knowledge base and informing future research.
+\newblock {\em Journal of Planning Literature}, 21(3):255--266, 2007.
+\newblock \href {https://doi.org/10.1177/0885412206295845}
+  {\path{doi:10.1177/0885412206295845}}.
+
+\bibitem{selbst2019fairness}
+Andrew~D. Selbst, Danah Boyd, Sorelle~A. Friedler, Suresh Venkatasubramanian,
+  and Janet Vertesi.
+\newblock Fairness and abstraction in sociotechnical systems.
+\newblock In {\em Proceedings of the Conference on Fairness, Accountability,
+  and Transparency (FAT* '19)}, pages 59--68. ACM, 2019.
+\newblock \href {https://doi.org/10.1145/3287560.3287598}
+  {\path{doi:10.1145/3287560.3287598}}.
 
 \bibitem{shmueli2010}
 Galit Shmueli.
@@ -114,6 +427,12 @@ Galit Shmueli.
 \newblock \href {https://doi.org/10.1214/10-STS330}
   {\path{doi:10.1214/10-STS330}}.
 
+\bibitem{sood2018ethnicolr}
+Gaurav Sood and Suriyan Laohaprapanon.
+\newblock ethnicolr: Predict race and ethnicity from name.
+\newblock {\em CRAN/PyPI}, 2018.
+\newblock URL: \url{https://github.com/appeler/ethnicolr}.
+
 \bibitem{hb24_2025}
 {Texas Legislature}.
 \newblock House bill 24, 89th legislature, regular session, 2025.
@@ -121,5 +440,49 @@ Galit Shmueli.
   \S 211.0061.
 \newblock URL:
   \url{https://capitol.texas.gov/BillLookup/History.aspx?LegSess=89R&Bill=HB24}.
+
+\bibitem{texas211006}
+{Texas State Legislature}.
+\newblock Texas local government code {\S}~211.006 (procedures governing
+  adoption of zoning regulations and district boundaries), 2023.
+\newblock URL: \url{https://statutes.capitol.texas.gov/Docs/LG/htm/LG.211.htm}.
+
+\bibitem{interview_tomko2026}
+Jonathan Tomko.
+\newblock Principal planner, city of austin. semi-structured interview
+  regarding predictive tools and administrative adoption.
+\newblock Personal communication, February 2026.
+
+\bibitem{tcad2025ears}
+{Travis Central Appraisal District}.
+\newblock Electronic appraisal roll submission ({EARS}), 2018--2025.
+\newblock Texas Comptroller of Public Accounts Property Tax Data Portal, 2025.
+\newblock URL: \url{https://comptroller.texas.gov/taxes/property-tax/}.
+
+\bibitem{tcclerk2022}
+{Travis County Clerk}.
+\newblock November 2022 election results.
+\newblock Technical report, Travis County, TX, 2022.
+\newblock URL:
+  \url{https://www.traviscountyclerk.org/eclerk/content/election-results}.
+
+\bibitem{census2023acs}
+{U.S. Census Bureau}.
+\newblock American community survey 5-year estimates (2009--2023).
+\newblock Technical report, U.S. Department of Commerce, 2023.
+\newblock URL: \url{https://data.census.gov}.
+
+\bibitem{way2018}
+Heather~K. Way.
+\newblock {\em The Racist Roots of Austin's Segregation}.
+\newblock University of Texas Press, 2018.
+
+\bibitem{whittemore2014racial}
+Andrew~H. Whittemore.
+\newblock Racial and class bias in exclusionary zoning: {The} case of
+  {Maywood}, {Illinois}.
+\newblock {\em Journal of Planning History}, 13(3):250--272, 2014.
+\newblock \href {https://doi.org/10.1177/1538513213511195}
+  {\path{doi:10.1177/1538513213511195}}.
 
 \end{thebibliography}
