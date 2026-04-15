@@ -46,10 +46,12 @@ def plot_combined_calibration():
     except Exception:
         optimal_name_a = "Optimal Champion"
 
+    # Stage A hazards are extremely low-base-rate; quantile bins avoid a single
+    # overfull leftmost bin and improve diagnostic readability.
     prob_true_opt, prob_pred_opt = calibration_curve(
-        y_true_a, df_a['Prob_Optimal_H=4'], n_bins=10)
+        y_true_a, df_a['Prob_Optimal_H=4'], n_bins=10, strategy='quantile')
     prob_true_lr_a, prob_pred_lr_a = calibration_curve(
-        y_true_a, df_a['Prob_LR_H=4'], n_bins=10)
+        y_true_a, df_a['Prob_LR_H=4'], n_bins=10, strategy='quantile')
 
     # ── Load Stage C ──────────────────────────────────────────────────
     df_c = pd.read_csv(STAGE_C_OUT,
@@ -99,8 +101,16 @@ def plot_combined_calibration():
     # ── Build 1×3 grid ────────────────────────────────────────────────
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5.5))
 
-    # Panel (a): Development-Proposal Model Reliability Diagram
-    ax1.plot([0, 1], [0, 1], 'k--', label='Perfect Calibration')
+    # Panel (a): Development-Proposal Model Reliability Diagram (zoomed to
+    # observed Stage A risk range to avoid visual collapse at the origin).
+    stage_a_max = max(
+        float(np.max(prob_pred_opt)),
+        float(np.max(prob_true_opt)),
+        float(np.max(prob_pred_lr_a)),
+        float(np.max(prob_true_lr_a)),
+    )
+    stage_a_lim = max(stage_a_max * 1.10, 1e-4)
+    ax1.plot([0, stage_a_lim], [0, stage_a_lim], 'k--', label='Perfect Calibration')
     ax1.plot(prob_pred_opt, prob_true_opt, marker='o', lw=2,
              color='darkblue', label=f'{optimal_name_a} (V-REx)')
     ax1.plot(prob_pred_lr_a, prob_true_lr_a, marker='s', linestyle=':',
@@ -108,6 +118,8 @@ def plot_combined_calibration():
     ax1.set_title("(a)  Calibration Reliability")
     ax1.set_xlabel("Mean Predicted Probability")
     ax1.set_ylabel("Fraction of Positives")
+    ax1.set_xlim(0, stage_a_lim)
+    ax1.set_ylim(0, stage_a_lim)
     ax1.legend(fontsize=9)
     ax1.grid(True, alpha=0.3)
 

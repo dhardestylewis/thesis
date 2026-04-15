@@ -142,6 +142,14 @@ def _rename_feature(name):
     return cleaned.replace('_', ' ').title()
 
 
+def _warehouse_master_file(hz: str) -> str:
+    """Resolve the correct as-of warehouse master by horizon."""
+    base = os.path.join(ROOT, "Data", "Warehouse_As_Of")
+    if hz == "H0":
+        return os.path.join(base, "H0_Filing_Master_Enriched.csv")
+    return os.path.join(base, "H3_Filing_Master_NLP.csv")
+
+
 def plot_all_track1_exhibits():
     with open(os.path.join(ROOT, "Analysis", "Scripts", "exhibit_titles.json"), "r") as f:
         titles = json.load(f)
@@ -190,7 +198,7 @@ def plot_all_track1_exhibits():
             try:
                 df_drift = pd.read_csv(drift_file)
                 # Compute baselines dynamically
-                df_gt = pd.read_csv(os.path.join(ROOT, "Data", "Warehouse_As_Of", f"{hz}_Filing_Master_Enriched.csv"), low_memory=False)
+                df_gt = pd.read_csv(_warehouse_master_file(hz), low_memory=False)
                 df_gt['year'] = pd.to_numeric(df_gt['year'], errors='coerce')
                 target = 'is_protested' if 'is_protested' in df_gt.columns else 'protest'
                 df_gt[target] = pd.to_numeric(df_gt[target], errors='coerce').fillna(0).astype(int)
@@ -230,7 +238,7 @@ def plot_all_track1_exhibits():
                     bars = plt.bar(df_reg['Regime'], df_reg['PR-AUC'], color=['navy', 'orange', 'darkred'])
                     
                     # Custom baselines per bar
-                    df_gt = pd.read_csv(os.path.join(ROOT, "Data", "Warehouse_As_Of", f"{hz}_Filing_Master_Enriched.csv"), low_memory=False)
+                    df_gt = pd.read_csv(_warehouse_master_file(hz), low_memory=False)
                     df_gt['year'] = pd.to_numeric(df_gt['year'], errors='coerce')
                     target = 'is_protested' if 'is_protested' in df_gt.columns else 'protest'
                     df_gt[target] = pd.to_numeric(df_gt[target], errors='coerce').fillna(0).astype(int)
