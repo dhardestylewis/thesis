@@ -1,0 +1,105 @@
+digraph ThesisPipeline {
+    rankdir=TB;
+    node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=10];
+    edge [fontname="Helvetica", fontsize=8];
+    
+    // Color scheme
+    node [fillcolor="#E8F4FD"];
+    
+    subgraph cluster_data {
+        label="Stage 1: Data Sources";
+        style=dashed;
+        color="#002147";
+        fontname="Helvetica Bold";
+        
+        EARS [label="TCAD EARS\n(2018-2025)\n84 columns × 7 years", fillcolor="#D4E6F1"];
+        LUI [label="Land Use Inventory\n284,924 parcels\nMULTIPOLYGON geometry", fillcolor="#D4E6F1"];
+        ZC [label="Zoning Cases\n6,865 cases\n(1997-2024)", fillcolor="#D4E6F1"];
+        PDF [label="Petition PDF\n558 pages\n8,843 signatures\n252 cases", fillcolor="#D4E6F1"];
+        ACS [label="ACS Census\n13 variables\n15 vintages\n(2009-2023)", fillcolor="#D4E6F1"];
+        FRED [label="FRED API\nFed Funds Rate\n30Y Mortgage", fillcolor="#D4E6F1"];
+    }
+    
+    subgraph cluster_panel {
+        label="Stage 2: Panel Construction";
+        style=dashed;
+        color="#002147";
+        fontname="Helvetica Bold";
+        
+        UNIVERSE [label="Parcel Universe\n284,924 parcels", fillcolor="#FADBD8"];
+        SKELETON [label="Panel Skeleton\n284,924 × 18 years\n= 5.1M rows", fillcolor="#FADBD8"];
+        BUFFER [label="200ft Spatial Buffer\n65,167 features", fillcolor="#FADBD8"];
+        ENRICH [label="Time-Varying Enrichment\n5.1M × 20 covariates\n≈ 99M cells", fillcolor="#FADBD8"];
+    }
+    
+    subgraph cluster_features {
+        label="Stage 3: Feature Engineering";
+        style=dashed;
+        color="#002147";
+        fontname="Helvetica Bold";
+        
+        ETHNICOLR [label="Ethnicolr Bayesian\nSurname Classification\n→ Demographic Friction", fillcolor="#D5F5E3"];
+        DENSITY [label="Zoning Severity\nΔ Density Index\n(0-10 scale)", fillcolor="#D5F5E3"];
+        NLP [label="Sentence-BERT\n384-dim embeddings\nof council testimony", fillcolor="#D5F5E3"];
+        TENSOR [label="Econometric Tensor\n566 cases × 17 features\n11 environments", fillcolor="#F9E79F"];
+    }
+    
+    subgraph cluster_models {
+        label="Stage 4: Modeling";
+        style=dashed;
+        color="#002147";
+        fontname="Helvetica Bold";
+        
+        OLS [label="OLS Regression\nEq. (1): VoteNo ~ Petition\n+ Residential + Wealth", fillcolor="#E8DAEF"];
+        DID [label="Staggered DiD\nEq. (2): Residential × Post\nPolicy Shock Estimator", fillcolor="#E8DAEF"];
+        ICP [label="Nonlinear ICP\nMLP + CVAE\nERM vs V-REx\nResidual Invariance Test", fillcolor="#E8DAEF"];
+        ANCHOR [label="Anchor Regression\nEq. (6): γ-interpolation\nOLS ↔ Causal/IV", fillcolor="#E8DAEF"];
+    }
+    
+    subgraph cluster_output {
+        label="Stage 5: Outputs";
+        style=dashed;
+        color="#002147";
+        fontname="Helvetica Bold";
+        
+        TABLE1 [label="Table 1\nDescriptive Statistics", fillcolor="#FDEBD0"];
+        TABLE2 [label="Table 2\nOLS Coefficients", fillcolor="#FDEBD0"];
+        FIGURES [label="Figures 1-3\nSpatial Map\nTimeseries\nDemographic Friction", fillcolor="#FDEBD0"];
+        RESULTS [label="ICP Invariance Verdicts\nAccepted/Rejected\nper Environment Set", fillcolor="#FDEBD0"];
+    }
+    
+    // Data → Panel
+    LUI -> UNIVERSE;
+    ZC -> UNIVERSE;
+    PDF -> UNIVERSE;
+    UNIVERSE -> SKELETON;
+    LUI -> BUFFER;
+    ZC -> BUFFER;
+    SKELETON -> ENRICH;
+    BUFFER -> ENRICH;
+    EARS -> ENRICH;
+    ACS -> ENRICH;
+    
+    // Panel → Features
+    ENRICH -> ETHNICOLR;
+    ENRICH -> DENSITY;
+    ENRICH -> NLP;
+    PDF -> ETHNICOLR;
+    FRED -> TENSOR;
+    ETHNICOLR -> TENSOR;
+    DENSITY -> TENSOR;
+    NLP -> TENSOR;
+    ENRICH -> TENSOR;
+    
+    // Features → Models
+    TENSOR -> OLS;
+    TENSOR -> DID;
+    TENSOR -> ICP;
+    TENSOR -> ANCHOR;
+    
+    // Models → Outputs
+    ENRICH -> TABLE1;
+    OLS -> TABLE2;
+    TENSOR -> FIGURES;
+    ICP -> RESULTS;
+}

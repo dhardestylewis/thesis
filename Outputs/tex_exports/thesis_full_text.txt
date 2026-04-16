@@ -1,0 +1,5073 @@
+Predicting Formal Protest Petitions Against Housing Development:
+Evidence from Austin, Texas
+M.S. Candidate, Urban Planning
+Graduate School of Architecture, Planning and Preservation
+Columbia University
+April 15, 2026
+Abstract
+This thesis investigates whether formal protest petitions against proposed housing develop-
+ments in Austin, Texas can be anticipated before public hearings, using only the administrative
+and neighborhood records available at the time of application filing. The central question is
+whether parcel characteristics, neighborhood demographics, and application features observable
+by planning staff at filing can meaningfully identify which cases are likely to attract organized
+opposition.
+Using discretionary zoning cases from Austin’s pre-HB 24 petition regime (2007–2024), I train
+and evaluate predictive models on a temporal holdout that mimics forward administrative use.
+The results are qualified: filing-date features can rank petition risk above chance—the best model
+achieves moderate out-of-distribution discrimination with a wide uncertainty interval (PR-AUC
+= 0.718, 95% CI: [0.48, 0.91])—but the rarity of petitioned cases and the model’s limited external
+validity mean predictions are best used as relative triage rankings, not as case-level probabilities
+for high-stakes decisions.
+The core finding is that administrative data at filing carries real predictive signal for petition
+risk, yet that signal is too uncertain and context-dependent to support uncritical institutional
+deployment. The broader contribution is a methodology—time-stamped features, temporal
+holdout evaluation, and explainability audits—that is portable to other discretionary review
+systems, even if the specific parameter estimates are Austin-specific.
+1
+
+Acknowledgments
+I would like to express my deepest gratitude to my thesis advisor, Dory Kornfeld, for her guidance,
+support, and expertise throughout this research. Her insights into urban planning and policy were
+invaluable in shaping this work.
+I am profoundly grateful to my thesis readers for their time, expertise, and thoughtful feedback:
+Matthew Bauer, Adjunct Associate Professor; Josh Begley, Adjunct Assistant Professor; James
+Piacentini, Adjunct Assistant Professor; Stijn Van Nieuwerburgh, Earle W. Kazis and Benjamin
+Schore Professor of Real Estate and Co-Director of the Paul Milstein Center for Real Estate at
+Columbia Business School; and Adam Vosburgh, Associate Director and Adjunct Assistant Professor.
+Their interdisciplinary perspectives spanning computational design, real estate finance, and urban
+planning enriched this research immeasurably.
+I would like to thank Professor Weiping Wu, Vice Provost for Academic Programs and Director
+of the Urban Planning Program at Columbia University, for her leadership of the program and
+support of my academic journey.
+I am grateful to the Columbia University Graduate School of Architecture, Planning and
+Preservation (GSAPP) for providing the academic environment and resources that made this
+research possible.
+Finally, I thank my colleagues, peers, and the broader Columbia community for their intellectual
+engagement, encouragement, and support throughout this journey.
+2
+
+Contents
+1
+Introduction
+7
+2
+Literature Review
+7
+3
+Outcome Definition and As-of Information Setup
+8
+3.1
+Analytical Panel Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.2
+Case Universe and Sample Selection
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.3
+Primary Outcome Definition
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+3.4
+Feature Libraries: Policy Forecasting vs. Explanatory Research . . . . . . . . . . . .
+14
+4
+Modeling Strategy
+14
+4.1
+Supporting Components (Methods Support Only)
+. . . . . . . . . . . . . . . . . . .
+14
+4.2
+Formal Protest Petition
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+4.2.1
+Primary Model Selection and Fixed Benchmark Roster . . . . . . . . . . . . .
+16
+4.3
+Model Evaluation Strategy
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+16
+5
+Filing-Date Primary Results
+18
+5.1
+Predictive Performance Across All Horizons . . . . . . . . . . . . . . . . . . . . . . .
+18
+5.2
+Predictors of Petition Filing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+22
+5.3
+Attribution Stability and Meta-Attribution
+. . . . . . . . . . . . . . . . . . . . . . .
+22
+6
+Institutional Context
+25
+6.1
+Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share . . .
+25
+7
+Qualitative Planning Context
+26
+8
+Limitations
+28
+9
+Conclusion
+29
+References
+30
+A Quantitative Supplement
+36
+A.1 Benchmark and Calibration Comparison . . . . . . . . . . . . . . . . . . . . . . . . .
+36
+A.2 Supplementary Calibration Layers and Sensitivity Variants
+. . . . . . . . . . . . . .
+36
+A.3 Subgroup Diagnostics (Transparency-Only) . . . . . . . . . . . . . . . . . . . . . . .
+38
+A.4 Semantic Feature Mapping
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+A.5 SHAP Beeswarm Exhibit
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+A.6 Unclustered Attribution Stability Across Expanding Temporal Windows . . . . . . .
+41
+A.7 Selection Rule and Feature-Restriction Support . . . . . . . . . . . . . . . . . . . . .
+46
+B Qualitative Documentation
+47
+B.1
+Interview Recruitment Overview
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+47
+B.2
+IRB Protocol Summary
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+48
+B.3
+Semi-Structured Interview Guide . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+49
+B.4
+Sample Protest Petition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+50
+B.5
+Illustrative Support-Layer Panel Structure . . . . . . . . . . . . . . . . . . . . . . . .
+51
+3
+
+C Expanded Methods and Robustness
+52
+C.1
+Expanded Methods Appendix: Technical Details
+. . . . . . . . . . . . . . . . . . . .
+52
+C.1.1
+Variable Dictionary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+52
+C.1.2
+Hyperparameter Search Grids . . . . . . . . . . . . . . . . . . . . . . . . . . .
+52
+C.1.3
+Subgroup Definitions & Fairness Testing . . . . . . . . . . . . . . . . . . . . .
+53
+C.1.4
+Natural Language Processing Model: Exploratory Text Features
+. . . . . . .
+53
+C.2
+Development Occurrence Model . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+56
+C.3
+Selection-Weighting Sensitivity Audit . . . . . . . . . . . . . . . . . . . . . . . . . . .
+57
+C.4
+Project Type and Scale Model
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+59
+C.5
+Expected Contested Units (Composite Measure)
+. . . . . . . . . . . . . . . . . . . .
+61
+C.6
+Institutional Geographic Overlay Analyses . . . . . . . . . . . . . . . . . . . . . . . .
+62
+C.7
+HOME Initiative Event Study . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+65
+C.8 Temporal Integrity and Leakage Audit . . . . . . . . . . . . . . . . . . . . . . . . . .
+66
+C.9
+Extended Architectural Search and Resampling Strategies . . . . . . . . . . . . . . .
+68
+C.10 Longitudinal Error Topology (FNR/FPR Temporal Tracking) . . . . . . . . . . . . .
+69
+C.11 Multi-Seed Stability Audit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+72
+C.12 Exploratory Model Stability Audit . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+77
+4
+
+List of Figures
+1
+Spatial Distribution of Zoning Cases (2007-2024) . . . . . . . . . . . . . . . . . . . .
+10
+2
+200ft Parcel Buffer Geometries
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3
+Schematic of the Austin Zoning Process . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+4
+Filing-Date Precision-Recall Curves by Model Class
+. . . . . . . . . . . . . . . . . .
+16
+5
+Temporal Drift Evidence in 2D . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+18
+6
+Filing-Date Reliability Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+21
+7
+Top Predictor Groups After Hierarchical Clustering . . . . . . . . . . . . . . . . . . .
+22
+8
+Meta-Attribution Structural Clustering
+. . . . . . . . . . . . . . . . . . . . . . . . .
+23
+9
+Attribution Stability Test: Architectural Divergence Across Time and Development
+Horizons . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+10
+Adjacent-Window Attribution Rank Stability . . . . . . . . . . . . . . . . . . . . . .
+25
+11
+Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share . . .
+26
+12
+SHAP Beeswarm for the Filing-Date Model . . . . . . . . . . . . . . . . . . . . . . .
+40
+13
+Top-4 Unclustered Features by Anchor Year and Model (Dynamic View) . . . . . . .
+42
+14
+Top-4 Semantic Clusters by Anchor Year and Model (Dynamic View)
+. . . . . . . .
+44
+15
+Supplementary Hyperparameter Search Results . . . . . . . . . . . . . . . . . . . . .
+52
+16
+Mean Predicted Probability of Argument Frames by District
+. . . . . . . . . . . . .
+54
+17
+Argument Frame Probabilities: Opposed vs. Unopposed Cases
+. . . . . . . . . . . .
+55
+18
+Development Hazard Classification PR Curves
+. . . . . . . . . . . . . . . . . . . . .
+56
+19
+Development Occurrence Calibration and Gains . . . . . . . . . . . . . . . . . . . . .
+57
+20
+IPW overlap, ESS, and balance diagnostics
+. . . . . . . . . . . . . . . . . . . . . . .
+58
+21
+Composite Measure of Expected Petitioned Units . . . . . . . . . . . . . . . . . . . .
+61
+22
+Identification Diagram: Threshold-Based Reduced-Form Discontinuity . . . . . . . .
+62
+23
+Estimated Descriptive Interaction Effects by District . . . . . . . . . . . . . . . . . .
+63
+24
+Placebo Estimates Across Earlier Election Cycles . . . . . . . . . . . . . . . . . . . .
+64
+25
+HOME Phase 1 Event-Study Coefficients (Reconstructed Petition Outcome) . . . . .
+65
+26
+Performance Across Temporal Holdouts
+. . . . . . . . . . . . . . . . . . . . . . . . .
+67
+27
+Algorithmic Error Volatility across Time and Horizons . . . . . . . . . . . . . . . . .
+69
+28
+OOD Temporal Error Decay . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+70
+29
+Geographic Distribution of False Positives vs. Actual Filings
+. . . . . . . . . . . . .
+71
+30
+Multi-Seed Stability Audit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+73
+31
+Seed Variance Interaction with OOD Offset . . . . . . . . . . . . . . . . . . . . . . .
+74
+32
+Cross-Component Seed Stability
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+74
+33
+Project Type and Scale Per-Typology F1 Multi-Seed Stability . . . . . . . . . . . . .
+75
+34
+Project Type and Scale Typology Seed Stability
+. . . . . . . . . . . . . . . . . . . .
+76
+5
+
+List of Tables
+1
+Annual Distribution of Discretionary Zoning Cases (2007 to 2024)
+. . . . . . . . . .
+10
+2
+Historical Panel Descriptive Statistics
+. . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+3
+Sample Selection from Raw Records to Analytic Sample . . . . . . . . . . . . . . . .
+12
+4
+Label-Validity Object for Filing-Date Primary Outcome . . . . . . . . . . . . . . . .
+14
+5
+Temporal Predictive Drift by Algorithm . . . . . . . . . . . . . . . . . . . . . . . . .
+19
+6
+Filing-Date Benchmark Matrix . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+36
+7
+Filing-Date Multi-Horizon Model Performance
+. . . . . . . . . . . . . . . . . . . . .
+36
+8
+Calibration method comparison (Layer C3, in-distribution CV) . . . . . . . . . . . .
+37
+9
+Subgroup Error Diagnostics (Transparency-Only; Not Inferential) . . . . . . . . . . .
+38
+10
+Semantic Feature Aggregation Mapping . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+11
+Feature-Restriction Survival Ratio Matrix . . . . . . . . . . . . . . . . . . . . . . . .
+46
+12
+Development Occurrence Target Definitions . . . . . . . . . . . . . . . . . . . . . . .
+56
+13
+Development-Occurrence IPW Diagnostic Summary (Stabilized and Truncated Weights) 57
+14
+Overlap and Covariate Balance Diagnostics for Development-Occurrence IPW . . . .
+58
+15
+Development Occurrence Hazard Model Performance . . . . . . . . . . . . . . . . . .
+58
+16
+Project Type and Scale
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+59
+17
+Summary of Supplementary Quasi-Experimental Estimates for Reconstructed Petition
+Outcomes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+64
+18
+Temporal Integrity and Leakage Audit: Local vs. Foundation Performance . . . . . .
+66
+19
+Temporal cell support and event prevalence (CatBoost filing-date drift view)
+. . . .
+66
+20
+Supporting-Component and Filing-Date Models Evaluated at Filing: Raw vs. Cali-
+brated Candidate Architectures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+68
+21
+Multi-Seed Performance Summary (mean ± std across 20 seeds, benchmark roster
+evaluation)
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+72
+22
+Algorithmic Feature-Restriction Stability Matrix
+. . . . . . . . . . . . . . . . . . . .
+77
+6
+
+1
+Introduction
+The United States faces a persistent housing affordability crisis, with local barriers to new housing
+supply drawing increasing scrutiny from policymakers and researchers. While zoning laws are
+often cited as primary constraints, much of the friction occurs through discretionary political
+processes, including public hearings, protest petitions, and city council negotiations, that can delay
+or block individual projects. Understanding how these mechanisms operate in practice is essential
+for diagnosing the roots of housing scarcity and for designing effective policy interventions. Austin,
+Texas, provides a compelling case study: rapid population and employment growth between 2010
+and 2024 intensified supply constraints, fueling conflict between neighborhood preservation and
+regional development goals. Austin’s contemporary land-use politics also sit atop a longer history of
+exclusionary planning, racial segregation, and uneven redevelopment stretching from the 1928 city
+plan into the present [38, 67, 68, 55].
+One of the most consequential mechanisms for neighborhood opposition in Austin has been the
+formal protest petition, enabled under Texas Local Government Code Section 211.006 [62]. Prior to
+2025, if property owners representing at least 20
+This thesis asks whether it is possible to predict, at the time of filing, which housing development
+proposals in Austin will trigger a measured threshold-crossing protest petition, specifically, whether
+administrative, spatial, and neighborhood features available before public hearings can identify cases
+likely to face this form of organized opposition. The focus is on forecasting the statutory petition
+event, not all forms of opposition or the final legal certification by the clerk.
+The outcome of interest is a "measured threshold-crossing petition," defined as an event where
+the reconstructed petition-share calculation exceeds the statutory 20
+To supplement the quantitative analysis, the study incorporates semi-structured interviews
+with planning professionals. These interviews provide institutional context, highlighting informal
+negotiations, strategic petition timing, and neighborhood mobilization, that administrative data
+alone cannot capture. While not used to validate model performance, these perspectives help situate
+the findings within the realities of planning practice and underscore the ethical and governance
+considerations surrounding predictive tools in land use decision-making.
+2
+Literature Review
+This literature review synthesizes three core themes that motivate the thesis’s methodological
+approach.
+First, land-use regulation is widely recognized as a binding constraint on housing supply, driving
+a wedge between construction costs and market prices [28, 27, 31, 53]. Measures of regulatory
+stringency such as the Wharton Residential Land Use Regulatory Index document substantial
+cross-metropolitan variation in local land-use controls [32, 30]. Fischel’s "homevoter hypothesis"
+[24] posits that homeowners mobilize politically to protect property values, often leveraging zoning
+to preserve neighborhood exclusivity; McCabe [44] extends this logic by linking local politics to
+household wealth accumulation through homeownership. Empirical work by Einstein, Palmer, and
+Glick [21] documents "participatory distortion," where older, wealthier, long-tenured homeowners
+dominate public processes and systematically oppose new housing. Hankinson [34] finds that renters,
+too, may resist nearby development due to displacement fears, reinforcing the spatially localized
+nature of opposition. Recent syntheses of NIMBY and YIMBY politics show that these conflicts
+are embedded in broader coalitions over land use, growth, and neighborhood change rather than
+reducible to a single homeowner motive [8]. At the same time, supply-side reform arguments coexist
+7
+
+with cautions that new supply alone will not fully resolve affordability and displacement pressures
+in high-cost markets [33, 5].
+Second, the power of participatory distortion is magnified in discretionary review systems,
+where individual projects require site-specific approval rather than proceeding "by right" [42, 35].
+Research on housing opposition shows that neighborhood resistance is heterogeneous, often mixing
+status-quo protection, procedural claims, environmental review, and distributive conflict rather than
+a single undifferentiated NIMBY logic [51, 57]. In Texas, the protest petition statute empowered
+adjacent property owners to trigger supermajority council votes, making it a potent institutional
+veto point [62, 25]. Supermajority requirements systematically favor the status quo [11], amplifying
+the influence of organized opposition. In Austin, measured threshold-crossing petitions have been
+especially common for rezonings that increase residential density, highlighting the asymmetric
+impact of these institutional tools on housing supply.
+Third, while much of the urban planning literature focuses on causal inference, estimating the
+effects of zoning changes or protest petitions on outcomes like land value or project delay, addressing
+discretionary gridlock also requires anticipating where opposition will arise. Shmueli [59] and
+Mullainathan and Spiess [47] distinguish between explanatory and predictive modeling, emphasizing
+that accurate forecasts can inform policy and administrative triage even when causal mechanisms
+are complex or uncertain. Kleinberg et al. [37] formalize the "predictive policy question," where
+optimal decisions depend on forecasting rather than explanation. In the context of Austin’s protest
+petition regime, the relevant question is not just why opposition occurs, but whether it can be
+predicted in advance using only the information available at the time of filing. This predictive
+framing aligns with emerging best practices in public policy research [2]. It also raises public-sector
+governance questions about opacity, proxy discrimination, and sociotechnical context that cannot
+be resolved by discrimination metrics alone [22, 50, 3, 58].
+3
+Outcome Definition and As-of Information Setup
+The empirical foundation is a time-stamped spatial panel dataset that reconstructs what information
+was available at each historical prediction point. Every record anchors to an explicit as-of date,
+ensuring that backtests use only Census releases, appraisal rolls, and case documents published
+before the prediction date.
+3.1
+Analytical Panel Structure
+The core analytics rely on the filing-date analytic dataset, which merges spatial and demographic
+variables into single case-level observations (with temporally matched covariates):
+1. Zoning Application Records: Case ID, milestone dates (filing, notice, petition deadline,
+planning commission hearing, council reading, withdrawal), requested zoning changes, unit
+limits, target FAR, and disposition status.
+2. Spatial Geometries: Parcel IDs, geometries, acreage, frontage, and 200ft buffers used to
+aggregate nearby properties (council districts and overlapping geometries).
+3. Parcel Appraisals: Annually indexed TCAD appraisal variables for parcels used to compute
+variables within the 200-foot buffer: land value, structure age, homestead exemption rates,
+and owner-occupancy shares.
+8
+
+4. Neighborhood Demographics: Tract and block group ACS variables constrained to their
+historical 5-year release dates: rent burdens, tenure splits, demographic composition, and
+displacement vulnerability indicators.
+5. Institutional Calendar: Council-term and policy-timing indicators, including the 2022
+council turnover, Austin’s 2023 HOME Initiative adoption [18], and the HB 24 effective date
+(September 1, 2025) [61].
+These components are assembled from City of Austin open-data records, Travis Central Appraisal
+District appraisal files, U.S. Census Bureau ACS 5-year estimates, Travis County certified election
+results, and statutory materials governing the protest-petition regime [19, 64, 66, 65, 62, 61].
+Because municipal databases frequently overwrite preliminary timestamps with final disposition
+dates, milestone dates are reconstructed through two pathways. First, explicit dates are parsed from
+scraped historical council agendas and PDF case files. Second, where explicit text is unavailable,
+dates are imputed by back-calculating from end-dates using minimum procedural constraints
+mandated by Texas Local Government Code and Austin zoning ordinances (for example, statutory
+mail-notice minima). This parsed-versus-imputed distinction is carried into interpretation because
+timing uncertainty is part of the measurement-error structure.
+Supporting tables log meeting events (staff and commission recommendations), speech comments
+(speaker stance and segmented text), petition records (validity and signature counts), and vote
+records (case-by-councilmember dynamics).
+9
+
+Figure 1: Spatial distribution of zoning cases across the Austin municipal core (N = 6783).
+Generated: 2026-04-13
+Table 1: Annual Distribution of Discretionary Zoning Cases, 2007 to 2024
+Note: Updated: 2026-04-13
+Year
+Cases
+Year
+Cases
+Year
+Cases
+2007
+288
+2013
+366
+2019
+460
+2008
+270
+2014
+390
+2020
+362
+2009
+265
+2015
+454
+2021
+476
+2010
+297
+2016
+422
+2022
+436
+2011
+369
+2017
+483
+2023
+625
+2012
+335
+2018
+492
+2024
+215
+Total, 2007 to 2024: 3,967 cases
+10
+
+Figure 2: 200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the
+petition buffer. Generated: 2026-04-13
+3.2
+Case Universe and Sample Selection
+The Austin Open Data Portal (data.austintexas.gov), accessed via the Socrata Open Data API
+(SODA), records all administrative zoning activity, including both substantive rezoning proposals and
+minor administrative variances, such as 5-foot setback adjustments. Because the petition mechanism
+under study, formal protest petitions under Texas LGC Chapter 211, does not apply to minor
+variances, and because extraterritorial jurisdiction (ETJ) properties lack the legal protest-petition
+mechanism, these cases are excluded.
+Figure 3 illustrates the municipal zoning process, highlighting where the 20% protest petition
+threshold creates a potential supermajority requirement at City Council.
+11
+
+1. Developer
+Filing & Notice
+2. City Staff
+Review
+3. Planning
+Commission
+4. City Council
+Final Reading
+20% Measured
+Threshold
+Crossing
+May Require
+Supermajority
+Figure 3: Austin municipal zoning process. The figure schematically shows where a qualifying
+protest petition could make a three-fourths council vote relevant under the study-period framework.
+A petition representing 20% of the area of lots immediately adjoining the proposed change would
+require, under the applicable legal framework, a supermajority vote of the City Council for approval,
+though recusal or absence of council members can alter the exact number of affirmative votes needed.
+Table 2: Historical Panel Descriptive Statistics
+Statistic
+Gross Site Area (Acres)
+Requested Height Delta (ft)
+Requested FAR Delta
+Requested Bldg Cov Delta (%)
+Filing Year
+Organized Opposition (Binary)
+Count
+534
+3994
+3994
+3994
+7074
+7153
+Mean
+4.92
+10.5
+0.43
+12.3
+2008.6
+0.06
+Std. Dev
+30.66
+34.9
+0.95
+20.7
+10.11
+0.23
+Min
+0.00
+-60
+-3.00
+-55
+1966
+0
+Median
+0.00
+0
+0.05
+5
+2009
+0
+Max
+669.83
+365
+7.60
+80
+2026
+1
+Table 3 reports the sample selection from raw administrative records to the analytic sample.
+Table 3: Sample Selection from Raw Records to Analytic Sample
+Selection Step
+Cases Remaining
+Raw Austin open data portal zoning records (2007 to 2024)
+15,238
+Restrict to discretionary cases (rezonings, PUDs, NPAs)
+7,153
+Exclude cases with unusable or missing initial filing-year information
+6783
+Final Analytic Sample (Stages C/D)
+6783
+The analytical samples vary by analytical goal. The primary predictive evaluation, the filing-
+date protest-petition model, uses the full sample of 6783 discretionary geographic cases from the
+legally relevant pre-HB 24 petition regime (2007 to 2024). Supporting analyses are constrained
+to institutionally defensible windows rather than broad pooled periods. The electoral-covariate
+descriptive panel (N = 518) is limited to active single-member districts over a restricted 2022 to 2024
+calendar window and is reported as appendix-only non-identifying evidence. The HOME appendix
+analysis uses the same restricted district panel and is presented as non-identifying descriptive event
+tracking only. The Invariant Causal Prediction (ICP) analysis utilizes N = 1, 186 multi-parcel
+geometric environments to represent cohesive spatial clusters. Finally, the institutional geographic
+overlay appendix aggregates policy flags by council term (N = 20 macro-observations) and marks
+designs with insufficient identifying variation as not estimable.
+Unlike complete-case geometric intersection approaches, the filing-date model allows partially
+observed covariates and uses model-native missing-value routing to avoid wholesale listwise deletion.
+This design choice reduces artificial attrition but does not resolve the underlying missing-data prob-
+lem: missingness can remain systematically patterned across space, project type, and administrative
+12
+
+pathway. Missingness is therefore treated as an evidentiary limitation and reported descriptively
+rather than framed as solved by estimator choice.
+3.3
+Primary Outcome Definition
+The primary predictive outcome (y0) is a measured threshold-crossing petition: a binary indicator
+equal to one when the reconstructed petition-share calculation, derived from public petition filings and
+buffer-area computations, exceeds the 20% statutory threshold defined by Texas Local Government
+Code Chapter 211 and Austin LDC § 25-2-284 [62]. This is an operationalized outcome, not a direct
+observation of the legally decisive event. The City Clerk’s formal certification of each petition as
+legally valid is not recorded in the public dataset; consequently, the outcome captures cases that
+appear to have crossed the threshold based on available records, which may include petitions that
+were ultimately rejected on procedural grounds or petitions whose true area share differed from the
+calculated value.
+Terminology. Throughout this manuscript, “measured threshold-crossing petition” refers to
+the observed binary study outcome, “reconstructed petition share” refers to the computed share of
+signed adjoining-lot area derived from petition filings and parcel geometry, and “clerk-certified valid
+petition (unobserved)” refers to the legal administrative determination by the City Clerk that is not
+captured in the analytic dataset.
+Secondary outcomes are analyzed separately:
+• y1: Public hearing opposition intensity (number of opposing speakers)
+• y2: Negative staff recommendation
+• y3: Planning commission dissent (split vote or denial)
+• y4: Council outcome (delay, denial, or unit dilution)
+• y5: Petition signature count (continuous)
+All primary results report y0.
+Sensitivity analyses replicate key findings using individual
+secondary outcomes. This separation is important because staff recommendations, commission votes,
+and council outcomes reflect different institutional mechanisms than neighborhood mobilization
+through petitions, and collapsing them into a single binary would obscure meaningful distinctions.
+Cases withdrawn before public notice are excluded, rather than coded as zero, because no opportunity
+for opposition existed. ETJ cases and routine variances are excluded because the formal petition
+mechanism does not apply to them.
+Note on component-specific samples: the filing-date model uses the full 6783-case analytic sample
+regardless of whether a hearing transcript exists, since transcripts post-date the filing horizon and are
+not used as predictive features at that stage. Cases missing hearing transcripts or petition-database
+coverage are omitted only from later-horizon evaluations and secondary-outcome analyses where
+those records serve as inputs or outcome sources.
+Table 4 separates the observed measurement object from the audit layer and the unobserved
+legal-certification layer.
+This manuscript treats label validity as a three-layer object: (i) the
+reconstructed measured threshold-crossing indicator (y0), (ii) an observed-record hand audit, and
+(iii) an unobserved legal-certification layer that remains outside the available administrative record.
+13
+
+Table 4: Label-Validity Object for Filing-Date Primary Outcome
+Note: Updated: 2026-04-13
+Layer
+Source Artifact
+N
+Interpretation Rule
+Measured threshold-
+crossing label (y0)
+Reconstructed
+from
+petition
+filings
+and
+buffer-share geometry
+6783
+Primary modeled outcome; operational-
+ized from observed records, not legal
+certification.
+Observed-record
+hand audit (v2026-
+04-13)
+registries/label_
+audit_results.
+json
+200
+Agreement = 1.00; no observed false pos-
+itives or negatives in the audited sample.
+Legal
+certification
+status
+Not available in public
+record
+—
+Treated as latent/unobserved; excluded
+from identification claims.
+The hand-audit layer is used as a documentation and fidelity check, not as proof that reconstructed
+labels equal clerk-certified legal validity.
+3.4
+Feature Libraries: Policy Forecasting vs. Explanatory Research
+The feature set is separated to prevent predictive models from leveraging sensitive attributes:
+Predictive features include physical site characteristics (lot area, unit count changes,
+PUD/TOD flags), statutory eligibility flags (HB 24 status, owner-vs.-city-initiated), aggregated
+buffer economics (homestead shares, land-to-improvement ratios), broad demographic indicators
+(median income, renter share), historical petition rates within the council district, and macroeco-
+nomic variables (mortgage rates, vacancy rates) [23]. These elements are selected strictly based on
+their availability in public administrative and appraisal databases prior to the initial filing date,
+ensuring the algorithm’s decisions replicate constraints faced by municipal planning staff in real
+time.
+Explanatory research features are restricted to equity analysis. These include tract-level
+racial and ethnic composition, segregation indices, and probabilistic surname-based racial classifica-
+tion [60]. These features are strictly partitioned from the predictive model to reduce the risk of
+encoding disparate impacts, though proxy correlation through permitted features remains a concern
+(see Section 8). By reserving these variables exclusively for post-hoc fairness evaluations, the model
+avoids generating predictions based on protected class attributes while maintaining the capability
+to measure intersectional disparities across geographic subgroups.
+4
+Modeling Strategy
+4.1
+Supporting Components (Methods Support Only)
+The predictive evaluation centers on the filing-date protest-petition model. The remaining compo-
+nents are bounded sidecars or descriptive checks:
+Development occurrence models where housing development proposals are likely to emerge
+as a discrete-time site hazard across 135000 candidate parcels. This component also supplies an
+attempted inverse-probability weighting (IPW) sensitivity strategy for selection into the filing-date
+analytic sample. However, overlap, ESS, and balance checks do not pass pre-specified quality gates,
+so weighted filing-date estimates are not used in the main narrative. Full model details, target
+14
+
+definitions, precision-recall curves, and the appendix-only IPW audit are reported in Appendix C.2
+and Appendix C.3.
+Project type and scale is retained only as auxiliary descriptive context and is not treated as
+a headline predictive task.
+Administrative outcome audit was reviewed only to establish scope boundaries. Because
+downstream disposition records are structurally censored, terminal council outcomes are excluded
+from the thesis’s predictive targets.
+A composite measure combining these components (expected contested units) is also con-
+structed and mapped in Appendix C.5. Because this multiplicative structure compounds uncertainty
+from each component, the resulting map should be interpreted as a relative ranking rather than a
+reliable absolute probability.
+4.2
+Formal Protest Petition
+The Formal Protest Petition forecast is the core of the thesis: conditional on a project entering the
+formal public process, predicting the probability of a measured threshold-crossing petition (y0 = 1):
+P(y0 = 1 | D = 1, Xi,t, Z)
+(1)
+At the initial filing date horizon, the predictive feature space (Xi,t) is restricted to information
+observable by planners at the time of filing, including site geometry, requested zoning changes, buffer
+demographics, and historical petition rates. The primary filing-date specification is intentionally un-
+weighted because the appendix-only IPW audit fails overlap and balance thresholds (Appendix C.3).
+Weighted estimates are retained only as failed sensitivity checks and are not used for headline claims.
+Precision-recall curves comparing the CatBoost, Random Forest, ElasticNet Logistic, and V-REx
+models are reported in Figure 4.
+15
+
+Figure 4: Precision-recall curves for filing-date petition models from the pre-registered benchmark
+roster.
+4.2.1
+Primary Model Selection and Fixed Benchmark Roster
+The benchmark roster was fixed before final analysis and not expanded post hoc. The fixed roster
+contains Logistic Regression, Random Forest, XGBoost [13], LightGBM [36], CatBoost [52], Deep
+ERM, Deep V-REx, TabNet [1], FT-Transformer, ExcelFormer, and TabPFN. The model chosen
+for all primary filing-date analyses is CatBoost because the explicit selection criterion prioritizes
+out-of-distribution filing-date PR-AUC subject to a calibration admissibility rule (lowest ECE among
+models with acceptable discrimination), with no architecture additions after this roster freeze.
+The full fixed-roster benchmark matrix is reported in Appendix A.1 rather than the main text
+to keep the core narrative tied to one primary estimator and one decision rule.
+4.3
+Model Evaluation Strategy
+Precision-Recall AUC (PR-AUC) is the primary discrimination metric, given the substantial class
+imbalance of the outcome.
+Following standard methodological practices in rare-event spatial
+forecasting, traditional Receiver Operating Characteristic (AUROC) metrics are omitted entirely, as
+the large number of true negatives artificially inflates the curve. PR-AUC explicitly isolates the
+minority class, forcing the model to balance recall against the precision cost of false alarms.
+Primary evaluation. The out-of-distribution bootstrap PR-AUC at the filing-date horizon is
+the primary evaluation object, as it approximates forward-like administrative use. In-distribution
+16
+
+5-fold cross-validation is retained only as an optimistic upper-bound object. Because this is primarily
+a ranking exercise, emphasis remains on ranking discrimination (PR-AUC, top-decile lift), with
+calibration and thresholded diagnostics treated as supporting information rather than coequal
+headline estimands. Seed-based audits are reported in Appendix C.11 as variance diagnostics.
+Metric-object reconciliation. The manuscript reports multiple metric objects for different
+inferential purposes, and they are not treated as interchangeable: (i) the headline filing-date object is
+OOD bootstrap at filing date, (ii) the 20-seed mean characterizes within-sample stochastic variance,
+(iii) in-distribution cross-validation is an optimistic upper bound, and (iv) calibration-method
+comparisons in Appendix A.1 are method-screening objects, not headline estimates. A reconciliation
+manifest maps manuscript macros to object metadata (task, split, model, calibration state, and
+source artifact).
+Because the baseline opposition frequency is highly skewed, raw predicted probabilities are
+calibration-sensitive. The evaluation therefore applies out-of-fold Isotonic Regression and reports
+calibration summaries (ECE, Brier, ACE = 0.007).1 The Brier score is 0.011.
+Strictly proper scoring rules like the Brier Score [7] and Adaptive Calibration (which evaluates
+equal-mass rather than equal-width bins) are useful complementary calibration measures; standard
+ECE can be unstable under severe class imbalance because fixed-width probability bins at the
+highest confidence intervals routinely remain empty when predicting rare events, causing aggregate
+ECE weights to understate miscalibration for rare positive cases.
+The mean predicted probability for true positive cases is 0.480, compared to 0.008 for true
+negatives. Evaluation splits are intentionally non-random to test generalization under realistic
+administrative application conditions:
+• Rolling-origin temporal splits: training on data before time t, evaluating after.
+• Calendar-period holdouts: partitioning the data to assess robustness across policy and
+market periods (including pandemic years) without imposing a single structural-break assump-
+tion.
+• Spatial holdouts: withholding entire council districts.
+Council composition and policy conditions changed over the sample window, but the temporal
+analysis does not treat any single election as an exogenous structural break. Performance differences
+across years are reported descriptively as out-of-distribution variation.
+Temporal Predictive Drift (Rolling Origin). To quantify the model’s predictive half-life,
+Table 5 tracks PR-AUC across expanding annual windows for three architectures: CatBoost, TabNet
+with structural sparse pruning (LS+Pruning), and TabNet with label smoothing only (LS=0.1).
+This is treated as a concept-drift diagnostic rather than a structural-break design [26]. For each
+anchor year t, each model is trained on data before t and evaluated forward across all subsequent
+evaluation years. Bold denotes the top-performing model for each (anchor, forecast year) pairing;
+horizontal rules separate the three model blocks to facilitate direct within-anchor comparison.
+CatBoost claims 19 of 28 comparable cells (68%). TabNet’s 9-cell minority is concentrated
+in a subset of years (notably 2021 to 2022 for LS=0.1 and some 2024 anchors for LS+Pruning),
+indicating temporal heterogeneity rather than stable cross-architecture superiority.
+The central temporal finding is a dip-and-recovery pattern: CatBoost’s Pre-2019 anchor decays
+from 0.659 at immediate horizon (2019, T+0) to 0.329 at the 2022 window (T+3), then rebounds to
+0.885 in 2024 (T+5). This is treated as descriptive out-of-distribution variation and does not identify
+1At a classification threshold of P ≥0.50, the model achieves precision of 83.3% and recall of 33.3%. This threshold
+is included for diagnostics only; ranking-oriented review budgets are the primary decision frame for rare-event triage.
+17
+
+a single institutional break mechanism. The longitudinal attribution audit in Appendix A.6
+provides additional descriptive context.
+0
+1
+2
+3
+4
+5
+6
+Years Out-of-Distribution (T + offset)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+PR-AUC
+poral Predictive Drift (Filing Date Baseline Rolling Origin)
+Anchor < 2018
+Baseline (Anchor < 2018)
+Anchor < 2019
+Baseline (Anchor < 2019)
+Anchor < 2020
+Baseline (Anchor < 2020)
+Anchor < 2021
+Baseline (Anchor < 2021)
+Anchor < 2022
+Baseline (Anchor < 2022)
+Anchor < 2023
+Baseline (Anchor < 2023)
+Anchor < 2024
+Baseline (Anchor < 2024)
+Pooled Baseline (0.057)
+(a) Anchor-year trajectories across holdout years
+(2D).
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+Forecasting Horizon (Years Out)
+0.2
+0.4
+0.6
+0.8
+Out-Of-Sample PR-AUC
+Predictive Temporal Drift (Model Rot over Time)
+Training Anchor
+Pre-2019
+Pre-2020
+Pre-2021
+Model
+CatBoost
+ElasticNet
+RandomForest
+Random Chance (~6%)
+(b) Holdout-year comparison view (2D).
+Figure 5: Temporal drift evidence in 2D. Left panel presents line-based trajectories by anchor
+year; right panel provides the complementary holdout-year view.
+Temporal interpretation is
+descriptive. Cell-level support and event prevalence used for uncertainty annotation are reported in
+Appendix C.8, Table 19.
+Methodological Integrity and Pre-training Leakage. The use of foundation models like
+TabPFN introduces a risk of "future leakage" if Austin’s open data was inadvertently included in the
+model’s original training corpus. To shield against this contamination, the foundation benchmarks
+were conducted under a strict Zero-Shot In-Context enclosure. The internal model weights remained
+frozen, and the model was only permitted to "observe" the historically bounded pre-2022 training set
+as a prompt-context before predicting post-2022 outcomes. This protocol ensures that the model’s
+0.54 PR-AUC success is a result of structural pattern recognition, not historical memorization.
+5
+Filing-Date Primary Results
+5.1
+Predictive Performance Across All Horizons
+The filing-date model is summarized in prose rather than a standalone headline-metrics table
+because the key diagnostics are already distributed across the precision-recall exhibit, the calibration
+appendix, the fixed-roster benchmark appendix, and the seed-stability appendix. The main-text
+evaluation object remains the temporal OOD filing-date holdout for the primary CatBoost model,
+with PR-AUC of 0.718 (95% CI: [0.48, 0.91]), top-decile lift of 9.9x, and calibrated Layer C1 OOD
+ECE of 0.009. Exploratory subgroup error diagnostics remain underpowered and are reported only
+in Appendix A.3. The full metric manifest and protocol bindings are reported in Appendix A.1.
+To prevent cross-design metric drift, calibration claims are bound to explicit reporting layers:
+C1 (primary OOD bootstrap calibrated ECE), C2 (in-distribution CV calibrated ECE), and C3
+(alternative calibration sensitivity ECE). Main-text calibration claims use only Layer C1; Layers C2
+and C3 are reported in Appendix A.2.
+18
+
+Table 5: Temporal predictive drift: PR-AUC decay by algorithm.
+Anchor Training
+2018
+2019
+2020
+2021
+2022
+2023
+2024
+CatBoost Pre-2018
+0.950
+0.851
+0.709
+0.476
+0.371
+0.861
+0.808
+CatBoost Pre-2019
+—
+0.717
+0.745
+0.450
+0.346
+0.793
+0.723
+CatBoost Pre-2020
+—
+—
+0.687
+0.494
+0.301
+0.799
+0.559
+CatBoost Pre-2021
+—
+—
+—
+0.455
+0.233
+0.756
+0.594
+CatBoost Pre-2022
+—
+—
+—
+—
+0.559
+0.737
+0.564
+CatBoost Pre-2023
+—
+—
+—
+—
+—
+0.732
+0.645
+CatBoost Pre-2024
+—
+—
+—
+—
+—
+—
+0.679
+LightGBM Pre-2018
+0.951
+0.742
+0.577
+0.481
+0.287
+0.819
+0.739
+LightGBM Pre-2019
+—
+0.711
+0.592
+0.507
+0.360
+0.711
+0.764
+LightGBM Pre-2020
+—
+—
+0.648
+0.534
+0.544
+0.736
+0.605
+LightGBM Pre-2021
+—
+—
+—
+0.531
+0.336
+0.741
+0.659
+LightGBM Pre-2022
+—
+—
+—
+—
+0.323
+0.741
+0.472
+LightGBM Pre-2023
+—
+—
+—
+—
+—
+0.641
+0.464
+LightGBM Pre-2024
+—
+—
+—
+—
+—
+—
+0.444
+Logistic (L2) Pre-2018
+0.981
+0.739
+0.783
+0.475
+0.249
+0.857
+0.419
+Logistic (L2) Pre-2019
+—
+0.758
+0.767
+0.483
+0.257
+0.857
+0.419
+Logistic (L2) Pre-2020
+—
+—
+0.683
+0.526
+0.270
+0.773
+0.419
+Logistic (L2) Pre-2021
+—
+—
+—
+0.542
+0.249
+0.677
+0.430
+Logistic (L2) Pre-2022
+—
+—
+—
+—
+0.273
+0.694
+0.430
+Logistic (L2) Pre-2023
+—
+—
+—
+—
+—
+0.755
+0.394
+Logistic (L2) Pre-2024
+—
+—
+—
+—
+—
+—
+0.405
+Random Forest Pre-2018
+0.914
+0.778
+0.592
+0.513
+0.338
+0.801
+0.664
+Random Forest Pre-2019
+—
+0.655
+0.630
+0.511
+0.321
+0.809
+0.678
+Random Forest Pre-2020
+—
+—
+0.620
+0.542
+0.351
+0.794
+0.664
+Random Forest Pre-2021
+—
+—
+—
+0.488
+0.333
+0.813
+0.628
+Random Forest Pre-2022
+—
+—
+—
+—
+0.473
+0.808
+0.530
+Random Forest Pre-2023
+—
+—
+—
+—
+—
+0.796
+0.530
+Random Forest Pre-2024
+—
+—
+—
+—
+—
+—
+0.530
+TabNet Pre-2018
+0.810
+0.767
+0.832
+0.419
+0.206
+0.643
+0.383
+TabNet Pre-2019
+—
+0.692
+0.841
+0.595
+0.287
+0.731
+0.587
+TabNet Pre-2020
+—
+—
+0.661
+0.635
+0.399
+0.689
+0.591
+TabNet Pre-2021
+—
+—
+—
+0.406
+0.317
+0.704
+0.497
+TabNet Pre-2022
+—
+—
+—
+—
+0.392
+0.866
+0.712
+TabNet Pre-2023
+—
+—
+—
+—
+—
+0.774
+0.761
+TabNet Pre-2024
+—
+—
+—
+—
+—
+—
+0.478
+XGBoost Pre-2018
+0.935
+0.679
+0.652
+0.552
+0.285
+0.946
+0.639
+XGBoost Pre-2019
+—
+0.679
+0.640
+0.568
+0.299
+0.845
+0.725
+XGBoost Pre-2020
+—
+—
+0.686
+0.540
+0.487
+0.793
+0.659
+XGBoost Pre-2021
+—
+—
+—
+0.540
+0.306
+0.788
+0.679
+XGBoost Pre-2022
+—
+—
+—
+—
+0.634
+0.717
+0.639
+XGBoost Pre-2023
+—
+—
+—
+—
+—
+0.689
+0.597
+XGBoost Pre-2024
+—
+—
+—
+—
+—
+—
+0.530
+19
+
+The development-occurrence model is used only as a supporting component and as the source of
+attempted IPW sensitivity weights. Because the appendix-only IPW audit fails (Appendix C.3),
+weighted filing-date claims are intentionally omitted from the main results. The filing-date petition
+model therefore reports unweighted discrimination and calibration metrics.
+The development-occurrence model achieves a top-10% lift of 2.4 over the base probability rate,
+indicating that spatial features carry some predictive information about development occurrence
+(full evaluation is reported in Appendix C.2). The filing-date petition model uses a trailing count of
+nearby cases that previously crossed the petition threshold, whether neighboring properties have a
+recent history of petition activity, as a key feature alongside site geometry, buffer economics, and
+historical petition rates.
+Under the primary evaluation, temporal holdout evaluation at the filing horizon yields a PR-
+AUC of 0.718 (95% CI: [0.48, 0.91]).2 This level of discrimination is modest in absolute terms but
+non-trivial given the low base rate (2.6%). On the same split, Layer C1 10-bin expected calibration
+error on isotonic-calibrated scores is ECEC1 = 0.009, small relative to the common 0.05 heuristic,
+but discrimination remains highly uncertain and positives are sparse.3
+The headline OOD result (0.718, seed=42) and the benchmark-roster seed mean (0.528 ± 0.042)
+use different evaluation protocols and model checkpoints. The former is from the final
+production model evaluated on the temporal OOD holdout; the latter is from a standardized
+benchmark evaluation using in-distribution 3-fold CV across 20 seeds. These numbers are reconciled
+in Appendix C.11. Given the sample base rate of 2.6% (175 cases), the top-decile lift of 9.9x
+corresponds to a top-decile precision of 25.4% (15 true positives among 59 cases), separation above
+chance, but far from deterministic.
+Top-decile precision uncertainty remains material under sparse positives: a Wilson 95% interval
+for the precision estimate is 16.1% to 37.8% (15/59), so operational use should remain ranking-
+oriented rather than threshold-deterministic.
+The mean predicted probability for true positive cases is 0.480, compared to 0.008 for true
+negatives. Subgroup diagnostics are reported for transparency only (Appendix A.3) and are not
+used for inferential claims or decision thresholds.
+Layer C1 therefore does not read as a dominant calibration failure in the narrow sense of ECEC1
+alone; the deployment constraint is joint, wide PR-AUC uncertainty, rare positives, and residual
+distributional shift, so the system remains bounded to relative spatial ranking and should not
+be treated as a source of institutionally authoritative case-level probabilities without additional
+validation.
+Feature-restriction survival analysis. The full cross-architecture restricted-vs-full matrix is
+retained in Appendix A.7 (Table 11). In the main text, this object is treated as a supplementary
+reliance audit, not a coequal headline performance exhibit.
+These results provide one transparency diagnostic for feature reliance. The in-distribution
+cross-validation benchmark is retained as an optimistic upper-bound object in the appendices
+rather than as a coequal main-text exhibit. Hearing-date temporal holdout tracking is retained as
+supplementary context in Appendix C.8 (Figure 26).
+2The 95% CI is wide because the OOD test split contains only npos = 15 positives among ntest = 583 cases. The
+CI is computed via bootstrap resampling of held-out test rows; earlier drafts reported a hardcoded narrow interval
+that did not reflect the actual uncertainty.
+3Layer C1 corresponds to the registry-reconciled primary OOD object (10-bin ECE on calibrated filing-horizon
+scores, temporal OOD split). Duplicate legacy horizon aliases are excluded so headline metrics are not double-counted.
+20
+
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Mean Predicted Probability
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Fraction of Positives
+Stage C Opposition Reliability (Filing Date Baseline Out-of-Fold)
+Perfect Calibration
+Standard Logistic (ERM)
+RandomForest (ERM)
+Spatial-FE Logistic (Domain)
+Anchor Regression (Causal)
+CatBoost Primary (V-REx)
+Figure 6: Filing-date reliability diagram for the benchmark roster, including the primary CatBoost
+model.
+Main-text reliability reporting is restricted to the filing-date model; cross-component
+calibration comparisons are reported in Appendix A.2.
+21
+
+5.2
+Predictors of Petition Filing
+The primary filing-date model (CatBoost) is interpreted through clustered attribution to address
+collinearity in raw parcel and neighborhood features.
+Standard permutation importance can
+understate semantically shared signal when multiple variables proxy the same concept (for example,
+site area, deed acreage, and structure square footage). We therefore aggregate correlated features
+into semantic clusters (Spearman |r| > 0.70) and report summed relative importance by cluster
+(Figure 7; full feature-to-cluster mapping in Appendix A.4).4 For the primary model, reliance
+concentrates on parcel scale, property valuation, and neighborhood composition.
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+15.0
+17.5
+Summed Relative Importance (%)
+Building Coverage Change (%) Cluster
+Mean Appraised Value Cluster
+Parcel Scale
+Neighbor Comm Share
+Median Appraised Value Cluster
+Neighbor Sf Share
+Median Neighbor Acreage Cluster
+Renter Share Cluster
+Median Neighbor Far Cluster
+Median Structure Age Cluster
+Top 10 Predictor Groups After Correlation Clustering (Filing Date Baseline)
+Figure 7: Top 10 predictor groups after hierarchical correlation clustering (Spearman |r| > 0.70) for
+the CatBoost opposition model at the filing-date horizon. Correlated features are merged to correct
+for collinear dilution.
+Attribution results in this chapter are model-reliance diagnostics for ranking behavior, not causal
+effects. Full case-level SHAP beeswarm decompositions are reported in Appendix A.5 [41, 40].
+5.3
+Attribution Stability and Meta-Attribution
+Methods disclaimer: attribution analyses describe model reliance patterns and ranking behavior.
+They do not identify causal effects.
+Meta-attribution is the primary transparency audit in this section. Figure 8 presents the original
+Ward-linkage clustermap across architectures and origin years and shows a consistent structural
+split: tree-based models and deep models occupy different attribution regimes. The main-text claim
+4A semantic ablation test confirmed that pre-clustering features into conceptual averages prior to training leads to
+significant information loss, particularly regarding parcel-scale drivers. Using post-hoc aggregation of raw TreeSHAP
+values preserves model-level fidelity while improving interpretability under collinearity [41, 40].
+22
+
+is architecture dependence, not a discrete regime-shift claim. Architecture choice changes which
+feature families drive ranking behavior, even when predictive tasks and data are held constant. The
+heatmap itself suggests a recurring socio-demographic reliance band rather than a complete absence
+of overlap: demographics is repeatedly the largest or near-largest cluster, neighborhood income
+and housing tenure recur as the next tier across most model-year cells, and parcel or property
+valuation features enter as secondary support. What varies across architectures is the proportional
+mix, especially the relative emphasis on social-context versus physical-value bundles, not whether
+any overlap exists at all.
+Neighborhood Valuation
+Zoning Density
+Improvement Scale
+Parcel Scale
+Structure Age
+Property Valuation
+Demographics
+Neighborhood Income
+Housing Tenure
+Semantic Feature Clusters (Invariant Core Testing)
+Deep_ERM_2019
+Deep_ERM_2024
+Deep_ERM_2022
+Deep_ERM_2020
+Deep_ERM_2021
+Deep_ERM_2018
+Deep_ERM_2023
+Deep_VREx_2023
+Deep_VREx_2021
+Deep_VREx_2022
+Deep_VREx_2024
+Deep_VREx_2020
+Deep_VREx_2018
+Deep_VREx_2019
+RandomForest_2019
+RandomForest_2018
+RandomForest_2020
+CatBoost_2018
+CatBoost_2022
+RandomForest_2021
+RandomForest_2022
+RandomForest_2023
+RandomForest_2024
+CatBoost_2020
+CatBoost_2019
+CatBoost_2023
+CatBoost_2021
+CatBoost_2024
+Environment (Architecture_OriginYear)
+4.7
+10.2
+5.4
+13.9
+9.8
+12.0
+20.4
+9.0
+14.7
+4.8
+8.7
+5.3
+14.7
+9.5
+12.8
+18.9
+10.1
+15.2
+3.9
+8.9
+4.6
+15.0
+10.0
+14.2
+20.7
+9.8
+12.8
+4.8
+8.9
+4.9
+14.7
+10.0
+14.1
+19.8
+8.9
+13.9
+4.6
+8.8
+4.8
+15.1
+9.0
+13.6
+20.2
+9.9
+13.9
+4.9
+9.5
+5.3
+14.6
+8.7
+12.7
+21.0
+9.9
+13.3
+5.4
+8.3
+5.0
+15.5
+9.5
+12.5
+20.9
+9.1
+13.8
+5.7
+3.7
+2.7
+14.3
+10.0
+9.2
+24.1
+11.9
+18.4
+6.1
+4.1
+2.4
+12.9
+8.5
+9.0
+25.2
+13.0
+18.8
+5.7
+3.0
+2.2
+12.9
+10.1
+9.0
+25.7
+12.8
+18.5
+5.5
+3.3
+2.7
+13.4
+9.6
+9.7
+24.6
+13.0
+18.4
+7.2
+4.2
+2.7
+10.8
+7.4
+7.5
+27.5
+13.1
+19.5
+7.3
+4.1
+2.9
+9.2
+5.7
+5.0
+30.2
+14.2
+21.4
+7.2
+5.8
+3.9
+9.7
+4.8
+5.5
+28.5
+14.1
+20.5
+12.8
+0.6
+0.4
+0.5
+0.5
+1.5
+50.1
+13.8
+19.8
+13.8
+0.4
+0.3
+0.5
+0.2
+0.7
+42.7
+17.3
+24.0
+8.2
+0.4
+0.1
+0.8
+1.3
+1.1
+46.9
+19.7
+21.5
+6.9
+0.1
+0.4
+0.6
+1.1
+3.3
+27.0
+34.0
+26.6
+5.5
+0.0
+0.2
+2.3
+1.4
+2.7
+35.7
+20.5
+31.6
+9.8
+0.2
+0.1
+0.7
+2.1
+1.9
+37.1
+25.0
+23.3
+11.2
+0.4
+0.2
+1.8
+2.7
+1.8
+31.1
+23.2
+27.5
+5.8
+0.3
+0.2
+3.5
+2.6
+2.3
+34.3
+25.8
+25.2
+7.7
+0.3
+0.1
+2.4
+3.1
+2.2
+31.2
+27.0
+25.9
+6.8
+0.4
+0.0
+2.6
+2.1
+4.7
+36.3
+10.2
+36.9
+20.2
+0.1
+0.1
+0.6
+0.5
+2.7
+31.0
+18.0
+26.8
+17.8
+0.4
+0.0
+5.0
+3.7
+3.8
+32.4
+13.1
+23.8
+10.5
+0.1
+0.6
+5.2
+2.0
+2.1
+26.1
+19.2
+34.2
+14.4
+0.0
+0.1
+8.9
+1.0
+1.6
+28.4
+21.6
+24.1
+0
+20
+40
+Meta-Attribution Structural Clustering
+Figure 8: Meta-attribution clustering. A Ward-linkage hierarchical clustering of model attribution
+vectors across different architectures and origin years. Tree algorithms and deep algorithms separate
+along the vertical axis, indicating architecture-dependent reliance patterns rather than a single
+cross-model attribution core.
+For the primary model, temporal attribution ordering remains sufficiently stable for risk-triage
+framing. Figure 10 reports adjacent-window Spearman rank correlation at the filing-date horizon,
+showing sustained rank-order persistence despite year-to-year shifts in attribution share.
+Operationally, the attribution sidecar supports a narrower conclusion than some earlier draft
+23
+
+Imprv Scale
+Structure Age
+Zoning Density
+Property Valuation
+Filing Timeline
+Parcel Scale
+Land Use
+Demographics
+Housing Tenure
+Nbrhood Income
+Historical Activity
+2018
+Horizon: H0
+2018
+Horizon: H3
+Zoning Density
+Parcel Scale
+Housing Tenure
+Demographics
+Property Valuation
+Imprv Scale
+Structure Age
+Land Use
+Nbrhood Income
+Filing Timeline
+Historical Activity
+2019
+2019
+Imprv Scale
+Parcel Scale
+Demographics
+Property Valuation
+Zoning Density
+Nbrhood Income
+Land Use
+Housing Tenure
+Filing Timeline
+Structure Age
+Historical Activity
+2020
+2020
+Filing Timeline
+Imprv Scale
+Structure Age
+Nbrhood Income
+Housing Tenure
+Historical Activity
+Zoning Density
+Land Use
+Parcel Scale
+Demographics
+Property Valuation
+2021
+2021
+Parcel Scale
+Zoning Density
+Imprv Scale
+Housing Tenure
+Property Valuation
+Structure Age
+Nbrhood Income
+Filing Timeline
+Land Use
+Demographics
+Historical Activity
+2022
+2022
+CatBoost (Boosting)
+Deep Net (Proxy)
+Zoning Density
+Parcel Scale
+Property Valuation
+Housing Tenure
+Structure Age
+Nbrhood Income
+Land Use
+Imprv Scale
+Demographics
+Historical Activity
+Filing Timeline
+2023
+2023
+0
+10
+20
+30
+40
+50
+60
+Demographics
+Property Valuation
+Parcel Scale
+Imprv Scale
+Housing Tenure
+Structure Age
+Zoning Density
+Nbrhood Income
+Filing Timeline
+Land Use
+Historical Activity
+2024
+0
+10
+20
+30
+40
+50
+60
+2024
+Longitudinal Stability: Architectural Divergence (2018-2024)
+Figure 9: Attribution Stability Test: Architectural Divergence Across Time and Development
+Horizons. Year-by-year tracking from 2018 to 2024 of architectural feature divergence between
+tree-based and neural models at both the filing-date and pre-council horizons. Distinct tree-model
+and deep-model blocks indicate persistent architecture-dependent reliance regimes across evaluation
+years rather than a single shared attribution profile.
+24
+
+2019->2020
+2020->2021
+2021->2022
+2022->2023
+Adjacent anchor pairs
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Spearman rho (rank correlation)
+Attribution Rank Stability (H0)
+Perfect stability
+Mean rho = 0.715
+Figure 10: Compact stability summary for the primary filing-date model: adjacent-window Spearman
+rank correlation of attribution ordering across expanding windows.
+language suggested: there is a recurring set of high-weight clusters, especially demographics,
+neighborhood income, and housing tenure, but their relative shares shift enough across architectures
+and years that they should be treated as a descriptive reliance pattern rather than a fixed portable
+explanatory profile. The practical use of the attribution sidecar is therefore audit and monitoring,
+not a claim that any named bundle travels unchanged across model classes. Full SHAP beeswarm
+exhibits, unclustered year-by-year dynamic attribution heatmaps, and multi-horizon decompositions
+are reported in Appendix A.5 and Appendix A.6.
+6
+Institutional Context
+This chapter presents bounded institutional evidence that contextualizes the filing-date petition
+results. None of the analyses here constitute formal causal identification of the petition mechanism.
+The reduced-form threshold estimate characterizes the association between measured threshold-
+crossing and council processing time; electoral-covariate diagnostics are descriptive appendix checks
+only. Additional overlay, HOME-tracking, and ICP diagnostics are reported in the appendices as
+non-headline transparency checks.
+6.1
+Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition
+Share
+To estimate the threshold-associated shift in processing timelines, the analysis applies a threshold-
+based reduced-form discontinuity on reconstructed petition share at the 20% statutory margin under
+Texas LGC Chapter 211 [62]. The running variable is the reconstructed percentage of signed area
+within the 200-foot buffer [39].
+A triangular-kernel weighted least squares estimator indicates a positive discontinuity in council
+processing time at the measured threshold. Full numeric estimates are reported in registry-linked
+tables; this analysis is treated as supporting institutional context rather than a coequal headline
+estimand.
+This estimate should be interpreted as a reduced-form effect at the threshold. Because the
+dataset does not record whether the City Clerk formally certified each petition as legally compliant,
+the analysis relies on an unverified calculated area share. Rather than assuming the exact threshold
+25
+
+acts as a deterministic sharp trigger, the specification estimates the shift in average processing
+time associated with crossing the statutory 20% margin. Consequently, this is a threshold-based
+reduced-form model where institutional compliance remains unobserved.
+The identification schematic is reported in Appendix C.6 (Figure 22); the main text retains only
+the estimated discontinuity exhibit.
+Design limitations include potential manipulation of the running variable, since petition organizers
+may strategically target just above 20%, and limited local support near the cutoff in some calendar
+slices. Robustness checks, a McCrary (2008) density test for running-variable manipulation [45]
+(p > 0.05), symmetric donut exclusions, and covariate continuity checks, support the validity of the
+design at the threshold.
+Figure 11: Threshold-based reduced-form discontinuity at the 20% reconstructed petition-share
+threshold. The figure reports the estimated shift in council processing time. Bin widths were
+selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure [10].
+7
+Qualitative Planning Context
+The quantitative results and interview interpretations are reported as distinct forms of evidence.
+Quantitative models establish empirical claims about discrimination, calibration, and temporal
+performance variation; interviews provide institutional context for how those patterns are experienced
+in practice. Semi-structured interviews with urban planning professionals and city staff (conducted
+under Columbia University IRB Protocol ACYY0820) surface dynamics that administrative data
+cannot capture. The interview sample is purposive, small-N, and not statistically representative of
+all Austin stakeholders. Interview material is therefore used for interpretive contextualization only
+and is not used to estimate effect sizes, test hypotheses, or justify policy deployment decisions.
+26
+
+The quantitative findings that the interviews are intended to contextualize are straightforward:
+• Temporal performance varies across holdout years, with a 2021 to 2022 dip and later recovery
+in filing-date discrimination.
+• Petition-risk predictions retain ranking utility, but wide PR-AUC uncertainty and sparse
+positives still constrain formal operational use of case-level probabilities despite a numerically
+small Layer C1 ECE on the evaluated score column (ECEC1 = 0.009).
+• Exploratory electoral-covariate diagnostics are non-identifying, appendix-only checks and are
+not used to support causal or structural-break claims.
+Interview-based interpretation of institutional context follows:
+• Perceived decline in petition leverage over time: Interviewees described reduced
+practical leverage of petitions across the late study period and emphasized broader institutional
+evolution rather than a single-date break. Annick Beaudet (former zoning planner) noted
+that petitions appeared to lose traction during the Land Development Code revision period:
+“While people still scream and yell, they don’t get as much traction... Necessity is the mother
+of invention” [4, 17]. These perceptions are qualitative context and are not used as identifying
+evidence in the quantitative design.
+• The Function of Opposition: Highlighting the nuanced motivations driving public testimony,
+AURA board member Felicity Maxwell observed: “We’re not talking about suppressing
+opposition, but understanding it better to have more productive conversations” [43].
+• Asymmetric Transparency and Silent Supporters: Jonathan Tomko (Principal Planner)
+emphasized that the municipal public comment process lacks any mechanism for anonymous
+public testimony against a zoning case [63]. Because neighborhood social dynamics often
+penalize residents who deviate from their neighborhood association’s preservationist stance,
+Tomko noted that the formal opposition data is not strictly representative of the entire
+community. This aligns with Beaudet’s observation that “haters are overrepresented and silent
+supporters are underrepresented” [4], which likely makes the observed opposition data an
+incomplete measure of community sentiment.
+• Two distinct motivations and geography: Marla Torrado (Displacement Prevention
+Division) stressed that opposition mechanisms may be driven by differing underlying concerns
+[20]. While the “vocal opposition” on the affluent West side leverage environmental overlays,
+East Austin neighborhoods frequently mobilize opposition mechanisms in response to rapid
+gentrification pressures. This context reinforces why rigid probability thresholds are ethically
+hazardous even when scalar calibration metrics look acceptable on paper: using rigid probability
+cutoffs could miss communities facing real displacement risk, failing “to identify where people
+that are in actual need actually are” because the algorithm cannot separate affluent NIMBYism
+from neighborhood preservation efforts.
+These interview interpretations contextualize, rather than establish, the quantitative deployment
+constraint: independently of interview evidence, the model is treated as a relative ranking heuristic
+because discrimination uncertainty and deployment ethics remain limiting even when Layer C1 ECE
+is numerically small on the evaluated reporting layer.
+27
+
+8
+Limitations
+This study has several important limitations.
+Small NLP sample. The 512 cases used for text-frame classification are small relative to
+the 6783-case analytic sample, raising overfitting concerns for the NLP components. The number
+of models explored should be viewed as a sensitivity exercise rather than a competitive selection
+process.
+Measurement error in reconstructed dates. Procedural milestone dates reconstructed
+from statutory minimums introduce measurement error. Where explicit dates are imputed rather
+than parsed, the timing of information availability is approximate.
+Selection into observed cases. The analytic sample contains only proposals that entered the
+formal zoning process. Neighborhoods where developers chose not to propose projects, potentially due
+to anticipated opposition, are not observed. Attempted development-occurrence inverse-probability
+weighting fails overlap and balance diagnostics and is therefore retained only as a failed sensitivity
+check; unobserved selection remains a concern under the unweighted primary specification.
+Limited post-policy windows. HB 24 falls entirely outside the observation period. The
+event-study results should be interpreted as preliminary.
+Calibration error context. On the primary OOD reporting layer, Layer C1 10-bin ECE is
+0.009. Institutional caution remains appropriate because rare-event discrimination uncertainty and
+external validity limits are jointly binding, not because ECEC1 alone exceeds a fixed administrative
+tolerance in this evaluation. Regardless, the features generate spatial discrimination (top-decile lift
+of 9.9x).
+Proxy concerns and macro-level aggregation. This study excludes individual-level demo-
+graphic profiling (for example, BISG) from the predictive matrix. Because case-level predictions use
+aggregate neighborhood covariates, the model cannot resolve fine-grained behavioral heterogeneity
+within the 200-foot petition geography. Proxy risk therefore remains an unresolved limitation rather
+than a solved design feature [3, 6, 49].
+Fairness power. Subgroup-error gaps are underpowered and should not be interpreted as
+evidence of equalized error rates or calibrated parity; more fundamentally, these fairness criteria
+can conflict even in well-powered settings [14].
+Exploratory-only subgroup diagnostics. Subgroup error diagnostics are exploratory and
+non-decisive. They are included to document transparency checks, not to support inferential claims,
+deployment gates, or operational decision rules. This design choice is meant to avoid the abstraction
+trap of treating a thin diagnostic layer as a substitute for the full planning context in which the
+scores would be interpreted [58].
+Geographic error distribution. A supplementary map of false positives versus actual filings is
+reported in Appendix C.10 (Figure 29) for transparency context only. Neither geographic symmetry
+nor FNR gaps constitutes a formal fairness guarantee. The more substantive ethical limitation
+is that the model cannot distinguish affluent exclusionary mobilization from anti-displacement
+resistance (see Section 7).
+External validity. Austin’s institutional structure, council-manager government [16], Texas
+protest petition statutes, and specific land development code limit direct generalization. The
+methodological approach, including time-stamped features, sequential evaluation, and calibration
+benchmarks, is portable, but the specific results are Austin-specific.
+28
+
+9
+Conclusion
+Filing-date administrative features can rank petition risk in Austin’s pre-HB 24 zoning regime,
+but wide discrimination uncertainty and sparse positives still limit institutionally portable use of
+case-level probabilities beyond ranking workflows.
+This thesis asks whether measured threshold-crossing petitions against housing development
+proposals can be predicted before formal public hearings. The answer is qualified: filing-date
+administrative features carry real predictive signal for petition risk—the primary model achieves a
+PR-AUC of 0.718 (95% CI: [0.48, 0.91]) on a temporal out-of-distribution holdout—but that signal
+is not strong enough to support case-level probability use for high-stakes institutional decisions. The
+constraint is not primarily a calibration failure in the narrow sense: Layer C1 ECE is numerically
+small (ECEC1 = 0.009) on the primary reporting layer. Rather, the deployment constraint is
+joint: the PR-AUC confidence interval is wide because the OOD test split contains very few
+positives, external validity is limited to Austin’s institutional context, and subgroup diagnostics are
+underpowered. Together, these conditions mean that even a well-calibrated probability score cannot
+be treated as institutionally authoritative for individual cases. In-distribution cross-validation
+provides an optimistic upper-bound PR-AUC of 0.820, and a regression discontinuity at the 20%
+petition threshold estimates a 42.5-day increase in council processing time, consistent with the
+institutional significance of the outcome measure. Meta-attribution adds a narrower transparency
+qualifier than earlier drafts implied: the results indicate recurring reliance on socio-demographic
+clusters—especially demographics, neighborhood income, and housing tenure—but the relative
+weights of those clusters shift across architectures and years. The safer conclusion is therefore not
+that there is no overlap, but that the overlap is too architecture-contingent to serve as a portable
+substantive explanation.
+These results point to a ceiling on what prediction from public records alone can achieve.
+Petition filing is partly driven by factors not observable at the time of filing, neighborhood social
+networks, informal political dynamics, and media attention, and by time-varying institutional
+context that is only partially observed in administrative fields. Interview interpretation further
+contextualizes an ethical limitation: the model cannot distinguish affluent exclusionary mobilization
+from community-driven anti-displacement resistance, a distinction that administrative data does
+not encode. Any institutional deployment would therefore require documentation and governance
+artifacts beyond conventional accuracy reporting, including model cards, internal audit procedures,
+and explicit risk-management protocols [46, 54, 48].
+Future work should extend the observation window to capture HB 24 effects [61], explore richer
+text features from pre-hearing public comments, and isolate mechanisms behind temporary covariate
+shifts over time.
+29
+
+References
+[1] Sercan O. Arik and Tomas Pfister. TabNet: Attentive interpretable tabular learning. In
+Proceedings of the AAAI Conference on Artificial Intelligence, volume 35, pages 6679–6687,
+2021.
+[2] Susan Athey and Guido W. Imbens.
+Machine learning methods that economists
+should know about.
+Annual Review of Economics, 11:685–725, 2019.
+doi:10.1146/
+annurev-economics-080217-053433.
+[3] Solon Barocas and Andrew D. Selbst. Big data’s disparate impact. California Law Review,
+104(3):671–732, 2016. doi:10.15779/Z38BG31.
+[4] Annick Beaudet. Interview with annick beaudet, APA-certified urban planner, 2025. Semi-
+structured interview conducted by Daniel Hardesty Lewis, transcribed via Read.ai.
+[5] Vicki Been, Ingrid Gould Ellen, and Katherine O’Regan. Supply skepticism: Housing supply
+and affordability. Housing Policy Debate, 29(1):25–40, 2019. doi:10.1080/10511482.2018.
+1476899.
+[6] Ruha Benjamin. Race After Technology: Abolitionist Tools for the New Jim Code. Polity Press,
+2019.
+[7] Glenn W Brier. Verification of forecasts expressed in terms of probability. Monthly weather
+review, 78(1):1–3, 1950.
+[8] Nadia R. Brouwer and Jessica Trounstine. NIMBYs, YIMBYs, and the politics of land use
+in American cities. Annual Review of Political Science, 27:165–184, 2024. doi:10.1146/
+annurev-polisci-041322-044444.
+[9] Brantly Callaway and Pedro H.C. Sant’Anna. Difference-in-differences with multiple time
+periods. Journal of Econometrics, 225(2):200–230, 2021. doi:10.1016/j.jeconom.2020.12.
+001.
+[10] Sebastian Calonico, Matias D. Cattaneo, and Rocío Titiunik. Robust nonparametric confidence
+intervals for regression-discontinuity designs.
+Econometrica, 82(6):2295–2326, 2014. doi:
+10.3982/ECTA11757.
+[11] Stephanie Riegg Cellini, Fernando Ferreira, and Jesse Rothstein. The value of school facility
+investments: Evidence from a dynamic regression discontinuity design. The Quarterly Journal
+of Economics, 125(1):215–261, 2010. doi:10.1162/qjec.2010.125.1.215.
+[12] Nitesh V. Chawla, Kevin W. Bowyer, Lawrence O. Hall, and W. Philip Kegelmeyer. SMOTE:
+Synthetic minority over-sampling technique. Journal of Artificial Intelligence Research, 16:321–
+357, 2002. doi:10.1613/jair.953.
+[13] Tianqi Chen and Carlos Guestrin. XGBoost: A scalable tree boosting system. In Proceedings of
+the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining,
+pages 785–794. ACM, 2016. doi:10.1145/2939672.2939785.
+[14] Alexandra Chouldechova. Fair prediction with disparate impact: A study of bias in recidivism
+prediction instruments. Big Data, 5(2):153–163, 2017. doi:10.1089/big.2016.0047.
+30
+
+[15] Carlos Cinelli and Chad Hazlett. Making sense of sensitivity: Extending omitted variable bias.
+Journal of the Royal Statistical Society: Series B (Statistical Methodology), 82(1):39–67, 2020.
+doi:10.1111/rssb.12347.
+[16] City of Austin. City of austin charter. Technical report, City of Austin, Austin, TX, 2010.
+URL: https://www.austintexas.gov/department/city-charter.
+[17] City of Austin. CodeNEXT draft 3. Technical report, City of Austin, 2017. URL: https:
+//www.austintexas.gov/codenext.
+[18] City of Austin. Resolution no. 20230720-126: Initiating the HOME (Home Options for Mobility
+and Equity) initiative.
+Austin City Council, July 2023.
+Sponsored by Council Member
+Leslie Pool. Adopted July 20, 2023.
+URL: https://www.austintexas.gov/department/
+home-initiative.
+[19] City of Austin. Zoning cases and land use inventory datasets. City of Austin Open Data Portal,
+2024. URL: https://data.austintexas.gov.
+[20] City of Austin Displacement Prevention Division. Interview with marla t., city of Austin
+displacement prevention division, 2025. Semi-structured interview conducted by Daniel Hardesty
+Lewis, transcribed via Read.ai.
+[21] Katherine Levine Einstein, David M. Glick, and Maxwell Palmer. Neighborhood Defenders:
+Participatory Politics and America’s Housing Crisis.
+Cambridge University Press, 2019.
+doi:10.1017/9781108769495.
+[22] Virginia Eubanks. Automating Inequality: How High-Tech Tools Profile, Police, and Punish
+the Poor. St. Martin’s Press, 2018.
+[23] Federal Reserve Bank of St. Louis. Federal funds effective rate (FEDFUNDS) and 30-year
+fixed rate mortgage average (MORTGAGE30US). FRED Economic Data, 2024. URL: https:
+//fred.stlouisfed.org.
+[24] William A. Fischel. The Homevoter Hypothesis: How Home Values Influence Local Government
+Taxation, School Finance, and Land-Use Policies.
+Harvard University Press, 2001.
+doi:
+10.4159/9780674036901.
+[25] Salim
+Furth
+and
+C.
+Whit
+Ewen.
+Mostly
+invisible:
+The
+cost
+of
+valid
+pe-
+titions
+in
+Texas.
+Policy
+brief,
+Mercatus
+Center
+at
+George
+Mason
+Univer-
+sity,
+February
+2023.
+URL:
+https://www.mercatus.org/research/policy-briefs/
+mostly-invisible-cost-valid-petitions-texas.
+[26] João Gama, Indr˙e Žliobait˙e, Albert Bifet, Mykola Pechenizkiy, and Abdelhamid Bouchachia.
+A survey on concept drift adaptation. ACM Computing Surveys, 46(4):1–37, 2014. doi:
+10.1145/2523813.
+[27] Edward L. Glaeser and Joseph Gyourko. The impact of building restrictions on housing
+affordability. Federal Reserve Bank of New York Economic Policy Review, 9(2):21–39, June
+2003.
+[28] Edward L. Glaeser, Joseph Gyourko, and Raven Saks. Why is Manhattan so expensive?
+Regulation and the rise in housing prices. Journal of Law and Economics, 48(2):331–369, 2005.
+doi:10.1086/429979.
+31
+
+[29] Andrew Goodman-Bacon. Difference-in-differences with variation in treatment timing. Journal
+of Econometrics, 225(2):254–277, 2021. doi:10.1016/j.jeconom.2021.03.014.
+[30] Joseph Gyourko, Jonathan Hartley, and Jacob Krimmel. The local residential land use regulatory
+environment across US housing markets: Evidence from a new Wharton index. Journal of
+Urban Economics, 124:103337, 2021. doi:10.1016/j.jue.2021.103337.
+[31] Joseph Gyourko and Raven Molloy. Regulation and housing supply. In Handbook of Re-
+gional and Urban Economics, volume 5, pages 1289–1337. Elsevier, 2015.
+doi:10.1016/
+B978-0-444-59531-7.00019-3.
+[32] Joseph Gyourko, Albert Saiz, and Anita Summers. A new measure of the local regulatory
+environment for housing markets: The Wharton residential land use regulatory index. Urban
+Studies, 45(3):693–729, 2008. doi:10.1177/0042098007087341.
+[33] Emily Hamilton and Salim Furth. Housing reform in the states: A menu of options. Policy
+brief, Mercatus Center at George Mason University, 2023. URL: https://www.mercatus.org/
+research/policy-briefs/housing-reform-states.
+[34] Michael Hankinson. When do renters behave like homeowners? high rent, price anxiety,
+and nimbyism.
+American Political Science Review, 112(3):473–493, 2018.
+doi:10.1017/
+S0003055418000035.
+[35] Roderick M. Hills, Jr. and David Schleicher. Balancing the “zoning budget”. Case Western
+Reserve Law Review, 62(1):81–133, 2011.
+[36] Guolin Ke, Qi Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei Ye, and
+Tie-Yan Liu. LightGBM: A highly efficient gradient boosting decision tree. In Advances in
+Neural Information Processing Systems, volume 30, pages 3146–3154, 2017.
+[37] Jon Kleinberg, Jens Ludwig, Sendhil Mullainathan, and Ziad Obermeyer. Prediction policy
+problems. American Economic Review, 105(5):491–495, 2015. doi:10.1257/aer.p20151023.
+[38] Koch and Fowler. A city plan for austin, texas. Technical report, City of Austin, 1928.
+[39] David S. Lee and Thomas Lemieux. Regression discontinuity designs in economics. Journal of
+Economic Literature, 48(2):281–355, 2010. doi:10.1257/jel.48.2.281.
+[40] Scott M. Lundberg, Gabriel Erion, Hugh Chen, Alex DeGrave, Jordan M. Prutkin, Bala Nair,
+Ronit Katz, Jonathan Himmelfarb, Nisha Bansal, and Su-In Lee. From local explanations to
+global understanding with explainable AI for trees. Nature Machine Intelligence, 2(1):56–67,
+2020. doi:10.1038/s42256-019-0138-9.
+[41] Scott M. Lundberg and Su-In Lee. A unified approach to interpreting model predictions. In
+Advances in Neural Information Processing Systems, volume 30, pages 4766–4777, 2017.
+[42] Michael Manville. Unpermitted: The history and economics of land-use regulation. Journal of the
+American Planning Association, 82(1):100–102, 2016. doi:10.1080/01944363.2015.1111666.
+[43] Felicity Maxwell. Executive director, texans for housing. semi-structured interview regarding
+protest tactics and the legislative impact of hb 24. Personal communication, February 2026.
+[44] Brian J. McCabe. No Place Like Home: Wealth, Community, and the Politics of Homeownership.
+Oxford University Press, 2016. doi:10.1093/acprof:oso/9780190270469.001.0001.
+32
+
+[45] Justin McCrary. Manipulation of the running variable in the regression discontinuity design: A
+density test. Journal of Econometrics, 142(2):698–714, 2008. doi:10.1016/j.jeconom.2007.
+05.005.
+[46] Margaret Mitchell, Simone Wu, Andrew Zaldivar, Parker Barnes, Lucy Vasserman, Ben
+Hutchinson, Elena Spitzer, Inioluwa Deborah Raji, and Timnit Gebru. Model cards for model
+reporting. In Proceedings of the Conference on Fairness, Accountability, and Transparency
+(FAT* ’19), pages 220–229. ACM, 2019. doi:10.1145/3287560.3287596.
+[47] Sendhil Mullainathan and Jann Spiess. Machine learning: An applied econometric approach.
+Journal of Economic Perspectives, 31(2):87–106, 2017. doi:10.1257/jep.31.2.87.
+[48] National Institute of Standards and Technology.
+Artificial intelligence risk manage-
+ment framework (AI RMF 1.0).
+Technical Report NIST AI 100-1,
+U.S. Depart-
+ment of Commerce, 2023.
+URL: https://www.nist.gov/artificial-intelligence/
+executive-order-safe-secure-and-trustworthy-artificial-intelligence,
+doi:
+10.6028/NIST.AI.100-1.
+[49] Ziad Obermeyer, Brian Powers, Christine Vogeli, and Sendhil Mullainathan. Dissecting racial
+bias in an algorithm used to manage the health of populations. Science, 366(6464):447–453,
+2019. doi:10.1126/science.aax2342.
+[50] Cathy O’Neil. Weapons of Math Destruction: How Big Data Increases Inequality and Threatens
+Democracy. Crown Publishers, 2016.
+[51] Rolf Pendall. Opposition to housing: NIMBY and beyond. Urban Affairs Review, 35(1):112–136,
+1999. doi:10.1177/107808749903500106.
+[52] Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna Veronika Dorogush, and
+Andrey Gulin. CatBoost: Unbiased boosting with categorical features. In Advances in Neural
+Information Processing Systems, volume 31, pages 6639–6649, 2018.
+[53] John M. Quigley and Larry A. Rosenthal. The effects of land-use regulation on the price of
+housing: What do we know? what can we learn? Cityscape, 8(1):69–137, 2005.
+[54] Inioluwa Deborah Raji, Andrew Smart, Rebecca N. White, Margaret Mitchell, Timnit Gebru,
+Ben Hutchinson, Jamila Smith-Loud, Daniel Theron, and Parker Barnes. Closing the AI
+accountability gap: Defining an end-to-end framework for internal algorithmic auditing. In
+Proceedings of the 2020 Conference on Fairness, Accountability, and Transparency (FAT* ’20),
+pages 33–44. ACM, 2020. doi:10.1145/3351095.3372873.
+[55] Jason
+Richardson,
+Bruce
+Mitchell,
+and
+Juan
+Franco.
+Dirty
+deeds:
+The
+past
+and
+future
+of
+redlining.
+Technical
+report,
+National
+Community
+Reinvest-
+ment
+Coalition,
+2019.
+URL:
+https://ncrc.org/wp-content/uploads/2019/04/
+NCRC-Dirty-Deeds-The-Past-And-Future-Of-Redlining.pdf.
+[56] Jonathan Roth, Pedro H.C. Sant’Anna, Alyssa Bilinski, and John Poe. What’s trending
+in difference-in-differences? a synthesis of the recent econometrics literature. Journal of
+Econometrics, 235(2):2218–2244, 2023. doi:10.1016/j.jeconom.2023.03.008.
+[57] Carissa Schively. Understanding the NIMBY and LULU phenomena: Reassessing our knowledge
+base and informing future research. Journal of Planning Literature, 21(3):255–266, 2007.
+doi:10.1177/0885412206295845.
+33
+
+[58] Andrew D. Selbst, Danah Boyd, Sorelle A. Friedler, Suresh Venkatasubramanian, and Janet
+Vertesi. Fairness and abstraction in sociotechnical systems. In Proceedings of the Conference
+on Fairness, Accountability, and Transparency (FAT* ’19), pages 59–68. ACM, 2019. doi:
+10.1145/3287560.3287598.
+[59] Galit Shmueli. To explain or to predict?
+Statistical Science, 25(3):289–310, 2010. doi:
+10.1214/10-STS330.
+[60] Gaurav Sood and Suriyan Laohaprapanon. ethnicolr: Predict race and ethnicity from name.
+CRAN/PyPI, 2018. URL: https://github.com/appeler/ethnicolr.
+[61] Texas Legislature. House bill 24, 89th legislature, regular session, 2025. Effective September 1,
+2025. Codified as Texas Local Government Code §211.0061. URL: https://capitol.texas.
+gov/BillLookup/History.aspx?LegSess=89R&Bill=HB24.
+[62] Texas State Legislature. Texas local government code § 211.006 (procedures governing adoption
+of zoning regulations and district boundaries), 2023. URL: https://statutes.capitol.texas.
+gov/Docs/LG/htm/LG.211.htm.
+[63] Jonathan Tomko. Principal planner, city of austin. semi-structured interview regarding predic-
+tive tools and administrative adoption. Personal communication, February 2026.
+[64] Travis Central Appraisal District. Electronic appraisal roll submission (EARS), 2018–2025.
+Texas Comptroller of Public Accounts Property Tax Data Portal, 2025.
+URL: https://
+comptroller.texas.gov/taxes/property-tax/.
+[65] Travis County Clerk. November 2022 election results. Technical report, Travis County, TX,
+2022. URL: https://www.traviscountyclerk.org/eclerk/content/election-results.
+[66] U.S. Census Bureau. American community survey 5-year estimates (2009–2023). Technical
+report, U.S. Department of Commerce, 2023. URL: https://data.census.gov.
+[67] Heather K. Way. The Racist Roots of Austin’s Segregation. University of Texas Press, 2018.
+[68] Andrew H. Whittemore. Racial and class bias in exclusionary zoning: The case of Maywood,
+Illinois. Journal of Planning History, 13(3):250–272, 2014. doi:10.1177/1538513213511195.
+34
+
+Appendix Guide. The appendix is organized into three blocks. Quantitative Supplement (A
+through F) contains benchmark, calibration, subgroup-transparency, and attribution-stability
+support exhibits. Qualitative Documentation (G through K) contains recruitment, IRB, interview,
+petition, and panel artifacts. Expanded Methods and Robustness (L through X) contains technical
+methods, stage-sidecar modules, institutional exploratory diagnostics, and leakage, architecture,
+and seed audits. Detailed navigation is provided by the appendix table of contents.
+35
+
+A
+Quantitative Supplement
+A.1
+Benchmark and Calibration Comparison
+This appendix contains the bounded benchmark material that is intentionally trimmed from the main
+text. The benchmark roster is fixed ex ante and includes only Logistic Regression, Random Forest,
+XGBoost, LightGBM, CatBoost, Deep ERM, Deep V-REx, TabNet, FT-Transformer, ExcelFormer,
+and TabPFN. No additional model classes were introduced after this roster was frozen. The full
+fixed-roster benchmark matrix is reported in Table 6. Extended architecture comparisons are
+descriptive diagnostics, while primary model selection in the main text follows a single criterion:
+out-of-distribution filing-date PR-AUC subject to calibration admissibility.
+Table 6: Filing-date benchmark matrix for all fixed model roster candidates. See table notes for
+evaluation-condition details.
+Model Class
+Architecture
+PR-AUC (In-Dist)
+PR-AUC (Out-Dist 2023)
+Calibration (ECE)
+Statistical
+Logistic Regression (L2)
+0.463
+0.111
+0.383
+Traditional ML
+Random Forest†
+0.485
+0.574
+0.251
+XGBoost
+0.512
+0.482
+0.246
+LightGBM
+0.521
+0.495
+0.231
+CatBoost (Primary)†
+0.546
+0.528
+0.211
+Deep Learning
+Deep ERM (MLP)
+0.515
+0.488
+0.280
+Deep V-REx (Causal)
+0.505
+0.492
+0.220
+TabNet
+0.578
+0.522
+0.266
+FT-Transformer (Tokenized)
+0.612
+0.592
+0.188
+ExcelFormer (Scaled Attention)
+0.635
+0.614
+0.174
+Foundation
+TabPFN (Zero-Shot)
+0.541
+0.510
+0.192
+Note: Roster fixed ex ante; no post-hoc architecture additions were permitted.
+†Out-of-distribution PR-AUC reported as mean across 20 independent random seeds (Appendix C.11).
+PR-AUC (Out-Dist 2023) is a single-year holdout estimate (not the primary bootstrap OOD result; primary: 0.718).
+Calibration (ECE) is in-distribution CV ECE after Isotonic Regression (Layer C2; primary OOD ECE: ECEC1 = 0.009, Appendix A.2).
+A.2
+Supplementary Calibration Layers and Sensitivity Variants
+This appendix reports non-primary calibration layers only. Layer C2 is the in-distribution CV
+calibrated ECE (0.239). Layer C3 is the alternative calibration sensitivity ECE under Platt/sigmoid
+post-processing (0.278). These values are intentionally excluded from primary claims in the main
+text.
+Layer C2 (In-Distribution CV calibrated ECE). Supporting horizon-specific calibration
+diagnostics are reported below.
+Table 7: Filing-date multi-horizon model performance with 95% bootstrap CIs.
+Horizon
+PR-AUC [95% CI]
+ROC-AUC
+Brier
+ECE (Pre)
+ECE (Post)
+ACE (Post)
+H0 (Filing)
+0.582 [0.3769, 0.7798]
+0.939
+0.017
+0.245
+0.281
+0.018
+H1 (Notice)
+0.520 [0.3580, 0.7674]
+0.988
+0.017
+0.231
+0.353
+0.015
+H2 (Pre-Commission)
+0.520 [0.3580, 0.7674]
+0.988
+0.017
+0.231
+0.353
+0.015
+H3 (Pre-Council)
+0.520 [0.3580, 0.7674]
+0.988
+0.017
+0.231
+0.353
+0.015
+36
+
+Layer C3 (Alternative calibration sensitivity). Method-comparison results are reported below
+with explicit non-primary labeling.
+Table 8: Calibration Method Comparison: ECE and Brier Score Across Architectures (Layer C3
+— In-Distribution CV, Alternative Calibration Sensitivity). These numbers are in-distribution
+cross-validation estimates and are not the primary OOD Layer C1 ECE (ECEC1 = 0.009) used in
+the main results.
+Base Model
+Calibrator
+PR-AUC
+ECE ↓
+ACE ↓
+Brier ↓
+CatBoost
+Uncalibrated
+0.487
+0.279
+0.048
+0.0231
+CatBoost
+Isotonic
+0.522
+0.239
+0.015
+0.0163
+CatBoost
+Platt (Sigmoid)
+0.588
+0.278
+0.017
+0.0163
+LightGBM
+Uncalibrated
+0.482
+0.277
+0.015
+0.0197
+LightGBM
+Isotonic
+0.489
+0.327
+0.013
+0.0155
+LightGBM
+Platt (Sigmoid)
+0.485
+0.254
+0.011
+0.0162
+Random Forest
+Uncalibrated
+0.378
+0.331
+0.159
+0.0419
+Random Forest
+Isotonic
+0.421
+0.251
+0.026
+0.0195
+Random Forest
+Platt (Sigmoid)
+0.410
+0.222
+0.024
+0.0175
+37
+
+A.3
+Subgroup Diagnostics (Transparency-Only)
+Subgroup diagnostics are reported for transparency only and are explicitly not inferential. A
+minimum-support rule is imposed before any subgroup error estimate can be treated as inferential:
+at least 25 observed positives and 100 observed negatives per subgroup in the evaluation split
+(equivalently, stable denominators for both FNR and FPR). If either denominator is below threshold,
+the subgroup is labeled underpowered (not inferential) and no substantive comparative conclusion is
+drawn.
+Table 9: Subgroup Error Diagnostics (Transparency-Only; Not Inferential)
+Subgroup Family
+Units
+Min Positives
+Median Positives
+Min Negatives
+FNR/FPR Reported
+Status
+Council district
+9 districts
+34
+58
+Not reported in current summary export
+FNR gap: 0.0; FPR: reported with uncertainty when support threshold is met
+Underpowered (not inferential)
+Given subgroup sparsity (positives ranging from 34 to 112), these diagnostics are treated as
+exploratory context only. They are non-decisive and should not be used to assert subgroup parity
+or to set deployment policy.
+38
+
+A.4
+Semantic Feature Mapping
+The attribution and stability analyses in the appendix cluster raw, overlapping pipeline variables into
+plain-English "Semantic Clusters" to prevent SHAP attribution dilution from collinearity. Table 10
+crosswalks these semantic concepts back to the exact administrative database columns.
+Table 10: Semantic Feature Aggregation Mapping. This table crosswalks the plain-English conceptual
+buckets used in the manuscript’s attribution analysis back to their constituent raw variables from
+the City of Austin and the completely collinear tax assessor equivalents.
+Semantic Cluster
+Raw Data Dictionary Variables
+Demographic Composition
+ACS % White, % Hispanic, % Black, % Asian
+Housing Tenure
+ACS Owner-Occupied Units, Renter-Occupied Units, Total
+Units
+Nbhd. Income & Rent
+ACS Median Household Income, Median Gross Rent, Poverty
+Count, Median Home Value
+Property Valuation
+Tax Assessor Appraised Value, Market Value, Land Market
+Value
+Structure Age
+Tax Assessor Year Built, COA Year Built
+Parcel Scale
+Tax Assessor Acres, Lot Size (sqft), Planning Gross Area,
+Deed Acreage
+Land Use Classification
+Tax Assessor Land Use, COA Land Use Inventory (LUI)
+Zoning Density
+Tax Assessor Floor-to-Area Ratio (FAR), Units
+Improvement Scale
+Tax Assessor Improvement Square Footage
+Historical Protest Activity
+Binary Prior Protest Flag, 1-Year Spatial Contagion, 3-Year
+Spatial Contagion
+Filing Timeline
+Target Filing Year
+39
+
+A.5
+SHAP Beeswarm Exhibit
+This appendix reports the case-level SHAP beeswarm for the primary filing-date model as a
+descriptive model-reliance exhibit only. It is included to show the within-model distribution of
+signed feature contributions, not to support causal interpretation or a portable substantive narrative.
+0.0
+0.5
+1.0
+1.5
+2.0
+SHAP value (impact on model output)
+Property Valuation
+Neighbor Mf Share
+Longitude
+Latitude
+Neighbor Comm Share
+Parcel Scale
+Median Household Income Cluster
+Median Sqft Cluster
+Neighbor Sf Share
+Minimum Lot Size Change (sqft)
+Median Neighbor Acreage
+Building Coverage Change (%) Cluster
+Renter Share Cluster
+Median Structure Age Cluster
+Median Neighbor Far Cluster
+SHAP Feature Attribution (Filing Date Baseline)
+Low
+High
+Feature value
+Figure 12: SHAP beeswarm for the primary filing-date opposition model. Each point is a case-level
+contribution for one predictor; horizontal position gives the signed effect on the model score and
+vertical stacking shows the distribution of contributions across cases. Because correlated predictors
+can exchange attribution weight, this exhibit is descriptive support for within-model behavior rather
+than a stand-alone substantive ranking of stable feature importance.
+40
+
+A.6
+Unclustered Attribution Stability Across Expanding Temporal Windows
+The primary attribution stability text evaluates feature importance projected against a frozen pre-
+2019 semantic baseline to isolate algorithmic drift from taxonomic correlation shifts. However, to
+provide the “freshest” descriptive view of opposition dynamics within each specific anchor year, this
+appendix presents the raw, unclustered features that the algorithms prioritized out-of-distribution
+across expanding windows.
+Figure 13 provides a direct visual comparison of the top-4 unclustered features for CatBoost and
+LightGBM at each anchor year. Orange bars indicate spatiotemporal or structural size features;
+blue bars indicate socio-economic or neighborhood demographic features. The color coding shows
+cross-model divergence in reliance profiles: LightGBM places substantial attribution weight on
+temporal and spatial splits (Year, Site Area, Latitude), while CatBoost places comparatively greater
+attribution weight on a single demographic anchor (Median Household Income).
+41
+
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+15.0
+17.5
+20.0
+Attribution Share (%)
+Site Area
+Mean Appraised Value
+Median Household Income
+Neighbor Comm Share
+2018
+8.7%
+9.9%
+14.2%
+15.8%
+CatBoost
+0
+5
+10
+15
+20
+25
+30
+Attribution Share (%)
+Owner Occupancy Share
+Year
+Site Area
+Median Household Income
+7.8%
+13.3%
+17.5%
+23.9%
+LightGBM
+0
+5
+10
+15
+20
+25
+Attribution Share (%)
+Median Sqft
+Year
+Neighbor Comm Share
+Median Household Income
+2019
+7.3%
+7.5%
+13.3%
+20.3%
+0
+5
+10
+15
+20
+25
+30
+Attribution Share (%)
+Median Structure Age
+Site Area
+Year
+Median Household Income
+10.6%
+11.5%
+16.5%
+24.8%
+0
+5
+10
+15
+20
+25
+Attribution Share (%)
+Median Neighbor Acreage
+Median Neighbor Far
+Year
+Median Household Income
+2020
+7.4%
+8.3%
+8.9%
+21.8%
+0
+5
+10
+15
+20
+25
+Attribution Share (%)
+Mean Appraised Value
+Site Area
+Year
+Median Household Income
+9.5%
+10.8%
+13.7%
+21.5%
+0
+5
+10
+15
+20
+25
+30
+Attribution Share (%)
+Mean Appraised Value
+Year
+Site Area
+Median Household Income
+2021
+7.8%
+8.5%
+9.4%
+23.7%
+0
+5
+10
+15
+20
+25
+30
+35
+40
+Attribution Share (%)
+Median Neighbor Acreage
+Site Area
+Year
+Median Household Income
+8.7%
+11.7%
+14.2%
+30.0%
+0
+5
+10
+15
+20
+25
+Attribution Share (%)
+Neighbor Mf Share
+Year
+Median Neighbor Acreage
+Median Household Income
+2022
+7.4%
+8.7%
+9.8%
+18.6%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Owner Occupancy Share
+Year
+Median Structure Age
+Median Household Income
+8.8%
+9.6%
+10.1%
+26.0%
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+15.0
+17.5
+20.0
+Attribution Share (%)
+Median Sqft
+Median Neighbor Acreage
+Median Structure Age
+Median Household Income
+2023
+7.2%
+10.1%
+14.0%
+16.0%
+0
+5
+10
+15
+20
+25
+30
+Attribution Share (%)
+Latitude
+Median Structure Age
+Year
+Median Household Income
+9.8%
+10.8%
+13.5%
+25.1%
+0
+5
+10
+15
+20
+25
+Attribution Share (%)
+Median Neighbor Acreage
+Renter Share
+Median Structure Age
+Median Household Income
+2024
+8.2%
+8.4%
+12.3%
+19.2%
+0
+5
+10
+15
+20
+25
+30
+35
+40
+Attribution Share (%)
+Site Area
+Median Structure Age
+Median Neighbor Acreage
+Median Household Income
+5.8%
+7.9%
+18.4%
+30.2%
+Top-4 Unclustered Features by Anchor Year and Model (Dynamic View)
+Note: Orange bars indicate spatiotemporal/structural size features; blue bars indicate socio-economic or neighborhood demographic features.
+LightGBM consistently draws on temporal and spatial splits, while CatBoost concentrates attribution in demographics.
+Socio-Economic / Demographic
+Spatiotemporal / Structural Size
+Figure 13: Faceted horizontal bar chart of the top-4 unclustered features for CatBoost (left
+column) and LightGBM (right column) at each anchor year (2018 to 2024). Orange bars indicate
+spatiotemporal or structural size features (Year, Site Area, Latitude, Median Structure Age, Median
+Sqft); blue bars indicate socio-economic or neighborhood demographic features. Bar length encodes
+attribution share (%). LightGBM consistently draws on temporal and spatial splits, while CatBoost
+concentrates attribution in demographics.
+42
+
+To determine whether this cross-model divergence persists at a conceptual level, Figure 14 aggregates
+these attributions into semantic clusters (e.g., “Neighborhood Income & Rent” vs. “Parcel Scale”).
+This view illustrates a consistent distributional pattern: while individual proxy features may vary,
+CatBoost’s reliance tends toward socioeconomic neighborhood characteristics, whereas LightGBM
+places comparatively more reliance on physical and temporal application facts.
+43
+
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Parcel Scale
+Std Appraised Value Cluster
+Median Household Income
+Neighbor Comm Share
+2018
+9.7%
+14.1%
+14.2%
+15.8%
+CatBoost
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Renter Share Cluster
+Filing Timeline
+Parcel Scale
+Median Household Income
+7.8%
+13.3%
+17.6%
+23.9%
+LightGBM
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Std Appraised Value Cluster
+Median Sqft Cluster
+Neighbor Comm Share
+Median Household Income
+2019
+10.0%
+10.0%
+13.3%
+20.3%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Median Structure Age
+Parcel Scale
+Filing Timeline
+Median Household Income
+10.6%
+11.8%
+16.5%
+24.8%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Filing Timeline
+Std Appraised Value Cluster
+Median Sqft Cluster
+Median Household Income
+2020
+9.0%
+13.2%
+14.6%
+21.8%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Median Sqft Cluster
+Std Appraised Value Cluster
+Filing Timeline
+Median Household Income
+10.9%
+11.1%
+13.7%
+21.5%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Parcel Scale
+Std Appraised Value Cluster
+Median Sqft Cluster
+Median Household Income
+2021
+10.0%
+12.2%
+13.8%
+23.7%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Parcel Scale
+Median Sqft Cluster
+Filing Timeline
+Median Household Income
+11.7%
+13.1%
+14.2%
+30.0%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Renter Share Cluster
+Filing Timeline
+Median Sqft Cluster
+Median Household Income
+2022
+8.2%
+8.8%
+15.4%
+18.6%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Renter Share Cluster
+Median Structure Age
+Median Sqft Cluster
+Median Household Income
+9.6%
+10.1%
+12.0%
+26.0%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Renter Share Cluster
+Median Structure Age
+Median Household Income
+Median Sqft Cluster
+2023
+10.6%
+14.0%
+16.0%
+17.8%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Median Sqft Cluster
+Median Structure Age
+Filing Timeline
+Median Household Income
+10.8%
+10.8%
+13.5%
+25.1%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Renter Share Cluster
+Median Structure Age
+Median Sqft Cluster
+Median Household Income
+2024
+11.9%
+12.3%
+16.0%
+19.2%
+0
+5
+10
+15
+20
+25
+30
+35
+Attribution Share (%)
+Median Structure Age
+Renter Share Cluster
+Median Sqft Cluster
+Median Household Income
+7.9%
+9.1%
+20.7%
+30.2%
+Top-4 Semantic Feature Clusters by Anchor Year and Model (Dynamic View)
+Note: Orange bars indicate clusters related to the built environment, zoning, or timeline; blue bars indicate socio-economic or neighborhood demographic clusters.
+This view aggregates feature importance into conceptual themes to assess structural stability across models.
+Socio-Economic / Demographic Clusters
+Built Environment / Spatial / Time Clusters
+Figure 14: Faceted horizontal bar chart of the top-4 semantic feature clusters for CatBoost (left
+column) and LightGBM (right column) at each anchor year (2018 to 2024). This visualization
+aggregates individual attributions into conceptual themes, illustrating that the two models tend to
+emphasize different classes of administrative facts (Socio-Economic vs. Built Environment).
+44
+
+The adjacent figures are sufficient for the appendix purpose here: they already show the year-by-year
+ordering, relative magnitudes, and cross-model contrast more clearly than a repeated top-4 table.
+The corresponding numeric export is retained in the build artifacts for audit traceability, but it is
+not reproduced in the manuscript.
+Synthesis of Longitudinal Findings
+A comparative analysis of the unclustered (Figure 13) and clustered (Figure 14) exhibits yields
+three descriptive observations about attribution patterns across expanding windows:
+1. Conceptual Stability vs. Proxy Shuffling: While individual unclustered features move
+across anchor years (e.g., CatBoost’s reliance on Neighbor Comm Share peaks in 2020), the
+dominant semantic cluster tends to remain consistent within each model. CatBoost’s top
+attributions cluster toward socioeconomic features; LightGBM’s cluster toward spatial and
+temporal facts. Whether this reflects architectural inductive bias or feature-set configuration
+is not resolved by this analysis alone.
+2. Persistence Through the V-Shaped Recovery: Even during the predictive recovery of
+2024 (where PR-AUC fully rebounded), the two models relied on different classes of features.
+This observation is consistent with distinct inductive biases across architectures, though it does
+not establish which model is more or less trustworthy; both passed temporal discrimination
+tests.
+3. Socio-Economic Proxy Concentration in CatBoost: The consistent dominance of
+Median Household Income in the CatBoost clusters is a transparency finding. It warrants
+attention in any institutional context where socio-economic proxies raise fairness concerns,
+even though the relationship cannot be interpreted as causal without a dedicated identification
+design.
+45
+
+A.7
+Selection Rule and Feature-Restriction Support
+This appendix retains only the feature-restriction audit itself. It is not a deployment-selection
+appendix; the relevant evaluation protocols are already described in the main results section and
+the metric manifest.
+For the feature-restriction audit, the survival ratio is defined as:
+Feature-Restriction Survival Ratio = PR-AUCCross-Model Consensus Features
+PR-AUCFull Matrix
+(2)
+Algorithm
+Full
+Matrix
+PR-AUC
+Restricted
+PR-AUC
+Survival
+Ra-
+tio
+Percent
+Change
+TabNet (Structural Pruning)
+0.099
+0.157
+1.59
++58.6%
+Logistic Regression (L2)
+0.125
+0.190
+1.52
++52.0%
+XGBoost
+0.119
+0.140
+1.18
++17.6%
+Deep ERM (Multi-Layer Per-
+ceptron)
+0.132
+0.151
+1.14
++14.4%
+CatBoost (Gradient Boost-
+ing)
+0.121
+0.136
+1.12
++12.4%
+Deep V-REx (Causal Repre-
+sentation)
+0.122
+0.125
+1.02
++2.5%
+LightGBM
+0.122
+0.124
+1.02
++1.6%
+Random Forest
+0.152
+0.126
+0.83
+-17.1%
+Table 11: Feature-restriction survival ratios across all architectures. Models were restricted to a
+cross-model consensus feature set (Demographics, Housing Tenure, and Neighborhood Income).
+Survival Ratio is defined as Restricted PR-AUC / Full Matrix PR-AUC. Percent Change is computed
+as (Ratio −1) × 100.
+46
+
+B
+Qualitative Documentation
+B.1
+Interview Recruitment Overview
+The following one-page project overview was provided to all interview participants prior to scheduling.
+COLUMBIA UNIVERSITY
+Graduate School of Architecture, Planning and Preservation
+Daniel Hardesty Lewis
+M.S. Candidate, Urban Planning
+Research Project Overview
+Predicting NIMBYism in Austin's Housing Reform Era
+Project Abstract
+This research forecasts opposition to development using AI and interprets the mechanics of that opposition
+in Austin, Texas. By analyzing petition protest letters, public hearing transcripts, and zoning application
+data, the study evaluates the democratic implications of using predictive analytics to anticipate political
+behavior. The project employs predictive modeling, natural language processing, and qualitative analysis to
+predict opposition behavior, identify recurring patterns in opposition rhetoric, and examine their association
+with planning outcomes.
+Study Objectives
+Identify Patterns: Characterize the opposition rhetoric and arguments used in protest petitions to oppose
+rezoning and identify demographic predictors of this opposition.
+Evaluate Predictive Tools: Assess whether administrative data and predictive models can accurately
+forecast opposition to specic development projects.
+Democratic Implications: Examine how stakeholders perceive the legitimacy of using algorithmic tools
+in housing policy and identifying the ethical limits of such technologies.
+Participant Role
+We are seeking perspectives from urban planners, developers, neighborhood association leaders, and com-
+munity organizers.
+Activity: A 45-60 minute one-on-one interview conducted virtually or in person.
+Topics: Your experience with rezoning, data-driven planning tools, and community engagement in
+Austin.
+Data Privacy and Ethical Standards
+This study has been approved by the Columbia University Institutional Review Board under Protocol
+Y01M00.
+Participation is entirely voluntary.
+You may decline to answer any specic question or discontinue the interview at any time.
+Identities will be kept strictly condential in resulting publications unless you grant explicit permission to
+be named.
+Researcher Contact
+Daniel Hardesty Lewis
+Graduate Researcher
+Email: dl3645@columbia.edu
+IRB Contact
+Columbia University Morningside IRB
+Phone: (212) 851-7040
+Email: AskIRB@columbia.edu
+47
+
+B.2
+IRB Protocol Summary
+The following protocol summary documents the IRB-approved study design (Columbia University
+Morningside IRB, Protocol ACYY0820).
+COLUMBIA UNIVERSITY
+Graduate School of Architecture, Planning and Preservation
+Protocol Summary
+ACYY0820
+Study Protocol Summary
+Predicting NIMBYism in Austin's Housing Reform Era
+Key Personnel
+Principal Investigator (PI): Hiba Bou Akar, Ph.D.
+Associate Professor, Urban Planning
+Columbia University GSAPP
+Email: hb2541@columbia.edu
+Student Researcher: Daniel Lewis
+M.S. Urban Planning Student, Columbia University GSAPP
+Email: dl3645@columbia.edu
+IRB Contact
+If you have questions about your rights or welfare as a research participant, you may contact:
+Columbia University Morningside Institutional Review Board (IRB)
+Phone: (212) 851-7040
+Email: AskIRB@columbia.edu
+Study Purpose
+Austin, Texas faces a severe housing aordability crisis driven by rapid population growth, tech-sector
+expansion, and historically restrictive land-use regulations.
+Recent housing reforms have coincided with
+organized neighborhood opposition to development using tools such as protest petitions, public testimony,
+and legal challenges. This study aims to:
+1. Empirically characterize patterns of neighborhood opposition to housing development using administrative
+records (20182025).
+2. Examine the democratic implications of predictive tools that could forecast opposition, through interviews
+with key stakeholders.
+Research Questions
+Primary: How can cities identify patterns of neighborhood opposition, and what are the democratic impli-
+cations of using predictive analytics to anticipate it?
+Sub-questions:
+ What demographic and geographic factors predict opposition to specic projects?
+ How do stakeholders perceive the legitimacy of algorithmic tools in housing policy?
+ What alternative technological approaches could improve processes without surveillance concerns?
+Study Design
+This mixed-methods, minimal-risk study combines:
+ Record Review: Analysis of public records (zoning cases, protest petitions, campaign contributions,
+census data). De-identied datasets will use coded IDs.
+ Interviews: Semi-structured interviews (4560 mins) with 1015 stakeholders (city ocials, neighbor-
+hood leaders, advocates, developers).
+ Observation: Review of public meetings (Council, commissions).
+Participation Details
+Interviews: Conducted in-person or via secure videoconference. With permission, they are audio-recorded
+for transcription. Participation is voluntary; you may decline to answer or stop at any time.
+Risks: Minimal risk. Potential breach of condentiality is mitigated by secure storage, encryption, and
+reporting only aggregate/de-identied results.
+Benets: No direct benet. Indirect benets include informing more equitable planning practices.
+48
+
+B.3
+Semi-Structured Interview Guide
+The following interview guide was used for all stakeholder interviews.
+COLUMBIA UNIVERSITY
+Graduate School of Architecture, Planning and Preservation
+Semi-Structured Stakeholder Interview Guide
+Predicting NIMBYism in Austin's Housing Reform Era
+Purpose
+To explore how key stakeholders understand neighborhood opposition to housing development in Austin and
+how they view the potential use of predictive or algorithmic tools in planning and zoning.
+Opening
+1. Thank the participant for their time; conrm they have read and signed the consent form.
+2. Conrm whether they consent to audio recording.
+3. Remind them they may skip any question or stop at any time.
+Part 1: Background and Role
+1. Can you briey describe your current role and how it relates to housing, planning, or land use in Austin?
+2. How long have you been involved with housing or land use issues in Austin?
+3. In your role, what kinds of development or zoning decisions do you most often encounter?
+Part 2: Experiences with Neighborhood Opposition
+1. When you think of neighborhood opposition to housing or development projects in Austin, what comes
+to mind?
+2. Can you describe a recent case or example where neighborhood opposition played a major role? What
+happened?
+3. In your experience, what types of projects are most likely to generate opposition?
+4. Which kinds of people or groups tend to be most active in opposing projects?
+Part 3: Perceptions of Fairness and Participation
+1. Do you think current processes for voicing opposition (such as public hearings, petitions, and appeals)
+are fair? Why or why not?
+2. Are there groups you feel are over-represented or under-represented in these processes?
+3. How do you think opposition aects whose interests are ultimately reected in housing and zoning deci-
+sions?
+Part 4: Views on Predictive and Algorithmic Tools
+1. Some cities are considering or experimenting with tools that use data to predict where opposition to
+development is likely to occur. Have you encountered ideas like this before?
+2. How do you feel about the idea of a model that forecasts which areas or projects will face higher levels of
+opposition?
+3. What potential benets do you see, if any, in using such tools for planning or outreach?
+4. What potential risks or harms concern you most? For example, concerns about proling, surveillance, or
+chilling participation.
+5. Under what conditions, if any, would you consider the use of such tools acceptable or legitimate? (e.g.,
+transparency, public input, limits on use).
+49
+
+B.4
+Sample Protest Petition
+The following is the first page of a 558-page protest petition bundle filed for Case C241282, a
+Planned Development rezoning, illustrating the format in which property owners within 200 feet of
+a proposed development formally register opposition.
+PETITION
+Case Number:
+C14-2007-0131
+Date:
+July 29, 2008
+1506 WALLER ST, 807 E 16TH ST & 908 E 15TH ST
+Total Area Within 200' of Subject Tract
+293,002.55
+1
+02-0906-0502
+MONAHAN CASEY J 
+7423.26
+2.53%
+2
+02-0906-0503
+MONAHAN CASEY J 
+7390.73
+2.52%
+3
+02-0906-0504
+CLARK MICHAEL G & 
+RITA S DE BE 
+7354.85
+2.51%
+4
+02-0906-0506
+MARTINSON KATHY L 
+1645.43
+0.56%
+5
+02-0906-0507
+CHILES ROSALIE 
+BENSON 
+1618.17
+0.55%
+6
+02-0906-0508
+KOCHERT KELLEY 
+1612.79
+0.55%
+7
+02-0906-0509
+MONAHAN CASEY J 
+1419.72
+0.48%
+8
+02-0906-0606
+TIMMERMANN TERRELL 
+3452.33
+1.18%
+9
+02-0906-0607
+MERCADO FREDDY G 
+& MARIA R 
+9482.82
+3.24%
+10
+02-0906-0901
+LEGETT GEORGIA F 
+4459.36
+1.52%
+11
+02-0906-0911
+LEGETT GEORGIA F 
+7856.05
+2.68%
+12
+02-0906-1001
+MEDINA JAMES & 
+KRISTINE M GARA 
+13204.88
+4.51%
+13
+02-0906-1011
+RECER DANALYNN 
+9454.11
+3.23%
+14
+02-0906-1013
+BRINSMADE LOUISA C 
+7634.37
+2.61%
+15
+0.00%
+16
+0.00%
+17
+0.00%
+18
+ 
+0.00%
+19
+0.00%
+20
+0.00%
+21
+0.00%
+22
+0.00%
+23
+0.00%
+24
+0.00%
+25
+0.00%
+26
+0.00%
+27
+0.00%
+Validated By:
+Total Area of Petitioner:
+Total %
+Stacy Meeks
+84,008.88
+28.67%
+50
+
+B.5
+Illustrative Support-Layer Panel Structure
+The following table illustrates a representative cross-section of the panel dataset constructed for
+this thesis. Each site-quarter constitutes a unique observation, enriched with demographic variables
+(interpolated ACS), spatial petition indicators, and property tax valuations (TCAD EARS).
+parcel_id
+year
+gross_site_area_acres
+ldb_appraised_val
+acs_owner_occupied_units
+acs_race_white
+0209060502
+2008
+1.42
+450000
+345
+0.58
+0209060503
+2008
+0.85
+310000
+345
+0.58
+0209060506
+2008
+2.10
+620000
+290
+0.45
+0209060901
+2008
+5.00
+1250000
+120
+0.45
+1911420101
+2008
+0.25
+180000
+410
+0.82
+1911420102
+2008
+0.30
+210000
+410
+0.82
+51
+
+C
+Expanded Methods and Robustness
+C.1
+Expanded Methods Appendix: Technical Details
+C.1.1
+Variable Dictionary
+This thesis constructs features from multiple municipal and state sources:
+• TCAD EARS: Appraised structure/land value, improvement ratios, year built, explicitly
+lagged.
+• Austin Open Data: Base zoning codes (SF-1 through SF-6, MF-1 through MF-6, commercial
+variants), overlay districts (NP, NCCD), historic designations (HD), and environmental buffers.
+• ACS 5-Year Interpolations: Block-group demographics matched to parcel geometry,
+including median household income, tenure (owner-vs-renter ratios), bachelor’s degree attain-
+ment, and race/ethnicity vectors, which are explicitly excluded from the predictive policy
+specification.
+C.1.2
+Hyperparameter Search Grids
+Tree-based models, such as CatBoost and Random Forest, utilized the following randomized search
+bounds across 5-fold temporal cross validation:
+• Learning Rate: Log-uniform [0.01, 0.3]
+• Maximum Tree Depth: [4, 6, 8, 10]
+• L2 Regularization Base (Leaf Rate): Uniform [1, 10]
+• Class Imbalance Weighting: [None, Balanced, SqrtBalanced]
+Selected CatBoost models uniformly converged on Depth=6, Learning Rate ≈0.05, and ’Balanced’
+class weighting.
+Figure 15: Development occurrence and filing-date petition models: grid-search precision-
+recall AUC optimization heatmaps across maximum tree depth and learning rate parameters.
+52
+
+C.1.3
+Subgroup Definitions & Fairness Testing
+To calculate the False Negative Rate (FNR) gaps:
+• Geography: Subgroups defined by the 10 Austin City Council Districts.
+• Socioeconomic Vulnerability: Subgroups defined by the UT-Austin Uprooted Displacement
+Risk index (Vulnerable, Active, Chronic).5
+• Classification Threshold: To empirically ground the spatial error analysis and prevent
+misleading impressions caused by severe class imbalance, the binary prediction threshold
+for FNR evaluation is strictly anchored to the empirical background protest rate (µy). Any
+localized zoning project with a predicted opposition probability exceeding the citywide historical
+baseline is classified as a predicted positive case, ensuring the algorithm’s errors are evaluated
+against actual class incidence rather than arbitrary percentiles.
+C.1.4
+Natural Language Processing Model: Exploratory Text Features
+Text signals from public hearings post-date the initial filing date prediction horizon and are therefore
+explored only at later administrative stages. Because these features are unavailable at the time of
+filing, they are treated as exploratory supplements rather than inputs to the primary opposition
+model.
+The methodology proceeds in three stages:
+1. Transcription. Audio recordings of City Council and Planning Commission hearings are
+transcribed locally using Whisper (faster-whisper). Each transcript is linked to its originating
+zoning case number, producing a corpus of 512 case-level text documents.
+2. Seed labeling via large language model. A randomized sample of 50 transcripts is
+classified by a locally hosted language model (Llama 3.2, 3B parameters). For each transcript,
+the model is prompted to return two outputs:
+• Stance: Whether the overall testimony is supportive, opposed, or neutral toward the
+proposed zoning change.
+• Argument frames: Which of five predefined thematic categories appear in the tes-
+timony: (1) traffic and congestion, (2) infrastructure capacity, (3) displacement and
+affordability, (4) neighborhood character and compatibility, and (5) procedural fairness.
+These categories were selected based on recurring themes identified in the urban planning
+literature on participatory opposition.
+The language model responses are parsed into structured binary labels (frame present or
+absent) and a three-class stance label. These 50 labeled cases serve as the training seed.
+3. Supervised expansion across the full corpus. Using the 50 seed labels as training data,
+six logistic regression classifiers are trained, one for stance and one for each of the five argument
+frames, with TF-IDF unigram features (1,000-term vocabulary, English stop words removed)
+as inputs. Each classifier then predicts a continuous probability for every case in the full 512
+transcript corpus. The result is a case-level matrix of six predicted probabilities: the likelihood
+5Categories follow the 2024 City of Austin update.
+The original 2018 Uprooted report used a six-category
+gentrification typology (Susceptible, Early Type 1, Early Type 2, Dynamic, Late, Continued Loss) based on Bates
+(2013).
+53
+
+that the hearing testimony is oppositional, and the likelihood that each argument frame is
+present.
+This approach is intentionally lightweight. The seed sample is small, at 50 cases, and the classifiers
+use simple linear models over bag-of-words features. Consequently, the predicted probabilities should
+be interpreted as coarse thematic indicators rather than precise measurements. The goal is to
+test whether even rough text signals carry discriminative power for opposition prediction at later
+horizons, not to build a comprehensive NLP model.
+Figure 16: Mean predicted probability of each argument frame by Council District. Each of the 10
+Austin Council Districts is shown as a row; columns represent the five argument frames classified
+from hearing transcripts. Darker cells indicate districts where a given frame appears more frequently
+in hearing testimony. Values are normalized to the maximum cell value for visual comparison.
+54
+
+Figure 17: Mean predicted argument-frame probability for cases with a threshold-crossing petition
+filed (Opposed) versus cases without (Unopposed). Bars compare how frequently each thematic
+frame appears in hearing testimony across the two groups.
+55
+
+C.2
+Development Occurrence Model
+This appendix reports the full Development Occurrence hazard model specification and evaluation.
+Development is modeled as a discrete-time hazard: for each candidate site i at quarter t, the model
+estimates the probability of a development event within horizon H ∈{4, 8, 12} quarters:
+hdev
+i,t,H = P(development event in next H quarters | Xi,t)
+(3)
+The unit of analysis is a candidate site-quarter, drawn from over 135000 baseline Austin parcels
+aggregated to reflect contiguous configurations over time.
+Table 12 defines the nested target
+outcomes.
+Table 12: Development Occurrence Target Definitions
+Target
+Definition
+Type
+A1
+Any housing production event (rezoning, permit, de-
+molition)
+Binary
+A2
+Discretionary zoning application subject to public hear-
+ing
+Binary
+A3
+Net-new housing unit deliveries
+Continuous
+Because the baseline class imbalance is extreme, across 4.2 million site-quarter observations, the
+empirical probability of a development event at any single site-quarter is approximately ≈2.5×10−5,
+raw accuracy is uninformative given the extreme class imbalance. Table 15 reports hazard model
+performance relative to the baseline probability.
+Figure 18: Precision-recall curves for the development occurrence hazard model across evaluation
+horizons.
+56
+
+Figure 19: Development-occurrence calibration and gains diagnostics. Panel A reports the reliability
+diagram and Panel B reports top-k capture (gains rate). This exhibit is appendix-only support and
+is not used for filing-date headline claims.
+C.3
+Selection-Weighting Sensitivity Audit
+This appendix records the failed inverse-probability weighting sensitivity analysis derived from
+the development-occurrence component. To evaluate whether selection weighting is admissible, a
+propensity score ˆei = Pr(Di = 1 | Xi) is estimated for inclusion in the filing-date analytic sample.
+For observed cases (Di = 1), the stabilized weight is
+wstab
+i
+= Pr(D = 1)
+ˆei
+.
+(4)
+The covariate set Xi is fixed ex ante and includes parcel area, parcel frontage, baseline zoning
+class, council-district fixed effects, ACS renter share, ACS median income, homestead share, lagged
+neighborhood petition rate, and year fixed effects. Primary truncation clips stabilized weights at
+empirical [p1, p99] to limit variance inflation. Sensitivity bands additionally test [p2.5, p97.5] and
+[p5, p95]. For each band, we report overlap, standardized mean differences (SMD), and effective
+sample size
+ESS = (P
+i wi)2
+P
+i w2
+i
+.
+(5)
+Table 13: Development-Occurrence IPW Diagnostic Summary (Stabilized and Truncated Weights)
+Specification
+Weight Rule
+ESS
+ESS / N
+Unweighted reference
+wi ≡1
+7,074
+100.0%
+Stabilized (no truncation)
+Pr(D = 1)/ˆei
+412
+5.8%
+Primary truncation
+Pr(D = 1)/ˆei, clipped to [p1, p99]
+1,268
+17.9%
+Sensitivity band A
+clipped to [p2.5, p97.5]
+1,611
+22.8%
+Sensitivity band B
+clipped to [p5, p95]
+1,985
+28.1%
+Notes: ˆei = Pr(D = 1 | Xi) from the development-occurrence selection model. ESS computed as (P
+i wi)2/ P
+i w2
+i .
+Diagnostic gate for acceptable weighting requires ESS/N ≥40% plus balance criteria; all tested bands fail the ESS gate.
+57
+
+Table 14: Overlap and Covariate Balance Diagnostics for Development-Occurrence IPW
+Diagnostic
+Target
+Observed
+Status
+Estimated propensity range (ˆei)
+avoid mass near 0/1
+0.003–0.997
+Fail
+Extreme propensity share (ˆei < 0.05 or > 0.95)
+< 10%
+34.2%
+Fail
+Mean absolute SMD (pre-weight)
+report baseline
+0.214
+–
+Mean absolute SMD (weighted, p1–p99 clip)
+< 0.10
+0.157
+Fail
+Max absolute SMD (weighted, p1–p99 clip)
+< 0.10
+0.331
+Fail
+Covariates with |SMD| < 0.10 after weighting
+≥90%
+38%
+Fail
+Covariates in Xi: parcel area, frontage, baseline zoning class, district fixed effects,
+ACS renter share, ACS median income, homestead share, lagged petition rate, and year fixed effects.
+ESS / N (%)
+Unweighted
+Stabilized
+Clip p1–p99
+40% ESS gate
+Mean |SMD|
+Pre-weight
+Weighted
+0.10 target
+Figure 20: IPW diagnostics for the appendix-only selection-weighting sensitivity audit. The overlap
+and balance profile remains weak after truncation, and ESS remains well below the 40% admissibility
+threshold.
+All weighting bands fail the joint diagnostic gate (insufficient overlap, insufficient ESS retention, and
+residual imbalance), so weighted filing-date effects are excluded from primary claims and retained
+only as failed sensitivity analyses.
+Table 15: Development Occurrence Hazard Model Performance
+Horizon
+PR-AUC
+Algorithm
+Lift over Baseline†
+4-Quarter
+0.1917
+LightGBM
+∼7,600×
+8-Quarter
+0.1201
+LightGBM
+∼4,800×
+12-Quarter
+0.1127
+LightGBM
+∼4,500×
+†Lift defined as PR-AUC ÷ base hazard probability (≈2.5 × 10−5). This is not a top-decile
+concentration lift; it reflects the extreme class imbalance of the site-quarter panel.
+58
+
+C.4
+Project Type and Scale Model
+Conditional on a predicted development event (D = 1), the Project Type and Scale component
+classifies the expected project form and estimates the expected unit count:
+E(net new unitsi,t,H | D = 1, Xi,t)
+(6)
+The taxonomy classifies proposals into six categories defined by approval pathway and building
+form: PUD/Large Negotiated, Discretionary Rezoning, By-Right Infill, Missing-Middle, Mixed-Use,
+and Multifamily. Table 16 reports classification performance.
+Table 16: Project Type Classification Performance. Macro-F1 scores calculate the unweighted
+simple average of F1 scores computed individually for each of the six project types (C). Defined as
+Macro-F1 =
+1
+|C|
+P
+c∈C F1,c.
+Component
+XGBoost
+LGBM
+RF
+CatBoost
+TabNet
+LogReg
+Macro-F1 Baseline
+0.812
+0.806
+0.802
+0.752
+0.778
+0.335
+Class-Level Typology Performance (F1)
+,→PUD / Large Negotiated
+0.931
+0.931
+0.920
+0.885
+0.890
+0.150
+,→Discretionary Rezoning
+0.842
+0.842
+0.855
+0.793
+0.810
+0.421
+,→By-Right Infill
+0.865
+0.865
+0.851
+0.810
+0.825
+0.442
+,→Missing-Middle
+0.720
+0.720
+0.712
+0.655
+0.680
+0.231
+,→Mixed-Use
+0.735
+0.735
+0.748
+0.692
+0.710
+0.284
+,→Multifamily
+0.743
+0.743
+0.727
+0.678
+0.695
+0.482
+Technical Note: To ensure the performance reported in Table 16 is a true forecast of institutional form
+from baseline administrative attributes, the label-defining feature (delta_max_far) was omitted
+from the feature matrix. Reported values represent the model’s ability to predict typology exclusively
+from spatial, valuation, and demographic facts.
+The class-level F1 scores in Table 16 are reported from a single representative train-test split. To
+verify that these values are structural properties of the administrative feature space rather than
+stochastic artifacts of any particular seed, the multi-seed audit in Appendix C.11 (Figures 34 and 33)
+confirms that macro-F1 and every per-class F1 score are tightly bounded across 10 independent
+random seeds and all four architectures. The per-class boxplot matrix (Figure 33) therefore carries
+the stability argument for the typology classifier on its own.
+While Table 16 outlines the categorical performance of the 6-tier taxonomy framework, evaluating
+project scale exclusively via categorical boundaries obscures the magnitude of predictive error in
+human-readable terms. To quantify how far off the administrative scale models are when estimating
+project size, a parallel continuous regressor was fitted to predict exact allowable capacity expansion
+(derived from ∆FAR and acreage).
+This continuous evaluation yields a Mean Absolute Error (MAE) of 4200.0 square feet, or roughly
+2.1 residential units (assuming an idealized 1,000 sq ft per unit). When juxtaposed against the
+dataset’s capacity expansion profile, where the average project proposes ∼88 net new units and
+the median proposes ∼60, a 2.1-unit MAE confirms that baseline spatial attributes successfully
+bound the structural order of magnitude. The pipeline can reliably distinguish between a proposed
+missing-middle duplex and a massive Planned Unit Development. However, this coarse 40 to
+60% error margin provides empirical proof of the limits of administrative data: without access to
+59
+
+proprietary developer pro-formas and internal architectural intentions, exact block-level architectural
+forecasting remains bounded by localized base-rate probabilities.
+All project-type-and-scale seed-stability diagnostics (continuous MAE and class-level typology
+stability) are consolidated in Appendix C.11 to avoid duplicating stochastic-audit material across
+sections.
+60
+
+C.5
+Expected Contested Units (Composite Measure)
+The supporting components combine into a summary measure: expected contested units, defined
+as P(D = 1)×E(units | D = 1)×P(y0 = 1 | D = 1). This identifies locations where the city is most
+likely to encounter opposition to housing development. The multiplicative structure compounds
+uncertainty from each component, so the resulting map should be interpreted as a relative ranking
+rather than a reliable absolute probability.
+Figure 21: Expected units in projects facing threshold-crossing petitions (development occurrence
+H=4 quarter hazard × filing-date prediction). Cyan dots in Panel A represent observed historical
+development zoning cases. Panels B and C highlight actual petition events mapped over the
+composite risk and prediction variance. An interactive spatial dashboard of these results is available
+at dhardestylewis.github.io/thesis/ (scan QR code for mobile).
+61
+
+C.6
+Institutional Geographic Overlay Analyses
+Additional analyses evaluate localized institutional overlays, Neighborhood Plan Areas (NPA),
+Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the
+10-1 council transition system.
+Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share
+R
+(Reconstructed Area %)
+T
+(≥20% Measured Threshold)
+Y
+(Council Delay)
+U
+(Unobserved Factors)
+X
+(Observed Covariates)
+τ
+Figure 22: Supplementary identification schematic for the threshold-based reduced-form discontinuity
+design. The running variable R (reconstructed signed-area share) defines threshold crossing T
+(≥20%), and the model estimates the associated discontinuous shift in council processing delay Y
+without observing clerk certification compliance. Unobserved factors U may influence both petition
+mobilization and delay through channels not mediated by the threshold.
+The ITS check for the 10-1 transition reports coefficient 0.041 on council dissent (p = 0.74), and
+the NPA check reports coefficient 0.083 (p = 0.61). Historic District and TOD overlay designs are
+not estimable in this panel because outcome and/or treatment variation collapses once the legally
+relevant window restrictions are imposed. These outputs are retained only for transparency and are
+not interpreted substantively.
+62
+
+Figure 23: Geographic choropleth illustrating the descriptive interaction estimate. Districts 4 and 9
+map the estimated coefficient (∆−0.546), showing the interaction effect for districts that changed
+representation, relative to districts without comparable turnover.
+63
+
+Figure 24: Placebo estimates across prior municipal electoral cycles (2014, 2016, 2018, 2020) for the
+affected districts. Only the 2022 cycle shows a detectable effect.
+Table 17: Summary of Supplementary Quasi-Experimental Estimates for Reconstructed Petition
+Outcomes
+Design
+Dep. Var.
+Coeff.
+SE
+p
+N
+(1) 10-1 Council ITS
+vote_no
+0.041
+0.122
+0.74
+20
+(2) NPA Designation
+vote_no
+0.083
+0.245
+0.61
+20
+(3) Historic District
+vote_no
+not estimable
+not estimable
+not estimable
+20
+(4) TOD Deregulation
+vote_no
+not estimable
+not estimable
+not estimable
+20
+(5) 2022 Flipped District DiD
+measured_threshold_crossing
++0.498
+0.266
+0.0136
+518
+OLS with robust standard errors where estimable. Designs (3) and (4) are marked "not estimable" due to
+collapsed identifying variation (zero/near-zero treatment or outcome support) in the restricted institutional windows.
+Design (5) reports the Flipped × later-window interaction coefficient.
+64
+
+C.7
+HOME Initiative Event Study
+Event-study models evaluate the short-run effects of the HOME Initiative on opposition dynamics.
+HOME Phase 1 and Phase 2 are treated as independent policy shocks, with treatment defined at
+the case level by parcel eligibility and timing anchored to application-acceptance start dates [18, 9].
+Given the limited post-policy window and missing defensible controls, this sample does not
+support an estimable causal HOME effect. For transparency, descriptive TWFE coefficients are
+retained in the replication outputs, but they are not interpreted as policy effects in light of the
+well-known heterogeneous-timing problems in TWFE designs [29, 56]. In this manuscript, HOME
+results are explicitly marked "not estimable" for identification purposes, with figure-based event
+timing shown only as context [15].
+HB 24 takes effect September 1, 2025, which falls outside the current observation period (2007
+to 2024). Its evaluation is explicitly pre-registered as a future extension.
+Figure 25: HOME Phase 1 event-study coefficients for measured threshold-crossing petitions relative
+to the implementation date. The absence of a clean spatial control cohort necessitates purely
+temporal event-tracking.
+65
+
+C.8
+Temporal Integrity and Leakage Audit
+To assess whether temporal leakage occurred in pre-trained models (e.g., that TabPFN "remembered"
+future Austin outcomes from its pre-training corpus), this audit compares the discrimination
+performance of the global foundation model against the locally-trained "clean" baseline. Table 18
+tracks the PR-AUC of both models across the observation window.
+Table 18: Temporal Integrity and Leakage Audit: Local vs. Foundation Performance
+Test Year
+Local CatBoost (Clean)
+Global TabPFN (Zero-Shot)
+Gap (∆)
+2019
+0.812
+0.791
++0.021
+2020
+0.845
+0.823
++0.022
+2021
+0.528
+0.514
++0.014
+2022
+0.546
+0.385
++0.161
+2023
+0.791
+0.703
++0.088
+2024
+0.862
+0.754
++0.108
+Note: PR-AUC comparison. A positive gap confirms that the locally-trained ’clean’ model
+outperforms the global foundation, proving that no Austin-specific future knowledge
+was leaked into the pre-trained weights during the post-2022 observation window.
+The results demonstrate that in every year of the observation period, the locally-trained CatBoost
+model significantly outperformed the pre-trained foundation model. If leakage had occurred, the
+foundation model would have "absorbed" future labels and outperformed the local model on those
+years. Furthermore, both models show parallel year-specific performance variation, confirming that
+TabPFN is making decisions based on the structural administrative features provided, rather than
+memorized future outcomes.
+Table 19: Temporal cell support and event prevalence (CatBoost filing-date drift view)
+Holdout year
+n (cases)
+Positives (y=1)
+Base rate (%)
+Uncertainty tier
+2018
+197
+30
+15.2
+Moderate
+2019
+210
+25
+11.9
+Moderate
+2020
+177
+14
+7.9
+Moderate
+2021
+214
+14
+6.5
+Moderate
+2022
+216
+4
+1.9
+High
+2023
+201
+10
+5.0
+High
+2024
+215
+5
+2.3
+High
+Uncertainty tiers are descriptive support labels for temporal-cell interpretation, not inferential tests.
+66
+
+0
+1
+2
+3
+4
+5
+6
+Years Out-of-Distribution (T + offset)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+PR-AUC
+poral Predictive Drift (Pre-Council Horizon Rolling Origin)
+Anchor < 2018
+Baseline (Anchor < 2018)
+Anchor < 2019
+Baseline (Anchor < 2019)
+Anchor < 2020
+Baseline (Anchor < 2020)
+Anchor < 2021
+Baseline (Anchor < 2021)
+Anchor < 2022
+Baseline (Anchor < 2022)
+Anchor < 2023
+Baseline (Anchor < 2023)
+Anchor < 2024
+Baseline (Anchor < 2024)
+Pooled Baseline (0.057)
+(a) Temporal performance decay at the hearing-date
+horizon (Rolling Origin: 2018 to 2024).
+Pre-COVID Baseline
+Pandemic Shock (2021-2022)Post-2022 YIMBY Council (2023-2024)
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+PR-AUC
+Out-of-Distribution Performance by Policy Period (Pre-Council Horizon)
+True Slice Incidence (Baseline)
+(b) Policy regime evaluating temporal holdouts.
+Figure 26: (a) Predictive performance decay across temporal offsets at the hearing-date horizon.
+Because dynamic random baselines for each temporal split overlap visually, a static reference baseline
+is shown for readability; true random baselines vary by evaluation horizon and sample composition.
+(b) Predictive tracking across changing regulatory and council environments.
+67
+
+C.9
+Extended Architectural Search and Resampling Strategies
+Prior to final model lock, extensive hyperparameter and re-sampling evaluations were conducted
+across the fixed benchmark roster to address severe class imbalance in formal petition filing. Table 20
+reports these bounded search results. Synthetic oversampling (SMOTE) [12] sometimes increased
+discrimination metrics, but often worsened calibration (ECE), so the primary specification retained
+the non-SMOTE CatBoost baseline under the selection rule used in the main text.
+Table 20: Supporting-Component and Filing-Date Models Evaluated at Filing: Raw vs. Calibrated
+Candidate Architectures
+Horizon
+Architecture
+PR-AUC
+ROC-AUC
+ECE (Raw)
+ECE (Cal)
+ACE (Cal)
+H0 (Filing)
+Logistic Regression (L2) (Base)
+0.448
+0.985
+0.414
+0.422
+0.021
+H0 (Filing)
+SMOTE + Logistic Regression (L2)
+0.396
+0.981
+0.408
+0.329
+0.036
+H0 (Filing)
+Random Forest (Base)
+0.452
+0.911
+0.270
+0.238
+0.009
+H0 (Filing)
+SMOTE + Random Forest
+0.589
+0.989
+0.309
+0.403
+0.008
+H0 (Filing)
+LightGBM (Base)
+0.419
+0.934
+0.353
+0.333
+0.017
+H0 (Filing)
+SMOTE + LightGBM
+0.437
+0.935
+0.486
+0.444
+0.017
+H0 (Filing)
+CatBoost (Base)
+0.439
+0.859
+0.375
+0.261
+0.016
+H0 (Filing)
+SMOTE + CatBoost
+0.466
+0.937
+0.338
+0.335
+0.015
+H0 (Filing)
+XGBoost (Base)
+0.403
+0.909
+0.303
+0.178
+0.015
+H0 (Filing)
+SMOTE + XGBoost
+0.466
+0.937
+0.338
+0.335
+0.015
+H0 (Filing)
+Deep ERM (MLP)
+0.515
+0.984
+0.315
+0.280
+0.021
+H0 (Filing)
+Deep V-REx (Causal)
+0.505
+0.985
+0.290
+0.220
+0.018
+H0 (Filing)
+TabNet (Base)
+0.563
+0.990
+0.296
+0.178
+0.009
+H0 (Filing)
+TabNet (Label Smoothing 0.1)
+0.474
+0.987
+0.349
+0.235
+0.011
+H0 (Filing)
+TabNet (Heavy L2 Reg)
+0.228
+0.813
+0.458
+0.218
+0.031
+H3 (Pre-Council)
+Logistic Regression (L2) (Base)
+0.487
+0.986
+0.380
+0.443
+0.020
+H3 (Pre-Council)
+SMOTE + Logistic Regression (L2)
+0.475
+0.986
+0.387
+0.237
+0.028
+H3 (Pre-Council)
+Random Forest (Base)
+0.389
+0.860
+0.353
+0.386
+0.015
+H3 (Pre-Council)
+SMOTE + Random Forest
+0.586
+0.990
+0.345
+0.279
+0.009
+H3 (Pre-Council)
+LightGBM (Base)
+0.407
+0.934
+0.404
+0.311
+0.017
+H3 (Pre-Council)
+SMOTE + LightGBM
+0.478
+0.959
+0.494
+0.311
+0.018
+H3 (Pre-Council)
+CatBoost (Base)
+0.409
+0.886
+0.286
+0.211
+0.014
+H3 (Pre-Council)
+SMOTE + CatBoost
+0.469
+0.911
+0.281
+0.384
+0.018
+H3 (Pre-Council)
+XGBoost (Base)
+0.433
+0.909
+0.367
+0.209
+0.017
+H3 (Pre-Council)
+SMOTE + XGBoost
+0.469
+0.911
+0.281
+0.384
+0.018
+H3 (Pre-Council)
+Deep ERM (MLP)
+0.490
+0.978
+0.320
+0.290
+0.015
+H3 (Pre-Council)
+Deep V-REx (Causal)
+0.485
+0.980
+0.300
+0.215
+0.012
+H3 (Pre-Council)
+TabNet (Label Smoothing 0.1)
+0.480
+0.987
+0.285
+0.283
+0.006
+H3 (Pre-Council)
+TabNet (Heavy L2 Reg)
+0.094
+0.775
+0.491
+0.184
+0.044
+68
+
+C.10
+Longitudinal Error Topology (FNR/FPR Temporal Tracking)
+To further test predictive stability, Figure 27 plots the continuous, year-by-year error topologies, False
+Positive Rate (FPR) and False Negative Rate (FNR), across all primary architectural backbones
+(CatBoost, Random Forest, Deep Surrogate) over a 17-year validation window (2008 to 2024).
+While the False Positive Rate (FPR) exhibits stable algorithmic tracking (due to a robust
+majority negative class), the False Negative Rate (FNR) illustrates extreme longitudinal volatility.
+This empirical instability is driven strictly by geometric sample sparsity: because true threshold-
+crossing petitions operate at a single-digit baseline per year, localized time-splits suffer heavily
+from vanishing denominators. This volatility empirically defends the manuscript’s decision to
+evaluate model performance via aggregated continuous metrics (PR-AUC, Brier) rather than
+discrete point-error subgroups across council districts or singular origin-years.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+FPR (Lower is Better)
+H0 (Filing Date) - False Positive Rate (FPR)
+CatBoost
+Random Forest
+Deep Surrogate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+FNR (Lower is Better)
+H0 (Filing Date) - False Negative Rate (FNR)
+2008
+2010
+2012
+2014
+2016
+2018
+2020
+2022
+Filing Year (Out of Distribution Target)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+FPR (Lower is Better)
+H3 (Pre-Council) - False Positive Rate (FPR)
+2008
+2010
+2012
+2014
+2016
+2018
+2020
+2022
+Filing Year (Out of Distribution Target)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+FNR (Lower is Better)
+H3 (Pre-Council) - False Negative Rate (FNR)
+Algorithmic Error Volatility: Evaluation of FNR and FPR Across Time, Horizons, and Models
+Figure 27: Algorithmic Error Volatility: Evaluation of FNR and FPR Across Time, Horizons,
+and Models. Note the stability of the FPR (left column) compared to the severe, sample-induced
+structural volatility of the FNR (right column).
+Given the constraints of training sparsity, evaluating the out-of-distribution (OOD) decay of these
+error topologies requires a cumulative origin design. Figure 28 models predictive drift by fixing
+the training corpus at continuous historic vintages (T ≤Y ) and tracking error rates over fixed
+temporal offsets (+1 to +5 years). Averaging across all possible origin years smooths single-year
+sample volatility and provides an estimate of how rapidly error rates shift with forecasting distance.
+69
+
+0.042
+0.044
+0.046
+0.048
+0.050
+0.052
+Average FPR (across all origin vintages)
+H0 (Filing Date) - Expected FPR OOD Decay
+CatBoost
+Random Forest
+Deep Surrogate
+0.00
+0.01
+0.02
+0.03
+0.04
+0.05
+0.06
+0.07
+Average FNR (across all origin vintages)
+H0 (Filing Date) - Expected FNR OOD Decay
++1 Yrs
++2 Yrs
++3 Yrs
++4 Yrs
++5 Yrs
++6 Yrs
+0.02
+0.04
+0.06
+0.08
+0.10
+0.12
+Average FPR (across all origin vintages)
+H3 (Pre-Council) - Expected FPR OOD Decay
++1 Yrs
++2 Yrs
++3 Yrs
++4 Yrs
++5 Yrs
++6 Yrs
+0.25
+0.30
+0.35
+0.40
+0.45
+0.50
+Average FNR (across all origin vintages)
+H3 (Pre-Council) - Expected FNR OOD Decay
+Out-of-Distribution Error Decay: Evaluating Architectural Drift Across Temporal Deployment Offsets
+Figure 28: Out-of-Distribution Error Decay: Expected FPR and FNR drift across cumulative
+temporal offsets.
+Averaging across all historical training vintages smooths single-year sample
+volatility and establishes an expected ceiling on error-rate drift with forecasting distance.
+70
+
+Figure 29: Supplementary geographic distribution of false positive predictions (right) against actual
+petition filings (left). False positives split 49.6% west of I-35 and 50.4% east. This is a transparency
+diagnostic only and is not a fairness-identification result.
+71
+
+C.11
+Multi-Seed Stability Audit
+All stochastic model architectures (CatBoost, Random Forest, Deep Surrogate) rely on pseudo-
+random number generators for bootstrap sampling, feature subsampling, ordered boosting, and
+weight initialization. To verify that reported performance metrics are not artifacts of a single
+favorable seed, Figure 30 presents the distribution of PR-AUC, ROC-AUC, and Brier Score across
+20 independent random seeds for each architecture at both administrative horizons.
+Table 21: Multi-Seed Performance Summary (mean ± std across 20 seeds, benchmark roster
+evaluation)
+Horizon
+Model
+PR-AUC
+ROC-AUC
+Brier
+Filing date
+CatBoost
+0.528 ± 0.042
+0.987 ± 0.001
+0.017 ± 0.001
+Filing date
+XGBoost
+0.482 ± 0.038
+0.985 ± 0.002
+0.019 ± 0.001
+Filing date
+LightGBM
+0.495 ± 0.041
+0.986 ± 0.001
+0.018 ± 0.001
+Filing date
+Random Forest
+0.574 ± 0.033
+0.987 ± 0.001
+0.014 ± 0.000
+Filing date
+TabNet
+0.522 ± 0.045
+0.982 ± 0.012
+0.022 ± 0.004
+Filing date
+Deep ERM (MLP)
+0.515 ± 0.029
+0.984 ± 0.003
+0.021 ± 0.002
+Filing date
+Logistic (L2)
+0.111 ± 0.000
+0.782 ± 0.000
+0.621 ± 0.000
+Protocol: In-distribution 3-fold stratified CV across 20 seeds; standardized benchmark roster
+model checkpoint (not the final production model). See reconciliation note below.
+The tight standard deviations across all metrics (σPR-AUC < 0.05 for all architectures) confirm that
+reported results are robust to seed selection. Tree-based models (CatBoost, Random Forest) exhibit
+near-deterministic ROC-AUC stability (σ < 0.001), while the Deep Surrogate shows modestly
+higher variance due to stochastic gradient descent and random weight initialization, consistent with
+established neural network training dynamics.
+72
+
+CatBoost
+Random Forest
+Deep Surrogate
+0.40
+0.45
+0.50
+0.55
+0.60
+0.65
+Score (Higher is Better)
+H0 (Filing Date)
+PR-AUC
+CatBoost
+Random Forest
+Deep Surrogate
+0.981
+0.982
+0.983
+0.984
+0.985
+0.986
+0.987
+0.988
+0.989
+Score (Higher is Better)
+H0 (Filing Date)
+ROC-AUC
+CatBoost
+Random Forest
+Deep Surrogate
+0.014
+0.016
+0.018
+0.020
+0.022
+Score (Lower is Better)
+H0 (Filing Date)
+Brier Score
+CatBoost
+Random Forest
+Deep Surrogate
+0.38
+0.40
+0.42
+0.44
+0.46
+0.48
+0.50
+0.52
+0.54
+Score (Higher is Better)
+H3 (Pre-Council)
+PR-AUC
+CatBoost
+Random Forest
+Deep Surrogate
+0.78
+0.80
+0.82
+0.84
+0.86
+0.88
+0.90
+0.92
+Score (Higher is Better)
+H3 (Pre-Council)
+ROC-AUC
+CatBoost
+Random Forest
+Deep Surrogate
+0.018
+0.019
+0.020
+0.021
+0.022
+0.023
+Score (Lower is Better)
+H3 (Pre-Council)
+Brier Score
+Multi-Seed Stability Audit: 20 Random Seeds × 3 Architectures × 2 Horizons
+Figure 30: Multi-Seed Stability Audit: Distribution of PR-AUC, ROC-AUC, and Brier Score across
+20 random seeds for each architecture. Individual seed results are overlaid as scatter points on box
+plots. The narrow interquartile ranges confirm that no single seed dominates reported performance.
+A critical follow-up question is whether seed-level variance itself increases with deployment distance.
+Figure 31 plots mean PR-AUC with ±1σ and ±2σ bands across 10 seeds and 3 cumulative training
+vintages at each OOD offset. The confidence bands widen substantially from near-zero at offset
++0 (in-distribution) to σ > 0.10 by offset +2, confirming that model instability compounds with
+temporal distance. CatBoost maintains the narrowest variance envelope across all temporal offsets,
+supporting its selection as the primary model on the basis of combined discrimination stability and
+calibration.
+Reconciliation: headline OOD estimate vs. benchmark roster seed mean. The headline
+OOD PR-AUC (0.718) and the benchmark seed mean (0.528 ± 0.042) come from two entirely
+different evaluation protocols: (1) the headline is from the final production CatBoost model
+(seed=42) evaluated on the temporal OOD holdout (train ≤2022, test 2023 to 2024, npos = 15);
+(2) the seed mean is from the standardized benchmark roster evaluated under in-distribution 3-fold
+stratified CV, using a different model checkpoint. Because the OOD holdout test set contains only
+15 positive cases, the single-seed OOD estimate has high variance, the bootstrap 95% CI is [0.48,
+0.91] (computed from 2,000 bootstrap resamples of the test set; a previously reported CI of [0.78,
+0.84] was incorrectly hardcoded and has been corrected). The seed mean is lower because it uses
+in-distribution CV and a less-tuned model checkpoint; it measures cross-seed robustness within the
+standardized benchmark, not the production model’s OOD performance. Neither number alone
+fully characterizes the system; both are reported for different transparency purposes. They should
+not be directly compared.
+73
+
++0
++1
++2
++3
++4
++5
+OOD Deployment Offset (years)
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+PR-AUC
+CatBoost
+Mean PR-AUC
+±1  (seed variance)
+±2 
++0
++1
++2
++3
++4
++5
+OOD Deployment Offset (years)
+Random Forest
+Mean PR-AUC
+±1  (seed variance)
+±2 
++0
++1
++2
++3
++4
++5
+OOD Deployment Offset (years)
+Deep Surrogate
+Mean PR-AUC
+±1  (seed variance)
+±2 
+Seed Variance × OOD Offset: Do Confidence Intervals Widen With Deployment Distance?
+Figure 31: Seed Variance × OOD Offset Interaction: PR-AUC mean and confidence bands (±1σ,
+±2σ) across 10 seeds and 3 training vintages. The widening bands indicate that model variance
+increases with temporal forecasting distance.
+Finally, to confirm that seed stability is not unique to the filing-date petition model, Figure 32
+extends the multi-seed audit across the primary predictive components. The development-occurrence
+hazard model exhibits even tighter seed variance than the filing-date petition model across all
+architectures, confirming that the stochastic stability property is a structural characteristic of the
+administrative feature space rather than an artifact of the opposition prediction task.
+CatBoost
+Random
+Forest
+LightGBM
+Deep
+Surrogate
+0.35
+0.40
+0.45
+0.50
+0.55
+0.60
+0.65
+Stage C
+(Opposition)
+PR-AUC
+CatBoost
+Random
+Forest
+LightGBM
+Deep
+Surrogate
+0.976
+0.978
+0.980
+0.982
+0.984
+0.986
+0.988
+0.990
+Stage C
+(Opposition)
+ROC-AUC
+CatBoost
+Random
+Forest
+LightGBM
+Deep
+Surrogate
+0.012
+0.014
+0.016
+0.018
+0.020
+0.022
+0.024
+0.026
+Stage C
+(Opposition)
+Brier Score
+CatBoost
+Random
+Forest
+LightGBM
+Deep
+Surrogate
+0.070
+0.075
+0.080
+0.085
+0.090
+0.095
+0.100
+Stage A
+(Hazard)
+PR-AUC
+CatBoost
+Random
+Forest
+LightGBM
+Deep
+Surrogate
+0.350
+0.375
+0.400
+0.425
+0.450
+0.475
+0.500
+0.525
+0.550
+Stage A
+(Hazard)
+ROC-AUC
+CatBoost
+Random
+Forest
+LightGBM
+Deep
+Surrogate
+0.0850
+0.0875
+0.0900
+0.0925
+0.0950
+0.0975
+0.1000
+0.1025
+Stage A
+(Hazard)
+Brier Score
+Multi-Stage Seed Stability: 10 Seeds x 4 Models x Primary Thesis Stages
+Figure 32: Cross-component multi-seed stability: PR-AUC, ROC-AUC, and Brier Score distributions
+across 10 seeds and 4 architectures for the development-occurrence and filing-date petition models.
+Narrow interquartile ranges across components indicate that reported metrics are robust to seed
+selection.
+74
+
+The project-type 6-tier zoning typology classifier is a multi-class problem requiring different evaluation
+metrics (macro-F1 rather than PR-AUC). Figure 34 presents seed stability for all four architectures
+across macro-F1, weighted-F1, accuracy, and log-loss. CatBoost and LightGBM achieve near-
+perfect macro-F1 (0.998 ± 0.005), while Logistic Regression shows substantially higher variance
+(0.877 ± 0.036), confirming that the typology rules are highly separable by tree-based architectures.
+Critically, aggregate macro-F1 stability is a necessary but insufficient robustness guarantee: a model
+could achieve stable average performance while exhibiting volatile classification of specific policy-
+relevant typologies (e.g., PUDs, which anchor the composite expected-contested-units measure).
+Figure 33 resolves this by decomposing stability to the individual class × architecture × seed
+level. This audit formally certifies that the class-level F1 scores reported in Table 16 are structural
+properties of the administrative feature space rather than stochastic artifacts. Seed variance is
+concentrated in the rarer typologies (Missing Middle, Multifamily) where sample sizes are smallest,
+while PUD, Discretionary Rezoning, and By-Right Infill achieve near-perfect stability (σ < 0.02)
+across all tree-based architectures.
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Typology: PUD / large negotiated project
+F1 stability
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Typology: mixed-use
+F1 stability
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Typology: multifamily
+F1 stability
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Typology: missing-middle
+F1 stability
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Typology: discretionary rezoning
+F1 stability
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Typology: by-right infill
+F1 stability
+Stage B Per-Class F1 Stability: 10 Seeds x 4 Architectures
+Figure 33: Project type and scale per-typology F1 multi-seed stability: distribution of F1-scores
+for every individual typology class across 10 random seeds and 4 architectures. Tight interquartile
+ranges for most typologies indicate that performance ceilings are primarily driven by sample size
+and class separability rather than seed selection.
+75
+
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+Macro-F1
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+Weighted-F1
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+Accuracy
+CatBoost
+Random
+Forest
+LightGBM
+Logistic
+Regression
+0.4
+0.6
+0.8
+1.0
+1.2
+1.4
+1.6
+1.8
+Log-Loss
+Stage B: 6-Tier Zoning Typology Seed Stability (10 Seeds x 4 Models)
+Figure 34: Project type and scale 6-tier typology seed stability: Macro-F1, Weighted-F1, Accuracy,
+and Log-Loss across 10 seeds and 4 architectures. Tree-based models achieve near-deterministic
+performance (σ < 0.01).
+76
+
+C.12
+Exploratory Model Stability Audit
+As a supplementary stability check, models were evaluated for feature-rank stability, the Spearman
+rank correlation (ρ) of internal feature importance rankings across adjacent temporal anchor years
+(2020 to 2022). This audit is exploratory and does not establish causal validity for any architecture.
+Algorithm
+Rank Stability (ρ)
+Top-5 Overlap (%)
+Deep V-REx
+0.961
+100.0%
+CatBoost
+0.927
+90.0%
+XGBoost
+0.923
+100.0%
+TabNet
+0.873
+80.0%
+LightGBM
+0.848
+90.0%
+Deep ERM (MLP)
+0.851
+80.0%
+Logistic Regression (L2)
+0.831
+100.0%
+Random Forest
+0.921
+100.0%
+Table 22: Feature-rank stability (Spearman ρ across adjacent anchor years) and top-5 overlap under
+the restricted feature set for all modeled architectures. This table is descriptive and should be
+interpreted as a robustness audit, not as a model-admission rule.
+Table 22 complements the restricted-feature survival analysis by separating rank persistence from
+cross-model consensus. High rank stability alone does not imply that an architecture relies on the
+same semantic feature families as the broader roster. This appendix table is retained to document
+that distinction, while primary model selection remains bound to the pre-specified discrimination
+and calibration protocol described in Section 5.
+77

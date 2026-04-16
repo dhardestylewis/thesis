@@ -1,0 +1,14 @@
+| Model        | Profile     |   PRAUC |
+|:-------------|:------------|--------:|
+| RandomForest | Regularized |   0.681 |
+| RandomForest | HighCap     |   0.651 |
+| CatBoost     | HighCap     |   0.628 |
+| RandomForest | Default     |   0.626 |
+| XGBoost      | HighCap     |   0.621 |
+| CatBoost     | Regularized |   0.62  |
+| XGBoost      | Regularized |   0.603 |
+| TabNet       | Default     |   0.601 |
+| XGBoost      | Default     |   0.6   |
+| CatBoost     | Default     |   0.588 |
+| TabNet       | Regularized |   0.297 |
+| TabNet       | HighCap     |   0.135 |

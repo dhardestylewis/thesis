@@ -1,0 +1,9 @@
+Mathematical_Cluster,Semantic_Name,Features_Contained,Total_Attribution_Magnitude,Dominant_Features
+1,Historical Lag Matrices & Density Rules,58,18.378372590052965,delta_max_height_ft | district_gross_site_area_acres_lag_2yr | district_latitude_lag_1yr | district_longitude_lag_2yr | renter_share
+5,Lot Size & Boundary Geometry,1,15.040414759357537,gross_site_area_acres
+2,Raw Topographical Valuation,1,13.137523895065442,std_appraised_value
+6,Absolute Geographic Positioning,1,11.545794471714904,latitude
+3,The Relational Laws of Gravity (Momentum & Valuation),7,9.72941889434979,spatial_contagion_1yr | mean_appraised_value | median_neighbor_far | spatial_contagion_3yr | median_appraised_value
+7,Absolute Geographic Positioning,1,8.38254141564524,longitude
+0,Demographic Geometry (Scale & Wealth),3,8.301201440983304,median_household_income | delta_max_far | median_sqft
+4,Architectural Constraints,1,6.127751323133833,delta_max_bldg_cov_pct

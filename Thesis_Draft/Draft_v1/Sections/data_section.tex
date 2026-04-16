@@ -3,7 +3,7 @@
 % Daniel Hardesty Lewis, Columbia GSAPP
 %
 % This file is \input'd into the main thesis document.
-% It describes the panel dataset construction, sources, and temporal leakage audit.
+% It describes the panel construction, sources, and temporal leakage audit.
 
 \section{Data}
 \label{sec:data}
@@ -14,7 +14,7 @@ We construct a balanced property-year panel of 2,902 properties $\times$ 18 year
 (2007--2024) = 52,236 observations for Travis County (Austin), Texas.
 The panel links individual parcels to zoning protest petition outcomes and
 time-varying covariates from five independent data sources.
-Following Peters et al.\ (2016), we treat calendar years as distinct environments
+Following Peters et al.\ (2016), calendar years are treated as distinct environments
 $\mathcal{E}$ for Invariant Causal Prediction.
 
 \subsection{Data Sources}
@@ -23,7 +23,7 @@ $\mathcal{E}$ for Invariant Causal Prediction.
     \item \textbf{Zoning Protest Petitions} (2007--2024). Supermajority protest letters filed
     with the Austin City Clerk opposing zoning changes.
     Extracted via OCR from scanned petition documents, geocoded to TCAD parcels.
-    The dataset contains 27,363 property-petition records. Our binary outcome variable
+    The sample contains 27,363 property-petition records. Our binary outcome variable
     $Y_{it} = 1$ when a protest petition was filed for property $i$ in year $t$; the
     base rate is 5.75\% across all property-years, with 3,004 positive observations.
 
@@ -31,7 +31,7 @@ $\mathcal{E}$ for Invariant Causal Prediction.
     Annual property appraisal data from the Travis Central Appraisal District,
     following the Texas Comptroller's standardized 84-field EARS format.
     Appraisals are assessed as of January~1 of each tax year, prior to the zoning protest period.
-    We achieve a 72.7\% match rate on eligible property-years via an ID crosswalk
+    A 72.7\% match rate on eligible property-years is achieved via an ID crosswalk
     using the City of Austin Land Use Inventory's \texttt{property\_id} field
     (257,764 overlapping accounts).
 
@@ -67,7 +67,7 @@ protest petitions dataset, then expand each property across all 18 years in scop
 A key challenge is linking TCAD parcel identifiers to EARS appraisal roll accounts.
 The protest petitions use 10-digit \texttt{standardized\_tcad\_id} values
 (e.g., 0211220425), while EARS uses 6-digit \texttt{account\_number} values
-(e.g., 237076) with zero direct overlap. We resolve this through the
+(e.g., 237076) with zero direct overlap. This is resolved through the
 City of Austin Land Use Inventory, whose \texttt{property\_id} field matches
 EARS \texttt{account\_number}, yielding a crosswalk of 269,108 parcel-to-account mappings.
 
@@ -75,9 +75,9 @@ EARS \texttt{account\_number}, yielding a crosswalk of 269,108 parcel-to-account
 \label{sec:forwardfill}
 
 Several data sources provide periodic snapshots rather than annual observations.
-We apply a forward-fill strategy: for each property-year, we use the most recent
+A forward-fill strategy is applied: for each property-year, the most recent
 snapshot value observed at or before the panel year. For panel years preceding the
-earliest snapshot, we backward-fill from the first available observation.
+earliest snapshot, it is backward-filled from the first available observation.
 Each forward-filled variable is accompanied by a \texttt{\_source\_year} column
 indicating which snapshot the value originates from, enabling transparency and
 sensitivity analysis.
@@ -114,9 +114,9 @@ We classify every candidate variable into three risk categories:
 
     \item[CAUTION (7 variables):] Potential indirect leakage requiring mitigation.
     For example, \texttt{most\_recent\_sale\_date} may reflect post-protest transactions;
-    we use only lagged ($t-1$) values or derive time-since-sale features.
+    only lagged ($t-1$) values are used or time-since-sale features are derived.
     Similarly, \texttt{zoning\_code} may change as a \textit{result} of the zoning case
-    under protest, so we use prior-year values only.
+    under protest, so prior-year values are used exclusively.
 
     \item[EXCLUDE (2 variables):] Direct outcome leakage.
     The EARS fields \texttt{arb\_protest\_flag} (AJR078) and \texttt{arb\_protest\_result} (AJR079)
@@ -130,7 +130,7 @@ The complete audit trail is documented in the project's Variable Codebook
 
 \subsection{Environments for Invariant Prediction}
 
-Following Peters et al.\ (2016) and Bühlmann (2020), we treat calendar years as
+Following Peters et al.\ (2016) and Bühlmann (2020), calendar years are treated as
 distinct environments $\mathcal{E} = \{e_1, e_2, \ldots, e_T\}$.
 This is justified by the significant variation in Austin's real estate market regimes
 across the study period --- including pre-2008 growth, the 2008--2010 recession,

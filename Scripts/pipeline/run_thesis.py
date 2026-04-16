@@ -1,0 +1,413 @@
+"""
+run_thesis.py: The Top-Level Thesis Orchestrator
+
+This script executes the entire empirical pipeline for the Austin NIMBY thesis.
+It runs the 4-Stage Predictive Pipeline, the 2-Track Causal Pipeline, and the
+Visualizations/Tables pipeline using exclusively real data from the Data/Warehouse_As_Of/ directory. 
+All outputs are written to the Analysis/Output/ directory and draft Figures folders.
+"""
+import sys
+import os
+import time
+import datetime
+
+class DualLogger:
+    def __init__(self, filename):
+        self.terminal = sys.stdout
+        self.log = open(filename, "w", encoding='utf-8')
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+
+ROOT = r"C:\Users\dhl\data\thesis\thesis"
+log_dir = os.path.join(ROOT, "Analysis", "Scripts", "Modeling", "Utilities_and_Logs")
+os.makedirs(log_dir, exist_ok=True)
+run_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+sys.stdout = DualLogger(os.path.join(log_dir, f"empirical_run_{run_id}.log"))
+
+# Add Scripts to path so we can import modules
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Modeling"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Modeling", "Production_Models"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Visualization"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Visualization", "Production_Figures"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "DiD"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts", "Warehouse_Builder"))
+sys.path.append(os.path.join(ROOT, "Analysis", "Scripts"))
+from artifact_registry import TraceabilityRegistry as AR
+
+# Import pipeline stages (Real Data Versions)
+import StageA_development_hazard as stage_a
+import StageB_6_Tier_Classifier as stage_b
+import StageC_opposition_risk as stage_c
+import evaluate_fairness_thresholds as fairness_audit
+import StageD_institutional_outcome_real as stage_d
+import StageF_generative_simulation as stage_f
+import run_causal_track2_rd_real as track2
+import run_causal_track3_did_real as track3
+import run_multi_horizon as multi_horizon_table
+import run_alternative_architectures as alt_arch
+import run_rolling_origin_real as rolling_origin
+
+# Import Visualizations & Tables (Real Data Versions)
+import plot_F8_Calibration_real as f8
+import plot_combined_calibration_real as combined_cal
+import plot_F12_PR_real as f12
+import plot_F16_RD_real as f16
+import plot_F17_DiD_real as f17
+import plot_Track1_exhibits_real as t1_ex
+import generate_interactive_3d as plot_3d
+import plot_F12_PR_real as f12_pr
+import generate_summary_stats_real as stats_table
+import plot_F19_F20_Qualitative as f19_f20
+import plot_F22_HexMap as f22
+import generate_stageA_exhibits as stage_a_exhibits
+import generate_thesis_figures as fig1_and_more
+import importlib
+try:
+    geographic_causal = importlib.import_module("34_geographic_causal_designs")
+except Exception as e:
+    geographic_causal = None
+try:
+    sweeps = importlib.import_module("18_real_model_sweeps")
+except Exception as e:
+    sweeps = None
+
+def print_header(title):
+    print("\n" + "="*60)
+    print(f" {title}")
+    print("="*60)
+
+def main():
+    start_time = time.time()
+    
+    # Enable bypass for heavy 5M row CatBoost matrix if --fast is passed
+    fast_mode = '--fast' in sys.argv
+    if fast_mode:
+        print_header("THESIS ORCHESTRATOR: END-TO-END EXECUTION [FAST MODE ENABLED]")
+    else:
+        print_header("THESIS ORCHESTRATOR: END-TO-END EXECUTION")
+    
+    # ---------------------------------------------------------
+    # PART 0: WAREHOUSE ENGINEERING
+    # ---------------------------------------------------------
+    print_header("PHASE 0: WAREHOUSE ENGINEERING")
+    print("[+] Rebuilding Invariant Causal Prediction (ICP) Data Matrix...")
+    try:
+        if fast_mode:
+            print("    [--fast bypass] Skipping programmatic regeneration of the submission_grade_icp_matrix.csv...")
+        else:
+            icp_gen = os.path.join(ROOT, "Analysis", "Scripts", "Pipeline", "03_Data_Engineering_and_Panel_Builds", "build_submission_demographics.py")
+            os.system(f'python "{icp_gen}" > NUL')
+            print("    Output: Data/Zoning_Cases/Processed_Data/CSV/submission_grade_icp_matrix.csv")
+    except Exception as e:
+        print(f"    [!] Error running ICP Builder: {e}")
+
+    # ---------------------------------------------------------
+    # PART 1: PREDICTIVE PIPELINE (Stages A - D)
+    # ---------------------------------------------------------
+    print_header("PHASE 1: PREDICTIVE PIPELINE")
+    
+    print("[+] Stage A: Development Hazard (Computed via StageA_development_hazard.py)")
+    stage_a_path = str(AR.STAGE_A_HAZARD_RESULTS)
+    try:
+        if fast_mode and os.path.exists(stage_a_path):
+            print(f"    [--fast bypass] Found cached Stage A hazard probabilities ({os.path.getsize(stage_a_path) / 1e6:.1f} MB). Skipping heavy CatBoost 5M-row training!")
+        else:
+            stage_a.run_stage_a()
+            print("    Output: Analysis/Output/Track0_Predictive/stage_a_hazard_results.csv (1.08 GB)")
+    except Exception as e:
+        print(f"    [!] Error running Stage A: {e}")
+    
+    print("\n[+] Stage B: Project Scale & Typology")
+    try:
+        stage_b.run_stage_b()
+    except Exception as e:
+        print(f"    [!] Error running Stage B: {e}")
+        
+    print("\n[+] Stage C: Neighborhood Opposition Risk")
+    try:
+        stage_c.run_track1()
+    except Exception as e:
+        print(f"    [!] Error running Stage C: {e}")
+        
+    print("\n[+] Stage C.2: Fairness Sensitivity Audit")
+    try:
+        fairness_audit.run_experiment()
+    except Exception as e:
+        print(f"    [!] Error running Fairness Audit: {e}")
+
+    print("\n[+] Stage C.3: Deep Temporal Drift Topology")
+    try:
+        from Analysis.Scripts.Modeling.Production_Models import run_rolling_origin_real
+        run_rolling_origin_real.run_rolling_origin_drift()
+    except Exception as e:
+        print(f"    [!] Error running Deep Temporal Drift: {e}")
+
+    print("\n[+] Stage C.3: Supplemental Point-7 Metrics (Brier, Subgroup Ns, ECE CI)")
+    try:
+        supp_metrics_path = os.path.join(ROOT, "Analysis", "Scripts", "supplemental_metrics.py")
+        exec(open(supp_metrics_path, encoding='utf-8').read())
+    except Exception as e:
+        print(f"    [!] Error running Supplemental Metrics: {e}")
+        
+    print("\n[+] Stage D: Institutional Outcome")
+    try:
+        stage_d.run_stage_d()
+    except Exception as e:
+        print(f"    [!] Error running Stage D: {e}")
+
+    print("\n[+] Stage F: Generative Forward Simulation (Future Work Skeleton)")
+    # try:
+    #     stage_f.run_generative_simulation()
+    # except Exception as e:
+    #     print(f"    [!] Error running Stage F: {e}")
+
+    # ---------------------------------------------------------
+    # PART 2: CAUSAL PIPELINE (Tracks 2 & 3)
+    # ---------------------------------------------------------
+    print_header("PHASE 2: CAUSAL PIPELINE")
+    
+    try:
+        track2.run_track2()
+    except Exception as e:
+        print(f"    [!] Error running Track 2: {e}")
+        
+    try:
+        track3.run_track3()
+    except Exception as e:
+        print(f"    [!] Error running Track 3: {e}")
+
+    try:
+        if geographic_causal:
+            geographic_causal.execute_designs()
+    except Exception as e:
+        print(f"    [!] Error running Geographic Causal Designs: {e}")
+
+    # ---------------------------------------------------------
+    # PART 3: TABLES & VISUALIZATIONS
+    # ---------------------------------------------------------
+    print_header("PHASE 3: TABLES & VISUALIZATIONS")
+    
+    try:
+        stats_table.generate_summary_stats()
+    except Exception as e:
+        print(f"    [!] Error generating summary stats table: {e}")
+
+    try:
+        multi_horizon_table.main()
+    except Exception as e:
+        print(f"    [!] Error generating Table 8 (Multi-Horizon): {e}")
+
+    try:
+        rolling_origin.run_rolling_origin_drift()
+    except Exception as e:
+        print(f"    [!] Error generating Table 6 (Rolling Origin Temporal Drift): {e}")
+
+    try:
+        alt_arch.main()
+    except Exception as e:
+        print(f"    [!] Error generating Alternative Architectures Benchmark: {e}")
+
+    try:
+        f8.plot_f8()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 8 (Calibration): {e}")
+
+    try:
+        combined_cal.plot_combined_calibration()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 8/12 Combined (Calibration): {e}")
+
+    try:
+        f12.plot_f12()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 12 (PR Curves): {e}")
+
+    try:
+        f16.plot_f16()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 16 (RD): {e}")
+        
+    try:
+        f17.plot_f17()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 17 (DiD): {e}")
+
+    try:
+        placebo_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "DiD", "electoral_placebo_did.py")
+        os.system(f'python "{placebo_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Electoral Placebo DiD matrix: {e}")
+
+    try:
+        t1_ex.plot_all_track1_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Track 1 exhibits: {e}")
+
+    try:
+        f12_pr.plot_f12()
+    except Exception as e:
+        print(f"    [!] Error generating Authentic PR Curves (F12): {e}")
+
+    try:
+        plot_3d.main()
+    except Exception as e:
+        print(f"    [!] Error generating 3D Drift exhibits: {e}")
+
+    try:
+        stability_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "attribution_stability.py")
+        os.system(f'python "{stability_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Attribution Stability exhibits: {e}")
+
+    try:
+        multi_horizon_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "test_multi_horizon.py")
+        os.system(f'python "{multi_horizon_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Multi-Horizon Attribution exhibits: {e}")
+
+    try:
+        meta_cluster_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "meta_attribution_clustering.py")
+        os.system(f'python "{meta_cluster_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Meta-Attribution Clustering exhibits: {e}")
+
+    try:
+        unclustered_fig_script = os.path.join(ROOT, "scripts", "plot_unclustered_dynamic.py")
+        os.system(f'python "{unclustered_fig_script}"')
+        print("    [+] Generated Unclustered Dynamic Figure (fig_unclustered_dynamic.pdf)")
+    except Exception as e:
+        print(f"    [!] Error generating Unclustered Dynamic Figure: {e}")
+
+    try:
+        clustered_fig_script = os.path.join(ROOT, "scripts", "plot_clustered_dynamic.py")
+        os.system(f'python "{clustered_fig_script}"')
+        print("    [+] Generated Clustered Dynamic Figure (fig_clustered_dynamic.pdf)")
+    except Exception as e:
+        print(f"    [!] Error generating Clustered Dynamic Figure: {e}")
+
+    try:
+        unclustered_table_script = os.path.join(ROOT, "generate_unclustered_table.py")
+        os.system(f'python "{unclustered_table_script}"')
+        print("    [+] Generated Unclustered Dynamic Table (unclustered_stability.tex)")
+    except Exception as e:
+        print(f"    [!] Error generating Unclustered Dynamic Table: {e}")
+
+    try:
+        f19_f20.generate_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 19/20 (Qualitative): {e}")
+
+    try:
+        f22.generate_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 22 (HexMap): {e}")
+
+    try:
+        f23_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "plot_F23_Spatial_Error.py")
+        os.system(f'python "{f23_script}"')
+    except Exception as e:
+        print(f"    [!] Error generating Figure 23 (Spatial Error Map): {e}")
+
+    try:
+        stage_a_exhibits.generate_exhibits()
+    except Exception as e:
+        print(f"    [!] Error generating Stage A exhibits: {e}")
+
+    try:
+        fig1_and_more.main()
+    except Exception as e:
+        print(f"    [!] Error generating Figure 1 (Spatial Map) and others: {e}")
+
+    try:
+        if sweeps:
+            sweeps.run_real_pipelines()
+        else:
+            print("    [!] Could not load 18_real_model_sweeps module.")
+    except Exception as e:
+        print(f"    [!] Error generating Real Model Sweeps (Fig 8, 9, 10): {e}")
+
+    # ---------------------------------------------------------
+    # PART 3.5: ARCHITECTURAL KNOCKOUT AUDITS
+    # ---------------------------------------------------------
+    print_header("PHASE 3.5: ARCHITECTURAL KNOCKOUT AUDITS")
+    
+    try:
+        if fast_mode:
+            print("    [--fast bypass] Skipping computationally heavy 20-Seed T-Test and Deep Surrogate Pruning...")
+        else:
+            ttest_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "run_20seed_ttest.py")
+            os.system(f'python "{ttest_script}"')
+            print("    [+] Evaluated 20-Seed Feature Ablation T-Test")
+            
+            pruning_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "run_deep_surrogate_pruning.py")
+            os.system(f'python "{pruning_script}"')
+            print("    [+] Evaluated PyTorch Deep Surrogate Latent Node Pruning")
+
+            sandbox_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "run_invariant_core_sandbox.py")
+            os.system(f'python "{sandbox_script}"')
+            print("    [+] Evaluated Invariant Core Spuriousness Index")
+
+            disq_script = os.path.join(ROOT, "Analysis", "Scripts", "Experiments", "SHAP", "algorithmic_disqualification_audit.py")
+            os.system(f'python "{disq_script}"')
+            print("    [+] Evaluated Multi-Era Taxonomic Disqualification")
+    except Exception as e:
+        print(f"    [!] Error running Architectural Knockout Audits: {e}")
+
+    # ---------------------------------------------------------
+    # PART 4: AST SEMANTIC NARRATIVE GENERATION
+    # ---------------------------------------------------------
+    print_header("PHASE 4: EVALUATING LLM NARRATIVE AST DEPENDENCIES")
+    try:
+        from Analysis.Scripts.Modeling.Production_Models import StageE_narrative_generation
+        StageE_narrative_generation.run_stage_e()
+    except Exception as e:
+        print(f"    [!] Error during semantic AST generation: {e}")
+
+    # ---------------------------------------------------------
+    # PART 5: LATEX COMPILATION
+    # ---------------------------------------------------------
+    print_header("PHASE 5: COMPILING THESIS DOCUMENT")
+    
+    # Save current DIR to return after
+    current_cwd = os.getcwd()
+    target_dir = os.path.join(ROOT, "Thesis_Draft", "Draft_v1")
+    os.chdir(target_dir)
+
+    # Final build gate: block thesis compilation if submission integrity checks fail
+    gate_script = os.path.join(ROOT, "scripts", "11_final_build_gate.py")
+    gate_result = os.system(f'python "{gate_script}"')
+    if gate_result != 0:
+        print("\n[-] Final submission build gate failed. Blocking PDF compilation.")
+        os.chdir(current_cwd)
+        return
+
+    # Multi-pass LaTeX compilation for TOC and Citations
+    print("[*] PASS 1: PDFLaTeX")
+    os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex > NUL")
+    print("[*] PASS 2: BibTeX")
+    os.system("bibtex Austin_NIMBY_Thesis_Draft > NUL")
+    print("[*] PASS 3: PDFLaTeX (References)")
+    os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex > NUL")
+    print("[*] PASS 4: PDFLaTeX (Final)")
+    result = os.system("pdflatex -interaction=nonstopmode Austin_NIMBY_Thesis_Draft.tex > NUL")
+    
+    if result == 0:
+        print("\n[+] Thesis PDF compiled successfully (Austin_NIMBY_Thesis_Draft.pdf).")
+    else:
+        print("\n[-] PDF compilation returned warnings or errors. Check .log file.")
+
+    os.chdir(current_cwd)
+
+    end_time = time.time()
+    minutes = (end_time - start_time) / 60
+    print_header(f"ORCHESTRATOR COMPLETE ({minutes:.1f} minutes)")
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,55 @@
+\begin{table}[htbp]
+\centering
+\caption[Temporal Drift (Top-Decile Lift)]{\textbf{Temporal predictive drift: top-decile lift decay by algorithm.}}
+\label{tab:temporal_drift_lift}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Anchor Training} & \textbf{2018} & \textbf{2019} & \textbf{2020} & \textbf{2021} & \textbf{2022} & \textbf{2023} & \textbf{2024} \\
+\midrule
+CatBoost Pre-2018 & 5.910 & \textbf{7.200} & 8.429 & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+CatBoost Pre-2019 & --- & 6.000 & 8.429 & \textbf{7.643} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+CatBoost Pre-2020 & --- & --- & \textbf{8.429} & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+CatBoost Pre-2021 & --- & --- & --- & 7.643 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+CatBoost Pre-2022 & --- & --- & --- & --- & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+CatBoost Pre-2023 & --- & --- & --- & --- & --- & \textbf{9.571} & \textbf{9.773} \\
+CatBoost Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{9.773} \\
+LightGBM Pre-2018 & 6.238 & 6.000 & 8.429 & 6.253 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+LightGBM Pre-2019 & --- & 6.000 & 8.429 & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+LightGBM Pre-2020 & --- & --- & \textbf{8.429} & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+LightGBM Pre-2021 & --- & --- & --- & 7.643 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+LightGBM Pre-2022 & --- & --- & --- & --- & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+LightGBM Pre-2023 & --- & --- & --- & --- & --- & \textbf{9.571} & \textbf{9.773} \\
+LightGBM Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{9.773} \\
+Logistic (L2) Pre-2018 & \textbf{6.567} & \textbf{7.200} & 9.131 & 6.253 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Logistic (L2) Pre-2019 & --- & \textbf{6.400} & \textbf{9.131} & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Logistic (L2) Pre-2020 & --- & --- & \textbf{8.429} & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Logistic (L2) Pre-2021 & --- & --- & --- & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Logistic (L2) Pre-2022 & --- & --- & --- & --- & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Logistic (L2) Pre-2023 & --- & --- & --- & --- & --- & \textbf{9.571} & \textbf{9.773} \\
+Logistic (L2) Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{9.773} \\
+Random Forest Pre-2018 & 6.238 & 6.000 & 8.429 & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Random Forest Pre-2019 & --- & 6.000 & 8.429 & \textbf{7.643} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Random Forest Pre-2020 & --- & --- & \textbf{8.429} & \textbf{7.643} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Random Forest Pre-2021 & --- & --- & --- & \textbf{8.338} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Random Forest Pre-2022 & --- & --- & --- & --- & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+Random Forest Pre-2023 & --- & --- & --- & --- & --- & \textbf{9.571} & \textbf{9.773} \\
+Random Forest Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{9.773} \\
+TabNet Pre-2018 & 5.582 & \textbf{7.200} & \textbf{9.833} & 6.253 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+TabNet Pre-2019 & --- & 6.000 & 8.429 & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+TabNet Pre-2020 & --- & --- & 7.726 & \textbf{7.643} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+TabNet Pre-2021 & --- & --- & --- & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+TabNet Pre-2022 & --- & --- & --- & --- & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+TabNet Pre-2023 & --- & --- & --- & --- & --- & \textbf{9.571} & \textbf{9.773} \\
+TabNet Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{9.773} \\
+XGBoost Pre-2018 & 5.910 & 6.000 & 8.429 & \textbf{7.643} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+XGBoost Pre-2019 & --- & 6.000 & 8.429 & \textbf{7.643} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+XGBoost Pre-2020 & --- & --- & \textbf{8.429} & \textbf{7.643} & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+XGBoost Pre-2021 & --- & --- & --- & 6.948 & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+XGBoost Pre-2022 & --- & --- & --- & --- & \textbf{9.818} & \textbf{9.571} & \textbf{9.773} \\
+XGBoost Pre-2023 & --- & --- & --- & --- & --- & \textbf{9.571} & \textbf{9.773} \\
+XGBoost Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{9.773} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
