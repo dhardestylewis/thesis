@@ -10,6 +10,8 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
 
 % Metric macros shared with the main thesis document
 \input{Tables/chapter4_performance/tbl_ch4_08_metrics_config.tex}
@@ -59,7 +61,7 @@
 \begin{frame}[plain]
     \titlepage
 \end{frame}
-\note{\textbf{[1 min]} One sentence: this thesis asks whether formal protest petitions against housing development in Austin can be predicted at filing, using only administrative records. Roadmap: institutional stakes first, then prediction results, then limitations and implications.}
+\note{\textbf{[1 min]} One sentence: can formal protest petitions against housing development in Austin be predicted at filing, using only administrative records? Roadmap: institutional stakes first, then prediction results, then limitations and implications.}
 
 % ===== SLIDE 2: Motivation =====
 \begin{frame}{Housing Crisis and Local Opposition}
@@ -94,18 +96,73 @@
             \item Post-2014 council (11 members): 6 votes $\rightarrow$ 9 required.
             \item 21 states maintain similar petition statutes.
         \end{itemize}
-        \vspace{0.8em}
+        \vspace{0.5em}
         \textit{A localized minority can block citywide housing decisions.}
 
         \column{0.45\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth, height=0.60\textheight, keepaspectratio]{appendix/fig_app_04_sample_protest_petition_v15.pdf} \\
-        \footnotesize \textit{Sample formal protest petition record}
+        \vspace{0.5em}
+        \resizebox{\linewidth}{!}{%
+        \begin{tikzpicture}[
+          node distance=0.8cm,
+          box/.style={rectangle, draw=black, thick, fill=gray!10,
+                      text width=2.2cm, align=center, rounded corners,
+                      minimum height=0.9cm, font=\small},
+          arrow/.style={thick,->,>=stealth}
+        ]
+          \node[box] (filing)  {1. Developer Filing};
+          \node[box, below=of filing]  (staff)   {2. City Staff Review};
+          \node[box, below=of staff]   (zapco)   {3. Planning Commission};
+          \node[box, below=of zapco]   (council) {4. City Council};
+          \node[box, right=1.6cm of council,
+                draw=red, fill=red!8, text=red,
+                font=\small\bfseries] (protest) {20\% Threshold};
+
+          \draw[arrow] (filing)  -- (staff);
+          \draw[arrow] (staff)   -- (zapco);
+          \draw[arrow] (zapco)   -- (council);
+          \draw[arrow, dashed, red, thick] (protest) --
+              node[above, text=red, font=\tiny\itshape,
+                   yshift=0.1cm] {May Require}
+              node[below, text=red, font=\tiny\itshape,
+                   yshift=-0.1cm] {Supermajority}
+              (council);
+        \end{tikzpicture}
+        }
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} Key counterintuitive point: this is not a citywide referendum, only neighbors within 200 feet. Austin's council expanded from 7 to 11 members with the 10-1 district reform in 2014; the supermajority for 11 members is 9 votes. The petition document shows the precise geometric calculation of signed lot area against total buffer area.}
+\note{\textbf{[2 min]} Key counterintuitive point: only neighbors within 200 feet can trigger the supermajority requirement. Austin's council expanded from 7 to 11 members with the 10-1 district reform in 2014; the supermajority for 11 members is 9 votes. The flowchart shows that the petition arrives after filing and before the Council reading, creating a supermajority constraint at the legislative stage.}
 
-% ===== SLIDE 4: RD Result =====
+% ===== SLIDE 4: State Comparison =====
+\begin{frame}{Protest Petition Rules Across States}
+    \begin{columns}
+        \column{0.58\textwidth}
+        \small
+        \begin{tabular}{lccc}
+            \toprule
+            \textbf{State} & \textbf{Threshold} & \textbf{Buffer} & \textbf{Supermajority} \\
+            \midrule
+            \textbf{Texas} & \textbf{20\%} & \textbf{200ft} & \textbf{3/4} \\
+            Iowa            & 20\%          & 200ft          & 3/4 \\
+            New York        & 20\%          & 100ft          & 3/4 \\
+            Colorado        & 20\%          & 100ft          & 2/3 \\
+            Oklahoma        & 50\%          & 300ft          & 3/5 or 3/4 \\
+            Massachusetts   & 50\%          & 300ft          & 2/3 \\
+            \bottomrule
+        \end{tabular}
+        \vspace{0.5em}
+
+        \footnotesize \textit{Source: Furth \& McKinley (2025). 21 states maintain active protest petition statutes.}
+
+        \column{0.42\textwidth}
+        \centering
+        \includegraphics[width=\linewidth, height=0.62\textheight, keepaspectratio]{ch2/fig_ch2_01_waller_buffer_map.png}
+        \footnotesize \textit{200ft parcel buffer defining the petition area}
+    \end{columns}
+\end{frame}
+\note{\textbf{[1.5 min]} Key variation across states: threshold (20\% vs 50\%), buffer (100--300ft), supermajority requirement (2/3 vs 3/4). The Texas 20\%-at-200ft regime is relatively easy to trigger, which is why it generated many petition events in the study period. The buffer map makes the 200ft criterion spatial and concrete.}
+
+% ===== SLIDE 5: RD Result =====
 \begin{frame}{Why Petitions Matter: Institutional Costs}
     \begin{columns}
         \column{0.5\textwidth}
@@ -125,9 +182,9 @@
         \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{ch5/fig_ch5_31_petition_rd.png}
     \end{columns}
 \end{frame}
-\note{\textbf{[3 min]} This answers "so what if we predict petitions?" Crossing 20\% measurably extends processing time by 42.5 days. Be transparent: this is a reduced-form discontinuity, not a sharp RD, because we cannot observe the Clerk's formal certification directly. The key takeaway: this outcome has real institutional consequences and is worth predicting.}
+\note{\textbf{[3 min]} This answers "so what if we predict petitions?" Crossing 20\% measurably extends processing time by 42.5 days. Be transparent: reduced-form discontinuity, not a sharp RD, because we cannot observe the Clerk's formal certification directly. The key takeaway: this outcome has real institutional consequences and is worth predicting.}
 
-% ===== SLIDE 5: Research Question =====
+% ===== SLIDE 6: Research Question =====
 \begin{frame}{The Research Question}
     \begin{columns}
         \column{0.5\textwidth}
@@ -168,42 +225,42 @@
 \end{frame}
 \note{\textbf{[1.5 min]} Stress the as-of constraint: only what a planner knew on the day of filing. The feature partitioning (predictive vs. equity audit) is an important design choice. Sensitive attributes are excluded to reduce proxy discrimination risk, though that risk cannot be fully eliminated.}
 
-% ===== SLIDE 6: Rarity Problem =====
+% ===== SLIDE 7: Rarity Problem =====
 \begin{frame}{The Rarity Problem}
     \begin{columns}
         \column{0.5\textwidth}
-        \textbf{Sample Constraints}
+        \textbf{Sample Characteristics}
         \begin{itemize}
             \item $N = \metricBaselineCases{}$ cases, 2007--2024.
             \item Base rate: $\approx\metricBaseRate{}$ (1 in 38 cases).
             \item Test-set positives: $n_{\text{pos}} = \metricNTestPositive{}$.
         \end{itemize}
         \vspace{0.8em}
-        Sparse positives widen confidence intervals. The output is a \textbf{relative risk ranking}, not a case-level probability.
+        With so few events, confidence intervals are wide. The model output is a \textbf{score per case} (0--1); cases are ranked by that score, not classified by threshold.
 
         \column{0.5\textwidth}
         \textbf{Evaluation Design}
         \begin{itemize}
             \item Train on years $\leq t$; evaluate on years $> t$.
-            \item No random splits: mimics forward administrative use.
+            \item Temporal holdout for the test set; random cross-validation within training.
         \end{itemize}
         \vspace{0.8em}
         \textbf{Primary metric: PR-AUC}
 
-        \small AUROC omitted: 97.4\% true negatives artificially inflate it.
+        \small AUROC omitted: we are predicting a rare class.
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} PR-AUC over AUROC is the correct metric for this imbalance, not just convention. The temporal holdout is critical: a random split leaks future mobilization patterns into training. Fifteen test-set positives explains the wide CI ([0.48, 0.91]).}
+\note{\textbf{[2 min]} PR-AUC over AUROC is the correct metric for rare-class prediction. The temporal holdout is critical: a random split leaks future mobilization patterns into training. Fifteen test-set positives explains the wide CI ([0.48, 0.91]).}
 
-% ===== SLIDE 7: Data Pipeline =====
+% ===== SLIDE 8: Data Pipeline =====
 \begin{frame}{Timeline Integrity: As-Of Features}
     \begin{columns}
         \column{0.5\textwidth}
         \textbf{Enforcing the Constraint}
         \begin{itemize}
-            \item 15+ years of zoning agendas scraped from PDF clerk records.
+            \item 17 years of zoning records from Austin's open-data portal (2007--2024).
             \item Filing dates back-calculated from statutory minimums.
-            \item ACS and TCAD records anchored to publication date.
+            \item American Community Survey (ACS) and Travis County Appraisal District (TCAD) records anchored to publication date.
             \item $N=8$ IRB-approved interviews (ACYY0820) for institutional grounding.
         \end{itemize}
 
@@ -212,9 +269,9 @@
         \includegraphics[width=0.9\textwidth, height=0.65\textheight, keepaspectratio]{appendix/fig_app_02_project_overview.pdf}
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} A planner in 2012 could not access 2020 Census data; the feature matrix enforces this. Municipal IT overwrites historical timestamps, so milestone dates are approximated from statutory minimums, introducing measurement error reported as a limitation. Interviews provide context, not model validation.}
+\note{\textbf{[2 min]} A planner in 2012 could not access 2020 Census data; the feature matrix enforces this. Municipal IT overwrites historical timestamps, so milestone dates are approximated from statutory minimums, introducing measurement error. Interviews provide context, not model validation.}
 
-% ===== SLIDE 8: Main Result =====
+% ===== SLIDE 9: Main Result =====
 \begin{frame}{Predicting Resistance: Filing-Date Results}
     \centering
     \textbf{Tree Ensembles Dominate at the Top of the Risk Ranking}
@@ -222,17 +279,16 @@
 
     \includegraphics[height=0.68\textheight, width=\textwidth, keepaspectratio]{exhibits/fig_pr_curves_updated.pdf}
 \end{frame}
-\note{\textbf{[2 min]} Point to the upper-left corner: high-precision zone at moderate recall. CatBoost is the pre-specified primary model (best OOD PR-AUC subject to lowest ECE). OOD bootstrap PR-AUC = \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). Wide CI reflects 15 test-set positives, not model instability.}
+\note{\textbf{[2 min]} Point to the upper-left corner: high-precision zone at moderate recall. CatBoost is the primary model. OOD bootstrap PR-AUC = \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). Wide CI reflects 15 test-set positives, not model instability.}
 
-% ===== SLIDE 9: Top-Decile Lift =====
+% ===== SLIDE 10: Lift =====
 \begin{frame}{Operational Utility: Triage in Practice}
     \begin{columns}
         \column{0.55\textwidth}
-        \textbf{Top-Decile Risk Ranking}
+        \textbf{Risk Ranking Performance}
         \begin{itemize}
-            \item Flag the highest-risk 10\% of cases.
-            \item Precision: \textbf{\metricTopDecilePrecision{}} (CI: 16.1\%--37.8\%).
-            \item Lift: \textbf{\metricTopDecileLift{}} over the base rate.
+            \item Highest-risk 10\% of cases: \textbf{\metricTopDecilePrecision{}} precision.
+            \item \textbf{\metricTopDecileLift{}} lift over the base rate.
             \item Captures \metricTopDecileTP{} true positives in \metricTopDecileN{} flagged cases.
         \end{itemize}
         \vspace{0.8em}
@@ -244,30 +300,27 @@
             \item[\checkmark] Prioritize outreach for high-risk cases.
             \item[\checkmark] Flag cases for early negotiation.
             \item[$\times$] Hard probability cutoffs.
-            \item[$\times$] Developer site-screening.
         \end{itemize}
-        \vspace{0.8em}
-        \footnotesize \textit{Ethics Warning: This model ranks risk. It should not be used to pre-screen sites for developers.}
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} The lift metric converts abstract PR-AUC into something actionable. The wide precision CI (16--38\%) is why the use case is triage ranking, not hard thresholds. Raise the ethics warning proactively.}
+\note{\textbf{[2 min]} The lift metric converts abstract PR-AUC into something actionable. The wide precision CI (16--38\%) is why the use case is triage ranking, not hard thresholds.}
 
-% ===== SLIDE 10: Four-Family Benchmark =====
+% ===== SLIDE 11: Four-Family Benchmark =====
 \begin{frame}{Four-Family Modeling Benchmark}
     \begin{columns}
         \column{0.5\textwidth}
-        \textbf{Pre-Registered Architecture Families}
+        \textbf{Architecture Families Benchmarked}
 
         \vspace{0.5em}
-        \small
-        \begin{tabular}{p{2.6cm} p{4.4cm}}
+        \footnotesize
+        \begin{tabular}{p{1.9cm} p{4.1cm}}
             \toprule
             \textbf{Family} & \textbf{Key Property} \\
             \midrule
-            Tree (CatBoost) & Robust to scale diversity; dominant on tabular data \\[0.4em]
-            Deep (TabNet/MLP) & Overfits without heavy L2 regularization \\[0.4em]
-            Linear (L2) & Competitive at T+0; decays at long horizons \\[0.4em]
-            Robust (V-REx) & Distributionally robust; causal-stability baseline \\
+            Tree (CatBoost) & Best tabular OOD PR-AUC \\[0.4em]
+            Deep (TabNet/MLP) & Requires L2; overfits at low $N$ \\[0.4em]
+            Linear (L2 LR) & Strong at T+0; decays over time \\[0.4em]
+            Robust (V-REx) & Distributional robustness baseline \\
             \bottomrule
         \end{tabular}
 
@@ -275,37 +328,37 @@
         \textbf{Selection Criterion}
         \vspace{0.5em}
 
-        All families tuned to maximize OOD PR-AUC under strict temporal separation.
+        All families tuned to maximize out-of-distribution PR-AUC under strict temporal separation.
 
         \vspace{0.8em}
-        Primary model (CatBoost) pre-specified as best OOD PR-AUC subject to lowest ECE. No model-shopping after seeing results.
+        Primary model (CatBoost) selected before examining test-set results: best OOD discrimination with the most stable calibration.
     \end{columns}
 \end{frame}
-\note{\textbf{[1.5 min]} The benchmark is pre-registered. Entropy-based binning of continuous features prevents the algorithm from memorizing high-cardinality outlier values as de-facto case identifiers, an important data leakage safeguard. Hyperparameter sweep details are available in the appendix.}
+\note{\textbf{[1.5 min]} Four families capture the main modeling strategies available for tabular rare-event prediction. Entropy-based binning of continuous features prevents the algorithm from memorizing high-cardinality outlier values. Hyperparameter sweep details are in the appendix backup slide.}
 
-% ===== SLIDE 11: What Drives Petition Risk =====
+% ===== SLIDE 12: What Drives Petition Risk =====
 \begin{frame}{What Drives Petition Risk}
     \begin{columns}
         \column{0.4\textwidth}
         \textbf{Key Finding}
         \vspace{0.5em}
 
-        Tree models allocate over 80\% of weight to \textbf{socio-demographic} clusters: neighborhood demographics, income, and housing tenure.
+        Tree ensembles concentrate weight on \textbf{neighborhood context}: valuation, tenure, and demographic composition.
 
         \vspace{0.8em}
-        Physical parcel attributes matter far less than \textbf{who lives nearby}.
+        Deep models shift weight toward \textbf{physical parcel attributes}: scale, improvement size, and geometry.
 
         \vspace{0.8em}
-        Deep models invert this, concentrating weight on parcel scale and valuation.
+        Same data, same outcome; different internal logic.
 
         \column{0.6\textwidth}
         \centering
         \includegraphics[height=0.68\textheight, width=\linewidth, keepaspectratio]{exhibits/fig_feature_importance_clustered_H0_Full.pdf}
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} Lead with the result: it is who lives nearby that matters most, not what the parcel looks like. Tree ensembles concentrate weight on socio-demographic clusters at over 80\% of total importance. Deep architectures shift toward physical attributes (parcel scale, valuation, structure age). This architecture-dependent split is the key finding on the next slide.}
+\note{\textbf{[2 min]} Lead with the result: who lives nearby matters most, not what the parcel looks like. Tree ensembles concentrate weight on socio-demographic clusters at over 80\% of total importance. Deep architectures shift toward physical attributes. This architecture-dependent split is the key finding on the next slide.}
 
-% ===== SLIDE 12: Architecture Determines Feature Reliance =====
+% ===== SLIDE 13: Architecture Determines Feature Reliance =====
 \begin{frame}{Architecture Determines Feature Reliance}
     \begin{columns}
         \column{0.38\textwidth}
@@ -316,7 +369,7 @@
             \item Same data, same task: different internal logic.
         \end{itemize}
         \vspace{0.8em}
-        \textit{Algorithm selection is a normative choice about which features are prioritized.}
+        \textit{Different architectures may be tapping into different mechanisms of residential opposition: neighborhood-sorting logic vs.\ physical disruption logic.}
 
         \column{0.62\textwidth}
         \centering
@@ -325,13 +378,13 @@
 \end{frame}
 \note{\textbf{[2.5 min]} Rows are model-year combinations, columns are semantic clusters. The Ward-linkage dendrogram separates trees from deep models on the vertical axis; that separation is the finding. Deploying CatBoost endorses socio-demographic context as the primary signal; deploying a deep network endorses physical geometry. This is a policy choice disguised as a technical choice.}
 
-% ===== SLIDE 13: Temporal Drift and Agency (merged) =====
+% ===== SLIDE 14: Temporal Drift and Agency (merged) =====
 \begin{frame}{Temporal Drift and Neighborhood Agency}
     \begin{columns}
         \column{0.45\textwidth}
         \textbf{When Does the Model Break?}
         \begin{itemize}
-            \item Linear models collapse at T+3 horizons and beyond.
+            \item Linear models collapse at T+3 horizons.
             \item Tree ensembles degrade more gracefully.
         \end{itemize}
         \vspace{0.5em}
@@ -339,23 +392,25 @@
         \begin{itemize}
             \item PR-AUC drops sharply across all families in 2022.
             \item Consistent with pandemic-era filing disruptions reaching the evaluation window.
-            \item Not a causal claim.
         \end{itemize}
         \vspace{0.5em}
-        \small Performance sensitivity to ambient shocks is \textit{consistent with} mobilization being a strategic social choice.
+        Performance sensitivity to ambient shocks is \textit{consistent with} mobilization as a strategic social choice.
+
+        \vspace{0.3em}
+        \footnotesize \textit{Note: descriptive out-of-sample variation; no single institutional break is identified.}
 
         \column{0.55\textwidth}
         \centering
         \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{exhibits/fig_temporal_drift_prauc_testyear.pdf}
     \end{columns}
 \end{frame}
-\note{\textbf{[2.5 min]} Two points in one slide: the architecture comparison (trees vs. linear at long horizons) and the 2022 dip as evidence of contingent social mobilization. "Consistent with" is not "proves"; the thesis does not identify the mechanism. The threshold sensitivity appendix further supports this: signal does not stabilize around the 20\% statutory cutoff.}
+\note{\textbf{[2.5 min]} Two points in one slide: trees vs. linear at long horizons, and the 2022 dip as evidence of contingent social mobilization. "Consistent with" is not a causal claim. The threshold sensitivity appendix further supports this: signal does not stabilize around the 20\% statutory cutoff. Let the figure tell the story; avoid narrating individual data points.}
 
-% ===== SLIDE 14: Signal Dilution =====
+% ===== SLIDE 15: Signal Dilution =====
 \begin{frame}{Signal Dilution: When Retraining Hurts}
     \begin{columns}
         \column{0.45\textwidth}
-        \textbf{The Paradox}
+        \textbf{A Counter-Intuitive Finding}
         \begin{itemize}
             \item Pre-2018 models achieve $\sim$34$\times$ lift in 2024.
             \item Retraining on modern data degrades lift to $\sim$19$\times$.
@@ -368,10 +423,10 @@
         \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{exhibits/fig_temporal_drift_lift_testyear.pdf}
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} Retraining actively hurts: exposing the model to the post-ordinance era stops it from penalizing aggressive spatial configurations because the institutional environment has stopped producing petitions. Implication: continuous retraining would lose predictive power precisely as the policy environment stabilizes.}
+\note{\textbf{[2 min]} Retraining actively hurts: exposing the model to the post-ordinance era stops it from penalizing aggressive spatial configurations because the institutional environment has stopped producing petitions. Implication: continuous retraining would lose predictive power as the policy environment stabilizes.}
 
-% ===== SLIDE 15: Qualitative Context =====
-\begin{frame}{Qualitative Context: Motive Blindness}
+% ===== SLIDE 16: Qualitative Context =====
+\begin{frame}{What the Algorithm Cannot See}
     \begin{columns}
         \column{0.6\textwidth}
         \textbf{What the Algorithm Cannot Distinguish}
@@ -384,9 +439,9 @@
         \vspace{0.8em}
         \textbf{Practitioner Perspectives (IRB ACYY0820, $N=8$)}
         \begin{itemize}
-            \item \textit{``Haters are overrepresented and silent supporters are underrepresented.''} (Beaudet)
-            \item Rigid cutoffs fail to identify communities in actual need. (Torrado)
-            \item Probability thresholds are \textit{``ethically hazardous.''} (Tomko)
+            \item \textit{``Haters are overrepresented and silent supporters are underrepresented.''} (Beaudet) \textrightarrow{} explains the model's performance ceiling.
+            \item Rigid cutoffs could miss communities facing real displacement risk. (Torrado) \textrightarrow{} supports triage ranking over hard thresholds.
+            \item Formal opposition data lacks anonymous channels; it is not representative of the full community. (Tomko) \textrightarrow{} the training labels are incomplete by design.
         \end{itemize}
 
         \column{0.4\textwidth}
@@ -395,15 +450,15 @@
         \footnotesize \textit{IRB-Approved Interview Protocol}
     \end{columns}
 \end{frame}
-\note{\textbf{[2.5 min]} Qualitative and quantitative evidence converge here. Interviews provide institutional context for the performance ceiling, not model validation. Motive blindness is not solvable with more data or better algorithms. Formal opposition data over-represents loud voices because participation carries social costs (Tomko).}
+\note{\textbf{[2.5 min]} Qualitative and quantitative evidence converge here. Interviews provide institutional context for the performance ceiling, not model validation. The algorithm cannot distinguish exclusionary NIMBYism from anti-displacement resistance -- that is a structural feature of the data, not a solvable engineering problem. Tomko's point about anonymous testimony explains why the training labels under-represent quiet supporters.}
 
-% ===== SLIDE 16: Limitations =====
+% ===== SLIDE 17: Limitations =====
 \begin{frame}{Limitations}
     \begin{columns}
         \column{0.5\textwidth}
         \textbf{Methodological}
         \begin{itemize}
-            \item \textbf{Chilling effects}: Only filed cases are observed; pre-emptive withdrawals are invisible. IPW failed overlap diagnostics.
+            \item \textbf{Chilling effects}: Only filed cases observed; pre-emptive withdrawals are invisible. Selection correction was not feasible.
             \item \textbf{Timestamp imputation}: Milestone dates approximated from statutory minimums.
             \item \textbf{Unobserved certification}: Outcome is reconstructed area share, not the clerk's legal determination.
         \end{itemize}
@@ -419,7 +474,7 @@
 \end{frame}
 \note{\textbf{[2 min]} Address proactively. The chilling-effect limitation is the most substantive: predicting on a censored subset of the decision space. Proxy discrimination cannot be fully resolved by excluding protected-class features. The study maps these as boundaries, not solved problems.}
 
-% ===== SLIDE 17: Conclusion =====
+% ===== SLIDE 18: Conclusion =====
 \begin{frame}{Conclusion}
     \small
     \textbf{What we showed}
@@ -443,25 +498,25 @@
 \end{frame}
 \note{\textbf{[2 min]} Connect back to the opening arc: institutional costs established first (RD), then prediction capability characterized, then limits mapped. Real signal, real limits. Lead with the RD result; it anchors the "so what."}
 
-% ===== SLIDE 18: Policy Implications =====
+% ===== SLIDE 19: Policy Implications =====
 \begin{frame}{Implications: A Now-Closed Policy Window}
     \textbf{The HB 24 Shift (September 1, 2025)}
     \begin{itemize}
         \item Texas HB 24 exempted residential upzonings from the supermajority requirement.
         \item The 20\% institutional veto no longer applies to the most contested case types.
-        \item This thesis maps a specific, now-closed historical era of minority veto power.
+        \item The institutional regime is closed; its demographic and spatial correlates of opposition remain visible in the predictions.
     \end{itemize}
 
     \vspace{1.2em}
     \textbf{What travels forward}
     \begin{itemize}
         \item Methodology (time-stamped features, temporal holdouts, semantic clustering, qualitative integration) is portable to other discretionary review systems.
-        \item Iowa, Oklahoma, and Arizona retain similar petition statutes. The framework applies wherever institutional veto mechanisms create predictable opposition patterns.
+        \item New York, Iowa, Oklahoma, and Arizona retain active petition statutes. The framework applies wherever institutional veto mechanisms create predictable opposition patterns.
     \end{itemize}
 \end{frame}
-\note{\textbf{[1.5 min]} This is not a live policy problem; it is a historical analysis of how a specific mechanism operated. The analytical contribution is the methodology. Iowa (20\% at 200ft), Oklahoma (tiered), and Arizona (20\% land plus 20\% lots) retain comparable statutes. The framework is designed to travel.}
+\note{\textbf{[1.5 min]} Not a live policy problem; a historical analysis of how a specific mechanism operated. The analytical contribution is the methodology. Iowa (20\% at 200ft), Oklahoma (tiered), and Arizona (20\% land plus 20\% lots) retain comparable statutes. The framework is designed to travel.}
 
-% ===== SLIDE 19: Q&A + Thank You =====
+% ===== SLIDE 20: Q&A + Thank You =====
 \begin{frame}[plain]
     \centering
     \vspace{2.5em}
@@ -487,11 +542,11 @@
 \end{frame}
 \note{\textbf{[Rest of hour]} Anticipated questions:
 
-\textbf{Van Nieuwerburgh}: What is the economic cost of a petition? Point to the RD: 42.5-day delay; carrying costs and financing uncertainty not captured.
+\textbf{Van Nieuwerburgh}: Economic cost of a petition? Point to the RD: 42.5-day delay; carrying costs and financing uncertainty not captured.
 
 \textbf{Piacentini}: How do you know the 2022 dip is not data quality? We do not. Treated as descriptive variation consistent with multiple explanations.
 
-\textbf{Kornfeld}: How should a planner use this? Top-decile triage for early outreach, not a hard probability cutoff.
+\textbf{Kornfeld}: How should a planner use this? Top-decile triage for early outreach, not a hard cutoff.
 
 \textbf{Bauer}: Qualitative sample size? $N=8$, purposive, not statistically representative. Used for grounding, not hypothesis testing.
 
@@ -499,11 +554,86 @@
 
 \textbf{General}: What extends this? HB 24 natural experiment, pre-hearing public comment text, other city replication.}
 
-% ===== APPENDIX: Hyperparameter Robustness (backup) =====
+% ===== REFERENCES =====
+\begin{frame}[allowframebreaks]{Selected References}
+    \footnotesize
+    \begin{itemize}
+        \item Furth, S., \& McKinley, K. (2025). \textit{Protest petition statutes across U.S. states}. Mercatus Center.
+        \item Prokhorenkova, L., Gusev, G., Vorobev, A., Dorogush, A.V., \& Gulin, A. (2018). CatBoost: Unbiased boosting with categorical features. \textit{NeurIPS}.
+        \item Arik, S.O., \& Pfister, T. (2021). TabNet: Attentive interpretable tabular learning. \textit{AAAI}.
+        \item Krueger, D., Caballero, E., Jacobsen, J.H., Zhang, A., Binas, J., Zhang, D., Le Priol, R., \& Courville, A. (2021). Out-of-distribution generalization via risk extrapolation (V-REx). \textit{ICML}.
+        \item Lundberg, S.M., \& Lee, S.I. (2017). A unified approach to interpreting model predictions. \textit{NeurIPS}.
+        \item Imbens, G., \& Lemieux, T. (2008). Regression discontinuity designs: A guide to practice. \textit{Journal of Econometrics}.
+        \item Texas Local Government Code \S 211.006 (protest petition statute).
+        \item Texas HB 24 (2025, 89th Legislature). An Act Relating to Zoning Authority.
+    \end{itemize}
+\end{frame}
+\note{\textbf{[Backup]} Full bibliography in the thesis manuscript.}
+
+% ===== APPENDIX A: Hyperparameter Robustness =====
 \begin{frame}[plain]{Appendix: Hyperparameter Robustness}
     \centering
     \includegraphics[height=0.82\textheight, width=\textwidth, keepaspectratio]{exhibits/fig_hyperparameter_sweeps_benchmark.pdf}
 \end{frame}
-\note{\textbf{[Backup]} Hyperparameter sweep surfaces for all four families. Deep architectures (TabNet/MLP) overfit catastrophically under high capacity without L2 constraint. Tree ensembles plateau gracefully. All architectures tuned exclusively to maximize OOD PR-AUC under strict temporal separation.}
+\note{\textbf{[Backup]} Sweep surfaces for all four families. Deep architectures overfit catastrophically without L2 constraint. Tree ensembles plateau gracefully. All tuned to maximize OOD PR-AUC under strict temporal separation.}
+
+% ===== APPENDIX B: Sample Selection =====
+\begin{frame}[plain]{Appendix: Sample Selection and Coverage}
+    \small
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Sample Selection}
+
+        \vspace{0.5em}
+        \begin{tabular}{lr}
+            \toprule
+            \textbf{Selection Step} & \textbf{Cases} \\
+            \midrule
+            Raw Austin open-data records & 15,238 \\
+            Discretionary cases only & 7,153 \\
+            Usable filing-year information & 6,783 \\
+            \midrule
+            \textbf{Analytic sample} & \textbf{6,783} \\
+            \bottomrule
+        \end{tabular}
+
+        \column{0.5\textwidth}
+        \textbf{Illustrative Panel Structure}
+
+        \vspace{0.5em}
+        \tiny
+        \begin{tabular}{lrrrr}
+            \toprule
+            Case & Year & Lag Pet. & Med. Inc. & Own. Sh. \\
+            \midrule
+            C14-2015-001 & 2015 & 3 & \$85k & 62\% \\
+            C14-2015-002 & 2015 & 0 & \$42k & 21\% \\
+            C14-2015-006 & 2015 & 7 & \$112k & 85\% \\
+            C14-2016-009 & 2016 & 1 & \$55k & 34\% \\
+            C14-2016-012 & 2016 & 4 & \$95k & 71\% \\
+            \bottomrule
+        \end{tabular}
+    \end{columns}
+\end{frame}
+\note{\textbf{[Backup]} Sample selection shows the funnel from 15,238 raw records to 6,783 analytic cases. Exclusions are: non-discretionary cases (variances and ETJ properties) and cases with unusable filing-year timestamps. The illustrative panel shows the key predictive features that emerge as top drivers in the meta-attribution analysis.}
+
+% ===== APPENDIX C: Semantic Cluster Mapping =====
+\begin{frame}[plain]{Appendix: Semantic Feature Cluster Mapping}
+    \small
+    \begin{tabular}{p{3.5cm} p{8.5cm}}
+        \toprule
+        \textbf{Cluster} & \textbf{Representative Variables} \\
+        \midrule
+        Demographics & ACS \% White, \% Hispanic, \% Black, \% Asian \\
+        Housing Tenure & ACS owner-occupied, renter-occupied, total units \\
+        Income \& Rent & Median household income, gross rent, poverty count \\
+        Property Valuation & Tax assessor appraised value, market value, land value \\
+        Structure Age & Tax assessor year built, COA year built \\
+        Parcel Scale & Acres, lot size (sqft), gross area, deed acreage \\
+        Historical Protest Activity & Prior protest flag, 1-year and 3-year spatial contagion \\
+        \bottomrule
+    \end{tabular}
+\end{frame}
+\note{\textbf{[Backup]} Each cluster groups raw variables with Spearman $|r| > 0.70$. TreeSHAP values are summed within clusters after model fitting; pre-clustering before training loses information. The full crosswalk appears in Table 5.4 of the thesis.}
 
 \end{document}
