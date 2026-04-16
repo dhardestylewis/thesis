@@ -1,5 +1,5 @@
 {
-    "stage_c_reliability": "Stage C Opposition Reliability ({hz} Out-of-Fold)",
+    "stage_c_reliability": "Formal Petition Reliability ({hz} Out-of-Fold)",
     "stage_c_drift": "Temporal Predictive Drift ({hz} Rolling Origin)",
     "stage_c_policy_regimes": "Out-of-Distribution Performance by Policy Period ({hz})",
     "stage_c_feature_importance": "Top 15 Predictors of Organized Opposition ({hz})",

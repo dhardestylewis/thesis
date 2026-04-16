@@ -1,0 +1,55 @@
+\begin{table}[htbp]
+\centering
+\caption[Temporal Predictive Drift Lift (Threshold: >25\%)]{\textbf{Temporal predictive drift: PR-AUC lift by algorithm (Optimal Entropy-Based Discretization).}}
+\label{tab:temporal_drift_prauc_lift}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l lccccccc}
+\toprule
+\textbf{Model} & \textbf{Anchor Training} & \textbf{2018} & \textbf{2019} & \textbf{2020} & \textbf{2021} & \textbf{2022} & \textbf{2023} & \textbf{2024} \\
+\midrule
+CatBoost & Pre-2018 & 6.111 & 7.692 & \textbf{11.287} & \textbf{13.243} & 24.000 & 19.472 & \textbf{51.062} \\
+CatBoost & Pre-2019 & --- & 10.211 & \textbf{10.604} & 10.096 & 18.000 & \textbf{24.427} & 43.224 \\
+CatBoost & Pre-2020 & --- & --- & 8.141 & \textbf{9.475} & 27.000 & \textbf{24.803} & 40.153 \\
+CatBoost & Pre-2021 & --- & --- & --- & 9.824 & \textbf{43.200} & \textbf{27.944} & 28.219 \\
+CatBoost & Pre-2022 & --- & --- & --- & --- & \textbf{108.000} & \textbf{32.417} & \textbf{31.727} \\
+CatBoost & Pre-2023 & --- & --- & --- & --- & --- & 19.472 & 28.928 \\
+CatBoost & Pre-2024 & --- & --- & --- & --- & --- & --- & 42.925 \\
+XGBoost & Pre-2018 & 6.099 & 8.617 & 9.120 & 12.808 & 43.200 & \textbf{47.737} & 47.703 \\
+XGBoost & Pre-2019 & --- & 7.913 & 7.108 & \textbf{13.876} & 19.636 & 18.071 & \textbf{51.062} \\
+XGBoost & Pre-2020 & --- & --- & 7.570 & 7.741 & 24.000 & 22.194 & \textbf{49.271} \\
+XGBoost & Pre-2021 & --- & --- & --- & 12.747 & 30.857 & 23.929 & \textbf{36.505} \\
+XGBoost & Pre-2022 & --- & --- & --- & --- & 54.000 & 20.180 & 27.995 \\
+XGBoost & Pre-2023 & --- & --- & --- & --- & --- & 15.977 & \textbf{33.172} \\
+XGBoost & Pre-2024 & --- & --- & --- & --- & --- & --- & 31.418 \\
+Logistic (L2) & Pre-2018 & 4.810 & \textbf{11.645} & 5.739 & 7.050 & 43.200 & 16.707 & 32.698 \\
+Logistic (L2) & Pre-2019 & --- & \textbf{11.075} & 6.250 & 7.147 & \textbf{43.200} & 11.913 & 14.589 \\
+Logistic (L2) & Pre-2020 & --- & --- & 6.519 & 6.235 & \textbf{43.200} & 14.814 & 14.671 \\
+Logistic (L2) & Pre-2021 & --- & --- & --- & 5.884 & \textbf{43.200} & 12.721 & 13.078 \\
+Logistic (L2) & Pre-2022 & --- & --- & --- & --- & 54.000 & 11.287 & 12.810 \\
+Logistic (L2) & Pre-2023 & --- & --- & --- & --- & --- & 12.812 & 11.646 \\
+Logistic (L2) & Pre-2024 & --- & --- & --- & --- & --- & --- & 14.840 \\
+Spatial-FE Logistic & Pre-2018 & 3.343 & 10.031 & 6.545 & 6.034 & 36.000 & 16.842 & 36.505 \\
+Spatial-FE Logistic & Pre-2019 & --- & 8.691 & 6.930 & 7.030 & 36.000 & 20.696 & 15.444 \\
+Spatial-FE Logistic & Pre-2020 & --- & --- & 7.530 & 5.296 & 21.600 & 20.696 & 12.318 \\
+Spatial-FE Logistic & Pre-2021 & --- & --- & --- & 5.227 & 36.000 & 20.698 & 13.050 \\
+Spatial-FE Logistic & Pre-2022 & --- & --- & --- & --- & 54.000 & 14.836 & 12.280 \\
+Spatial-FE Logistic & Pre-2023 & --- & --- & --- & --- & --- & 20.010 & 7.533 \\
+Spatial-FE Logistic & Pre-2024 & --- & --- & --- & --- & --- & --- & 9.564 \\
+TabNet & Pre-2018 & \textbf{6.256} & 11.421 & 7.171 & 6.499 & 21.600 & 12.323 & 39.193 \\
+TabNet & Pre-2019 & --- & 10.056 & 6.152 & 6.503 & 21.600 & 6.236 & 26.875 \\
+TabNet & Pre-2020 & --- & --- & \textbf{11.535} & 6.519 & 1.000 & 1.411 & 2.990 \\
+TabNet & Pre-2021 & --- & --- & --- & \textbf{14.474} & 18.000 & 27.717 & 32.698 \\
+TabNet & Pre-2022 & --- & --- & --- & --- & 11.368 & 3.374 & 7.060 \\
+TabNet & Pre-2023 & --- & --- & --- & --- & --- & \textbf{20.205} & 25.233 \\
+TabNet & Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{44.632} \\
+Anchor Regression (Causal) & Pre-2018 & 5.610 & 1.101 & 2.488 & 11.465 & \textbf{54.000} & 10.300 & 13.688 \\
+Anchor Regression (Causal) & Pre-2019 & --- & 4.896 & 8.304 & 8.067 & 16.615 & 13.400 & 18.812 \\
+Anchor Regression (Causal) & Pre-2020 & --- & --- & 4.875 & 8.316 & 16.615 & 21.617 & 31.354 \\
+Anchor Regression (Causal) & Pre-2021 & --- & --- & --- & 10.274 & 19.636 & 12.599 & 24.785 \\
+Anchor Regression (Causal) & Pre-2022 & --- & --- & --- & --- & 54.000 & 11.167 & 21.831 \\
+Anchor Regression (Causal) & Pre-2023 & --- & --- & --- & --- & --- & 14.028 & 25.382 \\
+Anchor Regression (Causal) & Pre-2024 & --- & --- & --- & --- & --- & --- & 20.656 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
