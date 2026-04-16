@@ -343,10 +343,10 @@
         \textbf{Key Finding}
         \vspace{0.5em}
 
-        Tree ensembles concentrate weight on \textbf{neighborhood context}: valuation, tenure, and demographic composition.
+        Tree ensembles weight the \textbf{physical ask}: parcel scale (44\%) and zoning density request (36\%) together account for 80\%+ of attribution.
 
         \vspace{0.8em}
-        Deep models shift weight toward \textbf{physical parcel attributes}: scale, improvement size, and geometry.
+        Deep models also weight parcel scale (55\%) but add \textbf{neighborhood social fabric}: demographics (18\%) and housing tenure (12\%).
 
         \vspace{0.8em}
         Same data, same outcome; different internal logic.
@@ -356,7 +356,7 @@
         \includegraphics[height=0.68\textheight, width=\linewidth, keepaspectratio]{exhibits/fig_feature_importance_clustered_H0_Full.pdf}
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} Lead with the result: who lives nearby matters most, not what the parcel looks like. Tree ensembles concentrate weight on socio-demographic clusters at over 80\% of total importance. Deep architectures shift toward physical attributes. This architecture-dependent split is the key finding on the next slide.}
+\note{\textbf{[2 min]} Lead with the figure. Tree ensembles: parcel scale (44\%) + zoning density request (36\%) = 80\%+ of attribution. The model is detecting how big the project is and how much density change is being asked for. Deep models keep parcel scale dominant but add demographics (18\%) and housing tenure (12\%) -- they weight who lives nearby alongside the physical ask. This sets up the next slide: these may be two different mechanisms of NIMBYism captured by different model architectures.}
 
 % ===== SLIDE 13: Architecture Determines Feature Reliance =====
 \begin{frame}{Architecture Determines Feature Reliance}
@@ -369,7 +369,7 @@
             \item Same data, same task: different internal logic.
         \end{itemize}
         \vspace{0.8em}
-        \textit{Different architectures may be tapping into different mechanisms of residential opposition: neighborhood-sorting logic vs.\ physical disruption logic.}
+        \textit{Tree models appear to be detecting opposition to the regulatory ask (scale, density change). Deep models detect opposition from the neighborhood's social composition. These may be different mechanisms of NIMBYism.}
 
         \column{0.62\textwidth}
         \centering
@@ -397,7 +397,7 @@
         Performance sensitivity to ambient shocks is \textit{consistent with} mobilization as a strategic social choice.
 
         \vspace{0.3em}
-        \footnotesize \textit{Note: descriptive out-of-sample variation; no single institutional break is identified.}
+        \footnotesize \textit{Note: descriptive out-of-sample variation; no single institutional break is identified causally.}
 
         \column{0.55\textwidth}
         \centering
