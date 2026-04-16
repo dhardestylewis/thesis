@@ -12,7 +12,7 @@ replacements = {
     r'\\subsection\{Expected Petition Probability\}': r'\\subsection{Stage F: Expected Petition Probability}',
     r'\\subsection\{Causal Mechanisms and Identification\}': r'\\subsection{Causal Identification: Spatial Interventions and Institutional Reform}',
     r'\\subsection\{Natural Language Argument Framing\}': r'\\subsection{NLP Framing: Natural Language Argument Extraction}',
-    r'between pure structural randomness and deterministic physical observation\.': r'between stochastic behavioral ceilings and deterministic remote sensing classification bounds.'
+    r'between pure stochastic randomness and deterministic physical observation\.': r'between stochastic behavioral ceilings and deterministic remote sensing classification bounds.'
 }
 
 for old, new in replacements.items():
