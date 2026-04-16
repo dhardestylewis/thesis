@@ -321,7 +321,7 @@
 
     \includegraphics[height=0.68\textheight, width=\textwidth, keepaspectratio]{exhibits/fig_pr_curves_updated.pdf}
 \end{frame}
-\note{\textbf{[2 min]} Point to the upper-left corner: high-precision zone at moderate recall. CatBoost is the primary model. OOD bootstrap PR-AUC = \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). Wide CI reflects 15 test-set positives, not model instability.}
+\note{\textbf{[2 min]} Point to the upper-left corner: high-precision zone at moderate recall. CatBoost is the benchmark tree model emphasized in the manuscript, but this talk is about comparative ranking performance rather than a single calibrated winner. OOD bootstrap PR-AUC = \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). Wide CI reflects 15 test-set positives, not model instability.}
 
 % ===== SLIDE 10: Lift =====
 \begin{frame}{Operational Utility: Triage in Practice}
@@ -359,10 +359,10 @@
             \toprule
             \textbf{Family} & \textbf{Key Property} \\
             \midrule
-            Tree (CatBoost) & Best tabular OOD PR-AUC \\[0.4em]
-            Deep (TabNet/MLP) & Requires L2; overfits at low $N$ \\[0.4em]
-            Linear (L2 LR) & Strong at T+0; decays over time \\[0.4em]
-            Robust (V-REx) & Distributional robustness baseline \\
+            \shortstack[l]{Tree\\(CatBoost)} & Best tabular OOD PR-AUC \\[0.4em]
+            \shortstack[l]{Deep\\(TabNet/MLP)} & Requires L2; overfits at low $N$ \\[0.4em]
+            \shortstack[l]{Linear\\(L2 LR)} & Strong at T+0; decays over time \\[0.4em]
+            \shortstack[l]{Robust\\(V-REx)} & Distributional robustness baseline \\
             \bottomrule
         \end{tabular}
 
@@ -373,7 +373,7 @@
         All families tuned to maximize out-of-distribution PR-AUC under strict temporal separation.
 
         \vspace{0.8em}
-        Primary model (CatBoost) selected before examining test-set results: best OOD discrimination with the most stable calibration.
+        CatBoost remains the manuscript's benchmark tree model; this slide compares families on temporal PR-AUC, not calibration.
     \end{columns}
 \end{frame}
 \note{\textbf{[1.5 min]} Four families capture the main modeling strategies available for tabular rare-event prediction. Entropy-based binning of continuous features prevents the algorithm from memorizing high-cardinality outlier values. Hyperparameter sweep details are in the appendix backup slide.}
@@ -428,12 +428,12 @@
         \column{0.38\textwidth}
         \textbf{Architecture-Dependent Reliance}
         \begin{itemize}
-            \item Trees: $>$80\% weight on socio-demographic clusters.
-            \item Deep models: shift toward physical and geographic attributes.
+            \item Trees: weight parcel scale and zoning-density request.
+            \item Deep models: add neighborhood composition and tenure.
             \item Same data, same task: different internal logic.
         \end{itemize}
         \vspace{0.8em}
-        \textit{Tree models appear to be detecting opposition to the regulatory ask (scale, density change). Deep models detect opposition from the neighborhood's social composition. These may be different mechanisms of NIMBYism.}
+        \textit{Trees track the ask; deep models fold in who lives nearby. Those may reflect different opposition mechanisms.}
 
         \column{0.62\textwidth}
         \centering
@@ -470,24 +470,24 @@
 \end{frame}
 \note{\textbf{[2.5 min]} Two points in one slide: trees vs. linear at long horizons, and the 2022 dip as evidence of contingent social mobilization. "Consistent with" is not a causal claim. The threshold sensitivity appendix further supports this: signal does not stabilize around the 20\% statutory cutoff. Let the figure tell the story; avoid narrating individual data points.}
 
-% ===== SLIDE 15: Signal Dilution =====
-\begin{frame}{Signal Dilution: When Retraining Hurts}
+% ===== SLIDE 15: Lift Concentration =====
+\begin{frame}{Lift Concentrates as the Regime Winds Down}
     \begin{columns}
         \column{0.45\textwidth}
         \textbf{A Counter-Intuitive Finding}
         \begin{itemize}
-            \item Pre-2018 models achieve $\sim$34$\times$ lift in 2024.
-            \item Retraining on modern data degrades lift to $\sim$19$\times$.
+            \item Lift rises sharply in 2022--2024 across all anchors and architectures.
+            \item Models trained in any period achieve 20--40$\times$ lift in 2024.
         \end{itemize}
         \vspace{0.8em}
-        Post-ordinance labels starve the model of positive examples. The frozen legacy model preserves spatial sorting intelligence from an active institutional era.
+        As the institutional regime declines, the cases that still attract petitions become more concentrated in the highest-risk situations. The model's risk rankings sharpen.
 
         \column{0.55\textwidth}
         \centering
         \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{exhibits/fig_temporal_drift_lift_testyear.pdf}
     \end{columns}
 \end{frame}
-\note{\textbf{[2 min]} Retraining actively hurts: exposing the model to the post-ordinance era stops it from penalizing aggressive spatial configurations because the institutional environment has stopped producing petitions. Implication: continuous retraining would lose predictive power as the policy environment stabilizes.}
+\note{\textbf{[2 min]} Every anchor model, regardless of training period, shows sharply rising lift in 2022--2024. This is consistent with a declining base rate: as fewer cases attract petitions overall, the ones that do are the most extreme outliers, which are the easiest for the model to rank highly. Note the contrast with the PR-AUC figure on the previous slide: PR-AUC dips in 2022 while lift spikes, which can occur when the base rate falls faster than discrimination improves.}
 
 % ===== SLIDE 16: Qualitative Context =====
 \begin{frame}{What the Algorithm Cannot See}
@@ -501,17 +501,17 @@
         Same risk weight; opposite social meaning.
 
         \vspace{0.8em}
-        \textbf{Practitioner Perspectives (IRB ACYY0820, $N=8$)}
+        \textbf{Practitioner Perspectives ($N=8$)}
         \begin{itemize}
-            \item \textit{``Haters are overrepresented and silent supporters are underrepresented.''} (Beaudet) \textrightarrow{} explains the model's performance ceiling.
-            \item Rigid cutoffs could miss communities facing real displacement risk. (Torrado) \textrightarrow{} supports triage ranking over hard thresholds.
-            \item Formal opposition data lacks anonymous channels; it is not representative of the full community. (Tomko) \textrightarrow{} the training labels are incomplete by design.
+            \item \textit{``Haters are overrepresented and silent supporters are underrepresented.''} (Beaudet) helps explain the performance ceiling.
+            \item Torrado warns that rigid cutoffs can miss real displacement risk; use ranked triage, not hard thresholds.
+            \item Tomko notes that formal opposition lacks anonymous channels, so the labels understate full community sentiment.
         \end{itemize}
 
         \column{0.4\textwidth}
         \centering
         \includegraphics[width=\linewidth, height=0.60\textheight, keepaspectratio]{appendix/fig_app_01_interview_guide.pdf} \\
-        \footnotesize \textit{IRB-Approved Interview Protocol}
+        \footnotesize \textit{Interview guide used under IRB protocol ACYY0820}
     \end{columns}
 \end{frame}
 \note{\textbf{[2.5 min]} Qualitative and quantitative evidence converge here. Interviews provide institutional context for the performance ceiling, not model validation. The algorithm cannot distinguish exclusionary NIMBYism from anti-displacement resistance -- that is a structural feature of the data, not a solvable engineering problem. Tomko's point about anonymous testimony explains why the training labels under-represent quiet supporters.}

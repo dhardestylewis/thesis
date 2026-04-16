@@ -151,7 +151,7 @@ def _warehouse_master_file(hz: str) -> str:
 
 
 def plot_all_track1_exhibits():
-    with open(os.path.join(ROOT, "Analysis", "Scripts", "exhibit_titles.json"), "r") as f:
+    with open(os.path.join(ROOT, "Scripts", "exhibit_titles.json"), "r") as f:
         titles = json.load(f)
         
     for hz in ['H0', 'H3']:

@@ -409,8 +409,8 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     df_attr = df_attr.loc[:, df_attr.var() > 0.0]
     
     sns.set_theme(style='white')
-    g = sns.clustermap(df_attr, cmap='rocket_r', method='ward', metric='euclidean', figsize=(15, 24), linewidths=.5, annot=True, fmt=".1f", annot_kws={"size": 8})
-    g.fig.suptitle("Meta-Attribution Structural Clustering (70 Environments)", fontsize=16, fontweight='bold', y=1.02)
+    g = sns.clustermap(df_attr, cmap='rocket_r', method='ward', metric='euclidean', figsize=(10, 15), linewidths=.5, annot=True, fmt=".1f", annot_kws={"size": 8})
+    g.fig.suptitle("Meta-Attribution Structural Clustering", fontsize=16, fontweight='bold', y=1.02)
     g.ax_heatmap.set_xlabel("Semantic Feature Clusters (Invariant Core Testing)", fontsize=12)
     g.ax_heatmap.set_ylabel("Environment (Architecture_OriginYear)", fontsize=12)
     
@@ -429,7 +429,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     df_attr_w = df_attr.copy()
     df_attr_w = df_attr_w.mul(df_attr_w.index.map(wt_map).fillna(0), axis=0)
     
-    g_w = sns.clustermap(df_attr_w, cmap='mako', method='ward', metric='euclidean', figsize=(15, 24), linewidths=.5, annot=True, fmt=".1f", annot_kws={"size": 8})
+    g_w = sns.clustermap(df_attr_w, cmap='mako', method='ward', metric='euclidean', figsize=(10, 15), linewidths=.5, annot=True, fmt=".1f", annot_kws={"size": 8})
     g_w.fig.suptitle("Performance-Weighted Meta-Attribution Clustering", fontsize=16, fontweight='bold', y=1.02)
     g_w.ax_heatmap.set_xlabel("Semantic Feature Clusters", fontsize=12)
     g_w.ax_heatmap.set_ylabel("Environment", fontsize=12)
@@ -445,7 +445,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     
     t7_lines = [
         r'\begin{table}[htbp]', r'\centering',
-        r'\caption[Archetypal Family Attribution]{\textbf{Archetypal Family Attribution (Optimal Entropy-Based Discretization).} Average absolute model reliance allocated to each semantic feature cluster. \textbf{Causal} array maps the Non-Linear Anchor Regression. High-cardinality identity floats mathematically blinded via Shannon-Entropy decision tree mapping ($min\_samples\_leaf=100$).}',
+        r'\caption[Archetypal Family Attribution]{\textbf{Archetypal Family Attribution.} Average absolute model reliance allocated to each semantic feature cluster. \textbf{Causal} array maps the Non-Linear Anchor Regression. High-cardinality identity floats mathematically blinded via Shannon-Entropy decision tree mapping ($min\_samples\_leaf=100$).}',
         r'\label{tab:archetypal_attribution}', r'\resizebox{\textwidth}{!}{%',
         r'\begin{tabular}{lcccc}', r'\toprule',
         r'\textbf{Semantic Target Cluster} & \textbf{Tree Ensembles} & \textbf{Deep Architectures} & \textbf{Linear Architectures} & \textbf{Causal Algorithms} \\',
