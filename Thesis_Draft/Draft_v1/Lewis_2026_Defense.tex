@@ -252,7 +252,49 @@
 \end{frame}
 \note{\textbf{[2 min]} PR-AUC over AUROC is the correct metric for rare-class prediction. The temporal holdout is critical: a random split leaks future mobilization patterns into training. Fifteen test-set positives explains the wide CI ([0.48, 0.91]).}
 
-% ===== SLIDE 8: Data Pipeline =====
+% ===== SLIDE 8: Sample Funnel =====
+\begin{frame}{How We Arrived at N\,=\,\metricBaselineCases{}}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \small
+        \begin{tabular}{lr}
+            \toprule
+            \textbf{Selection Step} & \textbf{Cases} \\
+            \midrule
+            Raw Austin open-data records & 15,238 \\
+            Discretionary cases only & 7,153 \\
+            Usable filing-year information & \metricBaselineCases{} \\
+            \midrule
+            \textbf{Analytic sample} & \textbf{\metricBaselineCases{}} \\
+            \bottomrule
+        \end{tabular}
+        \vspace{0.8em}
+
+        \footnotesize Excluded: non-discretionary variances, ETJ cases (petition statute does not apply), and cases with unrecoverable timestamps.
+
+        \column{0.5\textwidth}
+        \textbf{Illustrative Panel Row}
+        \vspace{0.5em}
+        \tiny
+        \begin{tabular}{lrrrr}
+            \toprule
+            Case & Year & Lag Pet. & Med.\ Inc. & Own.\ Sh. \\
+            \midrule
+            C14-2015-001 & 2015 & 3 & \$85k & 62\% \\
+            C14-2015-002 & 2015 & 0 & \$42k & 21\% \\
+            C14-2015-006 & 2015 & 7 & \$112k & 85\% \\
+            C14-2016-009 & 2016 & 1 & \$55k & 34\% \\
+            C14-2016-012 & 2016 & 4 & \$95k & 71\% \\
+            \bottomrule
+        \end{tabular}
+        \vspace{0.5em}
+
+        \footnotesize Each row is one case; all features are available at filing date.
+    \end{columns}
+\end{frame}
+\note{\textbf{[1 min]} The exclusion funnel is straightforward. Non-discretionary cases (ministerial permits, variances) cannot receive petitions under LGC Ch.\ 211. ETJ cases are outside city limits; the statute requires contiguous city parcels. Unusable timestamps prevent construction of the as-of feature matrix. The illustrative panel shows that each row has a petition lag, neighborhood income, and ownership share --- all key predictive dimensions.}
+
+% ===== SLIDE 9: Data Pipeline =====
 \begin{frame}{Timeline Integrity: As-Of Features}
     \begin{columns}
         \column{0.5\textwidth}
@@ -336,7 +378,29 @@
 \end{frame}
 \note{\textbf{[1.5 min]} Four families capture the main modeling strategies available for tabular rare-event prediction. Entropy-based binning of continuous features prevents the algorithm from memorizing high-cardinality outlier values. Hyperparameter sweep details are in the appendix backup slide.}
 
-% ===== SLIDE 12: What Drives Petition Risk =====
+% ===== SLIDE 12: Semantic Cluster Mapping =====
+\begin{frame}{Reading the Attribution Charts: Feature Clusters}
+    \small
+    \begin{tabular}{p{3.2cm} p{8.5cm}}
+        \toprule
+        \textbf{Cluster} & \textbf{Representative Variables} \\
+        \midrule
+        Parcel Scale & Lot acres, gross site area, deed acreage, lot size (sqft) \\
+        Zoning Density & Requested FAR delta, height delta, building coverage delta \\
+        Neighborhood Income & Median household income, gross rent, poverty count \\
+        Demographics & ACS \% White, \% Hispanic, \% Black, \% Asian \\
+        Housing Tenure & ACS owner-occupied, renter-occupied, total units \\
+        Property Valuation & TCAD appraised value, market value, land value \\
+        Historical Protest Activity & Prior protest flag, 1-year and 3-year spatial contagion \\
+        \bottomrule
+    \end{tabular}
+    \vspace{0.5em}
+
+    \footnotesize Variables with Spearman $|r|>0.70$ are aggregated into clusters after model fitting; SHAP values are summed within clusters.
+\end{frame}
+\note{\textbf{[1 min]} Quick orientation before the attribution figures. Clustering happens after model fitting on SHAP values, not before training. Key contrasts to watch: Parcel Scale and Zoning Density are the physical/regulatory ask; Demographics, Housing Tenure, and Neighborhood Income are the social fabric of the buffer area. These two groups behave very differently across architecture families.}
+
+% ===== SLIDE 13: What Drives Petition Risk =====
 \begin{frame}{What Drives Petition Risk}
     \begin{columns}
         \column{0.4\textwidth}
@@ -577,63 +641,5 @@
 \end{frame}
 \note{\textbf{[Backup]} Sweep surfaces for all four families. Deep architectures overfit catastrophically without L2 constraint. Tree ensembles plateau gracefully. All tuned to maximize OOD PR-AUC under strict temporal separation.}
 
-% ===== APPENDIX B: Sample Selection =====
-\begin{frame}[plain]{Appendix: Sample Selection and Coverage}
-    \small
-    \begin{columns}
-        \column{0.5\textwidth}
-        \textbf{Sample Selection}
-
-        \vspace{0.5em}
-        \begin{tabular}{lr}
-            \toprule
-            \textbf{Selection Step} & \textbf{Cases} \\
-            \midrule
-            Raw Austin open-data records & 15,238 \\
-            Discretionary cases only & 7,153 \\
-            Usable filing-year information & 6,783 \\
-            \midrule
-            \textbf{Analytic sample} & \textbf{6,783} \\
-            \bottomrule
-        \end{tabular}
-
-        \column{0.5\textwidth}
-        \textbf{Illustrative Panel Structure}
-
-        \vspace{0.5em}
-        \tiny
-        \begin{tabular}{lrrrr}
-            \toprule
-            Case & Year & Lag Pet. & Med. Inc. & Own. Sh. \\
-            \midrule
-            C14-2015-001 & 2015 & 3 & \$85k & 62\% \\
-            C14-2015-002 & 2015 & 0 & \$42k & 21\% \\
-            C14-2015-006 & 2015 & 7 & \$112k & 85\% \\
-            C14-2016-009 & 2016 & 1 & \$55k & 34\% \\
-            C14-2016-012 & 2016 & 4 & \$95k & 71\% \\
-            \bottomrule
-        \end{tabular}
-    \end{columns}
-\end{frame}
-\note{\textbf{[Backup]} Sample selection shows the funnel from 15,238 raw records to 6,783 analytic cases. Exclusions are: non-discretionary cases (variances and ETJ properties) and cases with unusable filing-year timestamps. The illustrative panel shows the key predictive features that emerge as top drivers in the meta-attribution analysis.}
-
-% ===== APPENDIX C: Semantic Cluster Mapping =====
-\begin{frame}[plain]{Appendix: Semantic Feature Cluster Mapping}
-    \small
-    \begin{tabular}{p{3.5cm} p{8.5cm}}
-        \toprule
-        \textbf{Cluster} & \textbf{Representative Variables} \\
-        \midrule
-        Demographics & ACS \% White, \% Hispanic, \% Black, \% Asian \\
-        Housing Tenure & ACS owner-occupied, renter-occupied, total units \\
-        Income \& Rent & Median household income, gross rent, poverty count \\
-        Property Valuation & Tax assessor appraised value, market value, land value \\
-        Structure Age & Tax assessor year built, COA year built \\
-        Parcel Scale & Acres, lot size (sqft), gross area, deed acreage \\
-        Historical Protest Activity & Prior protest flag, 1-year and 3-year spatial contagion \\
-        \bottomrule
-    \end{tabular}
-\end{frame}
-\note{\textbf{[Backup]} Each cluster groups raw variables with Spearman $|r| > 0.70$. TreeSHAP values are summed within clusters after model fitting; pre-clustering before training loses information. The full crosswalk appears in Table 5.4 of the thesis.}
 
 \end{document}
