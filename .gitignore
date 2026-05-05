@@ -77,3 +77,14 @@ results/
 *.bak
 Thesis_Draft/Draft_v1/build/
 .claude/
+
+# ============================================
+# Massive PDF Archives (Added to prevent Git bloat)
+# ============================================
+*.pdf
+Data/Commission_PDFs/
+Data/Protest_Petitions/*.pdf
+
+Data/
+*.zip
+dummy.txt

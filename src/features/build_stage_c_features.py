@@ -99,6 +99,25 @@ def build_stage_c_features(
         district_map["council_district"] = to_numeric(district_map["council_district"], errors="coerce")
         district_map = district_map.drop_duplicates(subset=["case_id"])
         feature_matrix = feature_matrix.merge(district_map, on="case_id", how="left")
+        
+    # INJECT EXACT GEOMETRIC PETITION INTENSITY
+    geom_pet_path = Path(r"C:\Users\dhl\.gemini\antigravity\brain\1c4648c0-f36a-4614-a8f1-c9e2e5621756\exact_geometric_petition_intensity.csv")
+    if geom_pet_path.exists():
+        pet_df = pd.read_csv(geom_pet_path)
+        pet_df["case_number"] = pet_df["case_number"].str.strip()
+        
+        # We need a crosswalk from case_id to case_number if feature_matrix uses case_id
+        if "case_id" in feature_matrix.columns and "case_number" not in feature_matrix.columns:
+            if "case_number" in source.columns:
+                cw = source[["case_id", "case_number"]].drop_duplicates()
+                cw["case_number"] = cw["case_number"].str.strip()
+                pet_df = pet_df.merge(cw, on="case_number", how="inner")
+                pet_df = pet_df.drop(columns=["case_number"])
+                
+        # Merge it
+        feature_matrix = feature_matrix.merge(pet_df, on="case_id" if "case_id" in pet_df.columns else "case_number", how="left")
+        if "exact_geometric_petition_pct" in feature_matrix.columns:
+            feature_matrix["exact_geometric_petition_pct"].fillna(0, inplace=True)
 
     feature_matrix = feature_matrix.drop_duplicates(subset=["case_id"], keep="first").reset_index(drop=True)
 
