@@ -279,7 +279,7 @@ def run_meta_attribution(
     with open(out_path, "w") as f:
         json.dump(output_obj, f, indent=4, default=str)
 
-    print(f"\n[+] Saved meta-attribution object → {out_path}")
+    print(f"\n[+] Saved meta-attribution object -> {out_path}")
     return output_obj
 
 

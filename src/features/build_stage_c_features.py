@@ -116,8 +116,8 @@ def build_stage_c_features(
                 
         # Merge it
         feature_matrix = feature_matrix.merge(pet_df, on="case_id" if "case_id" in pet_df.columns else "case_number", how="left")
-        if "exact_geometric_petition_pct" in feature_matrix.columns:
-            feature_matrix["exact_geometric_petition_pct"].fillna(0, inplace=True)
+        if "label_exact_geometric_petition_pct" in feature_matrix.columns:
+            feature_matrix["label_exact_geometric_petition_pct"].fillna(0, inplace=True)
 
     feature_matrix = feature_matrix.drop_duplicates(subset=["case_id"], keep="first").reset_index(drop=True)
 
