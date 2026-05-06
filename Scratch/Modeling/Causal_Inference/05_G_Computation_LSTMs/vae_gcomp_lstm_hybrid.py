@@ -20,6 +20,10 @@ import os, time, math, re
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import torch
 import torch.nn as nn
+import torch.backends.cudnn as cudnn
+cudnn.benchmark = True
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import pandas as pd
 import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
@@ -197,26 +201,31 @@ class MultiTaskLSTM(nn.Module):
 # TRAINING
 # ============================================================
 def train_vae(model, X_train, epochs=40, lr=0.001, batch_size=256, kl_weight=0.0005):
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, fused=(device.type=='cuda'))
     dataset = TensorDataset(X_train)
-    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
+    scaler = torch.amp.GradScaler('cuda')
     
     model.train()
     for epoch in range(epochs):
         total_recon, total_kl = 0, 0
         for (bx,) in loader:
+            bx = bx.to(device)
             optimizer.zero_grad()
-            recon, mu, logvar = model(bx)
             
-            mask = (bx[:, :, -1] != 0).float().unsqueeze(-1)  # [B, T, 1]
-            
-            recon_loss = (((recon - bx) ** 2) * mask).sum() / mask.sum()
-            kl_loss = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
-            
-            loss = recon_loss + kl_weight * kl_loss
-            loss.backward()
+            with torch.amp.autocast('cuda'):
+                recon, mu, logvar = model(bx)
+                mask = (bx[:, :, -1] != 0).float().unsqueeze(-1)  # [B, T, 1]
+                recon_loss = (((recon - bx) ** 2) * mask).sum() / mask.sum()
+                kl_loss = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
+                loss = recon_loss + kl_weight * kl_loss
+                
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
+            
             total_recon += recon_loss.item()
             total_kl += kl_loss.item()
         
@@ -233,15 +242,17 @@ def train_lstm(model, X_train, Y_train, L_train, X_val, Y_val, L_val, epochs=20,
     computed_pos_weight = n_neg / (n_pos + 1e-8)
     print(f"  [LSTM] Computed pos_weight: {computed_pos_weight:.1f} (n_pos={int(n_pos)}, n_neg={int(n_neg)})", flush=True)
     
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
-    crit_bce = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([computed_pos_weight]), reduction='none')
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4, fused=(device.type=='cuda'))
+    crit_bce = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([computed_pos_weight], device=device), reduction='none')
     crit_mse = nn.MSELoss(reduction='none')
     
     dataset = TensorDataset(X_train, Y_train, L_train)
-    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
     
     val_dataset = TensorDataset(X_val, Y_val, L_val)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, pin_memory=True)
+    
+    scaler = torch.amp.GradScaler('cuda')
     
     import copy
     best_val_loss = float('inf')
@@ -253,22 +264,30 @@ def train_lstm(model, X_train, Y_train, L_train, X_val, Y_val, L_val, epochs=20,
         model.train()
         train_loss = 0.0
         for bx, by, bl in loader:
+            bx, by, bl = bx.to(device), by.to(device), bl.to(device)
             optimizer.zero_grad()
-            preds = model(bx, bl)
-            mask = (bx[:, :, -1] != 0).float()
             
-            loss_surv = (crit_bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum()
-            loss_vote = (crit_bce(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum()
-            loss_ht   = (crit_mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum()
-            loss_tok  = (crit_mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum()
-            loss_comm = (crit_mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum()
-            loss_coun = (crit_mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum()
-            
-            loss = loss_surv + loss_vote + loss_ht + loss_tok + loss_comm + loss_coun
-            loss.backward()
+            with torch.amp.autocast('cuda'):
+                preds = model(bx, bl)
+                mask = (bx[:, :, -1] != 0).float()
+                
+                loss_surv = (crit_bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum()
+                loss_vote = (crit_bce(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum()
+                loss_ht   = (crit_mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum()
+                loss_tok  = (crit_mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum()
+                loss_comm = (crit_mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum()
+                loss_coun = (crit_mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum()
+                
+                loss = loss_surv + loss_vote + loss_ht + loss_tok + loss_comm + loss_coun
+                
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
             grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0).item()
             grad_norms.append(grad_norm)
-            optimizer.step()
+            
+            scaler.step(optimizer)
+            scaler.update()
+            
             train_loss += loss.item()
             
         # Validation Loop
@@ -278,11 +297,13 @@ def train_lstm(model, X_train, Y_train, L_train, X_val, Y_val, L_val, epochs=20,
         val_loss = 0.0
         with torch.no_grad():
             for bx, by, bl in val_loader:
-                preds = model(bx, bl)
-                mask = (bx[:, :, -1] != 0).float()
-                l_s = (crit_bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum()
-                l_v = (crit_bce(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum()
-                l_h = (crit_mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum()
+                bx, by, bl = bx.to(device), by.to(device), bl.to(device)
+                with torch.amp.autocast('cuda'):
+                    preds = model(bx, bl)
+                    mask = (bx[:, :, -1] != 0).float()
+                    l_s = (crit_bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum()
+                    l_v = (crit_bce(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum()
+                    l_h = (crit_mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum()
                 l_t = (crit_mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum()
                 l_m = (crit_mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum()
                 l_c = (crit_mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum()
@@ -381,20 +402,25 @@ def run_counterfactual_pipeline(vae, lstm, X_test, features, norm_dict, n_sample
                 treated_traj[:, :, pet_idx] = X_test[:, :, pet_idx]
                 treated_traj[:, :, cum_pet_idx] = X_test[:, :, cum_pet_idx]
                 
+            # Move to device
+            control_traj = control_traj.to(device)
+            treated_traj = treated_traj.to(device)
+            
+            with torch.amp.autocast('cuda'):
                 # Feed through LSTM
                 ctrl_pred = lstm(control_traj)   # [B, 30, 6]
                 trt_pred = lstm(treated_traj)    # [B, 30, 6]
-                
-                # Extract final-step predictions
-                s_global = sample_start + s_idx
-                control_surv[:, s_global] = torch.sigmoid(ctrl_pred[:, -1, 0]).numpy()
-                treated_surv[:, s_global] = torch.sigmoid(trt_pred[:, -1, 0]).numpy()
-                control_vote[:, s_global] = torch.sigmoid(ctrl_pred[:, -1, 1]).numpy()
-                treated_vote[:, s_global] = torch.sigmoid(trt_pred[:, -1, 1]).numpy()
-                control_ht[:, s_global] = ctrl_pred[:, -1, 2].numpy()
-                treated_ht[:, s_global] = trt_pred[:, -1, 2].numpy()
-                control_tok[:, s_global] = ctrl_pred[:, -1, 3].numpy()
-                treated_tok[:, s_global] = trt_pred[:, -1, 3].numpy()
+            
+            # Extract final-step predictions and move back to CPU
+            s_global = sample_start + s_idx
+            control_surv[:, s_global] = torch.sigmoid(ctrl_pred[:, -1, 0]).cpu().numpy()
+            treated_surv[:, s_global] = torch.sigmoid(trt_pred[:, -1, 0]).cpu().numpy()
+            control_vote[:, s_global] = torch.sigmoid(ctrl_pred[:, -1, 1]).cpu().numpy()
+            treated_vote[:, s_global] = torch.sigmoid(trt_pred[:, -1, 1]).cpu().numpy()
+            control_ht[:, s_global] = ctrl_pred[:, -1, 2].cpu().numpy()
+            treated_ht[:, s_global] = trt_pred[:, -1, 2].cpu().numpy()
+            control_tok[:, s_global] = ctrl_pred[:, -1, 3].cpu().numpy()
+            treated_tok[:, s_global] = trt_pred[:, -1, 3].cpu().numpy()
             
             if (sample_start + batch_size) % 100 == 0:
                 print(f"  Processed {min(sample_start + batch_size, n_samples)}/{n_samples} samples...", flush=True)
@@ -415,13 +441,13 @@ def main():
     print(f"  Train: {X_train.shape[0]} | Test: {X_test.shape[0]}", flush=True)
     
     print("\n[3/5] Training Conditional VAE (world model)...", flush=True)
-    vae = ConditionalVAE(len(features))
+    vae = ConditionalVAE(len(features)).to(device)
     
     print("Training Causal VAE...")
     train_vae(vae, X_train, epochs=20, lr=0.001)
     
     print("Training Outcome Surrogate LSTM...")
-    lstm = MultiTaskLSTM(len(features))
+    lstm = MultiTaskLSTM(len(features)).to(device)
     train_lstm(lstm, X_train, Y_train, L_train, X_test, Y_test, L_test, epochs=20, lr=0.001)
     
     print("\n[5/5] Running Counterfactual G-Computation...", flush=True)
