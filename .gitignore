@@ -47,6 +47,7 @@ wandb/
 _*.py
 _*.json
 Data/GIS/
+model_retraining_logs*.txt
 
 # Standalone nested projects
 v0-properlytic-8v/
