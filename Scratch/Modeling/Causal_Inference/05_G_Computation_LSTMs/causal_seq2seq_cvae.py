@@ -267,6 +267,9 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
     for ep in range(epochs):
         kl_beta = min(0.001, 0.001 * (step / (0.3 * total_steps)))
         model.train()
+        step_count = 0
+        epoch_recon_loss = 0.0
+        epoch_kl_loss = 0.0
         for i in range(0, len(X_train), 256):
             bx, by = X_train[i:i+256].to(device), Y_train[i:i+256].to(device)
             # Pre-intervention sequence is the first 4 timesteps (t=0,1,2,3)
@@ -298,6 +301,9 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
                 opt.step()
+                epoch_recon_loss += recon_loss.item()
+                epoch_kl_loss += kl_loss.item()
+                step_count += 1
             else:
                 opt.zero_grad()
                 print(f"  [Seq2Seq] NaN loss at ep={ep} i={i}, skipping batch", flush=True)
@@ -326,6 +332,10 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
                 
             val_loss /= max(1, len(X_val) // 256)
             
+        train_recon_avg = epoch_recon_loss / max(1, step_count)
+        train_kl_avg = epoch_kl_loss / max(1, step_count)
+        print(f"  Epoch [{ep}/{epochs}] | Train Recon: {train_recon_avg:.4f} | KL: {train_kl_avg:.4f} (beta={kl_beta:.4f}) | Val Recon: {val_loss:.4f}", flush=True)
+            
         sched.step(val_loss)
         if val_loss < best_loss:
             best_loss = val_loss
@@ -333,6 +343,7 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
         else:
             patience_counter += 1
             if patience_counter >= patience:
+                print(f"  > Early stopping triggered at epoch {ep}", flush=True)
                 break
     return model
 
