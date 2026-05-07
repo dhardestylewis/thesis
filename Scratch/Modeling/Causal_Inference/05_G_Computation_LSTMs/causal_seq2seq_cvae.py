@@ -126,9 +126,26 @@ def load_data_and_cells():
     max_doses = df.groupby("case_number")["petition_pct_this_period"].max()
     
     cell_assignments = pd.DataFrame(index=first_periods.index)
-    cell_assignments["height_bin"] = pd.qcut(first_periods["proposed_max_height_ft"], q=4, labels=False, duplicates='drop').fillna(0).astype(int)
-    cell_assignments["dose_bin"] = pd.qcut(max_doses, q=4, labels=False, duplicates='drop').fillna(0).astype(int)
-    cell_assignments["cell_id"] = cell_assignments["height_bin"].astype(str) + "_" + cell_assignments["dose_bin"].astype(str)
+    
+    # User Feedback Implementation: FAR, Dose Intensity, and Petition Timing
+    far_q = pd.qcut(first_periods["proposed_max_far"], q=3, labels=False, duplicates='drop').fillna(0).astype(int)
+    dose_q = pd.qcut(max_doses, q=3, labels=False, duplicates='drop').fillna(0).astype(int)
+    
+    # Timing: 0 (No Petition), 1 (Early Petition), 2 (Late Petition)
+    first_pet = df[df['petition_pct_this_period'] > 0].groupby("case_number")["period_seq"].min()
+    timing_bin = pd.Series(0, index=first_periods.index)
+    if not first_pet.empty:
+        timing_bin.loc[first_pet.index] = pd.qcut(first_pet, q=2, labels=False, duplicates='drop').fillna(0).astype(int) + 1
+        
+    cell_assignments["far_bin"] = far_q
+    cell_assignments["dose_bin"] = dose_q
+    cell_assignments["timing_bin"] = timing_bin
+    
+    cell_assignments["cell_id"] = (
+        cell_assignments["far_bin"].astype(str) + "_" + 
+        cell_assignments["dose_bin"].astype(str) + "_" +
+        cell_assignments["timing_bin"].astype(str)
+    )
     
     unique_cells = cell_assignments["cell_id"].unique()
     
