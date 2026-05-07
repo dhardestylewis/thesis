@@ -56,10 +56,16 @@ class MultiTaskLSTM(nn.Module):
         self.head_tok  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
         self.head_comm = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
         self.head_coun = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
+        self.head_yea  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
+        self.head_nay  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
     
     def forward(self, x, lengths=None):
-        h, _ = self.lstm(x)
-        return torch.cat([self.head_surv(h), self.head_vote(h), self.head_ht(h), self.head_tok(h), self.head_comm(h), self.head_coun(h)], dim=-1)
+        if lengths is not None:
+            packed_out, _ = self.lstm(torch.nn.utils.rnn.pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False))
+            h, _ = torch.nn.utils.rnn.pad_packed_sequence(packed_out, batch_first=True, total_length=x.size(1))
+        else:
+            h, _ = self.lstm(x)
+        return torch.cat([self.head_surv(h), self.head_vote(h), self.head_ht(h), self.head_tok(h), self.head_comm(h), self.head_coun(h), self.head_yea(h), self.head_nay(h)], dim=-1)
 
 def generate_3d_plots():
     print("[1/3] Loading data and models...")
@@ -252,6 +258,10 @@ def generate_3d_plots():
             f_coun = features.index("cumulative_council_hearings_lag1")
             f_comm = features.index("cumulative_commission_hearings_lag1")
             f_tok = features.index("cumulative_council_nlp_lag1")
+            f_yea = features.index("cumulative_yea_votes")
+            f_nay = features.index("cumulative_nay_votes")
+            f_margin = features.index("net_vote_margin")
+            
             mean_coun, std_coun = norm_dict["cumulative_council_hearings_lag1"]
             mean_comm, std_comm = norm_dict["cumulative_commission_hearings_lag1"]
             mean_tok, std_tok = norm_dict["cumulative_council_nlp_lag1"]
@@ -268,18 +278,27 @@ def generate_3d_plots():
                         pred_tok = torch.expm1(preds_t[:, 3])
                         pred_comm = torch.sigmoid(preds_t[:, 4])
                         pred_coun = torch.sigmoid(preds_t[:, 5])
+                        pred_yea = torch.relu(preds_t[:, 6])
+                        pred_nay = torch.relu(preds_t[:, 7])
                         
                         curr_coun = X_cf[:, t, f_coun] * (std_coun + 1e-8) + mean_coun
                         curr_comm = X_cf[:, t, f_comm] * (std_comm + 1e-8) + mean_comm
                         curr_tok = X_cf[:, t, f_tok] * (std_tok + 1e-8) + mean_tok
+                        curr_yea = X_cf[:, t, f_yea]
+                        curr_nay = X_cf[:, t, f_nay]
                         
                         next_coun = curr_coun + pred_coun
                         next_comm = curr_comm + pred_comm
                         next_tok = curr_tok + pred_tok
+                        next_yea = curr_yea + pred_yea
+                        next_nay = curr_nay + pred_nay
                         
                         X_cf[:, t+1, f_coun] = (next_coun - mean_coun) / (std_coun + 1e-8)
                         X_cf[:, t+1, f_comm] = (next_comm - mean_comm) / (std_comm + 1e-8)
                         X_cf[:, t+1, f_tok] = (next_tok - mean_tok) / (std_tok + 1e-8)
+                        X_cf[:, t+1, f_yea] = next_yea
+                        X_cf[:, t+1, f_nay] = next_nay
+                        X_cf[:, t+1, f_margin] = next_yea - next_nay
                         
                     preds = lstm(X_cf)  # Final inference pass over rolled-out sequence
                 
@@ -413,18 +432,27 @@ def generate_3d_plots():
                             pred_tok = torch.expm1(preds_t[:, 3])
                             pred_comm = torch.sigmoid(preds_t[:, 4])
                             pred_coun = torch.sigmoid(preds_t[:, 5])
+                            pred_yea = torch.relu(preds_t[:, 6])
+                            pred_nay = torch.relu(preds_t[:, 7])
                             
                             curr_coun = X_cf[:, t, f_coun] * (std_coun + 1e-8) + mean_coun
                             curr_comm = X_cf[:, t, f_comm] * (std_comm + 1e-8) + mean_comm
                             curr_tok = X_cf[:, t, f_tok] * (std_tok + 1e-8) + mean_tok
+                            curr_yea = X_cf[:, t, f_yea]
+                            curr_nay = X_cf[:, t, f_nay]
                             
                             next_coun = curr_coun + pred_coun
                             next_comm = curr_comm + pred_comm
                             next_tok = curr_tok + pred_tok
+                            next_yea = curr_yea + pred_yea
+                            next_nay = curr_nay + pred_nay
                             
                             X_cf[:, t+1, f_coun] = (next_coun - mean_coun) / (std_coun + 1e-8)
                             X_cf[:, t+1, f_comm] = (next_comm - mean_comm) / (std_comm + 1e-8)
                             X_cf[:, t+1, f_tok] = (next_tok - mean_tok) / (std_tok + 1e-8)
+                            X_cf[:, t+1, f_yea] = next_yea
+                            X_cf[:, t+1, f_nay] = next_nay
+                            X_cf[:, t+1, f_margin] = next_yea - next_nay
                             
                         preds = lstm(X_cf)
                         

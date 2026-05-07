@@ -110,7 +110,8 @@ def load_data_and_cells():
     ]
     # council_nlp_total_tokens kept as TARGET only (not feature) to prevent leakage
     targets = ["resolved", "cumulative_vote_friction", "net_height_change",
-               "council_nlp_total_tokens", "commission_hearings_this_period", "council_hearings_this_period"]
+               "council_nlp_total_tokens", "commission_hearings_this_period", "council_hearings_this_period",
+               "yea_votes_this_period", "nay_votes_this_period"]
     
     for f in features + targets:
         if f not in df.columns: df[f] = 0
@@ -220,6 +221,8 @@ class MultiTaskLSTM(nn.Module):
         self.head_tok  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
         self.head_comm = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
         self.head_coun = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
+        self.head_yea  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
+        self.head_nay  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
     
     def forward(self, x, lengths=None):
         if lengths is not None:
@@ -227,7 +230,7 @@ class MultiTaskLSTM(nn.Module):
             h, _ = pad_packed_sequence(packed_out, batch_first=True, total_length=x.size(1))
         else:
             h, _ = self.lstm(x)
-        return torch.cat([self.head_surv(h), self.head_vote(h), self.head_ht(h), self.head_tok(h), self.head_comm(h), self.head_coun(h)], dim=-1)
+        return torch.cat([self.head_surv(h), self.head_vote(h), self.head_ht(h), self.head_tok(h), self.head_comm(h), self.head_coun(h), self.head_yea(h), self.head_nay(h)], dim=-1)
 
 # ============================================================
 # TRAINING LOGIC WITH EARLY STOPPING
@@ -317,8 +320,10 @@ def train_lstm_with_early_stopping(model, X_train, Y_train, L_train, X_val, Y_va
             l_tok  = (mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum()
             l_comm = (mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum()
             l_coun = (mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum()
+            l_yea  = (mse(preds[:, :, 6], by[:, :, 6]) * mask).sum() / mask.sum()
+            l_nay  = (mse(preds[:, :, 7], by[:, :, 7]) * mask).sum() / mask.sum()
             
-            loss = l_surv + l_vote + l_ht + l_tok + l_comm + l_coun
+            loss = l_surv + l_vote + l_ht + l_tok + l_comm + l_coun + l_yea + l_nay
             if torch.isfinite(loss):
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -341,7 +346,9 @@ def train_lstm_with_early_stopping(model, X_train, Y_train, L_train, X_val, Y_va
                 l_tok  = (mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum()
                 l_comm = (mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum()
                 l_coun = (mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum()
-                val_loss += (l_surv + l_vote + l_ht + l_tok + l_comm + l_coun).item()
+                l_yea  = (mse(preds[:, :, 6], by[:, :, 6]) * mask).sum() / mask.sum()
+                l_nay  = (mse(preds[:, :, 7], by[:, :, 7]) * mask).sum() / mask.sum()
+                val_loss += (l_surv + l_vote + l_ht + l_tok + l_comm + l_coun + l_yea + l_nay).item()
                 
             val_loss /= max(1, len(X_val) // 256)
             
@@ -415,6 +422,9 @@ def run_counterfactual_inference(vae, lstm, X_test, features, norm_dict):
     f_coun = features.index("cumulative_council_hearings_lag1")
     f_comm = features.index("cumulative_commission_hearings_lag1")
     f_tok = features.index("cumulative_council_nlp_lag1")
+    f_yea = features.index("cumulative_yea_votes")
+    f_nay = features.index("cumulative_nay_votes")
+    f_margin = features.index("net_vote_margin")
     
     mean_coun, std_coun = norm_dict["cumulative_council_hearings_lag1"]
     mean_comm, std_comm = norm_dict["cumulative_commission_hearings_lag1"]
@@ -439,28 +449,37 @@ def run_counterfactual_inference(vae, lstm, X_test, features, norm_dict):
             for t in range(4, 54):
                 # Predict current step
                 preds = lstm(X_t)
-                preds_t = preds[:, t, :] # (N, 6)
+                preds_t = preds[:, t, :] # (N, 8)
                 
                 # Extract predicted endogenous additions
-                # targets: [resolved, vote_friction, net_height_change, tokens, comm, coun]
+                # targets: [resolved, vote_friction, net_height_change, tokens, comm, coun, yea, nay]
                 pred_tok = torch.expm1(preds_t[:, 3]) # log1p was used, so expm1 to get linear
                 pred_comm = torch.sigmoid(preds_t[:, 4]) # bounded 0-1
                 pred_coun = torch.sigmoid(preds_t[:, 5])
+                pred_yea = torch.relu(preds_t[:, 6]) # prevent negative votes
+                pred_nay = torch.relu(preds_t[:, 7])
                 
                 # Unnormalize current state
                 curr_coun = X_t[:, t, f_coun] * (std_coun + 1e-8) + mean_coun
                 curr_comm = X_t[:, t, f_comm] * (std_comm + 1e-8) + mean_comm
                 curr_tok = X_t[:, t, f_tok] * (std_tok + 1e-8) + mean_tok
+                curr_yea = X_t[:, t, f_yea] # unscaled
+                curr_nay = X_t[:, t, f_nay] # unscaled
                 
                 # Update state
                 next_coun = curr_coun + pred_coun
                 next_comm = curr_comm + pred_comm
                 next_tok = curr_tok + pred_tok
+                next_yea = curr_yea + pred_yea
+                next_nay = curr_nay + pred_nay
                 
                 # Renormalize and assign to t+1
                 X_t[:, t+1, f_coun] = (next_coun - mean_coun) / (std_coun + 1e-8)
                 X_t[:, t+1, f_comm] = (next_comm - mean_comm) / (std_comm + 1e-8)
                 X_t[:, t+1, f_tok] = (next_tok - mean_tok) / (std_tok + 1e-8)
+                X_t[:, t+1, f_yea] = next_yea
+                X_t[:, t+1, f_nay] = next_nay
+                X_t[:, t+1, f_margin] = next_yea - next_nay
                 
             # 4. Final Inference on Rolled-out Trajectory
             preds = lstm(X_t)
