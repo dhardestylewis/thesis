@@ -58,7 +58,6 @@ def load_data_and_cells():
         df['net_vote_margin'] = 0
     
     # === LEAKAGE FIX: Zero out NLP tokens where no council hearing occurred ===
-    # council_nlp_total_tokens is derived from council minutes — only valid when a hearing occurred
     df['council_nlp_total_tokens'] = df['council_nlp_total_tokens'].where(
         df['council_hearings_this_period'] > 0, other=0
     )
@@ -66,19 +65,16 @@ def load_data_and_cells():
     # === V22: LAGGED CUMULATIVE FEATURES (all leakage-free: use t-1 history only) ===
     df = df.sort_values(['case_number', 'period_seq'])
     
-    # Lagged cumulative council hearings: "how many council periods has this case already had?"
     df['cumulative_council_hearings_lag1'] = (
         df.groupby('case_number')['council_hearings_this_period']
         .apply(lambda x: x.shift(1).fillna(0).cumsum())
         .reset_index(level=0, drop=True)
     )
-    # Lagged cumulative commission hearings
     df['cumulative_commission_hearings_lag1'] = (
         df.groupby('case_number')['commission_hearings_this_period']
         .apply(lambda x: x.shift(1).fillna(0).cumsum())
         .reset_index(level=0, drop=True)
     )
-    # Lagged cumulative NLP tokens: total council documentation up to (not including) current period
     df['cumulative_council_nlp_lag1'] = (
         df.groupby('case_number')['council_nlp_total_tokens']
         .apply(lambda x: x.shift(1).fillna(0).cumsum())
@@ -90,39 +86,29 @@ def load_data_and_cells():
     df['cumulative_vote_friction'] = df.groupby('case_number')['vote_friction'].cumsum()
     df['cumulative_petition_pct'] = df.groupby('case_number')['petition_pct_this_period'].cumsum()
     
-    features = [
-        # Parcel characteristics
-        "land_acres", "proposed_max_height_ft", "proposed_max_far",
-        # Spatial / gravity
-        "archetype_pct_Spatial_Gravity", "knn_petition_rate_1km",
-        # Macro
-        "local_unemployment_rate", "mortgage_rate_30yr",
-        # Temporal
-        "period_seq", "bw_sin", "bw_cos",
-        # Petition dose (current + cumulative)
-        "petition_pct_this_period", "cumulative_petition_pct",
-        # Time-varying vote accumulation
-        "cumulative_yea_votes", "cumulative_nay_votes", "net_vote_margin",
-        # Lagged cumulative hearing history (leakage-free)
-        "cumulative_council_hearings_lag1", "cumulative_commission_hearings_lag1",
-        # Lagged cumulative administrative documentation (leakage-free)
-        "cumulative_council_nlp_lag1",
-    ]
-    # council_nlp_total_tokens kept as TARGET only (not feature) to prevent leakage
     targets = ["resolved", "cumulative_vote_friction", "net_height_change",
                "council_nlp_total_tokens", "commission_hearings_this_period", "council_hearings_this_period",
                "yea_votes_this_period", "nay_votes_this_period"]
+               
+    exclude = set(targets + [
+        "case_number", "period_start", "period_start_dt", "year", "quarter", "petition_year", "petition_quarter",
+        "latitude", "longitude", "shape_area", "council_district", "census_tract", "land_use_code",
+        "label_petition_total_pct", "label_valid_protest", "label_real_days_in_pipeline", 
+        "label_valid_petition_pct", "label_exact_geometric_petition_pct",
+        "vote_event", "vote_friction", "yea_this_year", "nay_this_year", "censored",
+        "cumulative_council_hearings", "cumulative_commission_hearings" # leaky versions
+    ])
+    
+    features = [c for c in df.columns if c not in exclude]
     
     for f in features + targets:
         if f not in df.columns: df[f] = 0
         df[f] = pd.to_numeric(df[f], errors='coerce').fillna(0)
     
     norm_dict = {}
-    for f in ["land_acres", "proposed_max_far", "archetype_pct_Spatial_Gravity",
-              "knn_petition_rate_1km", "local_unemployment_rate", "mortgage_rate_30yr",
-              "period_seq", "cumulative_council_hearings_lag1",
-              "cumulative_commission_hearings_lag1", "cumulative_council_nlp_lag1",
-              "net_height_change"]:
+    for f in features + ["net_height_change"]:
+        if f in ["proposed_max_height_ft", "council_nlp_total_tokens", "net_vote_margin", "cumulative_yea_votes", "cumulative_nay_votes", "petition_pct_this_period", "cumulative_petition_pct"]:
+            continue # Skip specific raw values that need custom handling below
         mean_v, std_v = df[f].mean(), df[f].std()
         df[f] = (df[f] - mean_v) / (std_v + 1e-8)
         norm_dict[f] = (mean_v, std_v)
@@ -172,9 +158,26 @@ def build_tensors(df, features, targets, cases, max_seq=55):
 # ============================================================
 # MODELS
 # ============================================================
+class VariableSelectionNetwork(nn.Module):
+    def __init__(self, input_dim, hidden_dim=64):
+        super().__init__()
+        # Softmax attention weights over the input dimension
+        self.grn = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ELU(),
+            nn.Linear(hidden_dim, input_dim),
+            nn.Softmax(dim=-1)
+        )
+        
+    def forward(self, x):
+        weights = self.grn(x)
+        return x * weights, weights
+
 class Seq2SeqCVAE(nn.Module):
     def __init__(self, input_dim, hidden_dim=128, latent_dim=32, num_layers=2):
         super().__init__()
+        self.vsn = VariableSelectionNetwork(input_dim, hidden_dim)
+        
         self.encoder_lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.1)
         self.fc_mu = nn.Linear(hidden_dim, latent_dim)
         self.fc_logvar = nn.Linear(hidden_dim, latent_dim)
@@ -192,17 +195,20 @@ class Seq2SeqCVAE(nn.Module):
         self.head_nay  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
 
     def encode(self, x):
-        _, (h, _) = self.encoder_lstm(x)
+        x_filtered, _ = self.vsn(x)
+        _, (h, _) = self.encoder_lstm(x_filtered)
         return self.fc_mu(h[-1]), self.fc_logvar(h[-1])
         
     def decode(self, x, z):
+        x_filtered, weights = self.vsn(x)
         z_expanded = self.z_proj(z).unsqueeze(1).expand(-1, x.size(1), -1)
-        dec_in = torch.cat([x, z_expanded], dim=-1)
+        dec_in = torch.cat([x_filtered, z_expanded], dim=-1)
         h, _ = self.decoder_lstm(dec_in)
-        return torch.cat([
+        out = torch.cat([
             self.head_surv(h), self.head_vote(h), self.head_ht(h), self.head_tok(h), 
             self.head_comm(h), self.head_coun(h), self.head_yea(h), self.head_nay(h)
         ], dim=-1)
+        return out, weights
         
     def forward(self, x_pre, x_full):
         # Encode pre-intervention sequence (e.g. t=0 to 4)
@@ -210,7 +216,8 @@ class Seq2SeqCVAE(nn.Module):
         std = torch.exp(0.5 * logvar)
         z = mu + torch.randn_like(std) * std
         # Decode the full sequence conditioned on Z
-        return self.decode(x_full, z), mu, logvar
+        preds, weights = self.decode(x_full, z)
+        return preds, mu, logvar, weights
 
 # ============================================================
 # TRAINING LOGIC WITH EARLY STOPPING
@@ -237,7 +244,7 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
             bx_pre = bx[:, :4, :]
             
             opt.zero_grad()
-            preds, mu, logvar = model(bx_pre, bx)
+            preds, mu, logvar, weights = model(bx_pre, bx)
             logvar = logvar.clamp(-10, 4)
             mask = (bx[:, :, PS_IDX] != 0).float()
             
@@ -251,10 +258,13 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
             l_yea  = (mse(preds[:, :, 6], by[:, :, 6]) * mask).sum() / mask.sum()
             l_nay  = (mse(preds[:, :, 7], by[:, :, 7]) * mask).sum() / mask.sum()
             
+            # Sparsity penalty on attention weights to encourage aggressive feature selection
+            l_sparse = 0.01 * torch.mean(torch.abs(weights))
+            
             recon_loss = l_surv + l_vote + l_ht + l_tok + l_comm + l_coun + l_yea + l_nay
             kl_loss = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
             
-            loss = recon_loss + kl_beta * kl_loss
+            loss = recon_loss + kl_beta * kl_loss + l_sparse
             if torch.isfinite(loss):
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -270,7 +280,7 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
             for i in range(0, len(X_val), 256):
                 bx, by = X_val[i:i+256].to(device), Y_val[i:i+256].to(device)
                 bx_pre = bx[:, :4, :]
-                preds, mu, logvar = model(bx_pre, bx)
+                preds, mu, logvar, _ = model(bx_pre, bx)
                 mask = (bx[:, :, PS_IDX] != 0).float()
                 
                 l_surv = (bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum()
@@ -305,7 +315,7 @@ def compute_and_print_metrics(split_name, model, X, Y, L, batch_size=256):
         for i in range(0, len(X), batch_size):
             bx = X[i:i+batch_size].to(device)
             bx_pre = bx[:, :4, :]
-            preds, _, _ = model(bx_pre, bx)
+            preds, _, _, _ = model(bx_pre, bx)
             all_preds.append(preds.cpu())
     
     preds = torch.cat(all_preds, dim=0)
@@ -384,7 +394,7 @@ def run_counterfactual_inference(model, X_test, features, norm_dict):
             # 3. Autoregressive Rollout from t=4 to 54
             for t in range(4, 54):
                 # Predict current step
-                preds, _, _ = model(X_pre, X_t)
+                preds, _, _, _ = model(X_pre, X_t)
                 preds_t = preds[:, t, :] # (N, 8)
                 
                 # Extract predicted endogenous additions
@@ -418,7 +428,7 @@ def run_counterfactual_inference(model, X_test, features, norm_dict):
                 X_t[:, t+1, f_margin] = next_yea - next_nay
                 
             # 4. Final Inference on Rolled-out Trajectory
-            preds, _, _ = model(X_pre, X_t)
+            preds, _, _, _ = model(X_pre, X_t)
             
             # Extract cumulative outcomes
             results[d]["surv"][:, 0] = torch.sigmoid(preds[:, :, 0]).mean(dim=1).cpu().numpy()
