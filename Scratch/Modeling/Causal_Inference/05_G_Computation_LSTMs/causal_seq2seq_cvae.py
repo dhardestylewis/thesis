@@ -395,6 +395,93 @@ def compute_and_print_metrics(split_name, model, X, Y, L, batch_size=256):
     print(f"  > [{split_name} METRICS] MAE | Vote: {vote_mae:.2f} | Height: {ht_mae:.1f}ft | Tokens: {tok_mae:.1f} | Comm: {comm_mae:.2f} | Coun: {coun_mae:.2f}", flush=True)
     print(f"  > [{split_name} METRICS] Vote R2: {vote_r2:.3f} | Vote Spearman: {vote_corr:.3f} | Vote mean(pred)={vote_mean_pred:.3f} vs mean(actual)={vote_mean_actual:.3f} | Ht R2: {ht_r2:.3f}", flush=True)
 
+def compute_autoregressive_metrics(split_name, model, X, Y, L, features, norm_dict):
+    from sklearn.metrics import roc_auc_score, average_precision_score, brier_score_loss, mean_absolute_error, r2_score
+    from scipy.stats import spearmanr
+    model.eval()
+    
+    # Feature indices
+    f_coun = features.index("cumulative_council_hearings_lag1")
+    f_comm = features.index("cumulative_commission_hearings_lag1")
+    f_tok = features.index("cumulative_council_nlp_lag1")
+    f_yea = features.index("cumulative_yea_votes")
+    f_nay = features.index("cumulative_nay_votes")
+    f_margin = features.index("net_vote_margin")
+    
+    mean_coun, std_coun = norm_dict["cumulative_council_hearings_lag1"]
+    mean_comm, std_comm = norm_dict["cumulative_commission_hearings_lag1"]
+    mean_tok, std_tok = norm_dict["cumulative_council_nlp_lag1"]
+    mean_ht, std_ht = norm_dict["net_height_change"]
+    
+    y_true = np.zeros((len(X), 8))
+    y_pred = np.zeros((len(X), 8))
+    
+    with torch.no_grad():
+        X_t = X.clone().to(device)
+        X_pre = X_t[:, :4, :]
+        
+        # Autoregressive Rollout from t=4 to 54
+        for t in range(4, 54):
+            preds, _, _, _ = model(X_pre, X_t)
+            preds_t = preds[:, t, :]
+            
+            pred_tok = torch.expm1(preds_t[:, 3])
+            pred_comm = torch.sigmoid(preds_t[:, 4])
+            pred_coun = torch.sigmoid(preds_t[:, 5])
+            pred_yea = torch.relu(preds_t[:, 6])
+            pred_nay = torch.relu(preds_t[:, 7])
+            
+            curr_coun = X_t[:, t, f_coun] * (std_coun + 1e-8) + mean_coun
+            curr_comm = X_t[:, t, f_comm] * (std_comm + 1e-8) + mean_comm
+            curr_yea = X_t[:, t, f_yea]
+            curr_nay = X_t[:, t, f_nay]
+            
+            next_coun = curr_coun + pred_coun
+            next_comm = curr_comm + pred_comm
+            next_tok = pred_tok
+            next_yea = curr_yea + pred_yea
+            next_nay = curr_nay + pred_nay
+            
+            X_t[:, t+1, f_coun] = (next_coun - mean_coun) / (std_coun + 1e-8)
+            X_t[:, t+1, f_comm] = (next_comm - mean_comm) / (std_comm + 1e-8)
+            X_t[:, t+1, f_tok] = (next_tok - mean_tok) / (std_tok + 1e-8)
+            X_t[:, t+1, f_yea] = next_yea
+            X_t[:, t+1, f_nay] = next_nay
+            X_t[:, t+1, f_margin] = next_yea - next_nay
+            
+        # Final pass
+        preds, _, _, _ = model(X_pre, X_t)
+        
+        for i in range(len(X)):
+            valid_len = (X_t[i, :, features.index("period_seq")] != 0).sum()
+            idx = max(0, valid_len - 1)
+            y_true[i] = Y[i, idx, :].cpu().numpy()
+            y_pred[i] = preds[i, idx, :].cpu().numpy()
+            
+            # Correct specific units in prediction
+            y_pred[i, 0] = 1.0 / (1.0 + np.exp(-y_pred[i, 0])) # Surv sigmoid
+            y_pred[i, 2] = (y_pred[i, 2] * std_ht) + mean_ht # Height un-normalize
+            y_pred[i, 3] = np.expm1(y_pred[i, 3]) # Token linear
+            
+            # Correct targets
+            y_true[i, 3] = np.expm1(y_true[i, 3])
+            
+    # Binary
+    if len(np.unique(y_true[:, 0])) > 1:
+        surv_roc = roc_auc_score(y_true[:, 0], y_pred[:, 0])
+        surv_pr = average_precision_score(y_true[:, 0], y_pred[:, 0])
+    else:
+        surv_roc = surv_pr = 0.0
+        
+    vote_mae = mean_absolute_error(y_true[:, 1], y_pred[:, 1])
+    vote_corr = spearmanr(y_true[:, 1], y_pred[:, 1]).statistic
+    ht_mae = mean_absolute_error(y_true[:, 2], y_pred[:, 2])
+    tok_mae = mean_absolute_error(y_true[:, 3], y_pred[:, 3])
+    
+    print(f"  > [{split_name} METRICS] Surv: ROC {surv_roc:.3f} | PR {surv_pr:.3f}", flush=True)
+    print(f"  > [{split_name} METRICS] MAE | Vote: {vote_mae:.2f} | Height: {ht_mae:.1f}ft | Tokens: {tok_mae:.1f}", flush=True)
+    print(f"  > [{split_name} METRICS] Vote Spearman: {vote_corr:.3f}", flush=True)
+
 # ============================================================
 # INFERENCE
 # ============================================================
@@ -556,8 +643,12 @@ def main():
         print(f"\n  === EVALUATION PHASE ===", flush=True)
         # Note: We replaced the dual model with the unified Seq2SeqCVAE
         
-        compute_and_print_metrics("TRAIN", model, X_train, Y_train, L_train)
-        compute_and_print_metrics("VAL", model, X_val, Y_val, L_val)
+        # Output 1-step Teacher Forced Metrics
+        compute_and_print_metrics(f"VAL", model, X_val, Y_val, L_val)
+        compute_and_print_metrics(f"TEST", model, X_test, Y_test, L_test)
+        
+        # Output Full Autoregressive Rollout Metrics
+        compute_autoregressive_metrics(f"AUTOREGRESSIVE TEST", model, X_test, Y_test, L_test, features, norm_dict)
         if len(X_test) > 0:
             compute_and_print_metrics("TEST", model, X_test, Y_test, L_test)
         
