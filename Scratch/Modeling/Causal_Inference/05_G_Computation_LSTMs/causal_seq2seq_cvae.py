@@ -128,8 +128,17 @@ def load_data_and_cells():
     cell_assignments = pd.DataFrame(index=first_periods.index)
     
     # User Feedback Implementation: FAR, Dose Intensity, and Petition Timing
-    far_q = pd.qcut(first_periods["proposed_max_far"], q=3, labels=False, duplicates='drop').fillna(0).astype(int)
-    dose_q = pd.qcut(max_doses, q=3, labels=False, duplicates='drop').fillna(0).astype(int)
+    # IMPORTANT: We must compute quantiles ONLY on values > 0, because 0 dominates the dataset
+    far_vals = first_periods["proposed_max_far"]
+    far_q = pd.Series(0, index=far_vals.index)
+    pos_far = far_vals[far_vals > 0]
+    if not pos_far.empty:
+        far_q.loc[pos_far.index] = pd.qcut(pos_far, q=2, labels=False, duplicates='drop').fillna(0).astype(int) + 1
+        
+    dose_q = pd.Series(0, index=max_doses.index)
+    pos_dose = max_doses[max_doses > 0]
+    if not pos_dose.empty:
+        dose_q.loc[pos_dose.index] = pd.qcut(pos_dose, q=2, labels=False, duplicates='drop').fillna(0).astype(int) + 1
     
     # Timing: 0 (No Petition), 1 (Early Petition), 2 (Late Petition)
     first_pet = df[df['petition_pct_this_period'] > 0].groupby("case_number")["period_seq"].min()
@@ -475,21 +484,28 @@ def main():
     
     pooled_results = {d: {"surv": [], "vote": [], "ht": [], "tok": []} for d in doses}
     
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    gkf = GroupKFold(n_splits=5)
     
-    # Generate 5 pure temporal splits (ignoring spatial cells due to extreme power-law collapse)
+    # Generate the 5 volume-weighted cell splits
     all_cases = first_periods_dt.index.values
+    all_groups = cell_assignments.loc[all_cases, "cell_id"].values
     
-    for cutoff, (train_case_idx, test_case_idx) in zip(cutoffs, kf.split(all_cases)):
+    print("DEBUG ALL GROUPS LEN:", len(all_groups), "UNIQUE:", len(np.unique(all_groups)), flush=True)
+    
+    for cutoff, (train_case_idx, test_case_idx) in zip(cutoffs, gkf.split(all_cases, groups=all_groups)):
         print("\n" + "=" * 50, flush=True)
-        print(f"--- TEMPORAL FOLD: CUTOFF {cutoff} ---", flush=True)
+        print(f"--- SPATIO-TEMPORAL FOLD: CUTOFF {cutoff} ---", flush=True)
         
         cutoff_date = pd.to_datetime(f"{cutoff}-12-31")
         end_test_date = pd.to_datetime(f"{cutoff+3}-12-31")
         
-        # Temporal Split using random K-Fold assignments
-        in_dist_train_mask = (first_periods_dt[all_cases[train_case_idx]] <= cutoff_date)
-        all_train_cases = all_cases[train_case_idx][in_dist_train_mask]
+        # Identify the assigned OOD cells for this fold based on the cases
+        train_cells = cell_assignments.loc[all_cases[train_case_idx], "cell_id"].unique()
+        test_cells = cell_assignments.loc[all_cases[test_case_idx], "cell_id"].unique()
+            
+        # SPATIO-TEMPORAL SPLIT
+        in_dist_train_mask = (first_periods_dt <= cutoff_date) & (cell_assignments["cell_id"].isin(train_cells))
+        all_train_cases = first_periods_dt[in_dist_train_mask].index.values
         
         # IN-DISTRIBUTION VALIDATION SPLIT (Purely Random for Early Stopping)
         gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
@@ -497,10 +513,10 @@ def main():
         train_cases = all_train_cases[train_idx]
         val_cases = all_train_cases[val_idx]
         
-        test_cases = first_periods_dt.loc[all_cases[test_case_idx]]
-        test_cases = test_cases[
-            (test_cases > cutoff_date) & 
-            (test_cases <= end_test_date)
+        test_cases = first_periods_dt[
+            (first_periods_dt > cutoff_date) & 
+            (first_periods_dt <= end_test_date) & 
+            (cell_assignments["cell_id"].isin(test_cells))
         ].index.values
         
         if len(test_cases) == 0: continue
