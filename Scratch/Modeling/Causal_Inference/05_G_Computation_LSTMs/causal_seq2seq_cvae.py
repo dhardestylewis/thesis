@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
-from sklearn.model_selection import GroupShuffleSplit, KFold
+from sklearn.model_selection import GroupShuffleSplit, KFold, GroupKFold
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import warnings
 warnings.filterwarnings('ignore')
@@ -26,7 +26,11 @@ DOSE_STEP = 0.10
 # DATA & SPATIAL SPLIT
 # ============================================================
 def load_data_and_cells():
-    df = pd.read_csv(PANEL_PATH, low_memory=False)
+    import os
+    if os.path.exists("/home/ubuntu/biweekly_panel.csv"):
+        df = pd.read_csv("/home/ubuntu/biweekly_panel.csv", low_memory=False)
+    else:
+        df = pd.read_csv(PANEL_PATH, low_memory=False)
     df['period_start_dt'] = pd.to_datetime(df['period_start'])
     
     # === TIME-VARYING VOTE FEATURES ===
@@ -455,17 +459,22 @@ def main():
     
     pooled_results = {d: {"surv": [], "vote": [], "ht": [], "tok": []} for d in doses}
     
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    gkf = GroupKFold(n_splits=5)
     
-    for cutoff, (train_cell_idx, test_cell_idx) in zip(cutoffs, kf.split(unique_cells)):
+    # Generate the 5 volume-weighted cell splits
+    all_cases = first_periods_dt.index.values
+    all_groups = cell_assignments.loc[all_cases, "cell_id"].values
+    
+    for cutoff, (train_case_idx, test_case_idx) in zip(cutoffs, gkf.split(all_cases, groups=all_groups)):
         print("\n" + "=" * 50, flush=True)
         print(f"--- SPATIO-TEMPORAL FOLD: CUTOFF {cutoff} ---", flush=True)
         
         cutoff_date = pd.to_datetime(f"{cutoff}-12-31")
         end_test_date = pd.to_datetime(f"{cutoff+3}-12-31")
         
-        train_cells = unique_cells[train_cell_idx]
-        test_cells = unique_cells[test_cell_idx]
+        # Identify the assigned OOD cells for this fold based on the cases
+        train_cells = cell_assignments.loc[all_cases[train_case_idx], "cell_id"].unique()
+        test_cells = cell_assignments.loc[all_cases[test_case_idx], "cell_id"].unique()
             
         # SPATIO-TEMPORAL SPLIT
         in_dist_train_mask = (first_periods_dt <= cutoff_date) & (cell_assignments["cell_id"].isin(train_cells))
