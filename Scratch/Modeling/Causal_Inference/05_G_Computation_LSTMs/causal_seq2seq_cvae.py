@@ -475,26 +475,21 @@ def main():
     
     pooled_results = {d: {"surv": [], "vote": [], "ht": [], "tok": []} for d in doses}
     
-    gkf = GroupKFold(n_splits=5)
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
     
-    # Generate the 5 volume-weighted cell splits
+    # Generate 5 pure temporal splits (ignoring spatial cells due to extreme power-law collapse)
     all_cases = first_periods_dt.index.values
-    all_groups = cell_assignments.loc[all_cases, "cell_id"].values
     
-    for cutoff, (train_case_idx, test_case_idx) in zip(cutoffs, gkf.split(all_cases, groups=all_groups)):
+    for cutoff, (train_case_idx, test_case_idx) in zip(cutoffs, kf.split(all_cases)):
         print("\n" + "=" * 50, flush=True)
-        print(f"--- SPATIO-TEMPORAL FOLD: CUTOFF {cutoff} ---", flush=True)
+        print(f"--- TEMPORAL FOLD: CUTOFF {cutoff} ---", flush=True)
         
         cutoff_date = pd.to_datetime(f"{cutoff}-12-31")
         end_test_date = pd.to_datetime(f"{cutoff+3}-12-31")
         
-        # Identify the assigned OOD cells for this fold based on the cases
-        train_cells = cell_assignments.loc[all_cases[train_case_idx], "cell_id"].unique()
-        test_cells = cell_assignments.loc[all_cases[test_case_idx], "cell_id"].unique()
-            
-        # SPATIO-TEMPORAL SPLIT
-        in_dist_train_mask = (first_periods_dt <= cutoff_date) & (cell_assignments["cell_id"].isin(train_cells))
-        all_train_cases = first_periods_dt[in_dist_train_mask].index.values
+        # Temporal Split using random K-Fold assignments
+        in_dist_train_mask = (first_periods_dt[all_cases[train_case_idx]] <= cutoff_date)
+        all_train_cases = all_cases[train_case_idx][in_dist_train_mask]
         
         # IN-DISTRIBUTION VALIDATION SPLIT (Purely Random for Early Stopping)
         gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
@@ -502,10 +497,10 @@ def main():
         train_cases = all_train_cases[train_idx]
         val_cases = all_train_cases[val_idx]
         
-        test_cases = first_periods_dt[
-            (first_periods_dt > cutoff_date) & 
-            (first_periods_dt <= end_test_date) & 
-            (cell_assignments["cell_id"].isin(test_cells))
+        test_cases = first_periods_dt.loc[all_cases[test_case_idx]]
+        test_cases = test_cases[
+            (test_cases > cutoff_date) & 
+            (test_cases <= end_test_date)
         ].index.values
         
         if len(test_cases) == 0: continue
