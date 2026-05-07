@@ -18,9 +18,8 @@ LSTM_PATH = os.path.join(OUT_DIR, "causal_lstm_weights.pt")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 N_SAMPLES = 500
 
-# Spatial Grid Definitions
-HEIGHT_STEP = 20.0
-DOSE_STEP = 0.10
+# Spatial Grid Definitions (Quantile Macro-Cells)
+# Heights and Doses are now dynamically bucketed via pd.qcut
 
 # ============================================================
 # DATA & SPATIAL SPLIT
@@ -127,8 +126,8 @@ def load_data_and_cells():
     max_doses = df.groupby("case_number")["petition_pct_this_period"].max()
     
     cell_assignments = pd.DataFrame(index=first_periods.index)
-    cell_assignments["height_bin"] = (first_periods["proposed_max_height_ft"] // HEIGHT_STEP).astype(int)
-    cell_assignments["dose_bin"] = (max_doses // DOSE_STEP).astype(int)
+    cell_assignments["height_bin"] = pd.qcut(first_periods["proposed_max_height_ft"], q=4, labels=False, duplicates='drop').fillna(0).astype(int)
+    cell_assignments["dose_bin"] = pd.qcut(max_doses, q=4, labels=False, duplicates='drop').fillna(0).astype(int)
     cell_assignments["cell_id"] = cell_assignments["height_bin"].astype(str) + "_" + cell_assignments["dose_bin"].astype(str)
     
     unique_cells = cell_assignments["cell_id"].unique()
