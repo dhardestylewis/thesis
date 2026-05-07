@@ -403,6 +403,7 @@ def run_counterfactual_inference(model, X_test, features, norm_dict):
     mean_coun, std_coun = norm_dict["cumulative_council_hearings_lag1"]
     mean_comm, std_comm = norm_dict["cumulative_commission_hearings_lag1"]
     mean_tok, std_tok = norm_dict["cumulative_council_nlp_lag1"]
+    mean_ht, std_ht = norm_dict["net_height_change"]
     
     doses = np.linspace(0.0, 1.0, 11).tolist()
     results = {d: {"surv": np.zeros((X_test.size(0), 1)),
@@ -437,14 +438,13 @@ def run_counterfactual_inference(model, X_test, features, norm_dict):
                 # Unnormalize current state
                 curr_coun = X_t[:, t, f_coun] * (std_coun + 1e-8) + mean_coun
                 curr_comm = X_t[:, t, f_comm] * (std_comm + 1e-8) + mean_comm
-                curr_tok = X_t[:, t, f_tok] * (std_tok + 1e-8) + mean_tok
                 curr_yea = X_t[:, t, f_yea] # unscaled
                 curr_nay = X_t[:, t, f_nay] # unscaled
                 
                 # Update state
                 next_coun = curr_coun + pred_coun
                 next_comm = curr_comm + pred_comm
-                next_tok = curr_tok + pred_tok
+                next_tok = pred_tok # Token prediction is already cumulative
                 next_yea = curr_yea + pred_yea
                 next_nay = curr_nay + pred_nay
                 
@@ -462,9 +462,10 @@ def run_counterfactual_inference(model, X_test, features, norm_dict):
             # Extract cumulative outcomes
             results[d]["surv"][:, 0] = torch.sigmoid(preds[:, :, 0]).mean(dim=1).cpu().numpy()
             results[d]["vote"][:, 0] = preds[:, -1, 1].cpu().numpy()
-            # net_height_change is native scale (linear difference)
-            results[d]["ht"][:, 0] = preds[:, -1, 2].cpu().numpy()
-            results[d]["tok"][:, 0] = torch.expm1(preds[:, :, 3]).sum(dim=1).cpu().numpy()
+            # Un-normalize height change from Z-score to native feet
+            results[d]["ht"][:, 0] = (preds[:, -1, 2].cpu().numpy() * std_ht) + mean_ht
+            # Extract final cumulative token count
+            results[d]["tok"][:, 0] = torch.expm1(preds[:, -1, 3]).cpu().numpy()
 
     return results
 
