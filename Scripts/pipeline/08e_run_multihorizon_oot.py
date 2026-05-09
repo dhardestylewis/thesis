@@ -299,7 +299,6 @@ def run():
             for m_name, clf in models.items():
                 try:
                     import torch
-                    import gc
                     if torch.cuda.is_available():
                         torch.cuda.empty_cache()
                     gc.collect()
