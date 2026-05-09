@@ -284,6 +284,27 @@ C14-2016-012 2016 4                   $95,000         71%           $620,000
 }
 
 
+\subsection{Biweekly Panel Feature Engineering}
+\label{sec:biweekly_features}
+
+To support multi-horizon predictive evaluation, the filing-date case-level observations are expanded into a longitudinal biweekly panel. Each case generates one row per 14-day period from filing through final disposition or censoring, yielding a panel of approximately 193,000 case-period observations across 2007--2024. All cumulative features are lagged by one biweekly period prior to use, ensuring that no feature at period $t$ reflects information that would only become available at or after period $t$. This strict lag-and-shift architecture, applied via \texttt{pandas.groupby().shift(1)}, eliminates contemporaneous target leakage at the feature level.
+
+\textbf{Cumulative Spatial Friction Features.} The core innovation of the biweekly panel is the accumulation of spatial friction vectors derived from geocoded petition signer records matched to TCAD parcel geometries. For each case-period, the following are computed over all petition signers observed to date:
+
+\begin{itemize}
+    \item \textit{Signer Proximity:} Minimum, maximum, and median Euclidean distance from each signer's parcel centroid to the case boundary polygon, and counts of signers within and outside the statutory 200ft buffer.
+    \item \textit{Protest Intensity:} An unofficial protest intensity score (sum of inverse-distance-weighted signer counts), a directional signer distance vector (signed mean displacement from case centroid), and delta friction metrics representing the marginal change in both protesting and silent parcel shares across biweekly periods.
+    \item \textit{Land Use Friction Mix:} For each 14-day window, the cumulative share of protesting and silent neighboring parcels classified as single-family residential, commercial, and multifamily, derived from the City of Austin Land Use Inventory (LUI). Corresponding mean parcel square footages for protesting versus silent cohorts are also retained.
+    \item \textit{Temporal LDB Differentials:} Time-matched versions of the land-use friction shares, computed by joining the LDB snapshot to the biweekly \texttt{period\_start} date via a strict backward-fill temporal join (\texttt{pd.merge\_asof(direction=`backward')}), ensuring that only LDB snapshots published on or before a given period are used.
+    \item \textit{Protester Spatial Embeddings:} Four-dimensional PCA embeddings computed from the latitude/longitude coordinates of petition signers. These capture the geometric shape of the opposition coalition (e.g., clustered vs.\ dispersed, directionally biased) in a compressed, rotation-invariant form beyond scalar distance metrics.
+\end{itemize}
+
+\textbf{Process Accumulation Features.} Cumulative counts of city council hearings and planning commission hearings, lagged by one period, are included to proxy procedural friction depth. The Remand Count variable records how many times a case was formally remanded back from Council to the Commission. An aggregate hearing sentiment score, derived from NLP analysis of commission transcripts, and the net height change extracted from intermediate zoning proposals (measuring developer concessions over time) are included as longitudinal case-trajectory signals.
+
+\textbf{Macroeconomic Features.} National macroeconomic context is incorporated at the period level via four FRED/BLS series: the 30-year fixed mortgage rate, the 10-year Treasury yield, the Federal Funds Rate, and the local unemployment rate. For each series, three derived features are computed: a 1-year lag, a 6-month trailing momentum (first difference), and a filing-date delta (current value minus the value observed at the initial case filing date). These capture both the level of borrowing costs and the directional trajectory facing developers and signer households at the time each biweekly observation is recorded.
+
+\textbf{Annualization.} For the annualized multi-horizon evaluation (see Section~\ref{sec:results}), the biweekly panel is collapsed to one row per (case, calendar year) by taking the \emph{last} biweekly period of each year. This preserves the richest cumulative state while remaining strictly within the information boundary of December 31 of that year, since all cumulative features are already lagged within the biweekly construction.
+
 \section{Modeling Strategy}
 
 \subsection{Formal Protest Petition Model}
