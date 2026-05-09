@@ -98,28 +98,66 @@ def get_models(spw: float) -> dict:
             scale_pos_weight=spw,
             eval_metric="AUC", random_seed=42, verbose=False, task_type="GPU"
         ),
-        "RandomForest": RandomForestClassifier(
-            n_estimators=300, max_depth=8, class_weight="balanced",
-            n_jobs=-1, random_state=42
-        ),
-        "LogisticL2": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(C=0.1, penalty="l2", max_iter=1000,
-                                       class_weight="balanced", random_state=42))
-        ]),
-        "LogisticL1": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(C=0.1, penalty="l1", solver="liblinear",
-                                       max_iter=1000, class_weight="balanced", random_state=42))
-        ]),
-        "MLP": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", MLPClassifier(
-                hidden_layer_sizes=(128, 64, 32), alpha=1e-3,
-                max_iter=200, random_state=42, early_stopping=True
-            ))
-        ]),
+        "RandomForest": "XGB_RF_Placeholder",
+        "LogisticL2": "PyTorch_LogisticL2_Placeholder",
+        "LogisticL1": "PyTorch_LogisticL1_Placeholder",
+        "Linear": "PyTorch_Linear_Placeholder",
+        "MLP": "PyTorch_MLP_Placeholder",
     }
+
+def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=256):
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    from torch.utils.data import TensorDataset, DataLoader
+    from sklearn.preprocessing import StandardScaler
+    
+    scaler = StandardScaler()
+    X_tr_sc = scaler.fit_transform(X_tr)
+    X_te_sc = scaler.transform(X_te)
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    layers = []
+    in_dim = X_tr.shape[1]
+    for h in hidden_dims:
+        layers.append(nn.Linear(in_dim, h))
+        layers.append(nn.ReLU())
+        in_dim = h
+    layers.append(nn.Linear(in_dim, 1))
+    
+    model = nn.Sequential(*layers).to(device)
+    
+    pos_weight = max(1.0, (len(y_tr) - sum(y_tr)) / max(1, sum(y_tr)))
+    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([pos_weight], dtype=torch.float32).to(device))
+    
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=l2_reg)
+    
+    X_t = torch.tensor(X_tr_sc, dtype=torch.float32)
+    y_t = torch.tensor(y_tr, dtype=torch.float32).unsqueeze(1)
+    
+    dl = DataLoader(TensorDataset(X_t, y_t), batch_size=batch_size, shuffle=True)
+    
+    model.train()
+    for _ in range(epochs):
+        for Xb, yb in dl:
+            Xb, yb = Xb.to(device), yb.to(device)
+            optimizer.zero_grad()
+            out = model(Xb)
+            loss = criterion(out, yb)
+            if l1_reg > 0:
+                l1_norm = sum(p.abs().sum() for p in model.parameters())
+                loss += l1_reg * l1_norm
+            loss.backward()
+            optimizer.step()
+            
+    model.eval()
+    with torch.no_grad():
+        X_te_t = torch.tensor(X_te_sc, dtype=torch.float32).to(device)
+        logits = model(X_te_t)
+        probs = torch.sigmoid(logits).cpu().numpy().flatten()
+        
+    return probs
 
 
 def run():
@@ -168,17 +206,31 @@ def run():
                                 eval_set=(X_te, y_te),
                                 early_stopping_rounds=50,
                                 verbose=False)
+                        y_pred = clf.predict_proba(X_te)[:, 1]
+                    elif m_name == "RandomForest":
+                        from xgboost import XGBRFClassifier
+                        rf = XGBRFClassifier(n_estimators=300, max_depth=8, scale_pos_weight=spw, tree_method='hist', device='cuda', random_state=42)
+                        rf.fit(X_tr, y_tr)
+                        y_pred = rf.predict_proba(X_te)[:, 1]
+                    elif m_name == "LogisticL2":
+                        y_pred = build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l2_reg=1e-2)
+                    elif m_name == "LogisticL1":
+                        y_pred = build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=1e-3)
+                    elif m_name == "Linear":
+                        y_pred = build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01)
+                    elif m_name == "MLP":
+                        y_pred = build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[128, 64, 32], epochs=30, lr=1e-3)
                     else:
                         clf.fit(X_tr, y_tr)
-
-                    y_pred = clf.predict_proba(X_te)[:, 1]
+                        y_pred = clf.predict_proba(X_te)[:, 1]
+                        
                     roc = roc_auc_score(y_te, y_pred)
                     pr  = average_precision_score(y_te, y_pred)
 
-                    print(f"  [{h_name:<10}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}")
+                    print(f"  [{year_cutoff}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}", flush=True)
 
                     results.append({
-                        "Test_Year":     test_year,
+                        "Test_Year":     year_cutoff,
                         "Horizon":       h_name,
                         "Model":         m_name,
                         "Model_Family":  ("Tree" if m_name in ("CatBoost", "RandomForest")
@@ -187,9 +239,13 @@ def run():
                         "ROC_AUC":       roc,
                         "PR_AUC":        pr,
                         "Naive_PR_AUC":  naive_pr,
-                        "Train_Cases":   len(X_tr),
-                        "Test_Cases":    len(X_te),
+                        "Train_Samples": int(train_mask.sum()),
+                        "Test_Samples":  int(test_mask.sum()),
                     })
+                    
+                    # Incremental save
+                    os.makedirs(OUT_CSV.parent, exist_ok=True)
+                    pd.DataFrame(results).to_csv(OUT_CSV, index=False)
 
                 except Exception as e:
                     print(f"  [{h_name}] {m_name} FAILED: {e}")

@@ -3,21 +3,21 @@
 
 \noindent While the Double Machine Learning (DML) and longitudinal SHAP analyses provide a rigorous mathematical framework for quantifying the impact of neighborhood petitions on zoning outcomes, these models inherently abstract the underlying socio-political friction. To ground-truth the causal surfaces identified in the quantitative pipeline, a qualitative review of historical municipal transcripts was conducted. Utilizing a programmatic hierarchical distillation algorithm, 36 archival staff reports and commission meeting minutes were systematically filtered to isolate the qualitative signals for three representative case archetypes identified via covariate clustering.
 
-\subsubsection{Archetype 1: Suburban Friction and Commission Defiance (C14-2013-0098)}
+\subsubsection[Archetype 1: Suburban Friction and Commission Defiance]{Archetype 1: Suburban Friction and Commission Defiance (C14-2013-0098)}
 \textbf{Context:} Located in the Bull Creek Watershed (District 6), this case involved a rezoning request by the Balcones Country Club to convert a rural residential (RR) tract into single-family large lot (SF-1) zoning. 
 
 \textbf{Analysis:} This case exemplifies the raw political power of suburban neighborhood mobilization, independent of municipal planning directives. The initial technical review by City Staff resulted in a formal recommendation for approval, indicating the request was fundamentally aligned with baseline zoning parameters. However, the introduction of the case at the September 2013 Planning Commission hearing was met with immediate, organized neighborhood opposition, forcing an initial 7-0 vote for postponement. 
 
 When the case returned two weeks later, the neighborhood's mobilization proved insurmountable. Despite the explicit staff recommendation for approval, the Planning Commission actively defied the technical guidance and yielded to the localized political pressure, voting unanimously (7-0) to deny the rezoning request entirely. This archetype perfectly validates the high SHAP hazard values observed in suburban spatial clusters, demonstrating how organized petitions can deterministically override technical staff support.
 
-\subsubsection{Archetype 2: Urban Core Complexity and Compromise Failure (C14-2013-0104)}
+\subsubsection[Archetype 2: Urban Core Complexity and Compromise Failure]{Archetype 2: Urban Core Complexity and Compromise Failure (C14-2013-0104)}
 \textbf{Context:} Known as the Shelley Tract (District 9), this parcel in the downtown Judges Hill neighborhood involved an attempt to adaptively reuse a historic residential structure (SF-3) into a limited office/mixed-use (LO-MU) space.
 
 \textbf{Analysis:} The urban core represents the most hyper-politicized spatial cluster in the dataset, characterized by high densities of intersecting neighborhood associations. The Shelley Tract activated a massive coalition, including the Judges Hill Neighborhood Association, Downtown Austin Neighborhood Association (DANA), and Preservation Austin. The qualitative data reveals the immense friction of operating within this dense organizational matrix.
 
 During the November 2013 hearing, the Planning Commission attempted to broker a middle-ground solution by proposing a strict Conditional Overlay (CO) that would cap building height and impervious cover at $45\%$. This attempt to mitigate the neighborhood's concerns while allowing the office use failed dramatically on a 2-5-1 vote. Recognizing that the Commission could not force a rezoning against a unified downtown coalition, and having exhausted all avenues for compromise, the applicant formally withdrew the case. This archetype illustrates why the causal pipeline identifies high ``withdrawal hazards'' in the urban core: the complexity of satisfying multiple overlapping preservation and neighborhood groups often renders development politically unviable, forcing applicant surrender before a final council vote is even reached.
 
-\subsubsection{Archetype 3: East Austin Cultural and Demographic Protection (C14-2008-0247)}
+\subsubsection[Archetype 3: East Austin Cultural and Demographic Protection]{Archetype 3: East Austin Cultural and Demographic Protection (C14-2008-0247)}
 \textbf{Context:} Located in the East Cesar Chavez Neighborhood Planning Area (District 3), this case involved a request to upgrade existing commercial zoning to CS-1, a classification specifically permitting commercial liquor sales.
 
 \textbf{Analysis:} This archetype highlights the socio-cultural dimensions of zoning protests that are often masked by purely structural covariates (e.g., lot size, height). The request to introduce a high-intensity liquor establishment into a historically Hispanic neighborhood activated a broad coalition of cultural organizations, including El Concilio Mexican-American Neighborhoods and Tejano Town. 

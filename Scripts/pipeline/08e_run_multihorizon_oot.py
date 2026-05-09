@@ -82,30 +82,137 @@ def get_models(scale_pos_weight: float):
             scale_pos_weight=scale_pos_weight,
             eval_metric="AUC", random_seed=42, verbose=False, task_type="GPU"
         ),
-        "RandomForest": RandomForestClassifier(
-            n_estimators=300, max_depth=8, class_weight="balanced",
-            n_jobs=-1, random_state=42
-        ),
+        "RandomForest": "XGB_RF_Placeholder",
         # Regularized Linear
-        "LogisticL2": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(C=0.1, penalty="l2", max_iter=1000,
-                                       class_weight="balanced", random_state=42))
-        ]),
-        "LogisticL1": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(C=0.1, penalty="l1", solver="liblinear",
-                                       max_iter=1000, class_weight="balanced", random_state=42))
-        ]),
+        "LogisticL2": "PyTorch_LogisticL2_Placeholder",
+        "LogisticL1": "PyTorch_LogisticL1_Placeholder",
+        "Linear": "PyTorch_Linear_Placeholder",
         # Deep (MLP proxy)
-        "MLP": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", MLPClassifier(
-                hidden_layer_sizes=(128, 64, 32), activation="relu",
-                alpha=1e-3, max_iter=200, random_state=42, early_stopping=True
-            ))
-        ]),
+        "MLP": "PyTorch_MLP_Placeholder"
     }
+    
+    try:
+        from pytorch_tabnet.tab_model import TabNetClassifier
+        models["TabNet"] = Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", TabNetClassifier(n_d=8, n_a=8, n_steps=3, gamma=1.3, seed=42, verbose=0))
+        ])
+    except ImportError:
+        print("WARNING: pytorch-tabnet not installed. Skipping TabNet.")
+        
+    return models
+
+def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=256):
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    from torch.utils.data import TensorDataset, DataLoader
+    from sklearn.preprocessing import StandardScaler
+    
+    scaler = StandardScaler()
+    X_tr_sc = scaler.fit_transform(X_tr)
+    X_te_sc = scaler.transform(X_te)
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    layers = []
+    in_dim = X_tr.shape[1]
+    for h in hidden_dims:
+        layers.append(nn.Linear(in_dim, h))
+        layers.append(nn.ReLU())
+        in_dim = h
+    layers.append(nn.Linear(in_dim, 1))
+    
+    model = nn.Sequential(*layers).to(device)
+    
+    pos_weight = max(1.0, (len(y_tr) - sum(y_tr)) / max(1, sum(y_tr)))
+    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([pos_weight], dtype=torch.float32).to(device))
+    
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=l2_reg)
+    
+    X_t = torch.tensor(X_tr_sc, dtype=torch.float32)
+    y_t = torch.tensor(y_tr, dtype=torch.float32).unsqueeze(1)
+    
+    dl = DataLoader(TensorDataset(X_t, y_t), batch_size=batch_size, shuffle=True)
+    
+    model.train()
+    for _ in range(epochs):
+        for Xb, yb in dl:
+            Xb, yb = Xb.to(device), yb.to(device)
+            optimizer.zero_grad()
+            out = model(Xb)
+            loss = criterion(out, yb)
+            if l1_reg > 0:
+                l1_norm = sum(p.abs().sum() for p in model.parameters())
+                loss += l1_reg * l1_norm
+            loss.backward()
+            optimizer.step()
+            
+    model.eval()
+    with torch.no_grad():
+        X_te_t = torch.tensor(X_te_sc, dtype=torch.float32).to(device)
+        logits = model(X_te_t)
+        probs = torch.sigmoid(logits).cpu().numpy().flatten()
+        
+    return probs
+
+
+def build_and_train_lstm(df_tr, df_te, y_tr, y_te, feats, seq_len=6, epochs=10, lr=0.01):
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    from torch.utils.data import TensorDataset, DataLoader
+    from sklearn.preprocessing import StandardScaler
+
+    # Scale features
+    scaler = StandardScaler()
+    X_tr_flat = scaler.fit_transform(df_tr[feats].values)
+    X_te_flat = scaler.transform(df_te[feats].values)
+
+    def make_3d(X_vals, cases, y, seq_len):
+        X_3d = np.zeros((len(X_vals), seq_len, len(feats)), dtype=np.float32)
+        for i in range(len(X_vals)):
+            start_idx = max(0, i - seq_len + 1)
+            while start_idx < i and cases[start_idx] != cases[i]:
+                start_idx += 1
+            valid_len = i - start_idx + 1
+            X_3d[i, -valid_len:, :] = X_vals[start_idx:i+1, :]
+        return torch.tensor(X_3d), torch.tensor(y, dtype=np.float32).unsqueeze(1)
+
+    X_tr_3d, y_tr_t = make_3d(X_tr_flat, df_tr['case_number'].values, y_tr, seq_len)
+    X_te_3d, _ = make_3d(X_te_flat, df_te['case_number'].values, y_te, seq_len)
+
+    class SimpleLSTM(nn.Module):
+        def __init__(self, input_dim, hidden_dim):
+            super().__init__()
+            self.lstm = nn.LSTM(input_dim, hidden_dim, batch_first=True)
+            self.fc = nn.Linear(hidden_dim, 1)
+        def forward(self, x):
+            out, _ = self.lstm(x)
+            return self.fc(out[:, -1, :])
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = SimpleLSTM(len(feats), 64).to(device)
+    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([max(1.0, (len(y_tr)-sum(y_tr))/max(1, sum(y_tr)))]).to(device))
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+
+    dl = DataLoader(TensorDataset(X_tr_3d, y_tr_t), batch_size=256, shuffle=True)
+    
+    model.train()
+    for _ in range(epochs):
+        for Xb, yb in dl:
+            Xb, yb = Xb.to(device), yb.to(device)
+            optimizer.zero_grad()
+            loss = criterion(model(Xb), yb)
+            loss.backward()
+            optimizer.step()
+
+    model.eval()
+    with torch.no_grad():
+        logits = model(X_te_3d.to(device))
+        probs = torch.sigmoid(logits).cpu().numpy()
+        
+    return probs.flatten()
 
 
 def build_target(df: pd.DataFrame, window: int) -> pd.Series:
@@ -121,11 +228,20 @@ def run():
     print("1. Loading biweekly panel...")
     df_raw = pd.read_csv(PANEL_PATH, low_memory=False)
     df_raw = df_raw.sort_values(["case_number", "period_seq"]).reset_index(drop=True)
+    
+    print("2. Truncating post-petition rows (removing Target Leakage)...")
+    # Identify the first petition event for each case
+    first_petition = df_raw[df_raw['petition_event'] == 1].groupby('case_number')['period_seq'].min()
+    df_raw['first_petition_seq'] = df_raw['case_number'].map(first_petition)
+    # Keep only rows where period_seq <= first_petition_seq (or where petition never happens)
+    df_raw = df_raw[(df_raw['first_petition_seq'].isna()) | (df_raw['period_seq'] <= df_raw['first_petition_seq'])]
+    df_raw = df_raw.drop(columns=['first_petition_seq']).reset_index(drop=True)
+
     feats  = [f for f in FEATS if f in df_raw.columns]
     print(f"   {len(df_raw):,} rows | {df_raw['case_number'].nunique():,} cases | {len(feats)} features")
 
     # ── Precompute all horizon targets once ──────────────────────────────────
-    print("2. Precomputing horizon targets (once)...")
+    print("3. Precomputing horizon targets (once)...")
     target_cols = {}
     for h_name, window in HORIZONS.items():
         target_cols[h_name] = build_target(df_raw, window).values
@@ -160,15 +276,38 @@ def run():
             spw      = max(1.0, (len(y_tr) - y_tr.sum()) / max(1, y_tr.sum()))
             naive_pr = float(y_tr.mean())
             models   = get_models(spw)
+            models["LSTM"] = "PyTorch_LSTM_Placeholder" # Add to sequence
 
             for m_name, clf in models.items():
                 try:
-                    if m_name == "CatBoost":
+                    if m_name == "LSTM":
+                        try:
+                            # Pass full df slices so we can build 3D temporal tensors grouped by case
+                            df_tr = df_raw[train_mask]
+                            df_te = df_raw[test_mask]
+                            y_pred = build_and_train_lstm(df_tr, df_te, y_tr, y_te, feats)
+                        except ImportError:
+                            print(f"  [{h_name}] LSTM skipped (torch not installed)")
+                            continue
+                    elif m_name == "CatBoost":
                         clf.fit(X_tr_all, y_tr, verbose=False)
+                        y_pred = clf.predict_proba(X_te)[:, 1]
+                    elif m_name == "RandomForest":
+                        from xgboost import XGBRFClassifier
+                        rf = XGBRFClassifier(n_estimators=300, max_depth=8, scale_pos_weight=spw, tree_method='hist', device='cuda', random_state=42)
+                        rf.fit(X_tr_all, y_tr)
+                        y_pred = rf.predict_proba(X_te)[:, 1]
+                    elif m_name == "LogisticL2":
+                        y_pred = build_and_train_pytorch_mlp(X_tr_all, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l2_reg=1e-2)
+                    elif m_name == "LogisticL1":
+                        y_pred = build_and_train_pytorch_mlp(X_tr_all, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=1e-3)
+                    elif m_name == "Linear":
+                        y_pred = build_and_train_pytorch_mlp(X_tr_all, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01)
+                    elif m_name == "MLP":
+                        y_pred = build_and_train_pytorch_mlp(X_tr_all, y_tr, X_te, hidden_dims=[128, 64, 32], epochs=30, lr=1e-3)
                     else:
                         clf.fit(X_tr_all, y_tr)
-
-                    y_pred = clf.predict_proba(X_te)[:, 1]
+                        y_pred = clf.predict_proba(X_te)[:, 1]
                     roc = roc_auc_score(y_te, y_pred)
                     pr  = average_precision_score(y_te, y_pred)
 
@@ -187,6 +326,10 @@ def run():
                         "Train_Samples": int(train_mask.sum()),
                         "Test_Samples":  int(test_mask.sum()),
                     })
+                    
+                    # Incremental save to prevent data loss on crash
+                    os.makedirs(OUT_CSV.parent, exist_ok=True)
+                    pd.DataFrame(results).to_csv(OUT_CSV, index=False)
 
                 except Exception as e:
                     print(f"  [{h_name}] {m_name} FAILED: {e}", flush=True)
