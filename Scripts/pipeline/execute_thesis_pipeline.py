@@ -11,9 +11,12 @@ SCRIPTS_DIR = ROOT / "Scripts" / "pipeline"
 
 # Define the sequence
 PIPELINE_STEPS = [
+    ("00a_engineer_model_ready_zoning.py", "Engineering formal model_ready_zoning_data.csv baseline..."),
+    ("00b_extract_ears_data.py", "Extracting raw EARS AJR archives into panel-ready data..."),
     ("00_build_case_universe.py", "Building analytic universe spine..."),
     ("01_build_labels.py", "Generating the label-validity registry..."),
     ("02_build_features.py", "Engineering filing-date as-of features..."),
+    ("02b_build_biweekly_panel.py", "Generating the formal biweekly causal inference panel..."),
     ("03_build_splits.py", "Freezing evaluation split registry..."),
     ("04_train_stage_a.py", "Running Stage A selection-correction sidecar..."),
     ("05_train_stage_c.py", "Training the canonical Stage C model..."),
