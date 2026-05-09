@@ -23,6 +23,8 @@ PIPELINE_STEPS = [
     ("08b_run_ablation_suite.py", "Running semantic cluster ablations..."),
     ("08c_run_did_causal.py", "Running Stijn DiD causal estimators..."),
     ("08d_run_drift_and_archetypes.py", "Running temporal drift and 10-architecture meta-attribution..."),
+    ("08e_run_multihorizon_oot.py", "Running Walk-Forward Multi-Horizon Out-Of-Time evaluation..."),
+    ("08f_run_multihorizon_shap.py", "Generating Multi-Horizon SHAP spatial interaction heatmaps..."),
     ("09_run_audits.py", "Running label-fidelity and data-quality audits..."),
     ("10_export_manuscript_artifacts.py", "Generating metrics manifest and LaTeX macros..."),
     ("11_final_build_gate.py", "Running final submission build gate..."),

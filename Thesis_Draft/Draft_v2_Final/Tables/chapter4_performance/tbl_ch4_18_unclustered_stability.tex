@@ -1,0 +1,28 @@
+\begin{table}[H]
+\centering
+\caption{Top Unclustered Features by Anchor Year: CatBoost vs. LightGBM (Dynamic View)}
+\label{tab:unclustered_dynamic}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cp{7cm}p{7cm}}
+\toprule
+\textbf{Anchor Year} & \textbf{CatBoost} & \textbf{LightGBM} \\
+\midrule
+\textbf{2018} & 1. Neighbor Comm Share (15.8\%) \newline 2. Median Household Income (14.2\%) \newline 3. Mean Appraised Value (9.9\%) \newline 4. \textit{Site Area} (8.7\%) & 1. Median Household Income (23.9\%) \newline 2. \textit{Site Area} (17.5\%) \newline 3. \textit{Year} (13.3\%) \newline 4. Owner Occupancy Share (7.8\%) \\
+\midrule
+\textbf{2019} & 1. Median Household Income (20.3\%) \newline 2. Neighbor Comm Share (13.3\%) \newline 3. \textit{Year} (7.5\%) \newline 4. \textit{Median Sqft} (7.3\%) & 1. Median Household Income (24.8\%) \newline 2. \textit{Year} (16.5\%) \newline 3. \textit{Site Area} (11.5\%) \newline 4. \textit{Median Structure Age} (10.6\%) \\
+\midrule
+\textbf{2020} & 1. Median Household Income (21.8\%) \newline 2. \textit{Year} (8.9\%) \newline 3. Median Neighbor Far (8.3\%) \newline 4. Median Neighbor Acreage (7.4\%) & 1. Median Household Income (21.5\%) \newline 2. \textit{Year} (13.7\%) \newline 3. \textit{Site Area} (10.8\%) \newline 4. Mean Appraised Value (9.5\%) \\
+\midrule
+\textbf{2021} & 1. Median Household Income (23.7\%) \newline 2. \textit{Site Area} (9.4\%) \newline 3. \textit{Year} (8.5\%) \newline 4. Mean Appraised Value (7.8\%) & 1. Median Household Income (30.0\%) \newline 2. \textit{Year} (14.2\%) \newline 3. \textit{Site Area} (11.7\%) \newline 4. Median Neighbor Acreage (8.7\%) \\
+\midrule
+\textbf{2022} & 1. Median Household Income (18.6\%) \newline 2. Median Neighbor Acreage (9.8\%) \newline 3. \textit{Year} (8.7\%) \newline 4. Neighbor Mf Share (7.4\%) & 1. Median Household Income (26.0\%) \newline 2. \textit{Median Structure Age} (10.1\%) \newline 3. \textit{Year} (9.6\%) \newline 4. Owner Occupancy Share (8.8\%) \\
+\midrule
+\textbf{2023} & 1. Median Household Income (16.0\%) \newline 2. \textit{Median Structure Age} (14.0\%) \newline 3. Median Neighbor Acreage (10.1\%) \newline 4. \textit{Median Sqft} (7.2\%) & 1. Median Household Income (25.1\%) \newline 2. \textit{Year} (13.5\%) \newline 3. \textit{Median Structure Age} (10.8\%) \newline 4. \textit{Latitude} (9.8\%) \\
+\midrule
+\textbf{2024} & 1. Median Household Income (19.2\%) \newline 2. \textit{Median Structure Age} (12.3\%) \newline 3. Renter Share (8.4\%) \newline 4. Median Neighbor Acreage (8.2\%) & 1. Median Household Income (30.2\%) \newline 2. Median Neighbor Acreage (18.4\%) \newline 3. \textit{Median Structure Age} (7.9\%) \newline 4. \textit{Site Area} (5.8\%) \\
+\bottomrule
+\end{tabular}
+}
+\vspace{1em}
+\small{\textit{Note:} This table presents the freshest (dynamic) unclustered view of feature attribution at each temporal anchor. Spatiotemporal and project size features are emphasized in \textit{italics} to highlight how LightGBM consistently relies on them, while CatBoost prioritizes demographics and surrounding neighborhood characteristics.}
+\end{table}

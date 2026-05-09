@@ -3,7 +3,7 @@ import shutil
 from pathlib import Path
 
 def main():
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[2]
     
     # 1. Update Stage A Limits table with the genuinely dynamic output from Track 0
     track0_table = root / "Analysis/Output/Track0_Predictive/Metrics/Table6_multi_horizon.tex"

@@ -16,6 +16,12 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     from sklearn.impute import SimpleImputer
     from pytorch_tabnet.tab_model import TabNetClassifier
     import torch
+
+    # GPU detection — use CUDA if available, fall back to CPU cleanly
+    USE_GPU = torch.cuda.is_available()
+    CB_TASK  = "GPU" if USE_GPU else "CPU"
+    XGB_TREE = "gpu_hist" if USE_GPU else "hist"
+    print(f"[*] Device: {'GPU (CUDA)' if USE_GPU else 'CPU'}")
     
     warnings = __import__('warnings')
     warnings.filterwarnings('ignore')
@@ -188,15 +194,15 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
         X_train_anc_sc = anc_scaler.fit_transform(X_train_anc)
     
         models = {
-            'CatBoost': CatBoostClassifier(iterations=100, depth=6, verbose=0, random_seed=42),
-            'XGBoost': XGBClassifier(n_estimators=100, max_depth=6, random_state=42, eval_metric='logloss'),
+            'CatBoost': CatBoostClassifier(iterations=100, depth=6, verbose=0, random_seed=42, task_type=CB_TASK),
+            'XGBoost': XGBClassifier(n_estimators=100, max_depth=6, random_state=42, eval_metric='logloss', device='cuda' if USE_GPU else 'cpu'),
             # 'LightGBM': LGBMClassifier(n_estimators=100, max_depth=6, random_state=42, verbose=-1),
             # 'Random Forest': RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42),
             'Logistic (L2)': LogisticRegression(class_weight='balanced', random_state=42, max_iter=500),
             # 'ElasticNet': LogisticRegression(penalty='elasticnet', l1_ratio=0.5, solver='saga', class_weight='balanced', random_state=42, max_iter=200),
             'Spatial-FE Logistic': LogisticRegression(class_weight='balanced', random_state=42, max_iter=500),
             'Anchor Regression (Causal)': NonLinearAnchorRegression(gamma=10.0, n_anchors=n_anc_dummies),
-            'TabNet': TabNetClassifier(verbose=0)
+            'TabNet': TabNetClassifier(verbose=0, device_name='cuda' if USE_GPU else 'cpu')
             # 'TabNet (VREx)': TabNetClassifier(optimizer_params={'weight_decay': 0.05}, verbose=0)
         }
     

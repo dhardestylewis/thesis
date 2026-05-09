@@ -8,7 +8,7 @@ from typing import Any, Callable, Optional, cast
 import numpy as np
 import pandas as pd
 
-from src.data_io.schema import REGISTRY_DIR, ROOT_DIR, WAREHOUSE_DIR, ensure_dirs, save_registry
+from src.data_io.schema import REGISTRY_DIR, ROOT_DIR, WAREHOUSE_DIR, WAREHOUSE_MASTER, ensure_dirs, save_registry
 
 EXCLUDE_COLUMNS = {
     "case_id",
@@ -33,7 +33,7 @@ to_numeric = cast(Callable[..., Any], getattr(pd, "to_numeric"))
 
 
 def _load_source_frame(source_path: Optional[str] = None) -> pd.DataFrame:
-    path = Path(source_path) if source_path else WAREHOUSE_DIR / "H0_Filing_Master_Enriched.csv"
+    path = Path(source_path) if source_path else WAREHOUSE_MASTER
     if not path.exists():
         raise FileNotFoundError(f"Source file not found: {path}")
     if path.suffix.lower() == ".parquet":
@@ -98,6 +98,9 @@ def build_stage_c_features(
         district_map = case_universe[["case_id", "council_district"]].copy()
         district_map["council_district"] = to_numeric(district_map["council_district"], errors="coerce")
         district_map = district_map.drop_duplicates(subset=["case_id"])
+        # Drop existing council_district to avoid duplicate-column MergeError
+        if "council_district" in feature_matrix.columns:
+            feature_matrix = feature_matrix.drop(columns=["council_district"])
         feature_matrix = feature_matrix.merge(district_map, on="case_id", how="left")
         
     # INJECT EXACT GEOMETRIC PETITION INTENSITY
@@ -105,19 +108,25 @@ def build_stage_c_features(
     if geom_pet_path.exists():
         pet_df = pd.read_csv(geom_pet_path)
         pet_df["case_number"] = pet_df["case_number"].str.strip()
-        
-        # We need a crosswalk from case_id to case_number if feature_matrix uses case_id
+
+        # Build case_id <-> case_number crosswalk only if source has both
         if "case_id" in feature_matrix.columns and "case_number" not in feature_matrix.columns:
-            if "case_number" in source.columns:
+            if "case_id" in source.columns and "case_number" in source.columns:
                 cw = source[["case_id", "case_number"]].drop_duplicates()
                 cw["case_number"] = cw["case_number"].str.strip()
                 pet_df = pet_df.merge(cw, on="case_number", how="inner")
                 pet_df = pet_df.drop(columns=["case_number"])
-                
-        # Merge it
-        feature_matrix = feature_matrix.merge(pet_df, on="case_id" if "case_id" in pet_df.columns else "case_number", how="left")
+            elif "case_number" in source.columns:
+                # Source uses case_number as PK aliased to case_id in feature_matrix
+                cw = pd.DataFrame({"case_id": feature_matrix["case_id"], "case_number": source["case_number"].astype(str).str.strip()}).drop_duplicates()
+                pet_df = pet_df.merge(cw, on="case_number", how="inner")
+                pet_df = pet_df.drop(columns=["case_number"])
+
+        merge_key = "case_id" if "case_id" in pet_df.columns else "case_number"
+        feature_matrix = feature_matrix.merge(pet_df, on=merge_key, how="left")
         if "label_exact_geometric_petition_pct" in feature_matrix.columns:
-            feature_matrix["label_exact_geometric_petition_pct"].fillna(0, inplace=True)
+            feature_matrix["label_exact_geometric_petition_pct"] = feature_matrix["label_exact_geometric_petition_pct"].fillna(0)
+
 
     feature_matrix = feature_matrix.drop_duplicates(subset=["case_id"], keep="first").reset_index(drop=True)
 

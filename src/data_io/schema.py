@@ -19,7 +19,9 @@ REGISTRY_DIR = ROOT_DIR / "registries"
 PRIMARY_STAGE_C_HORIZON = "filing"
 CONFIG_DIR = ROOT_DIR / "configs"
 SRC_DIR = ROOT_DIR / "src"
-WAREHOUSE_DIR = ROOT_DIR / "Data" / "Warehouse_As_Of"
+WAREHOUSE_DIR = ROOT_DIR / "Data" / "Warehouse_As_Of" / "canonical"
+# Canonical enriched master file (v2 OmniLagged is the thesis-parity source)
+WAREHOUSE_MASTER = WAREHOUSE_DIR / "H0_Filing_Master_Enriched_v2_OmniLagged.csv"
 
 
 class RunKey(TypedDict, total=False):

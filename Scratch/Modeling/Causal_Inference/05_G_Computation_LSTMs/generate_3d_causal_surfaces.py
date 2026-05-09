@@ -12,60 +12,7 @@ PANEL_PATH = r"C:\Users\dhl\.gemini\antigravity\brain\1c4648c0-f36a-4614-a8f1-c9
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Model Architectures
-class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, max_len=100):
-        super().__init__()
-        import math
-        pe = torch.zeros(max_len, d_model)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
-        pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
-        self.register_buffer('pe', pe.unsqueeze(0))
-    def forward(self, x): return x + self.pe[:, :x.size(1)]
-
-class ConditionalVAE(nn.Module):
-    def __init__(self, input_dim, d_model=128, nhead=4, num_layers=3, latent_dim=32):
-        super().__init__()
-        self.enc_proj = nn.Linear(input_dim, d_model)
-        self.enc_pos = PositionalEncoding(d_model)
-        self.encoder = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead, dim_feedforward=d_model*4, dropout=0.1, batch_first=True), num_layers=num_layers)
-        self.fc_mu = nn.Linear(d_model, latent_dim)
-        self.fc_logvar = nn.Linear(d_model, latent_dim)
-        self.dec_proj = nn.Linear(latent_dim, d_model)
-        self.dec_pos = PositionalEncoding(d_model)
-        self.decoder = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead, dim_feedforward=d_model*4, dropout=0.1, batch_first=True), num_layers=num_layers)
-        self.output_proj = nn.Linear(d_model, input_dim)
-    
-    def encode(self, x):
-        h = self.encoder(self.enc_pos(self.enc_proj(x)))
-        return self.fc_mu(h.mean(dim=1)), self.fc_logvar(h.mean(dim=1))
-        
-    def decode(self, z, seq_len=55):
-        h = self.decoder(self.dec_pos(self.dec_proj(z.unsqueeze(1).expand(-1, seq_len, -1))))
-        return self.output_proj(h)
-
-class MultiTaskLSTM(nn.Module):
-    def __init__(self, input_dim, hidden_dim=128, num_layers=2):
-        super().__init__()
-        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.1)
-        self.head_surv = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-        self.head_vote = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-        self.head_ht   = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-        self.head_tok  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-        self.head_comm = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-        self.head_coun = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-        self.head_yea  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-        self.head_nay  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
-    
-    def forward(self, x, lengths=None):
-        if lengths is not None:
-            packed_out, _ = self.lstm(torch.nn.utils.rnn.pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False))
-            h, _ = torch.nn.utils.rnn.pad_packed_sequence(packed_out, batch_first=True, total_length=x.size(1))
-        else:
-            h, _ = self.lstm(x)
-        return torch.cat([self.head_surv(h), self.head_vote(h), self.head_ht(h), self.head_tok(h), self.head_comm(h), self.head_coun(h), self.head_yea(h), self.head_nay(h)], dim=-1)
+from causal_seq2seq_cvae import Seq2SeqCVAE, VariableSelectionNetwork
 
 def generate_3d_plots():
     print("[1/3] Loading data and models...")
@@ -119,46 +66,84 @@ def generate_3d_plots():
     df['vote_friction'] = df['vote_event'] * (1 + df['cumulative_nay_votes'].clip(upper=10))
     df['cumulative_vote_friction'] = df.groupby('case_number')['vote_friction'].cumsum()
     df['cumulative_petition_pct'] = df.groupby('case_number')['petition_pct_this_period'].cumsum()
+    
+    # === DYNAMIC TARGET ENGINEERING (Time-Varying Mediators) ===
+    if "pdf_requested_height_ft" in df.columns:
+        initial_req = df.groupby("case_number")["pdf_requested_height_ft"].transform("max")
+        current_constraint = df[["pdf_requested_height_ft", "pdf_staff_recommends_ht"]].min(axis=1) if "pdf_staff_recommends_ht" in df.columns else df["pdf_requested_height_ft"]
+        current_constraint = current_constraint.fillna(initial_req)
+        final_ht = df["pdf_reduced_to_ft"].fillna(current_constraint).fillna(0) if "pdf_reduced_to_ft" in df.columns else current_constraint.fillna(0)
+        df["net_height_change"] = (initial_req - final_ht).clip(lower=0).fillna(0)
+    else:
+        df["net_height_change"] = 0
 
-    features = [
-        "land_acres", "proposed_max_height_ft", "proposed_max_far",
-        "archetype_pct_Spatial_Gravity", "knn_petition_rate_1km",
-        "local_unemployment_rate", "mortgage_rate_30yr", "period_seq", "petition_pct_this_period",
-        "cumulative_petition_pct", "bw_sin", "bw_cos",
-        "cumulative_yea_votes", "cumulative_nay_votes", "net_vote_margin",
-        "cumulative_council_hearings_lag1", "cumulative_commission_hearings_lag1", "cumulative_council_nlp_lag1",
-        "net_height_change"
-    ]
-    for f in features: df[f] = pd.to_numeric(df[f], errors='coerce').fillna(0)
+    targets = ["resolved", "cumulative_vote_friction", "net_height_change",
+               "council_nlp_total_tokens", "commission_hearings_this_period", "council_hearings_this_period",
+               "yea_votes_this_period", "nay_votes_this_period"]
+               
+    exclude = set(targets + [
+        "case_number", "period_start", "period_start_dt", "year", "quarter", "petition_year", "petition_quarter",
+        "latitude", "longitude", "shape_area", "council_district", "census_tract", "land_use_code",
+        "label_petition_total_pct", "label_valid_protest", "label_real_days_in_pipeline", 
+        "label_valid_petition_pct", "label_exact_geometric_petition_pct",
+        "vote_event", "vote_friction", "yea_this_year", "nay_this_year", "censored",
+        "cumulative_council_hearings", "cumulative_commission_hearings",
+        "Aggregate_Sentiment",
+        "max_opponent_experience"
+    ])
+    
+    features = [c for c in df.columns if c not in exclude]
+    
+    for f in features + targets:
+        if f not in df.columns: df[f] = 0
+        df[f] = pd.to_numeric(df[f], errors='coerce').fillna(0)
     
     norm_dict = {}
-    for f in ["land_acres", "proposed_max_far", "archetype_pct_Spatial_Gravity", "knn_petition_rate_1km",
-              "local_unemployment_rate", "mortgage_rate_30yr", "period_seq",
-              "cumulative_council_hearings_lag1", "cumulative_commission_hearings_lag1", "cumulative_council_nlp_lag1",
-              "net_height_change"]:
+    for f in features + ["net_height_change"]:
+        if f in ["proposed_max_height_ft", "council_nlp_total_tokens", "net_vote_margin", "cumulative_yea_votes", "cumulative_nay_votes", "petition_pct_this_period", "cumulative_petition_pct"]:
+            continue
         mean_v, std_v = df[f].mean(), df[f].std()
         df[f] = (df[f] - mean_v) / (std_v + 1e-8)
         norm_dict[f] = (mean_v, std_v)
         
-    for f in ["council_nlp_total_tokens"]:
+    for f in ["proposed_max_height_ft", "council_nlp_total_tokens"]:
         df[f] = np.log1p(df[f].clip(lower=0))
+    for f in ["commission_hearings_this_period", "council_hearings_this_period"]:
+        df[f] = df[f].clip(lower=0, upper=1)
 
     # Auto-detect feature count from checkpoint to support old weights
-    ckpt = torch.load(VAE_PATH, map_location='cpu', weights_only=True)
-    ckpt_input_dim = ckpt['enc_proj.weight'].shape[1]
+    ckpt = torch.load(rf"{BASE_DIR}\causal_seq2seq_weights.pt", map_location='cpu', weights_only=True)
+    ckpt_input_dim = ckpt['vsn.grn.0.weight'].shape[1]
+    if 'treatment_residual.weight' in ckpt:
+        ckpt_input_dim += 2  # Add back the two bypassed treatment features
+        
     if ckpt_input_dim != len(features):
         print(f"  [NOTE] Checkpoint has {ckpt_input_dim} features vs {len(features)} — falling back to old feature set.")
         features = features[:ckpt_input_dim]
     
-    vae = ConditionalVAE(len(features)).to(device)
-    vae.load_state_dict(ckpt)
-    lstm = MultiTaskLSTM(len(features)).to(device)
-    lstm.load_state_dict(torch.load(LSTM_PATH, map_location='cpu', weights_only=True))
-    vae.eval(); lstm.eval()
+    treat_idx = [
+        features.index("petition_pct_this_period"), 
+        features.index("cumulative_petition_pct")
+    ]
+    
+    confounder_idx = []
+    if "proposed_max_far" in features:
+        confounder_idx.append(features.index("proposed_max_far"))
+    if "proposed_max_height_ft" in features:
+        confounder_idx.append(features.index("proposed_max_height_ft"))
+    if "land_acres" in features:
+        confounder_idx.append(features.index("land_acres"))
+        
+    model = Seq2SeqCVAE(
+        len(features), 
+        treat_idx=treat_idx, 
+        confounder_idx=confounder_idx
+    ).to(device)
+    model.load_state_dict(ckpt)
+    model.eval()
 
 
     MAX_SEQ = 55
-    ht_idx    = features.index("net_height_change")
     pet_idx   = features.index("petition_pct_this_period")
     cum_idx   = features.index("cumulative_petition_pct")
     timing    = 5  # Inject petition at t=5
@@ -211,10 +196,10 @@ def generate_3d_plots():
     target_cfgs = {
         "survival": {"idx": 0, "title": "Causal Friction: Survival Probability",    "z_label": "Hazard Rate (per period)",  "accum": "mean_hazard"},
         "vote":     {"idx": 1, "title": "Causal Friction: Cumulative Vote Friction", "z_label": "Cumulative Vote Friction",  "accum": "terminal_linear"},
-        "height":   {"title": "LDC Height Friction Surface", "z_label": "Net Height Change (ft)", "idx": 2, "accum": "terminal_linear"},
+        "height":   {"idx": 2, "title": "LDC Height Friction Surface", "z_label": "Net Height Change (ft)", "accum": "terminal_zscore"},
         "tokens":   {"idx": features.index("cumulative_council_nlp_lag1"), "title": "Administrative Drag (Council NLP Tokens)", "z_label": "Cumulative NLP Tokens", "accum": "terminal_feature"},
-        "comm":     {"idx": 4, "title": "Commission Hearings Friction",              "z_label": "Cumulative Hearings",        "accum": "sum_linear"},
-        "coun":     {"idx": 5, "title": "Council Hearings Friction",                 "z_label": "Cumulative Hearings",        "accum": "sum_linear"},
+        "comm":     {"idx": 4, "title": "Commission Hearings Friction",              "z_label": "Cumulative Hearings",        "accum": "sum_sigmoid"},
+        "coun":     {"idx": 5, "title": "Council Hearings Friction",                 "z_label": "Cumulative Hearings",        "accum": "sum_sigmoid"},
     }
 
     print("[2/3] Running G-Computation (Cohort x Dose)...")
@@ -237,9 +222,20 @@ def generate_3d_plots():
             
             # Normalize exactly as training script
             sub_norm = sub[features].copy()
+            
+            # 1. Apply log transforms FIRST
+            for f in ["land_acres", "market_value", "appraised_value"]:
+                if f in sub_norm.columns:
+                    sub_norm[f] = np.log1p(sub_norm[f].clip(lower=0))
+                    
+            # 2. Standardize
             for f in norm_dict:
-                sub_norm[f] = (sub_norm[f] - norm_dict[f][0]) / (norm_dict[f][1] + 1e-8)
-            sub_norm['proposed_max_height_ft'] = np.log1p(sub['proposed_max_height_ft'].clip(lower=0))
+                if f in sub_norm.columns:
+                    sub_norm[f] = (sub_norm[f] - norm_dict[f][0]) / (norm_dict[f][1] + 1e-8)
+                    
+            # 3. Custom handling
+            if 'proposed_max_height_ft' in sub_norm.columns:
+                sub_norm['proposed_max_height_ft'] = np.log1p(sub['proposed_max_height_ft'].clip(lower=0))
             
             feat_arr = sub_norm.values.astype(np.float32)
             case_sizes = sub.groupby('case_number').size()
@@ -273,11 +269,13 @@ def generate_3d_plots():
                 X_cf[:, timing-1:, cum_idx] = float(intensity)
                 
                 with torch.no_grad():
+                    X_pre = X_cf[:, :4, :]
                     for t in range(timing-1, 54):
-                        preds_t = lstm(X_cf)[:, t, :]
+                        preds, _, _, _ = model(X_pre, X_cf)
+                        preds_t = preds[:, t, :]
                         pred_tok = torch.expm1(preds_t[:, 3])
-                        pred_comm = torch.sigmoid(preds_t[:, 4])
-                        pred_coun = torch.sigmoid(preds_t[:, 5])
+                        pred_comm = torch.clamp(preds_t[:, 4], 0, 1)
+                        pred_coun = torch.clamp(preds_t[:, 5], 0, 1)
                         pred_yea = torch.relu(preds_t[:, 6])
                         pred_nay = torch.relu(preds_t[:, 7])
                         
@@ -300,20 +298,21 @@ def generate_3d_plots():
                         X_cf[:, t+1, f_nay] = next_nay
                         X_cf[:, t+1, f_margin] = next_yea - next_nay
                         
-                    preds = lstm(X_cf)  # Final inference pass over rolled-out sequence
+                    preds, _, _, _ = model(X_pre, X_cf)  # Final inference pass over rolled-out sequence
                 
                 if cfg["accum"] == "mean_hazard":
                     val = torch.sigmoid(preds[:, :, cfg["idx"]]).mean(dim=1).cpu().numpy()
                 elif cfg["accum"] == "terminal_linear":
                     val = preds[:, -1, cfg["idx"]].cpu().numpy()
+                elif cfg["accum"] == "terminal_zscore":
+                    mean_ht, std_ht = norm_dict["net_height_change"]
+                    val = (preds[:, -1, cfg["idx"]].cpu().numpy() * (std_ht + 1e-8)) + mean_ht
                 elif cfg["accum"] == "terminal_feature":
                     val_norm = X_cf[:, -1, cfg["idx"]].cpu().numpy()
                     mean_v, std_v = norm_dict["cumulative_council_nlp_lag1"]
                     val = val_norm * (std_v + 1e-8) + mean_v
-                elif cfg["accum"] == "terminal_ht_ft":
-                    val = np.expm1(preds[:, -1, cfg["idx"]].cpu().numpy())
-                elif cfg["accum"] == "sum_expm1":
-                    val = np.expm1(preds[:, :, cfg["idx"]].cpu().numpy()).sum(axis=1)
+                elif cfg["accum"] == "sum_sigmoid":
+                    val = torch.sigmoid(preds[:, :, cfg["idx"]]).sum(dim=1).cpu().numpy()
                 elif cfg["accum"] == "sum_linear":
                     val = preds[:, :, cfg["idx"]].cpu().numpy().sum(axis=1)
                 
@@ -394,9 +393,20 @@ def generate_3d_plots():
         sub = sub[sub['case_number'].isin(cases_in_sub)]
         
         sub_norm = sub[features].copy()
+        
+        # 1. Apply log transforms FIRST
+        for f in ["land_acres", "market_value", "appraised_value"]:
+            if f in sub_norm.columns:
+                sub_norm[f] = np.log1p(sub_norm[f].clip(lower=0))
+                
+        # 2. Standardize
         for f in norm_dict:
-            sub_norm[f] = (sub_norm[f] - norm_dict[f][0]) / (norm_dict[f][1] + 1e-8)
-        sub_norm['proposed_max_height_ft'] = np.log1p(sub['proposed_max_height_ft'].clip(lower=0))
+            if f in sub_norm.columns:
+                sub_norm[f] = (sub_norm[f] - norm_dict[f][0]) / (norm_dict[f][1] + 1e-8)
+                
+        # 3. Custom handling
+        if 'proposed_max_height_ft' in sub_norm.columns:
+            sub_norm['proposed_max_height_ft'] = np.log1p(sub['proposed_max_height_ft'].clip(lower=0))
         
         feat_arr = sub_norm.values.astype(np.float32)
         case_sizes = sub.groupby('case_number').size()
@@ -427,8 +437,10 @@ def generate_3d_plots():
                     X_cf[:, :, far_idx] = float(f_val_norm)
                     
                     with torch.no_grad():
+                        X_pre = X_cf[:, :4, :]
                         for t in range(timing-1, 54):
-                            preds_t = lstm(X_cf)[:, t, :]
+                            preds, _, _, _ = model(X_pre, X_cf)
+                            preds_t = preds[:, t, :]
                             pred_tok = torch.expm1(preds_t[:, 3])
                             pred_comm = torch.sigmoid(preds_t[:, 4])
                             pred_coun = torch.sigmoid(preds_t[:, 5])
@@ -454,14 +466,17 @@ def generate_3d_plots():
                             X_cf[:, t+1, f_nay] = next_nay
                             X_cf[:, t+1, f_margin] = next_yea - next_nay
                             
-                        preds = lstm(X_cf)
+                        preds, _, _, _ = model(X_pre, X_cf)
                         
                         if cfg["accum"] == "mean_hazard":
                             val = torch.sigmoid(preds[:, :, cfg["idx"]]).mean(dim=1).cpu().numpy()
                         elif cfg["accum"] == "terminal_linear":
                             val = preds[:, -1, cfg["idx"]].cpu().numpy()
-                        elif cfg["accum"] == "sum_expm1":
-                            val = torch.expm1(preds[:, :, cfg["idx"]]).sum(dim=1).cpu().numpy()
+                        elif cfg["accum"] == "terminal_zscore":
+                            mean_ht, std_ht = norm_dict["net_height_change"]
+                            val = (preds[:, -1, cfg["idx"]].cpu().numpy() * (std_ht + 1e-8)) + mean_ht
+                        elif cfg["accum"] == "sum_sigmoid":
+                            val = torch.sigmoid(preds[:, :, cfg["idx"]]).sum(dim=1).cpu().numpy()
                         elif cfg["accum"] == "sum_linear":
                             val = preds[:, :, cfg["idx"]].sum(dim=1).cpu().numpy()
                         elif cfg["accum"] == "terminal_feature":

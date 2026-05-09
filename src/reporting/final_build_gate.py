@@ -45,7 +45,7 @@ def _load_gate_config(root: Path) -> Dict:
             r"\[\[[^\]]+\]\]",
             r"<[^>]*placeholder[^>]*>",
         ],
-        "manuscript_entrypoint": "Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.tex",
+        "manuscript_entrypoint": "Thesis_Draft/Draft_v1/Lewis_2026_NIMBYism_Austin_Thesis.tex",
         "glossary_path": "Blei-Invariance_Causality-2026Spring/Knowledge_Base/Glossary.md",
     }
     override = _load_json(root / "reporting" / "submission_gate_config.json", {})

@@ -17,7 +17,7 @@ from typing import Any, Callable, Iterable, Optional, cast
 import numpy as np
 import pandas as pd
 
-from src.data_io.schema import REGISTRY_DIR, WAREHOUSE_DIR, ensure_dirs
+from src.data_io.schema import REGISTRY_DIR, WAREHOUSE_DIR, WAREHOUSE_MASTER, ensure_dirs
 
 CASE_ID_CANDIDATES = ["case_id", "case_number", "case_no", "zoning_case_id"]
 YEAR_CANDIDATES = ["year", "filing_year"]
@@ -37,7 +37,7 @@ def _first_present(columns: Iterable[str], candidates: Iterable[str]) -> Optiona
 
 
 def _load_source_frame(source_path: Optional[str] = None) -> pd.DataFrame:
-    path = Path(source_path) if source_path else WAREHOUSE_DIR / "H0_Filing_Master_Enriched.csv"
+    path = Path(source_path) if source_path else WAREHOUSE_MASTER
     if not path.exists():
         raise FileNotFoundError(f"Source file not found: {path}")
     if path.suffix.lower() == ".parquet":

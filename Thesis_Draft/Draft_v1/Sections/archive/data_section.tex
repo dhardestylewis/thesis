@@ -50,9 +50,15 @@ $\mathcal{E}$ for Invariant Causal Prediction.
     Census tract-level demographic and socioeconomic variables
     including median household income, median home value, racial/ethnic composition,
     homeownership rates, poverty rates, and gross rent.
-    Pulled from the Census Bureau API for all 15 available vintage years.
-    Match rate: 75.3\% (limited by properties without geocoded tract identifiers).
+    Pulled from the Census Bureau API for all 15 available using tidycensus. Decennial census boundaries mapped via weighted areal interpolation
+    if boundaries drifted between 2010 and 2020.
 \end{enumerate}
+
+\subsection{Primary Source NLP Target Hydration}
+
+During the ingestion of the protest petitions, an anomaly in the City of Austin's document portal export system stamped the retrieval date on all pages of the archival PDF packet. This systematically corrupted the formal signature dates for the vast majority of protests occurring between 2014 and 2023, artificially masking the presence of positive target variables in the panel. 
+
+To overcome this without introducing heuristic leakage, we established a mathematically rigorous temporal bridge using the official City Council Minutes. We leveraged Natural Language Processing (NLP) to parse the raw OCR text of all 376 legally validated Council Minutes PDFs. By executing a regular expression sweep for specific case numbers across the corpus of transcripts, we extracted the exact hearing dates for the 152 impacted cases. This successfully re-hydrated the 2014-2023 target sequence using primary-source municipal records, perfectly aligning the 3/4 supermajority hazard triggers in the biweekly panel.
 
 \subsection{Panel Construction}
 

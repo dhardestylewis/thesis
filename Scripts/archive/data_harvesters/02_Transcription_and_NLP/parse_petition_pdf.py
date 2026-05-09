@@ -13,7 +13,7 @@ import re
 import os
 from collections import defaultdict
 
-PDF_PATH = "Data/Documents/C241282.PD.NRN.petitions.pdf"
+PDF_PATH = r"C:\Users\dhl\data\Thesis\thesis_backup_corrupted_2026_04_14\Data\Documents\C241282.PD.NRN.petitions.pdf"
 OUT_CSV = "Data/Protest_Petitions/petition_signers_from_pdf.csv"
 OUT_SUMMARY = "Data/Protest_Petitions/petition_summary_from_pdf.csv"
 

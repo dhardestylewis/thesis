@@ -1,0 +1,19 @@
+\begin{table}[H]
+\centering
+\caption{Overlap and Covariate Balance Diagnostics for Development-Occurrence IPW}
+\label{tab:ipw_balance}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Diagnostic} & \textbf{Target} & \textbf{Observed} & \textbf{Status} \\
+\midrule
+Estimated propensity range ($\hat e_i$) & avoid mass near 0/1 & 0.003--0.997 & Fail \\
+Extreme propensity share ($\hat e_i<0.05$ or $>0.95$) & $<10\%$ & 34.2\% & Fail \\
+Mean absolute SMD (pre-weight) & report baseline & 0.214 & -- \\
+Mean absolute SMD (weighted, $p_1$--$p_{99}$ clip) & $<0.10$ & 0.157 & Fail \\
+Max absolute SMD (weighted, $p_1$--$p_{99}$ clip) & $<0.10$ & 0.331 & Fail \\
+Covariates with $|\mathrm{SMD}|<0.10$ after weighting & $\ge 90\%$ & 38\% & Fail \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Covariates in $X_i$: parcel area, frontage, baseline zoning class, district fixed effects,} \\
+\multicolumn{4}{l}{\footnotesize ACS renter share, ACS median income, homestead share, lagged petition rate, and year fixed effects.} \\
+\end{tabular}
+\end{table}

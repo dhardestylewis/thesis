@@ -9,7 +9,7 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import warnings
 warnings.filterwarnings('ignore')
 
-OUT_DIR = os.environ.get("OUT_DIR", r"C:\Users\dhl\.gemini\antigravity\brain\1c4648c0-f36a-4614-a8f1-c9e2e5621756")
+OUT_DIR = os.environ.get("OUT_DIR", ".")
 PANEL_PATH = os.environ.get("PANEL_PATH", os.path.join(OUT_DIR, "biweekly_panel.csv"))
 CAUSAL_SURFACE_PATH = os.environ.get("CAUSAL_SURFACE_PATH", os.path.join(OUT_DIR, "vae_dose_response_surface_expanded.csv"))
 VAE_PATH = os.path.join(OUT_DIR, "causal_vae_weights.pt")
@@ -87,8 +87,25 @@ def load_data_and_cells():
     # === STANDARD FEATURE ENGINEERING ===
     df['vote_friction'] = df['vote_event'] * (1 + df['cumulative_nay_votes'].clip(upper=10))
     df['cumulative_vote_friction'] = df.groupby('case_number')['vote_friction'].cumsum()
-    df['cumulative_petition_pct'] = df.groupby('case_number')['petition_pct_this_period'].cumsum()
+    if 'petition_pct_this_period' in df.columns:
+        df['cumulative_petition_pct'] = df.groupby('case_number')['petition_pct_this_period'].cumsum()
     
+    # === DYNAMIC TARGET ENGINEERING (Time-Varying Mediators) ===
+    # Compute the dynamic running concession at time t (how much the developer has conceded SO FAR).
+    # 1. Anchor: Initial maximum height requested by the developer
+    if "pdf_requested_height_ft" in df.columns:
+        initial_req = df.groupby("case_number")["pdf_requested_height_ft"].transform("max")
+        # 2. Current Constraint at time t: Minimum of current request and staff recommendation.
+        current_constraint = df[["pdf_requested_height_ft", "pdf_staff_recommends_ht"]].min(axis=1) if "pdf_staff_recommends_ht" in df.columns else df["pdf_requested_height_ft"]
+        # Default to initial request if no constraint exists yet (concession = 0)
+        current_constraint = current_constraint.fillna(initial_req)
+        
+        final_ht = df["pdf_reduced_to_ft"].fillna(current_constraint).fillna(0) if "pdf_reduced_to_ft" in df.columns else current_constraint.fillna(0)
+        # 3. Time-varying dynamic target
+        df["net_height_change"] = (initial_req - final_ht).clip(lower=0).fillna(0)
+    else:
+        df["net_height_change"] = 0
+
     targets = ["resolved", "cumulative_vote_friction", "net_height_change",
                "council_nlp_total_tokens", "commission_hearings_this_period", "council_hearings_this_period",
                "yea_votes_this_period", "nay_votes_this_period"]
@@ -99,7 +116,9 @@ def load_data_and_cells():
         "label_petition_total_pct", "label_valid_protest", "label_real_days_in_pipeline", 
         "label_valid_petition_pct", "label_exact_geometric_petition_pct",
         "vote_event", "vote_friction", "yea_this_year", "nay_this_year", "censored",
-        "cumulative_council_hearings", "cumulative_commission_hearings" # leaky versions
+        "cumulative_council_hearings", "cumulative_commission_hearings", # leaky versions
+        "Aggregate_Sentiment", # Leaky and zero-inflated target, replaced by nlp_oppose_hits
+        "max_opponent_experience" # Degenerate (pure zeros) due to missing bipartite graph
     ])
     
     features = [c for c in df.columns if c not in exclude]
@@ -108,53 +127,57 @@ def load_data_and_cells():
         if f not in df.columns: df[f] = 0
         df[f] = pd.to_numeric(df[f], errors='coerce').fillna(0)
     
+    # === OUTLIER / TYPO CLEANING ===
+    if "building_age" in df.columns:
+        # Fix 0 AD year built typoes (resulting in 2019 year building_age)
+        df.loc[df["building_age"] > 250, "building_age"] = df.loc[df["building_age"] <= 250, "building_age"].mean()
+    if "yr_built" in df.columns:
+        # Fix the underlying yr_built as well
+        df.loc[(df["yr_built"] < 1850) & (df["yr_built"] > 0), "yr_built"] = df.loc[df["yr_built"] >= 1850, "yr_built"].mean()
+    if "petition_pct_this_period" in df.columns:
+        df["petition_pct_this_period"] = df["petition_pct_this_period"].clip(upper=100.0)
+    if "cumulative_petition_pct" in df.columns:
+        df["cumulative_petition_pct"] = df["cumulative_petition_pct"].clip(upper=100.0)
+        
     norm_dict = {}
     for f in features + ["net_height_change"]:
-        if f in ["proposed_max_height_ft", "council_nlp_total_tokens", "net_vote_margin", "cumulative_yea_votes", "cumulative_nay_votes", "petition_pct_this_period", "cumulative_petition_pct"]:
+        if f in ["pdf_requested_height_ft", "council_nlp_total_tokens", "net_vote_margin", "cumulative_yea_votes", "cumulative_nay_votes", "petition_pct_this_period", "cumulative_petition_pct"]:
             continue # Skip specific raw values that need custom handling below
+        
+        # Apply Log Transform to massively right-skewed real estate and physical constraints
+        if f in ["land_acres", "market_value", "appraised_value"]:
+            df[f] = np.log1p(df[f].clip(lower=0))
+            
         mean_v, std_v = df[f].mean(), df[f].std()
         df[f] = (df[f] - mean_v) / (std_v + 1e-8)
         norm_dict[f] = (mean_v, std_v)
         
-    for f in ["proposed_max_height_ft", "council_nlp_total_tokens"]:
+    for f in ["pdf_requested_height_ft", "council_nlp_total_tokens"]:
         df[f] = np.log1p(df[f].clip(lower=0))
     for f in ["commission_hearings_this_period", "council_hearings_this_period"]:
         df[f] = df[f].clip(lower=0, upper=1)
         
-    # Build Cell Assignments
+    # Build Cell Assignments (Distributed Spatial Micro-Cells)
     first_periods = df.groupby("case_number").first()
-    max_doses = df.groupby("case_number")["petition_pct_this_period"].max()
+    
+    from sklearn.cluster import KMeans
+    from sklearn.preprocessing import StandardScaler
+    
+    # Extract Spatial + Feature variables for 'Spatio-Structural' clustering!
+    features_for_clustering = first_periods[["latitude", "longitude"]].copy()
+    if "proposed_max_far" in first_periods.columns:
+        features_for_clustering["far"] = first_periods["proposed_max_far"].fillna(0)
+    features_for_clustering["dose"] = max_doses = df.groupby("case_number")["petition_pct_this_period"].max().fillna(0)
+    
+    # Scale them so Latitude/Longitude degrees don't completely overpower FAR/Dose magnitudes
+    scaled_coords = StandardScaler().fit_transform(features_for_clustering.fillna(0).values)
+    
+    # Cluster into 50 Spatio-Structural micro-neighborhoods (Automatically determines best ratios)
+    kmeans = KMeans(n_clusters=50, random_state=42, n_init=10)
+    cluster_labels = kmeans.fit_predict(scaled_coords)
     
     cell_assignments = pd.DataFrame(index=first_periods.index)
-    
-    # User Feedback Implementation: FAR, Dose Intensity, and Petition Timing
-    # IMPORTANT: We must compute quantiles ONLY on values > 0, because 0 dominates the dataset
-    far_vals = first_periods["proposed_max_far"]
-    far_q = pd.Series(0, index=far_vals.index)
-    pos_far = far_vals[far_vals > 0]
-    if not pos_far.empty:
-        far_q.loc[pos_far.index] = pd.qcut(pos_far, q=2, labels=False, duplicates='drop').fillna(0).astype(int) + 1
-        
-    dose_q = pd.Series(0, index=max_doses.index)
-    pos_dose = max_doses[max_doses > 0]
-    if not pos_dose.empty:
-        dose_q.loc[pos_dose.index] = pd.qcut(pos_dose, q=2, labels=False, duplicates='drop').fillna(0).astype(int) + 1
-    
-    # Timing: 0 (No Petition), 1 (Early Petition), 2 (Late Petition)
-    first_pet = df[df['petition_pct_this_period'] > 0].groupby("case_number")["period_seq"].min()
-    timing_bin = pd.Series(0, index=first_periods.index)
-    if not first_pet.empty:
-        timing_bin.loc[first_pet.index] = pd.qcut(first_pet, q=2, labels=False, duplicates='drop').fillna(0).astype(int) + 1
-        
-    cell_assignments["far_bin"] = far_q
-    cell_assignments["dose_bin"] = dose_q
-    cell_assignments["timing_bin"] = timing_bin
-    
-    cell_assignments["cell_id"] = (
-        cell_assignments["far_bin"].astype(str) + "_" + 
-        cell_assignments["dose_bin"].astype(str) + "_" +
-        cell_assignments["timing_bin"].astype(str)
-    )
+    cell_assignments["cell_id"] = cluster_labels
     
     unique_cells = cell_assignments["cell_id"].unique()
     
@@ -171,7 +194,7 @@ def build_tensors(df, features, targets, cases, max_seq=55):
     L_out = np.zeros(n_c, dtype=np.int64)
     
     feat_vals = sub_df[features].values.astype(np.float32)
-    targ_vals = sub_df[targets].values.astype(np.float32)
+    targ_vals = sub_df[targets].fillna(0).values.astype(np.float32)
     
     idx = 0
     for i, c in enumerate(c_list):
@@ -200,19 +223,27 @@ class VariableSelectionNetwork(nn.Module):
         
     def forward(self, x):
         weights = self.grn(x)
-        return x * weights, weights
+        # Scale by feature dimension to preserve original variance (TFT standard practice)
+        # Otherwise Softmax shrinks all structural features by 1/N, causing treatments to dominate
+        return x * weights * x.shape[-1], weights
 
 class Seq2SeqCVAE(nn.Module):
-    def __init__(self, input_dim, hidden_dim=128, latent_dim=32, num_layers=2):
+    def __init__(self, input_dim, hidden_dim=128, latent_dim=32, num_layers=2, treat_idx=None, confounder_idx=None):
         super().__init__()
-        self.vsn = VariableSelectionNetwork(input_dim, hidden_dim)
+        self.treat_idx = treat_idx if treat_idx is not None else []
+        self.confounder_idx = confounder_idx if confounder_idx is not None else []
+        self.struct_dim = input_dim - len(self.treat_idx)
         
-        self.encoder_lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.1)
+        # VSN now only operates on structural features
+        self.vsn = VariableSelectionNetwork(self.struct_dim, hidden_dim)
+        
+        # The LSTM receives structural features (from VSN) + treatment features directly concatenated
+        self.encoder_lstm = nn.LSTM(self.struct_dim + len(self.treat_idx), hidden_dim, num_layers, batch_first=True, dropout=0.1)
         self.fc_mu = nn.Linear(hidden_dim, latent_dim)
         self.fc_logvar = nn.Linear(hidden_dim, latent_dim)
         
         self.z_proj = nn.Linear(latent_dim, hidden_dim)
-        self.decoder_lstm = nn.LSTM(input_dim + hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=0.1)
+        self.decoder_lstm = nn.LSTM(self.struct_dim + len(self.treat_idx) + hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=0.1)
         
         self.head_surv = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
         self.head_vote = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
@@ -223,20 +254,61 @@ class Seq2SeqCVAE(nn.Module):
         self.head_yea  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
         self.head_nay  = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
 
+        # Direct residual injection from treatment features to output heads
+        if len(self.treat_idx) > 0:
+            self.treatment_residual = nn.Linear(len(self.treat_idx), 8)
+        else:
+            self.treatment_residual = None
+
+    def _split_features(self, x):
+        if self.training and len(self.confounder_idx) > 0:
+            # Apply 20% targeted dropout to confounders to prevent OOD rejection manifold constraints
+            if torch.rand(1).item() < 0.2:
+                x = x.clone() # avoid inplace mutation
+                x[:, :, self.confounder_idx] = 0.0
+
+        if not self.treat_idx:
+            return x, None
+        
+        # Keep structural features and treatment features separate
+        struct_mask = torch.ones(x.shape[-1], dtype=torch.bool, device=x.device)
+        struct_mask[self.treat_idx] = False
+        return x[:, :, struct_mask], x[:, :, self.treat_idx]
+
     def encode(self, x):
-        x_filtered, _ = self.vsn(x)
-        _, (h, _) = self.encoder_lstm(x_filtered)
+        x_struct, x_treat = self._split_features(x)
+        x_filtered, _ = self.vsn(x_struct)
+        
+        if x_treat is not None:
+            lstm_in = torch.cat([x_filtered, x_treat], dim=-1)
+        else:
+            lstm_in = x_filtered
+            
+        _, (h, _) = self.encoder_lstm(lstm_in)
         return self.fc_mu(h[-1]), self.fc_logvar(h[-1])
         
     def decode(self, x, z):
-        x_filtered, weights = self.vsn(x)
+        x_struct, x_treat = self._split_features(x)
+        x_filtered, weights = self.vsn(x_struct)
+        
         z_expanded = self.z_proj(z).unsqueeze(1).expand(-1, x.size(1), -1)
-        dec_in = torch.cat([x_filtered, z_expanded], dim=-1)
+        
+        if x_treat is not None:
+            dec_in = torch.cat([x_filtered, x_treat, z_expanded], dim=-1)
+        else:
+            dec_in = torch.cat([x_filtered, z_expanded], dim=-1)
+            
         h, _ = self.decoder_lstm(dec_in)
+        
         out = torch.cat([
             self.head_surv(h), self.head_vote(h), self.head_ht(h), self.head_tok(h), 
             self.head_comm(h), self.head_coun(h), self.head_yea(h), self.head_nay(h)
         ], dim=-1)
+        
+        # Inject the treatment signal directly into the outputs, bypassing LSTM and VAE
+        if self.treatment_residual is not None and x_treat is not None:
+            out = out + self.treatment_residual(x_treat)
+            
         return out, weights
         
     def forward(self, x_pre, x_full):
@@ -251,10 +323,10 @@ class Seq2SeqCVAE(nn.Module):
 # ============================================================
 # TRAINING LOGIC WITH EARLY STOPPING
 # ============================================================
-def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3):
+def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, features, epochs=50, lr=1e-3):
     opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-5)
     sched = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode='min', factor=0.5, patience=3)
-    PS_IDX = 6  # period_seq
+    PS_IDX = features.index("period_seq")
     
     bce = nn.BCEWithLogitsLoss(reduction='none')
     mse = nn.MSELoss(reduction='none')
@@ -281,14 +353,15 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
             mask = (bx[:, :, PS_IDX] != 0).float()
             
             # Reconstruction Loss (Targets)
-            l_surv = (bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum()
-            l_vote = (mse(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum()
-            l_ht   = (mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum()
-            l_tok  = (mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum()
-            l_comm = (mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum()
-            l_coun = (mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum()
-            l_yea  = (mse(preds[:, :, 6], by[:, :, 6]) * mask).sum() / mask.sum()
-            l_nay  = (mse(preds[:, :, 7], by[:, :, 7]) * mask).sum() / mask.sum()
+            # Use .clamp(min=1.0) on the denominator to prevent division by zero NaNs if a batch has no active sequences.
+            l_surv = (bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum().clamp(min=1.0)
+            l_vote = (mse(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum().clamp(min=1.0)
+            l_ht   = (mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum().clamp(min=1.0)
+            l_tok  = (mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum().clamp(min=1.0)
+            l_comm = (mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum().clamp(min=1.0)
+            l_coun = (mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum().clamp(min=1.0)
+            l_yea  = (mse(preds[:, :, 6], by[:, :, 6]) * mask).sum() / mask.sum().clamp(min=1.0)
+            l_nay  = (mse(preds[:, :, 7], by[:, :, 7]) * mask).sum() / mask.sum().clamp(min=1.0)
             
             # Sparsity penalty on attention weights to encourage aggressive feature selection
             l_sparse = 0.01 * torch.mean(torch.abs(weights))
@@ -318,14 +391,14 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
                 preds, mu, logvar, _ = model(bx_pre, bx)
                 mask = (bx[:, :, PS_IDX] != 0).float()
                 
-                l_surv = (bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum()
-                l_vote = (mse(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum()
-                l_ht   = (mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum()
-                l_tok  = (mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum()
-                l_comm = (mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum()
-                l_coun = (mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum()
-                l_yea  = (mse(preds[:, :, 6], by[:, :, 6]) * mask).sum() / mask.sum()
-                l_nay  = (mse(preds[:, :, 7], by[:, :, 7]) * mask).sum() / mask.sum()
+                l_surv = (bce(preds[:, :, 0], by[:, :, 0]) * mask).sum() / mask.sum().clamp(min=1.0)
+                l_vote = (mse(preds[:, :, 1], by[:, :, 1]) * mask).sum() / mask.sum().clamp(min=1.0)
+                l_ht   = (mse(preds[:, :, 2], by[:, :, 2]) * mask).sum() / mask.sum().clamp(min=1.0)
+                l_tok  = (mse(preds[:, :, 3], by[:, :, 3]) * mask).sum() / mask.sum().clamp(min=1.0)
+                l_comm = (mse(preds[:, :, 4], by[:, :, 4]) * mask).sum() / mask.sum().clamp(min=1.0)
+                l_coun = (mse(preds[:, :, 5], by[:, :, 5]) * mask).sum() / mask.sum().clamp(min=1.0)
+                l_yea  = (mse(preds[:, :, 6], by[:, :, 6]) * mask).sum() / mask.sum().clamp(min=1.0)
+                l_nay  = (mse(preds[:, :, 7], by[:, :, 7]) * mask).sum() / mask.sum().clamp(min=1.0)
                 
                 recon_loss = l_surv + l_vote + l_ht + l_tok + l_comm + l_coun + l_yea + l_nay
                 val_loss += recon_loss.item()
@@ -347,7 +420,7 @@ def train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3
                 break
     return model
 
-def compute_and_print_metrics(split_name, model, X, Y, L, batch_size=256):
+def compute_and_print_metrics(split_name, model, X, Y, L, features, batch_size=256):
     from sklearn.metrics import roc_auc_score, average_precision_score, brier_score_loss, mean_absolute_error, r2_score
     from scipy.stats import spearmanr
     all_preds = []
@@ -360,7 +433,7 @@ def compute_and_print_metrics(split_name, model, X, Y, L, batch_size=256):
     
     preds = torch.cat(all_preds, dim=0)
     # Use period_seq (index 6) as mask: zero-padded steps have period_seq == 0
-    PS_IDX = 6
+    PS_IDX = features.index("period_seq")
     mask = (X[:, :, PS_IDX] != 0).cpu()
     
     y_true = Y.cpu()[mask].numpy()
@@ -426,8 +499,8 @@ def compute_autoregressive_metrics(split_name, model, X, Y, L, features, norm_di
             preds_t = preds[:, t, :]
             
             pred_tok = torch.expm1(preds_t[:, 3])
-            pred_comm = torch.sigmoid(preds_t[:, 4])
-            pred_coun = torch.sigmoid(preds_t[:, 5])
+            pred_comm = torch.clamp(preds_t[:, 4], 0, 1)
+            pred_coun = torch.clamp(preds_t[:, 5], 0, 1)
             pred_yea = torch.relu(preds_t[:, 6])
             pred_nay = torch.relu(preds_t[:, 7])
             
@@ -485,8 +558,12 @@ def compute_autoregressive_metrics(split_name, model, X, Y, L, features, norm_di
 # ============================================================
 # INFERENCE
 # ============================================================
-def run_counterfactual_inference(model, X_test, features, norm_dict):
+
+def run_counterfactual_inference(model, X_test, features, norm_dict, mc_samples=25):
     model.eval()
+    if len(X_test) == 0:
+        return {d: {"surv": np.array([]), "vote": np.array([]), "ht": np.array([]), "tok": np.array([]), "time_series_surv": [], "time_series_vote": [], "time_series_ht": []} for d in np.linspace(0.0, 1.0, 11).tolist()}
+        
     pet_idx = features.index("petition_pct_this_period")
     cum_pet_idx = features.index("cumulative_petition_pct")
     
@@ -497,73 +574,123 @@ def run_counterfactual_inference(model, X_test, features, norm_dict):
     f_yea = features.index("cumulative_yea_votes")
     f_nay = features.index("cumulative_nay_votes")
     f_margin = features.index("net_vote_margin")
+    f_req = features.index("pdf_requested_height_ft")
     
     mean_coun, std_coun = norm_dict["cumulative_council_hearings_lag1"]
     mean_comm, std_comm = norm_dict["cumulative_commission_hearings_lag1"]
     mean_tok, std_tok = norm_dict["cumulative_council_nlp_lag1"]
     mean_ht, std_ht = norm_dict["net_height_change"]
     
+    # Calculate native requested height
+    native_req_ht = np.expm1(X_test[:, 0, f_req].cpu().numpy())
+    # Identify cases actively seeking height
+    upzone_mask = native_req_ht > 35.0  # Assumes standard base height is ~35ft
+    
+    # Vectorize Monte Carlo Clones across the batch dimension
+    N_cases = X_test.size(0)
+    X_test_mc = X_test.unsqueeze(1).repeat(1, mc_samples, 1, 1).view(N_cases * mc_samples, X_test.size(1), X_test.size(2))
+    
     doses = np.linspace(0.0, 1.0, 11).tolist()
-    results = {d: {"surv": np.zeros((X_test.size(0), 1)),
-                   "vote": np.zeros((X_test.size(0), 1)),
-                   "ht":   np.zeros((X_test.size(0), 1)),
-                   "tok":  np.zeros((X_test.size(0), 1))} for d in doses}
+    results = {d: {"surv": np.zeros((N_cases, 1)),
+                   "vote": np.zeros((N_cases, 1)),
+                   "ht":   np.zeros((N_cases, 1)),
+                   "ht_pct": np.zeros((N_cases, 1)),
+                   "tok":  np.zeros((N_cases, 1)),
+                   "time_series_surv": np.zeros((N_cases, 55)),
+                   "time_series_vote": np.zeros((N_cases, 55)),
+                   "time_series_ht": np.zeros((N_cases, 55)),
+                   "time_series_ht_pct": np.zeros((N_cases, 55))} for d in doses}
                    
     with torch.no_grad():
         for d in doses:
-            # 1. Clone the factual sequence
-            X_t = X_test.clone().to(device)
+            # 1. Clone the factual sequence across the MC batch
+            X_t = X_test_mc.clone().to(device)
             X_pre = X_t[:, :4, :]
             
             # 2. Inject Intervention at t=4 (period 5)
             X_t[:, 4, pet_idx] = d
             X_t[:, 4:, cum_pet_idx] = d
             
+            # Setup time-series loggers
+            ts_surv = np.zeros((N_cases * mc_samples, 55))
+            ts_vote = np.zeros((N_cases * mc_samples, 55))
+            ts_ht   = np.zeros((N_cases * mc_samples, 55))
+            ts_ht_pct = np.zeros((N_cases * mc_samples, 55))
+            
+            # Repeat native_req_ht across MC dimension to calculate intermediate percentages
+            native_req_ht_mc = np.repeat(native_req_ht, mc_samples)
+            
             # 3. Autoregressive Rollout from t=4 to 54
             for t in range(4, 54):
                 # Predict current step
                 preds, _, _, _ = model(X_pre, X_t)
-                preds_t = preds[:, t, :] # (N, 8)
+                preds_t = preds[:, t, :] # (N*MC, 8)
+                
+                # Log intermediate metrics for time-series trajectory extraction
+                ts_surv[:, t] = torch.sigmoid(preds_t[:, 0]).cpu().numpy()
+                ts_vote[:, t] = preds_t[:, 1].cpu().numpy()
+                ts_ht_val     = (preds_t[:, 2].cpu().numpy() * std_ht) + mean_ht
+                ts_ht[:, t]   = ts_ht_val
+                
+                # Height % Achieved (Avoid division by zero with np.where)
+                ts_ht_pct[:, t] = np.where(native_req_ht_mc > 0, (native_req_ht_mc + ts_ht_val) / native_req_ht_mc, 1.0)
                 
                 # Extract predicted endogenous additions
-                # targets: [resolved, vote_friction, net_height_change, tokens, comm, coun, yea, nay]
-                pred_tok = torch.expm1(preds_t[:, 3]) # log1p was used, so expm1 to get linear
-                pred_comm = torch.sigmoid(preds_t[:, 4]) # bounded 0-1
+                pred_tok = torch.expm1(preds_t[:, 3])
+                pred_comm = torch.sigmoid(preds_t[:, 4])
                 pred_coun = torch.sigmoid(preds_t[:, 5])
-                pred_yea = torch.relu(preds_t[:, 6]) # prevent negative votes
+                pred_yea = torch.relu(preds_t[:, 6])
                 pred_nay = torch.relu(preds_t[:, 7])
                 
                 # Unnormalize current state
                 curr_coun = X_t[:, t, f_coun] * (std_coun + 1e-8) + mean_coun
                 curr_comm = X_t[:, t, f_comm] * (std_comm + 1e-8) + mean_comm
-                curr_yea = X_t[:, t, f_yea] # unscaled
-                curr_nay = X_t[:, t, f_nay] # unscaled
+                curr_yea = X_t[:, t, f_yea]
+                curr_nay = X_t[:, t, f_nay]
                 
                 # Update state
                 next_coun = curr_coun + pred_coun
                 next_comm = curr_comm + pred_comm
-                next_tok = pred_tok # Token prediction is already cumulative
+                next_tok = pred_tok
                 next_yea = curr_yea + pred_yea
                 next_nay = curr_nay + pred_nay
                 
                 # Renormalize and assign to t+1
                 X_t[:, t+1, f_coun] = (next_coun - mean_coun) / (std_coun + 1e-8)
                 X_t[:, t+1, f_comm] = (next_comm - mean_comm) / (std_comm + 1e-8)
-                X_t[:, t+1, f_tok] = (next_tok - mean_tok) / (std_tok + 1e-8)
-                X_t[:, t+1, f_yea] = next_yea
-                X_t[:, t+1, f_nay] = next_nay
+                X_t[:, t+1, f_tok]  = (next_tok - mean_tok) / (std_tok + 1e-8)
+                X_t[:, t+1, f_yea]  = next_yea
+                X_t[:, t+1, f_nay]  = next_nay
                 X_t[:, t+1, f_margin] = next_yea - next_nay
                 
             # 4. Final Inference on Rolled-out Trajectory
             preds, _, _, _ = model(X_pre, X_t)
             
-            # Extract cumulative outcomes
-            results[d]["surv"][:, 0] = torch.sigmoid(preds[:, :, 0]).mean(dim=1).cpu().numpy()
-            results[d]["vote"][:, 0] = preds[:, -1, 1].cpu().numpy()
-            # Un-normalize height change from Z-score to native feet
-            results[d]["ht"][:, 0] = (preds[:, -1, 2].cpu().numpy() * std_ht) + mean_ht
-            # Extract final cumulative token count
-            results[d]["tok"][:, 0] = torch.expm1(preds[:, -1, 3]).cpu().numpy()
+            # Extract cumulative outcomes for (N*MC)
+            mc_surv = torch.sigmoid(preds[:, :, 0]).mean(dim=1).cpu().numpy()
+            mc_vote = preds[:, -1, 1].cpu().numpy()
+            mc_ht   = (preds[:, -1, 2].cpu().numpy() * std_ht) + mean_ht
+            mc_tok  = torch.expm1(preds[:, -1, 3]).cpu().numpy()
+            mc_ht_pct = np.where(native_req_ht_mc > 0, (native_req_ht_mc + mc_ht) / native_req_ht_mc, 1.0)
+            
+            # Aggregate across the Monte Carlo clones via mean()
+            results[d]["surv"][:, 0] = mc_surv.reshape(N_cases, mc_samples).mean(axis=1)
+            results[d]["vote"][:, 0] = mc_vote.reshape(N_cases, mc_samples).mean(axis=1)
+            results[d]["ht"][:, 0]   = mc_ht.reshape(N_cases, mc_samples).mean(axis=1)
+            results[d]["tok"][:, 0]  = mc_tok.reshape(N_cases, mc_samples).mean(axis=1)
+            
+            # Condition Height Percentage to ONLY Upzone Cases
+            ht_pct_mean = mc_ht_pct.reshape(N_cases, mc_samples).mean(axis=1)
+            results[d]["ht_pct"][:, 0] = np.where(upzone_mask, ht_pct_mean, np.nan)
+            
+            # Aggregate the time-series logs (N_cases, 55)
+            results[d]["time_series_surv"] = ts_surv.reshape(N_cases, mc_samples, 55).mean(axis=1)
+            results[d]["time_series_vote"] = ts_vote.reshape(N_cases, mc_samples, 55).mean(axis=1)
+            results[d]["time_series_ht"]   = ts_ht.reshape(N_cases, mc_samples, 55).mean(axis=1)
+            
+            # Condition the time-series percentage
+            ts_ht_pct_mean = ts_ht_pct.reshape(N_cases, mc_samples, 55).mean(axis=1)
+            results[d]["time_series_ht_pct"] = np.where(upzone_mask[:, None], ts_ht_pct_mean, np.nan)
 
     return results
 
@@ -581,50 +708,51 @@ def main():
     cutoffs = [2017, 2018, 2019, 2020, 2021]
     doses = np.linspace(0.0, 1.0, 11).tolist()
     
-    pooled_results = {d: {"surv": [], "vote": [], "ht": [], "tok": []} for d in doses}
+    pooled_results = {d: {"surv": [], "vote": [], "ht": [], "tok": [], "ht_pct": [],
+                          "time_series_surv": [], "time_series_vote": [], "time_series_ht": [], "time_series_ht_pct": []} for d in doses}
     
     gkf = GroupKFold(n_splits=5)
     
-    # Generate the 5 volume-weighted cell splits
     all_cases = first_periods_dt.index.values
     all_groups = cell_assignments.loc[all_cases, "cell_id"].values
     
     print("DEBUG ALL GROUPS LEN:", len(all_groups), "UNIQUE:", len(np.unique(all_groups)), flush=True)
     
-    for cutoff, (train_case_idx, test_case_idx) in zip(cutoffs, gkf.split(all_cases, groups=all_groups)):
+    for fold_idx, (cutoff, (train_case_idx, test_case_idx)) in enumerate(zip(cutoffs, gkf.split(all_cases, groups=all_groups))):
         print("\n" + "=" * 50, flush=True)
-        print(f"--- SPATIO-TEMPORAL FOLD: CUTOFF {cutoff} ---", flush=True)
+        print(f"--- SPATIO-STRUCTURAL FOLD: CUTOFF {cutoff} ---", flush=True)
         
         cutoff_date = pd.to_datetime(f"{cutoff}-12-31")
         end_test_date = pd.to_datetime(f"{cutoff+3}-12-31")
         
-        # Identify the assigned OOD cells for this fold based on the cases
+        # Identify the assigned OOD micro-cells for this fold
         train_cells = cell_assignments.loc[all_cases[train_case_idx], "cell_id"].unique()
         test_cells = cell_assignments.loc[all_cases[test_case_idx], "cell_id"].unique()
             
-        # SPATIO-TEMPORAL SPLIT
+        # SPATIO-TEMPORAL SPLIT (Train on 40 spatial cells <= cutoff)
         in_dist_train_mask = (first_periods_dt <= cutoff_date) & (cell_assignments["cell_id"].isin(train_cells))
         all_train_cases = first_periods_dt[in_dist_train_mask].index.values
         
+        if len(all_train_cases) < 50:
+            print(f"  [SKIP] Fold {cutoff}: Not enough historical training data ({len(all_train_cases)} < 50).", flush=True)
+            continue
+            
         # IN-DISTRIBUTION VALIDATION SPLIT (Purely Random for Early Stopping)
+        from sklearn.model_selection import GroupShuffleSplit
         gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
         train_idx, val_idx = next(gss.split(all_train_cases, groups=all_train_cases))
         train_cases = all_train_cases[train_idx]
         val_cases = all_train_cases[val_idx]
         
+        # SPATIO-TEMPORAL OOD TEST (Test on 10 OOD spatial cells > cutoff)
         test_cases = first_periods_dt[
             (first_periods_dt > cutoff_date) & 
-            (first_periods_dt <= end_test_date) & 
+            (first_periods_dt <= end_test_date) &
             (cell_assignments["cell_id"].isin(test_cells))
         ].index.values
         
-        if len(test_cases) == 0: continue
-        
-        # Guard against degenerate folds (Fold 3 had 96 train / 630 test)
-        MIN_TRAIN = 200
-        MIN_TEST  = 5
-        if len(train_cases) < MIN_TRAIN or len(test_cases) < MIN_TEST:
-            print(f"  [SKIP] Fold {cutoff}: train={len(train_cases)} < {MIN_TRAIN} or test={len(test_cases)} < {MIN_TEST} — degenerate split.", flush=True)
+        if len(test_cases) < 5:
+            print(f"  [SKIP] Fold {cutoff}: Not enough future test cases ({len(test_cases)} < 5).", flush=True)
             continue
 
             
@@ -632,25 +760,39 @@ def main():
         X_val, Y_val, L_val = build_tensors(df, features, targets, val_cases)
         X_test, Y_test, L_test = build_tensors(df, features, targets, test_cases)
         
-        fold_idx = cutoffs.index(cutoff) + 1
-        print(f"  [Model {fold_idx}/5] Train Cases: {len(train_cases)} | Val Cases: {len(val_cases)} | Test Cases (OOD/{cutoff+1}-{cutoff+3}): {len(test_cases)}", flush=True)
+        print(f"  [Model {fold_idx + 1}/5] Train Cases: {len(train_cases)} | Val Cases: {len(val_cases)} | Test Cases (OOD/{cutoff+1}-{cutoff+3}): {len(test_cases)}", flush=True)
         
+        treat_idx = [
+            features.index("petition_pct_this_period"), 
+            features.index("cumulative_petition_pct")
+        ]
+        
+        confounder_idx = []
+        if "proposed_max_far" in features:
+            confounder_idx.append(features.index("proposed_max_far"))
+        if "pdf_requested_height_ft" in features:
+            confounder_idx.append(features.index("pdf_requested_height_ft"))
+        if "land_acres" in features:
+            confounder_idx.append(features.index("land_acres"))
+            
         print(f"  > Training Seq2Seq CVAE (Early Stopping)...", flush=True)
-        model = Seq2SeqCVAE(len(features)).to(device)
-        model = train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, epochs=50, lr=1e-3)
+        model = Seq2SeqCVAE(
+            len(features), 
+            treat_idx=treat_idx, 
+            confounder_idx=confounder_idx
+        ).to(device)
+        model = train_seq2seq_cvae(model, X_train, Y_train, X_val, Y_val, features, epochs=50, lr=1e-3)
         
         # OOD QUANTITATIVE EVALUATION (THE EXTRAPOLATION PROOF)
         print(f"\n  === EVALUATION PHASE ===", flush=True)
         # Note: We replaced the dual model with the unified Seq2SeqCVAE
         
         # Output 1-step Teacher Forced Metrics
-        compute_and_print_metrics(f"VAL", model, X_val, Y_val, L_val)
-        compute_and_print_metrics(f"TEST", model, X_test, Y_test, L_test)
+        compute_and_print_metrics(f"VAL", model, X_val, Y_val, L_val, features)
+        compute_and_print_metrics(f"TEST", model, X_test, Y_test, L_test, features)
         
         # Output Full Autoregressive Rollout Metrics
         compute_autoregressive_metrics(f"AUTOREGRESSIVE TEST", model, X_test, Y_test, L_test, features, norm_dict)
-        if len(X_test) > 0:
-            compute_and_print_metrics("TEST", model, X_test, Y_test, L_test)
         
         # Counterfactual Inference strictly on the OOD & OOT Test Cases
         print(f"  > Running Inference on {len(test_cases)} OOD cases...", flush=True)
@@ -660,9 +802,23 @@ def main():
             pooled_results[d]["surv"].append(cutoff_fold_res[d]["surv"])
             pooled_results[d]["vote"].append(cutoff_fold_res[d]["vote"])
             pooled_results[d]["ht"].append(cutoff_fold_res[d]["ht"])
+            pooled_results[d]["ht_pct"].append(cutoff_fold_res[d]["ht_pct"])
             pooled_results[d]["tok"].append(cutoff_fold_res[d]["tok"])
             
-        # Save final fold model weights for 3D analysis
+            # Append Time-Series Deltas if they exist
+            if "time_series_surv" in cutoff_fold_res[d] and len(cutoff_fold_res[d]["time_series_surv"]) > 0:
+                pooled_results[d]["time_series_surv"].append(cutoff_fold_res[d]["time_series_surv"])
+                pooled_results[d]["time_series_vote"].append(cutoff_fold_res[d]["time_series_vote"])
+                pooled_results[d]["time_series_ht"].append(cutoff_fold_res[d]["time_series_ht"])
+                pooled_results[d]["time_series_ht_pct"].append(cutoff_fold_res[d]["time_series_ht_pct"])
+            
+        # Save all fold model weights for 3D analysis and interactive OOD simulation
+        fold_idx = cutoff - 2017 + 1
+        fold_path = os.path.join(OUT_DIR, f"causal_seq2seq_weights_fold_{fold_idx}.pt")
+        torch.save(model.state_dict(), fold_path)
+        print(f"Exported Checkpoint: {fold_path}", flush=True)
+        
+        # Save final fold model weights for legacy compatibility
         if cutoff == 2021:
             seq2seq_path = os.environ.get("SEQ2SEQ_CHECKPOINT", os.path.join(OUT_DIR, "causal_seq2seq_weights.pt"))
             torch.save(model.state_dict(), seq2seq_path)
@@ -672,6 +828,7 @@ def main():
     
     summary = []
     flattened_data = []
+    ts_summary = []
     
     for d in doses:
         if len(pooled_results[d]["surv"]) == 0: continue
@@ -679,6 +836,10 @@ def main():
         vote_all = np.concatenate(pooled_results[d]["vote"], axis=0)
         ht_all   = np.concatenate(pooled_results[d]["ht"], axis=0)
         tok_all  = np.concatenate(pooled_results[d]["tok"], axis=0)
+        
+        # Strip NaNs for the conditional Height Percentage
+        ht_pct_all = np.concatenate(pooled_results[d]["ht_pct"], axis=0)
+        ht_pct_valid = ht_pct_all[~np.isnan(ht_pct_all)]
         
         summary.append({
             "dose": d,
@@ -688,9 +849,8 @@ def main():
             "ht_p50": np.percentile(ht_all, 50),
             "ht_p10": np.percentile(ht_all, 10),
             "ht_p90": np.percentile(ht_all, 90),
+            "ht_pct_p50": np.percentile(ht_pct_valid, 50) if len(ht_pct_valid) > 0 else np.nan,
             "tok_p50": np.percentile(tok_all, 50),
-            "tok_p10": np.percentile(tok_all, 10),
-            "tok_p90": np.percentile(tok_all, 90),
         })
         
         flattened_data.append(pd.DataFrame({
@@ -701,18 +861,42 @@ def main():
             "tok_mean": tok_all.mean(axis=1)
         }))
         
+        # Pool the Time-Series data to calculate average trajectory per dose
+        if len(pooled_results[d]["time_series_surv"]) > 0:
+            ts_surv_avg = np.concatenate(pooled_results[d]["time_series_surv"], axis=0).mean(axis=0) # shape: (55,)
+            ts_vote_avg = np.concatenate(pooled_results[d]["time_series_vote"], axis=0).mean(axis=0)
+            ts_ht_avg   = np.concatenate(pooled_results[d]["time_series_ht"], axis=0).mean(axis=0)
+            
+            ts_ht_pct_all = np.concatenate(pooled_results[d]["time_series_ht_pct"], axis=0)
+            ts_ht_pct_avg = np.nanmean(ts_ht_pct_all, axis=0) # nanmean safely handles the NaN upzone masks
+            
+            for t in range(55):
+                ts_summary.append({
+                    "dose": d,
+                    "t": t,
+                    "surv": ts_surv_avg[t],
+                    "vote": ts_vote_avg[t],
+                    "ht": ts_ht_avg[t],
+                    "ht_pct": ts_ht_pct_avg[t]
+                })
+        
     sum_df = pd.DataFrame(summary)
     df_results = pd.concat(flattened_data)
     
     df_results.to_csv(CAUSAL_SURFACE_PATH, index=False)
+    print(f"\n[√] Final God Table materialized at: {CAUSAL_SURFACE_PATH}", flush=True)
+    
+    if len(ts_summary) > 0:
+        ts_df = pd.DataFrame(ts_summary)
+        ts_path = CAUSAL_SURFACE_PATH.replace(".csv", "_time_series.csv")
+        ts_df.to_csv(ts_path, index=False)
+        print(f"Saved Time-Series Trajectories to {ts_path}", flush=True)
     
     # Save the final trained weights for local plotting
     seq2seq_path = os.environ.get("SEQ2SEQ_CHECKPOINT", os.path.join(OUT_DIR, "causal_seq2seq_weights.pt"))
     torch.save(model.state_dict(), seq2seq_path)
     
-    print(f"\n[√] Final God Table materialized at: {CAUSAL_SURFACE_PATH}", flush=True)
-    print("\n--- POOLED CAUSAL FRICTION SURFACE (P10 - P50 - P90) ---", flush=True)
-    print(sum_df[["dose", "surv_p50", "ht_p50", "tok_p50"]].to_string(index=False), flush=True)
+    print("\n[SUCCESS] Spatio-Temporal G-Computation Complete.")
 
 if __name__ == "__main__":
     main()
