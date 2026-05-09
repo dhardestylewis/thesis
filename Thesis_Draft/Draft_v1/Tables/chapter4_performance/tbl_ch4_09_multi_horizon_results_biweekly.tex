@@ -1,0 +1,27 @@
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption[Multi-Horizon OOT Performance by Architecture]{Multi-Horizon Walk-Forward OOT Performance by Architecture (Biweekly Panel)}
+\label{tbl:multihorizon_biweekly}
+\begin{tabular}{llcccccccccc}
+\toprule
+Family & Model & \multicolumn{2}{c}{14-Day} & \multicolumn{2}{c}{3-Month} & \multicolumn{2}{c}{6-Month} & \multicolumn{2}{c}{1-Year} & \multicolumn{2}{c}{2-Year} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}\cmidrule(lr){11-12}
+ &  & PR-AUC & ROC-AUC & PR-AUC & ROC-AUC & PR-AUC & ROC-AUC & PR-AUC & ROC-AUC & PR-AUC & ROC-AUC \\
+\midrule
+Tree Ensembles & CatBoost & -- & -- & -- & -- & -- & -- & 0.004 & 0.318 & -- & -- \\
+ & RandomForest & -- & -- & -- & -- & -- & -- & 0.005 & 0.280 & -- & -- \\
+\midrule
+Regularized Linear & LogisticL1 & -- & -- & -- & -- & -- & -- & 0.198 & 0.906 & -- & -- \\
+ & LogisticL2 & -- & -- & -- & -- & -- & -- & 0.140 & 0.876 & -- & -- \\
+\midrule
+Deep (MLP) & Linear & -- & -- & -- & -- & -- & -- & 0.053 & 0.904 & -- & -- \\
+\midrule
+\bottomrule
+\end{tabular}
+\begin{minipage}{\textwidth}
+\vspace{2pt}\footnotesize
+\textit{Note:} Mean PR-AUC and ROC-AUC across walk-forward test years. PR-AUC is the primary metric given class imbalance; ROC-AUC shown for reference. Tree = CatBoost + Random Forest; Linear = Logistic L1/L2; Deep = MLP. 
+\end{minipage}
+\end{table}

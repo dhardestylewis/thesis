@@ -40,7 +40,6 @@ OUT_CSV    = ROOT / "artifacts/annualized_multihorizon_multicutoff_all_models.cs
 FEATS = [
     "cumulative_petition_events", "cumulative_petition_count", "cumulative_petition_pct",
     "cumulative_council_hearings_lag1", "cumulative_commission_hearings_lag1",
-    "Remand_Count",
     "cumulative_min_signer_dist", "cumulative_max_signer_dist", "cumulative_median_signer_dist",
     "cumulative_signers_within_200ft", "cumulative_signers_outside_200ft",
     "cumulative_unofficial_protest_intensity",
@@ -50,31 +49,37 @@ FEATS = [
     "cumulative_temporal_protesting_pct_com", "cumulative_temporal_silent_pct_com",
     "cumulative_temporal_protesting_pct_mf", "cumulative_temporal_silent_pct_mf",
     "cumulative_delta_protesting_friction", "cumulative_delta_silent_friction",
-    "cumulative_protesting_pct_single_family", "cumulative_silent_pct_single_family",
-    "cumulative_protesting_pct_commercial", "cumulative_silent_pct_commercial",
-    "cumulative_protesting_pct_multifamily", "cumulative_silent_pct_multifamily",
     "market_value", "building_age", "land_acres",
     "total_population", "median_household_income",
     "renter_share", "rent_burden", "affordability_proxy",
-    "race_white", "race_black", "race_hispanic", "median_age",
+    "race_white", "median_age",
     "mortgage_rate_30yr", "mortgage_rate_30yr_momentum", "mortgage_rate_30yr_filing_delta",
     "treasury_10yr_yield", "treasury_10yr_yield_filing_delta",
     "fed_funds_rate", "fed_funds_rate_filing_delta",
     "local_unemployment_rate", "local_unemployment_rate_filing_delta",
     "knn_petition_rate_1km", "dist_petition_rate_lag1",
-    "label_real_days_in_pipeline", "Aggregate_Sentiment", "net_height_change",
+    
+    # Restored Spatial/Temporal/PDF Features
+    "active_cases_100m", "active_cases_250m", "active_cases_500m", "active_cases_1km", "active_cases_2km", "active_gravity_index_t",
+    "hearing_frequency", "petition_intensity_per_ft",
+    "hearing_velocity_3p", "petition_velocity_3p",
+    "pdf_requested_height_ft", "pdf_requested_max_far", "pdf_proposed_height_ft",
+    "pdf_story_count", "pdf_story_height_ft", "pdf_compatibility_height_ft"
 ]
 
 HORIZONS  = {"1_Year": 1, "2_Years": 2, "3_Years": 3}
-TEST_YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+TEST_YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
 
 
 def annualize(df: pd.DataFrame) -> pd.DataFrame:
     """Last biweekly period per (case, year) — richest in-year state, no leakage."""
-    return (df.sort_values(["case_number", "period_seq"])
-              .groupby(["case_number", "year"])
-              .last()
-              .reset_index())
+    ann = df.sort_values(["case_number", "period_seq"]).groupby(["case_number", "year"]).last().reset_index()
+    
+    # Recover the true target event which may have happened earlier in the year
+    events = df.groupby(["case_number", "year"])["petition_event"].max().reset_index()
+    ann = ann.drop(columns=["petition_event"]).merge(events, on=["case_number", "year"], how="left")
+    
+    return ann
 
 
 def build_horizon_target(annual: pd.DataFrame, horizon_years: int) -> pd.Series:
@@ -96,7 +101,7 @@ def get_models(spw: float) -> dict:
         "CatBoost": CatBoostClassifier(
             iterations=500, depth=6, learning_rate=0.05,
             scale_pos_weight=spw,
-            eval_metric="AUC", random_seed=42, verbose=False, task_type="GPU"
+            eval_metric="AUC", random_seed=42, verbose=False, thread_count=-1
         ),
         "RandomForest": "XGB_RF_Placeholder",
         "LogisticL2": "PyTorch_LogisticL2_Placeholder",
@@ -105,7 +110,7 @@ def get_models(spw: float) -> dict:
         "MLP": "PyTorch_MLP_Placeholder",
     }
 
-def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=256):
+def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=2048):
     import torch
     import torch.nn as nn
     import torch.optim as optim
@@ -170,30 +175,35 @@ def run():
     feats  = [f for f in FEATS if f in annual.columns]
     print(f"   {len(annual):,} annual rows | {annual['case_number'].nunique():,} cases | {len(feats)} features")
 
+    # ── Precompute all horizon targets once ──────────────────────────────────
+    print("3. Precomputing horizon targets (once)...")
+    target_cols = {}
+    for h_name, h_years in HORIZONS.items():
+        print(f"   [{h_name}] Precomputing...")
+        target_cols[h_name] = build_horizon_target(annual, h_years)
+
     results = []
 
     for test_year in TEST_YEARS:
         print(f"\n=== Walk-Forward Cutoff: {test_year} ===")
 
-        train_df = annual[annual["year"] < test_year].copy()
-        test_df  = annual[annual["year"] == test_year].copy()
+        train_mask = annual["year"] < test_year
+        test_mask  = annual["year"] == test_year
 
-        if len(test_df) == 0:
+        if test_mask.sum() == 0:
             continue
 
         for h_name, h_years in HORIZONS.items():
-            print(f"  [{h_name}] Building targets...")
-            train_df["target"] = build_horizon_target(train_df, h_years)
-            test_df["target"]  = build_horizon_target(test_df,  h_years)
+            y_all = target_cols[h_name]
+            y_tr  = y_all[train_mask].values
+            y_te  = y_all[test_mask].values
 
-            if train_df["target"].sum() == 0 or test_df["target"].sum() == 0:
+            if y_tr.sum() == 0 or y_te.sum() == 0:
                 print(f"  [{h_name}] Skipped — no positives")
                 continue
 
-            X_tr = train_df[feats].fillna(0).values
-            y_tr = train_df["target"].values
-            X_te = test_df[feats].fillna(0).values
-            y_te = test_df["target"].values
+            X_tr = annual[feats][train_mask].fillna(0).values
+            X_te = annual[feats][test_mask].fillna(0).values
 
             spw      = max(1.0, (len(y_tr) - y_tr.sum()) / max(1, y_tr.sum()))
             naive_pr = float(y_tr.mean())
@@ -209,7 +219,7 @@ def run():
                         y_pred = clf.predict_proba(X_te)[:, 1]
                     elif m_name == "RandomForest":
                         from xgboost import XGBRFClassifier
-                        rf = XGBRFClassifier(n_estimators=300, max_depth=8, scale_pos_weight=spw, tree_method='hist', device='cuda', random_state=42)
+                        rf = XGBRFClassifier(n_estimators=300, max_depth=8, scale_pos_weight=spw, tree_method='hist', n_jobs=-1, random_state=42)
                         rf.fit(X_tr, y_tr)
                         y_pred = rf.predict_proba(X_te)[:, 1]
                     elif m_name == "LogisticL2":
@@ -227,10 +237,10 @@ def run():
                     roc = roc_auc_score(y_te, y_pred)
                     pr  = average_precision_score(y_te, y_pred)
 
-                    print(f"  [{year_cutoff}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}", flush=True)
+                    print(f"  [{test_year}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}", flush=True)
 
                     results.append({
-                        "Test_Year":     year_cutoff,
+                        "Test_Year":     test_year,
                         "Horizon":       h_name,
                         "Model":         m_name,
                         "Model_Family":  ("Tree" if m_name in ("CatBoost", "RandomForest")

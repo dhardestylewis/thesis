@@ -18,10 +18,7 @@ df_council = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\interim\zoning_c
 valid_cases = set(df_model['case_number'].dropna().astype(str).str.upper().unique())
 case_pattern = re.compile(r'((?:C14|C814|NPA|C14H|C17)(?:-[A-Z0-9]+)?-\d{2,4}-\d{2,4}(?:\.[A-Z0-9]+)?)')
 
-base_zones = r'(?:SF|MF|CS|GR|LO|GO|CH|LI|MI|DR|AG|P|RR|CBD|DMU|TOD|PUD|ERC|W|NO|IP|CR)'
-suffix = r'(?:\s*-\s*[A-Z0-9]+)'
-optional_number = r'(?:\s*-?\s*[0-9]+[A-Z]*)'
-zone_regex = r'\b' + base_zones + r'(?:' + optional_number + r')?' + r'(?:' + suffix + r'){0,4}\b'
+zone_regex = r'\b(?:SF|MF|CS|GR|LO|GO|CH|LI|MI|DR|AG|P|RR|CBD|DMU|TOD|PUD|ERC|W|NO|IP|CR)(?:[0-9]+[A-Z]*)?(?:-[A-Z0-9]+)*\b'
 
 pattern_req_to = re.compile(r'(?i)request.{0,40}?(' + zone_regex + r').{0,30}?\bto\b.{0,30}?(' + zone_regex + r')')
 pattern_from_to = re.compile(r'(?i)from.{0,40}?(' + zone_regex + r').{0,30}?\bto\b.{0,30}?(' + zone_regex + r')')

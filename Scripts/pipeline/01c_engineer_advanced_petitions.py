@@ -27,12 +27,51 @@ def engineer_advanced_petitions():
     petitions = petitions[cols_to_keep].drop_duplicates(subset=['case_number'])
     petitions = petitions.rename(columns={'label_exact_geometric_petition_pct': 'true_petition_pct'})
     
-    # Identify injection period
-    first_comm = panel[panel['commission_hearings_this_period'] > 0].groupby('case_number')['period_seq'].min().reset_index()
-    first_comm = first_comm.rename(columns={'period_seq': 'injection_period'})
+    # Identify primary injection period (First Council Hearing)
+    first_council = panel[panel['council_hearings_this_period'] > 0].groupby('case_number')['period_seq'].min().reset_index()
+    first_council = first_council.rename(columns={'period_seq': 'council_period'})
     
+    # Identify secondary injection period (First Commission Hearing)
+    first_comm = panel[panel['commission_hearings_this_period'] > 0].groupby('case_number')['period_seq'].min().reset_index()
+    first_comm = first_comm.rename(columns={'period_seq': 'comm_period'})
+    
+    petitions = petitions.merge(first_council, on='case_number', how='left')
     petitions = petitions.merge(first_comm, on='case_number', how='left')
-    petitions['injection_period'] = petitions['injection_period'].fillna(1).astype(int)
+    
+    # Load EDIMS OCR Ground Truth to align injection precisely
+    ocr_path = r'C:\Users\dhl\data\Thesis\thesis\Scratch\ocr_petition_results.csv'
+    if os.path.exists(ocr_path):
+        ocr = pd.read_csv(ocr_path)
+        
+        def extract_date(url):
+            date_str = str(url).split('/')[-1].split('-')[0]
+            try:
+                return pd.to_datetime(date_str, format='%Y%m%d')
+            except:
+                return pd.NaT
+                
+        ocr['Petition_Date'] = ocr['Meeting_URL'].apply(extract_date)
+        petition_map_date = ocr.set_index('Case_Number')['Petition_Date'].to_dict()
+        
+        # We must find the `period_seq` that corresponds to the `Petition_Date` for each case
+        edims_period_map = {}
+        panel['period_start_dt'] = pd.to_datetime(panel['period_start'])
+        for case, p_date in petition_map_date.items():
+            if pd.isna(p_date): continue
+            case_data = panel[panel['case_number'] == case]
+            if case_data.empty: continue
+            mask = case_data['period_start_dt'] >= p_date
+            if mask.any():
+                edims_period_map[case] = case_data[mask]['period_seq'].iloc[0]
+            else:
+                edims_period_map[case] = case_data['period_seq'].iloc[-1]
+                
+        petitions['edims_period'] = petitions['case_number'].map(edims_period_map)
+    else:
+        petitions['edims_period'] = np.nan
+        
+    # Priority: EDIMS -> Council -> Commission -> 1
+    petitions['injection_period'] = petitions['edims_period'].fillna(petitions['council_period']).fillna(petitions['comm_period']).fillna(1).astype(int)
     
     # Create injection maps
     petition_map = petitions.set_index(['case_number', 'injection_period'])['true_petition_pct'].to_dict()
@@ -66,6 +105,7 @@ def engineer_advanced_petitions():
         return petition_map.get(key, 0.0)
         
     panel['petition_pct_this_period'] = panel.apply(apply_injection, axis=1)
+    panel['petition_event'] = (panel['petition_pct_this_period'] > 0).astype(int)
     
     for f in adv_features:
         def apply_adv(row):
@@ -75,7 +115,8 @@ def engineer_advanced_petitions():
         panel[f + "_this_period"] = panel.apply(apply_adv, axis=1)
     
     print("Forward-filling cumulative features...")
-    panel['cumulative_petition_pct'] = panel.groupby('case_number')['petition_pct_this_period'].cumsum()
+    panel['cumulative_petition_pct'] = panel.groupby('case_number')['petition_pct_this_period'].transform(lambda x: x.fillna(0).cumsum().shift(1).fillna(0))
+    panel['cumulative_petition_events'] = panel.groupby('case_number')['petition_event'].transform(lambda x: x.cumsum().shift(1).fillna(0))
     
     for f in adv_features:
         if f != 'signer_distance_vector':

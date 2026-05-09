@@ -22,7 +22,6 @@ import json
 from datetime import datetime
 import shutil
 import gc
-import torch
 
 from catboost import CatBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -34,14 +33,9 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 
 warnings.filterwarnings('ignore')
 
-if os.environ.get("AWS_EXECUTION") == "1":
-    ROOT = Path.cwd()
-    PANEL_PATH = ROOT / "biweekly_panel.csv"
-else:
-    ROOT = Path(__file__).resolve().parents[2]
-    PANEL_PATH = ROOT / "Scratch/Modeling/Causal_Inference/05_G_Computation_LSTMs/biweekly_panel.csv"
-
-OUT_CSV = ROOT / "artifacts/multihorizon_multicutoff_all_models.csv"
+ROOT       = Path(__file__).resolve().parents[2]
+PANEL_PATH = r'C:\Users\dhl\data\Thesis\thesis\Scratch\Modeling\Causal_Inference\05_G_Computation_LSTMs\biweekly_panel.csv'
+OUT_CSV    = ROOT / "artifacts/multihorizon_multicutoff_all_models.csv"
 
 FEATS = [
     "period_seq", "bw_sin", "bw_cos",
@@ -69,10 +63,10 @@ FEATS = [
     
     # Restored Spatial/Temporal/PDF Features
     "active_cases_100m", "active_cases_250m", "active_cases_500m", "active_cases_1km", "active_cases_2km", "active_gravity_index_t",
-    "hearing_frequency", "petition_intensity_per_ft",
+    "hearing_frequency", "petition_intensity_per_ft", "staff_concession_ratio",
     "hearing_velocity_3p", "petition_velocity_3p",
     "pdf_requested_height_ft", "pdf_requested_max_far", "pdf_proposed_height_ft",
-    "pdf_story_count", "pdf_story_height_ft", "pdf_compatibility_height_ft"
+    "pdf_story_count", "pdf_story_height_ft", "pdf_reduced_to_ft", "pdf_compatibility_height_ft", "pdf_staff_recommends_ht"
 ]
 
 HORIZONS = {
@@ -83,7 +77,7 @@ HORIZONS = {
     "2_Years":  52,
 }
 
-TEST_YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+TEST_YEARS = [2024]
 
 
 def get_models(scale_pos_weight: float):
@@ -91,11 +85,9 @@ def get_models(scale_pos_weight: float):
     return {
         # Tree Ensembles
         "CatBoost": CatBoostClassifier(
-            iterations=300, depth=6, learning_rate=0.05,
+            iterations=2, depth=6, learning_rate=0.05,
             scale_pos_weight=scale_pos_weight,
-            eval_metric="AUC", random_seed=42, verbose=False,
-            task_type="GPU" if torch.cuda.is_available() else "CPU",
-            thread_count=-1 if not torch.cuda.is_available() else 1
+            eval_metric="AUC", random_seed=42, verbose=False, task_type="GPU"
         ),
         "RandomForest": "XGB_RF_Placeholder",
         # Regularized Linear
@@ -117,7 +109,7 @@ def get_models(scale_pos_weight: float):
         
     return models
 
-def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=2048):
+def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=16):
     import torch
     import torch.nn as nn
     import torch.optim as optim
@@ -139,13 +131,7 @@ def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=
     layers.append(nn.Linear(in_dim, 1))
     
     model = nn.Sequential(*layers).to(device)
-    try:
-        import torch._dynamo
-        torch._dynamo.config.suppress_errors = True
-        model = torch.compile(model, mode="reduce-overhead")
-    except Exception as e:
-        print("Torch compile failed or unavailable, using eager mode.")
-        
+    
     pos_weight = max(1.0, (len(y_tr) - sum(y_tr)) / max(1, sum(y_tr)))
     criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([pos_weight], dtype=torch.float32).to(device))
     
@@ -220,17 +206,10 @@ def build_and_train_lstm(df_tr, df_te, y_tr, y_te, feats, seq_len=6, epochs=10, 
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = SimpleLSTM(len(feats), 64).to(device)
-    try:
-        import torch._dynamo
-        torch._dynamo.config.suppress_errors = True
-        model = torch.compile(model, mode="reduce-overhead")
-    except Exception as e:
-        print("Torch compile failed or unavailable, using eager mode.")
-
     criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([max(1.0, (len(y_tr)-sum(y_tr))/max(1, sum(y_tr)))]).to(device))
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
-    dl = DataLoader(TensorDataset(X_tr_3d, y_tr_t), batch_size=2048, shuffle=True)
+    dl = DataLoader(TensorDataset(X_tr_3d, y_tr_t), batch_size=16, shuffle=True)
     
     model.train()
     for _ in range(epochs):
@@ -321,7 +300,7 @@ def run():
             naive_pr = float(y_tr.mean())
             models   = get_models(spw)
             # Add to sequence if LSTM is supported
-            models["LSTM"] = "PyTorch_LSTM_Placeholder"
+            # models["LSTM"] = "PyTorch_LSTM_Placeholder"
 
             for m_name, clf in models.items():
                 try:
@@ -347,8 +326,7 @@ def run():
                         y_pred = clf.predict_proba(X_te)[:, 1]
                     elif m_name == "RandomForest":
                         from xgboost import XGBRFClassifier
-                        tree_device = 'cuda' if torch.cuda.is_available() else 'cpu'
-                        rf = XGBRFClassifier(n_estimators=300, max_depth=8, scale_pos_weight=spw, tree_method='hist', device=tree_device, n_jobs=-1 if tree_device == 'cpu' else 1, random_state=42)
+                        rf = XGBRFClassifier(n_estimators=300, max_depth=8, scale_pos_weight=spw, tree_method='hist', device='cuda', random_state=42)
                         rf.fit(X_tr_all, y_tr)
                         y_pred = rf.predict_proba(X_te)[:, 1]
                     elif m_name == "LogisticL2":

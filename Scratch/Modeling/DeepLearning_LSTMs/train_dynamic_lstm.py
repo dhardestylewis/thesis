@@ -139,9 +139,7 @@ class LSTMHazardModel(nn.Module):
         self.fc = nn.Linear(hidden_dim, 1)
 
     def forward(self, x, lengths):
-        packed_x = pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False)
-        packed_out, _ = self.lstm(packed_x) # LSTM returns (out, (h_n, c_n))
-        out, _ = pad_packed_sequence(packed_out, batch_first=True)
+        out, _ = self.lstm(x)
         logits = self.fc(out)
         return logits
 
@@ -210,6 +208,13 @@ for name, window in horizons.items():
     pos_weight = torch.tensor([(len(train_df) - train_df["target"].sum()) / train_df["target"].sum()]).to(device)
     
     model = LSTMHazardModel(input_dim=len(FEATS), hidden_dim=H_DIM, num_layers=2, dropout=DROP).to(device)
+    try:
+        import torch._dynamo
+        torch._dynamo.config.suppress_errors = True
+        model = torch.compile(model, mode="reduce-overhead")
+    except Exception as e:
+        print("Torch compile failed or unavailable, using eager mode.")
+
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     optimizer = optim.Adam(model.parameters(), lr=LR, weight_decay=1e-4)
     

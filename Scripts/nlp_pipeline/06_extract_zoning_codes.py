@@ -16,7 +16,7 @@ valid_cases = set(df_model['Core_Case'].dropna().unique())
 
 case_pattern = re.compile(r'((?:C14|C814|NPA|C14H|C17)(?:-[A-Z0-9]+)?-\d{2,4}-\d{2,4})')
 
-zone_regex = r'\b(?:SF|MF|CS|GR|LO|GO|CH|LI|MI|DR|AG|P|RR|CBD|DMU|TOD|PUD|ERC|W|NO|IP|CR)(?:-?[0-9A-Z]+){0,4}\b'
+zone_regex = r'\b(?:SF|MF|CS|GR|LO|GO|CH|LI|MI|DR|AG|P|RR|CBD|DMU|TOD|PUD|ERC|W|NO|IP|CR)(?:[0-9]+[A-Z]*)?(?:-[A-Z0-9]+)*\b'
 
 # Specific heuristics
 pattern_req_to = re.compile(r'(?i)request.{0,40}?(' + zone_regex + r').{0,30}?\bto\b.{0,30}?(' + zone_regex + r')')
