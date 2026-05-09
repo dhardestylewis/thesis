@@ -298,9 +298,13 @@ def run():
 
             for m_name, clf in models.items():
                 try:
-                    import torch
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
+                    try:
+                        import torch
+                        if torch.cuda.is_available():
+                            torch.cuda.empty_cache()
+                    except ImportError:
+                        pass
+                    import gc
                     gc.collect()
                     
                     if m_name == "LSTM":
