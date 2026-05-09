@@ -304,7 +304,6 @@ def run():
                             torch.cuda.empty_cache()
                     except ImportError:
                         pass
-                    import gc
                     gc.collect()
                     
                     if m_name == "LSTM":
