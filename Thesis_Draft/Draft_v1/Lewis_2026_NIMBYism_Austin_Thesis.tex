@@ -1,4 +1,4 @@
-\documentclass[11pt, letterpaper]{article}
+\documentclass[11pt, letterpaper, oneside]{article}
 \pdfminorversion=7
 \usepackage{float}
 \usepackage{array}
@@ -10,6 +10,8 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{titlesec}
+% Each top-level section starts on a new page (GSAPP requirement)
+\newcommand{\sectionbreak}{\clearpage}
 \usepackage{booktabs}
 \usepackage{setspace}
 \doublespacing
@@ -27,18 +29,20 @@
 
 \setlength{\emergencystretch}{3em}
 
-%  --  Front matter  -- 
-\title{Predicting Formal Protest Petitions Against Housing Development:\\
+%  --  Front matter (GSAPP title page per Appendix template)  --
+\title{\vspace{-2em}\LARGE\bfseries Predicting Formal Protest Petitions Against Housing Development:\\[0.4em]
 Evidence from Austin, Texas}
-\author{Daniel Hardesty Lewis\\[1em]
-Submitted in partial fulfillment of the requirements for the degree of\\
-Master of Science in Urban Planning\\[1em]
-Graduate School of Architecture, Planning and Preservation\\
-Columbia University\\[1em]
-Advisor: Dory Kornfeld\\
-Readers: Matthew Bauer, Josh Begley, James Piacentini,\\
-Stijn Van Nieuwerburgh, Adam Vosburgh}
-\date{\today}
+\author{
+\normalsize A Thesis Presented to the Faculty of Architecture, Planning and Preservation\\
+\normalsize COLUMBIA UNIVERSITY\\[1em]
+\normalsize In Partial Fulfillment\\[0.2em]
+\normalsize of the Requirements for the Degree\\[0.2em]
+\normalsize Master of Science in Urban Planning\\[1.5em]
+\normalsize by\\[0.5em]
+\normalsize Daniel Hardesty Lewis\\[1.5em]
+\normalsize Advisor: Dory Kornfeld\\[0.2em]
+\normalsize Reader: James Piacentini}
+\date{\normalsize May 2026}
 
 
 \begin{document}
@@ -810,8 +814,10 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{section}{References}
+{\singlespacing
 \bibliographystyle{plainurl}
 \bibliography{references}
+}
 
 \newpage
 \end{document}

@@ -1,34 +1,39 @@
 """
 08e_run_annualized_oot.py
 
-Annualizes the biweekly panel with zero leakage, then runs the same
-walk-forward multi-horizon CatBoost evaluation as the biweekly version.
+Annualizes the biweekly panel (last period per case-year, no leakage) then
+runs the same walk-forward multi-horizon evaluation as the biweekly version
+across the full pre-registered benchmark roster:
+  - Tree: CatBoost, Random Forest
+  - Linear: Logistic L2, Logistic L1
+  - Deep: MLP
 
-Annualization strategy (no leakage):
-  - For each (case_number, year), take the LAST row of that year.
-    This is the final known state as of Dec 31 of that year — all cumulative
-    features are correctly lagged inside the biweekly panel already
-    (they use .shift(1)), so taking the last row carries only
-    information that was known BEFORE that period fired.
-  - The horizon targets are built from events that occur AFTER
-    the snapshot date, not within it.
+Horizon targets (1, 2, 3 years) are built by looking for petition events
+in FUTURE calendar years relative to each (case, year) snapshot.
+
+Outputs: artifacts/annualized_multihorizon_multicutoff_all_models.csv
 """
 
 import warnings
 import pandas as pd
 import numpy as np
-from catboost import CatBoostClassifier
-from sklearn.metrics import roc_auc_score, average_precision_score
 from pathlib import Path
 import os
 
+from catboost import CatBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import roc_auc_score, average_precision_score
+
 warnings.filterwarnings('ignore')
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT       = Path(__file__).resolve().parents[2]
 PANEL_PATH = ROOT / "Scratch/Modeling/Causal_Inference/05_G_Computation_LSTMs/biweekly_panel.csv"
-OUT_CSV    = ROOT / "artifacts/annualized_multihorizon_multicutoff.csv"
+OUT_CSV    = ROOT / "artifacts/annualized_multihorizon_multicutoff_all_models.csv"
 
-# Features — same as biweekly eval, minus biweekly-specific cyclical encodings
 FEATS = [
     "cumulative_petition_events", "cumulative_petition_count", "cumulative_petition_pct",
     "cumulative_council_hearings_lag1", "cumulative_commission_hearings_lag1",
@@ -52,76 +57,77 @@ FEATS = [
     "mortgage_rate_30yr", "mortgage_rate_30yr_momentum", "mortgage_rate_30yr_filing_delta",
     "treasury_10yr_yield", "treasury_10yr_yield_filing_delta",
     "fed_funds_rate", "fed_funds_rate_filing_delta",
+    "local_unemployment_rate", "local_unemployment_rate_filing_delta",
     "knn_petition_rate_1km", "dist_petition_rate_lag1",
-    "label_real_days_in_pipeline",
-    "Aggregate_Sentiment", "net_height_change",
+    "label_real_days_in_pipeline", "Aggregate_Sentiment", "net_height_change",
 ]
 
-# Horizon definitions: how many YEARS forward to look for a petition event
-HORIZONS = {
-    "1_Year":  1,
-    "2_Years": 2,
-    "3_Years": 3,
-}
-
+HORIZONS  = {"1_Year": 1, "2_Years": 2, "3_Years": 3}
 TEST_YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
 
 def annualize(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Collapse biweekly rows to one row per (case_number, year).
-    Take the LAST biweekly period of each year — this is the most
-    information-rich snapshot that's still fully in-year and
-    free of future leakage (cumulative features already lag-shifted).
-    """
-    df = df.sort_values(["case_number", "period_seq"])
-    annual = (
-        df.groupby(["case_number", "year"])
-          .last()
-          .reset_index()
-    )
-    return annual
+    """Last biweekly period per (case, year) — richest in-year state, no leakage."""
+    return (df.sort_values(["case_number", "period_seq"])
+              .groupby(["case_number", "year"])
+              .last()
+              .reset_index())
 
 
 def build_horizon_target(annual: pd.DataFrame, horizon_years: int) -> pd.Series:
-    """
-    For each (case, year) snapshot, check whether a petition_event
-    fires in ANY of the next `horizon_years` calendar years.
-    This is built from the FULL biweekly panel aggregated forward,
-    so it's strictly future data relative to the snapshot year.
-    """
-    # Sum petition events by (case, year)
-    future_events = (
-        annual[["case_number", "year", "petition_event"]]
-        .copy()
-    )
-    # For each row, look up petition events in year+1 .. year+horizon
-    results = []
+    """1 if any petition_event fires in the next horizon_years calendar years."""
+    evt = annual[["case_number", "year", "petition_event"]].copy()
+    out = []
     for _, row in annual.iterrows():
-        case = row["case_number"]
-        snap_year = row["year"]
-        future = future_events[
-            (future_events["case_number"] == case) &
-            (future_events["year"] > snap_year) &
-            (future_events["year"] <= snap_year + horizon_years)
+        fut = evt[
+            (evt["case_number"] == row["case_number"]) &
+            (evt["year"] > row["year"]) &
+            (evt["year"] <= row["year"] + horizon_years)
         ]
-        results.append(1 if future["petition_event"].sum() > 0 else 0)
-    return pd.Series(results, index=annual.index)
+        out.append(1 if fut["petition_event"].sum() > 0 else 0)
+    return pd.Series(out, index=annual.index)
 
 
-def run_annualized_oot():
+def get_models(spw: float) -> dict:
+    return {
+        "CatBoost": CatBoostClassifier(
+            iterations=500, depth=6, learning_rate=0.05,
+            scale_pos_weight=spw,
+            eval_metric="AUC", random_seed=42, verbose=False, task_type="GPU"
+        ),
+        "RandomForest": RandomForestClassifier(
+            n_estimators=300, max_depth=8, class_weight="balanced",
+            n_jobs=-1, random_state=42
+        ),
+        "LogisticL2": Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", LogisticRegression(C=0.1, penalty="l2", max_iter=1000,
+                                       class_weight="balanced", random_state=42))
+        ]),
+        "LogisticL1": Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", LogisticRegression(C=0.1, penalty="l1", solver="liblinear",
+                                       max_iter=1000, class_weight="balanced", random_state=42))
+        ]),
+        "MLP": Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", MLPClassifier(
+                hidden_layer_sizes=(128, 64, 32), alpha=1e-3,
+                max_iter=200, random_state=42, early_stopping=True
+            ))
+        ]),
+    }
+
+
+def run():
     print("1. Loading biweekly panel...")
     bw = pd.read_csv(PANEL_PATH, low_memory=False)
     bw = bw.sort_values(["case_number", "period_seq"])
-    print(f"   {len(bw):,} biweekly rows | {bw['case_number'].nunique():,} cases")
 
-    print("2. Annualizing (last period per case-year, no leakage)...")
+    print("2. Annualizing (last period per case-year)...")
     annual = annualize(bw)
-    print(f"   {len(annual):,} annual rows | {annual['case_number'].nunique():,} cases")
-
-    # Resolve available features (some spatial cols may be missing if panel is baseline)
-    feats = [f for f in FEATS if f in annual.columns]
-    print(f"   Using {len(feats)} features")
+    feats  = [f for f in FEATS if f in annual.columns]
+    print(f"   {len(annual):,} annual rows | {annual['case_number'].nunique():,} cases | {len(feats)} features")
 
     results = []
 
@@ -132,58 +138,65 @@ def run_annualized_oot():
         test_df  = annual[annual["year"] == test_year].copy()
 
         if len(test_df) == 0:
-            print(f"  Skipped: no test rows for {test_year}")
             continue
 
         for h_name, h_years in HORIZONS.items():
             print(f"  [{h_name}] Building targets...")
-
-            # Build targets using future petition events
             train_df["target"] = build_horizon_target(train_df, h_years)
             test_df["target"]  = build_horizon_target(test_df,  h_years)
 
             if train_df["target"].sum() == 0 or test_df["target"].sum() == 0:
-                print(f"  [{h_name}] Skipped: no positive targets")
+                print(f"  [{h_name}] Skipped — no positives")
                 continue
 
-            X_train = train_df[feats].fillna(0).values
-            y_train = train_df["target"].values
-            X_test  = test_df[feats].fillna(0).values
-            y_test  = test_df["target"].values
+            X_tr = train_df[feats].fillna(0).values
+            y_tr = train_df["target"].values
+            X_te = test_df[feats].fillna(0).values
+            y_te = test_df["target"].values
 
-            # Naive baseline: historical base rate
-            naive_pr = float(y_train.mean())
+            spw      = max(1.0, (len(y_tr) - y_tr.sum()) / max(1, y_tr.sum()))
+            naive_pr = float(y_tr.mean())
+            models   = get_models(spw)
 
-            clf = CatBoostClassifier(
-                iterations=500, learning_rate=0.05, depth=6,
-                eval_metric="AUC", task_type="GPU",
-                random_seed=42, verbose=False
-            )
-            clf.fit(X_train, y_train,
-                    eval_set=(X_test, y_test),
-                    early_stopping_rounds=50)
+            for m_name, clf in models.items():
+                try:
+                    if m_name == "CatBoost":
+                        clf.fit(X_tr, y_tr,
+                                eval_set=(X_te, y_te),
+                                early_stopping_rounds=50,
+                                verbose=False)
+                    else:
+                        clf.fit(X_tr, y_tr)
 
-            y_pred = clf.predict_proba(X_test)[:, 1]
-            roc = roc_auc_score(y_test, y_pred)
-            pr  = average_precision_score(y_test, y_pred)
+                    y_pred = clf.predict_proba(X_te)[:, 1]
+                    roc = roc_auc_score(y_te, y_pred)
+                    pr  = average_precision_score(y_te, y_pred)
 
-            results.append({
-                "Test_Year":     test_year,
-                "Horizon":       h_name,
-                "ROC_AUC":       roc,
-                "PR_AUC":        pr,
-                "Naive_PR_AUC":  naive_pr,
-                "Train_Cases":   len(train_df),
-                "Test_Cases":    len(test_df),
-            })
-            print(f"  [{h_name}] ROC: {roc:.4f} | PR: {pr:.4f} | Naive PR: {naive_pr:.4f}")
+                    print(f"  [{h_name:<10}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}")
+
+                    results.append({
+                        "Test_Year":     test_year,
+                        "Horizon":       h_name,
+                        "Model":         m_name,
+                        "Model_Family":  ("Tree" if m_name in ("CatBoost", "RandomForest")
+                                          else "Linear" if "Logistic" in m_name
+                                          else "Deep"),
+                        "ROC_AUC":       roc,
+                        "PR_AUC":        pr,
+                        "Naive_PR_AUC":  naive_pr,
+                        "Train_Cases":   len(X_tr),
+                        "Test_Cases":    len(X_te),
+                    })
+
+                except Exception as e:
+                    print(f"  [{h_name}] {m_name} FAILED: {e}")
 
     res_df = pd.DataFrame(results)
     os.makedirs(OUT_CSV.parent, exist_ok=True)
     res_df.to_csv(OUT_CSV, index=False)
-    print(f"\n[+] Complete. Results saved to {OUT_CSV}")
-    print(res_df.to_string(index=False))
+    print(f"\n[+] Done. {len(res_df)} rows saved to {OUT_CSV}")
+    print(res_df.groupby(["Model", "Horizon"])[["ROC_AUC", "PR_AUC"]].mean().round(4).to_string())
 
 
 if __name__ == "__main__":
-    run_annualized_oot()
+    run()
