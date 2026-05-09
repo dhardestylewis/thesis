@@ -21,6 +21,7 @@ import os
 import json
 from datetime import datetime
 import shutil
+import gc
 
 from catboost import CatBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -102,7 +103,7 @@ def get_models(scale_pos_weight: float):
         
     return models
 
-def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=256):
+def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=0.01, l1_reg=0.0, l2_reg=0.0, batch_size=16):
     import torch
     import torch.nn as nn
     import torch.optim as optim
@@ -154,6 +155,12 @@ def build_and_train_pytorch_mlp(X_tr, y_tr, X_te, hidden_dims=[], epochs=20, lr=
         logits = model(X_te_t)
         probs = torch.sigmoid(logits).cpu().numpy().flatten()
         
+    del X_t, y_t, dl, model, X_te_t, logits
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    import gc
+    gc.collect()
+        
     return probs
 
 
@@ -196,7 +203,7 @@ def build_and_train_lstm(df_tr, df_te, y_tr, y_te, feats, seq_len=6, epochs=10, 
     criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([max(1.0, (len(y_tr)-sum(y_tr))/max(1, sum(y_tr)))]).to(device))
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
-    dl = DataLoader(TensorDataset(X_tr_3d, y_tr_t), batch_size=256, shuffle=True)
+    dl = DataLoader(TensorDataset(X_tr_3d, y_tr_t), batch_size=16, shuffle=True)
     
     model.train()
     for _ in range(epochs):
@@ -211,6 +218,12 @@ def build_and_train_lstm(df_tr, df_te, y_tr, y_te, feats, seq_len=6, epochs=10, 
     with torch.no_grad():
         logits = model(X_te_3d.to(device))
         probs = torch.sigmoid(logits).cpu().numpy()
+        
+    del X_tr_3d, y_tr_t, X_te_3d, dl, model, logits
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    import gc
+    gc.collect()
         
     return probs.flatten()
 
@@ -251,6 +264,10 @@ def run():
     X_all     = df_raw[feats].fillna(0).values
     year_arr  = df_raw["year"].values
 
+    # Free massive dataframe
+    del df_raw
+    gc.collect()
+
     results = []
 
     for year_cutoff in TEST_YEARS:
@@ -276,10 +293,17 @@ def run():
             spw      = max(1.0, (len(y_tr) - y_tr.sum()) / max(1, y_tr.sum()))
             naive_pr = float(y_tr.mean())
             models   = get_models(spw)
-            models["LSTM"] = "PyTorch_LSTM_Placeholder" # Add to sequence
+            # Add to sequence if LSTM is supported
+            # models["LSTM"] = "PyTorch_LSTM_Placeholder"
 
             for m_name, clf in models.items():
                 try:
+                    import torch
+                    import gc
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                    gc.collect()
+                    
                     if m_name == "LSTM":
                         try:
                             # Pass full df slices so we can build 3D temporal tensors grouped by case
