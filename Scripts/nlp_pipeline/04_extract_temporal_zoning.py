@@ -12,8 +12,8 @@ import json
 print("Loading data...", flush=True)
 model_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\model_ready_zoning_data.csv"
 df_model = pd.read_csv(model_csv)
-df_comm = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\commission_transcripts.csv")
-df_council = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\zoning_cases_with_council_votes.csv")
+df_comm = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\interim\commission_transcripts.csv")
+df_council = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\interim\zoning_cases_with_council_votes.csv")
 
 valid_cases = set(df_model['case_number'].dropna().astype(str).str.upper().unique())
 case_pattern = re.compile(r'((?:C14|C814|NPA|C14H|C17)(?:-[A-Z0-9]+)?-\d{2,4}-\d{2,4}(?:\.[A-Z0-9]+)?)')

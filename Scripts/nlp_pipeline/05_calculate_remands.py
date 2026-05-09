@@ -6,10 +6,12 @@ remand counts (the number of times a case was delayed or postponed).
 
 import pandas as pd
 import re
+import ast
 
+print("Loading data...", flush=True)
 model_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\model_ready_zoning_data.csv"
-votes_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\zoning_cases_with_council_votes.csv"
-comm_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\commission_transcripts.csv"
+votes_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\interim\zoning_cases_with_council_votes.csv"
+comm_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\interim\commission_transcripts.csv"
 
 df_model = pd.read_csv(model_csv)
 df_votes = pd.read_csv(votes_csv)
@@ -23,8 +25,14 @@ def clean_case(c):
 # Get First Council Date
 df_votes['Core_Case'] = df_votes['Case_Number'].apply(clean_case)
 def extract_date(text):
-    m = re.search(r'([A-Z][a-z]+\s+\d{1,2},\s+\d{4})', str(text))
-    return pd.to_datetime(m.group(1)) if m else pd.NaT
+    if pd.isna(text): return pd.NaT
+    m = re.search(r'([A-Z][a-z]+\s\d{1,2},\s\d{4})', text)
+    if m:
+        try:
+            return pd.to_datetime(m.group(1), errors='coerce')
+        except:
+            return pd.NaT
+    return pd.NaT
 
 df_votes['Council_Date'] = df_votes['Meeting_Date'].apply(extract_date)
 first_council = df_votes.groupby('Core_Case')['Council_Date'].min().reset_index()
@@ -51,7 +59,10 @@ remand_counts.columns = ['Core_Case', 'Remand_Count']
 # Merge to model
 if 'Remand_Count' in df_model.columns:
     df_model = df_model.drop(columns=['Remand_Count'])
+
+df_model['Core_Case'] = df_model['case_number'].apply(clean_case)
 df_model = pd.merge(df_model, remand_counts, on='Core_Case', how='left')
+df_model = df_model.drop(columns=['Core_Case'])
 df_model['Remand_Count'] = df_model['Remand_Count'].fillna(0).astype(int)
 
 print(f"Found {df_model['Remand_Count'].sum()} total remands based on chronological cross-referencing.")

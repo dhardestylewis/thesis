@@ -10,10 +10,10 @@ import pandas as pd
 
 BASE = r"c:\Users\dhl\data\Thesis\thesis\Data"
 
-TRANSCRIPTS_CSV = os.path.join(BASE, "commission_transcripts.csv")
-PLAN_INDEX_CSV = os.path.join(BASE, "planning_commission_index.csv")
-ZON_INDEX_CSV = os.path.join(BASE, "zoning_platting_commission_index.csv")
-OUT_CSV = os.path.join(BASE, "commission_agendas_cases.csv")
+TRANSCRIPTS_CSV = os.path.join(BASE, "interim", "commission_transcripts.csv")
+PLAN_INDEX_CSV = os.path.join(BASE, "raw", "indices", "planning_commission_index.csv")
+ZON_INDEX_CSV = os.path.join(BASE, "raw", "indices", "zoning_platting_commission_index.csv")
+OUT_CSV = os.path.join(BASE, "interim", "commission_agendas_cases.csv")
 
 print("1. Loading Commission Indices...")
 plan_idx = pd.read_csv(PLAN_INDEX_CSV, usecols=["Meeting_Date", "Doc_ID"])
