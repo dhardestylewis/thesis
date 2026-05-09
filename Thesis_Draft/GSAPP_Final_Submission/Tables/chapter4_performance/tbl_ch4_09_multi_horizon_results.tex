@@ -1,0 +1,35 @@
+\begin{table}[H]
+\centering
+\caption[Multi-Horizon Out-Of-Time Predictive Performance]{Multi-Horizon Out-Of-Time (OOT) Predictive Performance by Walk-Forward Cutoff Year (2022--2024). Metrics report CatBoost trained on all prior years, evaluated on the held-out cutoff year.}
+\label{tab:multi_horizon_results}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{Test Year} & \textbf{Horizon} & \textbf{ROC-AUC} & \textbf{PR-AUC} & \textbf{Train $N$} & \textbf{Test $N$} \\
+\midrule
+\multicolumn{6}{l}{\textbf{2022 Cutoff}} \\
+ & 14 Days  & 0.990 & 0.238 & 180,182 & 6,418 \\
+ & 6 Months & 0.941 & 0.617 & 180,182 & 6,418 \\
+ & 2 Years  & 0.925 & 0.626 & 180,182 & 6,418 \\
+\midrule
+\multicolumn{6}{l}{\textbf{2023 Cutoff}} \\
+ & 14 Days  & 0.997 & 0.710 & 186,600 & 6,708 \\
+ & 6 Months & 0.927 & 0.431 & 186,600 & 6,708 \\
+ & 2 Years  & 0.944 & 0.632 & 186,600 & 6,708 \\
+\midrule
+\multicolumn{6}{l}{\textbf{2024 Cutoff}} \\
+ & 14 Days  & 0.951 & 0.091 & 193,308 & 5,873 \\
+ & 6 Months & 0.959 & 0.505 & 193,308 & 5,873 \\
+ & 2 Years  & 0.940 & 0.606 & 193,308 & 5,873 \\
+\midrule
+\multicolumn{6}{l}{\textbf{Naive Baseline (Base Rate)}} \\
+ & All & 0.500 & 0.021 & --- & --- \\
+\bottomrule
+\end{tabular}%
+}
+\begin{minipage}{\textwidth}
+\vspace{4pt}\footnotesize
+\textit{Note:} Walk-forward CatBoost trained on all years prior to each cutoff. PR-AUC is the primary metric given class imbalance ($\approx$2\% petition rate). Decay at the 14-Day horizon in 2024 reflects the post-HOME policy environment; structural signal at 6-Month and 2-Year horizons remains stable.
+\end{minipage}
+\end{table}

@@ -18,6 +18,9 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 import os
+import json
+from datetime import datetime
+import shutil
 
 from catboost import CatBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -117,73 +120,105 @@ def build_target(df: pd.DataFrame, window: int) -> pd.Series:
 def run():
     print("1. Loading biweekly panel...")
     df_raw = pd.read_csv(PANEL_PATH, low_memory=False)
-    df_raw = df_raw.sort_values(["case_number", "period_seq"])
+    df_raw = df_raw.sort_values(["case_number", "period_seq"]).reset_index(drop=True)
     feats  = [f for f in FEATS if f in df_raw.columns]
     print(f"   {len(df_raw):,} rows | {df_raw['case_number'].nunique():,} cases | {len(feats)} features")
+
+    # ── Precompute all horizon targets once ──────────────────────────────────
+    print("2. Precomputing horizon targets (once)...")
+    target_cols = {}
+    for h_name, window in HORIZONS.items():
+        target_cols[h_name] = build_target(df_raw, window).values
+        print(f"   [{h_name}] done")
+
+    # Cache feature matrix and year array to avoid repeated extraction
+    X_all     = df_raw[feats].fillna(0).values
+    year_arr  = df_raw["year"].values
 
     results = []
 
     for year_cutoff in TEST_YEARS:
-        print(f"\n=== Walk-Forward Cutoff: {year_cutoff} ===")
+        print(f"\n=== Walk-Forward Cutoff: {year_cutoff} ===", flush=True)
+        train_mask = year_arr < year_cutoff
+        test_mask  = year_arr == year_cutoff
+
+        if test_mask.sum() == 0:
+            continue
+
+        X_tr_all = X_all[train_mask]
+        X_te      = X_all[test_mask]
 
         for h_name, window in HORIZONS.items():
-            df = df_raw.copy()
-            df["target"] = build_target(df, window)
+            y_all = target_cols[h_name]
+            y_tr  = y_all[train_mask]
+            y_te  = y_all[test_mask]
 
-            train = df[df["year"] < year_cutoff].copy()
-            test  = df[df["year"] == year_cutoff].copy()
-
-            if len(test) == 0 or train["target"].sum() == 0 or test["target"].sum() == 0:
-                print(f"  [{h_name}] Skipped — no positives")
+            if y_tr.sum() == 0 or y_te.sum() == 0:
+                print(f"  [{h_name}] Skipped — no positives", flush=True)
                 continue
 
-            X_tr = train[feats].fillna(0).values
-            y_tr = train["target"].values
-            X_te = test[feats].fillna(0).values
-            y_te = test["target"].values
-
-            spw = max(1.0, (len(y_tr) - y_tr.sum()) / max(1, y_tr.sum()))
+            spw      = max(1.0, (len(y_tr) - y_tr.sum()) / max(1, y_tr.sum()))
             naive_pr = float(y_tr.mean())
-
-            models = get_models(spw)
+            models   = get_models(spw)
 
             for m_name, clf in models.items():
                 try:
                     if m_name == "CatBoost":
-                        clf.fit(X_tr, y_tr,
-                                eval_set=(X_te, y_te),
-                                early_stopping_rounds=30,
-                                verbose=False)
+                        clf.fit(X_tr_all, y_tr, verbose=False)
                     else:
-                        clf.fit(X_tr, y_tr)
+                        clf.fit(X_tr_all, y_tr)
 
                     y_pred = clf.predict_proba(X_te)[:, 1]
                     roc = roc_auc_score(y_te, y_pred)
                     pr  = average_precision_score(y_te, y_pred)
 
-                    print(f"  [{h_name:<10}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}")
+                    print(f"  [{h_name:<10}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}", flush=True)
 
                     results.append({
-                        "Test_Year":    year_cutoff,
-                        "Horizon":      h_name,
-                        "Model":        m_name,
-                        "Model_Family": ("Tree" if m_name in ("CatBoost", "RandomForest")
-                                         else "Linear" if "Logistic" in m_name
-                                         else "Deep"),
-                        "ROC_AUC":      roc,
-                        "PR_AUC":       pr,
-                        "Naive_PR_AUC": naive_pr,
-                        "Train_Samples": len(X_tr),
-                        "Test_Samples":  len(X_te),
+                        "Test_Year":     year_cutoff,
+                        "Horizon":       h_name,
+                        "Model":         m_name,
+                        "Model_Family":  ("Tree" if m_name in ("CatBoost", "RandomForest")
+                                          else "Linear" if "Logistic" in m_name
+                                          else "Deep"),
+                        "ROC_AUC":       roc,
+                        "PR_AUC":        pr,
+                        "Naive_PR_AUC":  naive_pr,
+                        "Train_Samples": int(train_mask.sum()),
+                        "Test_Samples":  int(test_mask.sum()),
                     })
 
                 except Exception as e:
-                    print(f"  [{h_name}] {m_name} FAILED: {e}")
+                    print(f"  [{h_name}] {m_name} FAILED: {e}", flush=True)
 
     res_df = pd.DataFrame(results)
+    
+    # MLOps Run Tracking
+    run_id = f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    run_dir = ROOT / "artifacts" / "runs" / run_id
+    os.makedirs(run_dir, exist_ok=True)
+    
+    # Save isolated copy
+    run_csv = run_dir / OUT_CSV.name
+    res_df.to_csv(run_csv, index=False)
+    
+    # Save metadata
+    meta = {
+        "run_id": run_id,
+        "timestamp": datetime.now().isoformat(),
+        "script": Path(__file__).name,
+        "rows_processed": len(res_df),
+        "features": FEATS
+    }
+    with open(run_dir / "metadata.json", "w") as f:
+        json.dump(meta, f, indent=4)
+        
+    # Copy back to main artifacts path for latex/downstream scripts
     os.makedirs(OUT_CSV.parent, exist_ok=True)
-    res_df.to_csv(OUT_CSV, index=False)
-    print(f"\n[+] Done. {len(res_df)} rows saved to {OUT_CSV}")
+    shutil.copy2(run_csv, OUT_CSV)
+    
+    print(f"\n[+] Done. {len(res_df)} rows saved to tracked run directory: {run_dir}")
+    print(f"[+] Output synchronized to downstream dependency: {OUT_CSV}")
     print(res_df.groupby(["Model", "Horizon"])[["ROC_AUC", "PR_AUC"]].mean().round(4).to_string())
 
 

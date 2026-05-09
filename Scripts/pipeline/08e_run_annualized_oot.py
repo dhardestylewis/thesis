@@ -19,6 +19,9 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 import os
+import json
+from datetime import datetime
+import shutil
 
 from catboost import CatBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -192,9 +195,33 @@ def run():
                     print(f"  [{h_name}] {m_name} FAILED: {e}")
 
     res_df = pd.DataFrame(results)
+    
+    # MLOps Run Tracking
+    run_id = f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    run_dir = ROOT / "artifacts" / "runs" / run_id
+    os.makedirs(run_dir, exist_ok=True)
+    
+    # Save isolated copy
+    run_csv = run_dir / OUT_CSV.name
+    res_df.to_csv(run_csv, index=False)
+    
+    # Save metadata
+    meta = {
+        "run_id": run_id,
+        "timestamp": datetime.now().isoformat(),
+        "script": Path(__file__).name,
+        "rows_processed": len(res_df),
+        "features": FEATS
+    }
+    with open(run_dir / "metadata.json", "w") as f:
+        json.dump(meta, f, indent=4)
+        
+    # Copy back to main artifacts path for latex/downstream scripts
     os.makedirs(OUT_CSV.parent, exist_ok=True)
-    res_df.to_csv(OUT_CSV, index=False)
-    print(f"\n[+] Done. {len(res_df)} rows saved to {OUT_CSV}")
+    shutil.copy2(run_csv, OUT_CSV)
+    
+    print(f"\n[+] Done. {len(res_df)} rows saved to tracked run directory: {run_dir}")
+    print(f"[+] Output synchronized to downstream dependency: {OUT_CSV}")
     print(res_df.groupby(["Model", "Horizon"])[["ROC_AUC", "PR_AUC"]].mean().round(4).to_string())
 
 

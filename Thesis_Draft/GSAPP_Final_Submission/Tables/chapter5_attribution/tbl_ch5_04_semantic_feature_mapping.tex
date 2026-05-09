@@ -1,0 +1,50 @@
+\begingroup
+\small
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.30\textwidth} p{0.65\textwidth}@{}}
+    \caption[Semantic Feature Aggregation Mapping]{Feature Cluster Reference. Each row maps a plain-English cluster label used in the attribution analysis to a description of what that cluster measures and where the underlying data originate. All clusters are drawn from three administrative data sources: the City of Austin zoning case records, the Travis County Appraisal District (TCAD), and the U.S. Census Bureau American Community Survey (ACS), supplemented by macroeconomic series from FRED and the Bureau of Labor Statistics.}
+    \label{tab:semantic_mapping} \\
+    \toprule
+    \textbf{Feature Cluster} & \textbf{What It Measures} \\
+    \midrule
+    \endfirsthead
+    \multicolumn{2}{l}{\small\textit{(Table~\ref*{tab:semantic_mapping} continued)}} \\
+    \toprule
+    \textbf{Feature Cluster} & \textbf{What It Measures} \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{2}{r}{\small\textit{Continued on next page}} \\
+    \endfoot
+    \bottomrule
+    \endlastfoot
+
+    \multicolumn{2}{l}{\textit{\textbf{Parcel \& Administrative Characteristics}}} \\[2pt]
+    \textbf{Property Value}     & Appraised and market value of the parcel and its improvements, from Travis County Appraisal District annual rolls \\
+    \textbf{Parcel Size}        & Lot size in acres, total building square footage, and the ratio of improvement value to land value \\
+    \textbf{Building Age}       & Year the primary structure was built, and the derived age of the building at the time of application \\
+    \textbf{Land Use Type}      & The parcel's current zoning and land use classification under Austin's Land Development Code \\
+    \textbf{Time in Review}     & How far along the case is in its administrative review cycle, encoded cyclically to capture seasonal hearing patterns \\
+    \midrule
+    \multicolumn{2}{l}{\textit{\textbf{Neighborhood Characteristics}}} \\[2pt]
+    \textbf{Racial Composition}  & Share of nearby residents identifying as White, Hispanic, Black, or Asian, from ACS five-year estimates \\
+    \textbf{Housing Tenure}      & Share of occupied housing units that are owner-occupied versus renter-occupied \\
+    \textbf{Income \& Rent}      & Median household income, median gross rent, poverty rate, and median home value for the surrounding census tract \\
+    \textbf{Prior Petition Activity} & Petition rate among zoning cases filed within one kilometer over the prior year, capturing neighborhood mobilization history \\
+    \midrule
+    \multicolumn{2}{l}{\textit{\textbf{Accumulated Protest Dynamics (Biweekly Panel)}}} \\[2pt]
+    \textbf{Signer Proximity}    & How close petition signers live to the project site — minimum, maximum, and median distances from the project boundary — and how many signers fall within versus outside the statutory 200-foot notification radius, accumulated across all periods observed \\
+    \textbf{Protest Intensity}   & A composite score of accumulated opposition activity, including the gap between the share of owners actively opposing the project versus those who have remained silent \\
+    \textbf{Opposition by Land Use} & The share of opposing owners whose parcels are classified as single-family, commercial, or multifamily, tracked cumulatively to capture how opposition coalition composition evolves during review \\
+    \textbf{Signer Location Geometry} & Four-dimensional summary of the spatial distribution of signers' home addresses, derived from principal components analysis of geocoded signer locations \\
+    \textbf{Hearing History}     & Count of City Council and Planning Commission hearings the case has appeared before, lagged by one period to avoid using information from the hearing at which the petition might be filed \\
+    \textbf{Accumulated Petitions} & Running total of petition events, total signers, and reconstructed petition share at each point in the case's review history \\
+    \midrule
+    \multicolumn{2}{l}{\textit{\textbf{Macroeconomic Context}}} \\[2pt]
+    \textbf{Mortgage Rate}       & The prevailing 30-year fixed mortgage rate, its 12-month lag, six-month momentum trend, and the change since the case's filing date \\
+    \textbf{Capital Markets}     & The 10-year Treasury yield and Federal Funds Rate, each with their 12-month lag and the change since filing \\
+    \textbf{Local Labor Market}  & The Austin-area unemployment rate, its 12-month lag, momentum, and the change since filing \\
+\end{longtable}
+\endgroup

@@ -1,0 +1,48 @@
+%% ============================================================
+%% Section: Austin's Petition Regime in Practice
+%% Position: After Literature Review, before Outcome Definition
+%% Purpose: Ground the study in institutional reality — case
+%%   evidence from the archive and practitioner knowledge —
+%%   so the methodological choices that follow are legible.
+%% ============================================================
+
+\section{Austin's Petition Regime in Practice}
+\label{sec:planning_context}
+
+The formal petition mechanism studied here is not a bureaucratic abstraction. It operates through specific institutional dynamics — neighborhood coalitions, commission procedures, and political calculations — that administrative records alone do not capture. Before describing the panel construction and modeling strategy, this section grounds the empirical analysis in two complementary forms of qualitative evidence: a close reading of three archival cases drawn from the study period, and perspectives from urban planning professionals who worked within or alongside the petition system. Together, they establish why the petition threshold functions as a meaningful threshold of organized opposition, why petition outcomes vary by geography and community composition in ways that complicate uniform algorithmic interpretation, and why the study's modeling choices prioritize ranking utility over case-level probability claims.
+
+\subsection{Archival Case Studies: How the Mechanism Operates}
+\label{subsec:case_studies}
+
+The following cases were selected from the full zoning case universe to represent three distinct spatial and political archetypes identified in the data. Each demonstrates a different configuration of the petition mechanism and illustrates the kind of institutional friction that motivates the study's predictive framing.
+
+\subsubsection{Suburban Mobilization and Commission Defiance: Balcones Country Club, 2013} \cite{case_c14_2013_0098}
+
+In District 6's Bull Creek Watershed, the Balcones Country Club sought to convert a rural residential tract into single-family large-lot zoning, a straightforward request that received a formal staff recommendation for approval. At the September 2013 Planning Commission hearing, organized neighborhood opposition immediately forced a 7-0 postponement. When the case returned, the Commission voted unanimously to deny the application despite the explicit staff recommendation for approval. The neighborhood coalition had made the case politically untouchable.
+
+This case is archetypal for the model's highest-confidence spatial clusters: suburban areas with high ownership density, long institutional memory, and established neighborhood associations capable of sustained mobilization across multiple hearings. The petition mechanism here served not as a defensive veto at council, but as a signal that crystallized Commission behavior well before council consideration.
+
+\subsubsection{Urban Core Complexity and Applicant Surrender: The Shelley Tract, 2013} \cite{case_c14_2013_0104}
+
+The Shelley Tract in the Judges Hill neighborhood (District 9) involved an attempt to convert a historic single-family structure to limited office use. The case activated simultaneous opposition from the Judges Hill Neighborhood Association, the Downtown Austin Neighborhood Association, and Preservation Austin, a coalition dense enough to make compromise structurally difficult. At the November 2013 hearing, the Commission proposed a conditional overlay capping height and impervious cover at 45\%. That attempt at a negotiated middle ground failed on a 2-5-1 vote. Faced with an irreconcilable coalition, the applicant formally withdrew.
+
+Urban core cases like this one never reach a petition vote. The institutional expectation of supermajority requirements at council makes withdrawal the rational response before the case advances. This is why the study's multi-horizon panel captures petition hazard at intermediate stages, not only at final council action: the mechanism's deterrent effect operates well before any formal vote is cast.
+
+\subsubsection{Cultural Preservation and East Austin Opposition: East Cesar Chavez, 2008} \cite{case_c14_2008_0247}
+
+A request to upgrade commercial zoning to permit liquor sales in the historically Hispanic East Cesar Chavez neighborhood (District 3) activated El Concilio Mexican-American Neighborhoods, Tejano Town, and adjacent cultural organizations. The Planning Commission denied the application 8-1. A subsequent council appeal was withdrawn on a 7-0 consent vote.
+
+This case illustrates a dimension of petition politics that raw spatial covariates are poorly positioned to capture. The opposition was not to density or bulk (the standard drivers of suburban petition activity) but to a land use perceived as a gentrifying disruption of a specific cultural community. The same statutory mechanism that amplified affluent suburban homeowner preferences in District 6 also served as an instrument for displacement prevention in District 3. This geographic asymmetry is central to the study's treatment of model predictions as relative rankings rather than uniform probability estimates.
+
+\subsection{Practitioner Perspectives}
+\label{subsec:interviews}
+
+Semi-structured interviews were conducted with urban planning professionals and city staff with direct experience in Austin's discretionary zoning system (Columbia University IRB Protocol ACYY0820). The interview sample is purposive and small-$N$; it is used here to establish institutional context, not to test hypotheses or estimate effect sizes.
+
+\textbf{Petition leverage declines but does not disappear.} Annick Beaudet, who served as a senior zoning planner during the Land Development Code revision period, described a trajectory in which petitions gradually lost practical leverage even before the statutory change in 2025: ``While people still scream and yell, they don't get as much traction\ldots\ Necessity is the mother of invention'' \cite{interview_beaudet2025,cityaustin2017codenext}. This observation motivates the study's temporal walk-forward design: petition dynamics are not stationary, and any predictive model must be evaluated against the period in which it would actually be used.
+
+\textbf{Silence is not consent.} Jonathan Tomko, Principal Planner, emphasized that the municipal public comment process has no mechanism for anonymous support of a zoning case \cite{interview_tomko2026}. Neighborhood social dynamics frequently penalize residents who deviate from a neighborhood association's established position, meaning that the administrative record systematically overrepresents organized opposition. As Beaudet summarized: ``haters are overrepresented and silent supporters are underrepresented'' \cite{interview_beaudet2025}. The implication for the study's feature engineering is direct: cumulative petition signatures measure active mobilization, not community sentiment, a distinction that affects how thresholds should be interpreted.
+
+\textbf{Geography encodes different concerns.} Marla Torrado, from the City's Displacement Prevention Division, noted that the petition mechanism is mobilized in service of fundamentally different interests depending on location \cite{interview_marla2025}. On the affluent west side, environmental overlays and neighborhood character arguments predominate. In East Austin, opposition is frequently a response to gentrification pressure. Because the same tool serves opposite ends in different neighborhoods, rigid probability cutoffs applied uniformly across the city risk ``failing to identify where people that are in actual need actually are.'' This is the primary reason the study treats predictions as triage rankings rather than decision thresholds, and why geographic heterogeneity in the error map is treated as a substantive finding rather than a model deficiency.
+
+\textbf{The goal is better conversation, not suppression.} AURA board member Felicity Maxwell framed the potential use of predictive tools in terms that distinguish anticipation from intervention: ``We're not talking about suppressing opposition, but understanding it better to have more productive conversations'' \cite{interview_maxwell2026}. This normative framing (anticipation in service of process design, not case-level gatekeeping) is the intended application of the ranking outputs described in this study.
