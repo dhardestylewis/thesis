@@ -6,19 +6,7 @@ from sklearn.preprocessing import StandardScaler
 import time
 import os
 
-def build_pca_embeddings():
-    print("1. Loading datasets...")
-    petitions = pd.read_csv(r'Data/Protest_Petitions/petition_signers_from_pdf.csv')
-    cases_gdf = gpd.read_file(r'Data/Zoning_Cases/zoning_cases_master_polygons.geojson')
-    cases_gdf = cases_gdf.to_crs(epsg=2277).set_index('case_number')
-    
-    tcad = gpd.read_file(r"Data/CoA_Open_Data/Land_Database_2021.geojson")
-    tcad = tcad.to_crs(epsg=2277)
-    
-    props = pd.read_csv(r'C:\Users\dhl\data\Thesis\thesis\Data\Panel\parcel\property_universe.csv', dtype={'standardized_tcad_id': str})
-    props['standardized_tcad_id'] = props['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
-    props = props.set_index('standardized_tcad_id')
-    
+def build_pca_embeddings(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/Protest_Petitions"):
     signed_cases = petitions['case_number'].unique()
     print(f"2. Computing localized matrices for {len(signed_cases)} protested cases...")
     
@@ -31,7 +19,7 @@ def build_pca_embeddings():
     
     for case in cases_to_process.index:
         # All parcels within 200ft
-        neighbors = joined[joined['case_number'] == case]['pid_10'].astype(str).unique()
+        neighbors = joined[joined['case_number'] == case].index.astype(str).unique()
         if len(neighbors) == 0:
             continue
             

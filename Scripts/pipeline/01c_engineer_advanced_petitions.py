@@ -16,9 +16,9 @@ ROOT = r"C:\Users\dhl\data\Thesis\thesis"
 DATA = os.path.join(ROOT, "Data")
 
 def engineer_advanced_petitions():
-    panel_path = os.path.join(ROOT, "Scratch", "Modeling", "Causal_Inference", "05_G_Computation_LSTMs", "biweekly_panel.csv")
+    panel_path = os.path.join(ROOT, "Data", "Panel", "biweekly_panel.csv")
     petitions_path = os.path.join(DATA, "Protest_Petitions", "advanced_geometric_petition_intensity.csv")
-    ocr_path = os.path.join(ROOT, "Scratch", "ocr_petition_results.csv")
+    ocr_path = os.path.join(ROOT, "Scratch", "Data_Exports", "ocr_petition_results.csv")
     
     if not os.path.exists(panel_path):
         print(f"Skipping 01c: {panel_path} does not exist locally.")
@@ -28,13 +28,33 @@ def engineer_advanced_petitions():
     panel = pd.read_csv(panel_path, low_memory=False)
     
     if not os.path.exists(petitions_path):
+        import geopandas as gpd
+        import time
+        
         print(f"advanced_geometric_petition_intensity.csv not found!")
         print(f"Dynamically generating PCA embeddings, EARS differentials, and exact spatial bounding polygons...")
-        build_spatial_vectors()
-        build_neighbor_differentials()
-        build_temporal_differentials()
-        build_ears_differentials()
-        build_pca_embeddings()
+        print(f"Loading 526MB TCAD geometry into memory (this happens only ONCE)...")
+        
+        t0 = time.time()
+        petitions = pd.read_csv("Data/Protest_Petitions/petition_signers_from_pdf.csv", dtype=str)
+        petitions = petitions[petitions['signed'] == '1']
+        
+        tcad = gpd.read_file("Data/GIS/TCAD/tcad_parcels.geojson")
+        tcad = tcad.to_crs(epsg=2277).set_index('geo_id')
+        
+        cases_gdf = gpd.read_file("Data/Zoning_Cases/zoning_cases_master_polygons.geojson")
+        cases_gdf = cases_gdf.to_crs(epsg=2277).set_index('case_number')
+        
+        props = pd.read_csv("Data/Panel/parcel/property_universe.csv", dtype={'standardized_tcad_id': str})
+        props['standardized_tcad_id'] = props['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
+        props = props.set_index('standardized_tcad_id')
+        print(f"Datasets loaded in {time.time() - t0:.1f}s. Proceeding with spatial vectors...")
+        
+        build_spatial_vectors(petitions, tcad, cases_gdf)
+        build_neighbor_differentials(petitions, tcad, cases_gdf, props)
+        build_temporal_differentials(petitions, tcad, cases_gdf, props)
+        build_ears_differentials(petitions, tcad, cases_gdf, props)
+        build_pca_embeddings(petitions, tcad, cases_gdf, props)
         
     petitions = pd.read_csv(petitions_path)
     

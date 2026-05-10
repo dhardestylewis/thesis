@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 BASE      = r"c:\Users\dhl\data\Thesis\thesis\Data"
-OUT_DIR   = r"c:\Users\dhl\data\Thesis\thesis\Scratch\Modeling\Causal_Inference\05_G_Computation_LSTMs"
+OUT_DIR   = r"c:\Users\dhl\data\Thesis\thesis\Data\Panel"
 CUTOFF    = pd.Timestamp("2026-05-02")
 MAX_DAYS  = 3650   # 10-yr cap
 

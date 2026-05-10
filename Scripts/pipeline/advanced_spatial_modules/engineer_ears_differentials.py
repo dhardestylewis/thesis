@@ -64,20 +64,13 @@ def load_ears_year(year):
         
     return df
 
-def build_ears_differentials():
-    print("1. Loading datasets...")
-    petitions = pd.read_csv(r'Data/Protest_Petitions/petition_signers_from_pdf.csv')
-    cases_gdf = gpd.read_file(r'Data/Zoning_Cases/zoning_cases_master_polygons.geojson')
-    cases_gdf = cases_gdf.to_crs(epsg=2277).set_index('case_number')
+def build_ears_differentials(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/Protest_Petitions"):
+    print("Pre-caching EARS longitudinal panels...")
     
-    case_meta = pd.read_csv(r'C:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\Source_Data\zoning_cases_prefetched_full.csv')
+    print("Loading case metadata...")
+    case_meta = pd.read_csv(r'C:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\Processed_Data\CSV\enriched_zoning_data_causal.csv', low_memory=False)
     case_meta = case_meta.set_index('case_number')
     
-    tcad = gpd.read_file(r"Data/CoA_Open_Data/Land_Database_2021.geojson")
-    tcad = tcad.to_crs(epsg=2277)
-    
-    # Pre-cache EARS dataframes in memory so we don't reload them 100 times
-    print("Pre-caching EARS longitudinal panels...")
     ears_cache = {}
     
     signed_cases = petitions['case_number'].unique()
@@ -94,7 +87,7 @@ def build_ears_differentials():
     results = []
     
     for idx, case in enumerate(cases_to_process.index):
-        neighbors = joined[joined['case_number'] == case]['pid_10'].astype(str).unique()
+        neighbors = joined[joined['case_number'] == case].index.astype(str).unique()
         if len(neighbors) == 0:
             continue
             
@@ -172,7 +165,7 @@ def build_ears_differentials():
     res_df = pd.DataFrame(results).fillna(0)
     print(f"Completed in {time.time() - t0:.1f}s")
     
-    out_path = r'C:\Users\dhl\data\Thesis\thesis\Scratch\Spatial_Engineering\ears_differentials.csv'
+    out_path = r'Data\Protest_Petitions\ears_differentials.csv'
     res_df.to_csv(out_path, index=False)
     print(f"Saved EARS longitudinal differentials to {out_path}")
     
