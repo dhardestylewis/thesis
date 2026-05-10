@@ -35,13 +35,15 @@ z = pd.read_csv(ZONING_CSV, low_memory=False)
 
 if "App_Date" not in z.columns and "application_start_date" in z.columns:
     z = z.rename(columns={"application_start_date": "App_Date"})
+if "parcel_id_10" not in z.columns and "tcad_id" in z.columns:
+    z = z.rename(columns={"tcad_id": "parcel_id_10"})
 
 for c in ["App_Date","Final_Council_Date","final_date","approval_date"]:
     if c in z.columns: z[c] = pd.to_datetime(z[c], errors="coerce")
 z = z[z["case_number"].notna() & z["App_Date"].notna()].copy()
 z = z.drop_duplicates(subset=["case_number"])
 z["T0"]     = z["App_Date"]
-z["T_vote"] = z["Final_Council_Date"].fillna(z.get("final_date")).fillna(z.get("approval_date"))
+z["T_vote"] = z.get("Final_Council_Date", pd.Series([pd.NaT]*len(z))).fillna(z.get("final_date")).fillna(z.get("approval_date"))
 z["censored"] = z["T_vote"].isna().astype(int)
 # Right-censor: unresolved cases get 2yr observation window, not full CUTOFF
 CENSOR_WINDOW = 730  # 2 years max for unresolved cases in skeleton

@@ -13,9 +13,11 @@ import re
 import os
 from collections import defaultdict
 
-PDF_PATH = r"C:\Users\dhl\data\Thesis\thesis_backup_corrupted_2026_04_14\Data\Documents\C241282.PD.NRN.petitions.pdf"
-OUT_CSV = "Data/Protest_Petitions/petition_signers_from_pdf.csv"
-OUT_SUMMARY = "Data/Protest_Petitions/petition_summary_from_pdf.csv"
+ROOT = r"C:\Users\dhl\data\thesis\thesis"
+DATA = os.path.join(ROOT, "Data")
+PDF_PATH = os.path.join(DATA, "Protest_Petitions", "C241282.PD.NRN.petitions.pdf")
+OUT_CSV = os.path.join(DATA, "Protest_Petitions", "petition_signers_from_pdf.csv")
+OUT_SUMMARY = os.path.join(DATA, "Protest_Petitions", "petition_summary_from_pdf.csv")
 
 TCAD_DASH = re.compile(r"^\d{2}-\d{4}-\d{4}")
 TCAD_LONG = re.compile(r"^\d{10,14}$")

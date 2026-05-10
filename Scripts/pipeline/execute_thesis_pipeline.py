@@ -15,6 +15,7 @@ PIPELINE_STEPS = [
     ("00b_extract_ears_data.py", "Extracting raw EARS AJR archives into panel-ready data..."),
     ("00_build_case_universe.py", "Building analytic universe spine..."),
     ("01_build_labels.py", "Generating the label-validity registry..."),
+    ("01a1_parse_petition_pdf.py", "Extracting OCR text and tables from raw Protest PDFs..."),
     ("01a2_calculate_spatial_petitions.py", "Calculating the true GIS geographic protest footprint..."),
     ("02_build_features.py", "Engineering filing-date as-of features..."),
     ("02b_build_biweekly_panel.py", "Generating the formal biweekly causal inference panel..."),
