@@ -20,6 +20,7 @@ PIPELINE_STEPS = [
     ("02_build_features.py", "Engineering filing-date as-of features..."),
     ("02b_build_biweekly_panel.py", "Generating the formal biweekly causal inference panel..."),
     ("01b_build_biweekly_panel.py", "Generating the primary biweekly causal inference panel..."),
+    ("01b2_patch_missing_petitions.py", "Patching missing NLP target petitions into the panel..."),
     ("01c_engineer_advanced_petitions.py", "Engineering advanced spatial petition features and injecting EDIMS dates..."),
     ("01d_merge_pdf_height_features.py", "Merging PDF extraction heights and outcomes..."),
     ("01e_build_advanced_features.py", "Engineering rolling window spatial gravity and velocities..."),

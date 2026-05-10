@@ -74,14 +74,19 @@ def engineer_advanced_petitions():
     
     petitions = petitions[cols_to_keep].drop_duplicates(subset=['case_number'])
     
-    # Identify primary injection period (First Council Hearing)
+    # Identify primary injection period (The period where the patched petition occurred)
+    petition_periods = panel[panel['petition_event'] == 1].groupby('case_number')['period_seq'].min().reset_index()
+    petition_periods = petition_periods.rename(columns={'period_seq': 'petition_period'})
+    
+    # Identify secondary injection period (First Council Hearing)
     first_council = panel[panel['council_hearings_this_period'] > 0].groupby('case_number')['period_seq'].min().reset_index()
     first_council = first_council.rename(columns={'period_seq': 'council_period'})
     
-    # Identify secondary injection period (First Commission Hearing)
+    # Identify tertiary injection period (First Commission Hearing)
     first_comm = panel[panel['commission_hearings_this_period'] > 0].groupby('case_number')['period_seq'].min().reset_index()
     first_comm = first_comm.rename(columns={'period_seq': 'comm_period'})
     
+    petitions = petitions.merge(petition_periods, on='case_number', how='left')
     petitions = petitions.merge(first_council, on='case_number', how='left')
     petitions = petitions.merge(first_comm, on='case_number', how='left')
     
@@ -116,8 +121,8 @@ def engineer_advanced_petitions():
     else:
         petitions['edims_period'] = np.nan
         
-    # Priority: EDIMS -> Council -> Commission -> 1
-    petitions['injection_period'] = petitions['edims_period'].fillna(petitions['council_period']).fillna(petitions['comm_period']).fillna(1).astype(int)
+    # Priority: Petition Event -> EDIMS -> Council -> Commission -> 1
+    petitions['injection_period'] = petitions['petition_period'].fillna(petitions['edims_period']).fillna(petitions['council_period']).fillna(petitions['comm_period']).fillna(1).astype(int)
     
     # Initialize advanced feature columns
     adv_features = ['min_signer_dist', 'max_signer_dist', 'median_signer_dist', 

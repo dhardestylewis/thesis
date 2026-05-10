@@ -17,7 +17,7 @@ import numpy as np
 import os
 
 BASE      = r"c:\Users\dhl\data\Thesis\thesis\Data"
-PANEL_IN  = r"c:\Users\dhl\data\Thesis\thesis\Scratch\Modeling\Causal_Inference\05_G_Computation_LSTMs\biweekly_panel.csv"
+PANEL_IN  = r"c:\Users\dhl\data\Thesis\thesis\Data\Panel\biweekly_panel.csv"
 PDF_HT    = BASE + r"\interim\pdf_height_features.csv"
 MODEL_RDY = BASE + r"\final\model_ready_zoning_data.csv"
 PANEL_OUT = PANEL_IN  # overwrite in place

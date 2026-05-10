@@ -7,7 +7,7 @@ from sklearn.neighbors import BallTree
 import json
 
 BASE = r"C:\Users\dhl\data\Thesis\thesis\Data"
-OUT_DIR = r"c:\Users\dhl\data\Thesis\thesis\Scratch\Modeling\Causal_Inference\05_G_Computation_LSTMs"
+OUT_DIR = r"c:\Users\dhl\data\Thesis\thesis\Data\Panel"
 PANEL_PATH = os.path.join(OUT_DIR, "biweekly_panel.csv")
 BIPARTITE_PATH = os.path.join(OUT_DIR, "bipartite_edges.csv")
 
