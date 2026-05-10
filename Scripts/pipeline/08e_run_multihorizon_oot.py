@@ -34,7 +34,7 @@ import torch
 
 from catboost import CatBoostClassifier
 from xgboost import XGBRFClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import roc_auc_score, average_precision_score
@@ -106,23 +106,28 @@ def get_models(spw: float) -> dict:
         ),
         "RandomForest":  "XGB_RF_Placeholder",
         # sklearn Pipelines — each has its own internal scaler for correctness
+        # sklearn >= 1.8: penalty= deprecated, use l1_ratio/C instead
         "LogisticL2": Pipeline([
             ("sc",  StandardScaler()),
-            ("clf", LogisticRegression(C=1.0,   solver="lbfgs", penalty="l2",
-                                       max_iter=500, tol=1e-3,
-                                       n_jobs=-1, class_weight="balanced")),
-        ]),
-        "LogisticL1": Pipeline([
-            ("sc",  StandardScaler()),
-            ("clf", LogisticRegression(C=1.0,   solver="saga",  penalty="l1",
+            ("clf", LogisticRegression(C=1.0,   solver="lbfgs",
+                                       l1_ratio=0.0,
                                        max_iter=500, tol=1e-3,
                                        class_weight="balanced")),
         ]),
+        # LogisticL1: SGDClassifier with log_loss+L1 — mini-batched, scales to 190k rows
+        # (saga/liblinear take 90s+ per cell on this dataset size)
+        "LogisticL1": Pipeline([
+            ("sc",  StandardScaler()),
+            ("clf", SGDClassifier(loss="log_loss", penalty="l1", alpha=1e-3,
+                                  max_iter=100, tol=1e-3, shuffle=True,
+                                  class_weight="balanced", random_state=42)),
+        ]),
         "Linear": Pipeline([
             ("sc",  StandardScaler()),
-            ("clf", LogisticRegression(C=100.0, solver="lbfgs", penalty="l2",
+            ("clf", LogisticRegression(C=100.0, solver="lbfgs",
+                                       l1_ratio=0.0,
                                        max_iter=500, tol=1e-3,
-                                       n_jobs=-1, class_weight="balanced")),
+                                       class_weight="balanced")),
         ]),
         "MLP":  "PyTorch_MLP_Placeholder",
         "LSTM": "PyTorch_LSTM_Placeholder",
