@@ -1,7 +1,12 @@
 import os
 import csv
 
-data_dir = "c:/Users/dhl/data/thesis/thesis/Data/Zoning_Cases/Processed_Data"
+import sys, os
+ROOT_DIR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ROOT_DIR_PATH not in sys.path: sys.path.append(ROOT_DIR_PATH)
+from pipeline.config.paths import ZONING_CASES_DIR
+
+data_dir = ZONING_CASES_DIR / "Processed_Data"
 multi_csv = os.path.join(data_dir, "multi_parcel_closed_2018_2025.csv")
 
 multis = set()

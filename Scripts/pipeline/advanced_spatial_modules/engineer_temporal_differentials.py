@@ -3,6 +3,8 @@ import geopandas as gpd
 import numpy as np
 import time
 import os
+from config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
+
 
 def determine_friction(case_zoning, neighbor_lu):
     if not isinstance(case_zoning, str) or not isinstance(neighbor_lu, str):
@@ -23,7 +25,7 @@ def determine_friction(case_zoning, neighbor_lu):
         
     return 0.0
 
-def build_temporal_differentials(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/Protest_Petitions"):
+def build_temporal_differentials(petitions, tcad, cases_gdf, props=None, out_dir=PROTEST_PETITIONS_DIR):
     print("Loading 2021 Property Universe...")
     props_2021 = pd.read_csv(r'C:\Users\dhl\data\Thesis\thesis\Data\Panel\parcel\property_universe.csv', dtype={'standardized_tcad_id': str})
     props_2021['standardized_tcad_id'] = props_2021['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
@@ -127,7 +129,7 @@ def build_temporal_differentials(petitions, tcad, cases_gdf, props=None, out_dir
     print(f"Saved temporal differentials to {out_path}")
     
     print("3. Merging into Advanced Petition Panel...")
-    adv_path = r'Data/Protest_Petitions/advanced_geometric_petition_intensity.csv'
+    adv_path = (PROTEST_PETITIONS_DIR / "advanced_geometric_petition_intensity.csv")
     adv = pd.read_csv(adv_path)
     
     cols_to_drop = [c for c in adv.columns if c in res_df.columns and c != 'case_number']

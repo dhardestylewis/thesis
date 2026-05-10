@@ -3,8 +3,10 @@ import geopandas as gpd
 import numpy as np
 import time
 import os
+from config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
 
-def build_neighbor_differentials(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/Protest_Petitions"):
+
+def build_neighbor_differentials(petitions, tcad, cases_gdf, props=None, out_dir=PROTEST_PETITIONS_DIR):
     signed_cases = petitions['case_number'].unique()
     print(f"2. Computing neighbor differentials for {len(signed_cases)} protested cases...")
     
@@ -71,7 +73,7 @@ def build_neighbor_differentials(petitions, tcad, cases_gdf, props=None, out_dir
     print(f"Saved neighbor differentials to {out_path}")
     
     print("3. Merging into Advanced Petition Panel...")
-    adv_path = r'Data/Protest_Petitions/advanced_geometric_petition_intensity.csv'
+    adv_path = (PROTEST_PETITIONS_DIR / "advanced_geometric_petition_intensity.csv")
     adv = pd.read_csv(adv_path)
     
     # Drop existing differential columns if they exist (for reruns)

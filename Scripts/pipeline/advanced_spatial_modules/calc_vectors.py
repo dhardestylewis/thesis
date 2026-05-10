@@ -4,8 +4,10 @@ import numpy as np
 import time
 import json
 import os
+from config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
 
-def build_spatial_vectors(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/Protest_Petitions"):
+
+def build_spatial_vectors(petitions, tcad, cases_gdf, props=None, out_dir=PROTEST_PETITIONS_DIR):
     signed_cases = petitions['case_number'].unique()
     
     print(f"2. Computing spatial distance vectors for {len(signed_cases)} protested cases...")
@@ -59,11 +61,11 @@ def build_spatial_vectors(petitions, tcad, cases_gdf, props=None, out_dir=r"Data
     print(f"   Completed in {time.time() - t0:.1f}s")
     
     print("3. Merging with exact geometric percentages...")
-    geo = pd.read_csv(r'Data/Protest_Petitions/petition_summary_spatial_true.csv')
+    geo = pd.read_csv((PROTEST_PETITIONS_DIR / "petition_summary_spatial_true.csv"))
     
     merged = pd.merge(geo, res_df, on='case_number', how='left')
     
-    out_path = r'Data/Protest_Petitions/advanced_geometric_petition_intensity.csv'
+    out_path = (PROTEST_PETITIONS_DIR / "advanced_geometric_petition_intensity.csv")
     merged.to_csv(out_path, index=False)
     print(f"Saved advanced spatial vectors to {out_path}")
 

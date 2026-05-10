@@ -5,8 +5,8 @@ from collections import defaultdict
 
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 
-PANEL_PATH = "Data/Panel/Output/Property_Year_Panel_Enriched.csv"
-CENTROIDS_PATH = "Data/Panel/Reference/parcel_centroids.csv"
+PANEL_PATH = (PANEL_DIR / "Output/Property_Year_Panel_Enriched.csv")
+CENTROIDS_PATH = (PANEL_DIR / "Reference/parcel_centroids.csv")
 OUT_DIR = "Analysis/Results"
 TRAIN_START = 2019
 EVAL_YEARS = [2020, 2021, 2022, 2023, 2024, 2025]
@@ -49,7 +49,7 @@ for y in sorted(rows_by_year):
     print("  Year %d: %d rows, %d protests" % (y, len(rows_by_year[y]), n_pos))
 
 # ---- Load 2025 EARS data directly (not yet in panel) ----
-EARS_2025 = "Data/Panel/Intermediate/ears_2025_clean.csv"
+EARS_2025 = (PANEL_DIR / "Intermediate/ears_2025_clean.csv")
 if os.path.exists(EARS_2025) and 2025 not in rows_by_year:
     print("Loading 2025 EARS data...")
     with open(EARS_2025, "r", encoding="utf-8") as f:
@@ -221,6 +221,11 @@ for fc_year in FORECAST_YEARS:
 print("\nBuilding map data...")
 
 import random
+import sys, os
+ROOT_DIR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ROOT_DIR_PATH not in sys.path: sys.path.append(ROOT_DIR_PATH)
+from pipeline.config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
+
 random.seed(42)
 
 map_years = {}

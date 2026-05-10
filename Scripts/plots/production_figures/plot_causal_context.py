@@ -5,7 +5,12 @@ import numpy as np
 import matplotlib.colors as mcolors
 
 print("Loading Austin 10-1 Council Districts GeoJSON...")
-districts_path = 'c:/Users/dhl/data/thesis/thesis/Data/GIS/council_districts.geojson'
+import sys, os
+ROOT_DIR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if ROOT_DIR_PATH not in sys.path: sys.path.append(ROOT_DIR_PATH)
+from pipeline.config.paths import GIS_DIR
+
+districts_path = GIS_DIR / 'council_districts.geojson'
 
 try:
     gdf = gpd.read_file(districts_path)

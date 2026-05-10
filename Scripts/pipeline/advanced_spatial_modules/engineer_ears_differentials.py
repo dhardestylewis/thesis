@@ -4,6 +4,8 @@ import numpy as np
 import time
 import os
 from pathlib import Path
+from config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
+
 
 # Mapping State Property Tax Board codes to standardized classes
 def get_standardized_lu(ears_code):
@@ -64,7 +66,7 @@ def load_ears_year(year):
         
     return df
 
-def build_ears_differentials(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/Protest_Petitions"):
+def build_ears_differentials(petitions, tcad, cases_gdf, props=None, out_dir=PROTEST_PETITIONS_DIR):
     print("Pre-caching EARS longitudinal panels...")
     
     print("Loading case metadata...")
@@ -170,7 +172,7 @@ def build_ears_differentials(petitions, tcad, cases_gdf, props=None, out_dir=r"D
     print(f"Saved EARS longitudinal differentials to {out_path}")
     
     print("3. Merging into Advanced Petition Panel...")
-    adv_path = r'Data/Protest_Petitions/advanced_geometric_petition_intensity.csv'
+    adv_path = (PROTEST_PETITIONS_DIR / "advanced_geometric_petition_intensity.csv")
     adv = pd.read_csv(adv_path)
     
     cols_to_drop = [c for c in adv.columns if c in res_df.columns and c != 'case_number']

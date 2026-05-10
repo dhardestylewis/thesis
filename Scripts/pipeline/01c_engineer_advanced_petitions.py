@@ -12,13 +12,12 @@ from pipeline.advanced_spatial_modules.generate_pca_embeddings import build_pca_
 from pipeline.advanced_spatial_modules.engineer_ears_differentials import build_ears_differentials
 from pipeline.advanced_spatial_modules.engineer_temporal_differentials import build_temporal_differentials
 
-ROOT = r"C:\Users\dhl\data\Thesis\thesis"
-DATA = os.path.join(ROOT, "Data")
+from config.paths import ROOT_DIR, DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
 
 def engineer_advanced_petitions():
-    panel_path = os.path.join(ROOT, "Data", "Panel", "biweekly_panel.csv")
-    petitions_path = os.path.join(DATA, "Protest_Petitions", "advanced_geometric_petition_intensity.csv")
-    ocr_path = os.path.join(ROOT, "Scratch", "Data_Exports", "ocr_petition_results.csv")
+    panel_path = PANEL_DIR / "biweekly_panel.csv"
+    petitions_path = PROTEST_PETITIONS_DIR / "advanced_geometric_petition_intensity.csv"
+    ocr_path = ROOT_DIR / "Scratch" / "Data_Exports" / "ocr_petition_results.csv"
     
     if not os.path.exists(panel_path):
         print(f"Skipping 01c: {panel_path} does not exist locally.")
@@ -36,16 +35,16 @@ def engineer_advanced_petitions():
         print(f"Loading 526MB TCAD geometry into memory (this happens only ONCE)...")
         
         t0 = time.time()
-        petitions = pd.read_csv("Data/Protest_Petitions/petition_signers_from_pdf.csv", dtype=str)
+        petitions = pd.read_csv(PROTEST_PETITIONS_DIR / "petition_signers_from_pdf.csv", dtype=str)
         petitions = petitions[petitions['signed'] == '1']
         
-        tcad = gpd.read_file("Data/GIS/TCAD/tcad_parcels.geojson")
+        tcad = gpd.read_file(GIS_DIR / "TCAD" / "tcad_parcels.geojson")
         tcad = tcad.to_crs(epsg=2277).set_index('geo_id')
         
-        cases_gdf = gpd.read_file("Data/Zoning_Cases/zoning_cases_master_polygons.geojson")
+        cases_gdf = gpd.read_file(ZONING_CASES_DIR / "zoning_cases_master_polygons.geojson")
         cases_gdf = cases_gdf.to_crs(epsg=2277).set_index('case_number')
         
-        props = pd.read_csv("Data/Panel/parcel/property_universe.csv", dtype={'standardized_tcad_id': str})
+        props = pd.read_csv(PANEL_DIR / "parcel" / "property_universe.csv", dtype={'standardized_tcad_id': str})
         props['standardized_tcad_id'] = props['standardized_tcad_id'].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
         props = props.set_index('standardized_tcad_id')
         print(f"Datasets loaded in {time.time() - t0:.1f}s. Proceeding with spatial vectors...")

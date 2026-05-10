@@ -16,7 +16,7 @@ with open(FORECAST_PATH, "r") as f:
 
 # Load coords from parcel_centroids.csv (extracted from LUI geometry)
 coords = {}
-with open("Data/Panel/Reference/parcel_centroids.csv", "r") as f:
+with open((PANEL_DIR / "Reference/parcel_centroids.csv"), "r") as f:
     for row in csv.DictReader(f):
         pid = row["parcel_id_10"]
         lat = row.get("latitude", "")
@@ -47,6 +47,11 @@ low_risk_sample = [p for p in joined if p["score"] < 0.1]
 
 # Sample low-risk for performance (too many for browser)
 import random
+import sys, os
+ROOT_DIR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ROOT_DIR_PATH not in sys.path: sys.path.append(ROOT_DIR_PATH)
+from pipeline.config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
+
 random.seed(42)
 if len(low_risk_sample) > 10000:
     low_risk_sample = random.sample(low_risk_sample, 10000)
@@ -57,7 +62,7 @@ print("Low risk sample (<0.1): %d" % len(low_risk_sample))
 
 # Also load actual protest locations for overlay
 actual_protests = []
-with open("Data/Panel/Output/Property_Year_Panel_Enriched.csv", "r", encoding="utf-8") as f:
+with open((PANEL_DIR / "Output/Property_Year_Panel_Enriched.csv"), "r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     seen = set()
     for row in reader:

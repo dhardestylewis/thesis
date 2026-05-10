@@ -11,9 +11,14 @@ import time
 import os
 import re
 
-plan_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\planning_commission_index.csv"
-zap_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\zoning_platting_commission_index.csv"
-output_dir = r"c:\Users\dhl\data\Thesis\thesis\Data\Commission_PDFs"
+import sys, os
+ROOT_DIR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ROOT_DIR_PATH not in sys.path: sys.path.append(ROOT_DIR_PATH)
+from pipeline.config.paths import DATA_DIR, COMMISSION_PDFS_DIR
+
+plan_csv = DATA_DIR / "planning_commission_index.csv"
+zap_csv = DATA_DIR / "zoning_platting_commission_index.csv"
+output_dir = COMMISSION_PDFS_DIR
 os.makedirs(output_dir, exist_ok=True)
 
 df_plan = pd.read_csv(plan_csv)

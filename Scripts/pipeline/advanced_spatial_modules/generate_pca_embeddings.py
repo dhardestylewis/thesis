@@ -5,8 +5,10 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import time
 import os
+from config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
 
-def build_pca_embeddings(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/Protest_Petitions"):
+
+def build_pca_embeddings(petitions, tcad, cases_gdf, props=None, out_dir=PROTEST_PETITIONS_DIR):
     signed_cases = petitions['case_number'].unique()
     print(f"2. Computing localized matrices for {len(signed_cases)} protested cases...")
     
@@ -78,12 +80,12 @@ def build_pca_embeddings(petitions, tcad, cases_gdf, props=None, out_dir=r"Data/
     
     print(f"PCA Variance Explained: {pca.explained_variance_ratio_}")
     
-    out_path = r'Data/Protest_Petitions/pca_embeddings.csv'
+    out_path = (PROTEST_PETITIONS_DIR / "pca_embeddings.csv")
     embed_df.to_csv(out_path, index=False)
     print(f"Saved literal PCA embeddings to {out_path}")
     
     print("4. Merging into Advanced Petition Panel...")
-    adv_path = r'Data/Protest_Petitions/advanced_geometric_petition_intensity.csv'
+    adv_path = (PROTEST_PETITIONS_DIR / "advanced_geometric_petition_intensity.csv")
     adv = pd.read_csv(adv_path)
     
     cols_to_drop = [c for c in adv.columns if 'embed_dim' in c]

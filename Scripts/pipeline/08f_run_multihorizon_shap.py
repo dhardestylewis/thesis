@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import os
 import warnings
+from config.paths import DATA_DIR, PANEL_DIR, PROTEST_PETITIONS_DIR, GIS_DIR, ZONING_CASES_DIR
+
 
 warnings.filterwarnings('ignore')
 
 ROOT = Path(__file__).resolve().parents[2]
-PANEL_PATH = ROOT / "Data/Panel/biweekly_panel.csv"
+PANEL_PATH = ROOT / (PANEL_DIR / "biweekly_panel.csv")
 
 def run_multihorizon_shap():
     print("--- 1. Loading Panel for Multi-Horizon SHAP ---")
