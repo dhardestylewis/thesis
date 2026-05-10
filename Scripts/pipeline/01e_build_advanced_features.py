@@ -29,10 +29,17 @@ panel["hearing_frequency"] = panel["cumulative_council_hearings"] / panel["perio
 panel["petition_intensity_per_ft"] = panel["cumulative_petition_pct"] / panel["pdf_requested_height_ft"].replace(0, np.nan)
 panel["staff_concession_ratio"] = panel.get("pdf_staff_recommends_ht", pd.Series(dtype=float)) / panel["pdf_requested_height_ft"].replace(0, np.nan)
 
-print("3. Calculating Velocities...")
+print("3. Calculating Velocities & Lags...")
 panel = panel.sort_values(["case_number", "period_seq"])
 panel["hearing_velocity_3p"] = panel.groupby("case_number")["cumulative_council_hearings"].diff(3).fillna(0)
 panel["petition_velocity_3p"] = panel.groupby("case_number")["cumulative_petition_pct"].diff(3).fillna(0)
+
+print("   -> Engineering causal cumulative lag (shift 1)...")
+panel["cumulative_petition_pct_lag1"] = (
+    panel.groupby("case_number")["petition_pct_this_period"]
+         .apply(lambda s: s.shift(1).fillna(0).cumsum())
+         .reset_index(level=0, drop=True)
+)
 
 print("4. Calculating Bipartite Opponent Centrality (max_opponent_experience)...")
 if os.path.exists(BIPARTITE_PATH):

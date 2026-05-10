@@ -14,16 +14,18 @@ echo "Downloading assets from S3..."
 aws s3 cp s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline/src/08e_run_multihorizon_oot.py .
 aws s3 cp s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline/data/biweekly_panel.csv .
 
-# Use the DL AMI's pre-installed conda pytorch env (Python 3.10, torch/numpy/sklearn pre-installed)
-echo "Activating DL AMI conda environment..."
-source /opt/conda/etc/profile.d/conda.sh
-conda activate pytorch
+# Ensure python3 and pip are installed (for Amazon Linux 2023)
+echo "Installing system dependencies..."
+sudo dnf install -y python3 python3-pip
 
-# Only install packages not already in the pytorch conda env
-# xgboost via conda-forge avoids pip metadata-generation-failed error in DL AMI
-echo "Installing additional packages..."
-conda install -y -c conda-forge xgboost pyarrow --quiet
-pip install --quiet catboost
+# Set up standard Python venv
+echo "Setting up Python venv..."
+python3 -m venv venv
+source venv/bin/activate
+
+echo "Installing required packages via pip..."
+pip install --upgrade pip --quiet
+pip install pandas numpy scikit-learn torch catboost xgboost pyarrow --quiet
 
 # Verify
 echo "Verifying installs..."

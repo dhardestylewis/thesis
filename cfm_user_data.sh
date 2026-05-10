@@ -1,13 +1,15 @@
 #!/bin/bash
 # Install Docker if not present
-sudo yum update -y
-sudo amazon-linux-extras install docker -y
-sudo service docker start
-sudo usermod -a -G docker ec2-user
+if ! command -v docker &> /dev/null; then
+    sudo apt-get update -y
+    sudo apt-get install -y docker.io
+    sudo systemctl start docker
+    sudo usermod -a -G docker ubuntu
+fi
 
 # Define Paths
 S3_BUCKET="s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline"
-WORK_DIR="/home/ec2-user/causal_run"
+WORK_DIR="/home/ubuntu/causal_run"
 OUT_DIR="$WORK_DIR/output"
 
 mkdir -p $WORK_DIR
