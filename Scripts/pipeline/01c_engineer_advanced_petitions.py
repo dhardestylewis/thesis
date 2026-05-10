@@ -2,15 +2,28 @@ import pandas as pd
 import numpy as np
 import os
 
+ROOT = r"C:\Users\dhl\data\Thesis\thesis"
+DATA = os.path.join(ROOT, "Data")
+
 def engineer_advanced_petitions():
-    panel_path = r'c:\Users\dhl\data\Thesis\thesis\Scratch\Modeling\Causal_Inference\05_G_Computation_LSTMs\biweekly_panel.csv'
-    petitions_path = r'C:\Users\dhl\data\Thesis\thesis\Scratch\Spatial_Engineering\advanced_geometric_petition_intensity.csv'
+    panel_path = os.path.join(DATA, "Panel", "Output", "biweekly_panel.csv")
+    petitions_path = os.path.join(ROOT, "Scratch", "Spatial_Engineering", "advanced_geometric_petition_intensity.csv")
+    ocr_path = os.path.join(ROOT, "Scratch", "ocr_petition_results.csv")
     
-    print("Loading data...")
+    if not os.path.exists(panel_path):
+        print(f"Skipping 01c: {panel_path} does not exist locally.")
+        return
+        
+    print(f"Loading official panel from {panel_path}...")
     panel = pd.read_csv(panel_path, low_memory=False)
+    
+    if not os.path.exists(petitions_path):
+        print(f"Skipping 01c: {petitions_path} does not exist locally.")
+        return
+        
     petitions = pd.read_csv(petitions_path)
-    # We care about exact petition pct AND the advanced features
-    cols_to_keep = ['case_number', 'label_exact_geometric_petition_pct', 
+    
+    cols_to_keep = ['case_number', 
                     'min_signer_dist', 'max_signer_dist', 'median_signer_dist', 
                     'signers_within_200ft', 'signers_outside_200ft', 
                     'unofficial_protest_intensity', 'signer_distance_vector',
@@ -25,7 +38,6 @@ def engineer_advanced_petitions():
                     'delta_protesting_friction', 'delta_silent_friction']
     
     petitions = petitions[cols_to_keep].drop_duplicates(subset=['case_number'])
-    petitions = petitions.rename(columns={'label_exact_geometric_petition_pct': 'true_petition_pct'})
     
     # Identify primary injection period (First Council Hearing)
     first_council = panel[panel['council_hearings_this_period'] > 0].groupby('case_number')['period_seq'].min().reset_index()
@@ -39,7 +51,6 @@ def engineer_advanced_petitions():
     petitions = petitions.merge(first_comm, on='case_number', how='left')
     
     # Load EDIMS OCR Ground Truth to align injection precisely
-    ocr_path = r'C:\Users\dhl\data\Thesis\thesis\Scratch\ocr_petition_results.csv'
     if os.path.exists(ocr_path):
         ocr = pd.read_csv(ocr_path)
         
@@ -73,9 +84,6 @@ def engineer_advanced_petitions():
     # Priority: EDIMS -> Council -> Commission -> 1
     petitions['injection_period'] = petitions['edims_period'].fillna(petitions['council_period']).fillna(petitions['comm_period']).fillna(1).astype(int)
     
-    # Create injection maps
-    petition_map = petitions.set_index(['case_number', 'injection_period'])['true_petition_pct'].to_dict()
-    
     # Initialize advanced feature columns
     adv_features = ['min_signer_dist', 'max_signer_dist', 'median_signer_dist', 
                     'signers_within_200ft', 'signers_outside_200ft', 
@@ -96,16 +104,7 @@ def engineer_advanced_petitions():
     # Maps for advanced features
     adv_maps = {f: petitions.set_index(['case_number', 'injection_period'])[f].to_dict() for f in adv_features}
     
-    print(f"Preparing to inject {len(petition_map)} true petition values with advanced spatial vectors...")
-    
-    panel['petition_pct_this_period'] = 0.0
-    
-    def apply_injection(row):
-        key = (row['case_number'], row['period_seq'])
-        return petition_map.get(key, 0.0)
-        
-    panel['petition_pct_this_period'] = panel.apply(apply_injection, axis=1)
-    panel['petition_event'] = (panel['petition_pct_this_period'] > 0).astype(int)
+    print(f"Preparing to inject advanced spatial vectors for {len(petitions)} cases...")
     
     for f in adv_features:
         def apply_adv(row):
@@ -114,9 +113,7 @@ def engineer_advanced_petitions():
             return val
         panel[f + "_this_period"] = panel.apply(apply_adv, axis=1)
     
-    print("Forward-filling cumulative features...")
-    panel['cumulative_petition_pct'] = panel.groupby('case_number')['petition_pct_this_period'].transform(lambda x: x.fillna(0).cumsum().shift(1).fillna(0))
-    panel['cumulative_petition_events'] = panel.groupby('case_number')['petition_event'].transform(lambda x: x.cumsum().shift(1).fillna(0))
+    print("Forward-filling cumulative advanced features...")
     
     for f in adv_features:
         if f != 'signer_distance_vector':
@@ -131,16 +128,12 @@ def engineer_advanced_petitions():
         del panel[f]
         del panel[f + "_this_period"]
     
-    final_cases = panel['case_number'].nunique()
-    final_protested = panel.groupby('case_number').last()['cumulative_petition_pct'] > 0
-    print(f"Final legally protested cases: {final_protested.sum()}")
-    
     unofficial_protested = panel.groupby('case_number').last()['cumulative_unofficial_protest_intensity'] > 0
     print(f"Final UNOFFICIALLY protested cases (including >200ft): {unofficial_protested.sum()}")
     
-    print("Saving repaired biweekly panel...")
+    print("Saving enriched biweekly panel...")
     panel.to_csv(panel_path, index=False)
-    print(f"Synced to {panel_path}")
+    print(f"Successfully integrated advanced petition features into {panel_path}")
 
 if __name__ == "__main__":
     engineer_advanced_petitions()

@@ -260,8 +260,35 @@ else:
 # ── 8. Petition events ────────────────────────────────────────────────────
 print("Step 7: Petition events...")
 pet = pd.read_csv(PETITION_CSV, low_memory=False)
+
+# CRITICAL FIX: Only keep parcels that actually signed (Format B PDFs include 'No' signers)
+pet["signed"] = pd.to_numeric(pet["signed"], errors="coerce").fillna(0)
+pet = pet[pet["signed"] == 1].copy()
+
 pet["date"] = pd.to_datetime(pet["date"], format="mixed", errors="coerce")
 pet = pet.dropna(subset=["date", "area_pct"])
+
+# --- True Spatial Footprint Re-Weighting ---
+# The raw area_pct is just parcel ownership fractions, not geographic footprint.
+# We load the true spatial footprint and distribute it temporally based on signature dates.
+spatial_path = os.path.join(BASE, "Protest_Petitions", "petition_summary_spatial_true.csv")
+if os.path.exists(spatial_path):
+    print("  Applying true spatial footprint weights...")
+    pet_spatial = pd.read_csv(spatial_path)
+    pet_case_sum = pet.groupby("case_number")["area_pct"].sum().reset_index(name="raw_sum")
+    pet = pet.merge(pet_case_sum, on="case_number", how="left")
+    pet = pet.merge(pet_spatial[["case_number", "spatial_petition_pct"]], on="case_number", how="left")
+    
+    pet["spatial_petition_pct"] = pet["spatial_petition_pct"].fillna(0)
+    pet["raw_sum"] = pet["raw_sum"].replace(0, 1) # Prevent div by zero
+    
+    # Weight = this row's contribution to the total raw sum
+    pet["weight"] = pet["area_pct"] / pet["raw_sum"]
+    # New temporal area_pct = proportional fraction of the TRUE spatial footprint
+    pet["area_pct"] = pet["weight"] * pet["spatial_petition_pct"]
+else:
+    print("  WARNING: petition_summary_spatial_true.csv not found! Using raw ownership fractions.")
+
 
 panel_periods = panel[["case_number", "period_start", "period_end"]].copy()
 pet_merged = pet.merge(panel_periods, on="case_number", how="inner")
