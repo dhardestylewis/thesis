@@ -102,6 +102,11 @@ CASE_COLS = [c for c in [
     "label_real_days_in_pipeline","Remand_Count","Council_Appearances",
     "Aggregate_Sentiment","label_valid_petition_pct",
     "Delta_Approved_Height","Delta_Approved_FAR","Staff_Attrition_Height",
+    # LDC zone-class height lookups — used for delta_requested_height_ldc target
+    "Requested_max_height_ft","Initial_max_height_ft","Approved_max_height_ft",
+    # Zoning text for audit/provenance
+    "Commission_Requested_max_height_ft", "Council_Requested_max_height_ft",
+    "Commission_Requested_Zoning", "Council_Requested_Zoning",
     # zoning flags from thesis
     "is_pud","is_tod","is_npa","owner_initiated","hb24_eligible",
 ] if c in z.columns]
@@ -453,7 +458,7 @@ if 'commission_hearings_this_period' in panel.columns:
 if 'council_nlp_total_tokens' in panel.columns:
     panel['cumulative_council_nlp_lag1'] = panel.groupby('case_number')['council_nlp_total_tokens'].apply(lambda x: x.shift(1).fillna(0).cumsum()).reset_index(level=0, drop=True)
 
-# Net height change
+# Net height change (legacy)
 if "pdf_requested_height_ft" in panel.columns:
     initial_req = panel.groupby("case_number")["pdf_requested_height_ft"].transform("max")
     current_constraint = panel[["pdf_requested_height_ft", "pdf_staff_recommends_ht"]].min(axis=1) if "pdf_staff_recommends_ht" in panel.columns else panel["pdf_requested_height_ft"]
@@ -462,6 +467,36 @@ if "pdf_requested_height_ft" in panel.columns:
     panel["net_height_change"] = (initial_req - final_ht).clip(lower=0).fillna(0)
 else:
     panel["net_height_change"] = 0
+
+# Dynamic LDC Height Concession tracking
+if "Commission_Requested_max_height_ft" in panel.columns and "Council_Requested_max_height_ft" in panel.columns:
+    # Fill backwards: if no commission request is known, assume the council request was also the commission request
+    base_req = panel["Commission_Requested_max_height_ft"].fillna(panel["Council_Requested_max_height_ft"])
+    # If no council request is known, assume it didn't change from commission
+    advanced_req = panel["Council_Requested_max_height_ft"].fillna(base_req)
+    # The ultimate fallback is the static Requested_max_height_ft
+    fallback_req = panel["Requested_max_height_ft"] if "Requested_max_height_ft" in panel.columns else np.nan
+    
+    base_req = base_req.fillna(fallback_req)
+    advanced_req = advanced_req.fillna(fallback_req)
+    
+    # State machine: switch to advanced_req once the council phase starts
+    council_started = panel["cumulative_council_hearings"] > 0
+    panel["Current_Requested_max_height_ft"] = np.where(council_started, advanced_req, base_req)
+    
+    # Final check: if resolved, map to Final_Zoning if available (using Approved_max_height_ft)
+    if "Approved_max_height_ft" in panel.columns:
+        panel["Current_Requested_max_height_ft"] = np.where(
+            panel["resolved"] == 1,
+            panel["Approved_max_height_ft"].fillna(panel["Current_Requested_max_height_ft"]),
+            panel["Current_Requested_max_height_ft"]
+        )
+        
+    init_ht = panel["Initial_max_height_ft"] if "Initial_max_height_ft" in panel.columns else np.nan
+    panel["delta_requested_height_ldc"] = (panel["Current_Requested_max_height_ft"] - init_ht).clip(lower=0).fillna(0)
+else:
+    panel["Current_Requested_max_height_ft"] = np.nan
+    panel["delta_requested_height_ldc"] = 0.0
 
 
 # ── 12. Output ────────────────────────────────────────────────────────────
@@ -511,7 +546,13 @@ OUT_COLS = [
     # Dynamic targets (Causal Inference)
     "council_nlp_total_tokens", "net_height_change",
     "cumulative_council_hearings_lag1", "cumulative_commission_hearings_lag1",
-    "cumulative_council_nlp_lag1"
+    "cumulative_council_nlp_lag1",
+    # LDC zone-class height lookups (dynamic over time)
+    "Requested_max_height_ft", "Initial_max_height_ft", "Approved_max_height_ft",
+    "Commission_Requested_max_height_ft", "Council_Requested_max_height_ft",
+    "Current_Requested_max_height_ft", "delta_requested_height_ldc",
+    "Initial_Zoning", "Requested_Zoning", "Final_Zoning",
+    "Commission_Requested_Zoning", "Council_Requested_Zoning",
 ]
 out = panel[[c for c in OUT_COLS if c in panel.columns]].copy()
 out_path = os.path.join(OUT_DIR, "biweekly_panel.csv")

@@ -99,13 +99,15 @@ FEATURES = [
 # interpretable: "by month 12, 4.2 commission hearings accumulated"
 TARGETS = [
     "resolved",                          # [0] binary → sigmoid
-    "height_concession_pct",             # [1] hurdle: gate + conditional CFM
+    "delta_requested_height_ldc",        # [1] LDC zone-class height jump (req_ht - init_ht), ft
+                                         #     1,041 cases with +25ft jump (SF→commercial);
+                                         #     measures developer height ambition; zero-inflated (68%)
     "cumulative_nlp_total_tokens_lag1",  # [2] cumulative total paperwork tokens
     "cumulative_commission_hearings_lag1",# [3] cumulative commission hearings
     "cumulative_council_hearings_lag1",  # [4] cumulative council hearings
 ]
 Y_DIM = len(TARGETS)
-HEIGHT_IDX = 1  # index of height_concession_pct in TARGETS — handled by hurdle decoder
+HEIGHT_IDX = 1  # index of delta_requested_height_ldc — still zero-inflated, uses hurdle decoder
 
 # Feature indices for autoregressive state update
 CUM_TOK_COL   = "cumulative_council_nlp_lag1"
@@ -177,17 +179,10 @@ def load_data():
             df[col] = 0.0
 
     
-    # Net height change reframed as a concession percentage to normalize across building scales
-    if "pdf_requested_height_ft" in df.columns:
-        initial_req = df.groupby("case_number")["pdf_requested_height_ft"].transform("max")
-        current_constraint = df[["pdf_requested_height_ft", "pdf_staff_recommends_ht"]].min(axis=1) if "pdf_staff_recommends_ht" in df.columns else df["pdf_requested_height_ft"]
-        current_constraint = current_constraint.fillna(initial_req)
-        final_ht = df["pdf_reduced_to_ft"].fillna(current_constraint).fillna(0) if "pdf_reduced_to_ft" in df.columns else current_constraint.fillna(0)
-        
-        concession = (initial_req - final_ht) / initial_req.replace(0, np.nan)
-        df["height_concession_pct"] = concession.clip(lower=0.0, upper=1.0).fillna(0.0)
-    else:
-        df["height_concession_pct"] = 0.0
+    # delta_requested_height_ldc: LDC zone-class height jump (req_ht - init_ht)
+    # Now calculated dynamically inside the panel to capture temporal concessions!
+    if "delta_requested_height_ldc" not in df.columns:
+        df["delta_requested_height_ldc"] = 0.0
 
     # Petition percentage columns were normalized/recomputed above. Do not divide again.
 
@@ -210,7 +205,7 @@ def load_data():
         "resolved",
         "petition_pct_this_period",
         "cumulative_petition_pct",
-        "height_concession_pct",   # 85% zeros — z-scoring destroys the spike structure
+        "delta_requested_height_ldc",   # 68% zeros — z-scoring destroys the spike structure
     }
     norm_dict = {}
     for col in available_features + available_targets:

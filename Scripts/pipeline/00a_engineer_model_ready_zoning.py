@@ -5,7 +5,7 @@ import numpy as np
 import json
 
 print("1. Loading Master Dataset...")
-df = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\model_ready_zoning_data.csv")
+df = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\final\model_ready_zoning_data.csv")
 
 zoning_metrics_dict = {
     'RR':   {'max_height_ft': 35, 'max_far': 0.05, 'max_bldg_cov_pct': 20, 'min_lot_sqft': 43560},
@@ -66,6 +66,9 @@ for metric in ['max_height_ft', 'max_far', 'max_bldg_cov_pct', 'min_lot_sqft']:
     df[f'Requested_{metric}'] = np.nan
     df[f'Approved_{metric}'] = np.nan
 
+df['Commission_Requested_max_height_ft'] = np.nan
+df['Council_Requested_max_height_ft'] = np.nan
+
 df['Staff_Recommendation'] = np.nan
 
 for idx, row in df.iterrows():
@@ -106,6 +109,14 @@ for idx, row in df.iterrows():
         df.at[idx, 'Approved_max_bldg_cov_pct'] = zoning_metrics_dict[app_z]['max_bldg_cov_pct']
         df.at[idx, 'Approved_min_lot_sqft'] = zoning_metrics_dict[app_z]['min_lot_sqft']
         
+    comm_req_z = extract_base_zone(row.get('Commission_Requested_Zoning'))
+    cc_req_z = extract_base_zone(row.get('Council_Requested_Zoning'))
+    
+    if comm_req_z and comm_req_z in zoning_metrics_dict:
+        df.at[idx, 'Commission_Requested_max_height_ft'] = zoning_metrics_dict[comm_req_z]['max_height_ft']
+    if cc_req_z and cc_req_z in zoning_metrics_dict:
+        df.at[idx, 'Council_Requested_max_height_ft'] = zoning_metrics_dict[cc_req_z]['max_height_ft']
+        
 for metric in ['max_height_ft', 'max_far', 'max_bldg_cov_pct', 'min_lot_sqft']:
     df[f'Staff_{metric}'] = np.nan
     
@@ -121,31 +132,39 @@ print("3. Executing Spatial Proximity Engine...")
 RAW_GEOJSON = r"c:\Users\dhl\data\Thesis\thesis\Data\CoA_Open_Data\Zoning_Cases_Raw_Download.geojson"
 LDB_CSV = r"c:\Users\dhl\data\Thesis\thesis\Data\CoA_Open_Data\LDB_2021_kk8y-6cmt.csv"
 
-gdf_cases = gpd.read_file(RAW_GEOJSON)[['case_number', 'geometry']]
-gdf_cases['case_number'] = gdf_cases['case_number'].str.strip()
-gdf_cases = gdf_cases.to_crs(epsg=2277)
+try:
+    gdf_cases = gpd.read_file(RAW_GEOJSON)[['case_number', 'geometry']]
+    gdf_cases['case_number'] = gdf_cases['case_number'].str.strip()
+    gdf_cases = gdf_cases.to_crs(epsg=2277)
 
-print("   Loading Land Database (LDB) for Single-Family proximities...")
-df_ldb = pd.read_csv(LDB_CSV, usecols=['the_geom', 'LU_DESC', 'GEN_LU_DES'])
+    print("   Loading Land Database (LDB) for Single-Family proximities...")
+    df_ldb = pd.read_csv(LDB_CSV, usecols=['the_geom', 'LU_DESC', 'GEN_LU_DES'])
 
-def parse_geom(geom_str):
-    if pd.isna(geom_str): return None
-    try:
-        from shapely import wkt
-        return wkt.loads(geom_str)
-    except:
-        return None
+    def parse_geom(geom_str):
+        if pd.isna(geom_str): return None
+        try:
+            from shapely import wkt
+            return wkt.loads(geom_str)
+        except:
+            return None
 
-df_ldb['geometry'] = df_ldb['the_geom'].apply(parse_geom)
-gdf_ldb = gpd.GeoDataFrame(df_ldb, geometry='geometry', crs="EPSG:4326")
-gdf_ldb = gdf_ldb.to_crs(epsg=2277)
+    df_ldb['geometry'] = df_ldb['the_geom'].apply(parse_geom)
+    gdf_ldb = gpd.GeoDataFrame(df_ldb, geometry='geometry', crs="EPSG:4326")
+    gdf_ldb = gdf_ldb.to_crs(epsg=2277)
 
-gdf_sf = gdf_ldb[gdf_ldb['GEN_LU_DES'].isin(['Single Family'])]
+    gdf_sf = gdf_ldb[gdf_ldb['GEN_LU_DES'].isin(['Single Family'])]
 
-nearest = gpd.sjoin_nearest(gdf_cases, gdf_sf[['geometry']], distance_col="SF_Distance_ft", how='left')
-min_dists = nearest.groupby('case_number')['SF_Distance_ft'].min().reset_index()
+    nearest = gpd.sjoin_nearest(gdf_cases, gdf_sf[['geometry']], distance_col="SF_Distance_ft", how='left')
+    min_dists = nearest.groupby('case_number')['SF_Distance_ft'].min().reset_index()
 
-df = pd.merge(df, min_dists, on='case_number', how='left')
+    # Drop existing SF_Distance_ft before merging fresh one
+    df = df.drop(columns=['SF_Distance_ft'], errors='ignore')
+    df = pd.merge(df, min_dists, on='case_number', how='left')
+    print(f"   SF_Distance_ft computed for {df['SF_Distance_ft'].notna().sum()} cases.")
+except Exception as e:
+    print(f"   WARNING: Spatial proximity step failed ({e}). Using existing GIS_Compatibility_Height_Cap if present.")
+    if 'SF_Distance_ft' not in df.columns:
+        df['SF_Distance_ft'] = np.nan
 
 def get_comp_cap(dist_ft):
     if pd.isna(dist_ft) or dist_ft > 540: return 9999.0

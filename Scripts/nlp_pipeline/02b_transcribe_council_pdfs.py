@@ -11,14 +11,17 @@ import time
 import re
 
 def main():
-    pdf_dir = r"C:\Users\dhl\data\Thesis\thesis\Data\Council_Minutes_PDFs"
+    pdf_dirs = [
+        r"C:\Users\dhl\data\Thesis\thesis\Data\Council_PDFs",
+        r"C:\Users\dhl\data\Thesis\thesis\Data\Council_Backups"
+    ]
     output_csv = r"C:\Users\dhl\data\Thesis\thesis\Data\interim\council_transcripts.csv"
 
-    if not os.path.exists(pdf_dir):
-        print(f"Directory {pdf_dir} not found.")
-        exit(1)
+    pdf_files = []
+    for d in pdf_dirs:
+        if os.path.exists(d):
+            pdf_files.extend([(d, f) for f in os.listdir(d) if f.endswith('.pdf')])
 
-    pdf_files = [f for f in os.listdir(pdf_dir) if f.endswith('.pdf')]
     transcripts = []
 
     start_time = time.time()
@@ -26,9 +29,11 @@ def main():
 
     processed = 0
     errors = 0
+    
+    case_pattern = re.compile(r'[Cc]8?14-\d{4}-\d{4}(?:\.\d{2})?')
 
-    for filename in pdf_files:
-        pdf_path = os.path.join(pdf_dir, filename)
+    for dir_path, filename in pdf_files:
+        pdf_path = os.path.join(dir_path, filename)
         try:
             doc = fitz.open(pdf_path)
             full_text = ""
@@ -37,9 +42,18 @@ def main():
                 
             full_text = re.sub(r'\s+', ' ', full_text).strip()
             
+            # Extract case number from filename first
+            case_match = case_pattern.search(filename)
+            if not case_match:
+                # Fallback to early text
+                case_match = case_pattern.search(full_text[:4000])
+                
+            case_num = case_match.group(0).upper() if case_match else "UNKNOWN"
+            
             transcripts.append({
                 'Filename': filename,
-                'Raw_Text': full_text
+                'Case_Number': case_num,
+                'Vote_Transcript': full_text
             })
             processed += 1
             

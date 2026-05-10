@@ -147,7 +147,12 @@ for idx, row in df_model.iterrows():
     # We maintain the legacy Requested_Zoning (best_req) as a fallback
     best_req = c_req if c_req else cc_req
     
-    final_z = final_zoning_dict.get(case)
+    final_z = None
+    if str(row.get('detailed_status', '')).startswith('Approved'):
+        if cc_req and cc_req != 'UNKNOWN':
+            final_z = cc_req
+        else:
+            final_z = final_zoning_dict.get(case)
             
     df_model.at[idx, 'Initial_Zoning'] = best_init
     df_model.at[idx, 'Requested_Zoning'] = best_req
