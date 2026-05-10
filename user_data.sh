@@ -1,9 +1,7 @@
 #!/bin/bash
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
-echo "Updating system..."
-yum update -y
-yum install -y python3-pip git aws-cli tmux
+echo "=== Starting Multi-Horizon Pipeline Setup ==="
 
 # Paths
 export WORK_DIR="/home/ec2-user/thesis_run"
@@ -16,18 +14,22 @@ echo "Downloading assets from S3..."
 aws s3 cp s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline/src/08e_run_multihorizon_oot.py .
 aws s3 cp s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline/data/biweekly_panel.csv .
 
-# Create venv and install dependencies
-echo "Installing dependencies..."
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install pandas numpy catboost scikit-learn tqdm pyarrow torch xgboost
+# Use the DL AMI's pre-installed conda pytorch env (Python 3.10, torch/numpy/sklearn pre-installed)
+echo "Activating DL AMI conda environment..."
+source /opt/conda/etc/profile.d/conda.sh
+conda activate pytorch
 
-# Verify all critical packages installed before running anything
+# Only install packages not already in the pytorch conda env
+# xgboost via conda-forge avoids pip metadata-generation-failed error in DL AMI
+echo "Installing additional packages..."
+conda install -y -c conda-forge xgboost pyarrow --quiet
+pip install --quiet catboost
+
+# Verify
 echo "Verifying installs..."
-python3 -c "import pandas, numpy, catboost, sklearn, torch, xgboost; print('All packages OK')"
+python -c "import pandas, numpy, catboost, sklearn, torch, xgboost; print('All packages OK — Python:', __import__('sys').version)"
 if [ $? -ne 0 ]; then
-    echo "FATAL: package verification failed — uploading install log and aborting"
+    echo "FATAL: package verification failed"
     aws s3 cp /var/log/user-data.log s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline/logs/multihorizon_run.log
     TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
     INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
@@ -35,7 +37,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Background sync: push run.log + checkpoint CSV to S3 every 60s for live monitoring
+# Background log sync every 60s
 (
   while true; do
     [ -f "$WORK_DIR/run.log" ] && \
@@ -50,13 +52,12 @@ LOG_SYNC_PID=$!
 # Run pipeline
 echo "Starting Multi-Horizon Pipeline..."
 export AWS_EXECUTION=1
-python3 08e_run_multihorizon_oot.py > $WORK_DIR/run.log 2>&1
+python 08e_run_multihorizon_oot.py > $WORK_DIR/run.log 2>&1
 
-# Kill sync loop
 kill $LOG_SYNC_PID 2>/dev/null
 
 # Final upload
-echo "Uploading final results to S3..."
+echo "Uploading results..."
 aws s3 cp $WORK_DIR/run.log s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline/logs/multihorizon_run.log
 [ -f "$OUT_DIR/multihorizon_multicutoff_all_models.csv" ] && \
   aws s3 cp $OUT_DIR/multihorizon_multicutoff_all_models.csv s3://mineflow-v3-horizon-1ed4ab27/thesis-pipeline/output/multihorizon_multicutoff_all_models.csv
