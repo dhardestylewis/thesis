@@ -1,13 +1,23 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
+
+ROOT = r"C:\Users\dhl\data\Thesis\thesis"
+sys.path.append(os.path.join(ROOT, "Scripts"))
+
+from pipeline.advanced_spatial_modules.calc_vectors import build_spatial_vectors
+from pipeline.advanced_spatial_modules.engineer_neighbor_differentials import build_neighbor_differentials
+from pipeline.advanced_spatial_modules.generate_pca_embeddings import build_pca_embeddings
+from pipeline.advanced_spatial_modules.engineer_ears_differentials import build_ears_differentials
+from pipeline.advanced_spatial_modules.engineer_temporal_differentials import build_temporal_differentials
 
 ROOT = r"C:\Users\dhl\data\Thesis\thesis"
 DATA = os.path.join(ROOT, "Data")
 
 def engineer_advanced_petitions():
-    panel_path = os.path.join(DATA, "Panel", "Output", "biweekly_panel.csv")
-    petitions_path = os.path.join(ROOT, "Scratch", "Spatial_Engineering", "advanced_geometric_petition_intensity.csv")
+    panel_path = os.path.join(ROOT, "Scratch", "Modeling", "Causal_Inference", "05_G_Computation_LSTMs", "biweekly_panel.csv")
+    petitions_path = os.path.join(DATA, "Protest_Petitions", "advanced_geometric_petition_intensity.csv")
     ocr_path = os.path.join(ROOT, "Scratch", "ocr_petition_results.csv")
     
     if not os.path.exists(panel_path):
@@ -18,8 +28,13 @@ def engineer_advanced_petitions():
     panel = pd.read_csv(panel_path, low_memory=False)
     
     if not os.path.exists(petitions_path):
-        print(f"Skipping 01c: {petitions_path} does not exist locally.")
-        return
+        print(f"advanced_geometric_petition_intensity.csv not found!")
+        print(f"Dynamically generating PCA embeddings, EARS differentials, and exact spatial bounding polygons...")
+        build_spatial_vectors()
+        build_neighbor_differentials()
+        build_temporal_differentials()
+        build_ears_differentials()
+        build_pca_embeddings()
         
     petitions = pd.read_csv(petitions_path)
     
