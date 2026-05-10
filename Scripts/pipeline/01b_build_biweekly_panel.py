@@ -83,7 +83,7 @@ for _, r in z.iterrows():
             "vote_event": int(
                 pd.notna(r["T_vote"]) and ps <= r["T_vote"] <= pe),
             "resolved": int(
-                pd.notna(r["T_vote"]) and ps <= r["T_vote"]),
+                pd.notna(r["T_vote"]) and pe >= r["T_vote"]),
         })
 panel = pd.DataFrame(rows)
 print(f"  {len(panel):,} rows | {panel['case_number'].nunique():,} cases | "
