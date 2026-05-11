@@ -39,6 +39,7 @@ if not panel_path.exists():
 df = pd.read_csv(panel_path, low_memory=False)
 
 zoning_df = pd.read_csv(ROOT / "Data/Zoning_Cases/Processed_Data/CSV/zoning_land_use_merged_data.csv", low_memory=False)
+
 zoning_df['start'] = pd.to_datetime(zoning_df['application_start_date'], errors='coerce')
 zoning_df['end_status'] = pd.to_datetime(zoning_df['status_date'], errors='coerce')
 zoning_df['end_approval'] = pd.to_datetime(zoning_df['approval_date'], errors='coerce')
@@ -86,6 +87,23 @@ cs = df.groupby('case_number').agg({
     'cumulative_petition_attempted': 'max',
     'cumulative_mobilization_failure': 'max'
 }).reset_index()
+
+# ── INJECT AREA-WEIGHTED DEMOGRAPHICS ──────────────────────────────────────────
+# For standard parcels, the point-based features in `df` are mathematically identical.
+# For massive mega-projects (>500 acres), `cs` currently holds the point-based features.
+# We will override these with the area-weighted features to eliminate spatial measurement error.
+area_weighted_path = ROOT / "Data/Zoning_Cases/Processed_Data/CSV/area_weighted_demographics.csv"
+if area_weighted_path.exists():
+    aw_df = pd.read_csv(area_weighted_path)
+    # We only overwrite the exact demographic columns that exist in the area-weighted CSV
+    demo_cols = ['median_household_income', 'renter_share', 'race_white']
+    aw_df = aw_df[['case_number'] + [c for c in demo_cols if c in aw_df.columns]]
+    
+    cs = cs.set_index('case_number')
+    aw_df = aw_df.set_index('case_number')
+    cs.update(aw_df)
+    cs = cs.reset_index()
+    print(f"Injected exact area-weighted demographics for {len(aw_df)} cases.", flush=True)
 
 # Withdrawn cases → approved height = 0 (nothing was approved)
 mask_withdrawn = cs['Delta_Requested_Height'].notna() & cs['Delta_Approved_Height'].isna()
