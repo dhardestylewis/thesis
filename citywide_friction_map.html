@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Citywide Causal Friction Surface (20% Petition Dose)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d1117; font-family: 'Inter', 'Segoe UI', sans-serif; color: #e0e0e0; overflow: hidden; }
+    #map { width: 100vw; height: 100vh; }
+    #panel {
+      position: fixed; top: 20px; left: 20px; width: 300px;
+      background: rgba(13, 17, 23, 0.92);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 20px; z-index: 1000;
+      backdrop-filter: blur(12px);
+    }
+    #panel h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.04em; color: #f0f0f0; margin-bottom: 2px; }
+    #panel .subtitle { font-size: 11px; color: #888; margin-bottom: 18px; }
+    .badge {
+      display: inline-block; padding: 4px 8px; border-radius: 4px;
+      background: rgba(249, 115, 22, 0.2); color: #f97316; font-size: 10px; font-weight: 600;
+      margin-bottom: 12px; border: 1px solid rgba(249, 115, 22, 0.4);
+    }
+    .metrics { margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 14px; }
+    .metric { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .metric-label { font-size: 11px; color: #888; }
+    .metric-value { font-size: 14px; font-weight: 700; color: #f97316; }
+    .legend { margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 14px; font-size: 11px; color: #888; }
+    .legend-title { color: #aaa; font-weight: 600; margin-bottom: 8px; }
+    .legend-bar { height: 10px; border-radius: 5px; margin: 6px 0 2px 0;
+      background: linear-gradient(to right, #14097899, #bc3768ff, #fd8d21ff, #fcff37ff); }
+    .legend-bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: #666; }
+    .graveyard-swatch { display: inline-block; width: 12px; height: 12px;
+      background: rgba(80,80,80,0.9); border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+    #tooltip {
+      position: fixed; pointer-events: none; display: none;
+      background: rgba(13,17,23,0.95); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 12px 14px; font-size: 12px;
+      line-height: 1.6; max-width: 220px; z-index: 2000;
+    }
+    #tooltip .case { font-weight: 700; color: #f0f0f0; margin-bottom: 6px; font-size: 13px; }
+    #tooltip .killed { color: #ef4444; font-weight: 700; }
+    .credits { position: fixed; bottom: 8px; right: 10px; font-size: 9px; color: #666; z-index: 999; }
+    
+    /* Loading overlay */
+    #loading {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center;
+      z-index: 9999; color: white; font-family: monospace; font-size: 14px;
+      transition: opacity 0.5s;
+    }
+  </style>
+</head>
+<body>
+<div id="loading">Streaming FlatGeobuf (300k+ Parcels)...</div>
+<div id="map"></div>
+<div id="panel">
+  <h1>Austin Friction Map</h1>
+  <div class="subtitle">Citywide Predictive Surface</div>
+  
+  <div class="badge">SIMULATING: 20% PETITION DOSE</div>
+  <div class="badge">SIMULATING: 29ft UPZONE</div>
+
+  <div class="legend">
+    <div class="legend-title">Map Legend</div>
+    <div>Extrusion Height: Net Approved Height (ft)</div>
+    <div style="margin-top:8px;">Color: Expected Delay (Days)</div>
+    <div class="legend-bar"></div>
+    <div class="legend-bar-labels"><span>Fast</span><span>Years Delayed</span></div>
+    <div style="margin-top:8px;"><span class="graveyard-swatch"></span> Killed (Withdrawn)</div>
+  </div>
+</div>
+
+<div id="tooltip"></div>
+<div class="credits">© CARTO, © OpenStreetMap contributors</div>
+
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/deck.gl@^8.9/dist.min.js"></script>
+<script src="https://unpkg.com/flatgeobuf@3.26.2/dist/flatgeobuf-geojson.min.js"></script>
+
+<script>
+function getColor(f) {
+  if (f.properties.cate_withd > 0.10) return [80, 80, 80, 180]; // Graveyard
+  
+  const delay = f.properties.cate_delay;
+  const norm_d = Math.max(0, Math.min(1, delay / 1800));
+  
+  let r, g, b;
+  if (norm_d < 0.25) {
+      const t = norm_d * 4;
+      r = 20 + t * (100 - 20); g = 11 + t * (24 - 11); b = 121 + t * (221 - 121);
+  } else if (norm_d < 0.5) {
+      const t = (norm_d - 0.25) * 4;
+      r = 100 + t * (188 - 100); g = 24 + t * (55 - 24); b = 221 + t * (84 - 221);
+  } else if (norm_d < 0.75) {
+      const t = (norm_d - 0.5) * 4;
+      r = 188 + t * (253 - 188); g = 55 + t * (141 - 55); b = 84 + t * (33 - 84);
+  } else {
+      const t = (norm_d - 0.75) * 4;
+      r = 253 + t * (252 - 253); g = 141 + t * (255 - 141); b = 33 + t * (164 - 33);
+  }
+  return [r, g, b, 220];
+}
+
+function getElevation(f) {
+  if (f.properties.cate_withd > 0.10) return 5; // Graveyard columns are flat
+  const net_height_ft = Math.max(0, 29 - f.properties.cate_height);
+  return Math.max(5, net_height_ft * 0.3048);
+}
+
+const tooltip = document.getElementById('tooltip');
+
+const map = new maplibregl.Map({
+  container: 'map',
+  style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+  center: [-97.743, 30.275],
+  zoom: 11.5,
+  pitch: 55,
+  bearing: -15,
+  antialias: true
+});
+
+const overlay = new deck.MapboxOverlay({
+  interleaved: false,
+  layers: [],
+  onHover: (info) => {
+    if (info.object) {
+      const d = info.object.properties;
+      const isKilled = d.cate_withd > 0.10;
+      const netHeight = Math.max(0, 29 - d.cate_height);
+      tooltip.style.display = 'block';
+      tooltip.style.left = (info.x + 14) + 'px';
+      tooltip.style.top  = (info.y - 10) + 'px';
+      tooltip.innerHTML = `
+        <div class="case">Parcel ID: ${d.prop_id || 'Unknown'}</div>
+        ${isKilled
+          ? '<div class="killed">&#x26B0; Killed (Withdrawn)</div>'
+          : `<div>Net Approved Height: ${netHeight.toFixed(1)} ft</div>
+             <div>Height Attrition: -${d.cate_height.toFixed(1)} ft</div>
+             <div>Expected Delay: ${d.cate_delay.toFixed(0)} days</div>
+             <div>Withd Risk: ${(d.cate_withd * 100).toFixed(1)}%</div>`
+        }
+      `;
+    } else {
+      tooltip.style.display = 'none';
+    }
+  }
+});
+
+map.addControl(overlay);
+
+async function loadFGB() {
+  const loading = document.getElementById('loading');
+  try {
+    const DATA_URL = 'http://localhost:8766/Data/Zoning_Cases/austin_causal_surface.fgb';
+    const response = await fetch(DATA_URL);
+    if (!response.ok) throw new Error('Failed to fetch FGB file');
+    
+    // Deserialize returns an async iterable of GeoJSON features
+    const iter = flatgeobuf.deserialize(response.body);
+    const features = [];
+    let count = 0;
+    
+    // Process stream
+    for await (const feature of iter) {
+      features.push(feature);
+      count++;
+      
+      // Update loading text every 10,000 features so the user knows it hasn't frozen
+      if (count % 10000 === 0) {
+        loading.textContent = `Downloading binary stream: ${count} parcels extracted...`;
+      }
+    }
+    
+    loading.textContent = `Rendering 3D Geometries into WebGL...`;
+    
+    // Final render with all features ONCE to prevent main-thread locking
+    const finalLayer = new deck.GeoJsonLayer({
+      id: 'friction-polygons',
+      data: { type: 'FeatureCollection', features },
+      stroked: false,
+      filled: true,
+      extruded: true,
+      getElevation: f => getElevation(f),
+      getFillColor: f => getColor(f)
+    });
+    overlay.setProps({ layers: [finalLayer] });
+    
+    // Hide loading screen
+    loading.style.opacity = '0';
+    setTimeout(() => loading.style.display = 'none', 500);
+    
+  } catch (err) {
+    console.error("Stream failed:", err);
+    loading.textContent = "Error streaming data. Check console.";
+    loading.style.background = "rgba(100,0,0,0.8)";
+  }
+}
+
+map.on('load', () => {
+  loadFGB();
+});
+</script>
+</body>
+</html>

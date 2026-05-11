@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from econml.dml import CausalForestDML
 from catboost import CatBoostRegressor, CatBoostClassifier
+from sklearn.metrics import r2_score, roc_auc_score, mean_absolute_error
 import time
 
 # Root configuration
@@ -117,6 +118,7 @@ for year_cutoff in TEST_YEARS:
     surv_mask_te = ~cs_te['detailed_status'].isin(['Withdrawn', 'Denied', 'Expired', 'VOID'])
 
     Y_tr_joint = cs_tr.loc[surv_mask_tr, ['Height_Attrition', 'days_to_resolution']].values
+    Y_te_joint = cs_te.loc[surv_mask_te, ['Height_Attrition', 'days_to_resolution']].values
     X_tr_surv = X_tr[surv_mask_tr]
     D_tr_surv = D_tr[surv_mask_tr]
     
@@ -151,9 +153,37 @@ for year_cutoff in TEST_YEARS:
     expected_delay_treated = (base_surv - withd_cate) * (base_delay + multi_delay_cate)
     joint_hurdle_cate = expected_delay_treated - expected_delay_untreated
 
+    # --- NONCAUSAL ML METRICS EVALUATION ---
+    try:
+        # Evaluate Joint Multi-Output Regressor
+        model_y_multi.fit(X_tr_surv, Y_tr_joint)
+        Y_pred_joint = model_y_multi.predict(X_te_surv)
+        if len(Y_te_joint) > 1:
+            r2_height = r2_score(Y_te_joint[:, 0], Y_pred_joint[:, 0])
+            r2_delay = r2_score(Y_te_joint[:, 1], Y_pred_joint[:, 1])
+            mae_height = mean_absolute_error(Y_te_joint[:, 0], Y_pred_joint[:, 0])
+        else:
+            r2_height, r2_delay, mae_height = np.nan, np.nan, np.nan
+        
+        # Evaluate Binary Propensity and Withdrawal
+        model_t_gpu.fit(X_tr, D_tr)
+        D_pred = model_t_gpu.predict_proba(X_te)[:, 1]
+        auc_prop = roc_auc_score(D_te, D_pred) if D_te.sum() > 0 and D_te.sum() < len(D_te) else np.nan
+        
+        model_y_gpu.fit(X_tr, Y_tr_withd)
+        W_pred = model_y_gpu.predict(X_te) # CatBoostRegressor returns continuous predictions
+        auc_withd = roc_auc_score(cs_te['Withdrawal_Binary'].values, W_pred) if cs_te['Withdrawal_Binary'].sum() > 0 and cs_te['Withdrawal_Binary'].sum() < len(cs_te) else np.nan
+        
+    except Exception as e:
+        print("ML Metric Exception:", e)
+        r2_height, r2_delay, mae_height, auc_prop, auc_withd = np.nan, np.nan, np.nan, np.nan, np.nan
+
     print(f"  Multi-Output Height CATE: {multi_height_cate:.1f} ft")
     print(f"  Multi-Output Delay CATE:  +{multi_delay_cate:.1f} days")
     print(f"  Withdrawal Penalty CATE:  +{withd_cate*100:.1f}%")
     print(f"  Joint Expected Delay CATE: {joint_hurdle_cate:.1f} days")
+    print(f"  [ML] Height R2: {r2_height:.2f} | Delay R2: {r2_delay:.2f} | Height MAE: {mae_height:.2f}")
+    print(f"  [ML] Propensity AUC: {auc_prop:.2f} | Withdrawal AUC: {auc_withd:.2f}")
+
 
 print("\nDone!")

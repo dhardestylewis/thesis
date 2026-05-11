@@ -24,20 +24,27 @@ def fraction_01(s):
 print("Loading biweekly panel...", flush=True)
 df = pd.read_csv(PANEL_PATH, low_memory=False)
 
-# Load raw zoning data for dates
-print("Loading raw zoning dates...", flush=True)
-zoning_path = r'c:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\Processed_Data\CSV\zoning_land_use_merged_data.csv'
-zoning_df = pd.read_csv(zoning_path, low_memory=False)
-zoning_df['start'] = pd.to_datetime(zoning_df['application_start_date'], errors='coerce')
-zoning_df['end'] = pd.to_datetime(zoning_df['status_date'], errors='coerce')
-zoning_df['days_to_resolution'] = (zoning_df['end'] - zoning_df['start']).dt.days
-zoning_df['days_to_resolution'] = zoning_df['days_to_resolution'].clip(0, 3650) # Cap at 10 years
-zoning_dates = zoning_df[['case_number', 'days_to_resolution']].drop_duplicates('case_number')
-
 # Load Socrata case statuses
 print("Loading Socrata case statuses...", flush=True)
 status_path = r'c:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\Processed_Data\CSV\zoning_case_statuses.csv'
 status_df = pd.read_csv(status_path, low_memory=False)
+
+# Load raw zoning data for dates
+print("Loading raw zoning dates...", flush=True)
+zoning_path = r'c:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\Processed_Data\CSV\zoning_land_use_merged_data.csv'
+zoning_df = pd.read_csv(zoning_path, low_memory=False)
+zoning_df = pd.merge(zoning_df, status_df[['case_number', 'detailed_status']], on='case_number', how='left')
+
+zoning_df['start'] = pd.to_datetime(zoning_df['application_start_date'], errors='coerce')
+zoning_df['end'] = pd.to_datetime(zoning_df['status_date'], errors='coerce')
+
+# RIGHT-CENSORING PATCH: Impute current date (scrape date) for pending cases
+pending_mask = zoning_df['detailed_status'].str.contains('Pending|Active|Review', case=False, na=False)
+zoning_df.loc[pending_mask, 'end'] = pd.to_datetime('2026-05-01')
+
+zoning_df['days_to_resolution'] = (zoning_df['end'] - zoning_df['start']).dt.days
+zoning_df['days_to_resolution'] = zoning_df['days_to_resolution'].clip(0, 3650) # Cap at 10 years
+zoning_dates = zoning_df[['case_number', 'days_to_resolution']].drop_duplicates('case_number')
 
 # Collapse panel to cross-sectional (Baseline model only)
 print("Collapsing to cross-sectional...", flush=True)
@@ -90,8 +97,9 @@ confounders = [
     'cumulative_petition_attempted', 'cumulative_mobilization_failure'
 ]
 
-# Drop ANY remaining NaNs to prevent EconML from crashing
-cs = cs.dropna(subset=confounders + ['Delta_Approved_Height', 'Height_Attrition', 'concession_binary', 'petition_dose', 'days_to_resolution', 'year'])
+# Drop ONLY the confounders, petition_dose, and year. 
+# Do NOT drop target columns globally to prevent dropping pending cases with NaNs!
+cs = cs.dropna(subset=confounders + ['petition_dose', 'year'])
 
 TEST_YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
 # To capture up to the max density, we test up to 0.40. Beyond 0.40 data is too sparse.
@@ -137,25 +145,27 @@ for year_cutoff in TEST_YEARS:
             continue
             
         for target_col, target_name in TARGETS.items():
+            # General NaN filter for the current target
+            valid_tr = cs_tr[target_col].notna()
+            valid_te = cs_te[target_col].notna()
+            
             if target_name == "Continuous_Time_Delay":
                 # SURVIVOR BIAS PATCH: Only evaluate delay for cases that survived.
-                # Defeated cases (withdrawn/denied) have maxed-out NaN delays that skew the continuous target.
                 surv_mask_tr = ~cs_tr['detailed_status'].isin(['Withdrawn', 'Denied', 'Expired', 'VOID'])
                 surv_mask_te = ~cs_te['detailed_status'].isin(['Withdrawn', 'Denied', 'Expired', 'VOID'])
                 
-                Y_tr = cs_tr.loc[surv_mask_tr, target_col].values
-                Y_te = cs_te.loc[surv_mask_te, target_col].values
-                D_tr_cur = D_tr[surv_mask_tr]
-                D_te_cur = D_te[surv_mask_te]
-                X_tr_cur = X_tr[surv_mask_tr]
-                X_te_cur = X_te[surv_mask_te]
+                final_mask_tr = valid_tr & surv_mask_tr
+                final_mask_te = valid_te & surv_mask_te
             else:
-                Y_tr = cs_tr[target_col].values
-                Y_te = cs_te[target_col].values
-                D_tr_cur = D_tr
-                D_te_cur = D_te
-                X_tr_cur = X_tr
-                X_te_cur = X_te
+                final_mask_tr = valid_tr
+                final_mask_te = valid_te
+                
+            Y_tr = cs_tr.loc[final_mask_tr, target_col].values
+            Y_te = cs_te.loc[final_mask_te, target_col].values
+            D_tr_cur = D_tr[final_mask_tr]
+            D_te_cur = D_te[final_mask_te]
+            X_tr_cur = X_tr[final_mask_tr]
+            X_te_cur = X_te[final_mask_te]
             
             # Need enough treated cases in current subset
             if D_tr_cur.sum() < 5:
