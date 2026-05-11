@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from econml.dml import CausalForestDML
 from lightgbm import LGBMClassifier, LGBMRegressor
+from sklearn.metrics import r2_score, mean_absolute_error, roc_auc_score, brier_score_loss
 
 # Root configuration to match thesis pipeline
 ROOT = Path(__file__).resolve().parents[4] # thesis root
@@ -136,8 +137,30 @@ for year_cutoff in TEST_YEARS:
             continue
             
         for target_col, target_name in TARGETS.items():
-            Y_tr = cs_tr[target_col].values
-            Y_te = cs_te[target_col].values
+            if target_name == "Continuous_Time_Delay":
+                # SURVIVOR BIAS PATCH: Only evaluate delay for cases that survived.
+                # Defeated cases (withdrawn/denied) have maxed-out NaN delays that skew the continuous target.
+                surv_mask_tr = ~cs_tr['detailed_status'].isin(['Withdrawn', 'Denied', 'Expired', 'VOID'])
+                surv_mask_te = ~cs_te['detailed_status'].isin(['Withdrawn', 'Denied', 'Expired', 'VOID'])
+                
+                Y_tr = cs_tr.loc[surv_mask_tr, target_col].values
+                Y_te = cs_te.loc[surv_mask_te, target_col].values
+                D_tr_cur = D_tr[surv_mask_tr]
+                D_te_cur = D_te[surv_mask_te]
+                X_tr_cur = X_tr[surv_mask_tr]
+                X_te_cur = X_te[surv_mask_te]
+            else:
+                Y_tr = cs_tr[target_col].values
+                Y_te = cs_te[target_col].values
+                D_tr_cur = D_tr
+                D_te_cur = D_te
+                X_tr_cur = X_tr
+                X_te_cur = X_te
+            
+            # Need enough treated cases in current subset
+            if D_tr_cur.sum() < 5:
+                print(f"    Skipping {target_name}: Only {D_tr_cur.sum()} treated cases in training subset.")
+                continue
             
             # Setup CF
             cf = CausalForestDML(
@@ -149,26 +172,57 @@ for year_cutoff in TEST_YEARS:
             )
             
             try:
-                cf.fit(Y_tr, D_tr, X=X_tr)
-                cate_te = cf.effect(X_te)
+                cf.fit(Y_tr, D_tr_cur, X=X_tr_cur)
+                cate_te = cf.effect(X_te_cur)
                 
                 # The EconML score() computes the Out-of-Sample R-Scorer (negative MSE of the treatment effect)
                 # Note: if D_te has no variance (i.e. no treated cases in the holdout), score() will fail.
-                if D_te.sum() >= 1 and D_te.sum() < len(D_te):
-                    r_scorer = cf.score(Y_te, D_te, X=X_te)
+                if D_te_cur.sum() >= 1 and D_te_cur.sum() < len(D_te_cur):
+                    r_scorer = cf.score(Y_te, D_te_cur, X=X_te_cur)
                 else:
                     r_scorer = np.nan
                 
+                # --- EXPLICIT NUISANCE MODEL EVALUATION ---
+                baseline_y = LGBMRegressor(max_depth=3, min_child_samples=5, random_state=42)
+                baseline_t = LGBMClassifier(max_depth=3, min_child_samples=5, random_state=42)
+                
+                baseline_y.fit(X_tr_cur, Y_tr)
+                baseline_t.fit(X_tr_cur, D_tr_cur)
+                
+                Y_pred = baseline_y.predict(X_te_cur)
+                D_pred = baseline_t.predict_proba(X_te_cur)[:, 1]
+                
+                t_brier = brier_score_loss(D_te_cur, D_pred)
+                t_roc = roc_auc_score(D_te_cur, D_pred) if (D_te_cur.sum() >= 1 and D_te_cur.sum() < len(D_te_cur)) else np.nan
+                
+                y_r2 = np.nan
+                y_mae = np.nan
+                y_roc = np.nan
+                y_brier = np.nan
+                
+                if target_name in ["Continuous_Attrition", "Continuous_Time_Delay"]:
+                    y_r2 = r2_score(Y_te, Y_pred)
+                    y_mae = mean_absolute_error(Y_te, Y_pred)
+                else:
+                    y_brier = brier_score_loss(Y_te, Y_pred)
+                    y_roc = roc_auc_score(Y_te, Y_pred) if (Y_te.sum() >= 1 and Y_te.sum() < len(Y_te)) else np.nan
+
                 results.append({
                     "Test_Year": year_cutoff,
                     "Target": target_name,
                     "Threshold": t,
-                    "N_Train": len(cs_tr),
-                    "N_Train_Treated": D_tr.sum(),
-                    "N_Test": len(cs_te),
-                    "N_Test_Treated": D_te.sum(),
+                    "N_Train": len(Y_tr),
+                    "N_Train_Treated": D_tr_cur.sum(),
+                    "N_Test": len(Y_te),
+                    "N_Test_Treated": D_te_cur.sum(),
                     "OOT_Mean_CATE": cate_te.mean(),
-                    "OOT_R_Scorer": r_scorer
+                    "OOT_R_Scorer": r_scorer,
+                    "Propensity_ROC": t_roc,
+                    "Propensity_Brier": t_brier,
+                    "Outcome_R2": y_r2,
+                    "Outcome_MAE": y_mae,
+                    "Outcome_ROC": y_roc,
+                    "Outcome_Brier": y_brier
                 })
                 
             except Exception as e:

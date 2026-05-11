@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Austin Friction Map</title>
+    <!-- MapLibre GL JS -->
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div id="dashboard">
+        <div class="header">
+            <h1>Austin Friction Map</h1>
+            <p>Predictive Causal Machine Learning Surface</p>
+        </div>
+        
+        <div class="control-group">
+            <label for="height-slider">Proposed Additional Height (ft)</label>
+            <div class="slider-container">
+                <input type="range" id="height-slider" min="0" max="100" value="15">
+                <span id="height-value">15 ft</span>
+            </div>
+            <p class="helper-text">Simulates the requested upzone scale.</p>
+        </div>
+
+        <div class="metrics-panel">
+            <div class="metric-box" id="metric-delay">
+                <div class="metric-title">Expected Delay Toll</div>
+                <div class="metric-value">0 Days</div>
+            </div>
+            <div class="metric-box" id="metric-withdrawal">
+                <div class="metric-title">Withdrawal Risk</div>
+                <div class="metric-value">0%</div>
+            </div>
+            <div class="metric-box" id="metric-attrition">
+                <div class="metric-title">Height Attrition</div>
+                <div class="metric-value">0 ft</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h4>Map Legend</h4>
+            <div class="legend-row">
+                <div class="legend-color" style="background: linear-gradient(to top, rgba(0, 255, 255, 0.5), rgba(255, 0, 0, 0.8)); height: 30px; width: 15px; margin-right: 10px;"></div>
+                <span><strong>Extrusion Height:</strong> Bureaucratic Delay (Days)</span>
+            </div>
+            <div class="legend-row">
+                <div class="legend-color" style="background: linear-gradient(to right, #00f0ff, #ff003c); height: 15px; width: 50px; margin-right: 10px;"></div>
+                <span><strong>Color:</strong> Withdrawal Probability</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
