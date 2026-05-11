@@ -7,7 +7,7 @@ set -e
 
 THESIS_DIR="/home/ubuntu/thesis"
 VENV_DIR="$THESIS_DIR/.venv"
-API_SCRIPT="$THESIS_DIR/Scratch/Modeling/Causal_Inference/05_G_Computation_LSTMs/live_friction_api.py"
+API_SCRIPT="$THESIS_DIR/Scratch/Modeling/Causal_Inference/05_G_Computation_LSTMs/live_api/live_friction_api.py"
 LOG_FILE="/home/ubuntu/friction_api.log"
 PID_FILE="/home/ubuntu/friction_api.pid"
 
