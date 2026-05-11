@@ -117,7 +117,14 @@
 // Global State
 let currentHeight = 29;
 let currentDose = 0.20;
-let API_URL = 'http://localhost:8001';
+
+// URL Configuration
+// 1. Point this to your EC2 instance (e.g. 'http://54.x.x.x:8001')
+let API_URL = 'http://localhost:8001'; 
+
+// 2. Production geometry from R2 (Highly recommended for speed)
+let GEOMETRY_URL = 'https://pub-7f58e07bff423d2120acf10aa6bf7a32.r2.dev/public/austin_base_geometries.fgb';
+
 let cateData = new Float32Array(0); // [delay0, height0, withd0, delay1, ...]
 let geojsonFeatures = []; // Static geometries
 let deckLayer = null;
@@ -214,8 +221,8 @@ map.addControl(overlay);
 async function loadGeometry() {
   const loading = document.getElementById('loading');
   try {
-    const response = await fetch(`${API_URL}/geometries`);
-    if (!response.ok) throw new Error('API down');
+    const response = await fetch(GEOMETRY_URL);
+    if (!response.ok) throw new Error('Geometry failed to load');
     const iter = flatgeobuf.deserialize(response.body);
     let count = 0;
     for await (const feature of iter) {
