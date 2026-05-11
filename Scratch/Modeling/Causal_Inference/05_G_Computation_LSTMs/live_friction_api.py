@@ -20,15 +20,24 @@ ROOT = Path(os.environ.get("API_ROOT", r"c:\Users\dhl\data\Thesis\thesis"))
 PORT = int(os.environ.get("PORT", 8001))
 CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*")
 
-print(f"Loading Causal Models from {ROOT}...", flush=True)
-models = joblib.load(ROOT / "Data/Zoning_Cases/causal_models.pkl")
-cf_joint = models['cf_joint']
-cf_withd = models['cf_withd']
+# Load baseline data
 X_base = np.load(ROOT / "Data/Zoning_Cases/X_base.npy")
-
 print(f"Loaded X_base shape: {X_base.shape}", flush=True)
 
-# State cache for O(1) dose updates
+# Load Hypergrid Cache if available (Instant API mode)
+CACHE_PATH = ROOT / "Data/Zoning_Cases/inference_cache.npy"
+hypergrid = None
+if CACHE_PATH.exists():
+    print(f"Loading Hypergrid Cache from {CACHE_PATH}...", flush=True)
+    hypergrid = np.load(CACHE_PATH)
+    print(f"  Instant API Mode enabled (Grid: {hypergrid.shape})", flush=True)
+else:
+    print(f"Cache missing. Loading Causal Models from {ROOT} (Slow Mode)...", flush=True)
+    models = joblib.load(ROOT / "Data/Zoning_Cases/causal_models.pkl")
+    cf_joint = models['cf_joint']
+    cf_withd = models['cf_withd']
+
+# State cache for Slow Mode
 cached_height = None
 cached_marginal_joint = None
 cached_marginal_withd = None
@@ -37,7 +46,6 @@ cached_marginal_withd = None
 class FrictionAPIHandler(http.server.SimpleHTTPRequestHandler):
 
     def log_message(self, format, *args):
-        # Suppress per-request noise; only keep important prints
         pass
 
     def _cors_headers(self):
@@ -55,7 +63,6 @@ class FrictionAPIHandler(http.server.SimpleHTTPRequestHandler):
 
         parsed = urllib.parse.urlparse(self.path)
 
-        # ── Health check ──────────────────────────────────────────────────
         if parsed.path == '/health':
             self.send_response(200)
             self._cors_headers()
@@ -64,7 +71,6 @@ class FrictionAPIHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(b'ok')
             return
 
-        # ── Serve FlatGeobuf geometry ─────────────────────────────────────
         if parsed.path == '/geometries':
             fgb_path = ROOT / "Data/Zoning_Cases/austin_base_geometries.fgb"
             try:
@@ -81,7 +87,6 @@ class FrictionAPIHandler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
             return
 
-        # ── Serve live CATE predictions ───────────────────────────────────
         if parsed.path == '/predict':
             query = urllib.parse.parse_qs(parsed.query)
             try:
@@ -94,34 +99,48 @@ class FrictionAPIHandler(http.server.SimpleHTTPRequestHandler):
 
             t0 = time.time()
 
-            if cached_height != height:
-                print(f"Height={height} → re-evaluating Causal Forest...", flush=True)
-                X_base[:, 0] = height
-                cached_marginal_joint = cf_joint.effect(X_base, T0=0.0, T1=1.0)
-                cached_marginal_withd = cf_withd.effect(X_base, T0=0.0, T1=1.0)
-                cached_height = height
-                print(f"  Done in {time.time()-t0:.2f}s", flush=True)
+            if hypergrid is not None:
+                # INSTANT MODE: Find nearest cached height tier (5-120 range)
+                h_idx = int(np.clip(round(height) - 5, 0, hypergrid.shape[0] - 1))
+                m_delay     = hypergrid[h_idx, :, 0]
+                m_attrition = hypergrid[h_idx, :, 1]
+                m_withd     = hypergrid[h_idx, :, 2]
+            else:
+                # SLOW MODE: Evaluate model if height changed
+                if cached_height != height:
+                    print(f"Height={height} → re-evaluating Causal Forest...", flush=True)
+                    X_base[:, 0] = height
+                    cached_marginal_joint = cf_joint.effect(X_base, T0=0.0, T1=1.0)
+                    cached_marginal_withd = cf_withd.effect(X_base, T0=0.0, T1=1.0)
+                    cached_height = height
+                m_delay     = cached_marginal_joint[:, 1]
+                m_attrition = cached_marginal_joint[:, 0]
+                m_withd     = cached_marginal_withd
 
-            # O(1): scale cached marginal by dose
-            cate_multi = cached_marginal_joint * dose
-            cate_w     = cached_marginal_withd  * dose
+            # O(1): Scale marginals by dose
+            cate_delay = m_delay * dose
+            cate_attr  = m_attrition * dose
+            cate_risk  = m_withd * dose
 
             # Pack: [delay0, height0, withd0, delay1, ...]
             out = np.empty((len(X_base) * 3,), dtype=np.float32)
-            out[0::3] = np.clip(cate_multi[:, 1], -365,  3650)  # delay
-            out[1::3] = np.clip(cate_multi[:, 0], -500,  1500)  # height attrition
-            out[2::3] = np.clip(cate_w,            -1.0,  1.0)  # withdrawal
+            out[0::3] = np.clip(cate_delay, -365,  3650)  # delay
+            out[1::3] = np.clip(cate_attr,  -500,  1500)  # height attrition
+            out[2::3] = np.clip(cate_risk,  -1.0,  1.0)   # withdrawal risk
 
             buf = out.tobytes()
-            print(f"Served /predict (dose={dose:.2f}, h={height}) → {len(buf)/1e6:.2f} MB in {time.time()-t0:.3f}s", flush=True)
-
             self.send_response(200)
             self._cors_headers()
             self.send_header('Content-Type', 'application/octet-stream')
             self.send_header('Content-Length', str(len(buf)))
             self.end_headers()
             self.wfile.write(buf)
+            
+            print(f"Served /predict (h={height}, dose={dose:.2f}) in {time.time()-t0:.3f}s", flush=True)
             return
+
+        self.send_response(404)
+        self.end_headers()
 
         self.send_response(404)
         self.end_headers()
