@@ -41,7 +41,9 @@ df = pd.read_csv(panel_path, low_memory=False)
 zoning_df = pd.read_csv(ROOT / "Data/Zoning_Cases/Processed_Data/CSV/zoning_land_use_merged_data.csv", low_memory=False)
 zoning_df['start'] = pd.to_datetime(zoning_df['application_start_date'], errors='coerce')
 zoning_df['end'] = pd.to_datetime(zoning_df['status_date'], errors='coerce')
-zoning_df['days_to_resolution'] = (zoning_df['end'] - zoning_df['start']).dt.days.clip(0, 3650)
+# STRICT ARTIFACT CAP: Clip delay to 5 years (1825 days). Anything longer is 
+# an administrative ledger artifact (e.g. 30-year abandoned cases closed in mass purges)
+zoning_df['days_to_resolution'] = (zoning_df['end'] - zoning_df['start']).dt.days.clip(0, 1825)
 zoning_dates = zoning_df[['case_number', 'days_to_resolution']].drop_duplicates('case_number')
 
 # Load the enriched causal CSV — has delta_max_height_ft + lat/lon for more cases
@@ -98,6 +100,20 @@ if not enriched_df.empty and 'latitude' in enriched_df.columns:
     n1b = (missing_geo2 & cs['latitude'].notna()).sum()
     cs.drop(columns=['_lat_e', '_lon_e'], inplace=True)
     print(f"FIX 1b: Backfilled lat/lon from enriched_causal CSV for {n1b:,} more cases.", flush=True)
+
+# ── FIX 1c: Backfill lat/lon from external geocoder (866 cases) ─────────────
+geocoded_path = ROOT / "Data/Zoning_Cases/Processed_Data/CSV/geocoded_missing_cases.csv"
+if geocoded_path.exists():
+    geocoded_df = pd.read_csv(geocoded_path, low_memory=False)
+    if 'lat_geocoded' in geocoded_df.columns:
+        cs = cs.merge(geocoded_df[['case_number', 'lat_geocoded', 'lon_geocoded']].drop_duplicates('case_number'),
+                      on='case_number', how='left')
+        missing_geo3 = cs['latitude'].isna()
+        cs.loc[missing_geo3, 'latitude']  = cs.loc[missing_geo3, 'lat_geocoded']
+        cs.loc[missing_geo3, 'longitude'] = cs.loc[missing_geo3, 'lon_geocoded']
+        n1c = (missing_geo3 & cs['latitude'].notna()).sum()
+        cs.drop(columns=['lat_geocoded', 'lon_geocoded'], inplace=True)
+        print(f"FIX 1c: Backfilled lat/lon from Geocoder for {n1c:,} more cases.", flush=True)
 
 # ── FIX 2: Height recovery from enriched_zoning_data_causal.csv ─────────────
 # Cases where Delta_Requested_Height is null may have height data in the
