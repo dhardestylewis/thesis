@@ -93,7 +93,7 @@ def build_ears_differentials(petitions, tcad, cases_gdf, props=None, out_dir=PRO
         if len(neighbors) == 0:
             continue
             
-        raw_signers = petitions[petitions['case_number'] == case]['tcad_id'].dropna().astype(str)
+        raw_signers = petitions[petitions['case_number'] == case]['tcad_normalized'].dropna().astype(str)
         signers = set(raw_signers.str.replace(r'\.0$', '', regex=True).str.replace('-', '', regex=False).unique())
         
         # Partition

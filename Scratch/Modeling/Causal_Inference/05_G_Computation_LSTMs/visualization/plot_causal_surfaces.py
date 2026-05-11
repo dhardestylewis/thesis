@@ -5,9 +5,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 # Paths to the AWS outputs (synced locally)
-SURFACE_CSV = "aws_deploy/vae_dose_response_surface_expanded.csv"
-TIME_SERIES_CSV = "aws_deploy/causal_time_series_surface.csv"
-OUTPUT_DIR = "../../artifacts/eda_plots/" # Assuming we want to output to the artifacts dir
+SURFACE_CSV = "output/vae_dose_response_surface_expanded.csv"
+OUTPUT_DIR = r"c:\Users\dhl\.gemini\antigravity\brain\1632e32a-ef31-4422-854b-ea7296224fe1\\"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

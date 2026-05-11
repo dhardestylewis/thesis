@@ -1,0 +1,32 @@
+\begin{table}[htbp]
+\centering
+\caption[Temporal Drift (Max-of-Family)]{\textbf{Max-of-Family dominance (Optimal Entropy-Based Discretization).}}
+\label{tab:temporal_drift_family}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Anchor Training} & \textbf{2018} & \textbf{2019} & \textbf{2020} & \textbf{2021} & \textbf{2022} & \textbf{2023} & \textbf{2024} \\
+\midrule
+\multicolumn{8}{c}{\textbf{Panel A: Maximum Absolute PR-AUC}} \\
+\midrule
+Pre-2018 & 0.952 (Linear) & 0.736 (Linear) & 0.539 (Trees) & 0.445 (Trees) & 0.582 (Trees) & 0.597 (Trees) & 0.667 (Linear) \\
+Pre-2019 & --- & 0.707 (Linear) & 0.578 (Linear) & 0.492 (Deep) & 0.345 (Causal) & 0.583 (Trees) & 0.649 (Trees) \\
+Pre-2020 & --- & --- & 0.642 (Trees) & 0.492 (Deep) & 0.424 (Trees) & 0.609 (Trees) & 0.733 (Deep) \\
+Pre-2021 & --- & --- & --- & 0.550 (Trees) & 0.360 (Trees) & 0.722 (Deep) & 0.725 (Causal) \\
+Pre-2022 & --- & --- & --- & --- & 0.517 (Trees) & 0.628 (Trees) & 0.750 (Deep) \\
+Pre-2023 & --- & --- & --- & --- & --- & 0.620 (Trees) & 0.468 (Causal) \\
+Pre-2024 & --- & --- & --- & --- & --- & --- & 0.432 (Causal) \\
+\midrule
+\multicolumn{8}{c}{\textbf{Panel B: Maximum Relative PR-AUC Lift}} \\
+\midrule
+Pre-2018 & 6.25 (Linear) & 9.09 (Linear) & 7.94 (Trees) & 7.94 (Trees) & 31.44 (Trees) & 17.14 (Trees) & 35.83 (Linear) \\
+Pre-2019 & --- & 8.73 (Linear) & 8.53 (Linear) & 8.77 (Deep) & 18.64 (Causal) & 16.74 (Trees) & 34.87 (Trees) \\
+Pre-2020 & --- & --- & 9.47 (Trees) & 8.78 (Deep) & 22.91 (Trees) & 17.50 (Trees) & 39.42 (Deep) \\
+Pre-2021 & --- & --- & --- & 9.81 (Trees) & 19.46 (Trees) & 20.74 (Deep) & 38.97 (Causal) \\
+Pre-2022 & --- & --- & --- & --- & 27.94 (Trees) & 18.04 (Trees) & 40.31 (Deep) \\
+Pre-2023 & --- & --- & --- & --- & --- & 17.81 (Trees) & 25.17 (Causal) \\
+Pre-2024 & --- & --- & --- & --- & --- & --- & 23.23 (Causal) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

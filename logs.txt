@@ -1,0 +1,93 @@
+Script confirmed at: -rw-r--r-- 1 root root 47K May 10 19:40 /home/ubuntu/causal_run/causal_cfm_cvae.py
+Starting Fold 0...
+Loading data from /home/ubuntu/causal_run/biweekly_panel.csv...
+/home/ubuntu/causal_run/causal_cfm_cvae.py:120: DtypeWarning: Columns (79) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(PANEL_PATH)
+Features: 43  Targets: 4
+Dataset: 6790 cases | input_dim=43 | y_dim=4
+Executing Fold 1/9 (Cutoff 2018) | Train: 3459 | Val: 865
+Device: cuda
+cumulative_petition_pct_lag1 in features: True
+petition features: ['petition_pct_this_period', 'cumulative_petition_pct', 'knn_petition_rate_1km', 'cumulative_petition_count', 'cumulative_petition_events', 'cumulative_petition_count_lag1', 'cumulative_petition_events_lag1', 'dist_petition_rate_lag1', 'petition_velocity_3p_lag1', 'cumulative_petition_pct_lag1']
+treat_idx: [0, 1] prop_petition_idx: [42, 38, 39, 41] masked_treatment_idx: [0, 1, 36, 37]
+Parameters: 6,860,423
+/home/ubuntu/causal_run/causal_cfm_cvae.py:816: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[Epoch 001/80] TR cfm=25.3175 kl=0.0100 | VA cfm=23.6524 kl=0.0020 prop=0.0307 | AUC=0.465 MAE_Pos=40.743 MAE_0=0.430 | 0.9min elapsed
+  ✓ Saved best-CFM model (score=23.6535)
+  ✓ Saved best-height model (score=44.1099)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 002/80] TR cfm=17.3006 kl=0.0013 | VA cfm=20.6850 kl=0.0028 prop=0.0283 | AUC=0.547 MAE_Pos=40.792 MAE_0=0.328 | 1.4min elapsed
+  ✓ Saved best-CFM model (score=20.6864)
+  ✓ Saved best-height model (score=41.1465)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 003/80] TR cfm=14.6877 kl=0.0077 | VA cfm=16.8300 kl=0.0030 prop=0.0273 | AUC=0.490 MAE_Pos=40.812 MAE_0=0.432 | 1.9min elapsed
+  ✓ Saved best-CFM model (score=16.8315)
+  ✓ Saved best-height model (score=37.3223)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 004/80] TR cfm=12.1245 kl=0.0028 | VA cfm=11.9606 kl=0.0042 prop=0.0185 | AUC=0.485 MAE_Pos=40.855 MAE_0=0.387 | 2.3min elapsed
+  ✓ Saved best-CFM model (score=11.9627)
+  ✓ Saved best-height model (score=32.4653)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 005/80] TR cfm=8.7175 kl=0.0054 | VA cfm=9.4784 kl=0.0026 prop=0.0103 | AUC=0.508 MAE_Pos=40.861 MAE_0=0.383 | 2.8min elapsed
+  ✓ Saved best-CFM model (score=9.4797)
+  ✓ Saved best-height model (score=29.9854)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 006/80] TR cfm=7.8492 kl=0.0026 | VA cfm=12.0831 kl=0.0020 prop=0.0059 | AUC=0.501 MAE_Pos=40.865 MAE_0=0.373 | 3.3min elapsed
+[Epoch 007/80] TR cfm=7.9962 kl=0.0024 | VA cfm=11.9055 kl=0.0015 prop=0.0033 | AUC=0.523 MAE_Pos=40.849 MAE_0=0.364 | 3.8min elapsed
+[Epoch 008/80] TR cfm=8.0458 kl=0.0015 | VA cfm=9.6591 kl=0.0015 prop=0.0020 | AUC=0.509 MAE_Pos=40.794 MAE_0=0.394 | 4.2min elapsed
+[Epoch 009/80] TR cfm=7.0741 kl=0.0012 | VA cfm=10.3046 kl=0.0010 prop=0.0017 | AUC=0.514 MAE_Pos=40.776 MAE_0=0.373 | 4.6min elapsed
+[Epoch 010/80] TR cfm=7.2579 kl=0.0013 | VA cfm=9.6485 kl=0.0012 prop=0.0016 | AUC=0.513 MAE_Pos=40.836 MAE_0=0.322 | 5.1min elapsed
+[Epoch 011/80] TR cfm=7.6765 kl=0.0012 | VA cfm=10.2973 kl=0.0008 prop=0.0026 | AUC=0.484 MAE_Pos=40.840 MAE_0=0.321 | 5.5min elapsed
+[Epoch 012/80] TR cfm=6.4930 kl=0.0010 | VA cfm=9.4554 kl=0.0011 prop=0.0014 | AUC=0.495 MAE_Pos=40.884 MAE_0=0.308 | 5.9min elapsed
+  ✓ Saved best-CFM model (score=9.4560)
+  ✓ Saved best-height model (score=29.9591)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 013/80] TR cfm=6.6278 kl=0.0011 | VA cfm=9.8426 kl=0.0009 prop=0.0012 | AUC=0.480 MAE_Pos=40.866 MAE_0=0.313 | 6.4min elapsed
+[Epoch 014/80] TR cfm=5.5503 kl=0.0012 | VA cfm=8.6344 kl=0.0011 prop=0.0011 | AUC=0.496 MAE_Pos=40.853 MAE_0=0.334 | 6.8min elapsed
+  ✓ Saved best-CFM model (score=8.6349)
+  ✓ Saved best-height model (score=29.1280)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 015/80] TR cfm=5.5675 kl=0.0011 | VA cfm=7.5291 kl=0.0009 prop=0.0010 | AUC=0.510 MAE_Pos=40.858 MAE_0=0.319 | 7.3min elapsed
+  ✓ Saved best-CFM model (score=7.5295)
+  ✓ Saved best-height model (score=28.0218)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 016/80] TR cfm=5.0859 kl=0.0008 | VA cfm=6.7461 kl=0.0009 prop=0.0010 | AUC=0.487 MAE_Pos=40.864 MAE_0=0.314 | 7.8min elapsed
+  ✓ Saved best-CFM model (score=6.7465)
+  ✓ Saved best-height model (score=27.2411)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 017/80] TR cfm=4.4741 kl=0.0010 | VA cfm=5.1222 kl=0.0011 prop=0.0011 | AUC=0.491 MAE_Pos=40.872 MAE_0=0.288 | 8.3min elapsed
+  ✓ Saved best-CFM model (score=5.1227)
+  ✓ Saved best-height model (score=25.6159)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 018/80] TR cfm=3.4140 kl=0.0013 | VA cfm=4.8131 kl=0.0013 prop=0.0010 | AUC=0.499 MAE_Pos=40.833 MAE_0=0.326 | 8.8min elapsed
+  ✓ Saved best-CFM model (score=4.8138)
+  ✓ Saved best-height model (score=25.2948)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 019/80] TR cfm=4.2257 kl=0.0016 | VA cfm=4.0255 kl=0.0014 prop=0.0009 | AUC=0.505 MAE_Pos=40.857 MAE_0=0.300 | 9.3min elapsed
+  ✓ Saved best-CFM model (score=4.0262)
+  ✓ Saved best-height model (score=24.5140)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 020/80] TR cfm=2.7927 kl=0.0017 | VA cfm=4.1941 kl=0.0023 prop=0.0010 | AUC=0.500 MAE_Pos=40.878 MAE_0=0.283 | 9.7min elapsed
+[Epoch 021/80] TR cfm=2.7422 kl=0.0019 | VA cfm=3.6199 kl=0.0020 prop=0.0009 | AUC=0.492 MAE_Pos=40.858 MAE_0=0.280 | 10.2min elapsed
+  ✓ Saved best-CFM model (score=3.6209)
+  ✓ Saved best-height model (score=24.1048)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 022/80] TR cfm=3.0298 kl=0.0015 | VA cfm=4.5987 kl=0.0011 prop=0.0010 | AUC=0.487 MAE_Pos=40.918 MAE_0=0.222 | 10.7min elapsed
+[Epoch 023/80] TR cfm=3.2165 kl=0.0016 | VA cfm=3.9117 kl=0.0016 prop=0.0009 | AUC=0.477 MAE_Pos=40.891 MAE_0=0.232 | 11.1min elapsed
+[Epoch 024/80] TR cfm=2.9238 kl=0.0017 | VA cfm=3.7687 kl=0.0011 prop=0.0010 | AUC=0.499 MAE_Pos=40.896 MAE_0=0.223 | 11.5min elapsed
+[Epoch 025/80] TR cfm=2.8086 kl=0.0013 | VA cfm=3.6815 kl=0.0011 prop=0.0009 | AUC=0.537 MAE_Pos=40.888 MAE_0=0.228 | 11.9min elapsed
+[Epoch 026/80] TR cfm=2.7323 kl=0.0012 | VA cfm=4.8623 kl=0.0010 prop=0.0009 | AUC=0.529 MAE_Pos=40.906 MAE_0=0.198 | 12.4min elapsed
+[Epoch 027/80] TR cfm=2.5243 kl=0.0010 | VA cfm=3.5076 kl=0.0010 prop=0.0009 | AUC=0.496 MAE_Pos=40.956 MAE_0=0.155 | 12.8min elapsed
+  ✓ Saved best-CFM model (score=3.5080)
+  ✓ Saved best-height model (score=24.0165)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 028/80] TR cfm=2.8925 kl=0.0009 | VA cfm=3.2592 kl=0.0007 prop=0.0009 | AUC=0.531 MAE_Pos=40.861 MAE_0=0.283 | 13.3min elapsed
+  ✓ Saved best-CFM model (score=3.2596)
+  ✓ Saved best-height model (score=23.7461)
+  ✓ Saved feature manifest → /home/ubuntu/causal_run/output/feature_manifest_fold_0.json
+[Epoch 029/80] TR cfm=2.4849 kl=0.0006 | VA cfm=3.4551 kl=0.0006 prop=0.0007 | AUC=0.523 MAE_Pos=40.862 MAE_0=0.261 | 13.8min elapsed
+[Epoch 030/80] TR cfm=2.7073 kl=0.0006 | VA cfm=4.1586 kl=0.0007 prop=0.0010 | AUC=0.483 MAE_Pos=40.866 MAE_0=0.270 | 14.2min elapsed
+[Epoch 031/80] TR cfm=2.7093 kl=0.0005 | VA cfm=3.3250 kl=0.0006 prop=0.0009 | AUC=0.499 MAE_Pos=40.869 MAE_0=0.243 | 14.6min elapsed
+[Epoch 032/80] TR cfm=2.4774 kl=0.0006 | VA cfm=3.7619 kl=0.0005 prop=0.0008 | AUC=0.468 MAE_Pos=40.876 MAE_0=0.245 | 15.0min elapsed
+[Epoch 033/80] TR cfm=2.5484 kl=0.0004 | VA cfm=3.5241 kl=0.0003 prop=0.0008 | AUC=0.522 MAE_Pos=40.911 MAE_0=0.191 | 15.5min elapsed

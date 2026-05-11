@@ -171,8 +171,9 @@ for yr, grp in unique_cy.groupby("vintage_year_ears"):
     feats = [f for f in PARCEL_FEATS if f in ref.columns]
     if ref_type == "ears":
         sub = grp.dropna(subset=["ears_account_number"]).copy()
-        sub["ears_account_number"] = sub["ears_account_number"].astype(str)
-        ref["account_number"]      = ref["account_number"].astype(str)
+        # Convert to Int64 first to safely drop decimals from NaNs/floats, then string
+        sub["ears_account_number"] = sub["ears_account_number"].astype('Int64').astype(str)
+        ref["account_number"]      = ref["account_number"].astype(str).str.replace(r'\.0$', '', regex=True)
         m = sub.merge(ref[["account_number"]+feats],
                       left_on="ears_account_number",right_on="account_number",how="left")
     else:

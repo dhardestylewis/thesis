@@ -26,7 +26,7 @@ def build_pca_embeddings(petitions, tcad, cases_gdf, props=None, out_dir=PROTEST
             continue
             
         # Fix float string bug (10003.0 -> '10003') while supporting dashes
-        raw_signers = petitions[petitions['case_number'] == case]['tcad_id'].dropna().astype(str)
+        raw_signers = petitions[petitions['case_number'] == case]['tcad_normalized'].dropna().astype(str)
         signers = set(raw_signers.str.replace(r'\.0$', '', regex=True).str.replace('-', '', regex=False).unique())
         
         protesting_ids = [n for n in neighbors if n in signers]

@@ -5,7 +5,7 @@ import numpy as np
 import json
 
 print("1. Loading Master Dataset...")
-df = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\final\model_ready_zoning_data.csv")
+df = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\model_ready_zoning_data.csv")
 
 zoning_metrics_dict = {
     'RR':   {'max_height_ft': 35, 'max_far': 0.05, 'max_bldg_cov_pct': 20, 'min_lot_sqft': 43560},

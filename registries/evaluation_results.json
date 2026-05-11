@@ -4,25 +4,25 @@
   "model_family": "CatBoost",
   "score_column": "y_score_calibrated",
   "ranking": {
-    "pr_auc": 0.6627982323634497,
+    "pr_auc": 0.6862236957889131,
     "top_decile_precision": 0.2542372881355932,
     "top_decile_lift": 9.88135593220339,
-    "pr_auc_ci_low": 0.4332610524510301,
-    "pr_auc_ci_high": 0.8737239520956626
+    "pr_auc_ci_low": 0.46160470739460363,
+    "pr_auc_ci_high": 0.8894956429281371
   },
   "calibration": {
-    "brier": 0.014304957644380573,
-    "ece": 0.01567460439074118,
-    "ace": 0.0022416482363568488,
-    "calibration_slope": 0.836638438423475
+    "brier": 0.014558973601809806,
+    "ece": 0.019992601299390952,
+    "ace": 0.0020490642964548266,
+    "calibration_slope": 0.7940500878212113
   },
   "thresholded": {
     "precision_at_0_30": 0.5263157894736842,
     "recall_at_0_30": 0.6666666666666666,
-    "precision_at_0_50": 0.5294117647058824,
+    "precision_at_0_50": 0.6,
     "recall_at_0_50": 0.6
   },
   "sample_size": 583,
   "positive_rate": 0.025728987993138937,
-  "generated_at": "2026-05-08T21:06:09.128841+00:00"
+  "generated_at": "2026-05-10T21:21:59.699179+00:00"
 }

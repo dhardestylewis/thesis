@@ -3,7 +3,7 @@ import re
 import numpy as np
 
 print("Loading data...", flush=True)
-model_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\final\model_ready_zoning_data.csv"
+model_csv = r"c:\Users\dhl\data\Thesis\thesis\Data\model_ready_zoning_data.csv"
 df_model = pd.read_csv(model_csv)
 df_comm = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\interim\commission_transcripts.csv")
 df_council = pd.read_csv(r"c:\Users\dhl\data\Thesis\thesis\Data\interim\council_transcripts.csv")

@@ -16,7 +16,9 @@ MAX_DAYS  = 3650   # 10-yr cap
 
 ZONING_CSV    = os.path.join(BASE, "final", "model_ready_zoning_data.csv")
 ENRICHED_CSV  = os.path.join(BASE, "Zoning_Cases","Processed_Data","CSV","enriched_zoning_data_causal.csv")
+SPATIAL_CSV   = os.path.join(BASE, "final", "model_ready_spatial_hydrated.csv")
 PETITION_CSV  = os.path.join(BASE, "Protest_Petitions","petition_signers_backfilled.csv")
+SPATIAL_PETITION_CSV = os.path.join(BASE, "Protest_Petitions", "petition_summary_spatial_true.csv")
 COUNCIL_CSV   = os.path.join(BASE, "interim", "council_agendas_cases.csv")
 LDB16_CSV     = os.path.join(BASE, "CoA_Open_Data","LDB_2016_4nsn-uea6.csv")
 LDB21_CSV     = os.path.join(BASE, "CoA_Open_Data","LDB_2021_kk8y-6cmt.csv")
@@ -32,12 +34,17 @@ def safe_pid(x):
 # ── 1. Zoning cases ────────────────────────────────────────────────────────
 print("Step 1: Zoning cases...")
 z = pd.read_csv(ZONING_CSV, low_memory=False)
-for c in ["App_Date","Final_Council_Date","final_date","approval_date"]:
+for c in ["application_start_date","Final_Council_Date","final_date","approval_date"]:
     if c in z.columns: z[c] = pd.to_datetime(z[c], errors="coerce")
-z = z[z["case_number"].notna() & z["App_Date"].notna()].copy()
-z["T0"]     = z["App_Date"]
-z["T_vote"] = z["Final_Council_Date"].fillna(z.get("final_date")).fillna(z.get("approval_date"))
+z = z[z["case_number"].notna() & z["application_start_date"].notna()].copy()
+z["T0"]     = z["application_start_date"].fillna(z.get("status_date")).fillna(z.get("approval_date"))
+z["T_vote"] = z.get("Final_Council_Date", pd.Series(dtype='datetime64[ns]')).fillna(z.get("final_date")).fillna(z.get("approval_date"))
 z["censored"] = z["T_vote"].isna().astype(int)
+
+# Restore missing parcel_id_10 from upstream enriched data
+z_enriched = pd.read_csv(SPATIAL_CSV, usecols=["case_number", "parcel_id_10"], low_memory=False)
+z = z.merge(z_enriched.drop_duplicates("case_number"), on="case_number", how="left")
+
 # Right-censor: unresolved cases get 2yr observation window, not full CUTOFF
 CENSOR_WINDOW = 730  # 2 years max for unresolved cases in skeleton
 if "label_real_days_in_pipeline" in z.columns:
@@ -94,7 +101,7 @@ CASE_COLS = [c for c in [
     "council_district","T0","T_vote","censored","filing_year",
     "label_real_days_in_pipeline","Remand_Count","Council_Appearances",
     "Aggregate_Sentiment","label_valid_petition_pct",
-    "Delta_Approved_Height","Delta_Approved_FAR","Staff_Attrition_Height",
+    "Delta_Requested_Height","Delta_Approved_Height","Delta_Approved_FAR","Staff_Attrition_Height",
     # zoning flags from thesis
     "is_pud","is_tod","is_npa","owner_initiated","hb24_eligible",
 ] if c in z.columns]
@@ -121,21 +128,30 @@ for yr in range(2019, 2026):
     ears[yr] = df
 
 LDB16 = pd.read_csv(LDB16_CSV, low_memory=False,
-    usecols=["PID_10","MARKET_VAL","APPRAISED_VAL","LAND_ACRES","YR_BUILT"]).rename(
+    usecols=["PID_10","MARKET_VAL","APPRAISED_VAL","LAND_ACRES","YR_BUILT","SUM_IMPRV_SQFT","HS_EXEMPT",
+             "TOTAL_IMP_","TOTAL_LAND","LAND_USE"]).rename(
     columns={"PID_10":"parcel_id_10","MARKET_VAL":"market_value",
-             "APPRAISED_VAL":"appraised_value","LAND_ACRES":"land_acres","YR_BUILT":"yr_built"})
+             "APPRAISED_VAL":"appraised_value","LAND_ACRES":"land_acres","YR_BUILT":"yr_built",
+             "SUM_IMPRV_SQFT":"improvement_sq_ft","HS_EXEMPT":"exemption_flag_hs",
+             "TOTAL_IMP_":"improvement_market_value","TOTAL_LAND":"land_market_value",
+             "LAND_USE":"land_use_code"})
 LDB16["parcel_id_10"] = LDB16["parcel_id_10"].map(safe_pid)
 LDB16["data_year"] = 2016
 
 LDB21 = pd.read_csv(LDB21_CSV, low_memory=False,
-    usecols=["PID_10","MARKET_VAL","ASSESSED_V","LAND_ACRES","YR_BUILT"]).rename(
+    usecols=["PID_10","MARKET_VAL","ASSESSED_V","LAND_ACRES","YR_BUILT","SUM_IMPRV_","HS_EXEMPT",
+             "TOTAL_IMP_","TOTAL_LAND","LAND_USE"]).rename(
     columns={"PID_10":"parcel_id_10","MARKET_VAL":"market_value",
-             "ASSESSED_V":"appraised_value","LAND_ACRES":"land_acres","YR_BUILT":"yr_built"})
+             "ASSESSED_V":"appraised_value","LAND_ACRES":"land_acres","YR_BUILT":"yr_built",
+             "SUM_IMPRV_":"improvement_sq_ft","HS_EXEMPT":"exemption_flag_hs",
+             "TOTAL_IMP_":"improvement_market_value","TOTAL_LAND":"land_market_value",
+             "LAND_USE":"land_use_code"})
 LDB21["parcel_id_10"] = LDB21["parcel_id_10"].map(safe_pid)
 LDB21["data_year"] = 2021
 
 xwalk = pd.read_csv(CROSSWALK_CSV, low_memory=False)
-xwalk["parcel_id_10"] = xwalk["parcel_id_10"].astype(str).str.zfill(10)
+xwalk["parcel_id_10"] = xwalk["parcel_id_10"].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
+panel["parcel_id_10"] = panel["parcel_id_10"].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
 panel = panel.merge(xwalk[["parcel_id_10","ears_account_number"]].drop_duplicates(),
                     on="parcel_id_10", how="left")
 
@@ -158,11 +174,17 @@ for yr, grp in unique_cy.groupby("vintage_year_ears"):
 
     feats = [f for f in PARCEL_FEATS if f in ref.columns]
     if ref_type == "ears":
-        sub = grp.dropna(subset=["ears_account_number"]).copy()
-        sub["ears_account_number"] = sub["ears_account_number"].astype(str)
-        ref["account_number"]      = ref["account_number"].astype(str)
-        m = sub.merge(ref[["account_number"]+feats],
-                      left_on="ears_account_number",right_on="account_number",how="left")
+        if yr >= 2022:
+            sub = grp.dropna(subset=["parcel_id_10"]).copy()
+            ref["account_number"] = ref["account_number"].astype(str).str.replace(r'\.0$', '', regex=True).str.zfill(10)
+            m = sub.merge(ref[["account_number"]+feats],
+                          left_on="parcel_id_10", right_on="account_number", how="left")
+        else:
+            sub = grp.dropna(subset=["ears_account_number"]).copy()
+            sub["ears_account_number"] = sub["ears_account_number"].astype(str).str.replace(r'\.0$', '', regex=True)
+            ref["account_number"]      = ref["account_number"].astype(str).str.replace(r'\.0$', '', regex=True)
+            m = sub.merge(ref[["account_number"]+feats],
+                          left_on="ears_account_number", right_on="account_number", how="left")
     else:
         sub = grp.dropna(subset=["parcel_id_10"])
         m = sub.merge(ref[["parcel_id_10"]+feats], on="parcel_id_10", how="left")
@@ -176,8 +198,7 @@ if chunks:
 # ── 5. Engineered parcel ratios (Properlytic paradigm) ────────────────────
 # Coerce EARS numeric cols that may arrive as strings
 for _nc in ["market_value","appraised_value","land_acres","yr_built",
-             "land_market_value","improvement_market_value","improvement_sq_ft",
-             "exemption_flag_hs","homesite_flag"]:
+             "land_market_value","improvement_market_value","improvement_sq_ft"]:
     if _nc in panel.columns:
         panel[_nc] = pd.to_numeric(panel[_nc], errors="coerce")
 if "yr_built" in panel.columns:
@@ -226,8 +247,12 @@ FRED_PATH = os.path.join(BASE, "Panel", "macro", "fred_timeseries.csv")
 if os.path.exists(FRED_PATH):
     fred = pd.read_csv(FRED_PATH)
     fred["observation_date"] = pd.to_datetime(fred["observation_date"])
-    fred = fred.sort_values("observation_date")
-    panel = panel.sort_values("period_start")
+    fred.dropna(subset=["observation_date"], inplace=True)
+    fred["observation_date"] = pd.to_datetime(fred["observation_date"]).astype("datetime64[ns]")
+    panel["period_start"] = panel["period_start"].astype("datetime64[ns]")
+    
+    fred.sort_values("observation_date", inplace=True)
+    panel.sort_values("period_start", inplace=True)
     
     # Forward-fill merge macro onto the exact period_start
     panel = pd.merge_asof(panel, fred, left_on="period_start", right_on="observation_date", direction="backward")
@@ -256,16 +281,31 @@ else:
 print("Step 7: Petition events...")
 pet = pd.read_csv(PETITION_CSV, low_memory=False)
 pet["date"] = pd.to_datetime(pet["date"], format="mixed", errors="coerce")
-pet = pet.dropna(subset=["date", "area_pct"])
+pet = pet.dropna(subset=["date"])
 
 panel_periods = panel[["case_number", "period_start", "period_end"]].copy()
+
+# Temporal Snapping for Out-of-Bounds Petitions
+case_bounds = panel_periods.groupby("case_number")["period_start"].agg(["min", "max"]).reset_index()
+pet = pet.merge(case_bounds, on="case_number", how="inner")
+pet["snapped_date"] = pet["date"]
+pet.loc[pet["date"] < pet["min"], "snapped_date"] = pet["min"]
+pet.loc[pet["date"] > pet["max"], "snapped_date"] = pet["max"]
+
 pet_merged = pet.merge(panel_periods, on="case_number", how="inner")
-pet_matched = pet_merged[(pet_merged["date"] >= pet_merged["period_start"]) & (pet_merged["date"] <= pet_merged["period_end"])]
+pet_matched = pet_merged[(pet_merged["snapped_date"] >= pet_merged["period_start"]) & (pet_merged["snapped_date"] <= pet_merged["period_end"])]
 
 pet_period_agg = pet_matched.groupby(["case_number", "period_start"]).agg(
-    petition_count_this_period=("signed", "sum"),
-    petition_pct_this_period=("area_pct", "sum")
+    petition_count_this_period=("signed", "sum")
 ).reset_index()
+
+# Merge TRUE Spatial Footprint instead of summing flawed OCR area_pct
+if os.path.exists(SPATIAL_PETITION_CSV):
+    true_pet = pd.read_csv(SPATIAL_PETITION_CSV, usecols=["case_number", "spatial_petition_pct"])
+    pet_period_agg = pet_period_agg.merge(true_pet, on="case_number", how="left")
+    pet_period_agg = pet_period_agg.rename(columns={"spatial_petition_pct": "petition_pct_this_period"})
+else:
+    pet_period_agg["petition_pct_this_period"] = 0.0
 
 panel = panel.merge(pet_period_agg, on=["case_number", "period_start"], how="left")
 panel["petition_event"] = panel["petition_pct_this_period"].notna().astype(int)
@@ -472,7 +512,7 @@ OUT_COLS = [
     "filing_year","is_pud","is_tod","is_npa","owner_initiated","hb24_eligible",
     # Outcomes (constant per case)
     "label_real_days_in_pipeline","Remand_Count",
-    "Delta_Approved_Height","Delta_Approved_FAR","Staff_Attrition_Height",
+    "Delta_Requested_Height","Delta_Approved_Height","Delta_Approved_FAR","Staff_Attrition_Height",
     "Aggregate_Sentiment","label_valid_petition_pct",
     # Dynamic targets (Causal Inference)
     "council_nlp_total_tokens", "net_height_change",

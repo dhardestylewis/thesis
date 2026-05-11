@@ -4,7 +4,7 @@ import re
 from dateutil import parser
 
 # File Paths
-PANEL_PATH = r"C:\Users\dhl\data\Thesis\thesis\Data\Panel\biweekly_panel.csv"
+PANEL_PATH = r"C:\Users\dhl\data\Thesis\thesis\Scratch\Modeling\Causal_Inference\05_G_Computation_LSTMs\biweekly_panel.csv"
 ADV_PATH = r"C:\Users\dhl\data\Thesis\thesis\Data\Protest_Petitions\advanced_geometric_petition_intensity.csv"
 TRANSCRIPTS_PATH = r"C:\Users\dhl\data\Thesis\thesis\Data\interim\council_transcripts.csv"
 
@@ -32,14 +32,14 @@ def extract_date(text):
     return None
 
 print("Extracting dates from 376 Council Minutes PDFs...")
-transcripts["Meeting_Date"] = transcripts["Raw_Text"].apply(extract_date)
+transcripts["Meeting_Date"] = transcripts["Vote_Transcript"].apply(extract_date)
 
 # Identify the 209 cases that were legally protested
 protested_adv = adv[adv["unofficial_protest_intensity"] > 0].copy()
 protested_cases = protested_adv["case_number"].unique()
 
-# Identify cases that already have petition_event = 1 in the panel
-existing_protested = panel[panel["petition_event"] == 1]["case_number"].unique()
+# Identify cases that already have petition_pct_this_period > 0 in the panel
+existing_protested = panel[panel["petition_pct_this_period"] > 0]["case_number"].unique()
 missing_cases = list(set(protested_cases) - set(existing_protested))
 
 print(f"Total Protested Cases: {len(protested_cases)}")
@@ -58,7 +58,7 @@ for case in missing_cases:
     # Regex search for the case number in all transcripts
     # Sometimes cases have .SH or suffixes, so we search the base case
     base_case = str(case).split('.')[0]
-    hits = transcripts[transcripts["Raw_Text"].str.contains(base_case, na=False, case=False)]
+    hits = transcripts[transcripts["Vote_Transcript"].str.contains(base_case, na=False, case=False)]
     
     if len(hits) > 0:
         # Get all valid dates and find the earliest (first reading)
