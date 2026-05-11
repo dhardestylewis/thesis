@@ -44,6 +44,10 @@ zoning_df['end'] = pd.to_datetime(zoning_df['status_date'], errors='coerce')
 zoning_df['days_to_resolution'] = (zoning_df['end'] - zoning_df['start']).dt.days.clip(0, 3650)
 zoning_dates = zoning_df[['case_number', 'days_to_resolution']].drop_duplicates('case_number')
 
+# Load the enriched causal CSV — has delta_max_height_ft + lat/lon for more cases
+enriched_path = ROOT / "Data/Zoning_Cases/Processed_Data/CSV/enriched_zoning_data_causal.csv"
+enriched_df = pd.read_csv(enriched_path, low_memory=False) if enriched_path.exists() else pd.DataFrame()
+
 status_df = pd.read_csv(ROOT / "Data/Zoning_Cases/Processed_Data/CSV/zoning_case_statuses.csv", low_memory=False)
 
 print("Collapsing panel...", flush=True)
@@ -64,12 +68,69 @@ cs = df.groupby('case_number').agg({
     'cumulative_mobilization_failure': 'max'
 }).reset_index()
 
+# Withdrawn cases → approved height = 0 (nothing was approved)
 mask_withdrawn = cs['Delta_Requested_Height'].notna() & cs['Delta_Approved_Height'].isna()
 cs.loc[mask_withdrawn, 'Delta_Approved_Height'] = 0
 
 cs = pd.merge(cs, zoning_dates, on='case_number', how='left')
 cs = pd.merge(cs, status_df[['case_number', 'detailed_status']], on='case_number', how='left')
 
+# ── FIX 1: Backfill lat/lon from zoning CSV (63 cases) ──────────────────────
+if 'latitude' in zoning_df.columns and 'longitude' in zoning_df.columns:
+    geo_fallback = zoning_df[['case_number', 'latitude', 'longitude']].dropna().drop_duplicates('case_number')
+    cs = cs.merge(geo_fallback.rename(columns={'latitude': '_lat_z', 'longitude': '_lon_z'}),
+                  on='case_number', how='left')
+    missing_geo = cs['latitude'].isna()
+    cs.loc[missing_geo, 'latitude']  = cs.loc[missing_geo, '_lat_z']
+    cs.loc[missing_geo, 'longitude'] = cs.loc[missing_geo, '_lon_z']
+    n1 = (missing_geo & cs['latitude'].notna()).sum()
+    cs.drop(columns=['_lat_z', '_lon_z'], inplace=True)
+    print(f"FIX 1a: Backfilled lat/lon from zoning CSV for {n1:,} cases.", flush=True)
+
+# ── FIX 1b: Backfill lat/lon from enriched_zoning_data_causal.csv (19 more) ─
+if not enriched_df.empty and 'latitude' in enriched_df.columns:
+    geo_enriched = enriched_df[['case_number', 'latitude', 'longitude']].dropna().drop_duplicates('case_number')
+    cs = cs.merge(geo_enriched.rename(columns={'latitude': '_lat_e', 'longitude': '_lon_e'}),
+                  on='case_number', how='left')
+    missing_geo2 = cs['latitude'].isna()
+    cs.loc[missing_geo2, 'latitude']  = cs.loc[missing_geo2, '_lat_e']
+    cs.loc[missing_geo2, 'longitude'] = cs.loc[missing_geo2, '_lon_e']
+    n1b = (missing_geo2 & cs['latitude'].notna()).sum()
+    cs.drop(columns=['_lat_e', '_lon_e'], inplace=True)
+    print(f"FIX 1b: Backfilled lat/lon from enriched_causal CSV for {n1b:,} more cases.", flush=True)
+
+# ── FIX 2: Height recovery from enriched_zoning_data_causal.csv ─────────────
+# Cases where Delta_Requested_Height is null may have height data in the
+# enriched CSV under delta_max_height_ft / proposed_max_height_ft.
+if not enriched_df.empty and 'delta_max_height_ft' in enriched_df.columns:
+    height_enriched = enriched_df[['case_number', 'delta_max_height_ft',
+                                    'proposed_max_height_ft', 'existing_max_height_ft']].drop_duplicates('case_number')
+    cs = cs.merge(height_enriched.add_prefix('_e_').rename(columns={'_e_case_number': 'case_number'}),
+                  on='case_number', how='left')
+    # Fill missing Delta_Requested_Height from delta_max_height_ft
+    missing_req = cs['Delta_Requested_Height'].isna()
+    cs.loc[missing_req, 'Delta_Requested_Height'] = cs.loc[missing_req, '_e_delta_max_height_ft']
+    n2a = (missing_req & cs['Delta_Requested_Height'].notna()).sum()
+    # For those with proposed/existing but no delta, compute it
+    still_missing = cs['Delta_Requested_Height'].isna()
+    cs.loc[still_missing, 'Delta_Requested_Height'] = (
+        cs.loc[still_missing, '_e_proposed_max_height_ft'] - cs.loc[still_missing, '_e_existing_max_height_ft']
+    )
+    n2b = (still_missing & cs['Delta_Requested_Height'].notna()).sum()
+    cs.drop(columns=[c for c in cs.columns if c.startswith('_e_')], inplace=True)
+    print(f"FIX 2: Recovered Delta_Requested_Height for {n2a+n2b:,} cases from enriched CSV.", flush=True)
+
+# ── FIX 3: No-petition, no-height cases → zero-treatment controls ────────────
+# If a case had no petition AND still no recorded height request, it's a
+# pure control observation. Attrition = 0 (full approval), approved = requested.
+no_petition = cs['cumulative_unofficial_protest_intensity'].fillna(0) == 0
+no_height   = cs['Delta_Requested_Height'].isna()
+zero_controls = no_petition & no_height
+cs.loc[zero_controls, 'Delta_Requested_Height'] = 0.0
+cs.loc[zero_controls, 'Delta_Approved_Height']  = cs.loc[zero_controls, 'Delta_Approved_Height'].fillna(0.0)
+print(f"FIX 3: Set {zero_controls.sum():,} no-petition/no-height cases as zero-treatment controls.", flush=True)
+
+# Recompute derived columns after all recovery
 def fraction_01(s):
     x = pd.to_numeric(s, errors='coerce').fillna(0.0)
     non_zero = x[x > 0]
@@ -77,16 +138,28 @@ def fraction_01(s):
         x = x / 100.0
     return x.clip(0.0, 1.0)
 
-cs['petition_dose'] = fraction_01(cs['cumulative_unofficial_protest_intensity'])
-cs['Height_Attrition'] = cs['Delta_Requested_Height'] - cs['Delta_Approved_Height']
+cs['petition_dose']     = fraction_01(cs['cumulative_unofficial_protest_intensity'])
+cs['Height_Attrition']  = cs['Delta_Requested_Height'] - cs['Delta_Approved_Height']
 cs['Withdrawal_Binary'] = (cs['detailed_status'] == 'Withdrawn').astype(float)
 
-for c in ['median_household_income', 'race_white', 'renter_share']:
-    cs[c] = cs[c].fillna(cs[c].median())
+# Zero-fill petition features (genuinely zero when no petition occurred)
 for c in ['cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
           'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
           'cumulative_petition_attempted', 'cumulative_mobilization_failure']:
     cs[c] = cs[c].fillna(0.0)
+
+# ── Spatially-aware KNN imputation for census demographics ──────────────────
+demo_cols = ['median_household_income', 'race_white', 'renter_share']
+cs_geo = cs.dropna(subset=['latitude', 'longitude'] + demo_cols)
+if len(cs_geo) > 5:
+    knn_imputer = KNeighborsRegressor(n_neighbors=min(5, len(cs_geo)), weights='distance')
+    knn_imputer.fit(cs_geo[['latitude', 'longitude']].values, cs_geo[demo_cols].values)
+    missing_demo = cs[demo_cols].isna().any(axis=1) & cs['latitude'].notna()
+    if missing_demo.sum() > 0:
+        cs.loc[missing_demo, demo_cols] = knn_imputer.predict(
+            cs.loc[missing_demo, ['latitude', 'longitude']].values
+        )
+        print(f"KNN-imputed demographics for {missing_demo.sum():,} training cases.", flush=True)
 
 confounders = [
     'Delta_Requested_Height', 'latitude', 'longitude',
@@ -96,30 +169,48 @@ confounders = [
     'cumulative_petition_attempted', 'cumulative_mobilization_failure'
 ]
 
-cs = cs.dropna(subset=confounders + ['Delta_Approved_Height', 'Height_Attrition', 'petition_dose', 'days_to_resolution', 'latitude', 'longitude'])
+# Hard minimum: must have lat/lon (spatial context) and petition_dose (treatment)
+cs = cs.dropna(subset=['latitude', 'longitude', 'petition_dose'])
+cs = cs.dropna(subset=confounders)  # after all imputations, remaining nulls are unrecoverable
+
+print(f"\nFinal case counts after all recovery:", flush=True)
+print(f"  Total with geo + confounders:  {len(cs):,}", flush=True)
+print(f"  With days_to_resolution:       {cs['days_to_resolution'].notna().sum():,}  (joint model)", flush=True)
+print(f"  With height attrition:         {cs['Height_Attrition'].notna().sum():,}  (joint model)", flush=True)
+print(f"  All cases (withdrawal model):  {len(cs):,}", flush=True)
 
 # ── 2. Fit CONTINUOUS Causal Forest ──────────────────────────────────────
-print("Fitting Continuous Causal Forest on historical cases...", flush=True)
+print("\nFitting Continuous Causal Forest on historical cases...", flush=True)
 X = cs[confounders].values
-T_cont = cs['petition_dose'].values # Continuous treatment!
+T_cont = cs['petition_dose'].values
 
-surv_mask = ~cs['detailed_status'].isin(['Withdrawn', 'Denied', 'Expired', 'VOID'])
+# ── FIX 4: Split joint vs withdrawal training sets ────────────────────────────
+# Joint model (delay + attrition): requires resolved outcome — exclude pending cases
+# Withdrawal model: all cases including pending (Withdrawal_Binary = 0 for pending)
+surv_mask = (
+    ~cs['detailed_status'].isin(['Withdrawn', 'Denied', 'Expired', 'VOID']) &
+    cs['days_to_resolution'].notna() &
+    cs['Height_Attrition'].notna()
+)
 cs_surv = cs[surv_mask]
 X_surv = cs_surv[confounders].values
 Y_surv_joint = cs_surv[['Height_Attrition', 'days_to_resolution']].values
 T_cont_surv = cs_surv['petition_dose'].values
 Y_withd = cs['Withdrawal_Binary'].values
+print(f"  Joint model training N:      {len(cs_surv):,}", flush=True)
+print(f"  Withdrawal model training N: {len(cs):,}", flush=True)
+
 
 # Notice discrete_treatment=False so we can dynamically query T1=dose
 cf_joint = CausalForestDML(
     model_y=model_y_multi, model_t=model_t_cont,
-    discrete_treatment=False, n_estimators=100,
-    cv=KFold(n_splits=2), random_state=42
+    discrete_treatment=False, n_estimators=1000, # Crank to 1000 for asymptote
+    cv=KFold(n_splits=5), random_state=42 # 5-fold for stability
 )
 cf_withd = CausalForestDML(
     model_y=model_y_bin, model_t=model_t_cont,
-    discrete_treatment=False, n_estimators=100,
-    cv=KFold(n_splits=2), random_state=42
+    discrete_treatment=False, n_estimators=1000,
+    cv=KFold(n_splits=5), random_state=42
 )
 
 cf_joint.fit(Y_surv_joint, T_cont_surv, X=X_surv)
