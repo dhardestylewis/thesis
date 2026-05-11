@@ -47,7 +47,8 @@ confounders = [
     'knn_petition_rate_1km', 'dist_petition_rate_lag1',
     'cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
     'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
-    'cumulative_petition_attempted', 'cumulative_mobilization_failure'
+    'cumulative_petition_attempted', 'cumulative_mobilization_failure',
+    'fire_hazard_severity', 'slope_degree', 'is_imagine_corridor'
 ]
 
 # ── HURDLE MODEL: Predict baseline probability of withdrawal ─────────────────

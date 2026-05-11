@@ -129,6 +129,52 @@ lui_gdf['cumulative_protester_embed_dim2'] = 0.0
 lui_gdf['cumulative_petition_attempted'] = 0.0
 lui_gdf['cumulative_mobilization_failure'] = 0.0
 
+# ── 4b. Spatial Fusion: WUI and Imagine Austin Corridors ──────────────────
+print("7b. Applying structural spatial constraints (WUI & Corridors)...", flush=True)
+try:
+    # 1. WUI
+    wui_path = ROOT / "Data/CoA_Open_Data/BOUNDARIES_wildland_urban_interface_code.geojson"
+    wui_gdf = gpd.read_file("https://data.austintexas.gov/api/geospatial/ti8v-kzst?method=export&format=GeoJSON") if not wui_path.exists() else gpd.read_file(wui_path)
+    if wui_gdf.crs and wui_gdf.crs != "EPSG:4326": wui_gdf = wui_gdf.to_crs("EPSG:4326")
+    
+    wui_cols = [c for c in wui_gdf.columns if c.lower() in ['fire_hazard_severity', 'slope_degree', 'geometry']]
+    joined_wui = gpd.sjoin(centroids_gdf, wui_gdf[wui_cols], how='left', predicate='within')
+    joined_wui = joined_wui[~joined_wui.index.duplicated(keep='first')]
+    
+    fh_col = next((c for c in joined_wui.columns if 'fire_hazard' in c.lower()), None)
+    if fh_col:
+        fh_series = joined_wui[fh_col].astype(str).str.title()
+        fh_map = {'Low': 1, 'Moderate': 2, 'Medium': 2, 'High': 3, 'Extreme': 4}
+        lui_gdf['fire_hazard_severity'] = fh_series.map(fh_map).fillna(0.0)
+    else:
+        lui_gdf['fire_hazard_severity'] = 0.0
+
+    slope_col = next((c for c in joined_wui.columns if 'slope' in c.lower()), None)
+    if slope_col:
+        lui_gdf['slope_degree'] = pd.to_numeric(joined_wui[slope_col], errors='coerce').fillna(0.0)
+    else:
+        lui_gdf['slope_degree'] = 0.0
+
+    # 2. Corridors
+    corr_path = ROOT / "Data/CoA_Open_Data/Imagine_Austin_Corridors.geojson"
+    corr_gdf = gpd.read_file("https://data.austintexas.gov/api/geospatial/gsvs-ypi7?method=export&format=GeoJSON") if not corr_path.exists() else gpd.read_file(corr_path)
+    if corr_gdf.crs and corr_gdf.crs != "EPSG:4326": corr_gdf = corr_gdf.to_crs("EPSG:4326")
+    
+    if corr_gdf.geometry.type.isin(['LineString', 'MultiLineString']).any():
+        corr_gdf = corr_gdf.to_crs("EPSG:3857")
+        corr_gdf.geometry = corr_gdf.geometry.buffer(50)
+        corr_gdf = corr_gdf.to_crs("EPSG:4326")
+
+    joined_corr = gpd.sjoin(centroids_gdf, corr_gdf[['geometry']], how='left', predicate='within')
+    joined_corr = joined_corr[~joined_corr.index.duplicated(keep='first')]
+    lui_gdf['is_imagine_corridor'] = joined_corr['index_right'].notna().astype(float)
+
+except Exception as e:
+    print(f"Failed to spatial join WUI/Corridors: {e}")
+    lui_gdf['fire_hazard_severity'] = 0.0
+    lui_gdf['slope_degree'] = 0.0
+    lui_gdf['is_imagine_corridor'] = 0.0
+
 # ── 5. Hurdle Propensity Link ─────────────────────────────────────────────
 print("8. Calculating Baseline Withdrawal Propensity...", flush=True)
 confounders = [
@@ -140,7 +186,8 @@ confounders = [
     'knn_petition_rate_1km', 'dist_petition_rate_lag1',
     'cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
     'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
-    'cumulative_petition_attempted', 'cumulative_mobilization_failure'
+    'cumulative_petition_attempted', 'cumulative_mobilization_failure',
+    'fire_hazard_severity', 'slope_degree', 'is_imagine_corridor'
 ]
 
 # Impute lingering NaNs (due to geometries falling outside LDB/Tract bounds)
