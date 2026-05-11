@@ -40,10 +40,27 @@ df = pd.read_csv(panel_path, low_memory=False)
 
 zoning_df = pd.read_csv(ROOT / "Data/Zoning_Cases/Processed_Data/CSV/zoning_land_use_merged_data.csv", low_memory=False)
 zoning_df['start'] = pd.to_datetime(zoning_df['application_start_date'], errors='coerce')
-zoning_df['end'] = pd.to_datetime(zoning_df['status_date'], errors='coerce')
-# STRICT ARTIFACT CAP: Clip delay to 5 years (1825 days). Anything longer is 
-# an administrative ledger artifact (e.g. 30-year abandoned cases closed in mass purges)
-zoning_df['days_to_resolution'] = (zoning_df['end'] - zoning_df['start']).dt.days.clip(0, 1825)
+zoning_df['end_status'] = pd.to_datetime(zoning_df['status_date'], errors='coerce')
+zoning_df['end_approval'] = pd.to_datetime(zoning_df['approval_date'], errors='coerce')
+zoning_df['end_final'] = pd.to_datetime(zoning_df['final_date'], errors='coerce')
+
+# Cascade to find the true resolution date
+zoning_df['days_final'] = (zoning_df['end_final'] - zoning_df['start']).dt.days
+zoning_df['days_approval'] = (zoning_df['end_approval'] - zoning_df['start']).dt.days
+zoning_df['days_status'] = (zoning_df['end_status'] - zoning_df['start']).dt.days
+
+# Condition 1: Use final_date if it's valid (between 0 and 1825 days)
+cond_final = zoning_df['days_final'].between(0, 1825)
+# Condition 2: Use approval_date if final_date is invalid, but approval_date is valid
+cond_app = ~cond_final & zoning_df['days_approval'].between(0, 1825)
+
+# Build the true delay column
+zoning_df['days_to_resolution'] = zoning_df['days_status']
+zoning_df.loc[cond_app, 'days_to_resolution'] = zoning_df.loc[cond_app, 'days_approval']
+zoning_df.loc[cond_final, 'days_to_resolution'] = zoning_df.loc[cond_final, 'days_final']
+
+# Finally, apply the 5-year strict statutory cap to everything that remains
+zoning_df['days_to_resolution'] = zoning_df['days_to_resolution'].clip(0, 1825)
 zoning_dates = zoning_df[['case_number', 'days_to_resolution']].drop_duplicates('case_number')
 
 # Load the enriched causal CSV — has delta_max_height_ft + lat/lon for more cases
