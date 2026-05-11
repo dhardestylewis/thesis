@@ -40,7 +40,7 @@ warnings.filterwarnings("ignore")
 OUT_DIR = os.environ.get("OUT_DIR", ".")
 PANEL_PATH = os.environ.get(
     "PANEL_PATH",
-    os.path.join(OUT_DIR, "biweekly_panel.csv"),
+    os.path.join(OUT_DIR, "biweekly_panel_patched.csv"),
 )
 
 # ── Constants ────────────────────────────────────────────────────────────────
@@ -618,8 +618,8 @@ def load_data():
     targets       : list[str]  target column names (AVAILABLE_TARGETS order)
     norm_dict     : dict       normalization stats + height logit stats
     """
-    if os.path.exists("/home/ubuntu/biweekly_panel.csv"):
-        df = pd.read_csv("/home/ubuntu/biweekly_panel.csv", low_memory=False)
+    if os.path.exists("/home/ubuntu/biweekly_panel_patched.csv"):
+        df = pd.read_csv("/home/ubuntu/biweekly_panel_patched.csv", low_memory=False)
     else:
         df = pd.read_csv(PANEL_PATH, low_memory=False)
 
