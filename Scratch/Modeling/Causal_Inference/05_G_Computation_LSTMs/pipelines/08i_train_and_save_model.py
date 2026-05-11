@@ -79,7 +79,19 @@ cs = df.groupby('case_number').agg({
     'longitude': 'first',
     'median_household_income': 'first',
     'race_white': 'first',
+    'race_black': 'first',
+    'race_hispanic': 'first',
     'renter_share': 'first',
+    'rent_burden': 'first',
+    'total_population': 'first',
+    'median_age': 'first',
+    'appraised_value': 'first',
+    'building_age': 'first',
+    'mortgage_rate_30yr': 'first',
+    'fed_funds_rate': 'first',
+    'local_unemployment_rate': 'first',
+    'knn_petition_rate_1km': 'first',
+    'dist_petition_rate_lag1': 'first',
     'cumulative_min_signer_dist': 'max',
     'cumulative_signers_outside_200ft': 'max',
     'cumulative_protester_embed_dim1': 'max',
@@ -96,7 +108,7 @@ area_weighted_path = ROOT / "Data/Zoning_Cases/Processed_Data/CSV/area_weighted_
 if area_weighted_path.exists():
     aw_df = pd.read_csv(area_weighted_path)
     # We only overwrite the exact demographic columns that exist in the area-weighted CSV
-    demo_cols = ['median_household_income', 'renter_share', 'race_white']
+    demo_cols = ['median_household_income', 'renter_share', 'race_white', 'total_population', 'median_age']
     aw_df = aw_df[['case_number'] + [c for c in demo_cols if c in aw_df.columns]]
     
     cs = cs.set_index('case_number')
@@ -200,7 +212,12 @@ for c in ['cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
     cs[c] = cs[c].fillna(0.0)
 
 # ── Spatially-aware KNN imputation for census demographics ──────────────────
-demo_cols = ['median_household_income', 'race_white', 'renter_share']
+# Impute missing demographics and structural property values using spatial proximity
+demo_cols = ['median_household_income', 'race_white', 'race_black', 'race_hispanic', 
+             'renter_share', 'rent_burden', 'total_population', 'median_age',
+             'appraised_value', 'building_age', 'mortgage_rate_30yr', 
+             'fed_funds_rate', 'local_unemployment_rate',
+             'knn_petition_rate_1km', 'dist_petition_rate_lag1']
 cs_geo = cs.dropna(subset=['latitude', 'longitude'] + demo_cols)
 if len(cs_geo) > 5:
     knn_imputer = KNeighborsRegressor(n_neighbors=min(5, len(cs_geo)), weights='distance')
@@ -214,7 +231,11 @@ if len(cs_geo) > 5:
 
 confounders = [
     'Delta_Requested_Height', 'latitude', 'longitude',
-    'median_household_income', 'race_white', 'renter_share',
+    'median_household_income', 'race_white', 'race_black', 'race_hispanic',
+    'renter_share', 'rent_burden', 'total_population', 'median_age',
+    'appraised_value', 'building_age',
+    'mortgage_rate_30yr', 'fed_funds_rate', 'local_unemployment_rate',
+    'knn_petition_rate_1km', 'dist_petition_rate_lag1',
     'cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
     'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
     'cumulative_petition_attempted', 'cumulative_mobilization_failure'
@@ -269,7 +290,7 @@ cf_withd.fit(Y_withd, T_cont, X=X)
 
 print("Training KNN Demographic Interpolator...", flush=True)
 knn_X = cs[['latitude', 'longitude']].values
-knn_Y = cs[['median_household_income', 'race_white', 'renter_share']].values
+knn_Y = cs[demo_cols].values
 knn = KNeighborsRegressor(n_neighbors=5, weights='distance')
 knn.fit(knn_X, knn_Y)
 
@@ -287,10 +308,10 @@ gdf = gdf.dropna(subset=['latitude', 'longitude'])
 
 print("Interpolating demographics for 300k parcels...", flush=True)
 demo_preds = knn.predict(gdf[['latitude', 'longitude']].values)
-gdf['median_household_income'] = demo_preds[:, 0]
-gdf['race_white'] = demo_preds[:, 1]
-gdf['renter_share'] = demo_preds[:, 2]
+for i, col in enumerate(demo_cols):
+    gdf[col] = demo_preds[:, i]
 
+# Set baseline petition/protest mechanics (what if zero protest?)
 gdf['Delta_Requested_Height'] = 29.0
 gdf['cumulative_min_signer_dist'] = 0.0
 gdf['cumulative_signers_outside_200ft'] = 0.0
