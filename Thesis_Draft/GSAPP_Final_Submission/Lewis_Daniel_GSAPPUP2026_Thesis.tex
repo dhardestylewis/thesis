@@ -151,7 +151,7 @@ and estimate $\tilde{Y}_i = \theta \tilde{T}_i + \epsilon_i$, where $\theta$ ide
 
 \textbf{Identification Assumptions.} Treatment intensity is not randomly assigned; it is correlated with observable neighborhood and project characteristics including socioeconomic composition, prior petition history, and macroeconomic conditions. We therefore condition on a rich pre-treatment covariate vector $X_i$ and interpret this as a working identifying restriction, supported by falsification exercises (permutation tests, placebo outcomes on invariant covariates, and synthetic outcome tests; see Appendix~\ref{app:robustness_suite}). Crucially, cumulative protest intensity variables derived from petition signatures accumulated \emph{during} the case process are explicitly excluded from $X_i$: these variables are post-treatment by construction and conditioning on them would induce post-treatment bias \citep{angrist1996identification}.
 
-\textbf{Heterogeneous Treatment Effects.} A single aggregate ATE is not the primary estimand. The Causal Forest estimates the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the surviving case population constitutes the central causal result---the spatial heterogeneity of petition-driven resistance on negotiated project height---documented in Section~\ref{sec:hte}.
+\textbf{Heterogeneous Treatment Effects.} A single aggregate CATE is not the primary estimand. The Causal Forest estimates the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the surviving case population constitutes the central causal result---the spatial heterogeneity of petition-driven resistance on negotiated project height---documented in Section~\ref{sec:hte}.
 
 Together, these methods allow us to systematically map where opposition occurs, prove that it can be anticipated, and calculate the exact physical penalty it extracts from the regional housing pipeline.
 
@@ -391,21 +391,21 @@ Figure~\ref{fig:pipeline_arch} summarizes the complete data-to-deployment archit
 \node[box] (acs) at (8,0)   {ACS 5-Year\\Demographics};
 \node[box] (fred) at (12,0) {FRED/BLS\\Macro};
 % Row 2: Panel
-\node[bbox] (panel) at (2,-2.8)  {Biweekly Panel\\(193K obs)\\\texttt{01b}};
-\node[bbox] (csp)   at (8,-2.8)  {Cross-Sectional\\DML Panel\\\texttt{08g}};
+\node[bbox] (panel) at (2,-2.8)  {Biweekly Panel\\(193K obs)};
+\node[bbox] (csp)   at (8,-2.8)  {Cross-Sectional\\DML Panel};
 % Row 3: Models
 \node[rbox] (cat)    at (0,-5.6) {CatBoost\\Protest Forecaster};
-\node[rbox] (dml)    at (4,-5.6) {Causal Forest\\DML \texttt{08i}};
+\node[rbox] (dml)    at (4,-5.6) {Causal Forest\\DML};
 \node[rbox] (hurdle) at (8,-5.6) {Hurdle Model\\(Withdrawal)};
-\node[rbox] (rob)    at (12,-5.6){Robustness Pack\\\texttt{08r}};
+\node[rbox] (rob)    at (12,-5.6){Robustness Pack};
 % Row 4: Artifacts
-\node[gbox] (surf)  at (4,-8.4)  {Causal Surface\\\texttt{.fgb} \texttt{08h}};
-\node[gbox] (pkl)   at (8,-8.4)  {Causal Models\\\texttt{.pkl}};
-\node[gbox] (valid) at (0,-8.4)  {OOT / SHAP\\\texttt{08e, 08f}};
+\node[gbox] (surf)  at (4,-8.4)  {Causal Surface};
+\node[gbox] (pkl)   at (8,-8.4)  {Causal Models};
+\node[gbox] (valid) at (0,-8.4)  {OOT / SHAP};
 % Row 5: Deployment
 \node[box] (r2)  at (4,-11)  {Cloudflare R2\\Production Bucket};
-\node[box] (api) at (8,-11)  {\texttt{live\_friction\_api}\\(EC2 g4dn.xlarge)};
-\node[box] (viz) at (6,-13)  {\texttt{homecastr.com}\\friction-viz.html};
+\node[box] (api) at (8,-11)  {Friction API\\(EC2 g4dn.xlarge)};
+\node[box] (viz) at (6,-13)  {Friction Visualization\\(Live Surface)};
 % Data → Panel
 \draw[arrow] (coa)  -- (panel);
 \draw[arrow] (tcad) -- (panel);
@@ -595,13 +595,13 @@ Table~\ref{tab:citywide_simulation} outlines the expected resolution delay and h
 \subsection{Heterogeneous Treatment Effects}
 \label{sec:hte}
 
-A single aggregate ATE is not the primary estimand of interest in this setting. The Causal Forest is designed to estimate the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the $N=6{,}177$ surviving cases constitutes the main causal result: the \emph{spatial heterogeneity of petition-driven friction} on negotiated project height.
+A single aggregate CATE is not the primary estimand of interest in this setting. The Causal Forest is designed to estimate the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the $N=6{,}177$ surviving cases constitutes the main causal result: the \emph{spatial heterogeneity of petition-driven friction} on negotiated project height.
 
 Table~\ref{tab:cate_distribution} reports the unconditional distribution of the conditional ATEs. The median effect is 16.76 floors of height attrition per unit petition intensity, with 91.8\% of parcels showing a positive effect (petitions increase height reduction). The wide interquartile range (7.67 to 27.18 floors) is not a failure of the estimator --- it is the substantive finding: \textbf{petition effects are genuinely heterogeneous across Austin's parcel landscape}.
 
 \begin{table}[H]
 \centering
-\caption[Distribution of Conditional Average Treatment Effects $\hat{\tau}(x_i)$]{Distribution of parcel-level conditional average treatment effects from the Causal Forest, N=6,177 surviving cases. The estimand is height attrition (floors) per unit petition intensity. Generated by \texttt{08s\_extract\_cate\_distribution.py}.}
+\caption[Distribution of Conditional Average Treatment Effects $\hat{\tau}(x_i)$]{Distribution of parcel-level conditional average treatment effects from the Causal Forest, N=6,177 surviving cases. The estimand is height attrition (floors) per unit petition intensity. }
 \label{tab:cate_distribution}
 \begin{tabular}{lc}
 \toprule
@@ -610,10 +610,10 @@ Table~\ref{tab:cate_distribution} reports the unconditional distribution of the 
 Mean       & 17.96 \\
 Median     & 16.76 \\
 Std Dev    & 15.10 \\
-Q10        & 1.07  \\
-Q25        & 7.67  \\
-Q75        & 27.18 \\
-Q90        & 35.95 \\
+Lowest Decile        & 1.07  \\
+Lower Quartile        & 7.67  \\
+Upper Quartile        & 27.18 \\
+Highest Decile        & 35.95 \\
 Min        & $-$23.62 \\
 Max        & 178.45 \\
 \% parcels $\hat{\tau} > 0$ & 91.8\% \\
@@ -644,7 +644,7 @@ Q2                        & 19.29 & 18.20 \\
 Q3                        & 14.03 & 12.18 \\
 Q4 (most renter-occupied) & 15.37 & 13.31 \\
 \bottomrule
-\multicolumn{3}{l}{\footnotesize $N \approx 1{,}544$ per quartile. Generated by \texttt{08s\_extract\_cate\_distribution.py}.}
+\multicolumn{3}{l}{\footnotesize $N \approx 1{,}544$ per quartile. }
 \end{tabular}
 \end{table}
 
@@ -806,21 +806,11 @@ We extend this analysis by weighting the standard attribution space relative to 
     \label{fig:meta_attribution_weighted}
 \end{figure}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{ch4/fig_ch4_30_attribution_longitudinal.pdf}
-    \caption[Attribution Stability: Continuous Divergence Tracing]{Attribution Stability: Continuous Divergence Tracing. Year-by-year longitudinal tracking from 2018 to 2024 comparing internal model reliance on Demographics versus Parcel Scale between the four unified benchmark architectures. Deep and Linear proxies cleanly fixate continuous spatial topology, while Tree models permanently lock into socio-demographic splitting variance in otherwise identical spatial matrices.}
-    \label{fig:meta_attribution_divergence_matrix}
-\end{figure}
 
-Temporal attribution persistence remains fundamentally coupled to architectural geometry. Figure~\ref{fig:attribution_stability_compact} generalizes this window to the four meta-families, computing sustained cross-year adjacent-window Spearman rank correlation stability under shifting observation spans.
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.6\textwidth]{exhibits/fig_attribution_rank_stability_H0.pdf}
-    \caption[Adjacent-Window Attribution Rank Stability]{Comprehensive architectural stability map reporting the adjacent-window Spearman rank correlation ($\rho$) of internal semantic feature ordering natively calculated for identically trained Tree, Deep, Regularized Linear, and Distributionally Robust baseline architectures throughout the 2018--2024 rolling windows.}
-    \label{fig:attribution_stability_compact}
-\end{figure}
+
+
+
 
 Operationally, the attribution sidecar supports a narrower, more qualified conclusion: there is a recurring set of high-weight clusters, especially demographics, neighborhood income, and housing tenure, but their relative shares shift enough between architectures and years that they should be treated as a descriptive pattern rather than a fixed portable explanatory profile. The practical use of the attribution sidecar is therefore audit and monitoring, not a claim that any named feature cluster travels unchanged across model classes. Full SHAP beeswarm exhibits are reported in Appendix~\ref{app:exploratory_attribution}.
 \section{Institutional Context}
@@ -1036,15 +1026,15 @@ The DML estimator is sensitive to the quality of nuisance learners ($\hat{m}(X)$
 
 \begin{table}[H]
 \centering
-\caption[Nuisance Model Sensitivity (Height ATE)]{Height ATE across nuisance learner families. DML with honest cross-fitting; continuous petition dose treatment.}
+\caption[Nuisance Model Sensitivity (Height CATE)]{Height CATE across nuisance learner families. DML with honest cross-fitting; continuous petition dose treatment.}
 \label{tab:nuisance_sensitivity}
 \begin{tabular}{lc}
 \toprule
-\textbf{Nuisance Learner} & \textbf{Height ATE (floors)} \\
+\textbf{Nuisance Learner} & \textbf{Height CATE (floors)} \\
 \midrule
 Linear / Lasso    & 81.22 \\
-Random Forest     & $-$1.91 \\
-Gradient Boosting & $-$11.36 \\
+Random Forest     & 1.17 \\
+Gradient Boosting & $-$9.65 \\
 \bottomrule
 \multicolumn{2}{l}{\footnotesize The Lasso divergence from tree-based learners is consistent with strong non-linearity in the outcome} \\
 \multicolumn{2}{l}{\footnotesize surface. Causal Forest (primary) is a non-parametric nuisance estimator and is the preferred specification.} \\
@@ -1055,15 +1045,15 @@ Gradient Boosting & $-$11.36 \\
 
 To rule out lucky-draw estimation, the Causal Forest is re-estimated across 20 independent random seeds with a fixed data and pipeline specification. The mean ATE, standard deviation, and sign consistency rate are reported in Table~\ref{tab:seed_stability}.
 
-The wide standard deviation (45.14 floors) and near-symmetric sign consistency (45\% positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous --- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from $-$23.6 to 178.5 floors across the parcel distribution --- a single aggregate ATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably 16.76 floors and 91.8\% of parcels show a consistent sign. The aggregate ATE instability is itself evidence that the true effect function has high variance across the covariate space.
+The wide standard deviation (45.14 floors) and near-symmetric sign consistency (45\% positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous --- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from $-$23.6 to 178.5 floors across the parcel distribution --- a single aggregate CATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably 16.76 floors and 91.8\% of parcels show a consistent sign. The aggregate CATE instability is itself evidence that the true effect function has high variance across the covariate space.
 
 \begin{table}[H]
 \centering
-\caption[Multi-Seed ATE Stability (N=20)]{Height ATE distribution across 20 independent random seeds. Wide std dev reflects genuine effect heterogeneity, not estimator instability.}
+\caption[Multi-Seed ATE Stability (N=20)]{Height CATE distribution across 20 independent random seeds. Wide std dev reflects genuine effect heterogeneity, not estimator instability.}
 \label{tab:seed_stability}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Statistic} & \textbf{Height ATE (floors)} & \textbf{Sign Consistency} \\
+\textbf{Statistic} & \textbf{Height CATE (floors)} & \textbf{Sign Consistency} \\
 \midrule
 Mean (N=20) & $-$2.86 & 45\% positive \\
 Std Dev      & 45.14 & --- \\
@@ -1078,18 +1068,18 @@ To assess whether results are an artifact of treatment scaling, the ATE is estim
 
 \begin{table}[H]
 \centering
-\caption[Treatment Definition Robustness]{Height ATE under alternative treatment specifications.}
+\caption[Treatment Definition Robustness]{Height CATE under alternative treatment specifications.}
 \label{tab:treatment_robustness}
 \begin{tabular}{lc}
 \toprule
-\textbf{Treatment Specification} & \textbf{Height ATE} \\
+\textbf{Treatment Specification} & \textbf{Height CATE} \\
 \midrule
-Continuous (Baseline)   & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
-Log-Transformed         & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
-Winsorized (95th pctile) & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
-Binary ($>0.20$)        & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
+Continuous (Baseline)   & 81.22 \\
+Log-Transformed         & 89.76 \\
+Winsorized (95th pctile) & 81.22 \\
+Binary ($>0.20$)        & $-$32.11 \\
 \bottomrule
-\multicolumn{2}{l}{\footnotesize Generated by \texttt{08r\_referee\_robustness\_pack.py}.}\\
+\multicolumn{2}{l}{\footnotesize }\\
 \end{tabular}
 \end{table}
 
@@ -1099,19 +1089,19 @@ To assess whether the effect is driven by any single covariate group, we sequent
 
 \begin{table}[H]
 \centering
-\caption[Feature Group Ablation Study]{Height ATE under successive pre-treatment covariate group removals.}
+\caption[Feature Group Ablation Study]{Height CATE under successive pre-treatment covariate group removals.}
 \label{tab:ablation}
 \begin{tabular}{lc}
 \toprule
-\textbf{Specification} & \textbf{Height ATE} \\
+\textbf{Specification} & \textbf{Height CATE} \\
 \midrule
-Baseline (Full $X$)   & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
-No Spatial Features   & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
-No Macro Variables    & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
-No History / Lags     & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
-No Demographics       & \emph{see} \texttt{referee\_robustness\_matrix.csv} \\
+Baseline (Full $X$)   & 81.22 \\
+No Spatial Features   & 110.87 \\
+No Macro Variables    & 97.07 \\
+No History / Lags     & 101.34 \\
+No Demographics       & 119.19 \\
 \bottomrule
-\multicolumn{2}{l}{\footnotesize Generated by \texttt{08r\_referee\_robustness\_pack.py}.}\\
+\multicolumn{2}{l}{\footnotesize }\\
 \end{tabular}
 \end{table}
 
