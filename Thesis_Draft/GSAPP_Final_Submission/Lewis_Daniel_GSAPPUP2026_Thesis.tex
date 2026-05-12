@@ -333,7 +333,95 @@ To support multi-horizon predictive evaluation, the filing-date case-level obser
 
 \textbf{Annualization.} For the annualized multi-horizon evaluation (see Section~\ref{sec:results}), the biweekly panel is collapsed to one row per (case, calendar year) by taking the \emph{last} biweekly period of each year. This preserves the richest cumulative state while remaining strictly within the information boundary of December 31 of that year, since all cumulative features are already lagged within the biweekly construction.
 
+\section{Identification Strategy}
+
+\subsection{Setup and Potential Outcomes}
+
+We consider a setting in which project outcomes are potentially affected by neighborhood mobilization intensity. Let:
+\begin{itemize}
+    \item $T_i$: intensity of neighborhood mobilization affecting project $i$
+    \item $Y_i(1), Y_i(0)$: potential outcomes under high vs. low mobilization
+    \item $X_i$: pre-treatment covariates observed prior to project initiation
+\end{itemize}
+
+We are interested in the average causal effect:
+\begin{equation}
+ATE = \mathbb{E}[Y_i(1) - Y_i(0)]
+\end{equation}
+
+We further decompose outcomes into two sequential stages:
+\begin{enumerate}
+    \item \textbf{Selection (Hurdle) stage:} probability of project continuation (non-withdrawal)
+    \item \textbf{Outcome stage (conditional on continuation):} negotiated height and time-to-resolution
+\end{enumerate}
+
+This structure reflects institutional filtering rather than assuming a single reduced-form outcome process.
+
+\subsection{Treatment Assignment and Confounding Structure}
+
+Treatment intensity ($T_i$) is not randomly assigned. Instead, it is plausibly correlated with observable neighborhood and project characteristics, including socioeconomic composition, prior mobilization history, and macroeconomic conditions.
+
+We therefore assume \textbf{selection on observables conditional on a rich pre-treatment state vector ($X_i$)}:
+\begin{equation}
+(Y_i(1), Y_i(0)) \perp T_i \mid X_i
+\end{equation}
+
+This assumption is interpreted as a \textbf{working identifying restriction}, supported by extensive covariate adjustment and falsification exercises described below, rather than a literal structural claim. 
+
+Importantly, all components of $X_i$ are constructed to precede treatment realization, and exclude post-treatment variables or outcomes of prior negotiation phases (e.g., cumulative protest intensities).
+
+\subsection{Estimation Framework: Double Machine Learning}
+
+We estimate causal effects using a Double Machine Learning (DML) framework that partials out high-dimensional confounding via flexible nuisance models:
+\begin{itemize}
+    \item $m(X) = \mathbb{E}[Y \mid X]$
+    \item $g(X) = \mathbb{E}[T \mid X]$
+\end{itemize}
+
+We construct orthogonalized residuals:
+\begin{equation}
+\tilde{Y}_i = Y_i - \hat{m}(X_i), \quad \tilde{T}_i = T_i - \hat{g}(X_i)
+\end{equation}
+and estimate:
+\begin{equation}
+\tilde{Y}_i = \theta \tilde{T}_i + \epsilon_i
+\end{equation}
+where $\theta$ identifies the local average treatment effect under the maintained assumptions.
+
+\subsection{Sample Structure and Selection}
+
+The analysis conditions on project continuation (non-withdrawal) for outcome-stage estimation. This reflects institutional sequencing: substantive negotiation outcomes are only observed conditional on entry into the negotiation phase. Formally, we estimate:
+\begin{equation}
+ATE \mid S_i = 1
+\end{equation}
+where $S_i$ denotes survival past the initial administrative hurdle. 
+
+This conditioning is interpreted as defining the estimand within the \textit{effective policy-relevant population of active negotiations}, rather than imposing a claim of representativeness. We assess sensitivity to this restriction using auxiliary models of the selection process.
+
+\subsection{Temporal Instability and Structural Breaks}
+
+We allow for time variation in both treatment assignment and outcome functions. In particular, we permit:
+\begin{equation}
+\mathbb{P}(T_i \mid X_i, t) \neq \mathbb{P}(T_i \mid X_i)
+\end{equation}
+Rather than imposing full stationarity, we explicitly estimate models in rolling time windows and report out-of-time performance. We interpret systematic instability as evidence of \textbf{institutional evolution}, but do not rely on this as an identifying assumption.
+
+\subsection{Falsification and Overidentification Tests}
+
+We implement a set of pre-specified falsification exercises:
+\begin{enumerate}
+    \item \textbf{Permutation test of treatment assignment:} Randomly permuting $T_i$ across observations yields null effects, supporting dependence on correct pairing structure.
+    \item \textbf{Placebo outcomes on invariant covariates:} Physical attributes (e.g., geographic slope, building age) show no systematic response.
+    \item \textbf{Synthetic outcome test:} Estimation on independently generated noise outcomes yields no systematic treatment effect.
+\end{enumerate}
+These tests are interpreted as \textbf{diagnostics of estimator behavior}, not as formal proofs of identification.
+
+\subsection{Interpretation}
+
+The resulting estimates should be interpreted as the conditional association between exogenous variation in neighborhood mobilization intensity and project-level outcomes, after high-dimensional adjustment for pre-treatment observables. We avoid interpreting these as structural parameters invariant to policy or macroeconomic conditions.
+
 \section{Modeling Strategy}
+
 
 \subsection{Formal Protest Petition Model}
 

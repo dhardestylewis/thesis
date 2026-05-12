@@ -1,22 +1,21 @@
 """
-08g_prepare_cross_sectional_panel.py
+08g_prepare_causal_panel.py
 
-Data Engineering pipeline for Double Machine Learning.
-Loads the biweekly longitudinal panel, collapses it to a cross-sectional
-case-level dataset, backfills missing spatial coordinates, intersects area-weighted
-demographics for mega-projects, and uses a spatially-aware KNN to impute missing
-macroeconomic and property features.
-Outputs `cross_sectional_dml_panel.csv` for `08i` to train on.
+Production version of the Causal Inference data engineering pipeline.
+Collapses biweekly longitudinal panel to cross-sectional cases, backfills spatial coordinates,
+intersects area-weighted demographics, and ensures strictly pre-treatment conditioning (X).
 """
 
 import pandas as pd
 import numpy as np
 import warnings
-warnings.filterwarnings('ignore')
 from pathlib import Path
 from sklearn.neighbors import KNeighborsRegressor
 
-ROOT = Path(r"c:\Users\dhl\data\Thesis\thesis")
+warnings.filterwarnings('ignore')
+
+# Root resolution for production Scripts/pipeline/ location
+ROOT = Path(__file__).resolve().parents[2]
 
 # ── 1. Load Historical Data ──────────────────────────────────
 print("Loading historical panel...", flush=True)
@@ -118,7 +117,7 @@ if 'latitude' in zoning_df.columns and 'longitude' in zoning_df.columns:
     cs.drop(columns=['_lat_z', '_lon_z'], inplace=True)
     print(f"FIX 1a: Backfilled lat/lon from zoning CSV for {n1:,} cases.", flush=True)
 
-# ── FIX 1b: Backfill lat/lon from enriched_zoning_data_causal.csv (19 more) ─
+# ── FIX 1b: Backfill lat/lon from enriched_causal CSV (19 more) ────────────
 if not enriched_df.empty and 'latitude' in enriched_df.columns:
     geo_enriched = enriched_df[['case_number', 'latitude', 'longitude']].dropna().drop_duplicates('case_number')
     cs = cs.merge(geo_enriched.rename(columns={'latitude': '_lat_e', 'longitude': '_lon_e'}),
@@ -144,7 +143,7 @@ if geocoded_path.exists():
         cs.drop(columns=['lat_geocoded', 'lon_geocoded'], inplace=True)
         print(f"FIX 1c: Backfilled lat/lon from Geocoder for {n1c:,} more cases.", flush=True)
 
-# ── FIX 2: Height recovery from enriched_zoning_data_causal.csv ─────────────
+# ── FIX 2: Height recovery from enriched_causal CSV ─────────────
 if not enriched_df.empty and 'delta_max_height_ft' in enriched_df.columns:
     height_enriched = enriched_df[['case_number', 'delta_max_height_ft',
                                     'proposed_max_height_ft', 'existing_max_height_ft']].drop_duplicates('case_number')
@@ -182,12 +181,6 @@ cs['Height_Attrition']  = cs['Delta_Requested_Height'] - cs['Delta_Approved_Heig
 cs['Withdrawal_Binary'] = (cs['detailed_status'] == 'Withdrawn').astype(float)
 cs['log_days_to_resolution'] = np.log1p(cs['days_to_resolution'])
 
-
-for c in ['cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
-          'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
-          'cumulative_petition_attempted', 'cumulative_mobilization_failure']:
-    cs[c] = cs[c].fillna(0.0)
-
 # ── SPATIAL JOIN: WUI and Imagine Austin Corridors ──────────────────────────
 import geopandas as gpd
 print("Applying structural spatial constraints (WUI & Corridors)...", flush=True)
@@ -203,10 +196,8 @@ try:
     joined_wui = gpd.sjoin(cs_gdf, wui_gdf[wui_cols], how='left', predicate='within')
     joined_wui = joined_wui[~joined_wui.index.duplicated(keep='first')]
     
-    # Ordinal mapping for fire hazard if categorical
     fh_col = next((c for c in joined_wui.columns if 'fire_hazard' in c.lower()), None)
     if fh_col:
-        # Safely convert to string and title-case for robust mapping
         fh_series = joined_wui[fh_col].astype(str).str.title()
         fh_map = {'Low': 1, 'Moderate': 2, 'Medium': 2, 'High': 3, 'Extreme': 4}
         cs['fire_hazard_severity'] = fh_series.map(fh_map).fillna(0.0)
@@ -224,7 +215,6 @@ try:
     corr_gdf = gpd.read_file("https://data.austintexas.gov/api/geospatial/gsvs-ypi7?method=export&format=GeoJSON") if not corr_path.exists() else gpd.read_file(corr_path)
     if corr_gdf.crs and corr_gdf.crs != "EPSG:4326": corr_gdf = corr_gdf.to_crs("EPSG:4326")
     
-    # Some corridors might be lines, buffer them slightly to catch points (e.g., 50 meters)
     if corr_gdf.geometry.type.isin(['LineString', 'MultiLineString']).any():
         corr_gdf = corr_gdf.to_crs("EPSG:3857")
         corr_gdf.geometry = corr_gdf.geometry.buffer(50)
@@ -258,6 +248,8 @@ if len(cs_geo) > 5:
         )
         print(f"KNN-imputed demographics for {missing_demo.sum():,} training cases.", flush=True)
 
+# ── IDENTIFICATION SET (X) ──────────────────────────────────────────────────
+# STRICT PRE-TREATMENT COVARIATES ONLY.
 confounders = [
     'Delta_Requested_Height', 'latitude', 'longitude',
     'median_household_income', 'race_white', 'race_black', 'race_hispanic',
@@ -268,8 +260,7 @@ confounders = [
     'fire_hazard_severity', 'slope_degree', 'is_imagine_corridor'
 ]
 
-# We retain the following as "Post-Treatment Mediators" for descriptive checks only,
-# but they MUST be excluded from the causal identification baseline X.
+# RETENTION FOR DESCRIPTIVE ANALYSIS (NOT USED IN DML IDENTIFICATION)
 mediators = [
     'cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
     'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
@@ -281,10 +272,9 @@ cs = cs.dropna(subset=['latitude', 'longitude', 'petition_dose'])
 cs = cs.dropna(subset=confounders) 
 
 print(f"\nFinal case counts after all recovery:", flush=True)
-print(f"  Total with geo + confounders:  {len(cs):,}", flush=True)
-print(f"  With days_to_resolution:       {cs['days_to_resolution'].notna().sum():,}  (joint model)", flush=True)
-print(f"  With height attrition:         {cs['Height_Attrition'].notna().sum():,}  (joint model)", flush=True)
-print(f"  All cases (withdrawal model):  {len(cs):,}", flush=True)
+print(f"  Total with geo + confounders:  {len(cs):,}")
+print(f"  With days_to_resolution:       {cs['days_to_resolution'].notna().sum():,} (joint model)")
+print(f"  With height attrition:         {cs['Height_Attrition'].notna().sum():,} (joint model)")
 
 out_path = ROOT / "Data/Panel/cross_sectional_dml_panel.csv"
 print(f"Saving fully prepared cross-sectional panel to {out_path}...", flush=True)

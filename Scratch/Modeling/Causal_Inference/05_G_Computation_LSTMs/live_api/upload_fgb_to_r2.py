@@ -10,11 +10,13 @@ R2_ACCOUNT_ID    = "7f58e07bff423d2120acf10aa6bf7a32"
 R2_ACCESS_KEY_ID = "a9ad4cd53aaf0193e35f4b2b48edbad5"
 R2_SECRET        = "7a4eba060df826a5ba1f3a293017ab2207cc4a39536d7472880b7e2776c7f981"
 BUCKET           = "properlytic-raw-data"
-OBJECT_KEY       = "public/austin_base_geometries.fgb"
+OBJECT_KEY       = "public/austin_causal_surface.fgb"
 CACHE_KEY        = "public/inference_cache.npy"
+MODEL_KEY        = "public/causal_models.pkl"
 
-FGB_PATH   = Path(r"c:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\austin_base_geometries.fgb")
+FGB_PATH   = Path(r"c:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\austin_causal_surface.fgb")
 CACHE_PATH = Path(r"c:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\inference_cache.npy")
+MODEL_PATH = Path(r"c:\Users\dhl\data\Thesis\thesis\Data\Zoning_Cases\causal_models.pkl")
 
 s3 = boto3.client(
     "s3",
@@ -38,5 +40,5 @@ def upload(local_path, key):
 upload(FGB_PATH, OBJECT_KEY)
 if CACHE_PATH.exists():
     upload(CACHE_PATH, CACHE_KEY)
-else:
-    print(f"Skipping {CACHE_PATH.name} (not found yet)")
+if MODEL_PATH.exists():
+    upload(MODEL_PATH, MODEL_KEY)

@@ -44,17 +44,21 @@ ex_ante_confounders = [
     'renter_share', 'rent_burden', 'total_population', 'median_age',
     'appraised_value', 'building_age',
     'mortgage_rate_30yr', 'fed_funds_rate', 'local_unemployment_rate',
-    'fire_hazard_severity', 'slope_degree', 'is_imagine_corridor'
+    'fire_hazard_severity', 'slope_degree', 'is_imagine_corridor',
+    'knn_petition_rate_1km', 'dist_petition_rate_lag1'
 ]
 
-post_treatment_confounders = [
-    'knn_petition_rate_1km', 'dist_petition_rate_lag1',
+# Note: These are mediators/intensities of the treatment itself. 
+# Including them in X induces post-treatment bias. 
+# We exclude them from the causal identification baseline.
+mediators = [
     'cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
     'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
     'cumulative_petition_attempted', 'cumulative_mobilization_failure'
 ]
 
-confounders = ex_ante_confounders + post_treatment_confounders
+confounders = ex_ante_confounders 
+
 
 # ── HURDLE MODEL: Predict baseline probability of withdrawal ─────────────────
 print("\nTraining Phase 1 Hurdle (Withdrawal Propensity)...", flush=True)

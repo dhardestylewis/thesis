@@ -19,12 +19,10 @@ def run_multihorizon_shap():
     df = pd.read_csv(PANEL_PATH, low_memory=False)
     
     FEATS = [
-        "cumulative_min_signer_dist", "cumulative_unofficial_protest_intensity", 
-        "cumulative_protester_embed_dim1", "cumulative_protester_embed_dim2",
-        "cumulative_temporal_protesting_pct_sf", "cumulative_delta_protesting_friction",
         "market_value", "total_population", "median_household_income", 
         "renter_share", "race_white", "median_age",
-        "mortgage_rate_30yr", "mortgage_rate_30yr_momentum"
+        "mortgage_rate_30yr", "mortgage_rate_30yr_momentum",
+        "knn_petition_rate_1km", "dist_petition_rate_lag1"
     ]
     
     # Analyze the 6-month and 1-Year horizons

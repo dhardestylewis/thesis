@@ -58,6 +58,9 @@ cs = df.groupby('case_number').agg({
     'median_household_income': 'first',
     'race_white': 'first',
     'renter_share': 'first',
+    'local_unemployment_rate': 'first',
+    'knn_petition_rate_1km': 'first',
+    'dist_petition_rate_lag1': 'first',
     'cumulative_min_signer_dist': 'max',
     'cumulative_signers_outside_200ft': 'max',
     'cumulative_protester_embed_dim1': 'max',
@@ -93,10 +96,11 @@ for c in ['cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
 confounders = [
     'Delta_Requested_Height', 'latitude', 'longitude',
     'median_household_income', 'race_white', 'renter_share',
-    'cumulative_min_signer_dist', 'cumulative_signers_outside_200ft',
-    'cumulative_protester_embed_dim1', 'cumulative_protester_embed_dim2',
-    'cumulative_petition_attempted', 'cumulative_mobilization_failure'
+    'knn_petition_rate_1km', 'dist_petition_rate_lag1'
 ]
+
+# Note: Mediators are purged to satisfy the Conditional Independence Assumption (CIA).
+# We exclude signer distances and protester embeddings from the conditioning set.
 
 cs = cs.dropna(subset=confounders + ['Delta_Approved_Height', 'Height_Attrition', 'petition_dose', 'days_to_resolution', 'latitude', 'longitude'])
 
@@ -128,9 +132,10 @@ cf_withd.fit(Y_withd, D_bin, X=X)
 
 # ── 2. Train Spatial KNN Interpolator ──────────────────────────────────────
 print("Training KNN Demographic Interpolator...", flush=True)
-# Predict [income, race, renter] from [lat, lon]
+# Predict [income, race, renter, knn_pet, dist_pet] from [lat, lon]
 knn_X = cs[['latitude', 'longitude']].values
-knn_Y = cs[['median_household_income', 'race_white', 'renter_share']].values
+knn_targets = ['median_household_income', 'race_white', 'renter_share', 'knn_petition_rate_1km', 'dist_petition_rate_lag1']
+knn_Y = cs[knn_targets].values
 knn = KNeighborsRegressor(n_neighbors=5, weights='distance')
 knn.fit(knn_X, knn_Y)
 
@@ -153,9 +158,8 @@ gdf = gdf.dropna(subset=['latitude', 'longitude'])
 
 print("Interpolating demographics for all parcels...", flush=True)
 demo_preds = knn.predict(gdf[['latitude', 'longitude']].values)
-gdf['median_household_income'] = demo_preds[:, 0]
-gdf['race_white'] = demo_preds[:, 1]
-gdf['renter_share'] = demo_preds[:, 2]
+for idx, col in enumerate(knn_targets):
+    gdf[col] = demo_preds[:, idx]
 
 # ── 4. Build Synthetic Features for Inference ──────────────────────────────
 print("Building synthetic X matrix for inference...", flush=True)

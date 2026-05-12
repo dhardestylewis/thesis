@@ -26,15 +26,18 @@ pip install --quiet --upgrade pip
 pip install --quiet econml scikit-learn geopandas joblib numpy
 
 echo "=== Downloading precomputed data if missing ==="
-if [ ! -f "$THESIS_DIR/Data/Zoning_Cases/austin_base_geometries.fgb" ]; then
-    echo "  Downloading geometries from R2..."
-    curl -o "$THESIS_DIR/Data/Zoning_Cases/austin_base_geometries.fgb" "https://pub-7f58e07bff423d2120acf10aa6bf7a32.r2.dev/public/austin_base_geometries.fgb"
+if [ ! -f "$THESIS_DIR/Data/Zoning_Cases/austin_causal_surface.fgb" ]; then
+    echo "  Downloading causal surface from R2..."
+    curl -o "$THESIS_DIR/Data/Zoning_Cases/austin_causal_surface.fgb" "https://pub-7f58e07bff423d2120acf10aa6bf7a32.r2.dev/public/austin_causal_surface.fgb"
 fi
 
 if [ ! -f "$THESIS_DIR/Data/Zoning_Cases/inference_cache.npy" ]; then
     echo "  Downloading inference cache from R2 (390MB)..."
     curl -o "$THESIS_DIR/Data/Zoning_Cases/inference_cache.npy" "https://pub-7f58e07bff423d2120acf10aa6bf7a32.r2.dev/public/inference_cache.npy"
 fi
+
+echo "  Downloading latest causal models from R2..."
+curl -o "$THESIS_DIR/Data/Zoning_Cases/causal_models.pkl" "https://pub-7f58e07bff423d2120acf10aa6bf7a32.r2.dev/public/causal_models.pkl"
 
 echo "=== Stopping existing server (if running) ==="
 if [ -f "$PID_FILE" ]; then
