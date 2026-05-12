@@ -1084,7 +1084,25 @@ No Demographics       & 119.19 \\
 \end{tabular}
 \end{table}
 
+\newpage
+\section{Policy Event Studies}
+\label{app:policy_events}
 
+\subsection{HOME Initiative Event Study}
+\label{app:home}
+
+\noindent Event-study models evaluate the short-run effects of the HOME Initiative on opposition dynamics. HOME Phase~1 and Phase~2 are treated as independent policy shocks, with treatment defined at the case level by parcel eligibility and timing anchored to application-acceptance start dates \cite{pool2023,callaway2021did}.
+
+Given the limited post-policy window and missing defensible controls, this sample does not support an estimable causal HOME effect. For transparency, descriptive TWFE coefficients are retained in the replication outputs, but they are not interpreted as policy effects in light of the well-known heterogeneous-timing problems in TWFE designs \cite{goodmanbacon2021did,roth2023did}. In this manuscript, HOME results are explicitly marked "not estimable" for identification purposes, with figure-based event timing shown only as context \cite{cinelli2020making}.
+
+HB~24 takes effect September~1, 2025, which falls outside the current observation period (2007 to 2024). Its evaluation is explicitly pre-registered as a future extension.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{ch5/fig_ch5_32_did_event_study.png}
+\caption[HOME Phase 1 Event-Study Coefficients (Reconstructed Petition Outcome)]{HOME Phase 1 event-study coefficients for measured threshold-crossing petitions relative to the implementation date. The absence of a clean spatial control cohort necessitates purely temporal event-tracking.}
+\label{fig:f17_did}
+\end{figure}
 
 \cleardoublepage
 
