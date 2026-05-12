@@ -1031,9 +1031,9 @@ The DML estimator is sensitive to the quality of nuisance learners ($\hat{m}(X)$
 \toprule
 \textbf{Nuisance Learner} & \textbf{Height CATE (feet)} \\
 \midrule
-Linear / Lasso    & 81.22 \\
-Random Forest     & 1.17 \\
-Gradient Boosting & $-$9.65 \\
+Linear / Lasso    & \metricRobustNuisanceLasso{} \\
+Random Forest     & \metricRobustNuisanceRF{} \\
+Gradient Boosting & \metricRobustNuisanceGBM{} \\
 \bottomrule
 \multicolumn{2}{l}{\footnotesize The Lasso divergence from tree-based learners is consistent with strong non-linearity in the outcome function.} \\
 \multicolumn{2}{l}{\footnotesize Causal Forest (primary) is a non-parametric nuisance estimator and is the preferred specification.} \\
@@ -1044,7 +1044,7 @@ Gradient Boosting & $-$9.65 \\
 
 To rule out lucky-draw estimation, the Causal Forest is re-estimated across 20 independent random seeds with a fixed data and pipeline specification. The mean ATE, standard deviation, and sign consistency rate are reported in Table~\ref{tab:seed_stability}.
 
-The wide standard deviation (45.14 feet) and near-symmetric sign consistency (45\% positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous -- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from \metricCATEHeightMin{} to \metricCATEHeightMax{} feet across the parcel distribution -- a single aggregate CATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably \metricCATEHeightMedian{} feet and \metricCATEHeightPctPositive{} of parcels show a consistent sign. The aggregate CATE instability is itself evidence that the true effect function has high variance across the covariate space.
+The wide standard deviation (\metricRobustSeedStd{} feet) and near-symmetric sign consistency (\metricRobustSeedPosPct{} positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous -- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from \metricCATEHeightMin{} to \metricCATEHeightMax{} feet across the parcel distribution -- a single aggregate CATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably \metricCATEHeightMedian{} feet and \metricCATEHeightPctPositive{} of parcels show a consistent sign. The aggregate CATE instability is itself evidence that the true effect function has high variance across the covariate space.
 
 \begin{table}[H]
 \centering
@@ -1054,8 +1054,8 @@ The wide standard deviation (45.14 feet) and near-symmetric sign consistency (45
 \toprule
 \textbf{Statistic} & \textbf{Height CATE (feet)} & \textbf{Sign Consistency} \\
 \midrule
-Mean (N=20) & $-$2.86 & 45\% positive \\
-Std Dev      & 45.14 & n/a \\
+Mean (N=20) & \metricRobustSeedMean{} & \metricRobustSeedPosPct{} positive \\
+Std Dev      & \metricRobustSeedStd{} & n/a \\
 \bottomrule
 \multicolumn{3}{l}{\footnotesize Fixed pipeline specification. Only random seed varies. See Section~\ref{sec:hte} for the CATE distribution.}\\
 \end{tabular}
@@ -1073,10 +1073,10 @@ To assess whether results are an artifact of treatment scaling, the ATE is estim
 \toprule
 \textbf{Treatment Specification} & \textbf{Height CATE} \\
 \midrule
-Continuous (Baseline)   & 81.22 \\
-Log-Transformed         & 89.76 \\
-Winsorized (95th pctile) & 81.22 \\
-Binary ($>0.20$)        & $-$32.11 \\
+Continuous (Baseline)   & \metricRobustTreatContinuous{} \\
+Log-Transformed         & \metricRobustTreatLog{} \\
+Winsorized (95th pctile) & \metricRobustTreatWinsorized{} \\
+Binary ($>0.20$)        & \metricRobustTreatBinary{} \\
 \bottomrule
 \multicolumn{2}{l}{\footnotesize }\\
 \end{tabular}
@@ -1094,11 +1094,11 @@ To assess whether the effect is driven by any single covariate group, we sequent
 \toprule
 \textbf{Specification} & \textbf{Height CATE} \\
 \midrule
-Baseline (Full $X$)   & 81.22 \\
-No Spatial Features   & 110.87 \\
-No Macro Variables    & 97.07 \\
-No History / Lags     & 101.34 \\
-No Demographics       & 119.19 \\
+Baseline (Full $X$)   & \metricRobustAblateBaseline{} \\
+No Spatial Features   & \metricRobustAblateNoSpatial{} \\
+No Macro Variables    & \metricRobustAblateNoMacro{} \\
+No History / Lags     & \metricRobustAblateNoHistory{} \\
+No Demographics       & \metricRobustAblateNoDemographics{} \\
 \bottomrule
 \multicolumn{2}{l}{\footnotesize }\\
 \end{tabular}
