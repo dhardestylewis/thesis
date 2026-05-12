@@ -791,7 +791,7 @@ Before evaluating the treatment effects, we report the predictive performance of
 
 A single aggregate CATE is not the primary estimand of interest in this setting. The Causal Forest is designed to estimate the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the $N=\metricSurvivingN{}$ surviving cases constitutes the main causal result: the \emph{spatial heterogeneity of petition-driven resistance} on negotiated project height.
 
-Table~\ref{tab:cate_distribution} reports the unconditional distribution of the conditional ATEs. The median effect is 16.76 feet of height attrition per unit petition intensity, with 91.8\% of parcels showing a positive effect (petitions increase height reduction). The wide interquartile range (7.67 to 27.18 feet) is not a failure of the estimator -- it is the substantive finding: \textbf{petition effects are genuinely heterogeneous across Austin's parcel landscape}.
+Table~\ref{tab:cate_distribution} reports the unconditional distribution of the conditional ATEs. The median effect is \metricCATEHeightMedian{} feet of height attrition per unit petition intensity, with \metricCATEHeightPctPositive{} of parcels showing a positive effect (petitions increase height reduction). The wide interquartile range (\metricCATEHeightQuartileLow{} to \metricCATEHeightQuartileHigh{} feet) is not a failure of the estimator -- it is the substantive finding: \textbf{petition effects are genuinely heterogeneous across Austin's parcel landscape}.
 
 \begin{table}[!htbp]
 \centering
