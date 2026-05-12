@@ -731,7 +731,7 @@ Council composition and policy conditions changed over the sample window, but th
 \subsection{Outcome Scope}
 \label{sec:supporting_stages}
 
-This thesis strictly predicts whether a neighborhood protest petition will be filed, rather than predicting the final City Council up-or-down vote on the development. We avoid predicting final council votes because that data is fundamentally incomplete: developers frequently withdraw their zoning applications early if they face heavy neighborhood backlash. By focusing entirely on the initial protest petition filing, the analysis targets a clean, measurable indicator of neighborhood opposition before behind-the-scenes negotiations or case withdrawals permanently hide the outcome.
+This thesis is structured in two distinct phases to handle the fundamental incompleteness of land use outcomes. The first phase strictly predicts whether a neighborhood protest petition will be filed, treating the formal protest as a clean, measurable indicator of neighborhood opposition. We avoid predicting final City Council up-or-down votes because that data suffers from severe survival bias: developers frequently withdraw their zoning applications early if they face heavy neighborhood backlash, permanently hiding the true outcome. To address this bias, the second phase employs causal inference (Double Machine Learning) to estimate the downstream impact of these petitions on final development outcomes---specifically height reduction and resolution delay---by explicitly modeling the hurdle of early case withdrawal.
 
 \subsection{Feature Attribution and Semantic Clustering}
 \label{sec:feature_attribution}
