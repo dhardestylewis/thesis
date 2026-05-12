@@ -241,8 +241,8 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 \node[box] (zapco)  at (5.5,-0.85) {Planning \&\\ZAP Commissions};
 
 %% Panel B interior nodes
-\node[box] (rdg1)   at (11.5, 0.85) {City Council\\Readings};
-\node[box] (rdg2)   at (11.5,-0.85) {City Council\\Final Reading};
+\node[box] (rdg1)   at (11.5, 0.85) {City Staff\\Reviews};
+\node[box] (rdg2)   at (11.5,-0.85) {City Council\\Readings};
 
 %% Panel frames (drawn in background so nodes sit on top)
 \begin{pgfonlayer}{background}
@@ -270,11 +270,8 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 \draw[dasharrow] (panelB.south) to[bend left=15]  (wdraw.east);
 
 %% Feedback loops
-\draw[dasharrow] (panelB.north) to[bend left=30]
-      node[above, font=\small] {Remand} (panelA.north);
-
-\draw[dasharrow] (rdg1.west) to[bend right=20]
-      node[above, font=\tiny, align=center] {Staff\\Re-review} (staff.east);
+\draw[dasharrow] (panelB.north) to[bend right=30]
+      node[above, font=\small, align=center] {Staff\\Re-review} (panelA.north);
 
 %% Supermajority trigger
 \draw[arrow, dashed, red!70, thick] (protest.west) --
