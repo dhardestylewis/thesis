@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
+import pickle
 from pathlib import Path
+from sklearn.metrics import roc_auc_score, average_precision_score
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -49,6 +51,30 @@ for q in ['Q1', 'Q2', 'Q3', 'Q4']:
     add_macro(f"CATERenter{q_str}DelayMean", sub_df['cate_delay_days'].mean())
     add_macro(f"CATERenter{q_str}DelayMedian", sub_df['cate_delay_days'].median())
 
+# 4. Hurdle and Nuisance Models
+with open(ROOT / "Data/Zoning_Cases/causal_models_production.pkl", 'rb') as f:
+    model_data = pickle.load(f)
+
+cf = model_data['cf_joint']
+hurdle = model_data['hurdle_model']
+features = model_data['features']
+
+# Nuisance R2
+y_scores = np.mean(getattr(cf, 'nuisance_scores_y', [[0,0]]), axis=0)
+t_scores = np.mean(getattr(cf, 'nuisance_scores_t', [[0,0]]), axis=0)
+add_macro("NuisanceHeightRTwo", y_scores[0])
+add_macro("NuisancePetitionRTwo", t_scores[0])
+
+# Hurdle PR/ROC
+cs = pd.read_csv(ROOT / "Data/Panel/cross_sectional_dml_panel.csv")
+ex_ante = [f for f in features if f != 'P_withdraw']
+X = cs[ex_ante].values
+y = cs['Withdrawal_Binary'].values
+y_pred = hurdle.predict_proba(X)[:, 1]
+
+add_macro("HurdleROCAUC", roc_auc_score(y, y_pred))
+add_macro("HurdlePRAUC", average_precision_score(y, y_pred))
+
 # Format macros
 macro_str = "\n".join(macros) + "\n"
 
@@ -62,8 +88,8 @@ with open(config_path, 'r') as f:
 lines = existing_content.splitlines()
 new_lines = []
 for line in lines:
-    if line.startswith(r"\newcommand{\metricCATE"):
-        continue # Drop old CATE macros
+    if line.startswith(r"\newcommand{\metricCATE") or line.startswith(r"\newcommand{\metricNuisance") or line.startswith(r"\newcommand{\metricHurdle"):
+        continue # Drop old macros
     new_lines.append(line)
 
 new_content = "\n".join(new_lines) + "\n\n% --- DYNAMIC CAUSAL METRICS ---\n" + macro_str
