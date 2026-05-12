@@ -126,30 +126,73 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     districts = df['council_district'].values
     
     SEMANTIC_CLUSTERS = {
-        'acs_owner_occupied_units': 'Housing Tenure',
-        'acs_renter_occupied_units': 'Housing Tenure',
-        'acs_total_housing_units': 'Housing Tenure',
-        'acs_race_white': 'Demographics',
-        'acs_race_hispanic': 'Demographics',
-        'acs_race_black': 'Demographics',
-        'acs_race_asian': 'Demographics',
-        'acs_median_household_income': 'Neighborhood Income',
-        'acs_poverty_count': 'Neighborhood Income',
-        'acs_median_home_value': 'Neighborhood Valuation',
-        'ldb_appraised_val': 'Property Valuation',
-        'land_market_value': 'Property Valuation',
-        'total_market_value': 'Property Valuation',
-        'improvement_sq_ft': 'Improvement Scale',
-        'ldb_imprv_sqft': 'Improvement Scale',
-        'ldb_yr_built': 'Structure Age',
-        'year_built': 'Structure Age',
-        'property_age': 'Structure Age',
-        'gross_site_area_acres': 'Parcel Scale',
-        'deed_acreage': 'Parcel Scale',
-        'ldb_land_acres': 'Parcel Scale',
-        'ldb_lotsize': 'Parcel Scale',
-        'ldb_far': 'Zoning Density',
-        'ldb_units': 'Zoning Density'
+        # Property Value
+        "market_value": "Property Value", "land_market_value": "Property Value", 
+        "improvement_market_value": "Property Value", "appraised_value": "Property Value",
+        "total_market_value": "Property Value", "ldb_appraised_val": "Property Value",
+        
+        # Parcel Size
+        "land_acres": "Parcel Size", "shape_area": "Parcel Size", "improvement_sq_ft": "Parcel Size", 
+        "land_to_building_ratio": "Parcel Size", "improvement_ratio": "Parcel Size",
+        "ldb_land_acres": "Parcel Size", "ldb_lotsize": "Parcel Size", "deed_acreage": "Parcel Size",
+        "gross_site_area_acres": "Parcel Size",
+        
+        # Building Age
+        "yr_built": "Building Age", "building_age": "Building Age",
+        "ldb_yr_built": "Building Age", "year_built": "Building Age",
+        
+        # Land Use Type
+        "land_use_code": "Land Use Type", "exemption_flag_hs": "Land Use Type", "homesite_flag": "Land Use Type",
+        
+        # Time in Review
+        "bw_sin": "Time in Review", "bw_cos": "Time in Review", "period_seq": "Time in Review",
+        
+        # Racial Composition
+        "race_white": "Racial Composition", "race_black": "Racial Composition", 
+        "race_hispanic": "Racial Composition", "total_population": "Racial Composition", 
+        "acs_race_white": "Racial Composition", "acs_race_hispanic": "Racial Composition",
+        "acs_race_black": "Racial Composition", "acs_race_asian": "Racial Composition",
+        
+        # Housing Tenure
+        "owner_share": "Housing Tenure", "renter_share": "Housing Tenure",
+        "acs_owner_occupied_units": "Housing Tenure", "acs_renter_occupied_units": "Housing Tenure",
+        
+        # Income & Rent
+        "median_household_income": "Income & Rent", "median_gross_rent": "Income & Rent", 
+        "rent_burden": "Income & Rent", "affordability_proxy": "Income & Rent",
+        "acs_median_household_income": "Income & Rent", "acs_poverty_count": "Income & Rent",
+        
+        # Prior Petition Activity
+        "knn_petition_rate_1km": "Prior Petition Activity", "dist_petition_rate_lag1": "Prior Petition Activity",
+        
+        # Signer Proximity
+        "cumulative_min_signer_dist": "Signer Proximity", "cumulative_max_signer_dist": "Signer Proximity", 
+        "cumulative_median_signer_dist": "Signer Proximity", "cumulative_signers_within_200ft": "Signer Proximity", 
+        "cumulative_signers_outside_200ft": "Signer Proximity",
+        
+        # Protest Intensity
+        "cumulative_unofficial_protest_intensity": "Protest Intensity", 
+        "cumulative_delta_protesting_friction": "Protest Intensity", "cumulative_delta_silent_friction": "Protest Intensity",
+        
+        # Opposition by Land Use
+        "cumulative_protesting_pct_single_family": "Opposition by Land Use", "cumulative_silent_pct_single_family": "Opposition by Land Use",
+        "cumulative_protesting_pct_commercial": "Opposition by Land Use", "cumulative_silent_pct_commercial": "Opposition by Land Use",
+        "cumulative_protesting_pct_multifamily": "Opposition by Land Use", "cumulative_silent_pct_multifamily": "Opposition by Land Use",
+        
+        # Zoning Density
+        "ldb_far": "Zoning Density", "ldb_units": "Zoning Density", "pdf_requested_max_far": "Zoning Density",
+        
+        # Improvement Scale
+        "ldb_imprv_sqft": "Improvement Scale", "pdf_proposed_height_ft": "Improvement Scale",
+        
+        # Mortgage Rate
+        "mortgage_rate_30yr": "Mortgage Rate", "mortgage_rate_30yr_momentum": "Mortgage Rate",
+        
+        # Capital Markets
+        "treasury_10yr_yield": "Capital Markets", "fed_funds_rate": "Capital Markets",
+        
+        # Local Labor Market
+        "local_unemployment_rate": "Local Labor Market"
     }
     
     anchors = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
@@ -232,6 +275,51 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                 else: raw_imp = m.feature_importances_
                 
             fitted_models[name] = m
+            
+            # Persist CatBoost 2023 Anchor for Track 1 Exhibit Re-Rendering
+            if name == 'CatBoost' and anchor == 2023:
+                import joblib
+                model_save_dir = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "Models")
+                os.makedirs(model_save_dir, exist_ok=True)
+                joblib.dump(m, os.path.join(model_save_dir, "stage_c_model_H0.joblib"))
+                print(f"  [+] Persisted CatBoost 2023 Anchor -> stage_c_model_H0.joblib")
+                
+                # --- INTERACTION SHAP GENERATION (FIGURE 14) ---
+                print("  [*] Computing Interaction TreeSHAP for Figure 14 (N=600)...")
+                import shap
+                X_sample_raw = X_raw_df.iloc[np.where(train_mask)].sample(n=min(600, train_mask.sum()), random_state=42)
+                explainer = shap.TreeExplainer(m)
+                interaction_values = explainer.shap_interaction_values(X_sample_raw)
+                
+                # Extract Main Effects (diagonal)
+                main_effects = np.diagonal(interaction_values, axis1=1, axis2=2)
+                
+                # Aggregate to 18-cluster taxonomy
+                features_list = X_raw_df.columns
+                cluster_data = {}
+                cluster_shap = {}
+                
+                for i, feat in enumerate(features_list):
+                    cluster = SEMANTIC_CLUSTERS.get(feat, "Other")
+                    if cluster not in cluster_data:
+                        cluster_data[cluster] = []
+                        cluster_shap[cluster] = []
+                    cluster_data[cluster].append(X_sample_raw[feat])
+                    cluster_shap[cluster].append(main_effects[:, i])
+                    
+                final_X = pd.DataFrame({k: pd.concat(v, axis=1).mean(axis=1) for k, v in cluster_data.items()})
+                final_shap = np.column_stack([np.sum(v, axis=0) for v in cluster_shap.values()])
+                
+                plt.figure(figsize=(10, 8))
+                shap.summary_plot(final_shap, final_X, max_display=15, show=False, plot_size=None)
+                plt.title("Interaction TreeSHAP: Forecasting Main Effects (Filing Date)", fontsize=14)
+                plt.tight_layout()
+                
+                fig_out = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "exhibits", "fig_ch4_14_forecasting_interaction_shap.pdf")
+                os.makedirs(os.path.dirname(fig_out), exist_ok=True)
+                plt.savefig(fig_out, bbox_inches='tight')
+                plt.close()
+                print(f"  [+] Saved Interaction Exhibit -> {fig_out}")
             
             total = np.sum(raw_imp)
             if total > 0: raw_imp = (raw_imp / total) * 100
@@ -417,7 +505,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     
 
     if is_appendix: return  # Skip figures for appendices loop
-    out_dir_fig = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "ch5")
+    out_dir_fig = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "ch5")
     os.makedirs(out_dir_fig, exist_ok=True)
     out_path_fig = os.path.join(out_dir_fig, "fig_ch5_35_meta_attribution_clustermap.pdf")
     g.savefig(out_path_fig, bbox_inches='tight')
