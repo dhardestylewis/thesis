@@ -1,6 +1,6 @@
 \begin{table}[H]
 \centering
-\caption[Multi-Horizon Out-Of-Time Predictive Performance]{Multi-Horizon Out-Of-Time (OOT) Predictive Performance by Walk-Forward Cutoff Year (2022--2024). Metrics report CatBoost trained on all prior years, evaluated on the held-out cutoff year.}
+\caption[Multi-Horizon Walk-Forward Predictive Performance]{Multi-horizon walk-forward predictive performance by cutoff year (2022--2024). CatBoost trained on all prior years, evaluated on the held-out cutoff year.}
 \label{tab:multi_horizon_results}
 \small
 \resizebox{\textwidth}{!}{%
@@ -24,9 +24,9 @@
  & 2 Years & 0.940 & 0.781 & 193,308 & 5,873 \\
 \midrule
 \multicolumn{6}{l}{\textbf{Naive Baseline (Base Rate)}} \\
- & 14 Days & 0.500 & 0.001 & --- & --- \\
- & 6 Months & 0.500 & 0.011 & --- & --- \\
- & 2 Years & 0.500 & 0.017 & --- & --- \\
+ & 14 Days & 0.500 & 0.001 & n/a& n/a\\
+ & 6 Months & 0.500 & 0.006 & n/a& n/a\\
+ & 2 Years & 0.500 & 0.022 & n/a& n/a\\
 \bottomrule
 \end{tabular}%
 }
