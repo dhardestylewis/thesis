@@ -22,7 +22,7 @@
 \usepackage{amsmath}
 \usepackage{lmodern}
 \usepackage{tikz}
-\usetikzlibrary{positioning, arrows.meta}
+\usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
 \usepackage[protrusion=true, expansion=true]{microtype}
 \usepackage{fancyhdr}
 % Running header: GSAPP style matching peer theses (Li 2025, Ernestus 2025)
@@ -110,15 +110,15 @@ One of the most consequential mechanisms for neighborhood opposition in Austin h
 
 The institutional power of the petition mechanism is fundamentally tied to the composition of the City Council. A critical inflection point occurred during the November 2022 municipal elections, which replaced a preservationist-leaning council majority with a dominant pro-housing supermajority for the 2023-2024 mayoral term under Kirk Watson. By securing 9 of the 11 council seats, the pro-housing coalition gained the strict mathematical threshold required to unilaterally override valid protest petitions. This institutional regime shift effectively neutered the veto power of organized neighborhood opposition, setting the stage for aggressive zoning reforms (such as the HOME Initiative, which fundamentally upzoned single-family parcels to allow up to three units citywide) and fundamentally altering the strategic value of petition gathering in the final years of the dataset.
 
-Furthermore, the value of accurately forecasting this opposition extends far beyond a mere engineering exercise. From a theoretical perspective, achieving high predictive performance proves that neighborhood resistance is not an idiosyncratic or random process, but rather a structurally foreseeable phenomenon governed by baseline spatial and demographic realities. Practically, this predictive architecture serves as a critical anticipatory triage tool. By identifying structurally doomed housing proposals before administrative resources are exhausted, city planners and developers can proactively mitigate friction and redirect capital toward more viable zoning pathways.
+Furthermore, the value of accurately forecasting this opposition extends far beyond a mere engineering exercise. From a theoretical perspective, achieving high predictive performance proves that neighborhood resistance is not an idiosyncratic or random process, but rather a structurally foreseeable phenomenon governed by baseline spatial and demographic realities. Practically, this predictive architecture serves as a critical anticipatory triage tool. By identifying structurally doomed housing proposals before administrative resources are exhausted, city planners and developers can proactively reduce resistance and redirect capital toward more viable zoning pathways.
 
 
-While this thesis focuses on estimating the physical manifestations of the resistance penalty, specifically building height attrition and administrative processing delay, it is critical to recognize that these frictions translate directly into severe monetary costs. Extended holding periods, compounding financing costs, and the loss of leasable area drastically degrade a project's pro forma feasibility. Even when a rezoning is ultimately approved, the financial carrying costs associated with institutional delay and negotiated height reductions restrict the aggregate pipeline and drive up regional housing prices \cite{glaeser2003zoning,gyourko2021local}.
+While this thesis focuses on estimating the physical manifestations of the resistance penalty, specifically building height attrition and administrative processing delay, it is critical to recognize that these delays and penalties translate directly into severe monetary costs. Extended holding periods, compounding financing costs, and the loss of leasable area drastically degrade a project's pro forma feasibility. Even when a rezoning is ultimately approved, the financial carrying costs associated with institutional delay and negotiated height reductions restrict the aggregate pipeline and drive up regional housing prices \cite{glaeser2003zoning,gyourko2021local}.
 
 
 Instead of merely predicting opposition, this thesis asks a fundamental causal question: Do formal neighborhood protest petitions causally constrain allowable building height, and what is the exact spatial tax they impose on housing supply? The urban economics literature widely assumes that local homeowner opposition restricts housing supply and drives up prices, but it rarely measures the exact material cost of a specific regulatory mechanism at the parcel level. By targeting the Texas Protest Petition, we isolate the exact mechanism through which neighbors restrict supply, transitioning NIMBYism and participatory distortion from qualitative complaints into a quantifiable, asymmetric reduction in the built environment.
 
-This thesis explicitly hypothesizes that the formal protest petition mechanism acts as a predictable, structural "spatial tax" that systematically reduces housing density and imposes measurable institutional friction, disproportionately biting hardest in wealthy, exclusionary neighborhoods. Knowing this causal cost transforms urban planning and development strategy. For policymakers, it provides empirical justification for state-level zoning reform (such as Texas HB 24, which repealed the petition). For urban planners, mapping the spatial heterogeneity reveals exactly where opposition is most lethal to housing yield. Finally, for developers, proving that opposition carries a massive causal height penalty justifies the deployment of predictive forecasting models. Forecasting opposition at the time of filing becomes a critical financial risk-assessment tool, rather than just a public relations warning system.
+This thesis explicitly hypothesizes that the formal protest petition mechanism acts as a predictable, structural "spatial tax" that systematically reduces housing density and imposes measurable institutional resistance, disproportionately biting hardest in wealthy, exclusionary neighborhoods. Knowing this causal cost transforms urban planning and development strategy. For policymakers, it provides empirical justification for state-level zoning reform (such as Texas HB 24, which repealed the petition). For urban planners, mapping the spatial heterogeneity reveals exactly where opposition is most lethal to housing yield. Finally, for developers, proving that opposition carries a massive causal height penalty justifies the deployment of predictive forecasting models. Forecasting opposition at the time of filing becomes a critical financial risk-assessment tool, rather than just a public relations warning system.
 
 To supplement the quantitative causal and predictive analyses, the study incorporates semi-structured interviews with planning professionals. These interviews provide institutional context, highlighting informal negotiations, strategic petition timing, and neighborhood mobilization that administrative data alone cannot capture. While not used to validate model performance, these perspectives help situate the findings within the realities of planning practice and underscore the ethical and governance considerations surrounding predictive tools in land use decision-making.
 
@@ -132,7 +132,7 @@ Second, the power of participatory distortion is magnified in discretionary revi
 
 Third, while much of the urban planning literature focuses on causal inference, estimating the effects of zoning changes or protest petitions on outcomes like land value or project delay, addressing discretionary gridlock also requires anticipating where opposition will arise. Shmueli \cite{shmueli2010} and Mullainathan and Spiess \cite{mullainathan2017ml} distinguish between explanatory and predictive modeling, emphasizing that predictive models can inform policy and administrative triage even when causal mechanisms are complex or uncertain. Kleinberg et al. \cite{kleinberg2015prediction} formalize the ``predictive policy question,'' where optimal decisions depend on forecasting rather than explanation. In the context of Austin's protest petition regime, the relevant question is not just why opposition occurs, but whether it can be predicted in advance using only the information available at the time of filing. This predictive framing aligns with emerging best practices in public policy research \cite{athey2019ml}. It also raises public-sector governance questions about opacity, proxy discrimination, and sociotechnical context that cannot be resolved by predictive performance alone \cite{eubanks2018,oneil2016weapons,barocas2016,selbst2019fairness}.
 
-Fourth, a critical methodological gap in the prior literature is the absence of heterogeneous treatment effect (HTE) estimation for petition-driven resistance. Existing work quantifies whether petitions delay or block projects in the aggregate; it does not characterize how those effects vary across neighborhood types. Wager and Athey \cite{wager2018estimation} and Athey and Wager \cite{athey2019generalized} develop Causal Forests, an honest non-parametric estimator of the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which estimates a separate causal effect for each covariate profile rather than a single pooled average. Chernozhukov et al. \cite{chernozhukov2018dml} formalize Double Machine Learning as a semiparametric framework that allows flexible nuisance estimation while retaining $\sqrt{n}$-consistent causal inference. Applied to the petition setting, these methods permit the thesis to characterize not just whether petitions matter on average, but where and for whom they are most consequential. The income and renter-share gradients documented in Section~\ref{sec:hte} would be invisible to any aggregate-ATE estimator, and directly motivate the deployed spatial impact surface as an instrument for heterogeneity-aware planning triage.
+Fourth, a critical methodological gap in the prior literature is the absence of heterogeneous treatment effect (HTE) estimation for petition-driven resistance. Existing work quantifies whether petitions delay or block projects in the aggregate; it does not characterize how those effects vary across neighborhood types. Wager and Athey \cite{wager2018estimation} and Athey and Wager \cite{athey2019generalized} develop Causal Forests, an honest non-parametric estimator of the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which estimates a separate causal effect for each covariate profile rather than a single pooled average. Chernozhukov et al. \cite{chernozhukov2018dml} formalize Double Machine Learning as a semiparametric framework that allows flexible nuisance estimation while retaining $\sqrt{n}$-consistent causal inference. Applied to the petition setting, these methods permit the thesis to characterize not just whether petitions matter on average, but where and for whom they are most consequential. The income and renter-share gradients documented in Section~\ref{sec:hte} would be invisible to any aggregate-ATE estimator, and directly motivate the deployed spatial impact layer as an instrument for heterogeneity-aware planning triage.
 
 \input{Sections/planning_context}
 
@@ -151,7 +151,7 @@ and estimate $\tilde{Y}_i = \theta \tilde{T}_i + \epsilon_i$, where $\theta$ ide
 
 \textbf{Identification Assumptions.} Treatment intensity is not randomly assigned; it is correlated with observable neighborhood and project characteristics including socioeconomic composition, prior petition history, and macroeconomic conditions. We therefore condition on a rich pre-treatment covariate vector $X_i$ and interpret this as a working identifying restriction, supported by falsification exercises (permutation tests, placebo outcomes on invariant covariates, and synthetic outcome tests; see Appendix~\ref{app:robustness_pack}). Crucially, cumulative protest intensity variables derived from petition signatures accumulated \emph{during} the case process are explicitly excluded from $X_i$: these variables are post-treatment by construction and conditioning on them would induce post-treatment bias \citep{angrist1996identification}.
 
-\textbf{Heterogeneous Treatment Effects.} A single aggregate CATE is not the primary estimand. The Causal Forest estimates the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the surviving case population constitutes the central causal result---the spatial heterogeneity of petition-driven resistance on negotiated project height---documented in Section~\ref{sec:hte}.
+\textbf{Heterogeneous Treatment Effects.} A single aggregate CATE is not the primary estimand. The Causal Forest estimates the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the surviving case population constitutes the central causal result -- the spatial heterogeneity of petition-driven resistance on negotiated project height -- documented in Section~\ref{sec:hte}.
 
 Together, these methods allow us to systematically map where opposition occurs, prove that it can be anticipated, and calculate the exact physical penalty it extracts from the regional housing pipeline.
 
@@ -220,25 +220,67 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 
 \begin{figure}[H]
 \centering
-\resizebox{\linewidth}{!}{ \begin{tikzpicture}[
-  node distance=1.2cm,
-  box/.style={rectangle, draw=black, thick, fill=gray!10, text width=3.5cm, align=center, rounded corners, minimum height=1.2cm},
-  arrow/.style={thick,->,>=stealth}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  node distance=1.0cm and 1.4cm,
+  box/.style={rectangle, draw=black, thick, fill=gray!10, text width=3.2cm,
+              align=center, rounded corners, minimum height=1.2cm},
+  dnode/.style={rectangle, draw=black, thick, dashed, fill=gray!5,
+               text width=2.6cm, align=center, rounded corners, minimum height=1.1cm},
+  panel/.style={rectangle, draw=black!60, thick, dashed, rounded corners,
+                inner sep=0.55cm, fill=none},
+  arrow/.style={thick,->,>=stealth},
+  dasharrow/.style={thick,dashed,->,>=stealth}
 ]
-  \node[box] (filing) at (0,0) {1. Developer\\Filing \& Notice};
-  \node[box] (staff) at (4.5,0) {2. City Staff\\Review};
-  \node[box] (zapco) at (9.0,0) {3. Planning\\Commission};
-  \node[box] (council) at (13.5,0) {4. City Council\\Final Reading};
-  \node[box] (protest) at (13.5,-2.5) { \textbf{\textit{20\% Measured}} \\ \textbf{\textit{Threshold Crossing}} };
+%% Stage 1 (standalone)
+\node[box] (filing) at (0,0) {1.\ Developer\\Filing \& Notice};
 
-  \draw[arrow] (filing) -- (staff);
-  \draw[arrow] (staff) -- (zapco);
-  \draw[arrow] (zapco) -- (council);
+%% Panel A interior nodes
+\node[box] (staff)  at (5.5, 0.85) {City Staff\\Review};
+\node[box] (zapco)  at (5.5,-0.85) {Planning \&\\ZAP Commissions};
 
-  \draw[arrow, dashed, red, thick] (protest) -- node[right, text=red] {\small May Require} node[right, yshift=-0.4cm, text=red] {\small Supermajority} (council);
-\end{tikzpicture}
+%% Panel B interior nodes
+\node[box] (rdg1)   at (11.5, 0.85) {City Council\\First Reading};
+\node[box] (rdg2)   at (11.5,-0.85) {City Council\\Final Reading};
+
+%% Panel frames (drawn in background so nodes sit on top)
+\begin{pgfonlayer}{background}
+  \node[panel, fit=(staff)(zapco),
+        label={[font=\bfseries\small]north west:2}] (panelA) {};
+  \node[panel, fit=(rdg1)(rdg2),
+        label={[font=\bfseries\small]north west:3}] (panelB) {};
+\end{pgfonlayer}
+
+%% Withdrawal node (below, centred between panels)
+\node[dnode] (wdraw) at (8.5,-3.3) {Withdrawal};
+
+%% Protest-threshold node
+\node[box, text width=2.8cm, fill=white] (protest) at (16.0,-0.85)
+      {\textbf{\textit{20\% Measured}}\\\textbf{\textit{Threshold Crossing}}};
+
+%% Main process flow
+\draw[arrow] (filing)   -- (panelA);
+\draw[arrow] (staff)    -- (zapco);
+\draw[arrow] (panelA)   -- (panelB);
+\draw[arrow] (rdg1)     -- (rdg2);
+
+%% Withdrawal arrows FROM panels
+\draw[dasharrow] (panelA.south) to[bend right=15] (wdraw.west);
+\draw[dasharrow] (panelB.south) to[bend left=15]  (wdraw.east);
+
+%% Remand arrow: council panel --> commissions panel
+\draw[dasharrow] (panelB.north) to[bend left=30]
+      node[above, font=\small] {Remand} (panelA.north);
+
+%% Supermajority trigger
+\draw[arrow, dashed, red!70, thick] (protest.west) --
+      node[above, text=red!70, font=\small] {May Require}
+      node[below, text=red!70, font=\small] {Supermajority}
+      (rdg2.east);
+
+\end{tikzpicture}%
 }
-\caption[Austin Municipal Zoning Process Diagram]{Austin municipal zoning process. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council.}
+\caption[Austin Municipal Zoning Process]{Austin municipal zoning process. Panel~2 groups staff review and commission stages; Panel~3 groups city council readings. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council. Cases may be remanded from Council back to Commission, or withdrawn at either stage.}
 \label{fig:flowchart}
 \end{figure}
 
@@ -258,7 +300,7 @@ Raw Austin open data portal zoning records (2007 to 2024) & 15,238 \\
 Restrict to discretionary cases (rezonings, PUDs, NPAs) & 7,153 \\
 Exclude cases with unusable or missing initial filing-year information & \metricBaselineCases{} \\
 \midrule
-\textbf{Final Analytic Sample (Stages C/D)} & \textbf{\metricBaselineCases{}} \\
+\textbf{Final Analytic Sample} & \textbf{\metricBaselineCases{}} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -285,7 +327,7 @@ Cases withdrawn before public notice are excluded from the sample, rather than c
 \subsection{Statutory Context: The Legal Petition Mechanism}
 \label{sec:statutory_context}
 
-\noindent Formal protest petitions represent a strict administrative mechanism granting incumbent property owners veto authority over localized zoning changes. As detailed by Furth and McKinley, twenty-one U.S. states actively enforce petition statutes that allow a localized numeric minority of nearby residents to force supermajority voting constraints on municipal legislative bodies \cite{furth2025protest}. While specific standards vary geographicallyâ€”for instance, Oklahoma requires a 50\% sign-on threshold spanning 300 feet, whereas Iowa utilizes a 20\% threshold at 200 feetâ€”the institutional architecture remains remarkably consistent: protest petitions formally subordinate city-wide housing coordination to the exclusionary friction of hyper-localized abutters. 
+\noindent Formal protest petitions represent a strict administrative mechanism granting incumbent property owners veto authority over localized zoning changes. As detailed by Furth and McKinley, twenty-one U.S. states actively enforce petition statutes that allow a localized numeric minority of nearby residents to force supermajority voting constraints on municipal legislative bodies \cite{furth2025protest}. While specific standards vary geographicallyâ€”for instance, Oklahoma requires a 50\% sign-on threshold spanning 300 feet, whereas Iowa utilizes a 20\% threshold at 200 feetâ€”the institutional architecture remains remarkably consistent: protest petitions formally subordinate city-wide housing coordination to the exclusionary force of hyper-localized abutters. 
 
 Texas historically enforced one of the nation's most active 20\% protest thresholds, culminating in 2025 legislative reforms that explicitly exempted comprehensive mapping efforts and residential upzonings from the supermajority requirement precisely to curb the immense veto power yielded by neighborhood opposition groups \cite{furth2025protest}. Figure~\ref{fig:sample_petition} illustrates a representative historical petition filed for a development rezoning in Austin, documenting the precise computational format through which property owners within a tight 200-foot administrative buffer aggregate formal opposition to legally bind the City Council.
 
@@ -351,23 +393,25 @@ C14-2016-012 & 2016 & 4 & \$95,000  & 71\% & \$620,000 \\
 \subsection{Biweekly Panel Feature Engineering}
 \label{sec:biweekly_features}
 
-To support multi-horizon predictive evaluation, the filing-date case-level observations are expanded into a longitudinal biweekly panel. Each case generates one row per 14-day period from filing through final disposition or censoring, yielding a panel of approximately 193,000 case-period observations across 2007--2024. All cumulative features are lagged by one biweekly period prior to use, ensuring that no feature at period $t$ reflects information that would only become available at or after period $t$. This strict lag-and-shift architecture, applied via \texttt{pandas.groupby().shift(1)}, eliminates contemporaneous target leakage at the feature level.
+To support multi-horizon predictive evaluation, the filing-date case-level observations are expanded into a longitudinal biweekly panel. Each case generates one row per 14-day period from filing through final disposition or censoring, yielding a panel of approximately 193,000 case-period observations across 2007--2024. All cumulative features are lagged by one biweekly period prior to use, ensuring that no feature at period $t$ reflects information that would only become available at or after period $t$. This strict lag-and-shift architecture eliminates contemporaneous target leakage at the feature level.
 
-\textbf{Cumulative Spatial Friction Features.} The core innovation of the biweekly panel is the accumulation of spatial friction vectors derived from geocoded petition signer records matched to TCAD parcel geometries. For each case-period, the following are computed over all petition signers observed to date:
+\textbf{Cumulative Spatial Opposition Features.} The core innovation of the biweekly panel is the accumulation of spatial opposition signals derived from geocoded petition signer records matched to TCAD parcel geometries. For each case-period, the following are computed over all petition signers observed to date:
 
 \begin{itemize}
     \item \textit{Signer Proximity:} Minimum, maximum, and median Euclidean distance from each signer's parcel centroid to the case boundary polygon, and counts of signers within and outside the statutory 200ft buffer.
-    \item \textit{Protest Intensity:} An unofficial protest intensity score (sum of inverse-distance-weighted signer counts), a directional signer distance vector (signed mean displacement from case centroid), and delta friction metrics representing the marginal change in both protesting and silent parcel shares across biweekly periods.
-    \item \textit{Land Use Friction Mix:} For each 14-day window, the cumulative share of protesting and silent neighboring parcels classified as single-family residential, commercial, and multifamily, derived from the City of Austin Land Use Inventory (LUI). Corresponding mean parcel square footages for protesting versus silent cohorts are also retained.
-    \item \textit{Temporal LDB Differentials:} Time-matched versions of the land-use friction shares, computed by joining the LDB snapshot to the biweekly \texttt{period\_start} date via a strict backward-fill temporal join (\texttt{pd.merge\_asof(direction=`backward')}), ensuring that only LDB snapshots published on or before a given period are used.
+    \item \textit{Protest Intensity:} An unofficial protest intensity score (sum of inverse-distance-weighted signer counts), a directional signer distance vector (signed mean displacement from case centroid), and opposition change metrics representing the marginal change in both protesting and silent parcel shares across biweekly periods.
+    \item \textit{Land Use Opposition Mix:} For each 14-day window, the cumulative share of protesting and silent neighboring parcels classified as single-family residential, commercial, and multifamily, derived from the City of Austin Land Use Inventory. Corresponding mean parcel square footages for protesting versus silent cohorts are also retained.
+    \item \textit{Temporal Land-Use Differentials:} Time-matched versions of the land-use opposition shares, computed by joining the land database snapshot to each biweekly period start date via a strict backward-fill temporal join, ensuring that only snapshots published on or before a given period are used.
     \item \textit{Protester Spatial Embeddings:} Four-dimensional PCA embeddings computed from the latitude/longitude coordinates of petition signers. These capture the geometric shape of the opposition coalition (e.g., clustered vs.\ dispersed, directionally biased) in a compressed, rotation-invariant form beyond scalar distance metrics.
 \end{itemize}
 
-\textbf{Process Accumulation Features.} Cumulative counts of city council hearings and planning commission hearings, lagged by one period, are included to proxy procedural friction depth. The Remand Count variable records how many times a case was formally remanded back from Council to the Commission. An aggregate hearing sentiment score, derived from NLP analysis of commission transcripts, and the net height change extracted from intermediate zoning proposals (measuring developer concessions over time) are included as longitudinal case-trajectory signals.
+\textbf{Process Accumulation Features.} Cumulative counts of city council hearings and planning commission hearings, lagged by one period, are included to proxy procedural resistance depth. The Remand Count variable records how many times a case was formally remanded back from Council to the Commission. An aggregate hearing sentiment score, derived from NLP analysis of commission transcripts, and the net height change extracted from intermediate zoning proposals (measuring developer concessions over time) are included as longitudinal case-trajectory signals.
 
 \textbf{Macroeconomic Features.} National macroeconomic context is incorporated at the period level via four FRED/BLS series: the 30-year fixed mortgage rate, the 10-year Treasury yield, the Federal Funds Rate, and the local unemployment rate. For each series, three derived features are computed: a 1-year lag, a 6-month trailing momentum (first difference), and a filing-date delta (current value minus the value observed at the initial case filing date). These capture both the level of borrowing costs and the directional trajectory facing developers and signer households at the time each biweekly observation is recorded.
 
 \textbf{Annualization.} For the annualized multi-horizon evaluation (see Section~\ref{sec:results}), the biweekly panel is collapsed to one row per (case, calendar year) by taking the \emph{last} biweekly period of each year. This preserves the richest cumulative state while remaining strictly within the information boundary of December 31 of that year, since all cumulative features are already lagged within the biweekly construction.
+
+\input{Sections/appendices_augmentation/appendices_intermediate_proposals.tex}
 
 \subsection{End-to-End Pipeline Architecture}
 \label{sec:pipeline_architecture}
@@ -397,15 +441,15 @@ Figure~\ref{fig:pipeline_arch} summarizes the complete data-to-deployment archit
 \node[rbox] (cat)    at (0,-5.6) {CatBoost\\Protest Forecaster};
 \node[rbox] (dml)    at (4,-5.6) {Causal Forest\\DML};
 \node[rbox] (hurdle) at (8,-5.6) {Hurdle Model\\(Withdrawal)};
-\node[rbox] (rob)    at (12,-5.6){Robustness Pack};
+\node[rbox] (rob)    at (12,-5.6){Robustness\\Checks};
 % Row 4: Artifacts
-\node[gbox] (surf)  at (4,-8.4)  {Causal Surface};
+\node[gbox] (surf)  at (4,-8.4)  {Causal Impact\\Layer};
 \node[gbox] (pkl)   at (8,-8.4)  {Causal Models};
-\node[gbox] (valid) at (0,-8.4)  {OOT / SHAP};
+\node[gbox] (valid) at (0,-8.4)  {Validation\\Diagnostics};
 % Row 5: Deployment
 \node[box] (r2)  at (4,-11)  {Cloudflare R2\\Production Bucket};
-\node[box] (api) at (8,-11)  {Friction API\\(EC2 g4dn.xlarge)};
-\node[box] (viz) at (6,-13)  {Friction Visualization\\(Live Surface)};
+\node[box] (api) at (8,-11)  {Resistance API\\(EC2 g4dn.xlarge)};
+\node[box] (viz) at (6,-13)  {Live Resistance\\Map};
 % Data → Panel
 \draw[arrow] (coa)  -- (panel);
 \draw[arrow] (tcad) -- (panel);
@@ -430,7 +474,7 @@ Figure~\ref{fig:pipeline_arch} summarizes the complete data-to-deployment archit
 \draw[arrow] (api)  -- (viz);
 \end{tikzpicture}
 }
-\caption[End-to-End Causal Pipeline Architecture]{Complete pipeline architecture from raw administrative data to live deployed causal visualization. Blue nodes: panel construction. Red nodes: model estimation. Green nodes: validated output artifacts. The deployed visualization renders Causal Forest estimates as a spatially continuous friction map on the public Homecastr platform.}
+\caption[Data-to-Deployment Causal Pipeline]{Blue nodes: panel construction. Red nodes: model estimation. Green nodes: validated output artifacts. The deployed map renders Causal Forest estimates as a spatially continuous resistance layer on the public Homecastr platform.}
 \label{fig:pipeline_arch}
 \end{figure}
 
@@ -461,45 +505,43 @@ This structure reflects institutional filtering rather than assuming a single re
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-  node distance=2.0cm and 2.8cm,
-  obs/.style={rectangle, draw=black, thick, fill=white, rounded corners, minimum height=0.9cm, minimum width=2.6cm, align=center, font=\small},
-  unobs/.style={rectangle, draw=gray, thick, dashed, fill=gray!8, rounded corners, minimum height=0.9cm, minimum width=2.0cm, align=center, font=\small},
-  posttreat/.style={rectangle, draw=red!70, thick, fill=red!8, rounded corners, minimum height=0.9cm, minimum width=2.8cm, align=center, font=\small},
+  node distance=2.4cm and 3.2cm,
+  obs/.style={rectangle, draw=black, thick, fill=white, rounded corners,
+              minimum height=0.9cm, minimum width=2.4cm, align=center, font=\small},
+  unobs/.style={rectangle, draw=gray, thick, dashed, fill=gray!8, rounded corners,
+                minimum height=0.9cm, minimum width=2.0cm, align=center, font=\small},
+  posttreat/.style={rectangle, draw=red!70, thick, fill=red!8, rounded corners,
+                    minimum height=0.9cm, minimum width=2.4cm, align=center, font=\small},
   arrow/.style={thick,->,>=stealth},
   redarrow/.style={thick,->,>=stealth,draw=red!60,dashed},
   dasharrow/.style={thick,->,>=stealth,dashed,draw=gray}
 ]
 
-% Nodes
-\node[obs]     (X)  at (0, 0)     {$X_i$\\{\footnotesize Pre-Treatment Covariates}\\{\tiny Demographics, Macro,}\\{\tiny Spatial, History}};
-\node[obs]     (T)  at (4.5, 0)   {$T_i$\\{\footnotesize Petition Intensity}\\{\tiny (Mobilization Dose)}};
-\node[obs]     (Y)  at (9, 0)     {$Y_i$\\{\footnotesize Outcome}\\{\tiny Height Attrition,}\\{\tiny Process Delay}};
-\node[unobs]   (U)  at (4.5, 2.8) {$U$\\{\footnotesize Unobserved}\\{\tiny Confounders}};
-\node[obs]     (S)  at (9, -2.5)  {$S_i = 1$\\{\footnotesize Survival}\\{\tiny (Non-Withdrawal)}};
-\node[posttreat] (M) at (4.5, -2.5) {$M_i$\\{\footnotesize Post-Treatment Vars}\\{\tiny Cumulative signer counts,}\\{\tiny Petition area accumulation}};
+\node[obs]       (X) at (0,   0)    {$X_i$};
+\node[obs]       (T) at (5,   0)    {$T_i$};
+\node[obs]       (Y) at (10,  0)    {$Y_i$};
+\node[unobs]     (U) at (5,   2.8)  {$U$};
+\node[obs]       (S) at (8.5,-2.8)  {$S_i = 1$};
+\node[posttreat] (M) at (5,  -2.8)  {$M_i$};
 
-% Main causal edges
-\draw[arrow] (X) -- node[above, font=\tiny] {confounding} (T);
-\draw[arrow] (X) to[bend right=20] node[below, font=\tiny] {direct} (Y);
+\draw[arrow] (X) -- node[above, font=\footnotesize] {confounding} (T);
+\draw[arrow] (X) to[out=-15, in=195] node[below, font=\footnotesize] {direct} (Y);
 \draw[arrow] (T) -- node[above, font=\small\bfseries] {$\theta$} (Y);
 
-% Unobserved confounders
-\draw[dasharrow] (U) -- (T);
-\draw[dasharrow] (U) -- (Y);
+\draw[dasharrow] (U) to[out=200, in=90]  (T);
+\draw[dasharrow] (U) to[out=-10, in=100] (Y);
 
-% Survival conditioning
-\draw[arrow, gray] (T) -- (S);
-\draw[arrow, gray] (X) to[bend left=30] (S);
+\draw[arrow, gray] (T) to[out=270, in=140] (S);
+\draw[arrow, gray] (X) to[out=315, in=200] (S);
 
-% Post-treatment collider — EXCLUDED
 \draw[redarrow] (T) -- (M);
-\draw[redarrow] (M) to[bend right=20] (Y);
+\draw[redarrow] (M) to[out=0, in=270] (Y);
 
-% Exclusion annotation
-\node[font=\footnotesize\bfseries, text=red!80] at (4.5, -4.0) {$\longleftarrow$ EXCLUDED from $X_i$ (post-treatment collider) $\longrightarrow$};
+\node[font=\footnotesize\bfseries, text=red!80] at (5, -4.4)
+      {$\longleftarrow$ EXCLUDED from $X_i$ (post-treatment collider) $\longrightarrow$};
 
 \end{tikzpicture}
-\caption[Causal DAG for the Identification Strategy]{Causal directed acyclic graph (DAG) for the identification strategy. $X_i$: pre-treatment covariate vector (demographics, spatial, macroeconomic, historical petition rates). $T_i$: petition intensity (mobilization dose). $Y_i$: negotiated outcome (height attrition, processing delay). $U$: unobserved confounders (dashed). $S_i=1$: survival conditioning on non-withdrawal. $M_i$: post-treatment variables (red, dashed) — including cumulative petition signer counts and in-process petition area accumulations — that are \textbf{explicitly excluded} from $X_i$ to prevent post-treatment collider bias. The estimand is $\theta = \mathbb{E}[Y_i(1) - Y_i(0)]$, identified under CIA: $(Y_i(1), Y_i(0)) \perp T_i \mid X_i$.}
+\caption[Causal DAG for the Identification Strategy]{Causal directed acyclic graph for the identification strategy. Observed nodes: $X_i$ (pre-treatment covariates), $T_i$ (petition intensity), $Y_i$ (negotiated outcome), $S_i$ (non-withdrawal survival indicator), $M_i$ (post-treatment mediators, excluded from $X_i$). Unobserved confounders $U$ shown with dashed border. Estimand: $\theta = \mathbb{E}[Y_i(1) - Y_i(0)]$, identified under $(Y_i(1), Y_i(0)) \perp T_i \mid X_i$.}
 \label{fig:causal_dag}
 \end{figure}
 
@@ -540,11 +582,11 @@ where $\theta$ identifies the local average treatment effect under the maintaine
 
 The DML causal estimation panel is constructed as a cross-sectional collapse of the biweekly longitudinal dataset, reducing the multi-period trajectory for each case to a single observation anchored to the last observed period prior to final disposition. This resolves the temporal structure of the biweekly panel into a format compatible with cross-sectional identification.
 
-\textbf{Pre-Treatment Covariate Vector ($X_i$).} The conditioning set $X_i$ is strictly limited to variables determined prior to treatment realization. Specifically, $X_i$ includes: (i) \textit{project characteristics} --- requested height change ($\Delta$ height requested), parcel coordinates, and appraised value; (ii) \textit{ACS neighborhood demographics} --- median household income, racial composition (White, Black, Hispanic shares), renter share, rent burden, total population, and median age, matched to the census release available at the project filing date; (iii) \textit{historical petition environment} --- KNN-interpolated petition rate within 1~km at filing date and a one-period lagged spatial petition rate, capturing pre-existing neighborhood mobilization capacity; (iv) \textit{physical and environmental features} --- building age, fire hazard severity, slope degree, and Imagine Austin corridor designation; and (v) \textit{macroeconomic context} --- 30-year mortgage rate, Federal Funds Rate, and local unemployment rate at filing date.
+\textbf{Pre-Treatment Covariate Vector ($X_i$).} The conditioning set $X_i$ is strictly limited to variables determined prior to treatment realization. Specifically, $X_i$ includes: (i) \textit{project characteristics} -- requested height change ($\Delta$ height requested), parcel coordinates, and appraised value; (ii) \textit{ACS neighborhood demographics} -- median household income, racial composition (White, Black, Hispanic shares), renter share, rent burden, total population, and median age, matched to the census release available at the project filing date; (iii) \textit{historical petition environment} -- KNN-interpolated petition rate within 1~km at filing date and a one-period lagged spatial petition rate, capturing pre-existing neighborhood mobilization capacity; (iv) \textit{physical and environmental features} -- building age, fire hazard severity, slope degree, and Imagine Austin corridor designation; and (v) \textit{macroeconomic context} -- 30-year mortgage rate, Federal Funds Rate, and local unemployment rate at filing date.
 
-\textbf{Mediator Exclusion.} Cumulative protest intensity variables derived from petition signatures accumulated \textit{during} the case process --- including cumulative signer counts, cumulative petition area share, and post-filing spatial friction accumulations --- are explicitly excluded from $X_i$. These variables are post-treatment by construction: they evolve in direct response to neighborhood mobilization and cannot serve as pre-treatment confounders without inducing post-treatment bias \citep{angrist1996identification}. Their inclusion would condition on a collider downstream of $T_i$, invalidating the CIA. This exclusion is the primary architectural change distinguishing the hardened DML specification from earlier exploratory drafts.
+\textbf{Mediator Exclusion.} Cumulative protest intensity variables derived from petition signatures accumulated \textit{during} the case process -- including cumulative signer counts, cumulative petition area share, and post-filing spatial opposition accumulations -- are explicitly excluded from $X_i$. These variables are post-treatment by construction: they evolve in direct response to neighborhood mobilization and cannot serve as pre-treatment confounders without inducing post-treatment bias \citep{angrist1996identification}. Their inclusion would condition on a collider downstream of $T_i$, invalidating the CIA. This exclusion is the primary architectural change distinguishing the hardened DML specification from earlier exploratory drafts.
 
-\textbf{KNN Demographic Interpolation for Citywide Inference.} For parcels not in the training panel (used in citywide surface generation), demographic and historical petition features are imputed via $K$-Nearest Neighbor interpolation ($K=5$) using Euclidean geographic distance as the similarity metric. This preserves the spatial structure of neighborhood characteristics without requiring exact parcel-level census linkage across the full municipal boundary.
+\textbf{KNN Demographic Interpolation for Citywide Inference.} For parcels not in the training panel (used in citywide impact layer generation), demographic and historical petition features are imputed via $K$-Nearest Neighbor interpolation ($K=5$) using Euclidean geographic distance as the similarity metric. This preserves the spatial structure of neighborhood characteristics without requiring exact parcel-level census linkage across the full municipal boundary.
 
 \subsection{Sample Structure and Selection}
 
@@ -578,16 +620,16 @@ These tests are interpreted as \textbf{diagnostics of estimator behavior}, not a
 
 The resulting estimates should be interpreted as the conditional association between exogenous variation in neighborhood mobilization intensity and project-level outcomes, after high-dimensional adjustment for pre-treatment observables. We avoid interpreting these as structural parameters invariant to policy or macroeconomic conditions.
 
-\subsection{Citywide Causal Surface Generation and Deployment}
-\label{sec:causal_surface}
+\subsection{Citywide Causal Impact Layer Generation and Deployment}
+\label{sec:causal_impact_layer}
 
-To translate case-level DML estimates into a spatially continuous policy instrument, the trained Causal Forest model is applied to all addressable parcels in Austin's municipal boundary, producing a citywide causal surface across approximately 300,000 parcels. This surface is the empirical foundation for the live friction visualization deployed at \href{https://www.homecastr.com/friction-viz.html}{\texttt{homecastr.com/friction-viz.html}}.
+To translate case-level DML estimates into a spatially continuous policy instrument, the trained Causal Forest model is applied to all addressable parcels in Austin's municipal boundary, producing a citywide causal impact layer across approximately 300,000 parcels. This layer is the empirical foundation for the live resistance visualization deployed at \href{https://www.homecastr.com/friction-viz.html}{homecastr.com}.
 
-For each parcel, the causal surface assigns: (i) the predicted conditional ATE $\hat{\tau}(x_i)$ --- the estimated effect of a unit increase in petition intensity on negotiated height attrition at that parcel's covariate profile; (ii) 95\% confidence interval bounds from the Causal Forest's honest variance estimator; and (iii) the hurdle probability from the complementary Hurdle model, identifying parcels where opposition risk is severe enough that projects are unlikely to reach the outcome stage. Parcel-level covariates are assembled using the pre-treatment vector $X_i$ described in Section~\ref{sec:dml_panel_construction}, with demographic and historical petition features interpolated via KNN from the training panel.
+For each parcel, the causal impact layer assigns: (i) the predicted conditional ATE $\hat{\tau}(x_i)$ -- the estimated effect of a unit increase in petition intensity on negotiated height attrition at that parcel's covariate profile; (ii) 95\% confidence interval bounds from the Causal Forest's honest variance estimator; and (iii) the hurdle probability from the complementary Hurdle model, identifying parcels where opposition risk is severe enough that projects are unlikely to reach the outcome stage. Parcel-level covariates are assembled using the pre-treatment vector $X_i$ described in Section~\ref{sec:dml_panel_construction}, with demographic and historical petition features interpolated via KNN from the training panel.
 
 The resulting spatial artifact is exported as a continuous spatial binary, synchronized to a cloud storage environment, and rendered as a WebGL 3D height-extrusion map via MapLibre GL~JS. An application programming interface (API) layer serves real-time parcel-level causal estimates from an EC2 instance via a cached hypergrid for fast response. The deployment is automated via continuous integration pipelines, which pull the latest validated artifacts and restart the API process on each release cycle.
 
-Table~\ref{tab:citywide_simulation} outlines the expected resolution delay and hurdle risk generated by the model across all $300,000+$ addressable Austin parcels under three standardized planning scenarios. By parameterizing the simulation to reflect common physical entitlement requests (a 0-foot use-change, a 25-foot middle-density expansion, and a 55-foot transit corridor rezoning), we quantify the spatial distribution of petition-induced friction while strictly bounding the mathematical extrapolation of the model.
+Table~\ref{tab:citywide_simulation} outlines the expected resolution delay and hurdle risk generated by the model across all $300,000+$ addressable Austin parcels under three standardized planning scenarios. By parameterizing the simulation to reflect common physical entitlement requests (a 0-foot use-change, a 25-foot middle-density expansion, and a 55-foot transit corridor rezoning), we quantify the spatial distribution of petition-induced resistance while strictly bounding the mathematical extrapolation of the model.
 
 \input{Tables/chapter5_attribution/tbl_ch5_01b_citywide_stats.tex}
 
@@ -595,56 +637,58 @@ Table~\ref{tab:citywide_simulation} outlines the expected resolution delay and h
 \subsection{Heterogeneous Treatment Effects}
 \label{sec:hte}
 
-A single aggregate CATE is not the primary estimand of interest in this setting. The Causal Forest is designed to estimate the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the $N=6{,}177$ surviving cases constitutes the main causal result: the \emph{spatial heterogeneity of petition-driven friction} on negotiated project height.
+A single aggregate CATE is not the primary estimand of interest in this setting. The Causal Forest is designed to estimate the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the $N=6{,}177$ surviving cases constitutes the main causal result: the \emph{spatial heterogeneity of petition-driven resistance} on negotiated project height.
 
-Table~\ref{tab:cate_distribution} reports the unconditional distribution of the conditional ATEs. The median effect is 16.76 floors of height attrition per unit petition intensity, with 91.8\% of parcels showing a positive effect (petitions increase height reduction). The wide interquartile range (7.67 to 27.18 floors) is not a failure of the estimator --- it is the substantive finding: \textbf{petition effects are genuinely heterogeneous across Austin's parcel landscape}.
+Table~\ref{tab:cate_distribution} reports the unconditional distribution of the conditional ATEs. The median effect is 16.76 feet of height attrition per unit petition intensity, with 91.8\% of parcels showing a positive effect (petitions increase height reduction). The wide interquartile range (7.67 to 27.18 feet) is not a failure of the estimator -- it is the substantive finding: \textbf{petition effects are genuinely heterogeneous across Austin's parcel landscape}.
 
 \begin{table}[H]
 \centering
-\caption[Distribution of Conditional Average Treatment Effects $\hat{\tau}(x_i)$]{Distribution of parcel-level conditional average treatment effects from the Causal Forest, N=6,177 surviving cases. The estimand is height attrition (floors) per unit petition intensity. }
+\caption[Distribution of Conditional Average Treatment Effects]{Distribution of parcel-level conditional average treatment effects from the Causal Forest, $N=6{,}177$ surviving cases.}
 \label{tab:cate_distribution}
-\begin{tabular}{lc}
+\begin{tabular}{lcc}
 \toprule
-\textbf{Statistic} & \textbf{$\hat{\tau}(x_i)$ (floors)} \\
+\textbf{Statistic} & \textbf{Height Attrition (ft)} & \textbf{Processing Delay (days)} \\
 \midrule
-Mean       & 17.96 \\
-Median     & 16.76 \\
-Std Dev    & 15.10 \\
-Lowest Decile        & 1.07  \\
-Lower Quartile        & 7.67  \\
-Upper Quartile        & 27.18 \\
-Highest Decile        & 35.95 \\
-Min        & $-$23.62 \\
-Max        & 178.45 \\
-\% parcels $\hat{\tau} > 0$ & 91.8\% \\
+Mean                      & 17.96   & \textit{[pending]} \\
+Median                    & 16.76   & \textit{[pending]} \\
+Std Dev                   & 15.10   & \textit{[pending]} \\
+Lowest Decile             & 1.07    & \textit{[pending]} \\
+Lower Quartile            & 7.67    & \textit{[pending]} \\
+Upper Quartile            & 27.18   & \textit{[pending]} \\
+Highest Decile            & 35.95   & \textit{[pending]} \\
+Min                       & $-$23.62 & \textit{[pending]} \\
+Max                       & 178.45  & \textit{[pending]} \\
+\% parcels $\hat{\tau} > 0$ & 91.8\% & \textit{[pending]} \\
 \bottomrule
-\multicolumn{2}{l}{\footnotesize $\hat{\tau}(x_i)$ is the Causal Forest conditional effect evaluated at each parcel's pre-treatment covariate vector.}
+\multicolumn{3}{l}{\footnotesize $\hat{\tau}(x_i)$ is the Causal Forest conditional effect evaluated at each parcel's pre-treatment covariate vector.}
 \end{tabular}
 \end{table}
 
-\textbf{Heterogeneity by Neighborhood Type.} Table~\ref{tab:cate_by_income} reports mean and median CATEs stratified by income and renter-share quartiles. A pronounced income gradient is visible: the highest-income quartile (Q4) exhibits a mean CATE of 24.58 floors, approximately 2.1$\times$ the lowest-income quartile mean of 11.94 floors. The renter-share gradient runs in the opposite direction: owner-occupied neighborhoods (Q1, renter share) bear the highest petition friction costs (mean 23.17 floors), while high-renter neighborhoods bear substantially lower costs (mean 15.37 floors). This asymmetry is consistent with the homevoter hypothesis \citep{fischel2001homevoter}: organized opposition is most materially consequential precisely in neighborhoods with the highest homeowner political capital.
+\textbf{Heterogeneity by Neighborhood Type.} Table~\ref{tab:cate_by_income} reports mean and median CATEs stratified by income and renter-share quartiles. A pronounced income gradient is visible: the highest-income quartile (Q4) exhibits a mean CATE of 24.58 feet, approximately 2.1$\times$ the lowest-income quartile mean of 11.94 feet. The renter-share gradient runs in the opposite direction: owner-occupied neighborhoods (Q1, renter share) bear the highest petition resistance costs (mean 23.17 feet), while high-renter neighborhoods bear substantially lower costs (mean 15.37 feet). This asymmetry is consistent with the homevoter hypothesis \citep{fischel2001homevoter}: organized opposition is most materially consequential precisely in neighborhoods with the highest homeowner political capital.
 
 \begin{table}[H]
 \centering
-\caption[CATE by Neighborhood Income and Renter Share Quartile]{Mean and median $\hat{\tau}(x_i)$ stratified by income quartile (upper panel) and renter-share quartile (lower panel). Effects approximately 2$\times$ larger in high-income, owner-occupied neighborhoods.}
+\caption[CATE by Neighborhood Income and Renter Share Quartile]{Mean and median $\hat{\tau}(x_i)$ for height attrition (feet) stratified by income quartile (upper panel) and renter-share quartile (lower panel). Effects approximately $2\times$ larger in high-income, owner-occupied neighborhoods.}
 \label{tab:cate_by_income}
-\begin{tabular}{lcc}
+\begin{tabular}{lcccc}
 \toprule
-\textbf{Subgroup} & \textbf{Mean CATE (floors)} & \textbf{Median CATE (floors)} \\
+ & \multicolumn{2}{c}{\textbf{Height Attrition (ft)}} & \multicolumn{2}{c}{\textbf{Delay (days)}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Subgroup} & \textbf{Mean} & \textbf{Median} & \textbf{Mean} & \textbf{Median} \\
 \midrule
-\multicolumn{3}{l}{\textit{By Median Household Income Quartile}} \\
-Q1 (lowest income)  & 11.94 & 11.52 \\
-Q2                  & 15.26 & 13.82 \\
-Q3                  & 20.09 & 19.80 \\
-Q4 (highest income) & \textbf{24.58} & \textbf{25.59} \\
+\multicolumn{5}{l}{\textit{By Median Household Income Quartile}} \\
+Q1 (lowest income)  & 11.94 & 11.52 & \textit{[p]} & \textit{[p]} \\
+Q2                  & 15.26 & 13.82 & \textit{[p]} & \textit{[p]} \\
+Q3                  & 20.09 & 19.80 & \textit{[p]} & \textit{[p]} \\
+Q4 (highest income) & \textbf{24.58} & \textbf{25.59} & \textit{[p]} & \textit{[p]} \\
 \midrule
-\multicolumn{3}{l}{\textit{By Renter Share Quartile}} \\
-Q1 (most owner-occupied)  & \textbf{23.17} & \textbf{23.64} \\
-Q2                        & 19.29 & 18.20 \\
-Q3                        & 14.03 & 12.18 \\
-Q4 (most renter-occupied) & 15.37 & 13.31 \\
+\multicolumn{5}{l}{\textit{By Renter Share Quartile}} \\
+Q1 (most owner-occupied)  & \textbf{23.17} & \textbf{23.64} & \textit{[p]} & \textit{[p]} \\
+Q2                        & 19.29 & 18.20 & \textit{[p]} & \textit{[p]} \\
+Q3                        & 14.03 & 12.18 & \textit{[p]} & \textit{[p]} \\
+Q4 (most renter-occupied) & 15.37 & 13.31 & \textit{[p]} & \textit{[p]} \\
 \bottomrule
-\multicolumn{3}{l}{\footnotesize $N \approx 1{,}544$ per quartile. }
+\multicolumn{5}{l}{\footnotesize $N \approx 1{,}544$ per quartile. \textit{[p]} = delay CATE values to be populated from model output.}
 \end{tabular}
 \end{table}
 
@@ -702,7 +746,7 @@ Because the inherent rarity of protest petitions (a \metricBaseRate{} base rate)
 
 This ranking utility is best understood through top-decile lift. When isolating the 10\% of cases the model flags as highest risk, the precision is \metricTopDecilePrecision{} (a lift of \metricTopDecileLift{} over the base rate). However, because there are few true positive cases even in this extreme top decile (\metricTopDecileTP{} out of \metricTopDecileN{} cases), the precision estimate retains a wide confidence interval (16.1\% to 37.8\%).
 
-These constraints establish the overarching narrative of the predictive results: the algorithmic framework successfully learns to triage neighborhood opposition risk based purely on filing-date administrative geometry and historical spatial friction. However, the absolute scarcity of petitioned cases means that these scores must remain bounded to relative triage rankings, and cannot be repurposed as deterministic, case-level probabilities for formal case-level results.
+These constraints establish the overarching narrative of the predictive results: the algorithmic framework successfully learns to triage neighborhood opposition risk based purely on filing-date administrative geometry and historical spatial opposition signals. However, the absolute scarcity of petitioned cases means that these scores must remain bounded to relative triage rankings, and cannot be repurposed as deterministic, case-level probabilities for formal case-level results.
 
 \begin{figure}[htbp]
     \centering
@@ -717,9 +761,9 @@ These results provide one transparency diagnostic for feature reliance. The in-d
 
 \subsection[Multi-Horizon Out-Of-Time Predictive Stability]{Multi-Horizon Out-Of-Time (OOT) Predictive Stability}
 
-To determine if initial spatial friction and neighborhood demographics constitute an enduring predictive signal for urban development opposition, we evaluated the Multi-Horizon CatBoost architecture across a rigorous Walk-Forward evaluation (predictive horizons ranging from 14 days to 2 years) against out-of-time test sets for 2022, 2023, and 2024. 
+To determine if initial spatial opposition signals and neighborhood demographics constitute an enduring predictive signal for urban development opposition, we evaluated the Multi-Horizon CatBoost architecture across a rigorous Walk-Forward evaluation (predictive horizons ranging from 14 days to 2 years) against out-of-time test sets for 2022, 2023, and 2024. 
 
-The predictive decay curve is remarkably minimal. Even at the extreme 2-Year horizon, the model retains a ROC AUC in excess of 0.92 across all test years. When benchmarked against Naive Baselines (such as the historical 0.500 ROC AUC base-rate heuristic), the spatial embeddings provide massive predictive lift. SHAP spatial interaction heatmaps executed at the 6-month and 1-year horizons confirm that the proximity and density of initial single-family friction vectors remain the dominant predictive associations regardless of the time delay, unequivocally proving the structural validity of early planning commission data as a forecasting mechanism.
+The predictive decay curve is remarkably minimal. Even at the extreme 2-Year horizon, the model retains a ROC AUC in excess of 0.92 across all test years. When benchmarked against Naive Baselines (such as the historical 0.500 ROC AUC base-rate heuristic), the spatial embeddings provide massive predictive lift. Feature attribution heatmaps executed at the 6-month and 1-year horizons confirm that the proximity and density of initial single-family opposition signals remain the dominant predictive associations regardless of the time delay, unequivocally proving the structural validity of early planning commission data as a forecasting mechanism.
 
 \input{Tables/chapter4_performance/tbl_ch4_09_multi_horizon_results.tex}
 
@@ -826,16 +870,7 @@ A triangular-kernel weighted least squares estimator indicates a positive discon
 
 This estimate should be interpreted as a reduced-form effect at the threshold. Because the data do not record whether the City Clerk formally certified each petition as legally compliant, the analysis relies on an unverified calculated area share. Rather than assuming the exact threshold acts as a deterministic sharp trigger, the specification estimates the shift in average processing time associated with crossing the statutory 20\% margin. Consequently, this is a threshold-based reduced-form model where institutional compliance remains unobserved.
 
-The identification schematic is reported in Appendix~\ref{app:overlays} (Figure~\ref{fig:causal_dag_appendix}); the main text retains only the estimated discontinuity exhibit.
-
 Design limitations include potential manipulation of the running variable, since petition organizers may strategically target just above 20\%, and limited local support near the cutoff in some calendar slices. Robustness checks, a McCrary (2008) density test for running-variable manipulation \cite{mccrary2008manipulation} ($p > 0.05$), symmetric donut exclusions, and covariate continuity checks, support the validity of the design at the threshold.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{ch5/fig_ch5_31_petition_rd.png}
-\caption[Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share]{Threshold-based reduced-form discontinuity at the 20\% reconstructed petition-share threshold. The figure reports the estimated shift in council processing time. Bin widths were selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure \cite{calonico2014rdrobust}.}
-\label{fig:f16_rd}
-\end{figure}
 
 
 \section{Limitations}
@@ -851,15 +886,15 @@ This study's methodological and empirical boundaries introduce several methodolo
 
 \textbf{Ethical Ambiguity in Algorithmic Error.} While the thesis presents formal spatial error distributions, neither geographic symmetry nor false-negative parity constitutes a robust fairness guarantee when algorithms are deployed into politically charged housing markets. The most substantive ethical limitation is that the algorithm's mathematical architecture is completely blind to motive: it cannot distinguish between affluent, exclusionary NIMBY mobilization intended to block multi-family housing and legitimate, community-driven anti-displacement resistance seeking to protect vulnerable tenants from predatory development (as detailed in Section~\ref{subsec:interviews}).  
 
-\textbf{External Validity and Policy Windows.} Crucially, Austin's unique institutional structure—characterized by a council-manager government \cite{cityaustin2010}, highly localized Texas protest petition statutes, and an archaic continuous land development code—severely limits the direct generalization of these specific predictive parameters to other municipalities. Furthermore, the sweeping Texas HB~24 legislation, which recently gutted the formal petition mechanism, falls entirely outside the thesis observation period. While the overarching computational approach (time-stamped feature engineering, strict sequential evaluation, and clustered attribution tracing) is theoretically portable to other cities, the specific model weights, architectures, and predictive scores presented here are strictly Austin-specific and bounded to a now-closed policy era.
+\textbf{External Validity and Policy Windows.} Crucially, Austin's unique institutional structure -- characterized by a council-manager government \cite{cityaustin2010}, highly localized Texas protest petition statutes, and an archaic continuous land development code -- severely limits the direct generalization of these specific predictive parameters to other municipalities. Furthermore, the sweeping Texas HB~24 legislation, which recently gutted the formal petition mechanism, falls entirely outside the thesis observation period. While the overarching computational approach (time-stamped feature engineering, strict sequential evaluation, and clustered attribution tracing) is theoretically portable to other cities, the specific model weights, architectures, and predictive scores presented here are strictly Austin-specific and bounded to a now-closed policy era.
 
-\textbf{Causal Pathway Limitations and Observational Assumptions.} In establishing a causal mediation framework for the "Density Bonus Paradox," this study must adopt several structural assumptions due to the constraints of observational data. First, the \textit{Anchor Pricing Assumption} posits that a developer's initially requested height or density is genuine; if developers strategically "over-ask" anticipating negotiations, observed reductions may reflect political theater rather than a true penalizing effect. Second, the \textit{Capital Stack Heterogeneity} assumption acknowledges that not all developers are equally exposed to macroeconomic attrition (e.g., floating-rate debt); while the model proxies institutional, patient capital via PUD or high-density requests, precise internal pro-forma data remains unobserved. Third, the \textit{Qualitative Void Limitation} requires treating discrete hearing counts as a proxy for political friction, mathematically equating a routine 5-minute postponement with a highly contested 4-hour hearing. However, while our current model relies on discrete hearing counts, the pipeline is architected to support future Natural Language Processing (NLP). A pilot NLP analysis of 14,999 commission transcripts confirms this variance, with agenda documentation lengths ranging from 0 to over 166,000 tokens per case, containing hundreds of localized keyword hits for terms like "traffic," "density," and "oppose." By calculating the token count or page-length of the agenda backup materials, future iterations can perfectly proxy the qualitative intensity of the political friction. Finally, \textit{Strategic Withdrawals} represent severe, pre-emptive opposition success that fundamentally censors the final disposition data, requiring the model to rely heavily on earlier protest-petition and hearing delays as the primary visible indicators of political friction.
+\textbf{Causal Pathway Limitations and Observational Assumptions.} In establishing a causal mediation framework for the "Density Bonus Paradox," this study must adopt several structural assumptions due to the constraints of observational data. First, the \textit{Anchor Pricing Assumption} posits that a developer's initially requested height or density is genuine; if developers strategically "over-ask" anticipating negotiations, observed reductions may reflect political theater rather than a true penalizing effect. Second, the \textit{Capital Stack Heterogeneity} assumption acknowledges that not all developers are equally exposed to macroeconomic attrition (e.g., floating-rate debt); while the model proxies institutional, patient capital via PUD or high-density requests, precise internal pro-forma data remains unobserved. Third, the \textit{Qualitative Void Limitation} requires treating discrete hearing counts as a proxy for political resistance, mathematically equating a routine 5-minute postponement with a highly contested 4-hour hearing. However, while the current model relies on discrete hearing counts, the architecture is designed to support future Natural Language Processing. A pilot NLP analysis of 14,999 commission transcripts confirms this variance, with agenda documentation lengths ranging from 0 to over 166,000 tokens per case, containing hundreds of localized keyword hits for terms like "traffic," "density," and "oppose." By calculating the token count or page-length of the agenda backup materials, future iterations can better proxy the qualitative intensity of political resistance. Finally, \textit{Strategic Withdrawals} represent severe, pre-emptive opposition success that fundamentally censors the final disposition data, requiring the model to rely heavily on earlier protest-petition and hearing delays as the primary visible indicators of political resistance.
 
 \section{Conclusion}
 
 Filing-date administrative features can rank petition risk in Austin's pre-HB\,24 zoning regime, but wide discrimination uncertainty and sparse positives still limit institutionally portable use of case-level probabilities beyond ranking workflows.
 
-This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is specific: filing-date administrative features carry real predictive signal for petition risk (the model achieves a PR-AUC of \metricBootstrapFiling{} on a temporal holdout), but that signal suffered significant temporal degradation during the 2022 performance dip. This suggests that predictive reliability is sensitive to ambient macro-shocks (such as pandemic-era administrative shifts) rather than static parcel spatiality. Furthermore, performance varies erratically across petition thresholds (0\%--25\%), providing a substantive empirical finding on \textbf{neighborhood agency}: neighbor mobilization is a deliberate social choice that subverts mechanistic administrative prediction, confirming that ``organized'' opposition remains a contingent social process rather than a rule-based response to statutory thresholds. These results demonstrate that while administrative data carries signal, the predictive patterns are mathematical artifacts of a specific policy window and should not be misinterpreted as permanent fundamental laws of neighborhood behavior. Finally, the model's dependence on socio-demographic clusters---especially neighborhood income, demographics, and housing tenure---indicates that predictive models of petition risk invariably embed complex class and race dynamics. However, because the relative feature importance of these clusters shifts unpredictably between different algorithms and over time, the attribution profiles are not stable enough to extract durable urban planning theories.
+This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is specific: filing-date administrative features carry real predictive signal for petition risk (the model achieves a PR-AUC of \metricBootstrapFiling{} on a temporal holdout), but that signal suffered significant temporal degradation during the 2022 performance dip. This suggests that predictive reliability is sensitive to ambient macro-shocks (such as pandemic-era administrative shifts) rather than static parcel spatiality. Furthermore, performance varies erratically across petition thresholds (0\%--25\%), providing a substantive empirical finding on \textbf{neighborhood agency}: neighbor mobilization is a deliberate social choice that subverts mechanistic administrative prediction, confirming that ``organized'' opposition remains a contingent social process rather than a rule-based response to statutory thresholds. These results demonstrate that while administrative data carries signal, the predictive patterns are mathematical artifacts of a specific policy window and should not be misinterpreted as permanent fundamental laws of neighborhood behavior. Finally, the model's dependence on socio-demographic clusters -- especially neighborhood income, demographics, and housing tenure -- indicates that predictive models of petition risk invariably embed complex class and race dynamics. However, because the relative feature importance of these clusters shifts unpredictably between different algorithms and over time, the attribution profiles are not stable enough to extract durable urban planning theories.
 
 
 
@@ -868,79 +903,18 @@ Future work should extend the observation window to capture HB~24 effects \cite{
 \appendix
 
 \newpage
-\noindent \textbf{Appendix Guide.} The appendix is organized into three blocks. \textit{Qualitative Documentation} (Appendix A) contains recruitment, IRB, interview, petition, and panel artifacts mapping to Chapter 3. \textit{Quantitative Methods and Robustness} (Appendix B) contains detailed modeling configurations, variable mapping, calibration transparency, and exploratory prediction diagnostics mapping to Chapters 4 and 5. \textit{Policy Event Studies} (Appendix C) contains independent tracking of the HOME Initiative shock. Detailed navigation is provided by the table of contents.
-\section{Qualitative Documentation}
-\label{app:qualitative_docs}
+\noindent \textbf{Appendix Guide.} The appendix contains two sections. \textit{Quantitative Methods and Robustness} (Appendix A) contains modeling configurations, variable mapping, calibration transparency, and exploratory prediction diagnostics. \textit{Policy Event Studies} (Appendix B) contains independent tracking of the HOME Initiative shock.
 
-\subsection{Interview Recruitment Overview}
-\label{app:overview}
-
-\noindent The following one-page project overview was provided to all interview participants prior to scheduling.
-
-\begin{center}
-\includegraphics[width=0.85\textwidth,page=1]{appendix/fig_app_02_project_overview.pdf}
-\end{center}
-
-\newpage
-\subsection{IRB Protocol Summary}
-\label{app:protocol}
-
-\noindent The following protocol summary documents the IRB-approved study design (Columbia University Morningside IRB, Protocol ACYY0820).
-
-\begin{center}
-\includegraphics[width=0.85\textwidth,page=1]{appendix/fig_app_03_protocol_summary.pdf}
-\end{center}
-
-\newpage
-\subsection{Semi-Structured Interview Guide}
-\label{app:interview}
-
-\noindent The following interview guide was used for all stakeholder interviews.
-
-\begin{center}
-\includegraphics[width=0.85\textwidth,page=1]{appendix/fig_app_01_interview_guide.pdf}
-\end{center}
-
-\newpage
-
-
-\newpage
-\input{Sections/appendices_augmentation/appendices_intermediate_proposals.tex}
-
-\newpage
-\input{Sections/appendices_augmentation/appendices_voting_data.tex}
-
-\newpage
-\input{Sections/appendices_augmentation/appendices_nlp_keywords.tex}
-
-\newpage
-
-\newpage
-
-\newpage
-\newpage
 \section{Quantitative Methods and Robustness}
 \label{app:quantitative_supp}
 
 \subsection{Expanded Methods Appendix: Technical Details}
 \label{app:methodology_details}
 
-\subsubsection{Hyperparameter Search Grids}
-The unified architectural benchmark utilized the following randomized search bounds in 5-fold temporal cross-validation:
-\begin{itemize}
-    \item \textbf{Tree Ensembles (CatBoost)}: Learning Rate $\sim \log\text{Uniform}[0.01, 0.3]$, Max Depth $\in \{4, 6, 8, 10\}$.
-    \item \textbf{Deep Architectures (MLP/TabNet)}: Layers $\in \{[32], [64,32], [128,64,32]\}$, Weight Decay $\sim \log\text{Uniform}[1\text{e-}5, 1\text{e-}2]$.
-    \item \textbf{Regularized Linear (Logistic L2)}: C (Inverse Regularization) $\sim \log\text{Uniform}[0.01, 10]$.
-    \item \textbf{Distributionally Robust (Anchor Regression)}: Alpha $\sim \text{Uniform}[1, 100]$.
-\end{itemize}
-All algorithms were tuned exclusively to maximize Out-Of-Fold Precision-Recall AUC (PR-AUC) under strict temporal separation.
+\input{Sections/appendices_augmentation/appendices_nlp_keywords.tex}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{exhibits/fig_hyperparameter_sweeps_benchmark.pdf}
-\caption[Supplementary Hyperparameter Search Results]{\textbf{Out-of-distribution optimization surfaces for benchmark architectures.} Empirically computed grid-search PR-AUC heatmaps across the four formalized model families (Tree, Deep, Linear, and Causal). Architectures like Deep Tabular overfit catastrophically under high capacity without massive L2 constraint, while Tree Ensembles plateau gracefully.}
-\label{fig:hyperparameters}
-\end{figure}
+\newpage
+
 
 
 
@@ -1015,7 +989,7 @@ Figure~\ref{fig:threshold_sensitivity} visualizes the performance trajectory of 
 \end{figure}
 
 
-\subsection{Referee Robustness Pack}
+\subsection{Referee Robustness Checks}
 \label{app:robustness_pack}
 
 \noindent Following the structured sensitivity framework recommended for causal machine learning submissions \citep{chernozhukov2018dml}, we report four orthogonal robustness checks targeting the failure modes most likely to generate referee skepticism: nuisance model dependence, seed sensitivity, treatment definition sensitivity, and covariate group omission. All results are generated via our evaluation pipeline against the hardened DML panel described in Section~\ref{sec:dml_panel_construction}.
@@ -1030,14 +1004,14 @@ The DML estimator is sensitive to the quality of nuisance learners ($\hat{m}(X)$
 \label{tab:nuisance_sensitivity}
 \begin{tabular}{lc}
 \toprule
-\textbf{Nuisance Learner} & \textbf{Height CATE (floors)} \\
+\textbf{Nuisance Learner} & \textbf{Height CATE (ft)} \\
 \midrule
 Linear / Lasso    & 81.22 \\
 Random Forest     & 1.17 \\
 Gradient Boosting & $-$9.65 \\
 \bottomrule
-\multicolumn{2}{l}{\footnotesize The Lasso divergence from tree-based learners is consistent with strong non-linearity in the outcome} \\
-\multicolumn{2}{l}{\footnotesize surface. Causal Forest (primary) is a non-parametric nuisance estimator and is the preferred specification.} \\
+\multicolumn{2}{l}{\footnotesize The Lasso divergence from tree-based learners is consistent with strong non-linearity in the outcome function.} \\
+\multicolumn{2}{l}{\footnotesize Causal Forest (primary) is a non-parametric nuisance estimator and is the preferred specification.} \\
 \end{tabular}
 \end{table}
 
@@ -1045,7 +1019,7 @@ Gradient Boosting & $-$9.65 \\
 
 To rule out lucky-draw estimation, the Causal Forest is re-estimated across 20 independent random seeds with a fixed data and pipeline specification. The mean ATE, standard deviation, and sign consistency rate are reported in Table~\ref{tab:seed_stability}.
 
-The wide standard deviation (45.14 floors) and near-symmetric sign consistency (45\% positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous --- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from $-$23.6 to 178.5 floors across the parcel distribution --- a single aggregate CATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably 16.76 floors and 91.8\% of parcels show a consistent sign. The aggregate CATE instability is itself evidence that the true effect function has high variance across the covariate space.
+The wide standard deviation (45.14 ft) and near-symmetric sign consistency (45\% positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous -- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from $-$23.6 to 178.5 ft across the parcel distribution -- a single aggregate CATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably 16.76 ft and 91.8\% of parcels show a consistent sign. The aggregate CATE instability is itself evidence that the true effect function has high variance across the covariate space.
 
 \begin{table}[H]
 \centering
@@ -1053,10 +1027,10 @@ The wide standard deviation (45.14 floors) and near-symmetric sign consistency (
 \label{tab:seed_stability}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Statistic} & \textbf{Height CATE (floors)} & \textbf{Sign Consistency} \\
+\textbf{Statistic} & \textbf{Height CATE (ft)} & \textbf{Sign Consistency} \\
 \midrule
 Mean (N=20) & $-$2.86 & 45\% positive \\
-Std Dev      & 45.14 & --- \\
+Std Dev      & 45.14 & n/a \\
 \bottomrule
 \multicolumn{3}{l}{\footnotesize Fixed pipeline specification. Only random seed varies. See Section~\ref{sec:hte} for the CATE distribution.}\\
 \end{tabular}
@@ -1105,82 +1079,6 @@ No Demographics       & 119.19 \\
 \end{tabular}
 \end{table}
 
-\newpage
-\newpage
-\newpage
-\newpage
-\section{Institutional Context and Causal Overlays}
-\label{app:institutional_overlays}
-\subsection{Institutional Geographic Overlay Analyses}
-\label{app:overlays}
-
-\noindent Additional analyses evaluate localized institutional overlays, Neighborhood Plan Areas (NPA), Historic District (HD) designations, Transit-Oriented Development (TOD) deregulation, and the 10-1 council transition system.
-
-\begin{figure}[H]
-\centering
-\vspace{0.2cm}
-\textbf{\small Threshold-Based Reduced-Form Discontinuity on Reconstructed Petition Share}\par\vspace{0.3cm}
-\begin{tikzpicture}[
-    node distance=1.5cm and 2.5cm,
-    var/.style={rectangle, draw, fill=white, minimum height=0.8cm, align=center, rounded corners},
-    unobs/.style={rectangle, draw, dashed, fill=gray!10, minimum height=0.8cm, align=center, rounded corners},
-    arrow/.style={thick,->,>=stealth},
-    dashed_arrow/.style={thick,dashed,->,>=stealth}
-]
-\node[var] (R) {$R$ \\ \footnotesize (Reconstructed Area \%)};
-\node[var, right=1.6cm of R, very thick] (T) {$T$ \\ \footnotesize ($\ge$ 20\% Measured Threshold)};
-\node[var, right=1.6cm of T] (Y) {$Y$ \\ \footnotesize (Council Delay)};
-\node[unobs, above=1.5cm of T] (U) {$U$ \\ \footnotesize (Unobserved Factors)};
-\node[var, below=1.5cm of T] (X) {$X$ \\ \footnotesize (Observed Covariates)};
-
-\draw[arrow] (R) -- (T);
-\draw[arrow] (T) -- node[above] {$\tau$} (Y);
-\draw[arrow] (R) to[bend right=30] (Y);
-\draw[dashed_arrow] (U) to[bend right=15] (R.north);
-\draw[dashed_arrow] (U) to[bend left=15] (Y.north);
-\draw[arrow] (X) to[bend left=15] (R.south);
-\draw[arrow] (X) to[bend right=15] (Y.south);
-\end{tikzpicture}
-\caption[Identification Diagram: Threshold-Based Reduced-Form Discontinuity]{Supplementary identification schematic for the threshold-based reduced-form discontinuity design. The running variable $R$ (reconstructed signed-area share) defines threshold crossing $T$ ($\geq 20\%$), and the model estimates the associated discontinuous shift in council processing delay $Y$ without observing clerk certification compliance. Unobserved factors $U$ may influence both petition mobilization and delay through channels not mediated by the threshold.}
-\label{fig:causal_dag_appendix}
-\end{figure}
-
-The ITS check for the 10-1 transition reports coefficient \metricTenOneITSCoeff{} on council dissent ($p=\metricTenOneITSPval{}$), and the NPA check reports coefficient \metricNPAFrictionCoeff{} ($p=\metricNPAFrictionPval{}$). Historic District and TOD overlay designs are not estimable in this panel because outcome and/or treatment variation collapses once the legally relevant window restrictions are imposed. These outputs are retained only for transparency and are not interpreted substantively.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{ch5/fig_ch5_34_causal_context_did.png}
-    \caption[Estimated Descriptive Interaction Effects by District]{Geographic choropleth illustrating the descriptive interaction estimate. Districts 4 and 9 map the estimated coefficient ($\Delta -0.546$), showing the interaction effect for districts that changed representation, relative to districts without comparable turnover.}
-    \label{fig:did_geography}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{ch5/fig_ch5_30_electoral_placebo_did.png}
-    \caption[Placebo Estimates Across Earlier Election Cycles]{Placebo estimates across prior municipal electoral cycles (2014, 2016, 2018, 2020) for the affected districts. Only the 2022 cycle shows a detectable effect.}
-    \label{fig:placebo_did_matrix}
-\end{figure}
-
-\begin{table}[H]
-\centering
-\caption[Summary of Quasi-Experimental Estimates]{Summary of Supplementary Quasi-Experimental Estimates for Reconstructed Petition Outcomes}
-\label{tab:geographic_causal}
-\small
-\begin{tabular}{@{}llrrrr@{}}
-\toprule
-\textbf{Design} & \textbf{Dep.\ Var.} & \textbf{Coeff.} & \textbf{SE} & \textbf{$p$} & \textbf{$N$} \\
-\midrule
-\textit{(1) 10-1 Council ITS}       & vote\_no       & \metricTenOneITSCoeff{}   & 0.122  & \metricTenOneITSPval{}  & 20 \\
-\textit{(2) NPA Designation}   & vote\_no       & \metricNPAFrictionCoeff{} & 0.245  & \metricNPAFrictionPval{}& 20 \\
-\textit{(3) Historic District}      & vote\_no       & not estimable  & not estimable    & not estimable & 20 \\
-\textit{(4) TOD Deregulation}       & vote\_no       & not estimable & not estimable    & not estimable& 20 \\
-\textit{(5) 2022 Flipped District DiD}& measured\_threshold\_crossing    & \textbf{\metricFlipDiDCoeff{}}     & 0.266  & \textbf{\metricFlipDiDPval{}}    & 518 \\
-\bottomrule
-\multicolumn{6}{l}{\footnotesize OLS with robust standard errors where estimable. Designs (3) and (4) are marked "not estimable" due to}\\
-\multicolumn{6}{l}{\footnotesize collapsed identifying variation (zero/near-zero treatment or outcome support) in the restricted institutional windows.} \\
-\multicolumn{6}{l}{\footnotesize Design (5) reports the $\text{Flipped} \times \text{later-window}$ interaction coefficient.} \\
-\end{tabular}
-\end{table}
 
 
 \newpage
