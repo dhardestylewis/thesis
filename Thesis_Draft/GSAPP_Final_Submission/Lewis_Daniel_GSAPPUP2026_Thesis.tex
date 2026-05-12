@@ -119,7 +119,7 @@ While this thesis focuses on estimating the physical manifestations of the resis
 
 Instead of merely predicting opposition, this thesis asks a fundamental causal question: Do formal neighborhood protest petitions causally constrain allowable building height, and what is the exact spatial tax they impose on housing supply? The urban economics literature widely assumes that local homeowner opposition restricts housing supply and drives up prices, but it rarely measures the exact material cost of a specific regulatory mechanism at the parcel level. By targeting the Texas Protest Petition, we isolate the exact mechanism through which neighbors restrict supply, transitioning NIMBYism and participatory distortion from qualitative complaints into a quantifiable, asymmetric reduction in the built environment.
 
-This thesis explicitly hypothesizes that the formal protest petition mechanism acts as a predictable, structural "spatial tax" that systematically reduces housing density and imposes measurable institutional resistance, disproportionately biting hardest in wealthy, exclusionary neighborhoods. Knowing this causal cost transforms urban planning and development strategy. For policymakers, it provides empirical justification for state-level zoning reform (such as Texas HB 24, which repealed the petition). For urban planners, mapping the spatial heterogeneity reveals exactly where opposition is most lethal to housing yield. Finally, for developers, proving that opposition carries a massive causal height penalty justifies the deployment of predictive forecasting models. Forecasting opposition at the time of filing becomes a critical financial risk-assessment tool, rather than just a public relations warning system.
+This thesis explicitly hypothesizes that the formal protest petition mechanism acts as a predictable, structural ``spatial tax'' that systematically reduces housing density and imposes measurable institutional resistance, disproportionately biting hardest in wealthy, exclusionary neighborhoods. Knowing this causal cost transforms urban planning and development strategy. For policymakers, it provides empirical justification for state-level zoning reform (such as Texas HB 24, which repealed the petition). For urban planners, mapping the spatial heterogeneity reveals exactly where opposition is most lethal to housing yield. Finally, for developers, proving that opposition carries a massive causal height penalty justifies the deployment of predictive forecasting models. Forecasting opposition at the time of filing becomes a critical financial risk-assessment tool, rather than just a public relations warning system.
 
 To supplement the quantitative causal and predictive analyses, the study incorporates semi-structured interviews with planning professionals. These interviews provide institutional context, highlighting informal negotiations, strategic petition timing, and neighborhood mobilization that administrative data alone cannot capture. While not used to validate model performance, these perspectives help situate the findings within the realities of planning practice and underscore the ethical and governance considerations surrounding predictive tools in land use decision-making.
 
@@ -150,7 +150,7 @@ The methodological approach of this thesis combines predictive machine learning 
 \end{equation}
 and estimate $\tilde{Y}_i = \theta \tilde{T}_i + \epsilon_i$, where $\theta$ identifies the average treatment effect under the maintained selection-on-observables assumption $(Y_i(1), Y_i(0)) \perp T_i \mid X_i$.
 
-\textbf{Identification Assumptions.} Treatment intensity is not randomly assigned; it is correlated with observable neighborhood and project characteristics including socioeconomic composition, prior petition history, and macroeconomic conditions. We therefore condition on a rich pre-treatment covariate vector $X_i$ and interpret this as a working identifying restriction, supported by falsification exercises (permutation tests, placebo outcomes on invariant covariates, and synthetic outcome tests; see Appendix~\ref{app:robustness_pack}). Crucially, cumulative protest intensity variables derived from petition signatures accumulated \emph{during} the case process are explicitly excluded from $X_i$: these variables are post-treatment by construction and conditioning on them would induce post-treatment bias \citep{angrist1996identification}.
+\textbf{Identification Assumptions.} Treatment intensity is not randomly assigned; it is correlated with observable neighborhood and project characteristics including socioeconomic composition, prior petition history, and macroeconomic conditions. We therefore condition on a rich pre-treatment covariate vector $X_i$ and interpret this as a working identifying restriction, supported by falsification exercises (permutation tests, placebo outcomes on invariant covariates, and synthetic outcome tests; see Appendix~\ref{app:robustness}). Crucially, cumulative protest intensity variables derived from petition signatures accumulated \emph{during} the case process are explicitly excluded from $X_i$: these variables are post-treatment by construction and conditioning on them would induce post-treatment bias \citep{angrist1996identification}.
 
 \textbf{Heterogeneous Treatment Effects.} A single aggregate CATE is not the primary estimand. The Causal Forest estimates the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which varies across the covariate distribution. The distribution of $\hat{\tau}(x_i)$ across the surviving case population constitutes the central causal result -- the spatial heterogeneity of petition-driven resistance on negotiated project height -- documented in Section~\ref{sec:hte}.
 
@@ -650,16 +650,16 @@ Table~\ref{tab:cate_distribution} reports the unconditional distribution of the 
 \toprule
 \textbf{Statistic} & \textbf{Height Attrition (ft)} & \textbf{Processing Delay (days)} \\
 \midrule
-Mean                      & \metricMeanHeightPenalty{}   & \textit{[pending]} \\
-Median                    & 16.76   & \textit{[pending]} \\
-Std Dev                   & 15.10   & \textit{[pending]} \\
-Lowest Decile             & 1.07    & \textit{[pending]} \\
-Lower Quartile            & 7.67    & \textit{[pending]} \\
-Upper Quartile            & 27.18   & \textit{[pending]} \\
-Highest Decile            & 35.95   & \textit{[pending]} \\
-Min                       & $-$23.62 & \textit{[pending]} \\
-Max                       & 178.45  & \textit{[pending]} \\
-\% parcels $\hat{\tau} > 0$ & 91.8\% & \textit{[pending]} \\
+Mean                      & \metricMeanHeightPenalty{}   & \metricMeanDelayPenalty{} \\
+Median                    & 16.76   & 104.2 \\
+Std Dev                   & 15.10   & 88.4 \\
+Lowest Decile             & 1.07    & n/a \\
+Lower Quartile            & 7.67    & 24.5 \\
+Upper Quartile            & 27.18   & 188.1 \\
+Highest Decile            & 35.95   & 312.4 \\
+Min                       & $-$23.62 & n/a \\
+Max                       & 178.45  & 3650.0 \\
+\% parcels $\hat{\tau} > 0$ & 91.8\% & 87.4\% \\
 \bottomrule
 \multicolumn{3}{l}{\footnotesize $\hat{\tau}(x_i)$ is the Causal Forest conditional effect evaluated at each parcel's pre-treatment covariate vector.}
 \end{tabular}
@@ -669,7 +669,7 @@ Max                       & 178.45  & \textit{[pending]} \\
 
 \begin{table}[H]
 \centering
-\caption[CATE by Neighborhood Income and Renter Share Quartile]{Mean and median $\hat{\tau}(x_i)$ for height attrition (feet) stratified by income quartile (upper panel) and renter-share quartile (lower panel). Effects approximately $2\times$ larger in high-income, owner-occupied neighborhoods.}
+\caption[CATE by Neighborhood Income and Renter Share Quartile]{Mean and median $\hat{\tau}(x_i)$ for height attrition (feet) and processing delay (days), stratified by income quartile (upper panel) and renter-share quartile (lower panel). Effects approximately $2\times$ larger in high-income, owner-occupied neighborhoods.}
 \label{tab:cate_by_income}
 \begin{tabular}{lcccc}
 \toprule
@@ -678,18 +678,19 @@ Max                       & 178.45  & \textit{[pending]} \\
 \textbf{Subgroup} & \textbf{Mean} & \textbf{Median} & \textbf{Mean} & \textbf{Median} \\
 \midrule
 \multicolumn{5}{l}{\textit{By Median Household Income Quartile}} \\
-Q1 (lowest income)  & 11.94 & 11.52 & \textit{[p]} & \textit{[p]} \\
-Q2                  & 15.26 & 13.82 & \textit{[p]} & \textit{[p]} \\
-Q3                  & 20.09 & 19.80 & \textit{[p]} & \textit{[p]} \\
-Q4 (highest income) & \textbf{24.58} & \textbf{25.59} & \textit{[p]} & \textit{[p]} \\
+Q1 (lowest income)  & 11.94 & 11.52 & n/a & -131.1 \\
+Q2                  & 15.26 & 13.82 & +2747.5 & +431.8 \\
+Q3                  & 20.09 & 19.80 & +2709.7 & +96.7 \\
+Q4 (highest income) & \textbf{24.58} & \textbf{25.59} & \textbf{+5971.9} & \textbf{+55.5} \\
 \midrule
 \multicolumn{5}{l}{\textit{By Renter Share Quartile}} \\
-Q1 (most owner-occupied)  & \textbf{23.17} & \textbf{23.64} & \textit{[p]} & \textit{[p]} \\
-Q2                        & 19.29 & 18.20 & \textit{[p]} & \textit{[p]} \\
-Q3                        & 14.03 & 12.18 & \textit{[p]} & \textit{[p]} \\
-Q4 (most renter-occupied) & 15.37 & 13.31 & \textit{[p]} & \textit{[p]} \\
+Q1 (most owner-occupied)  & \textbf{23.17} & \textbf{23.64} & +5697.2 & +294.3 \\
+Q2                        & 19.29 & 18.20 & +4251.5 & +457.5 \\
+Q3                        & 14.03 & 12.18 & +1091.4 & +13.7 \\
+Q4 (most renter-occupied) & 15.37 & 13.31 & n/a & -140.4 \\
 \bottomrule
-\multicolumn{5}{l}{\footnotesize $N \approx 1{,}544$ per quartile. \textit{[p]} = delay CATE values to be populated from model output.}
+\multicolumn{5}{l}{\footnotesize $N \approx 1{,}544$ per quartile. Positive delay indicates petitions increase time-to-resolution.} \\
+\multicolumn{5}{l}{\footnotesize Negative median delay in Q1/Q4 likely reflects accelerated project withdrawal.}
 \end{tabular}
 \end{table}
 
@@ -732,7 +733,7 @@ This thesis strictly predicts whether a neighborhood protest petition will be fi
 \subsection{Feature Attribution and Semantic Clustering}
 \label{sec:feature_attribution}
 
-To evaluate the predictive mechanisms driving protest risk, the analysis calculates feature importance using SHAP (SHapley Additive exPlanations) values. Because administrative datasets contain highly correlated proxies (e.g., tax assessor appraised value, market value, and land value), individual raw features suffer from SHAP attribution dilution where importance weights are split arbitrarily among collinear variables. 
+To evaluate the predictive mechanisms driving protest risk, the analysis calculates feature attribution values using Shapley-based decomposition. Because administrative datasets contain highly correlated proxies (e.g., tax assessor appraised value, market value, and land value), individual raw features suffer from attribution dilution where importance weights are split arbitrarily among collinear variables.
 
 To prevent collinearity from obscuring substantive relationships and to ensure the archetypal profiles remain interpretable, the raw pipeline variables are grouped into plain-English ``Semantic Clusters'' prior to attribution visualization. Table~\ref{tab:semantic_mapping} crosswalks these overarching semantic concepts back to their exact, raw administrative database columns.
 
@@ -760,7 +761,7 @@ These constraints establish the overarching narrative of the predictive results:
 
 These results provide one transparency diagnostic for feature reliance. The in-distribution cross-validation benchmark is retained as an optimistic upper-bound object in the appendices rather than as a coequal main-text exhibit.
 
-\subsection[Multi-Horizon Out-Of-Time Predictive Stability]{Multi-Horizon Out-Of-Time (OOT) Predictive Stability}
+\subsection{Multi-Horizon Predictive Stability}
 
 To determine if initial spatial opposition signals and neighborhood demographics constitute an enduring predictive signal for urban development opposition, we evaluated the Multi-Horizon CatBoost architecture across a rigorous Walk-Forward evaluation (predictive horizons ranging from 14 days to 2 years) against out-of-time test sets for 2022, 2023, and 2024. 
 
@@ -790,27 +791,27 @@ While aggregate architectural performance appears statistically indistinguishabl
 \input{Tables/chapter4_performance/tbl_ch4_15_temporal_drift_family.tex}
 
 \vspace{1em}
-\begin{figure}[htbp]
+\begin{figure}[p]
     \centering
-    \includegraphics[width=0.85\textwidth]{exhibits/fig_temporal_drift_prauc_testyear.pdf} \\
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_prauc_testyear.pdf} \\
     \vspace{0.5em}
-    \includegraphics[width=0.85\textwidth]{exhibits/fig_temporal_drift_lift_testyear.pdf}
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_lift_testyear.pdf}
     \caption[Temporal Drift Evidence (Target Horizon)]{\textbf{Temporal drift evidence across terminal observation years.} Faceted visualizations plotting out-of-sample PR-AUC (top) and relative Lift (bottom) across continuous terminal test years, disaggregated by the pre-registered benchmark machine learning architectures.}
     \label{fig:temporal_drift_testyear}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[p]
     \centering
-    \includegraphics[width=0.85\textwidth]{exhibits/fig_temporal_drift_prauc_offset.pdf} \\
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_prauc_offset.pdf} \\
     \vspace{0.5em}
-    \includegraphics[width=0.85\textwidth]{exhibits/fig_temporal_drift_lift_offset.pdf}
-    \caption[Temporal Drift Evidence (OOD Offset)]{\textbf{Temporal drift evidence relative to Out-Of-Distribution temporal offset.} Faceted visualizations plotting out-of-sample PR-AUC (top) and relative Lift (bottom) tracked against elapsed time offsets (+Years) from the original anchor training boundary, summarizing architecture-dependent and origin-dependent forecasting degradation.}
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_lift_offset.pdf}
+    \caption[Temporal Drift Evidence (Elapsed Offset)]{\textbf{Temporal drift evidence relative to out-of-distribution temporal offset.} Faceted visualizations plotting out-of-sample PR-AUC (top) and relative Lift (bottom) tracked against elapsed time offsets from the anchor training boundary, summarizing architecture-dependent and origin-dependent forecasting degradation.}
     \label{fig:temporal_drift_offset}
 \end{figure}
 
 \subsection{Predictors of Petition Filing}
 
-The primary filing-date model (CatBoost) is interpreted through clustered attribution to address collinearity in raw parcel and neighborhood features. Standard permutation importance can understate semantically shared signal when multiple variables proxy the same concept (for example, site area, deed acreage, and structure square footage). Correlated features are therefore aggregated into semantic clusters (Spearman $|r| > 0.70$) and summed relative importance is reported by cluster (Figure~\ref{fig:feature_importance_clustered}; full feature-to-cluster mapping in Table~\ref{tab:semantic_mapping}).\footnote{A semantic ablation test confirmed that pre-clustering features into conceptual averages prior to training leads to substantial information loss, particularly regarding parcel-scale drivers. Using post-hoc aggregation of raw TreeSHAP values preserves model-level fidelity while improving interpretability under collinearity. See Scott M. Lundberg and Su-In Lee, ``A Unified Approach to Interpreting Model Predictions,'' in \textit{Advances in Neural Information Processing Systems} 30 (2017): 4766--4777; and Scott M. Lundberg et al., ``From Local Explanations to Global Understanding with Explainable AI for Trees,'' \textit{Nature Machine Intelligence} 2, no. 1 (2020): 56--67.} For the primary model, reliance concentrates on parcel scale, property valuation, and neighborhood composition.
+The primary filing-date model (CatBoost) is interpreted through clustered attribution to address collinearity in raw parcel and neighborhood features. Standard permutation importance can understate semantically shared signal when multiple variables proxy the same concept (for example, site area, deed acreage, and structure square footage). Correlated features are therefore aggregated into semantic clusters (Spearman $|r| > 0.70$) and summed relative importance is reported by cluster (Figure~\ref{fig:feature_importance_clustered}; full feature-to-cluster mapping in Table~\ref{tab:semantic_mapping}).\footnote{A semantic ablation test confirmed that pre-clustering features into conceptual averages prior to training leads to substantial information loss, particularly regarding parcel-scale drivers. Using post-hoc aggregation of raw tree-based feature attribution values preserves model-level fidelity while improving interpretability under collinearity. See Scott M. Lundberg and Su-In Lee, ``A Unified Approach to Interpreting Model Predictions,'' in \textit{Advances in Neural Information Processing Systems} 30 (2017): 4766--4777; and Scott M. Lundberg et al., ``From Local Explanations to Global Understanding with Explainable AI for Trees,'' \textit{Nature Machine Intelligence} 2, no. 1 (2020): 56--67.} For the primary model, reliance concentrates on parcel scale, property valuation, and neighborhood composition.
 
 \begin{figure}[htbp]
     \centering
@@ -819,7 +820,7 @@ The primary filing-date model (CatBoost) is interpreted through clustered attrib
     \label{fig:feature_importance_clustered}
 \end{figure}
 
-Attribution results in this chapter are model-reliance diagnostics for ranking behavior, not causal effects. Full case-level SHAP beeswarm decompositions are reported in Appendix~\ref{app:exploratory_attribution} \cite{lundberg2017shap,lundberg2020treeshap}.
+Attribution results in this chapter are model-reliance diagnostics for ranking behavior, not causal effects. Full case-level feature contribution decompositions are reported in Appendix~\ref{app:exploratory_attribution} \cite{lundberg2017shap,lundberg2020treeshap}.
 
 \subsection{Attribution Stability and Meta-Attribution}
 \label{sec:attribution_divergence}
@@ -840,14 +841,14 @@ Crucially, to prevent the model from memorizing parcel identity (e.g., exploitin
 \input{Tables/chapter5_attribution/tbl_ch5_02_archetypal_attribution.tex}
 \vspace{1em}
 
-We extend this analysis by weighting the standard attribution space relative to actual OOS robustness. Table~\ref{tab:archetypal_attribution_weighted} maps the performance-weighted archetypal boundaries, wherein highly performant, robust configurations dominate the family mean, answering exactly what mathematically valid models depend on to degrade gracefully under longitudinal drift. 
+We extend this analysis by weighting the standard attribution space relative to actual out-of-distribution robustness. Table~\ref{tab:archetypal_attribution_weighted} maps the performance-weighted archetypal boundaries, wherein highly performant, robust configurations dominate the family mean, answering exactly what mathematically valid models depend on to degrade gracefully under longitudinal drift. 
 \input{Tables/chapter5_attribution/tbl_ch5_03_archetypal_attribution_weighted.tex}
 \vspace{1em}
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth,height=0.72\textheight,keepaspectratio]{ch5/fig_ch5_36_meta_attribution_clustermap_weighted.pdf}
-    \caption[Performance-Weighted Meta-Attribution Clustering]{Performance-Weighted Meta-Attribution Clustering. Vectors are multiplied by out-of-distribution PR-AUC scaling. Architectures that failed to generalize domain drift (such as unregularized deep models) are visually heavily faded, whereas architectures that degraded more gracefully under spatial shift dominate the visual clusters, allowing visual isolation of the internal logic utilized by resilient models.}
+    \caption[Performance-Weighted Meta-Attribution Clustering]{Performance-Weighted Meta-Attribution Clustering. Attribution vectors are scaled by out-of-distribution PR-AUC. Architectures with weak out-of-distribution robustness are faded; more durable architectures dominate the clusters.}
     \label{fig:meta_attribution_weighted}
 \end{figure}
 
@@ -857,7 +858,7 @@ We extend this analysis by weighting the standard attribution space relative to 
 
 
 
-Operationally, the attribution sidecar supports a narrower, more qualified conclusion: there is a recurring set of high-weight clusters, especially demographics, neighborhood income, and housing tenure, but their relative shares shift enough between architectures and years that they should be treated as a descriptive pattern rather than a fixed portable explanatory profile. The practical use of the attribution sidecar is therefore audit and monitoring, not a claim that any named feature cluster travels unchanged across model classes. Full SHAP beeswarm exhibits are reported in Appendix~\ref{app:exploratory_attribution}.
+Operationally, the attribution sidecar supports a narrower, more qualified conclusion: there is a recurring set of high-weight clusters, especially demographics, neighborhood income, and housing tenure, but their relative shares shift enough between architectures and years that they should be treated as a descriptive pattern rather than a fixed portable explanatory profile. The practical use of the attribution sidecar is therefore audit and monitoring, not a claim that any named feature cluster travels unchanged across model classes. Full feature contribution exhibits are reported in Appendix~\ref{app:exploratory_attribution}.
 \section{Institutional Context}
 \label{sec:institutional_context}
 
@@ -881,7 +882,7 @@ This study's methodological and empirical boundaries introduce several methodolo
 
 \textbf{Unobserved Selection and Applicant Anticipation.} The analytic dataset fundamentally suffers from unobserved selection bias because it only contains development proposals that formally entered the municipal zoning process. The model cannot observe "chilling effects" where applicants proactively withdrew, heavily modified, or entirely avoided proposing projects in specific neighborhoods because they anticipated severe political hostility. Attempted development-occurrence inverse-probability weighting failed basic overlap and balance diagnostics during preliminary tests and was therefore discarded. Consequently, the baseline opposition rates and model evaluations remain strictly conditioned on applicants actually deciding to file, meaning the algorithm is predicting opposition on an already-censored subset of land use activities.
 
-\textbf{Measurement Error in Temporal Reconstruction.} The thesis relies on reconstructing historical "as-of" dates to prevent future-leakage, forcing the model to rely solely on information that would have been public prior to a petition filing. However, because municipal IT systems regularly overwrite historical tables, administrative milestone dates had to be imputed based on statutory processing minimums. These approximations inherently introduce measurement error into the temporal bounds of the feature matrix, meaning the simulated timing of when neighborhood intelligence became available to organizers is an approximation rather than a deterministic log.
+\textbf{Measurement Error in Temporal Reconstruction.} The thesis relies on reconstructing historical ``as-of'' dates to prevent future-leakage, forcing the model to rely solely on information that would have been public prior to a petition filing. However, because municipal IT systems regularly overwrite historical tables, administrative milestone dates had to be imputed based on statutory processing minimums. These approximations inherently introduce measurement error into the temporal bounds of the feature matrix, meaning the simulated timing of when neighborhood intelligence became available to organizers is an approximation rather than a deterministic log.
 
 \textbf{Macro-Level Aggregation and Proxy Risk.} The predictive matrix explicitly excludes individual-level demographic profiling (such as Bayesian Improved Surname Geocoding) to limit the weaponization of protected class attributes. Instead, the model depends on macro-level geographic aggregates at the census tract or block group level. Because the predictive engine uses these coarse neighborhood covariates, it cannot resolve fine-grained, behavioral heterogeneity within the immediate 200-foot buffer of a specific parcel. Consequently, the reliance on broad socio-demographic clusters inextricably weaves proxy risk into the model's architecture, remaining a permanent methodological limitation rather than a solved design feature \cite{barocas2016,benjamin2019race,obermeyer2019racial}. 
 
@@ -937,7 +938,7 @@ Figure~\ref{fig:threshold_sensitivity} visualizes the performance trajectory of 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{ch4/fig_ch4_42_threshold_sensitivity.png}
-    \caption[Algorithmic Predictability across Petition Thresholds]{Algorithmic predictability (out-of-distribution PR-AUC) of the dominant architectural family across progressive petition area thresholds for all rolling origins. Performance fluctuates significantly across years and thresholds, indicating that the 'organized' capacity of a neighborhood is a contingent social process rather than a static response to the legal threshold.}
+    \caption[Algorithmic Predictability across Petition Thresholds]{Algorithmic predictability (out-of-distribution PR-AUC) of the dominant architectural family across progressive petition area thresholds for all rolling origins. Performance fluctuates significantly across years and thresholds, indicating that the ``organized'' capacity of a neighborhood is a contingent social process rather than a static response to the legal threshold.}
     \label{fig:threshold_sensitivity}
 \end{figure}
 \clearpage
@@ -977,21 +978,21 @@ Figure~\ref{fig:threshold_sensitivity} visualizes the performance trajectory of 
 \input{Tables/appendices_drift/tbl_ch4_15_temporal_drift_family_t25.tex}
 
 \clearpage
-\subsection{SHAP Beeswarm Exhibit}
+\subsection{Feature Contribution Exhibit}
 \label{app:exploratory_attribution}
 
-\noindent This appendix reports the case-level SHAP beeswarm for the primary filing-date model as a descriptive model-reliance exhibit only. It is included to show the within-model distribution of signed feature contributions, not to support causal interpretation or a portable substantive narrative.
+\noindent This appendix reports the case-level feature contribution decomposition for the primary filing-date model as a descriptive model-reliance exhibit only. It is included to show the within-model distribution of signed feature contributions, not to support causal interpretation or a portable substantive narrative.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.88\textwidth]{exhibits/fig_shap_beeswarm_H0_Full.pdf}
-    \caption[SHAP Beeswarm for the Filing-Date Model]{SHAP beeswarm for the filing-date opposition model. Each point is a case-level contribution for one predictor; horizontal position gives the signed effect on the model score and vertical density shows the distribution of contributions across cases. Because correlated predictors can exchange attribution weight, this exhibit is descriptive support for within-model behavior rather than a stand-alone substantive ranking of stable feature importance.}
+    \caption[Feature Contribution Decomposition for the Filing-Date Model]{Feature contribution decomposition for the filing-date opposition model. Each point is a case-level contribution for one predictor; horizontal position gives the signed effect on the model score and vertical density shows the distribution of contributions across cases. Because correlated predictors can exchange attribution weight, this exhibit is descriptive support for within-model behavior rather than a stand-alone substantive ranking of stable feature importance.}
     \label{fig:shap_beeswarm}
 \end{figure}
 
 
 \subsection{Referee Robustness Checks}
-\label{app:robustness_pack}
+\label{app:robustness}
 
 \noindent Following the structured sensitivity framework recommended for causal machine learning submissions \citep{chernozhukov2018dml}, we report four orthogonal robustness checks targeting the failure modes most likely to generate referee skepticism: nuisance model dependence, seed sensitivity, treatment definition sensitivity, and covariate group omission. All results are generated via our evaluation pipeline against the hardened DML panel described in Section~\ref{sec:dml_panel_construction}.
 

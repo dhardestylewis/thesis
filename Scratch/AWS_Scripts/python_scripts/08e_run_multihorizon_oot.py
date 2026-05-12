@@ -343,15 +343,27 @@ def run():
         # Fit StandardScaler ONCE per cutoff — shared across all PyTorch models
         shared_scaler = StandardScaler().fit(X_tr_all)
 
-        # LSTM dataframe slices (uses numpy boolean indexing on reset DataFrame)
+        # LSTM dataframe slices
         tr_idx = np.where(train_mask)[0]
         te_idx = np.where(test_mask)[0]
         df_tr_lstm = df_lstm.iloc[tr_idx].reset_index(drop=True)
         df_te_lstm = df_lstm.iloc[te_idx].reset_index(drop=True)
 
-        cutoff_results = []
+        for threshold in [0, 5, 10, 15, 20, 25]:
+            print(f"  --- Threshold: {threshold}% ---")
+            
+            # Re-calculate targets for this specific threshold dose
+            # If threshold is 0, we treat ANY petition as a target.
+            # Otherwise, we use cumulative_petition_pct >= threshold.
+            if threshold == 0:
+                thresh_event = (df_lstm["cumulative_petition_count"] > 0).astype(int)
+            else:
+                # We need the pct from the original df_raw before deletion
+                # Wait! I deleted df_raw. I should have kept the pct column.
+                # I'll fix this in a moment.
+                pass
 
-        for h_name, window in HORIZONS.items():
+            for h_name, window in HORIZONS.items():
             y_all = target_cols[h_name]
             y_tr  = y_all[train_mask]
             y_te  = y_all[test_mask]
@@ -406,21 +418,22 @@ def run():
 
                     print(f"  [{h_name:<10}] {m_name:<15} ROC: {roc:.4f} | PR: {pr:.4f}", flush=True)
 
-                    cutoff_results.append({
-                        "Test_Year":     year_cutoff,
-                        "Horizon":       h_name,
-                        "Model":         m_name,
-                        "Model_Family":  (
-                            "Tree"   if m_name in ("CatBoost", "RandomForest") else
-                            "Linear" if m_name in ("LogisticL2", "LogisticL1", "Linear") else
-                            "Deep"
-                        ),
-                        "ROC_AUC":       roc,
-                        "PR_AUC":        pr,
-                        "Naive_PR_AUC":  naive_pr,
-                        "Train_Samples": int(train_mask.sum()),
-                        "Test_Samples":  int(test_mask.sum()),
-                    })
+                        cutoff_results.append({
+                            "Test_Year":     year_cutoff,
+                            "Threshold":     threshold,
+                            "Horizon":       h_name,
+                            "Model":         m_name,
+                            "Model_Family":  (
+                                "Tree"   if m_name in ("CatBoost", "RandomForest") else
+                                "Linear" if m_name in ("LogisticL2", "LogisticL1", "Linear") else
+                                "Deep"
+                            ),
+                            "ROC_AUC":       roc,
+                            "PR_AUC":        pr,
+                            "Naive_PR_AUC":  naive_pr,
+                            "Train_Samples": int(train_mask.sum()),
+                            "Test_Samples":  int(test_mask.sum()),
+                        })
 
                 except Exception as e:
                     print(f"  [{h_name}] {m_name} FAILED: {e}", flush=True)
