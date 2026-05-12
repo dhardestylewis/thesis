@@ -421,9 +421,55 @@ We further decompose outcomes into two sequential stages:
     \item \textbf{Outcome stage (conditional on continuation):} negotiated height and time-to-resolution
 \end{enumerate}
 
-This structure reflects institutional filtering rather than assuming a single reduced-form outcome process.
+This structure reflects institutional filtering rather than assuming a single reduced-form outcome process. Figure~\ref{fig:causal_dag} presents the complete causal graph for the estimand.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=2.0cm and 2.8cm,
+  obs/.style={rectangle, draw=black, thick, fill=white, rounded corners, minimum height=0.9cm, minimum width=2.6cm, align=center, font=\small},
+  unobs/.style={rectangle, draw=gray, thick, dashed, fill=gray!8, rounded corners, minimum height=0.9cm, minimum width=2.0cm, align=center, font=\small},
+  posttreat/.style={rectangle, draw=red!70, thick, fill=red!8, rounded corners, minimum height=0.9cm, minimum width=2.8cm, align=center, font=\small},
+  arrow/.style={thick,->,>=stealth},
+  redarrow/.style={thick,->,>=stealth,draw=red!60,dashed},
+  dasharrow/.style={thick,->,>=stealth,dashed,draw=gray}
+]
+
+% Nodes
+\node[obs]     (X)  at (0, 0)     {$X_i$\\{\footnotesize Pre-Treatment Covariates}\\{\tiny Demographics, Macro,}\\{\tiny Spatial, History}};
+\node[obs]     (T)  at (4.5, 0)   {$T_i$\\{\footnotesize Petition Intensity}\\{\tiny (Mobilization Dose)}};
+\node[obs]     (Y)  at (9, 0)     {$Y_i$\\{\footnotesize Outcome}\\{\tiny Height Attrition,}\\{\tiny Process Delay}};
+\node[unobs]   (U)  at (4.5, 2.8) {$U$\\{\footnotesize Unobserved}\\{\tiny Confounders}};
+\node[obs]     (S)  at (9, -2.5)  {$S_i = 1$\\{\footnotesize Survival}\\{\tiny (Non-Withdrawal)}};
+\node[posttreat] (M) at (4.5, -2.5) {$M_i$\\{\footnotesize Post-Treatment Vars}\\{\tiny Cumulative signer counts,}\\{\tiny Petition area accumulation}};
+
+% Main causal edges
+\draw[arrow] (X) -- node[above, font=\tiny] {confounding} (T);
+\draw[arrow] (X) to[bend right=20] node[below, font=\tiny] {direct} (Y);
+\draw[arrow] (T) -- node[above, font=\small\bfseries] {$\theta$} (Y);
+
+% Unobserved confounders
+\draw[dasharrow] (U) -- (T);
+\draw[dasharrow] (U) -- (Y);
+
+% Survival conditioning
+\draw[arrow, gray] (T) -- (S);
+\draw[arrow, gray] (X) to[bend left=30] (S);
+
+% Post-treatment collider — EXCLUDED
+\draw[redarrow] (T) -- (M);
+\draw[redarrow] (M) to[bend right=20] (Y);
+
+% Exclusion annotation
+\node[font=\footnotesize\bfseries, text=red!80] at (4.5, -4.0) {$\longleftarrow$ EXCLUDED from $X_i$ (post-treatment collider) $\longrightarrow$};
+
+\end{tikzpicture}
+\caption[Causal DAG for the Identification Strategy]{Causal directed acyclic graph (DAG) for the identification strategy. $X_i$: pre-treatment covariate vector (demographics, spatial, macroeconomic, historical petition rates). $T_i$: petition intensity (mobilization dose). $Y_i$: negotiated outcome (height attrition, processing delay). $U$: unobserved confounders (dashed). $S_i=1$: survival conditioning on non-withdrawal. $M_i$: post-treatment variables (red, dashed) — including cumulative petition signer counts and in-process petition area accumulations — that are \textbf{explicitly excluded} from $X_i$ to prevent post-treatment collider bias. The estimand is $\theta = \mathbb{E}[Y_i(1) - Y_i(0)]$, identified under CIA: $(Y_i(1), Y_i(0)) \perp T_i \mid X_i$.}
+\label{fig:causal_dag}
+\end{figure}
 
 \subsection{Treatment Assignment and Confounding Structure}
+
 
 Treatment intensity ($T_i$) is not randomly assigned. Instead, it is plausibly correlated with observable neighborhood and project characteristics, including socioeconomic composition, prior mobilization history, and macroeconomic conditions.
 
