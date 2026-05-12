@@ -100,11 +100,15 @@ treatments = {
 
 for name, T_variant in treatments.items():
     print(f"  Evaluating {name}...", flush=True)
-    is_discrete = 'Binary' in name
-    cf = CausalForestDML(discrete_treatment=is_discrete, random_state=42)
-    cf.fit(Y, T_variant, X=X)
-    ate = cf.ate(X)
-    record_result('Treatment_Robustness', name, np.atleast_1d(ate)[0])
+    try:
+        is_discrete = 'Binary' in name
+        cf = CausalForestDML(discrete_treatment=is_discrete, random_state=42)
+        cf.fit(Y, T_variant, X=X)
+        ate = cf.ate(X)
+        record_result('Treatment_Robustness', name, np.atleast_1d(ate)[0])
+    except Exception as e:
+        print(f"    WARNING: {name} failed — {e}", flush=True)
+        record_result('Treatment_Robustness', name, float('nan'))
 
 # ── 5. FEATURE ABLATION STUDY ────────────────────────────────────────────────
 print("\n--- 3.4 Feature Ablations ---", flush=True)
@@ -119,11 +123,15 @@ ablations = {
 
 for name, X_cols in ablations.items():
     print(f"  Evaluating Ablation: {name}...", flush=True)
-    X_v = cs_surv[X_cols].values
-    cf = CausalForestDML(random_state=42)
-    cf.fit(Y, T, X=X_v)
-    ate = cf.ate(X_v)
-    record_result('Feature_Ablation', name, np.atleast_1d(ate)[0])
+    try:
+        X_v = cs_surv[X_cols].values
+        cf = CausalForestDML(random_state=42)
+        cf.fit(Y, T, X=X_v)
+        ate = cf.ate(X_v)
+        record_result('Feature_Ablation', name, np.atleast_1d(ate)[0])
+    except Exception as e:
+        print(f"    WARNING: {name} failed — {e}", flush=True)
+        record_result('Feature_Ablation', name, float('nan'))
 
 # ── 6. Consolidation & Export ────────────────────────────────────────────────
 out_df = pd.DataFrame(robustness_results)
