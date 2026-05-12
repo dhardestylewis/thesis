@@ -9,12 +9,12 @@
 \section{Austin's Petition Regime in Practice}
 \label{sec:planning_context}
 
-The formal petition mechanism studied here is not a bureaucratic abstraction. It operates through specific institutional dynamics — neighborhood coalitions, commission procedures, and political calculations — that administrative records alone do not capture. Before describing the panel construction and modeling strategy, this section grounds the empirical analysis in two complementary forms of qualitative evidence: a close reading of three archival cases drawn from the study period, and perspectives from urban planning professionals who worked within or alongside the petition system. Together, they establish why the petition threshold functions as a meaningful threshold of organized opposition, why petition outcomes vary by geography and community composition in ways that complicate uniform algorithmic interpretation, and why the study's modeling choices prioritize ranking utility over case-level probability claims.
+The formal petition mechanism studied here is not a bureaucratic abstraction. It operates through specific institutional dynamics -- neighborhood coalitions, commission procedures, and political calculations -- that administrative records alone do not capture. Before describing the panel construction and modeling strategy, this section grounds the empirical analysis in two complementary forms of qualitative evidence: a close reading of three archival cases drawn from the study period, and perspectives from urban planning professionals who worked within or alongside the petition system. Together, they establish why the petition threshold functions as a meaningful threshold of organized opposition, why petition outcomes vary by geography and community composition in ways that complicate uniform algorithmic interpretation, and why the study's modeling choices prioritize ranking utility over case-level probability claims.
 
 \subsection{Archival Case Studies: How the Mechanism Operates}
 \label{subsec:case_studies}
 
-The following cases were selected from the full zoning case universe to represent three distinct spatial and political archetypes identified in the data. Each demonstrates a different configuration of the petition mechanism and illustrates the kind of institutional friction that motivates the study's predictive framing.
+The following cases were selected from the full zoning case universe to represent three distinct spatial and political archetypes identified in the data. Each demonstrates a different configuration of the petition mechanism and illustrates the kind of institutional resistance that motivates the study's predictive framing.
 
 \subsubsection{Suburban Mobilization and Commission Defiance: Balcones Country Club, 2013}
 
@@ -37,11 +37,11 @@ This case illustrates a dimension of petition politics that raw spatial covariat
 \subsection{Practitioner Perspectives}
 \label{subsec:interviews}
 
-To rigorously contextualize the quantitative modeling, semi-structured interviews were conducted with urban planning professionals and city staff possessing direct experience navigating Austin's discretionary zoning system. The qualitative methodology was formalized under Columbia University IRB Protocol ACYY0820, ensuring minimal-risk protocols for informed consent, secure data storage, and participant confidentiality (see Appendix~\ref{app:protocol} for the full protocol summary). 
+To rigorously contextualize the quantitative modeling, semi-structured interviews were conducted with urban planning professionals and city staff possessing direct experience navigating Austin's discretionary zoning system. The qualitative methodology was formalized under Columbia University IRB Protocol ACYY0820, ensuring minimal-risk protocols for informed consent, secure data storage, and participant confidentiality (protocol summary in Section~\ref{app:protocol}).
 
-A purposive, small-$N$ sample ($N=4$) was constructed via snowball sampling to capture diverse institutional vantage points, explicitly recruiting participants to represent the procedural lifecycle of a zoning case. Participants included a former senior zoning planner, a current principal planner, a displacement prevention specialist, and a leading housing advocate (identities are disclosed only where explicit consent was granted, per the recruitment framing in Appendix~\ref{app:overview}). 
+A purposive, small-$N$ sample ($N=4$) was constructed via snowball sampling to capture diverse institutional vantage points, explicitly recruiting participants to represent the procedural lifecycle of a zoning case. Participants included a former senior zoning planner, a current principal planner, a displacement prevention specialist, and a leading housing advocate (identities are disclosed only where explicit consent was granted, per the recruitment framing in Section~\ref{app:overview}).
 
-Interviews were conducted virtually via secure videoconference, lasting approximately 45--60 minutes. To ensure systematic data collection across differing roles, discussions followed a standardized four-part guide (Appendix~\ref{app:interview}) probing: (1) institutional background, (2) firsthand experiences with neighborhood opposition, (3) perceptions of procedural fairness, and (4) specific views on the legitimacy and risks of deploying predictive algorithmic tools in municipal planning. Audio was transcribed with permission and coded thematically using a deductive framework aligned with the study's hypotheses on institutional friction, spatial heterogeneity, and petition deterrence. This qualitative governance structure ensures the interview data reliably establishes institutional context, ground-truths algorithmic assumptions, and highlights the limits of administrative data, directly shaping the thesis's predictive and causal architecture.
+Interviews were conducted virtually via secure videoconference, lasting approximately 45--60 minutes. To ensure systematic data collection across differing roles, discussions followed a standardized four-part guide (interview guide in Section~\ref{app:interview}) probing: (1) institutional background, (2) firsthand experiences with neighborhood opposition, (3) perceptions of procedural fairness, and (4) specific views on the legitimacy and risks of deploying predictive algorithmic tools in municipal planning. Audio was transcribed with permission and coded thematically using a deductive framework aligned with the study's hypotheses on institutional resistance, spatial heterogeneity, and petition deterrence. This qualitative governance structure ensures the interview data reliably establishes institutional context, ground-truths algorithmic assumptions, and highlights the limits of administrative data, directly shaping the thesis's predictive and causal architecture.
 \textbf{Petition leverage declines but does not disappear.} Annick Beaudet, who served as a senior zoning planner during the Land Development Code revision period, described a trajectory in which petitions gradually lost practical leverage even before the statutory change in 2025: ``While people still scream and yell, they don't get as much traction\ldots\ Necessity is the mother of invention'' \cite{interview_beaudet2025,cityaustin2017codenext}. This observation motivates the study's temporal walk-forward design: petition dynamics are not stationary, and any predictive model must be evaluated against the period in which it would actually be used.
 
 \textbf{Silence is not consent.} Jonathan Tomko, Principal Planner, emphasized that the municipal public comment process has no mechanism for anonymous support of a zoning case \cite{interview_tomko2026}. Neighborhood social dynamics frequently penalize residents who deviate from a neighborhood association's established position, meaning that the administrative record systematically overrepresents organized opposition. As Beaudet summarized: ``haters are overrepresented and silent supporters are underrepresented'' \cite{interview_beaudet2025}. The implication for the study's feature engineering is direct: cumulative petition signatures measure active mobilization, not community sentiment, a distinction that affects how thresholds should be interpreted.
@@ -49,3 +49,35 @@ Interviews were conducted virtually via secure videoconference, lasting approxim
 \textbf{Geography encodes different concerns.} Marla Torrado, from the City's Displacement Prevention Division, noted that the petition mechanism is mobilized in service of fundamentally different interests depending on location \cite{interview_marla2025}. On the affluent west side, environmental overlays and neighborhood character arguments predominate. In East Austin, opposition is frequently a response to gentrification pressure. Because the same tool serves opposite ends in different neighborhoods, rigid probability cutoffs applied uniformly across the city risk ``failing to identify where people that are in actual need actually are.'' This is the primary reason the study treats predictions as triage rankings rather than decision thresholds, and why geographic heterogeneity in the error map is treated as a substantive finding rather than a model deficiency.
 
 \textbf{The goal is better conversation, not suppression.} AURA board member Felicity Maxwell framed the potential use of predictive tools in terms that distinguish anticipation from intervention: ``We're not talking about suppressing opposition, but understanding it better to have more productive conversations'' \cite{interview_maxwell2026}. This normative framing (anticipation in service of process design, not case-level gatekeeping) is the intended application of the ranking outputs described in this study.
+
+\input{Sections/appendices_augmentation/appendices_voting_data.tex}
+
+\newpage
+\subsection{Interview Recruitment Overview}
+\label{app:overview}
+
+\noindent The following one-page project overview was provided to all interview participants prior to scheduling.
+
+\begin{center}
+\includegraphics[width=0.85\textwidth,page=1]{appendix/fig_app_02_project_overview.pdf}
+\end{center}
+
+\newpage
+\subsection{IRB Protocol Summary}
+\label{app:protocol}
+
+\noindent The following protocol summary documents the IRB-approved study design (Columbia University Morningside IRB, Protocol ACYY0820).
+
+\begin{center}
+\includegraphics[width=0.85\textwidth,page=1]{appendix/fig_app_03_protocol_summary.pdf}
+\end{center}
+
+\newpage
+\subsection{Semi-Structured Interview Guide}
+\label{app:interview}
+
+\noindent The following interview guide was used for all stakeholder interviews.
+
+\begin{center}
+\includegraphics[width=0.85\textwidth,page=1]{appendix/fig_app_01_interview_guide.pdf}
+\end{center}
