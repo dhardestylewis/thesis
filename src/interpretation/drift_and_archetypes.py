@@ -313,7 +313,34 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                 os.makedirs(os.path.dirname(fig_out), exist_ok=True)
                 plt.savefig(fig_out, bbox_inches='tight', dpi=300)
                 plt.close()
-                print(f"  [+] Saved Interaction Exhibit (raw features) -> {fig_out}")
+                print(f"  [+] Saved Interaction Beeswarm -> {fig_out}")
+                
+                # --- PAIRWISE INTERACTION GRID (HEATMAP) ---
+                print("  [*] Generating pairwise interaction heatmap...")
+                # Mean absolute interaction across all cases: (M, M)
+                mean_abs_int = np.abs(interaction_values).mean(axis=0)
+                np.fill_diagonal(mean_abs_int, 0)  # zero diagonal: we want off-diagonal interactions only
+                
+                # Pick top 15 features by total interaction strength
+                total_int = mean_abs_int.sum(axis=0)
+                top15_idx = np.argsort(total_int)[-15:]
+                top15_names = [clean_feat_name(X_sample_raw.columns[i]) for i in top15_idx]
+                int_matrix = mean_abs_int[np.ix_(top15_idx, top15_idx)]
+                
+                fig, ax = plt.subplots(figsize=(11, 9))
+                im = ax.imshow(int_matrix, cmap='magma', aspect='auto')
+                ax.set_xticks(range(15))
+                ax.set_yticks(range(15))
+                ax.set_xticklabels(top15_names, rotation=45, ha='right', fontsize=9)
+                ax.set_yticklabels(top15_names, fontsize=9)
+                plt.colorbar(im, ax=ax, label='Mean |Interaction SHAP|')
+                ax.set_title("Interaction TreeSHAP: Pairwise Feature Interaction Strength (Filing Date)", fontsize=13, pad=12)
+                plt.tight_layout()
+                
+                fig_out_grid = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "exhibits", "fig_ch4_14b_forecasting_interaction_grid.pdf")
+                plt.savefig(fig_out_grid, bbox_inches='tight', dpi=300)
+                plt.close()
+                print(f"  [+] Saved Interaction Grid -> {fig_out_grid}")
 
             
             total = np.sum(raw_imp)
