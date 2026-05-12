@@ -1,11 +1,7 @@
-
-
-The corresponding metrics are detailed in \autoref{tab:temporal_drift_family_t25}.
-
 \begin{table}[htbp]
 \centering
 \caption[Temporal Drift (Max-of-Family)]{\textbf{Max-of-Family dominance (Optimal Entropy-Based Discretization).}}
-\label{tab:temporal_drift_family_t25}
+\label{tab:temporal_drift_family}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccccc}
 \toprule
@@ -13,23 +9,23 @@ The corresponding metrics are detailed in \autoref{tab:temporal_drift_family_t25
 \midrule
 \multicolumn{8}{c}{\textbf{Panel A: Maximum Absolute PR-AUC}} \\
 \midrule
-Pre-2018 & 0.911 (Trees) & 0.724 (Linear) & 0.514 (Trees) & 0.359 (Trees) & 0.200 (Linear) & 0.950 (Trees) & 0.887 (Trees) \\
-Pre-2019 & n/a & 0.686 (Linear) & 0.544 (Deep) & 0.389 (Trees) & 0.200 (Linear) & 0.624 (Trees) & 0.950 (Trees) \\
-Pre-2020 & n/a & n/a & 0.501 (Trees) & 0.297 (Trees) & 0.200 (Linear) & 0.600 (Trees) & 0.917 (Trees) \\
-Pre-2021 & n/a & n/a & n/a & 0.376 (Trees) & 0.200 (Linear) & 0.733 (Trees) & 0.688 (Causal) \\
-Pre-2022 & n/a & n/a & n/a & n/a & 0.250 (Linear) & 0.582 (Trees) & 0.525 (Deep) \\
-Pre-2023 & n/a & n/a & n/a & n/a & n/a & 0.566 (Trees) & 0.799 (Trees) \\
-Pre-2024 & n/a & n/a & n/a & n/a & n/a & n/a & 0.607 (Causal) \\
+Pre-2018 & 0.911 (Tree) & 0.724 (Regularized Linear) & 0.514 (Tree) & 0.359 (Tree) & 0.200 (Regularized Linear) & 0.950 (Tree) & 0.887 (Tree) \\
+Pre-2019 & --- & 0.686 (Regularized Linear) & 0.500 (Tree) & 0.389 (Tree) & 0.200 (Regularized Linear) & 0.624 (Tree) & 0.950 (Tree) \\
+Pre-2020 & --- & --- & 0.501 (Tree) & 0.297 (Tree) & 0.200 (Regularized Linear) & 0.600 (Tree) & 0.917 (Tree) \\
+Pre-2021 & --- & --- & --- & 0.376 (Tree) & 0.200 (Regularized Linear) & 0.733 (Tree) & 0.679 (Tree) \\
+Pre-2022 & --- & --- & --- & --- & 0.250 (Regularized Linear) & 0.582 (Tree) & 0.521 (Tree) \\
+Pre-2023 & --- & --- & --- & --- & --- & 0.566 (Tree) & 0.799 (Tree) \\
+Pre-2024 & --- & --- & --- & --- & --- & --- & 0.585 (Tree) \\
 \midrule
 \multicolumn{8}{c}{\textbf{Panel B: Maximum Relative PR-AUC Lift}} \\
 \midrule
-Pre-2018 & 6.41 (Trees) & 11.70 (Linear) & 10.10 (Trees) & 12.81 (Trees) & 43.20 (Linear) & 47.74 (Trees) & 47.70 (Trees) \\
-Pre-2019 & n/a & 11.07 (Linear) & 10.70 (Deep) & 13.88 (Trees) & 43.20 (Linear) & 31.35 (Trees) & 51.06 (Trees) \\
-Pre-2020 & n/a & n/a & 9.86 (Trees) & 10.59 (Trees) & 43.20 (Linear) & 30.15 (Trees) & 49.27 (Trees) \\
-Pre-2021 & n/a & n/a & n/a & 13.42 (Trees) & 43.20 (Linear) & 36.85 (Trees) & 36.95 (Causal) \\
-Pre-2022 & n/a & n/a & n/a & n/a & 54.00 (Linear) & 29.25 (Trees) & 28.22 (Deep) \\
-Pre-2023 & n/a & n/a & n/a & n/a & n/a & 28.44 (Trees) & 42.93 (Trees) \\
-Pre-2024 & n/a & n/a & n/a & n/a & n/a & n/a & 32.63 (Causal) \\
+Pre-2018 & 6.41 (Tree) & 11.70 (Regularized Linear) & 10.10 (Tree) & 12.81 (Tree) & 43.20 (Regularized Linear) & 47.74 (Tree) & 47.70 (Tree) \\
+Pre-2019 & --- & 11.07 (Regularized Linear) & 9.83 (Tree) & 13.88 (Tree) & 43.20 (Regularized Linear) & 31.35 (Tree) & 51.06 (Tree) \\
+Pre-2020 & --- & --- & 9.86 (Tree) & 10.59 (Tree) & 43.20 (Regularized Linear) & 30.15 (Tree) & 49.27 (Tree) \\
+Pre-2021 & --- & --- & --- & 13.42 (Tree) & 43.20 (Regularized Linear) & 36.85 (Tree) & 36.51 (Tree) \\
+Pre-2022 & --- & --- & --- & --- & 54.00 (Regularized Linear) & 29.25 (Tree) & 27.99 (Tree) \\
+Pre-2023 & --- & --- & --- & --- & --- & 28.44 (Tree) & 42.93 (Tree) \\
+Pre-2024 & --- & --- & --- & --- & --- & --- & 31.42 (Tree) \\
 \bottomrule
 \end{tabular}%
 }

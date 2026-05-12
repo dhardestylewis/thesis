@@ -1,13 +1,13 @@
 \begin{table}[htbp]
 \centering
-\caption[Temporal Predictive Drift (PR-AUC decay)]{\textbf{Temporal predictive drift: PR-AUC decay by algorithm (Optimal Entropy-Based Discretization).}}
-\label{tab:temporal_drift}
+\caption[Temporal predictive drift: PR-AUC decay (Threshold: >5\%) ]{\textbf{Temporal predictive drift: PR-AUC decay (Threshold: >5\%) .}}
+\label{tab:temporal_drift_t05}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l lccccccc}
 \toprule
 \textbf{Model} & \textbf{Anchor Training} & \textbf{2018} & \textbf{2019} & \textbf{2020} & \textbf{2021} & \textbf{2022} & \textbf{2023} & \textbf{2024} \\
 \midrule
-CatBoost & Pre-2018 & 0.976 & 0.857 & \textbf{0.660} & \textbf{0.581} & 0.297 & 0.743 & \textbf{0.875} \\
+CatBoost & Pre-2018 & 0.976 & 0.857 & \textbf{0.660} & \textbf{0.581} & \textbf{0.297} & 0.743 & \textbf{0.875} \\
 CatBoost & Pre-2019 & --- & 0.865 & 0.537 & \textbf{0.629} & 0.258 & 0.863 & \textbf{0.715} \\
 CatBoost & Pre-2020 & --- & --- & 0.515 & \textbf{0.723} & 0.273 & 0.872 & \textbf{0.812} \\
 CatBoost & Pre-2021 & --- & --- & --- & 0.580 & \textbf{0.470} & 0.684 & 0.475 \\
@@ -15,40 +15,26 @@ CatBoost & Pre-2022 & --- & --- & --- & --- & \textbf{0.387} & \textbf{0.981} & 
 CatBoost & Pre-2023 & --- & --- & --- & --- & --- & \textbf{0.930} & 0.381 \\
 CatBoost & Pre-2024 & --- & --- & --- & --- & --- & --- & 0.353 \\
 XGBoost & Pre-2018 & 0.923 & \textbf{0.987} & 0.601 & 0.511 & 0.249 & \textbf{0.917} & 0.625 \\
-XGBoost & Pre-2019 & --- & 0.915 & 0.583 & 0.520 & 0.244 & \textbf{0.895} & 0.668 \\
+XGBoost & Pre-2019 & --- & 0.915 & \textbf{0.583} & 0.520 & 0.244 & \textbf{0.895} & 0.668 \\
 XGBoost & Pre-2020 & --- & --- & 0.571 & 0.519 & 0.237 & \textbf{0.970} & 0.649 \\
 XGBoost & Pre-2021 & --- & --- & --- & \textbf{0.635} & 0.242 & \textbf{0.912} & \textbf{0.650} \\
-XGBoost & Pre-2022 & --- & --- & --- & --- & 0.301 & 0.970 & 0.568 \\
-XGBoost & Pre-2023 & --- & --- & --- & --- & --- & 0.909 & 0.390 \\
+XGBoost & Pre-2022 & --- & --- & --- & --- & 0.301 & 0.970 & \textbf{0.568} \\
+XGBoost & Pre-2023 & --- & --- & --- & --- & --- & 0.909 & \textbf{0.390} \\
 XGBoost & Pre-2024 & --- & --- & --- & --- & --- & --- & \textbf{0.575} \\
-Logistic (L2) & Pre-2018 & 0.980 & 0.987 & 0.453 & 0.368 & 0.264 & 0.587 & 0.392 \\
-Logistic (L2) & Pre-2019 & --- & \textbf{0.987} & 0.459 & 0.385 & 0.262 & 0.599 & 0.392 \\
-Logistic (L2) & Pre-2020 & --- & --- & 0.447 & 0.382 & 0.288 & 0.599 & 0.415 \\
+Logistic (L2) & Pre-2018 & \textbf{0.980} & 0.987 & 0.453 & 0.368 & 0.264 & 0.587 & 0.392 \\
+Logistic (L2) & Pre-2019 & --- & \textbf{0.987} & 0.459 & 0.385 & \textbf{0.262} & 0.599 & 0.392 \\
+Logistic (L2) & Pre-2020 & --- & --- & 0.447 & 0.382 & \textbf{0.288} & 0.599 & 0.415 \\
 Logistic (L2) & Pre-2021 & --- & --- & --- & 0.376 & 0.308 & 0.665 & 0.392 \\
 Logistic (L2) & Pre-2022 & --- & --- & --- & --- & 0.317 & 0.585 & 0.413 \\
 Logistic (L2) & Pre-2023 & --- & --- & --- & --- & --- & 0.594 & 0.390 \\
 Logistic (L2) & Pre-2024 & --- & --- & --- & --- & --- & --- & 0.415 \\
-Spatial-FE Logistic & Pre-2018 & \textbf{0.998} & 0.959 & 0.629 & 0.439 & 0.268 & 0.555 & 0.548 \\
-Spatial-FE Logistic & Pre-2019 & --- & 0.962 & 0.631 & 0.433 & 0.247 & 0.557 & 0.531 \\
-Spatial-FE Logistic & Pre-2020 & --- & --- & 0.568 & 0.394 & 0.258 & 0.562 & 0.540 \\
-Spatial-FE Logistic & Pre-2021 & --- & --- & --- & 0.316 & 0.257 & 0.608 & 0.540 \\
-Spatial-FE Logistic & Pre-2022 & --- & --- & --- & --- & 0.339 & 0.613 & 0.540 \\
-Spatial-FE Logistic & Pre-2023 & --- & --- & --- & --- & --- & 0.602 & \textbf{0.526} \\
-Spatial-FE Logistic & Pre-2024 & --- & --- & --- & --- & --- & --- & 0.552 \\
-TabNet & Pre-2018 & \textbf{0.998} & 0.735 & 0.421 & 0.435 & \textbf{0.600} & 0.673 & 0.501 \\
-TabNet & Pre-2019 & --- & 0.557 & 0.410 & 0.402 & 0.039 & 0.094 & 0.052 \\
-TabNet & Pre-2020 & --- & --- & \textbf{0.593} & 0.407 & 0.355 & 0.689 & 0.567 \\
-TabNet & Pre-2021 & --- & --- & --- & 0.541 & 0.353 & 0.719 & 0.552 \\
-TabNet & Pre-2022 & --- & --- & --- & --- & 0.314 & 0.675 & \textbf{0.586} \\
-TabNet & Pre-2023 & --- & --- & --- & --- & --- & 0.333 & 0.260 \\
-TabNet & Pre-2024 & --- & --- & --- & --- & --- & --- & 0.404 \\
-Anchor Regression (Causal) & Pre-2018 & 0.678 & 0.632 & 0.455 & 0.299 & 0.255 & 0.439 & 0.209 \\
-Anchor Regression (Causal) & Pre-2019 & --- & 0.923 & \textbf{0.633} & 0.359 & \textbf{0.344} & 0.618 & 0.385 \\
-Anchor Regression (Causal) & Pre-2020 & --- & --- & 0.417 & 0.425 & \textbf{0.367} & 0.587 & 0.417 \\
-Anchor Regression (Causal) & Pre-2021 & --- & --- & --- & 0.374 & 0.345 & 0.635 & 0.424 \\
-Anchor Regression (Causal) & Pre-2022 & --- & --- & --- & --- & 0.358 & 0.603 & 0.381 \\
-Anchor Regression (Causal) & Pre-2023 & --- & --- & --- & --- & --- & 0.619 & 0.417 \\
-Anchor Regression (Causal) & Pre-2024 & --- & --- & --- & --- & --- & --- & 0.389 \\
+Deep (MLP) & Pre-2018 & 0.857 & 0.638 & 0.510 & 0.293 & 0.028 & 0.148 & 0.024 \\
+Deep (MLP) & Pre-2019 & --- & 0.637 & 0.497 & 0.326 & 0.035 & 0.148 & 0.035 \\
+Deep (MLP) & Pre-2020 & --- & --- & \textbf{0.608} & 0.316 & 0.042 & 0.159 & 0.039 \\
+Deep (MLP) & Pre-2021 & --- & --- & --- & 0.367 & 0.047 & 0.163 & 0.048 \\
+Deep (MLP) & Pre-2022 & --- & --- & --- & --- & 0.183 & 0.208 & 0.304 \\
+Deep (MLP) & Pre-2023 & --- & --- & --- & --- & --- & 0.838 & 0.352 \\
+Deep (MLP) & Pre-2024 & --- & --- & --- & --- & --- & --- & 0.318 \\
 \bottomrule
 \end{tabular}%
 }

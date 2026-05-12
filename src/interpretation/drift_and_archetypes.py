@@ -11,6 +11,8 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     from sklearn.linear_model import LogisticRegression, LinearRegression
     from sklearn.preprocessing import StandardScaler, KBinsDiscretizer, OneHotEncoder
     from sklearn.compose import ColumnTransformer
+    from sklearn.neural_network import MLPClassifier
+    from sklearn.isotonic import IsotonicRegression
     from sklearn.pipeline import Pipeline
     from sklearn.base import BaseEstimator, ClassifierMixin
     from sklearn.impute import SimpleImputer
@@ -196,14 +198,8 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
         models = {
             'CatBoost': CatBoostClassifier(iterations=100, depth=6, verbose=0, random_seed=42, task_type=CB_TASK),
             'XGBoost': XGBClassifier(n_estimators=100, max_depth=6, random_state=42, eval_metric='logloss', device='cuda' if USE_GPU else 'cpu'),
-            # 'LightGBM': LGBMClassifier(n_estimators=100, max_depth=6, random_state=42, verbose=-1),
-            # 'Random Forest': RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42),
             'Logistic (L2)': LogisticRegression(class_weight='balanced', random_state=42, max_iter=500),
-            # 'ElasticNet': LogisticRegression(penalty='elasticnet', l1_ratio=0.5, solver='saga', class_weight='balanced', random_state=42, max_iter=200),
-            'Spatial-FE Logistic': LogisticRegression(class_weight='balanced', random_state=42, max_iter=500),
-            'Anchor Regression (Causal)': NonLinearAnchorRegression(gamma=10.0, n_anchors=n_anc_dummies),
-            'TabNet': TabNetClassifier(verbose=0, device_name='cuda' if USE_GPU else 'cpu')
-            # 'TabNet (VREx)': TabNetClassifier(optimizer_params={'weight_decay': 0.05}, verbose=0)
+            'Deep (MLP)': MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=50, random_state=42)
         }
     
         print(f"[*] Training 10 Models for Pre-{anchor} anchor...")
@@ -217,13 +213,12 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                 m.fit(X_train_sp_sc, y_train)
                 # Exclude spatial dummy weights, map to core features
                 raw_imp = np.abs(m.coef_[0][n_sp_dummies:])
-            elif name == 'Anchor Regression (Causal)':
-                from sklearn.isotonic import IsotonicRegression
-                m.fit(X_train_anc_sc, y_train)
-                raw_imp = np.abs(m.feature_importances_[n_anc_dummies:])
+            elif name == 'Deep (MLP)':
+                m.fit(X_train_sc, y_train)
+                raw_imp = np.abs(m.coefs_[0]).sum(axis=1)
                 
                 # Isotonic Calibration because it uses regression backbone
-                raw_train_preds = m.predict_proba(X_train_anc_sc)[:, 1]
+                raw_train_preds = m.predict_proba(X_train_sc)[:, 1]
                 iso = IsotonicRegression(y_min=0, y_max=1, out_of_bounds='clip')
                 iso.fit(raw_train_preds, y_train)
                 m.iso = iso
@@ -255,10 +250,9 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
             attribution_matrix.append(vec)
             labels.append(f"{name}_{anchor}")
             
-            if name == 'Anchor Regression (Causal)': fam = 'Causal'
-            elif 'Logistic' in name or 'ElasticNet' in name: fam = 'Linear'
-            elif 'TabNet' in name: fam = 'Deep'
-            else: fam = 'Trees'
+            if 'Logistic' in name: fam = 'Regularized Linear'
+            elif 'TabNet' in name or 'Deep' in name: fam = 'Deep'
+            else: fam = 'Tree'
             families.append(fam)
     
         for test_year in eval_years:
@@ -284,9 +278,8 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                     p = m.predict_proba(X_test_sc)[:, 1]
                 elif name == 'Spatial-FE Logistic':
                     p = m.predict_proba(X_test_sp_sc)[:, 1]
-                elif name == 'Anchor Regression (Causal)':
-                    p_raw = m.predict_proba(X_test_anc_sc)[:, 1]
-                    p = m.iso.predict(p_raw)
+                elif name == 'Deep (MLP)':
+                    p = m.predict_proba(X_test_sc)[:, 1]
                 else:
                     p = m.predict_proba(X_test_raw)[:, 1]
                 
@@ -294,10 +287,9 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                 prauc = average_precision_score(y_test, p)
                 lift = prauc / base_rate if base_rate > 0 else 0
                 
-                if name == 'Anchor Regression (Causal)': fam = 'Causal'
-                elif 'Logistic' in name or 'ElasticNet' in name: fam = 'Linear'
-                elif 'TabNet' in name: fam = 'Deep'
-                else: fam = 'Trees'
+                if 'Logistic' in name: fam = 'Regularized Linear'
+                elif 'TabNet' in name or 'Deep' in name: fam = 'Deep'
+                else: fam = 'Tree'
                 
                 predictive_results.append({
                     'Family': fam, 'Model': name, 'Anchor': f'Pre-{anchor}',
@@ -310,8 +302,8 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     def format_grid(df, metric, use_lift=False):
         lines = []
 
-        sort_order = ['CatBoost', 'XGBoost', 'Logistic (L2)', 'Spatial-FE Logistic', 'TabNet', 'Anchor Regression (Causal)']
-        ordered_models = [m for m in sort_order if m in df['Model'].unique()] + [m for m in sorted(df['Model'].unique()) if m not in sort_order]
+        sort_order = ['CatBoost', 'XGBoost', 'Logistic (L2)', 'Deep (MLP)']
+        ordered_models = [m for m in sort_order if m in df['Model'].unique()]
         for model in ordered_models:
 
             for anchor in [f'Pre-{y}' for y in anchors]:
@@ -334,7 +326,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
         return lines
     
 
-    OUT_DIR = os.path.join(ROOT, 'Thesis_Draft', 'Draft_v1', 'Tables')
+    OUT_DIR = os.path.join(ROOT, 'Thesis_Draft', 'GSAPP_Final_Submission', 'Tables')
     if is_appendix:
         perf_dir = os.path.join(OUT_DIR, 'appendices_drift')
         attr_dir = os.path.join(OUT_DIR, 'appendices_drift')
@@ -347,8 +339,11 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     
 
     
-    # Table 4
-    t4_lines = [r'\begin{table}[htbp]', r'\centering', r'\caption[Temporal Predictive Drift (PR-AUC decay)]{\textbf{Temporal predictive drift: PR-AUC decay by algorithm (Optimal Entropy-Based Discretization).}}', r'\label{tab:temporal_drift}', r'\resizebox{\textwidth}{!}{%', r'\begin{tabular}{l l' + 'c'*len(eval_years) + '}', r'\toprule', r'\textbf{Model} & \textbf{Anchor Training} & ' + ' & '.join(['\\textbf{'+str(y)+'}' for y in eval_years]) + r' \\', r'\midrule']
+    # Table 19: Drift Analysis
+    t14_caption = r"\textbf{Temporal predictive drift: PR-AUC decay by algorithm.}"
+    if threshold > 0: t14_caption = f"\\textbf{{Temporal predictive drift: PR-AUC decay (Threshold: >{int(threshold*100)}\\%) .}}"
+    
+    t4_lines = [r'\begin{table}[htbp]', r'\centering', r'\caption[' + t14_caption[8:-2] + ']{' + t14_caption + '}', r'\label{tab:temporal_drift' + suffix + '}', r'\resizebox{\textwidth}{!}{%', r'\begin{tabular}{l l' + 'c'*len(eval_years) + '}', r'\toprule', r'\textbf{Model} & \textbf{Anchor Training} & ' + ' & '.join(['\\textbf{'+str(y)+'}' for y in eval_years]) + r' \\', r'\midrule']
     t4_lines.extend(format_grid(res_df, 'PRAUC'))
     t4_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     with open(os.path.join(perf_dir, f'tbl_ch4_14_temporal_drift_analysis{suffix}.tex'), 'w') as f: f.write('\n'.join(t4_lines))
@@ -447,23 +442,23 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     print("[*] Generating Archetypal Table (Including Causal)...")
     df_attr['Family'] = families
     df_agg = df_attr.groupby('Family').mean()
-    c_order = df_agg.loc['Trees'].sort_values(ascending=False).index.tolist()
+    c_order = df_agg.loc['Tree'].sort_values(ascending=False).index.tolist()
     
     t7_lines = [
         r'\begin{table}[htbp]', r'\centering',
-        r'\caption[Archetypal Family Attribution]{\textbf{Archetypal Family Attribution.} Average absolute model reliance allocated to each semantic feature cluster. \textbf{Causal} array maps the Non-Linear Anchor Regression. High-cardinality identity floats mathematically blinded via Shannon-Entropy decision tree mapping ($min\_samples\_leaf=100$).}',
+        r'\caption[Archetypal Family Attribution]{\textbf{Archetypal Family Attribution.} Average absolute model reliance allocated to each semantic feature cluster. High-cardinality identity floats mathematically blinded via Shannon-Entropy decision tree mapping ($min\_samples\_leaf=100$).}',
         r'\label{tab:archetypal_attribution}', r'\resizebox{\textwidth}{!}{%',
-        r'\begin{tabular}{lcccc}', r'\toprule',
-        r'\textbf{Semantic Target Cluster} & \textbf{Tree Ensembles} & \textbf{Deep Architectures} & \textbf{Linear Architectures} & \textbf{Causal Algorithms} \\',
+        r'\begin{tabular}{lccc}', r'\toprule',
+        r'\textbf{Semantic Target Cluster} & \textbf{Tree} & \textbf{Deep} & \textbf{Regularized Linear} \\',
         r'\midrule'
     ]
     
     for c in c_order:
         if c not in df_agg.columns: continue
-        t = df_agg.loc['Trees', c] if 'Trees' in df_agg.index else 0
+        t = df_agg.loc['Tree', c] if 'Tree' in df_agg.index else 0
         d = df_agg.loc['Deep', c] if 'Deep' in df_agg.index else 0
-        l = df_agg.loc['Linear', c] if 'Linear' in df_agg.index else 0
-        ca = df_agg.loc['Causal', c] if 'Causal' in df_agg.index else 0
+        l = df_agg.loc['Regularized Linear', c] if 'Regularized Linear' in df_agg.index else 0
+        ca = 0
         
         t_str, d_str, l_str, ca_str = f"{t:.1f}\\%", f"{d:.1f}\\%", f"{l:.1f}\\%", f"{ca:.1f}\\%"
         
@@ -474,7 +469,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
             elif ca == max_val: ca_str = f"\\textbf{{{ca_str}}}"
             else: l_str = f"\\textbf{{{l_str}}}"
             
-        t7_lines.append(f"{c} & {t_str} & {d_str} & {l_str} & {ca_str} \\\\")
+        t7_lines.append(f"{c} & {t_str} & {d_str} & {l_str} \\\\")
     
     t7_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     
@@ -506,17 +501,17 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
         r'\begin{table}[htbp]', r'\centering',
         r'\caption[Performance-Weighted Archetypal Attribution]{\textbf{Performance-Weighted Archetypal Family Attribution.} Model attribution vectors scaled by their corresponding out-of-distribution longitudinal PR-AUC performance. Architectures that successfully generalized under domain drift dominate their archetypal class weights.}',
         r'\label{tab:archetypal_attribution_weighted}', r'\resizebox{\textwidth}{!}{%',
-        r'\begin{tabular}{lcccc}', r'\toprule',
-        r'\textbf{Semantic Target Cluster} & \textbf{Tree Ensembles} & \textbf{Deep Architectures} & \textbf{Linear Architectures} & \textbf{Causal Algorithms} \\',
+        r'\begin{tabular}{lccc}', r'\toprule',
+        r'\textbf{Semantic Target Cluster} & \textbf{Tree} & \textbf{Deep} & \textbf{Regularized Linear} \\',
         r'\midrule'
     ]
     
     for c in c_order:
         if c not in df_agg_w.columns: continue
-        t = df_agg_w.loc['Trees', c] if 'Trees' in df_agg_w.index else 0
+        t = df_agg_w.loc['Tree', c] if 'Tree' in df_agg_w.index else 0
         d = df_agg_w.loc['Deep', c] if 'Deep' in df_agg_w.index else 0
-        l = df_agg_w.loc['Linear', c] if 'Linear' in df_agg_w.index else 0
-        ca = df_agg_w.loc['Causal', c] if 'Causal' in df_agg_w.index else 0
+        l = df_agg_w.loc['Regularized Linear', c] if 'Regularized Linear' in df_agg_w.index else 0
+        ca = 0
         
         t_str, d_str, l_str, ca_str = f"{t:.1f}\\%", f"{d:.1f}\\%", f"{l:.1f}\\%", f"{ca:.1f}\\%"
         
@@ -527,7 +522,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
             elif ca == max_val: ca_str = f"\\textbf{{{ca_str}}}"
             else: l_str = f"\\textbf{{{l_str}}}"
             
-        t8_lines.append(f"{c} & {t_str} & {d_str} & {l_str} & {ca_str} \\\\")
+        t8_lines.append(f"{c} & {t_str} & {d_str} & {l_str} \\\\")
     
     t8_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     

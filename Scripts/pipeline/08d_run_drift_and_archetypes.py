@@ -11,7 +11,7 @@ from src.interpretation.drift_and_archetypes import run_drift_and_archetypes
 
 # 1. Generate Canonical 20% tables (main text output)
 print("=== GENERATING CANONICAL DRIFT TABLES (20% Threshold) ===")
-# run_drift_and_archetypes(threshold=0.20, is_appendix=False)
+run_drift_and_archetypes(threshold=0.20, is_appendix=False)
 
 # 2. Generate Appendix Threshold tables
 print("\n=== GENERATING APPENDIX SENSITIVITY GRIDS ===")

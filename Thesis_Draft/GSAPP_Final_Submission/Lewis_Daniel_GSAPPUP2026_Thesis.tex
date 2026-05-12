@@ -237,11 +237,11 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 \node[box] (filing) at (0,0) {1.\ Developer\\Filing \& Notice};
 
 %% Panel A interior nodes
-\node[box] (staff)  at (5.5, 0.85) {City Staff\\Review};
+\node[box] (staff)  at (5.5, 0.85) {City Staff\\Reviews};
 \node[box] (zapco)  at (5.5,-0.85) {Planning \&\\ZAP Commissions};
 
 %% Panel B interior nodes
-\node[box] (rdg1)   at (11.5, 0.85) {City Council\\First Reading};
+\node[box] (rdg1)   at (11.5, 0.85) {City Council\\Readings};
 \node[box] (rdg2)   at (11.5,-0.85) {City Council\\Final Reading};
 
 %% Panel frames (drawn in background so nodes sit on top)
@@ -269,9 +269,12 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 \draw[dasharrow] (panelA.south) to[bend right=15] (wdraw.west);
 \draw[dasharrow] (panelB.south) to[bend left=15]  (wdraw.east);
 
-%% Remand arrow: council panel --> commissions panel
+%% Feedback loops
 \draw[dasharrow] (panelB.north) to[bend left=30]
       node[above, font=\small] {Remand} (panelA.north);
+
+\draw[dasharrow] (rdg1.west) to[bend right=20]
+      node[above, font=\tiny, align=center] {Staff\\Re-review} (staff.east);
 
 %% Supermajority trigger
 \draw[arrow, dashed, red!70, thick] (protest.west) --
@@ -281,7 +284,7 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 
 \end{tikzpicture}%
 }
-\caption[Austin Municipal Zoning Process]{Austin municipal zoning process. Panel~2 groups staff review and commission stages; Panel~3 groups city council readings. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council. Cases may be remanded from Council back to Commission, or withdrawn at either stage.}
+\caption[Austin Municipal Zoning Process]{Austin municipal zoning process. Panel~2 groups iterative staff reviews and commission stages; Panel~3 groups multiple city council readings. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council. Cases may be remanded from Council back to Commission, or withdrawn at either stage.}
 \label{fig:flowchart}
 \end{figure}
 
@@ -786,7 +789,7 @@ The central temporal finding is a peak-and-decay pattern: CatBoost's Pre-2019 an
 Normalizing against the collapsing base rate reveals a profoundly counter-intuitive \textit{signal dilution} effect. First, models trained exclusively on the high-conflict Pre-2018 era generate a blistering $338\times$ lift multiplier when predicting the immediate 2019 environment. Because the spatial recipe for formal opposition was hardened into the high-volume historical data, freezing the legacy model mathematically preserves the spatial sorting intelligence. However, the signal degrades as the legislative environment shifts; the Pre-2018 model's lift drops to $5.8\times$ by 2024. Conversely, iteratively retraining the model on modern data (e.g., Pre-2023 or Pre-2024 anchors) helps recover this signal, with the Pre-2024 anchor achieving a $15.5\times$ lift in the terminal year. Exposing the algorithm to the post-ordinance era allows it to adapt to the lower-density but still structured resistance environment.
 
 \vspace{1em}
-While aggregate architectural performance appears statistically indistinguishable, grouping architectures by functional capacity reveals strict boundaries around domain shift performance (Table~\ref{tab:temporal_drift_family}). First, linear architectures (Logistic Regression, L2) exhibit extreme \textit{horizon attrition}, demonstrating competitive dominance almost exclusively at immediate-year extrapolations (T+0) before decaying abruptly at distant forecasting horizons. Second, non-linear tree ensembles exhibit superior resilience to \textit{origin volatility}. When training anchors are forced to bridge the institutional break characterizing the post-ordinance era (Pre-2020 through Pre-2024 anchors), boosted trees remain the most frequent top performer, though Deep and Causal benchmarks offer competitive resilience in the terminal sparse-data regime.
+While aggregate architectural performance appears statistically indistinguishable, grouping architectures by functional capacity reveals strict boundaries around domain shift performance (Table~\ref{tab:temporal_drift_family}). First, linear architectures (Logistic Regression, L2) exhibit extreme \textit{horizon attrition}, demonstrating competitive dominance almost exclusively at immediate-year extrapolations (T+0) before decaying abruptly at distant forecasting horizons. Second, non-linear tree ensembles exhibit superior resilience to \textit{origin volatility}. When training anchors are forced to bridge the institutional break characterizing the post-ordinance era (Pre-2020 through Pre-2024 anchors), boosted trees remain consistent top performers. While CatBoost maintains the highest absolute PR-AUC (0.714), the performance gap between families is narrowest in the 6-month window, suggesting that Deep and Regularized Linear benchmarks offer competitive resilience when the prediction horizon allows for the aggregation of neighborhood signals.
 
 \input{Tables/chapter4_performance/tbl_ch4_15_temporal_drift_family.tex}
 
@@ -816,7 +819,7 @@ The primary filing-date model (CatBoost) is interpreted through clustered attrib
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{exhibits/fig_feature_importance_clustered_H0_Full.pdf}
-    \caption[Comparative Semantic Predictor Reliance between Architectural Families]{Top semantic predictor groups aggregated by average reliance within the four formalized model families (Tree, Deep, Regularized Linear, Distributionally Robust). Distinct reliance regimes hold uniquely between computational architectures: Linear and Deep proxies track spatial scale (Land Acres), while Tree methods locate heavy variance locally within demographics and zoning density.}
+    \caption[Comparative Semantic Predictor Reliance between Architectural Families]{Top semantic predictor groups aggregated by average reliance within the three formalized model families (Tree, Deep, and Regularized Linear). Distinct reliance regimes hold uniquely between computational architectures: Linear and Deep proxies track spatial scale (Land Acres), while Tree methods locate heavy variance locally within demographics and zoning density.}
     \label{fig:feature_importance_clustered}
 \end{figure}
 
@@ -896,7 +899,7 @@ This study's methodological and empirical boundaries introduce several methodolo
 
 Filing-date administrative features can rank petition risk in Austin's pre-HB\,24 zoning regime, but wide discrimination uncertainty and sparse positives still limit institutionally portable use of case-level probabilities beyond ranking workflows.
 
-This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is specific: filing-date administrative features carry real predictive signal for petition risk (the model achieves a PR-AUC of \metricBootstrapFiling{} on a temporal holdout), but that signal suffered significant temporal degradation during the 2022 performance dip. This suggests that predictive reliability is sensitive to ambient macro-shocks (such as pandemic-era administrative shifts) rather than static parcel spatiality. Furthermore, performance varies erratically across petition thresholds (0\%--25\%), providing a substantive empirical finding on \textbf{neighborhood agency}: neighbor mobilization is a deliberate social choice that subverts mechanistic administrative prediction, confirming that ``organized'' opposition remains a contingent social process rather than a rule-based response to statutory thresholds. These results demonstrate that while administrative data carries signal, the predictive patterns are mathematical artifacts of a specific policy window and should not be misinterpreted as permanent fundamental laws of neighborhood behavior. Finally, the model's dependence on socio-demographic clusters -- especially neighborhood income, demographics, and housing tenure -- indicates that predictive models of petition risk invariably embed complex class and race dynamics. However, because the relative feature importance of these clusters shifts unpredictably between different algorithms and over time, the attribution profiles are not stable enough to extract durable urban planning theories.
+This thesis asks whether measured threshold-crossing petitions against housing development proposals can be predicted before formal public hearings. The answer is specific: filing-date administrative features carry real predictive signal for petition risk (the model achieves a PR-AUC of \metricBootstrapFiling{} on a temporal holdout), but that signal suffered significant temporal degradation during the 2022 performance dip. To ensure maximum computational transparency and prevent identity-hacking of parcel-level physical floats, this study prioritizes three verified architectural families: Tree Ensembles (CatBoost/XGBoost), Deep Architectures (MLP), and Regularized Linear models. This consolidation demonstrates that predictive reliability is sensitive to ambient macro-shocks (such as pandemic-era administrative shifts) rather than static parcel spatiality. Furthermore, performance varies erratically across petition thresholds (0\%--25\%), providing a substantive empirical finding on \textbf{neighborhood agency}: neighbor mobilization is a deliberate social choice that subverts mechanistic administrative prediction, confirming that ``organized'' opposition remains a contingent social process rather than a rule-based response to statutory thresholds. These results demonstrate that while administrative data carries signal, the predictive patterns are mathematical artifacts of a specific policy window and should not be misinterpreted as permanent fundamental laws of neighborhood behavior. Finally, the model's dependence on socio-demographic clusters -- especially neighborhood income, demographics, and housing tenure -- indicates that predictive models of petition risk invariably embed complex class and race dynamics. However, because the relative feature importance of these clusters shifts unpredictably between different algorithms and over time, the attribution profiles are not stable enough to extract durable urban planning theories.
 
 
 
@@ -1083,25 +1086,7 @@ No Demographics       & 119.19 \\
 
 
 
-\newpage
-\section{Policy Event Studies}
-\label{app:policy_events}
-
-\subsection{HOME Initiative Event Study}
-\label{app:home}
-
-\noindent Event-study models evaluate the short-run effects of the HOME Initiative on opposition dynamics. HOME Phase~1 and Phase~2 are treated as independent policy shocks, with treatment defined at the case level by parcel eligibility and timing anchored to application-acceptance start dates \cite{pool2023,callaway2021did}.
-
-Given the limited post-policy window and missing defensible controls, this sample does not support an estimable causal HOME effect. For transparency, descriptive TWFE coefficients are retained in the replication outputs, but they are not interpreted as policy effects in light of the well-known heterogeneous-timing problems in TWFE designs \cite{goodmanbacon2021did,roth2023did}. In this manuscript, HOME results are explicitly marked "not estimable" for identification purposes, with figure-based event timing shown only as context \cite{cinelli2020making}.
-
-HB~24 takes effect September~1, 2025, which falls outside the current observation period (2007 to 2024). Its evaluation is explicitly pre-registered as a future extension.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{ch5/fig_ch5_32_did_event_study.png}
-\caption[HOME Phase 1 Event-Study Coefficients (Reconstructed Petition Outcome)]{HOME Phase 1 event-study coefficients for measured threshold-crossing petitions relative to the implementation date. The absence of a clean spatial control cohort necessitates purely temporal event-tracking.}
-\label{fig:f17_did}
-\end{figure}
+\cleardoublepage
 
 \cleardoublepage
 \phantomsection
