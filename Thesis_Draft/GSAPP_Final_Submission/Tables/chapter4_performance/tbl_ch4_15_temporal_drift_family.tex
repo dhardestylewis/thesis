@@ -1,6 +1,6 @@
 \begin{table}[htbp]
 \centering
-\caption[Temporal Drift (Max-of-Family)]{\textbf{Max-of-Family dominance (Optimal Entropy-Based Discretization).}}
+\caption[Temporal Drift (Max-of-Family)]{\textbf{Max-of-Family dominance (14-Day Horizon).}}
 \label{tab:temporal_drift_family}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccccc}
@@ -9,24 +9,22 @@
 \midrule
 \multicolumn{8}{c}{\textbf{Panel A: Maximum Absolute PR-AUC}} \\
 \midrule
-Pre-2018 & 0.994 (Causal) & 0.794 (Trees) & 0.802 (Deep) & 0.432 (Causal) & 0.267 (Deep) & 0.591 (Trees) & 1.000 (Linear) \\
-Pre-2019 & --- & 0.694 (Linear) & 0.506 (Deep) & 0.405 (Trees) & 0.208 (Trees) & 0.771 (Trees) & 0.679 (Trees) \\
-Pre-2020 & --- & --- & 0.511 (Trees) & 0.354 (Trees) & 0.208 (Causal) & 0.636 (Trees) & 0.661 (Causal) \\
-Pre-2021 & --- & --- & --- & 0.503 (Deep) & 0.325 (Trees) & 0.799 (Trees) & 0.775 (Deep) \\
-Pre-2022 & --- & --- & --- & --- & 0.625 (Trees) & 0.443 (Trees) & 0.722 (Causal) \\
-Pre-2023 & --- & --- & --- & --- & --- & 0.633 (Trees) & 0.469 (Causal) \\
-Pre-2024 & --- & --- & --- & --- & --- & --- & 0.667 (Deep) \\
-\midrule
+Pre-2018 & 0.014 (Linear) & 0.193 (Trees) & 0.032 (Deep) & 0.047 (Trees) & 0.249 (Trees) & 0.071 (Trees) & 0.016 (Trees) \\
+Pre-2019 & --- & 0.170 (Causal) & 0.039 (Trees) & 0.098 (Trees) & 0.247 (Trees) & 0.145 (Trees) & 0.060 (Trees) \\
+Pre-2020 & --- & --- & 0.050 (Causal) & 0.071 (Causal) & 0.264 (Trees) & 0.200 (Trees) & 0.028 (Deep) \\
+Pre-2021 & --- & --- & --- & 0.106 (Trees) & 0.282 (Trees) & 0.046 (Causal) & 0.014 (Deep) \\
+Pre-2022 & --- & --- & --- & --- & 0.162 (Trees) & 0.083 (Trees) & 0.038 (Trees) \\
+Pre-2023 & --- & --- & --- & --- & --- & 0.224 (Trees) & 0.034 (Trees) \\
+Pre-2024 & --- & --- & --- & --- & --- & --- & 0.050 (Deep) \\\midrule
 \multicolumn{8}{c}{\textbf{Panel B: Maximum Relative PR-AUC Lift}} \\
 \midrule
-Pre-2018 & 6.53 (Causal) & 11.90 (Trees) & 14.19 (Deep) & 9.24 (Causal) & 28.80 (Deep) & 29.69 (Trees) & 53.75 (Linear) \\
-Pre-2019 & --- & 10.41 (Linear) & 8.95 (Deep) & 8.67 (Trees) & 22.50 (Trees) & 38.73 (Trees) & 36.51 (Trees) \\
-Pre-2020 & --- & --- & 9.05 (Trees) & 7.58 (Trees) & 22.50 (Causal) & 31.96 (Trees) & 35.51 (Causal) \\
-Pre-2021 & --- & --- & --- & 10.76 (Deep) & 35.10 (Trees) & 40.13 (Trees) & 41.66 (Deep) \\
-Pre-2022 & --- & --- & --- & --- & 67.50 (Trees) & 22.27 (Trees) & 38.82 (Causal) \\
-Pre-2023 & --- & --- & --- & --- & --- & 31.82 (Trees) & 25.23 (Causal) \\
-Pre-2024 & --- & --- & --- & --- & --- & --- & 35.83 (Deep) \\
-\bottomrule
+Pre-2018 & $18.2\times$ (Linear) & $338.0\times$ (Trees) & $30.3\times$ (Deep) & $38.4\times$ (Trees) & $153.5\times$ (Trees) & $33.8\times$ (Trees) & $5.8\times$ (Trees) \\
+Pre-2019 & --- & $296.4\times$ (Causal) & $36.6\times$ (Trees) & $79.3\times$ (Trees) & $152.3\times$ (Trees) & $68.7\times$ (Trees) & $21.7\times$ (Trees) \\
+Pre-2020 & --- & --- & $47.6\times$ (Causal) & $57.7\times$ (Causal) & $163.2\times$ (Trees) & $95.1\times$ (Trees) & $10.0\times$ (Deep) \\
+Pre-2021 & --- & --- & --- & $86.4\times$ (Trees) & $174.4\times$ (Trees) & $21.7\times$ (Causal) & $5.1\times$ (Deep) \\
+Pre-2022 & --- & --- & --- & --- & $100.0\times$ (Trees) & $39.5\times$ (Trees) & $13.8\times$ (Trees) \\
+Pre-2023 & --- & --- & --- & --- & --- & $106.5\times$ (Trees) & $12.4\times$ (Trees) \\
+Pre-2024 & --- & --- & --- & --- & --- & --- & $18.0\times$ (Deep) \\\bottomrule
 \end{tabular}%
 }
 \end{table}
