@@ -315,30 +315,38 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                 plt.close()
                 print(f"  [+] Saved Interaction Beeswarm -> {fig_out}")
                 
-                # --- PAIRWISE INTERACTION GRID (HEATMAP) ---
-                print("  [*] Generating pairwise interaction heatmap...")
-                # Mean absolute interaction across all cases: (M, M)
+                # --- PAIRWISE INTERACTION GRID (BEESWARM) ---
+                print("  [*] Generating pairwise interaction beeswarm grid...")
+                n_grid = 8
                 mean_abs_int = np.abs(interaction_values).mean(axis=0)
-                np.fill_diagonal(mean_abs_int, 0)  # zero diagonal: we want off-diagonal interactions only
+                off_diag = mean_abs_int.copy(); np.fill_diagonal(off_diag, 0)
                 
-                # Pick top 15 features by total interaction strength
-                total_int = mean_abs_int.sum(axis=0)
-                top15_idx = np.argsort(total_int)[-15:]
-                top15_names = [clean_feat_name(X_sample_raw.columns[i]) for i in top15_idx]
-                int_matrix = mean_abs_int[np.ix_(top15_idx, top15_idx)]
+                # Pick top n features by total off-diagonal interaction strength
+                top_idx = np.argsort(off_diag.sum(axis=0))[-n_grid:]
+                top_names = [clean_feat_name(X_sample_raw.columns[i]) for i in top_idx]
                 
-                fig, ax = plt.subplots(figsize=(11, 9))
-                im = ax.imshow(int_matrix, cmap='magma', aspect='auto')
-                ax.set_xticks(range(15))
-                ax.set_yticks(range(15))
-                ax.set_xticklabels(top15_names, rotation=45, ha='right', fontsize=9)
-                ax.set_yticklabels(top15_names, fontsize=9)
-                plt.colorbar(im, ax=ax, label='Mean |Interaction SHAP|')
-                ax.set_title("Interaction TreeSHAP: Pairwise Feature Interaction Strength (Filing Date)", fontsize=13, pad=12)
+                fig, axes = plt.subplots(n_grid, n_grid, figsize=(n_grid * 2.2, n_grid * 2.0))
+                fig.suptitle("Interaction TreeSHAP: Pairwise Feature Interactions (Filing Date)", fontsize=13, y=1.01)
+                cmap = plt.cm.coolwarm
+                
+                for row, i in enumerate(top_idx):
+                    for col, j in enumerate(top_idx):
+                        ax = axes[row, col]
+                        y_vals = interaction_values[:, i, j]
+                        x_jitter = np.random.default_rng(42).uniform(-0.3, 0.3, size=len(y_vals))
+                        color_vals = X_sample_raw.iloc[:, j]
+                        norm_c = (color_vals - color_vals.min()) / (color_vals.max() - color_vals.min() + 1e-9)
+                        ax.scatter(x_jitter, y_vals, c=norm_c, cmap=cmap, alpha=0.4, s=4, linewidths=0)
+                        ax.axhline(0, color='gray', linewidth=0.4, linestyle='--')
+                        ax.set_xticks([]); ax.set_yticks([])
+                        if row == n_grid - 1:
+                            ax.set_xlabel(top_names[col], fontsize=7, rotation=30, ha='right')
+                        if col == 0:
+                            ax.set_ylabel(top_names[row], fontsize=7, rotation=0, ha='right', labelpad=40)
+                
                 plt.tight_layout()
-                
                 fig_out_grid = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "exhibits", "fig_ch4_14b_forecasting_interaction_grid.pdf")
-                plt.savefig(fig_out_grid, bbox_inches='tight', dpi=300)
+                plt.savefig(fig_out_grid, bbox_inches='tight', dpi=200)
                 plt.close()
                 print(f"  [+] Saved Interaction Grid -> {fig_out_grid}")
 

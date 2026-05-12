@@ -25,22 +25,41 @@ def save_beeswarm(shap_matrix, X_display, title, filename):
     print(f"  [+] Saved {filename}")
 
 
-def save_interaction_grid(mean_abs_int, feature_names, title, filename, n=15):
-    total_int = mean_abs_int.sum(axis=0)
-    top_idx = np.argsort(total_int)[-n:]
+def save_interaction_beeswarm_grid(iv, X_sample, feature_names, title, filename, n=8):
+    """
+    Beeswarm grid: n×n array of scatter subplots.
+    Cell (i, j) shows the distribution of SHAP interaction values Phi[i,j] across
+    all cases, with points colored by the value of feature j.
+    Diagonal = main effects. Off-diagonal = pairwise interactions.
+    Top n features selected by total off-diagonal interaction strength.
+    """
+    mean_abs_int = np.abs(iv).mean(axis=0)
+    off_diag = mean_abs_int.copy(); np.fill_diagonal(off_diag, 0)
+    top_idx = np.argsort(off_diag.sum(axis=0))[-n:]
     top_names = [feature_names[i] for i in top_idx]
-    matrix = mean_abs_int[np.ix_(top_idx, top_idx)].copy()
-    np.fill_diagonal(matrix, 0)  # off-diagonal interactions only
 
-    fig, ax = plt.subplots(figsize=(11, 9))
-    im = ax.imshow(matrix, cmap='magma', aspect='auto')
-    ax.set_xticks(range(n)); ax.set_yticks(range(n))
-    ax.set_xticklabels(top_names, rotation=45, ha='right', fontsize=8)
-    ax.set_yticklabels(top_names, fontsize=8)
-    plt.colorbar(im, ax=ax, label='Mean |Interaction SHAP|')
-    ax.set_title(title, fontsize=12, pad=10)
+    fig, axes = plt.subplots(n, n, figsize=(n * 2.2, n * 2.0))
+    fig.suptitle(title, fontsize=13, y=1.01)
+
+    cmap = plt.cm.coolwarm
+
+    for row, i in enumerate(top_idx):
+        for col, j in enumerate(top_idx):
+            ax = axes[row, col]
+            y_vals = iv[:, i, j]           # interaction values for pair (i,j)
+            x_jitter = np.random.default_rng(42).uniform(-0.3, 0.3, size=len(y_vals))
+            color_vals = X_sample.iloc[:, j]
+            norm_c = (color_vals - color_vals.min()) / (color_vals.max() - color_vals.min() + 1e-9)
+            ax.scatter(x_jitter, y_vals, c=norm_c, cmap=cmap, alpha=0.4, s=4, linewidths=0)
+            ax.axhline(0, color='gray', linewidth=0.4, linestyle='--')
+            ax.set_xticks([]); ax.set_yticks([])
+            if row == n - 1:
+                ax.set_xlabel(top_names[col], fontsize=7, rotation=30, ha='right')
+            if col == 0:
+                ax.set_ylabel(top_names[row], fontsize=7, rotation=0, ha='right', labelpad=40)
+
     plt.tight_layout()
-    plt.savefig(FIG_DIR / filename, bbox_inches='tight', dpi=300)
+    plt.savefig(FIG_DIR / filename, bbox_inches='tight', dpi=200)
     plt.close()
     print(f"  [+] Saved {filename}")
 
@@ -126,11 +145,10 @@ def run_causal_interaction():
                       "Interaction TreeSHAP: DML Treatment Effect Heterogeneity",
                       "fig_ch5_14_causal_dml_interaction_shap.pdf")
 
-        # Pairwise interaction grid
-        mean_abs_dml = np.abs(iv_dml).mean(axis=0)
-        save_interaction_grid(mean_abs_dml, feat_names,
-                              "Interaction TreeSHAP: Pairwise Feature Interactions (DML)",
-                              "fig_ch5_14b_causal_dml_interaction_grid.pdf")
+        # Pairwise interaction grid (beeswarm grid)
+        save_interaction_beeswarm_grid(iv_dml, X_disp, feat_names,
+                                       "Interaction TreeSHAP: Pairwise Feature Interactions (DML)",
+                                       "fig_ch5_14b_causal_dml_interaction_grid.pdf", n=8)
         return
     except Exception as e:
         print(f"  [!] GRF TreeSHAP failed ({e}), falling back to PermutationExplainer...")
