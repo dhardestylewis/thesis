@@ -291,35 +291,30 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                 explainer = shap.TreeExplainer(m)
                 interaction_values = explainer.shap_interaction_values(X_sample_raw)
                 
-                # Extract Main Effects (diagonal)
+                # Extract Main Effects (diagonal) — RAW features, no cluster aggregation
+                # Interaction decomposition purpose: see each feature's direct contribution
+                # unclouded by collinear interaction effects. Do NOT re-aggregate to clusters.
                 main_effects = np.diagonal(interaction_values, axis1=1, axis2=2)
                 
-                # Aggregate to 18-cluster taxonomy
-                features_list = X_raw_df.columns
-                cluster_data = {}
-                cluster_shap = {}
+                # Clean feature names for readability
+                def clean_feat_name(f):
+                    return (f.replace('acs2_', '').replace('acs_', '').replace('ldb_', '')
+                             .replace('_lag_6yr', '').replace('_', ' ').title())
                 
-                for i, feat in enumerate(features_list):
-                    cluster = SEMANTIC_CLUSTERS.get(feat, "Other")
-                    if cluster not in cluster_data:
-                        cluster_data[cluster] = []
-                        cluster_shap[cluster] = []
-                    cluster_data[cluster].append(X_sample_raw[feat])
-                    cluster_shap[cluster].append(main_effects[:, i])
-                    
-                final_X = pd.DataFrame({k: pd.concat(v, axis=1).mean(axis=1) for k, v in cluster_data.items()})
-                final_shap = np.column_stack([np.sum(v, axis=0) for v in cluster_shap.values()])
+                X_display = X_sample_raw.copy()
+                X_display.columns = [clean_feat_name(c) for c in X_display.columns]
                 
                 plt.figure(figsize=(10, 8))
-                shap.summary_plot(final_shap, final_X, max_display=15, show=False, plot_size=None)
+                shap.summary_plot(main_effects, X_display, max_display=15, show=False, plot_size=None)
                 plt.title("Interaction TreeSHAP: Forecasting Main Effects (Filing Date)", fontsize=14)
                 plt.tight_layout()
                 
                 fig_out = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "exhibits", "fig_ch4_14_forecasting_interaction_shap.pdf")
                 os.makedirs(os.path.dirname(fig_out), exist_ok=True)
-                plt.savefig(fig_out, bbox_inches='tight')
+                plt.savefig(fig_out, bbox_inches='tight', dpi=300)
                 plt.close()
-                print(f"  [+] Saved Interaction Exhibit -> {fig_out}")
+                print(f"  [+] Saved Interaction Exhibit (raw features) -> {fig_out}")
+
             
             total = np.sum(raw_imp)
             if total > 0: raw_imp = (raw_imp / total) * 100
@@ -557,7 +552,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
             elif ca == max_val: ca_str = f"\\textbf{{{ca_str}}}"
             else: l_str = f"\\textbf{{{l_str}}}"
             
-        t7_lines.append(f"{c} & {t_str} & {d_str} & {l_str} \\\\")
+        t7_lines.append(f"{c.replace('&', '\\&')} & {t_str} & {d_str} & {l_str} \\\\")
     
     t7_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     
@@ -610,7 +605,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
             elif ca == max_val: ca_str = f"\\textbf{{{ca_str}}}"
             else: l_str = f"\\textbf{{{l_str}}}"
             
-        t8_lines.append(f"{c} & {t_str} & {d_str} & {l_str} \\\\")
+        t8_lines.append(f"{c.replace('&', '\\&')} & {t_str} & {d_str} & {l_str} \\\\")
     
     t8_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     
