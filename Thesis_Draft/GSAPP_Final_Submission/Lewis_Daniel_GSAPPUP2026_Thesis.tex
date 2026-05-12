@@ -636,15 +636,15 @@ Table~\ref{tab:cate_distribution} reports the unconditional distribution of the 
 \textbf{Statistic} & \textbf{Height Attrition (ft)} & \textbf{Processing Delay (days)} \\
 \midrule
 Mean                      & \metricMeanHeightPenalty{}   & \metricMeanDelayPenalty{} \\
-Median                    & 3.35    & 69.2 \\
-Std Dev                   & 3.02    & 112.8 \\
-Lowest Decile             & 0.21    & -0.03 \\
-Lower Quartile            & 1.53    & 32.6 \\
-Upper Quartile            & 5.44    & 151.5 \\
-Highest Decile            & 7.19    & 271.5 \\
-Min                       & -4.72   & -154.5 \\
-Max                       & 35.69   & 1381.0 \\
-\% parcels $\hat{\tau} > 0$ & 91.8\%  & 89.9\% \\
+Median                    & \metricCATEHeightMedian    & \metricCATEDelayMedian \\
+Std Dev                   & \metricCATEHeightStd    & \metricCATEDelayStd \\
+Lowest Decile             & \metricCATEHeightDecileLow    & \metricCATEDelayDecileLow \\
+Lower Quartile            & \metricCATEHeightQuartileLow    & \metricCATEDelayQuartileLow \\
+Upper Quartile            & \metricCATEHeightQuartileHigh    & \metricCATEDelayQuartileHigh \\
+Highest Decile            & \metricCATEHeightDecileHigh    & \metricCATEDelayDecileHigh \\
+Min                       & \metricCATEHeightMin   & \metricCATEDelayMin \\
+Max                       & \metricCATEHeightMax   & \metricCATEDelayMax \\
+\% parcels $\hat{\tau} > 0$ & \metricCATEHeightPctPositive  & \metricCATEDelayPctPositive \\
 \bottomrule
 \multicolumn{3}{l}{\footnotesize $\hat{\tau}(x_i)$ is the Causal Forest conditional effect evaluated at each parcel's pre-treatment covariate vector.}
 \end{tabular}
@@ -663,16 +663,16 @@ Max                       & 35.69   & 1381.0 \\
 \textbf{Subgroup} & \textbf{Mean} & \textbf{Median} & \textbf{Mean} & \textbf{Median} \\
 \midrule
 \multicolumn{5}{l}{\textit{By Median Household Income Quartile}} \\
-Q1 (lowest income)  & 2.38 & 2.30 & 37.9 & 35.3 \\
-Q2                  & 3.06 & 2.77 & 84.4 & 64.5 \\
-Q3                  & 4.02 & 3.96 & 121.1 & 87.9 \\
-Q4 (highest income) & \textbf{4.91} & \textbf{5.11} & \textbf{173.8} & \textbf{150.6} \\
+Q1 (lowest income)  & \metricCATEIncomeOneHeightMean & \metricCATEIncomeOneHeightMedian & \metricCATEIncomeOneDelayMean & \metricCATEIncomeOneDelayMedian \\
+Q2                  & \metricCATEIncomeTwoHeightMean & \metricCATEIncomeTwoHeightMedian & \metricCATEIncomeTwoDelayMean & \metricCATEIncomeTwoDelayMedian \\
+Q3                  & \metricCATEIncomeThreeHeightMean & \metricCATEIncomeThreeHeightMedian & \metricCATEIncomeThreeDelayMean & \metricCATEIncomeThreeDelayMedian \\
+Q4 (highest income) & \textbf{\metricCATEIncomeFourHeightMean} & \textbf{\metricCATEIncomeFourHeightMedian} & \textbf{\metricCATEIncomeFourDelayMean} & \textbf{\metricCATEIncomeFourDelayMedian} \\
 \midrule
 \multicolumn{5}{l}{\textit{By Renter Share Quartile}} \\
-Q1 (most owner-occupied)  & \textbf{4.63} & \textbf{4.72} & \textbf{178.9} & \textbf{152.2} \\
-Q2                        & 3.87 & 3.65 & 106.2 & 77.4 \\
-Q3                        & 2.80 & 2.44 & 85.3 & 56.1 \\
-Q4 (most renter-occupied) & 3.07 & 2.66 & 46.6 & 41.0 \\
+Q1 (most owner-occupied)  & \textbf{\metricCATERenterOneHeightMean} & \textbf{\metricCATERenterOneHeightMedian} & \textbf{\metricCATERenterOneDelayMean} & \textbf{\metricCATERenterOneDelayMedian} \\
+Q2                        & \metricCATERenterTwoHeightMean & \metricCATERenterTwoHeightMedian & \metricCATERenterTwoDelayMean & \metricCATERenterTwoDelayMedian \\
+Q3                        & \metricCATERenterThreeHeightMean & \metricCATERenterThreeHeightMedian & \metricCATERenterThreeDelayMean & \metricCATERenterThreeDelayMedian \\
+Q4 (most renter-occupied) & \metricCATERenterFourHeightMean & \metricCATERenterFourHeightMedian & \metricCATERenterFourDelayMean & \metricCATERenterFourDelayMedian \\
 \bottomrule
 \multicolumn{5}{l}{\footnotesize $N \approx 1{,}491$ per quartile. Positive delay indicates petitions increase time-to-resolution.} \\
 \end{tabular}
@@ -1035,7 +1035,7 @@ Gradient Boosting & $-$9.65 \\
 
 To rule out lucky-draw estimation, the Causal Forest is re-estimated across 20 independent random seeds with a fixed data and pipeline specification. The mean ATE, standard deviation, and sign consistency rate are reported in Table~\ref{tab:seed_stability}.
 
-The wide standard deviation (45.14 feet) and near-symmetric sign consistency (45\% positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous -- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from $-$4.7 to 35.7 feet across the parcel distribution -- a single aggregate CATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably 3.35 feet and 91.8\% of parcels show a consistent sign. The aggregate CATE instability is itself evidence that the true effect function has high variance across the covariate space.
+The wide standard deviation (45.14 feet) and near-symmetric sign consistency (45\% positive) of the \emph{aggregate} ATE are expected and do not indicate estimator failure. When true causal effects are genuinely heterogeneous -- as documented in Section~\ref{sec:hte}, where $\hat{\tau}(x_i)$ ranges from \metricCATEHeightMin{} to \metricCATEHeightMax{} feet across the parcel distribution -- a single aggregate CATE is poorly identified even with a fixed specification, because marginal sampling variation in which cases are included shifts the aggregate substantially. The Causal Forest is designed to estimate the \emph{function} $\hat{\tau}(x_i)$, not a scalar point treatment effect; the correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably \metricCATEHeightMedian{} feet and \metricCATEHeightPctPositive{} of parcels show a consistent sign. The aggregate CATE instability is itself evidence that the true effect function has high variance across the covariate space.
 
 \begin{table}[H]
 \centering

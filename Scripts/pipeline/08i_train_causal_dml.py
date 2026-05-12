@@ -118,3 +118,8 @@ with open(models_path, 'wb') as f:
     }, f)
 
 print("Causal Production Pipeline complete!", flush=True)
+
+# -- 7. Export Metrics to LaTeX --
+print('\nExporting CATE metrics to LaTeX config...', flush=True)
+import subprocess
+subprocess.run(['python', str(ROOT / 'Scripts/pipeline/08j_export_causal_metrics.py')], check=True)
