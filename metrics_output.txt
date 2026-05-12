@@ -1,0 +1,98 @@
+### Year 2016 (Test N = 167)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: -2.6 ft
+  - Bureaucratic Delay: 325.1 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 5.4 ft
+  - Outcome Prediction (Delay): MAE = 419.1 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.578
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.907
+
+### Year 2017 (Test N = 176)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: -5.2 ft
+  - Bureaucratic Delay: 408.3 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 3.7 ft
+  - Outcome Prediction (Delay): MAE = 435.5 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.939
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.981
+
+### Year 2018 (Test N = 190)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: -2.1 ft
+  - Bureaucratic Delay: 371.1 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 5.8 ft
+  - Outcome Prediction (Delay): MAE = 419.6 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.590
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.975
+
+### Year 2019 (Test N = 204)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: -1.3 ft
+  - Bureaucratic Delay: 458.2 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 5.7 ft
+  - Outcome Prediction (Delay): MAE = 501.7 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.738
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.970
+
+### Year 2020 (Test N = 188)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: 3.9 ft
+  - Bureaucratic Delay: 377.5 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 5.5 ft
+  - Outcome Prediction (Delay): MAE = 315.4 days
+  - Treatment Propensity (E[T|X]): R^2 = -0.573
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.977
+
+### Year 2021 (Test N = 226)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: -0.7 ft
+  - Bureaucratic Delay: 523.9 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 5.4 ft
+  - Outcome Prediction (Delay): MAE = 383.5 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.359
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.991
+
+### Year 2022 (Test N = 239)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: 1.0 ft
+  - Bureaucratic Delay: 532.1 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 4.6 ft
+  - Outcome Prediction (Delay): MAE = 333.3 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.229
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.990
+
+### Year 2023 (Test N = 205)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: 1.7 ft
+  - Bureaucratic Delay: 304.9 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 7.4 ft
+  - Outcome Prediction (Delay): MAE = 331.5 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.224
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.993
+
+### Year 2024 (Test N = 209)
+- **Average Treatment Effect (ATE):**
+  - Height Attrition: 4.9 ft
+  - Bureaucratic Delay: 302.0 days
+- **First-Stage Nuisance Performance:**
+  - Outcome Prediction (Height): MAE = 8.0 ft
+  - Outcome Prediction (Delay): MAE = 316.3 days
+  - Treatment Propensity (E[T|X]): R^2 = 0.615
+- **Phase 1 Hurdle Classifier:**
+  - Withdrawal Probability ROC-AUC: 0.893

@@ -1,0 +1,197 @@
+## Comprehensive Temporal Transportability Matrix (2016-2024)
+
+### Training Set: All cases <= 2016
+  **Test Year 2017 (T+1):**
+  - Hurdle ROC-AUC: 0.629
+  - Treatment Propensity R2: 0.885
+  - Height MAE: 4.6 ft
+  - Delay MAE: 426.1 days
+  **Test Year 2018 (T+2):**
+  - Hurdle ROC-AUC: 0.643
+  - Treatment Propensity R2: 0.459
+  - Height MAE: 5.4 ft
+  - Delay MAE: 453.9 days
+  **Test Year 2019 (T+3):**
+  - Hurdle ROC-AUC: 0.672
+  - Treatment Propensity R2: 0.769
+  - Height MAE: 5.4 ft
+  - Delay MAE: 526.1 days
+  **Test Year 2020 (T+4):**
+  - Hurdle ROC-AUC: 0.604
+  - Treatment Propensity R2: -0.737
+  - Height MAE: 6.5 ft
+  - Delay MAE: 401.5 days
+  **Test Year 2021 (T+5):**
+  - Hurdle ROC-AUC: 0.742
+  - Treatment Propensity R2: -0.172
+  - Height MAE: 5.2 ft
+  - Delay MAE: 425.9 days
+  **Test Year 2022 (T+6):**
+  - Hurdle ROC-AUC: 0.509
+  - Treatment Propensity R2: 0.323
+  - Height MAE: 4.9 ft
+  - Delay MAE: 376.9 days
+  **Test Year 2023 (T+7):**
+  - Hurdle ROC-AUC: 0.480
+  - Treatment Propensity R2: 0.350
+  - Height MAE: 8.1 ft
+  - Delay MAE: 337.9 days
+  **Test Year 2024 (T+8):**
+  - Hurdle ROC-AUC: 0.591
+  - Treatment Propensity R2: 0.363
+  - Height MAE: 4.8 ft
+  - Delay MAE: 488.7 days
+
+### Training Set: All cases <= 2017
+  **Test Year 2018 (T+1):**
+  - Hurdle ROC-AUC: 0.645
+  - Treatment Propensity R2: 0.403
+  - Height MAE: 4.7 ft
+  - Delay MAE: 458.7 days
+  **Test Year 2019 (T+2):**
+  - Hurdle ROC-AUC: 0.568
+  - Treatment Propensity R2: 0.741
+  - Height MAE: 5.3 ft
+  - Delay MAE: 516.5 days
+  **Test Year 2020 (T+3):**
+  - Hurdle ROC-AUC: 0.669
+  - Treatment Propensity R2: -0.634
+  - Height MAE: 7.5 ft
+  - Delay MAE: 395.5 days
+  **Test Year 2021 (T+4):**
+  - Hurdle ROC-AUC: 0.659
+  - Treatment Propensity R2: -0.207
+  - Height MAE: 6.9 ft
+  - Delay MAE: 470.2 days
+  **Test Year 2022 (T+5):**
+  - Hurdle ROC-AUC: 0.576
+  - Treatment Propensity R2: -0.085
+  - Height MAE: 4.8 ft
+  - Delay MAE: 393.6 days
+  **Test Year 2023 (T+6):**
+  - Hurdle ROC-AUC: 0.371
+  - Treatment Propensity R2: 0.387
+  - Height MAE: 7.4 ft
+  - Delay MAE: 408.9 days
+  **Test Year 2024 (T+7):**
+  - Hurdle ROC-AUC: 0.494
+  - Treatment Propensity R2: 0.303
+  - Height MAE: 4.6 ft
+  - Delay MAE: 516.2 days
+
+### Training Set: All cases <= 2018
+  **Test Year 2019 (T+1):**
+  - Hurdle ROC-AUC: 0.648
+  - Treatment Propensity R2: 0.793
+  - Height MAE: 5.8 ft
+  - Delay MAE: 494.2 days
+  **Test Year 2020 (T+2):**
+  - Hurdle ROC-AUC: 0.645
+  - Treatment Propensity R2: -0.122
+  - Height MAE: 8.0 ft
+  - Delay MAE: 363.8 days
+  **Test Year 2021 (T+3):**
+  - Hurdle ROC-AUC: 0.762
+  - Treatment Propensity R2: 0.055
+  - Height MAE: 6.3 ft
+  - Delay MAE: 473.7 days
+  **Test Year 2022 (T+4):**
+  - Hurdle ROC-AUC: 0.547
+  - Treatment Propensity R2: 0.083
+  - Height MAE: 4.3 ft
+  - Delay MAE: 365.3 days
+  **Test Year 2023 (T+5):**
+  - Hurdle ROC-AUC: 0.564
+  - Treatment Propensity R2: 0.462
+  - Height MAE: 7.0 ft
+  - Delay MAE: 352.2 days
+  **Test Year 2024 (T+6):**
+  - Hurdle ROC-AUC: 0.583
+  - Treatment Propensity R2: 0.606
+  - Height MAE: 4.7 ft
+  - Delay MAE: 452.4 days
+
+### Training Set: All cases <= 2019
+  **Test Year 2020 (T+1):**
+  - Hurdle ROC-AUC: 0.665
+  - Treatment Propensity R2: -0.256
+  - Height MAE: 5.2 ft
+  - Delay MAE: 318.5 days
+  **Test Year 2021 (T+2):**
+  - Hurdle ROC-AUC: 0.766
+  - Treatment Propensity R2: -0.015
+  - Height MAE: 5.6 ft
+  - Delay MAE: 442.1 days
+  **Test Year 2022 (T+3):**
+  - Hurdle ROC-AUC: 0.474
+  - Treatment Propensity R2: -0.048
+  - Height MAE: 3.9 ft
+  - Delay MAE: 389.6 days
+  **Test Year 2023 (T+4):**
+  - Hurdle ROC-AUC: 0.594
+  - Treatment Propensity R2: 0.318
+  - Height MAE: 7.0 ft
+  - Delay MAE: 329.2 days
+  **Test Year 2024 (T+5):**
+  - Hurdle ROC-AUC: 0.568
+  - Treatment Propensity R2: 0.552
+  - Height MAE: 6.1 ft
+  - Delay MAE: 462.2 days
+
+### Training Set: All cases <= 2020
+  **Test Year 2021 (T+1):**
+  - Hurdle ROC-AUC: 0.703
+  - Treatment Propensity R2: 0.211
+  - Height MAE: 5.4 ft
+  - Delay MAE: 351.8 days
+  **Test Year 2022 (T+2):**
+  - Hurdle ROC-AUC: 0.567
+  - Treatment Propensity R2: 0.090
+  - Height MAE: 4.5 ft
+  - Delay MAE: 368.4 days
+  **Test Year 2023 (T+3):**
+  - Hurdle ROC-AUC: 0.376
+  - Treatment Propensity R2: 0.422
+  - Height MAE: 6.8 ft
+  - Delay MAE: 353.6 days
+  **Test Year 2024 (T+4):**
+  - Hurdle ROC-AUC: 0.463
+  - Treatment Propensity R2: 0.427
+  - Height MAE: 6.5 ft
+  - Delay MAE: 499.8 days
+
+### Training Set: All cases <= 2021
+  **Test Year 2022 (T+1):**
+  - Hurdle ROC-AUC: 0.510
+  - Treatment Propensity R2: 0.204
+  - Height MAE: 4.8 ft
+  - Delay MAE: 346.7 days
+  **Test Year 2023 (T+2):**
+  - Hurdle ROC-AUC: 0.430
+  - Treatment Propensity R2: 0.178
+  - Height MAE: 7.6 ft
+  - Delay MAE: 323.5 days
+  **Test Year 2024 (T+3):**
+  - Hurdle ROC-AUC: 0.565
+  - Treatment Propensity R2: 0.530
+  - Height MAE: 8.4 ft
+  - Delay MAE: 481.9 days
+
+### Training Set: All cases <= 2022
+  **Test Year 2023 (T+1):**
+  - Hurdle ROC-AUC: 0.353
+  - Treatment Propensity R2: 0.305
+  - Height MAE: 6.6 ft
+  - Delay MAE: 300.9 days
+  **Test Year 2024 (T+2):**
+  - Hurdle ROC-AUC: 0.441
+  - Treatment Propensity R2: 0.536
+  - Height MAE: 4.3 ft
+  - Delay MAE: 413.9 days
+
+### Training Set: All cases <= 2023
+  **Test Year 2024 (T+1):**
+  - Hurdle ROC-AUC: 0.455
+  - Treatment Propensity R2: 0.638
+  - Height MAE: 6.9 ft
+  - Delay MAE: 312.7 days
