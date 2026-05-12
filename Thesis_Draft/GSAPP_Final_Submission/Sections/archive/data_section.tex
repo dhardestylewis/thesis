@@ -20,38 +20,38 @@ $\mathcal{E}$ for Invariant Causal Prediction.
 \subsection{Data Sources}
 
 \begin{enumerate}
-    \item \textbf{Zoning Protest Petitions} (2007--2024). Supermajority protest letters filed
-    with the Austin City Clerk opposing zoning changes.
-    Extracted via OCR from scanned petition documents, geocoded to TCAD parcels.
-    The sample contains 27,363 property-petition records. Our binary outcome variable
-    $Y_{it} = 1$ when a protest petition was filed for property $i$ in year $t$; the
-    base rate is 5.75\% across all property-years, with 3,004 positive observations.
+ \item \textbf{Zoning Protest Petitions} (2007--2024). Supermajority protest letters filed
+ with the Austin City Clerk opposing zoning changes.
+ Extracted via OCR from scanned petition documents, geocoded to TCAD parcels.
+ The sample contains 27,363 property-petition records. Our binary outcome variable
+ $Y_{it} = 1$ when a protest petition was filed for property $i$ in year $t$; the
+ base rate is 5.75\% across all property-years, with 3,004 positive observations.
 
-    \item \textbf{TCAD Electronic Appraisal Roll Submissions (EARS)} (2019--2022).
-    Annual property appraisal data from the Travis Central Appraisal District,
-    following the Texas Comptroller's standardized 84-field EARS format.
-    Appraisals are assessed as of January~1 of each tax year, prior to the zoning protest period.
-    A 72.7\% match rate on eligible property-years is achieved via an ID crosswalk
-    using the City of Austin Land Use Inventory's \texttt{property\_id} field
-    (257,764 overlapping accounts).
+ \item \textbf{TCAD Electronic Appraisal Roll Submissions (EARS)} (2019--2022).
+ Annual property appraisal data from the Travis Central Appraisal District,
+ following the Texas Comptroller's standardized 84-field EARS format.
+ Appraisals are assessed as of January~1 of each tax year, prior to the zoning protest period.
+ A 72.7\% match rate on eligible property-years is achieved via an ID crosswalk
+ using the City of Austin Land Use Inventory's \texttt{property\_id} field
+ (257,764 overlapping accounts).
 
-    \item \textbf{City of Austin Land Database} (2016 and 2021 snapshots).
-    Rich parcel-level data including base zoning, effective zoning, floor area ratio (FAR),
-    lot size, residential units, year built, appraised and market values, and improvement type.
-    Source: Austin Open Data Portal (Dataset IDs: 4nsn-uea6, kk8y-6cmt).
-    Match rate: 98.3\% of panel rows via forward-fill (see Section~\ref{sec:forwardfill}).
+ \item \textbf{City of Austin Land Database} (2016 and 2021 snapshots).
+ Rich parcel-level data including base zoning, effective zoning, floor area ratio (FAR),
+ lot size, residential units, year built, appraised and market values, and improvement type.
+ Source: Austin Open Data Portal (Dataset IDs: 4nsn-uea6, kk8y-6cmt).
+ Match rate: 98.3\% of panel rows via forward-fill (see Section~\ref{sec:forwardfill}).
 
-    \item \textbf{City of Austin Land Use Inventory} (2012, 2022, and 2024 snapshots).
-    Parcel-level land use classifications compiled by the City Planning Department.
-    Source: Austin Open Data Portal (Dataset IDs: 3k7r-w54d, 6qkk-xgys, 7vsm-dvxg).
-    Match rate: 99.8\% via forward-fill.
+ \item \textbf{City of Austin Land Use Inventory} (2012, 2022, and 2024 snapshots).
+ Parcel-level land use classifications compiled by the City Planning Department.
+ Source: Austin Open Data Portal (Dataset IDs: 3k7r-w54d, 6qkk-xgys, 7vsm-dvxg).
+ Match rate: 99.8\% via forward-fill.
 
-    \item \textbf{American Community Survey (ACS) 5-Year Estimates} (2009--2023).
-    Census tract-level demographic and socioeconomic variables
-    including median household income, median home value, racial/ethnic composition,
-    homeownership rates, poverty rates, and gross rent.
-    Pulled from the Census Bureau API for all 15 available using tidycensus. Decennial census boundaries mapped via weighted areal interpolation
-    if boundaries drifted between 2010 and 2020.
+ \item \textbf{American Community Survey (ACS) 5-Year Estimates} (2009--2023).
+ Census tract-level demographic and socioeconomic variables
+ including median household income, median home value, racial/ethnic composition,
+ homeownership rates, poverty rates, and gross rent.
+ Pulled from the Census Bureau API for all 15 available using tidycensus. Decennial census boundaries mapped via weighted areal interpolation
+ if boundaries drifted between 2010 and 2020.
 \end{enumerate}
 
 \subsection{Primary Source NLP Target Hydration}
@@ -88,6 +88,10 @@ Each forward-filled variable is accompanied by a \texttt{\_source\_year} column
 indicating which snapshot the value originates from, enabling transparency and
 sensitivity analysis.
 
+
+
+The corresponding metrics are detailed in \autoref{tab:forwardfill}.
+
 \begin{table}[h]
 \centering
 \small
@@ -113,20 +117,20 @@ information about the outcome at time $t$ or later.
 We classify every candidate variable into three risk categories:
 
 \begin{description}
-    \item[SAFE (67 variables):] Determined strictly before the protest filing window.
-    Texas appraisals are assessed as of January~1 of each tax year,
-    and property characteristics (year built, acreage, category code) are physical
-    attributes that do not change in response to protests.
+ \item[SAFE (67 variables):] Determined strictly before the protest filing window.
+ Texas appraisals are assessed as of January~1 of each tax year,
+ and property characteristics (year built, acreage, category code) are physical
+ attributes that do not change in response to protests.
 
-    \item[CAUTION (7 variables):] Potential indirect leakage requiring mitigation.
-    For example, \texttt{most\_recent\_sale\_date} may reflect post-protest transactions;
-    only lagged ($t-1$) values are used or time-since-sale features are derived.
-    Similarly, \texttt{zoning\_code} may change as a \textit{result} of the zoning case
-    under protest, so prior-year values are used exclusively.
+ \item[CAUTION (7 variables):] Potential indirect leakage requiring mitigation.
+ For example, \texttt{most\_recent\_sale\_date} may reflect post-protest transactions;
+ only lagged ($t-1$) values are used or time-since-sale features are derived.
+ Similarly, \texttt{zoning\_code} may change as a \textit{result} of the zoning case
+ under protest, so prior-year values are used exclusively.
 
-    \item[EXCLUDE (2 variables):] Direct outcome leakage.
-    The EARS fields \texttt{arb\_protest\_flag} (AJR078) and \texttt{arb\_protest\_result} (AJR079)
-    are excluded entirely, as are zoning case outcome dates.
+ \item[EXCLUDE (2 variables):] Direct outcome leakage.
+ The EARS fields \texttt{arb\_protest\_flag} (AJR078) and \texttt{arb\_protest\_result} (AJR079)
+ are excluded entirely, as are zoning case outcome dates.
 \end{description}
 
 \noindent

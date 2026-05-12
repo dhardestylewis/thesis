@@ -1,0 +1,22 @@
+
+
+The corresponding metrics are detailed in \autoref{tab:biweekly_drift_lift}.
+
+\begin{table}[H]
+\centering
+\caption[Biweekly Panel Predictive Drift: Lift]{Biweekly Panel Temporal Predictive Drift: PR-AUC Lift by test year (averaged across all forecasting horizons).}
+\label{tab:biweekly_drift_lift}
+\resizebox{0.9\textwidth}{!}{%
+\begin{tabular}{l c c c c c c c}
+\toprule
+\textbf{Model} & 2018 & 2019 & 2020 & 2021 & 2022 & 2023 & 2024 \\
+\midrule
+CatBoost & 150.980 & 190.390 & 77.148 & 100.686 & 86.553 & 154.290 & 47.785 \\
+LogisticL1 & 49.644 & 67.858 & 52.215 & 67.128 & 33.344 & 30.387 & 40.989 \\
+LogisticL2 & 50.766 & 67.919 & 52.357 & 67.096 & 33.103 & 30.592 & 41.077 \\
+MLP & 110.918 & 181.767 & 70.049 & 95.521 & 68.524 & 134.621 & 67.464 \\
+RandomForest & 106.177 & 81.463 & 41.130 & 102.792 & 35.203 & 140.046 & 77.327 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

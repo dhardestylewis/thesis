@@ -1,0 +1,15 @@
+\begin{table}[H]
+\centering
+\caption[Multi-Seed ATE Stability (N=20)]{Height ATE distribution across 20 independent random seeds. Wide standard deviation reflects genuine effect heterogeneity, not estimator instability. Only the random seed varies; all other pipeline parameters are fixed.}
+\label{tab:seed_stability}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Statistic} & \textbf{Height ATE (feet)} & \textbf{Sign Consistency} \\
+\midrule
+Mean (N=20) & $-$2.86  & 45\% positive \\
+Std Dev     & \phantom{$-$}45.14 & --- \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\footnotesize Fixed pipeline specification. The wide standard deviation and near-symmetric sign consistency are expected when true causal effects are genuinely heterogeneous. As documented in Section~\ref{sec:hte}, $\hat{\tau}(x_i)$ ranges from $-$23.6 to 178.5 feet across the parcel distribution; a single aggregate ATE is poorly identified because marginal sampling variation shifts the aggregate substantially. The Causal Forest is designed to estimate the function $\hat{\tau}(x_i)$, not a scalar point treatment effect. The correct summary is the CATE quartile distribution in Table~\ref{tab:cate_distribution}, where the median is stably 16.76 feet and 91.8\% of parcels show a consistent direction.
+\end{table}

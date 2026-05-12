@@ -1,0 +1,25 @@
+\begin{table}[H]
+\centering
+\begin{tabular}{l l c}
+\toprule
+\textbf{Robustness Dimension} & \textbf{Variant / Ablation} & \textbf{Height ATE (ft)} \\
+\midrule
+Nuisance Sensitivity & Linear/Lasso & 81.22 \\
+ & RandomForest & 1.17 \\
+ & GradBoost & -9.65 \\
+Seed Stability & Mean (N=20, 45\% pos) & -2.86 \\
+ & Std Dev & 45.14 \\
+Treatment Robustness & Continuous (Base) & 81.22 \\
+ & Log-Transformed & 89.76 \\
+ & Winsorized (95th) & N/A \\
+ & Binary (>0.20) & -32.11 \\
+Feature Ablation & Baseline (Full X) & 81.22 \\
+ & No Spatial & 110.87 \\
+ & No Macro & 97.07 \\
+ & No History/Lags & 101.34 \\
+ & No Demographics & 119.19 \\
+\bottomrule
+\end{tabular}
+\caption{Referee Robustness Matrix for the DML model, testing sensitivity to nuisance function selection, treatment boundaries, and feature ablations.}
+\label{tab:referee_robustness}
+\end{table}

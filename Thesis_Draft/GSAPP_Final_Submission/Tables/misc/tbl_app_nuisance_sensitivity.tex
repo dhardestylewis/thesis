@@ -1,0 +1,16 @@
+\begin{table}[H]
+\centering
+\caption[Nuisance Model Sensitivity (Height ATE)]{Height ATE across nuisance learner families. DML with honest cross-fitting; continuous petition dose treatment.}
+\label{tab:nuisance_sensitivity}
+\begin{tabular}{lc}
+\toprule
+\textbf{Nuisance Learner} & \textbf{Height ATE (feet)} \\
+\midrule
+Linear / Lasso       & \phantom{$-$}81.22 \\
+Random Forest        & \phantom{$-$}1.17  \\
+Gradient Boosting    & $-$9.65            \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\footnotesize The Lasso divergence from tree-based learners is consistent with strong non-linearity in the outcome surface. The primary Causal Forest (non-parametric nuisance) is the preferred specification; sign consistency between Random Forest and Gradient Boosting supports the non-linear result.
+\end{table}

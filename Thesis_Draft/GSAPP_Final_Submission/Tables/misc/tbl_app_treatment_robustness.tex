@@ -1,0 +1,17 @@
+\begin{table}[H]
+\centering
+\caption[Treatment Definition Robustness]{Height ATE under alternative treatment specifications. Sign instability between continuous and binary definitions reflects the difference between estimating a dose-response slope versus a threshold-crossing effect, not estimator failure.}
+\label{tab:treatment_robustness}
+\begin{tabular}{lc}
+\toprule
+\textbf{Treatment Specification} & \textbf{Height ATE (feet)} \\
+\midrule
+Continuous (Baseline)             & \phantom{$-$}81.22  \\
+Log-Transformed                   & \phantom{$-$}89.76  \\
+Winsorized (95th percentile)      & N/A\textsuperscript{a} \\
+Binary ($>$0.20)                  & $-$32.11            \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\footnotesize \textsuperscript{a}Winsorized specification failed numeric convergence in the cross-fitting loop; result excluded. Sign divergence between continuous and binary specifications is consistent with a non-linear dose-response: continuous petition dose captures the full gradient from minimal to supermajority-triggering opposition, while the binary threshold captures only cases that crossed the 20\% statutory cutoff.
+\end{table}

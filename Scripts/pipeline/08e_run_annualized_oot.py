@@ -34,7 +34,7 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 warnings.filterwarnings('ignore')
 
 ROOT       = Path(__file__).resolve().parents[2]
-PANEL_PATH = ROOT / "Scratch/Modeling/Causal_Inference/05_G_Computation_LSTMs/biweekly_panel.csv"
+PANEL_PATH = ROOT / "Data/Panel/biweekly_panel.csv"
 OUT_CSV    = ROOT / "artifacts/annualized_multihorizon_multicutoff_all_models.csv"
 
 FEATS = [

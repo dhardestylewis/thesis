@@ -1,0 +1,49 @@
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l l l c c c c}
+\toprule
+\textbf{Training Horizon} & \textbf{Test Year} & \textbf{Offset} & \textbf{Hurdle AUC} & \textbf{Propensity $R^2$} & \textbf{Height MAE} & \textbf{Delay MAE} \\
+\midrule
+All cases <= 2016 & 2017 & T+1 & 0.629 & 0.885 & 4.6 ft & 426.1 days \\
+All cases <= 2016 & 2018 & T+2 & 0.643 & 0.459 & 5.4 ft & 453.9 days \\
+All cases <= 2016 & 2019 & T+3 & 0.672 & 0.769 & 5.4 ft & 526.1 days \\
+All cases <= 2016 & 2020 & T+4 & 0.604 & -0.737 & 6.5 ft & 401.5 days \\
+All cases <= 2016 & 2021 & T+5 & 0.742 & -0.172 & 5.2 ft & 425.9 days \\
+All cases <= 2016 & 2022 & T+6 & 0.509 & 0.323 & 4.9 ft & 376.9 days \\
+All cases <= 2016 & 2023 & T+7 & 0.480 & 0.350 & 8.1 ft & 337.9 days \\
+All cases <= 2016 & 2024 & T+8 & 0.591 & 0.363 & 4.8 ft & 488.7 days \\
+All cases <= 2017 & 2018 & T+1 & 0.645 & 0.403 & 4.7 ft & 458.7 days \\
+All cases <= 2017 & 2019 & T+2 & 0.568 & 0.741 & 5.3 ft & 516.5 days \\
+All cases <= 2017 & 2020 & T+3 & 0.669 & -0.634 & 7.5 ft & 395.5 days \\
+All cases <= 2017 & 2021 & T+4 & 0.659 & -0.207 & 6.9 ft & 470.2 days \\
+All cases <= 2017 & 2022 & T+5 & 0.576 & -0.085 & 4.8 ft & 393.6 days \\
+All cases <= 2017 & 2023 & T+6 & 0.371 & 0.387 & 7.4 ft & 408.9 days \\
+All cases <= 2017 & 2024 & T+7 & 0.494 & 0.303 & 4.6 ft & 516.2 days \\
+All cases <= 2018 & 2019 & T+1 & 0.648 & 0.793 & 5.8 ft & 494.2 days \\
+All cases <= 2018 & 2020 & T+2 & 0.645 & -0.122 & 8.0 ft & 363.8 days \\
+All cases <= 2018 & 2021 & T+3 & 0.762 & 0.055 & 6.3 ft & 473.7 days \\
+All cases <= 2018 & 2022 & T+4 & 0.547 & 0.083 & 4.3 ft & 365.3 days \\
+All cases <= 2018 & 2023 & T+5 & 0.564 & 0.462 & 7.0 ft & 352.2 days \\
+All cases <= 2018 & 2024 & T+6 & 0.583 & 0.606 & 4.7 ft & 452.4 days \\
+All cases <= 2019 & 2020 & T+1 & 0.665 & -0.256 & 5.2 ft & 318.5 days \\
+All cases <= 2019 & 2021 & T+2 & 0.766 & -0.015 & 5.6 ft & 442.1 days \\
+All cases <= 2019 & 2022 & T+3 & 0.474 & -0.048 & 3.9 ft & 389.6 days \\
+All cases <= 2019 & 2023 & T+4 & 0.594 & 0.318 & 7.0 ft & 329.2 days \\
+All cases <= 2019 & 2024 & T+5 & 0.568 & 0.552 & 6.1 ft & 462.2 days \\
+All cases <= 2020 & 2021 & T+1 & 0.703 & 0.211 & 5.4 ft & 351.8 days \\
+All cases <= 2020 & 2022 & T+2 & 0.567 & 0.090 & 4.5 ft & 368.4 days \\
+All cases <= 2020 & 2023 & T+3 & 0.376 & 0.422 & 6.8 ft & 353.6 days \\
+All cases <= 2020 & 2024 & T+4 & 0.463 & 0.427 & 6.5 ft & 499.8 days \\
+All cases <= 2021 & 2022 & T+1 & 0.510 & 0.204 & 4.8 ft & 346.7 days \\
+All cases <= 2021 & 2023 & T+2 & 0.430 & 0.178 & 7.6 ft & 323.5 days \\
+All cases <= 2021 & 2024 & T+3 & 0.565 & 0.530 & 8.4 ft & 481.9 days \\
+All cases <= 2022 & 2023 & T+1 & 0.353 & 0.305 & 6.6 ft & 300.9 days \\
+All cases <= 2022 & 2024 & T+2 & 0.441 & 0.536 & 4.3 ft & 413.9 days \\
+All cases <= 2023 & 2024 & T+1 & 0.455 & 0.638 & 6.9 ft & 312.7 days \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Temporal Transportability Matrix for the DML Causal Joint Model. Demonstrates predictive degradation across $T+N$ temporal holdout sets.}
+\label{tab:dml_transportability}
+\end{table}

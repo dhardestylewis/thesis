@@ -38,17 +38,20 @@ try:
             protesters.plot(ax=ax, facecolor='#99CCFF', edgecolor='blue', linewidth=1.5, hatch='//', label='Valid Protesting Parcel')
             
         import matplotlib.patches as mpatches
-        handles = [
-            mpatches.Patch(facecolor='#99CCFF', edgecolor='blue', hatch='//', label='Valid Protesting Parcel (Area Overlap)'),
-            mpatches.Patch(facecolor='#EEEEEE', edgecolor='gray', label='Non-Protesting Parcel')
-        ]
-        plt.legend(handles=handles, loc='lower center', bbox_to_anchor=(0.5, -0.1), ncol=2, parse_math=False, fontsize=10)
+        handles = []
+        if not protesters.empty:
+            handles.append(mpatches.Patch(facecolor='#99CCFF', edgecolor='blue', hatch='//', label='Valid Protesting Parcel'))
+        handles.append(mpatches.Patch(facecolor='#EEEEEE', edgecolor='gray', label='Non-Protesting Parcel'))
+        
+        plt.legend(handles=handles, loc='lower center', bbox_to_anchor=(0.5, -0.1), ncol=len(handles), parse_math=False, fontsize=10)
         
         plt.title("Visualizing the statutory 200ft Protest Buffer\n(Empirical TCAD Parcel Boundaries for Case C14-2007-0131)", fontsize=14, fontweight='bold')
         ax.set_axis_off()
         plt.tight_layout()
         
-        out_path = r'c:\Users\dhl\data\thesis\thesis\Thesis_Draft\Draft_v1\Figures\ch2\fig_ch2_01_waller_buffer_map.png'
+        out_path = r'c:\Users\dhl\data\thesis\thesis\Figures\ch2\fig_ch2_01_waller_buffer_map.png'
+        import os
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
         plt.savefig(out_path, dpi=300, bbox_inches='tight')
         print(f"Map updated and saved to {out_path}")
 

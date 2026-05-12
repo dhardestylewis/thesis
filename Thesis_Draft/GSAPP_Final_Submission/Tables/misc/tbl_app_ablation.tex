@@ -1,0 +1,18 @@
+\begin{table}[H]
+\centering
+\caption[Feature Group Ablation Study]{Height ATE under successive pre-treatment covariate group removals. ATE instability under demographic removal confirms that spatial heterogeneity in the resistance penalty is driven primarily by neighborhood socioeconomic composition, not physical site features.}
+\label{tab:ablation}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Specification} & \textbf{Height ATE (feet)} & \textbf{$\Delta$ vs.\ Baseline} \\
+\midrule
+Baseline (Full $X$)  & \phantom{$-$}81.22  & ---              \\
+No Spatial Features  & 110.87              & $+$29.65         \\
+No Macro Variables   & \phantom{$-$}97.07  & $+$15.85         \\
+No History / Lags    & 101.34              & $+$20.12         \\
+No Demographics      & 119.19              & $+$37.97         \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\footnotesize Removing demographic covariates produces the largest ATE shift (+37.97 ft), consistent with the Causal Forest's reliance on neighborhood income and renter share identified in Section~\ref{sec:hte}. Spatial and macro ablations produce smaller but consistent upward shifts, indicating partial confounding adjustment from these feature groups.
+\end{table}

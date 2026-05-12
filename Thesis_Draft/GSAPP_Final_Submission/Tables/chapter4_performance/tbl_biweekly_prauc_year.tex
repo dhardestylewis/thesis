@@ -1,0 +1,22 @@
+
+
+The corresponding metrics are detailed in \autoref{tab:biweekly_drift_prauc}.
+
+\begin{table}[H]
+\centering
+\caption[Biweekly Panel Predictive Drift: PR-AUC]{Biweekly Panel Temporal Predictive Drift: PR-AUC decay by test year (averaged across all forecasting horizons).}
+\label{tab:biweekly_drift_prauc}
+\resizebox{0.9\textwidth}{!}{%
+\begin{tabular}{l c c c c c c c}
+\toprule
+\textbf{Model} & 2018 & 2019 & 2020 & 2021 & 2022 & 2023 & 2024 \\
+\midrule
+CatBoost & 0.388 & 0.368 & 0.401 & 0.538 & 0.493 & 0.538 & 0.422 \\
+LogisticL1 & 0.191 & 0.215 & 0.354 & 0.484 & 0.258 & 0.264 & 0.309 \\
+LogisticL2 & 0.195 & 0.214 & 0.355 & 0.483 & 0.255 & 0.268 & 0.310 \\
+MLP & 0.322 & 0.374 & 0.379 & 0.437 & 0.336 & 0.410 & 0.452 \\
+RandomForest & 0.281 & 0.245 & 0.299 & 0.515 & 0.242 & 0.475 & 0.449 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

@@ -7,10 +7,10 @@ As the United States experiences a localized housing affordability crisis, under
 To rigorously evaluate this friction without confounding mechanisms, this research functions as a consolidated four-track program. The empirical architecture explicitly freezes the primary analytical paths before modeling, preventing specification searching. Instead of predicting generic NIMBYism, the evaluation focuses on:
 
 \begin{itemize}
-    \item \textbf{Primary Predictive Question:} At the time a zoning case is filed, what is the probability that it will face \textit{organized opposition} before final City Council action?
-    \item \textbf{Primary Causal Question 1:} What is the causal friction effect of crossing the 20\% valid protest threshold on council dissent and approval behaviors under the pre-H.B. 24 regime?
-    \item \textbf{Primary Causal Question 2:} How did the distinct implementation timelines of HOME Phase 1, Phase 2, and H.B. 24 fundamentally change opposition and voting dynamics for legally eligible cases?
-    \item \textbf{Governance Question:} Can these early-warning predictive models be utilized for proactive municipal outreach without inadvertently creating a displacement-targeting tool for developers?
+ \item \textbf{Primary Predictive Question:} At the time a zoning case is filed, what is the probability that it will face \textit{organized opposition} before final City Council action?
+ \item \textbf{Primary Causal Question 1:} What is the causal friction effect of crossing the 20\% valid protest threshold on council dissent and approval behaviors under the pre-H.B. 24 regime?
+ \item \textbf{Primary Causal Question 2:} How did the distinct implementation timelines of HOME Phase 1, Phase 2, and H.B. 24 fundamentally change opposition and voting dynamics for legally eligible cases?
+ \item \textbf{Governance Question:} Can these early-warning predictive models be utilized for proactive municipal outreach without inadvertently creating a displacement-targeting tool for developers?
 \end{itemize}
 
 Austin operates under a council-manager system. A pro-housing majority elected in 2022 ushered in sweeping 2024 legislative reforms: expanding the HOME Act and eliminating parking requirements citywide \cite{axios2023parking}. Simultaneously, the Texas Legislature's passage of House Bill (HB) 24, effective September 1, 2025, restructures protest petition mechanics under Texas Local Government Code \S~211.0061 \cite{hb24_2025}. This dual evolution motivates our event-study models.
@@ -32,11 +32,11 @@ Instead of relying on an unstructured cross-sectional panel that permits implici
 \subsection*{3.1 Analytical Panel Structure}
 The core tables comprising the central relational warehouse include:
 \begin{enumerate}
-    \item \textbf{case\_master:} Case ID, nested dates (filing, notice, petition deadline, planning commission, council, withdrawal), requested zoning changes, unit limits, target FAR, status disposition.
-    \item \textbf{site\_geometry:} Extracted parcel IDs, geometries, exact acreage, frontage variables, multi-buffer layers (200, 500, 1000 ft), and overlapping administrative boundaries (Council Districts).
-    \item \textbf{parcel\_buffer\_snapshot:} Annually-indexed TCAD variables specifically derived for parcels within buffer thresholds (land value, structure age, homestead exemption distributions, owner-occupancy shares).
-    \item \textbf{neighborhood\_snapshot:} Tract/Block Group ACS figures explicitly constrained to their historical 5-year public release dates. Includes rent burdens, tenure splits, demographic compositions, and vulnerability overlays.
-    \item \textbf{policy\_calendar:} Tracks the precise 2022 council regime change; the HOME Phase 1 (Feb 5, 2024), and HOME Phase 2 (August 16, 2024) application-acceptance start dates; and the H.B. 24 Sept 1, 2025 effective date.
+ \item \textbf{case\_master:} Case ID, nested dates (filing, notice, petition deadline, planning commission, council, withdrawal), requested zoning changes, unit limits, target FAR, status disposition.
+ \item \textbf{site\_geometry:} Extracted parcel IDs, geometries, exact acreage, frontage variables, multi-buffer layers (200, 500, 1000 ft), and overlapping administrative boundaries (Council Districts).
+ \item \textbf{parcel\_buffer\_snapshot:} Annually-indexed TCAD variables specifically derived for parcels within buffer thresholds (land value, structure age, homestead exemption distributions, owner-occupancy shares).
+ \item \textbf{neighborhood\_snapshot:} Tract/Block Group ACS figures explicitly constrained to their historical 5-year public release dates. Includes rent burdens, tenure splits, demographic compositions, and vulnerability overlays.
+ \item \textbf{policy\_calendar:} Tracks the precise 2022 council regime change; the HOME Phase 1 (Feb 5, 2024), and HOME Phase 2 (August 16, 2024) application-acceptance start dates; and the H.B. 24 Sept 1, 2025 effective date.
 \end{enumerate}
 
 Additional supportive tables log \textbf{meeting\_events} (staff/commission recommendations), \textbf{speech\_comments} (speaker stance and segmented text), \textbf{petition\_records} (validity, signature counts), and \textbf{vote\_records} (case × councilmember dynamics). A persistent \textbf{audit\_log} continuously verifies matching QA and geographical fidelity.
@@ -44,9 +44,9 @@ Additional supportive tables log \textbf{meeting\_events} (staff/commission reco
 \subsection*{3.2 The Primary Outcome and Censoring Directives}
 The \textbf{primary predictive outcome} formally identifies "Organized Opposition before final council action." This composite outcome resolves as $y=1$ if any of the following events occur:
 \begin{itemize}
-    \item A valid protest petition is formally filed, or
-    \item At least three distinct opposing speakers/comments are historically recorded prior to the final council disposition, or
-    \item Official opposition comments exceed supporting comments by a prespecified ratio.
+ \item A valid protest petition is formally filed, or
+ \item At least three distinct opposing speakers/comments are historically recorded prior to the final council disposition, or
+ \item Official opposition comments exceed supporting comments by a prespecified ratio.
 \end{itemize}
 This captures authentic mobilized friction efficiently without falling subject to the narrow constraints of statutory petitions alone. Auxiliary tasks (y1-y6) independently track specific sub-components like petition formalization, continuous opposition intensity scores, and explicit council dissenting-votes. 
 
@@ -62,8 +62,8 @@ To prevent predictive targeting algorithms from inadvertently leveraging highly 
 \subsection*{3.4 Formalizing the Text Pipeline}
 Deep NLP embeddings are methodologically inappropriate to utilize if their source temporal origins (such as council transcripts) post-date the targeted prediction date. Correspondingly, text signals are only permitted late within the analytical lifecycle. Utilizing stratified random seed sampling and explicit active learning loops across 2000 speech vectors and 500 written comments, the semantic architecture bypasses generic opaque sentence-embedding models in favor of two explicit decoding layers:
 \begin{itemize}
-    \item \textbf{Layer 1: Stance Classification.} Assigns Support, Oppose, or Neutral polarity markers to extracted statements.
-    \item \textbf{Layer 2: Frame Classification.} Executes multi-label probabilistic clustering over dominant thematic arguments (Traffic extraction, Infrastructure Capacity, Displacement Vulnerability, Neighborhood Character, and Procedural Fairness).
+ \item \textbf{Layer 1: Stance Classification.} Assigns Support, Oppose, or Neutral polarity markers to extracted statements.
+ \item \textbf{Layer 2: Frame Classification.} Executes multi-label probabilistic clustering over dominant thematic arguments (Traffic extraction, Infrastructure Capacity, Displacement Vulnerability, Neighborhood Character, and Procedural Fairness).
 \end{itemize}
 
 \section*{4. Methodology: A 4-Track Research Program}
@@ -71,10 +71,10 @@ Deep NLP embeddings are methodologically inappropriate to utilize if their sourc
 \subsection*{4.1 Track 1: Multi-Horizon Opposition Forecasting (Ex-Ante)}
 Because timeline reconstruction determines authentic algorithmic predictive power, Track 1 executes models across four distinctly constrained forecast horizons:
 \begin{enumerate}
-    \item \textbf{H0 (Filing Model):} Comprises exclusively what was fully known on the literal case application date (true ex ante).
-    \item \textbf{H1 (Notice Model):} Integrates H0 features alongside municipal staff notices, initial neighborhood written objections, and early drafted petition text, if submitted.
-    \item \textbf{H2 (Pre-Commission Model):} Combines H1 inputs with the completed planning commission packet recommendations.
-    \item \textbf{H3 (Pre-Council Model):} Adds planning commission outcomes and subsequent hearing testimony. At this maximal timeframe, target analysis is restricted strictly to evaluating pre-final-vote dynamics, heavily utilizing Layer 2 NLP features.
+ \item \textbf{H0 (Filing Model):} Comprises exclusively what was fully known on the literal case application date (true ex ante).
+ \item \textbf{H1 (Notice Model):} Integrates H0 features alongside municipal staff notices, initial neighborhood written objections, and early drafted petition text, if submitted.
+ \item \textbf{H2 (Pre-Commission Model):} Combines H1 inputs with the completed planning commission packet recommendations.
+ \item \textbf{H3 (Pre-Council Model):} Adds planning commission outcomes and subsequent hearing testimony. At this maximal timeframe, target analysis is restricted strictly to evaluating pre-final-vote dynamics, heavily utilizing Layer 2 NLP features.
 \end{enumerate}
 
 Given substantial negative class-imbalance realities, standard ROC-AUC metrics generate artificially inflated confidence metrics. \textbf{Precision-Recall AUC (PR-AUC)} is the singular leading discrimination metric. Sequential algorithmic modeling advances monotonically: Baseline hierarchical logistics transition into optimized Boosted Trees (LightGBM/CatBoost), capped by robust regularization methods including late-fusion MLP configurations and Variance Risk Extrapolation (V-REx) architectures enforcing invariant bounds across spatial boundaries. Candidate model selection systematically mandates validation PR-AUC maximization precisely subjected to strict calibration slope restraints bounded globally between 0.9 and 1.1.
@@ -85,7 +85,7 @@ To systematically identify failure modes mirroring eventual live-operations, out
 Moving beyond OLS correlation to address fundamental causality, the rigid Texas 20\% statutory threshold logic regulating protested neighborhood plans is utilized to deploy a definitive continuous causal model. Recovering the explicitly continuous percentage of valid signed-area share logged across internal case documentation allows for a granular Regression Discontinuity (RD) design explicitly clustered around the pre-H.B. 24 trigger threshold. Employing localized bandwidth specifications around the 20\% line strictly insulates the formal causal impact valid protest statuses inflict exclusively upon specific timeline delays and discrete council voting structures without confounding surrounding background outrage levels. (Alternatively, Double Machine Learning/DML estimations with cross-fitting are triggered if specific dimensional extraction proves incomplete).
 
 \subsection*{4.3 Track 3: Causal Study 2 -- Policy Shocks (Event Studies)}
-To evaluate municipal up-zoning dynamics, coarse 'post-policy' dummy variables are substituted for modern continuous dynamic estimation grids targeting specific event windows explicitly via standard Callaway-Sant'Anna Average Treatment Effect estimators \cite{callaway2021difference}.  HOME Phase 1 and Phase 2 constitute independent treatments mathematically keyed precisely against valid application acceptance starts. The statewide preemption framework of H.B.24 incorporates corresponding explicit indicator coding evaluating exclusively parcels fulfilling legally-derived residential density applicability restrictions prior to staggered rollouts.
+To evaluate municipal up-zoning dynamics, coarse 'post-policy' dummy variables are substituted for modern continuous dynamic estimation grids targeting specific event windows explicitly via standard Callaway-Sant'Anna Average Treatment Effect estimators \cite{callaway2021difference}. HOME Phase 1 and Phase 2 constitute independent treatments mathematically keyed precisely against valid application acceptance starts. The statewide preemption framework of H.B.24 incorporates corresponding explicit indicator coding evaluating exclusively parcels fulfilling legally-derived residential density applicability restrictions prior to staggered rollouts.
 
 \subsection*{4.4 Track 4: Red-Team Governance Exercise}
 The qualitative analysis explicitly transitions from rhetorical documentation toward strict governance testing designed to proactively evaluate tool deployment failure mechanisms against civic legitimacy structures. Executing focused semi-structured scenario interfaces involving public neighborhood planning staff, affordability developers, market analysts, and housing-equity officials validates how algorithm operational access structures should be regulated. Key focal objectives analyze implicit institutional exploitation parameters mapping whether revealing algorithm output logic precipitates internal institutional trust or incites active speculative capital acceleration explicitly weaponizing these vulnerability maps against established disadvantaged neighborhoods.

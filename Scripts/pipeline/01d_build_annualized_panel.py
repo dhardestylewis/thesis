@@ -38,14 +38,14 @@ def main():
     # ── 3. Hydrate Temporal Target Variables ─────────────────────────────────
     print("3. Hydrating Target Variables (Filing Events)...")
     z = pd.read_csv(ZONING_CSV, low_memory=False)
-    z["App_Date"] = pd.to_datetime(z["App_Date"], errors="coerce")
-    z = z[z["App_Date"].notna()].copy()
-    z["filing_year"] = z["App_Date"].dt.year
+    z["application_start_date"] = pd.to_datetime(z["application_start_date"], errors="coerce")
+    z = z[z["application_start_date"].notna()].copy()
+    z["filing_year"] = z["application_start_date"].dt.year
     z["parcel_id_10"] = z["parcel_id_10"].map(safe_pid)
     
     # Create an event flag per parcel per year
     filings = z.groupby(["parcel_id_10", "filing_year"]).agg(
-        case_count=("App_Date", "size"),
+        case_count=("application_start_date", "size"),
         Valid_Petition_Pct=("Valid_Petition_Pct", "max")
     ).reset_index()
     filings["is_filed_this_year"] = 1

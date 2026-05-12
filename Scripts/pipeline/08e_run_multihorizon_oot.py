@@ -46,7 +46,7 @@ if os.environ.get("AWS_EXECUTION") == "1":
     PANEL_PATH = ROOT / "biweekly_panel.csv"
 else:
     ROOT = Path(__file__).resolve().parents[2]
-    PANEL_PATH = ROOT / "Scratch/Modeling/Causal_Inference/05_G_Computation_LSTMs/biweekly_panel.csv"
+    PANEL_PATH = ROOT / "Data/Panel/biweekly_panel.csv"
 
 OUT_CSV = ROOT / "artifacts/multihorizon_multicutoff_all_models.csv"
 

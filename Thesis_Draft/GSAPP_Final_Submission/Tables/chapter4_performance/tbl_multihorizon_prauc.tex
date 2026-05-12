@@ -1,0 +1,18 @@
+\begin{table}[H]
+\centering
+\caption[Multi-Horizon Predictive Drift: PR-AUC]{Multi-Horizon Predictive Drift: PR-AUC by Algorithm across projection windows. Evaluated on the fully hydrated biweekly panel ($N=356,000$).}
+\label{tab:multihorizon_pr_auc}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l c c c c c}
+\toprule
+\textbf{Model} & \textbf{14 Days} & \textbf{3 Months} & \textbf{6 Months} & \textbf{1 Year} & \textbf{2 Years} \\
+\midrule
+CatBoost & 0.375 & 0.314 & 0.430 & 0.528 & 0.600 \\
+LogisticL2 & 0.096 & 0.191 & 0.304 & 0.406 & 0.489 \\
+LogisticL1 & 0.096 & 0.188 & 0.305 & 0.405 & 0.489 \\
+MLP & 0.358 & 0.242 & 0.355 & 0.419 & 0.563 \\
+RandomForest & 0.267 & 0.242 & 0.338 & 0.446 & 0.497 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
