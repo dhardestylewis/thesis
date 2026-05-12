@@ -988,8 +988,8 @@ Figure~\ref{fig:threshold_sensitivity} visualizes the performance trajectory of 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.88\textwidth]{exhibits/fig_shap_beeswarm_H0_Full.pdf}
-    \caption[Feature Contribution Decomposition for the Filing-Date Model]{Feature contribution decomposition for the filing-date opposition model. Each point is a case-level contribution for one predictor; horizontal position gives the signed effect on the model score and vertical density shows the distribution of contributions across cases. Because correlated predictors can exchange attribution weight, this exhibit is descriptive support for within-model behavior rather than a stand-alone substantive ranking of stable feature importance.}
+    \includegraphics[width=0.88\textwidth]{exhibits/fig_ch4_14_forecasting_interaction_shap.pdf}
+    \caption[Feature Contribution Decomposition for the Filing-Date Model]{Feature contribution decomposition for the filing-date opposition model using Interaction TreeSHAP (main effects). Each point is a case-level contribution for one predictor; horizontal position gives the signed effect on the model score and vertical density shows the distribution of contributions across cases. Main effects are extracted from the interaction value diagonal, separating each feature's direct contribution from contingent interaction effects with other predictors. Because correlated predictors can exchange attribution weight, this exhibit is descriptive support for within-model behavior rather than a stand-alone substantive ranking of stable feature importance.}
     \label{fig:shap_beeswarm}
 \end{figure}
 
