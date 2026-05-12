@@ -1,12 +1,3 @@
-"""
-08h_generate_citywide_causal_surface.py
-
-Trains the Causal Forest on the 3,416 historical zoning cases,
-interpolates spatial demographics to all 300,000+ Austin parcels,
-and runs a simulated inference for the entire city.
-Outputs a FlatGeobuf file for ultra-fast WebGL rendering.
-"""
-
 import pandas as pd
 import numpy as np
 import warnings
@@ -31,9 +22,7 @@ except ImportError:
 
 ROOT = Path(r"c:\Users\dhl\data\Thesis\thesis")
 DOSE_THRESHOLD = 0.20
-SIMULATED_HEIGHT = 0.0
 
-# ── 1. Load Historical Data & Train Model ──────────────────────────────────
 print("Loading historical panel...", flush=True)
 panel_path = ROOT / "Data/Panel/biweekly_panel_patched.csv"
 if not panel_path.exists():
@@ -71,7 +60,6 @@ cs = df.groupby('case_number').agg({
 
 mask_withdrawn = cs['Delta_Requested_Height'].notna() & cs['Delta_Approved_Height'].isna()
 cs.loc[mask_withdrawn, 'Delta_Approved_Height'] = 0
-
 cs = pd.merge(cs, zoning_dates, on='case_number', how='left')
 cs = pd.merge(cs, status_df[['case_number', 'detailed_status']], on='case_number', how='left')
 
@@ -98,9 +86,6 @@ confounders = [
     'median_household_income', 'race_white', 'renter_share',
     'knn_petition_rate_1km', 'dist_petition_rate_lag1'
 ]
-
-# Note: Mediators are purged to satisfy the Conditional Independence Assumption (CIA).
-# We exclude signer distances and protester embeddings from the conditioning set.
 
 cs = cs.dropna(subset=confounders + ['Delta_Approved_Height', 'Height_Attrition', 'petition_dose', 'days_to_resolution', 'latitude', 'longitude'])
 
@@ -130,30 +115,22 @@ cf_withd = CausalForestDML(
 cf_joint.fit(Y_surv_joint, D_bin_surv, X=X_surv)
 cf_withd.fit(Y_withd, D_bin, X=X)
 
-# ── 2. Train Spatial KNN Interpolator ──────────────────────────────────────
 print("Training KNN Demographic Interpolator...", flush=True)
-# Predict [income, race, renter, knn_pet, dist_pet] from [lat, lon]
 knn_X = cs[['latitude', 'longitude']].values
 knn_targets = ['median_household_income', 'race_white', 'renter_share', 'knn_petition_rate_1km', 'dist_petition_rate_lag1']
 knn_Y = cs[knn_targets].values
 knn = KNeighborsRegressor(n_neighbors=5, weights='distance')
 knn.fit(knn_X, knn_Y)
 
-# ── 3. Load 300k Parcels & Interpolate ─────────────────────────────────────
 print("Loading 300k+ Land Database Parcels...", flush=True)
 ldb_path = ROOT / "Data/CoA_Open_Data/Land_Database_2021.geojson"
 gdf = gpd.read_file(ldb_path)
-
-print(f"Loaded {len(gdf)} parcels. Converting CRS...", flush=True)
 if gdf.crs and gdf.crs != "EPSG:4326":
     gdf = gdf.to_crs("EPSG:4326")
 
-print("Calculating parcel centroids...", flush=True)
 centroids = gdf.geometry.centroid
 gdf['latitude'] = centroids.y
 gdf['longitude'] = centroids.x
-
-# Drop parcels with invalid geometries/centroids
 gdf = gdf.dropna(subset=['latitude', 'longitude'])
 
 print("Interpolating demographics for all parcels...", flush=True)
@@ -161,50 +138,68 @@ demo_preds = knn.predict(gdf[['latitude', 'longitude']].values)
 for idx, col in enumerate(knn_targets):
     gdf[col] = demo_preds[:, idx]
 
-# ── 4. Build Synthetic Features for Inference ──────────────────────────────
-print("Building synthetic X matrix for inference...", flush=True)
-gdf['Delta_Requested_Height'] = SIMULATED_HEIGHT
-gdf['cumulative_min_signer_dist'] = 0.0
-gdf['cumulative_signers_outside_200ft'] = 0.0
-gdf['cumulative_protester_embed_dim1'] = 0.0
-gdf['cumulative_protester_embed_dim2'] = 0.0
-gdf['cumulative_petition_attempted'] = 0.0
-gdf['cumulative_mobilization_failure'] = 0.0
-
-X_city = gdf[confounders].values
-
-# ── 5. Run City-Wide Inference ─────────────────────────────────────────────
-print("Running city-wide Causal Forest inference...", flush=True)
-
-# Chunk the inference to avoid any massive memory spikes, though 300k is usually fine
-chunk_size = 50000
-delay_preds = []
-height_preds = []
-withd_preds = []
-
-for i in range(0, len(X_city), chunk_size):
-    print(f"  Inference chunk {i} to {i + chunk_size}...")
-    X_chunk = X_city[i:i+chunk_size]
-    cate_multi = cf_joint.effect(X_chunk)
-    cate_w = cf_withd.effect(X_chunk)
+def simulate_scenario(gdf, height_delta):
+    print(f"Simulating +{height_delta} ft scenario...", flush=True)
+    gdf['Delta_Requested_Height'] = height_delta
+    X_city = gdf[confounders].values
     
-    height_preds.append(cate_multi[:, 0])
-    delay_preds.append(cate_multi[:, 1])
-    withd_preds.append(cate_w)
+    chunk_size = 50000
+    delay_preds = []
+    withd_preds = []
+    
+    for i in range(0, len(X_city), chunk_size):
+        X_chunk = X_city[i:i+chunk_size]
+        cate_multi = cf_joint.effect(X_chunk)
+        cate_w = cf_withd.effect(X_chunk)
+        delay_preds.append(cate_multi[:, 1])
+        withd_preds.append(cate_w)
+        
+    delay = np.clip(np.concatenate(delay_preds), 0, 3650)
+    withd = np.clip(np.concatenate(withd_preds), 0.0, 1.0)
+    return delay, withd
 
-gdf['cate_height'] = np.clip(np.concatenate(height_preds), -500, 1500)
-gdf['cate_delay']  = np.clip(np.concatenate(delay_preds), -365, 3650)
-gdf['cate_withd']  = np.clip(np.concatenate(withd_preds), -1.0, 1.0)
-gdf['is_dead'] = (gdf['cate_withd'] > 0.10).astype(int)
+# SCENARIOS
+scenarios = [
+    (0.0, "Use-Change (+0 ft)"),
+    (25.0, "Missing Middle (+25 ft)"),
+    (55.0, "Transit Corridor (+55 ft)")
+]
 
-# Clean up output GeoDataFrame to keep it tiny and fast
-cols_to_keep = ['prop_id', 'geometry', 'cate_height', 'cate_delay', 'cate_withd', 'is_dead']
-# Keep only necessary columns
-out_gdf = gdf[[c for c in cols_to_keep if c in gdf.columns]]
+results = []
+for h, label in scenarios:
+    delay, withd = simulate_scenario(gdf, h)
+    results.append({
+        'Scenario': label,
+        'Delay Mean': np.mean(delay),
+        'Delay Median': np.median(delay),
+        'Hurdle Mean': np.mean(withd) * 100,
+        'Hurdle Median': np.median(withd) * 100
+    })
 
-# ── 6. Export FlatGeobuf ───────────────────────────────────────────────────
-out_fgb = ROOT / "Data/Zoning_Cases/austin_causal_surface.fgb"
-print(f"Exporting to FlatGeobuf: {out_fgb}...", flush=True)
-out_gdf.to_file(out_fgb, driver='FlatGeobuf')
+res_df = pd.DataFrame(results)
 
-print("Pipeline completed successfully!", flush=True)
+latex_code = f"""\\begin{{table}}[H]
+\\centering
+\\caption[Citywide Simulated Resistance Penalties]{{\\textbf{{Citywide Simulated Resistance Penalties by Planning Scenario.}} Expected processing delay penalty and hurdle risk (probability of petition-induced withdrawal) if subjected to a 20\\% statutory neighborhood petition, simulated across all $N={len(gdf):,}$ addressable Austin parcels. The scenarios represent common entitlement requests: a strict use-change with no physical expansion (+0 ft), a "missing middle" medium-density upzone (+25 ft), and a mid-rise transit corridor rezoning (+55 ft).}}
+\\label{{tab:citywide_simulation}}
+\\begin{{tabular}}{{l cc cc}}
+\\toprule
+& \\multicolumn{{2}}{{c}}{{\\textbf{{Delay Penalty (Days)}}}} & \\multicolumn{{2}}{{c}}{{\\textbf{{Hurdle Risk (\\%)}}}} \\\\
+\\cmidrule(lr){{2-3}} \\cmidrule(lr){{4-5}}
+\\textbf{{Scenario}} & \\textbf{{Mean}} & \\textbf{{Median}} & \\textbf{{Mean}} & \\textbf{{Median}} \\\\
+\\midrule
+{res_df.iloc[0]['Scenario']} & {res_df.iloc[0]['Delay Mean']:.0f} & {res_df.iloc[0]['Delay Median']:.0f} & {res_df.iloc[0]['Hurdle Mean']:.1f}\\% & {res_df.iloc[0]['Hurdle Median']:.1f}\\% \\\\
+{res_df.iloc[1]['Scenario']} & {res_df.iloc[1]['Delay Mean']:.0f} & {res_df.iloc[1]['Delay Median']:.0f} & {res_df.iloc[1]['Hurdle Mean']:.1f}\\% & {res_df.iloc[1]['Hurdle Median']:.1f}\\% \\\\
+{res_df.iloc[2]['Scenario']} & {res_df.iloc[2]['Delay Mean']:.0f} & {res_df.iloc[2]['Delay Median']:.0f} & {res_df.iloc[2]['Hurdle Mean']:.1f}\\% & {res_df.iloc[2]['Hurdle Median']:.1f}\\% \\\\
+\\bottomrule
+\\multicolumn{{5}}{{l}}{{\\footnotesize Generated via continuous spatial causal inference across all municipal parcels.}}\\\\
+\\end{{tabular}}
+\\end{{table}}
+"""
+
+OUT_TEX = ROOT / "Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_01b_citywide_stats.tex"
+OUT_TEX.parent.mkdir(parents=True, exist_ok=True)
+with open(OUT_TEX, "w") as f:
+    f.write(latex_code)
+
+print("Generated Citywide Scenarios Table!")

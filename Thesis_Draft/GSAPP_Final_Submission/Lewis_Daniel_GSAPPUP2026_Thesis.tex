@@ -1,4 +1,4 @@
-﻿\documentclass[11pt, letterpaper, oneside]{article}
+\documentclass[11pt, letterpaper, oneside]{article}
 \pdfminorversion=7
 \usepackage{float}
 \usepackage{array}
@@ -179,7 +179,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{archive/fig1_spatial_distribution.png}
-    \caption[Spatial Distribution of Zoning Cases, 2007--2024]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$). \textit{Generated: 2026-04-13}}
+    \caption[Spatial Distribution of Zoning Cases, 2007--2024]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$).}
     \label{fig:spatial_dist}
 \end{figure}
 
@@ -187,7 +187,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \centering
 \caption[Annual Distribution of Discretionary Zoning Cases, 2007--2024]{Annual Distribution of Discretionary Zoning Cases, 2007 to 2024}
 \captionsetup{type=table}
-\caption*{\footnotesize \textit{Note:} Updated: 2026-04-13}
+
 \label{tab:annual_counts}
 \begin{tabular}{lc|lc|lc}
 \toprule
@@ -208,7 +208,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\textwidth]{ch2/fig_ch2_01_waller_buffer_map.png}
-    \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer. \textit{Generated: 2026-04-13}}
+    \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer.}
     \label{fig:buffer_map}
 \end{figure}
 
@@ -238,7 +238,7 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
   \draw[arrow, dashed, red, thick] (protest) -- node[right, text=red] {\small May Require} node[right, yshift=-0.4cm, text=red] {\small Supermajority} (council);
 \end{tikzpicture}
 }
-\caption[Schematic of the Austin Zoning Process]{Austin municipal zoning process. The figure schematically shows where a qualifying protest petition could make a three-fourths council vote relevant under the study-period framework. A petition representing 20\% of the area of lots immediately adjoining the proposed change would require, under the applicable legal framework, a supermajority vote of the City Council for approval, though recusal or absence of council members can alter the exact number of affirmative votes needed.}
+\caption[Austin Municipal Zoning Process Diagram]{Austin municipal zoning process. A valid protest petition representing 20\% of the area of lots immediately adjoining the proposed change triggers a supermajority requirement at City Council.}
 \label{fig:flowchart}
 \end{figure}
 
@@ -329,18 +329,24 @@ The feature set is separated to prevent predictive models from leveraging sensit
 
 \noindent The following table illustrates a representative cross-section of the core analytic panel. Each row constitutes a unique discretionary zoning case, enriched with spatial network indicators (historical petition clustering), demographic variables (ACS), and property tax valuations (TCAD EARS) strictly observable before the initial filing date. These specific columns are highlighted because they ultimately emerge as the primary predictive drivers in the meta-attribution analysis.
 
-\vspace{1em}
-{\small
-\begin{verbatim}
-Case Number  Year Lag Petitions (1km) Median Income   Owner Share   Appraised Value 
-C14-2015-001 2015 3                   $85,000         62%           $450,000        
-C14-2015-002 2015 0                   $42,000         21%           $210,000        
-C14-2015-006 2015 7                   $112,000        85%           $890,000        
-C14-2016-009 2016 1                   $55,000         34%           $315,000        
-C14-2016-012 2016 4                   $95,000         71%           $620,000        
-\end{verbatim}
+\begin{table}[H]
+\centering
+\caption{Illustrative Cross-Section of the DML Panel}
+\label{tab:panel_illustration}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Case Number} & \textbf{Year} & \textbf{Lag Petitions (1km)} & \textbf{Median Income} & \textbf{Owner Share} & \textbf{Appraised Value} \\
+\midrule
+C14-2015-001 & 2015 & 3 & \$85,000  & 62\% & \$450,000 \\
+C14-2015-002 & 2015 & 0 & \$42,000  & 21\% & \$210,000 \\
+C14-2015-006 & 2015 & 7 & \$112,000 & 85\% & \$890,000 \\
+C14-2016-009 & 2016 & 1 & \$55,000  & 34\% & \$315,000 \\
+C14-2016-012 & 2016 & 4 & \$95,000  & 71\% & \$620,000 \\
+\bottomrule
+\end{tabular}%
 }
-
+\end{table}
 
 \subsection{Biweekly Panel Feature Engineering}
 \label{sec:biweekly_features}
@@ -532,7 +538,7 @@ where $\theta$ identifies the local average treatment effect under the maintaine
 \subsection{Cross-Sectional DML Panel Construction and Mediator Exclusion}
 \label{sec:dml_panel_construction}
 
-The DML causal estimation panel is constructed as a cross-sectional collapse of the biweekly longitudinal dataset (script \texttt{08g\_causal\_panel\_prep.py}), reducing the multi-period trajectory for each case to a single observation anchored to the last observed period prior to final disposition. This resolves the temporal structure of the biweekly panel into a format compatible with cross-sectional identification.
+The DML causal estimation panel is constructed as a cross-sectional collapse of the biweekly longitudinal dataset, reducing the multi-period trajectory for each case to a single observation anchored to the last observed period prior to final disposition. This resolves the temporal structure of the biweekly panel into a format compatible with cross-sectional identification.
 
 \textbf{Pre-Treatment Covariate Vector ($X_i$).} The conditioning set $X_i$ is strictly limited to variables determined prior to treatment realization. Specifically, $X_i$ includes: (i) \textit{project characteristics} --- requested height change ($\Delta$ height requested), parcel coordinates, and appraised value; (ii) \textit{ACS neighborhood demographics} --- median household income, racial composition (White, Black, Hispanic shares), renter share, rent burden, total population, and median age, matched to the census release available at the project filing date; (iii) \textit{historical petition environment} --- KNN-interpolated petition rate within 1~km at filing date and a one-period lagged spatial petition rate, capturing pre-existing neighborhood mobilization capacity; (iv) \textit{physical and environmental features} --- building age, fire hazard severity, slope degree, and Imagine Austin corridor designation; and (v) \textit{macroeconomic context} --- 30-year mortgage rate, Federal Funds Rate, and local unemployment rate at filing date.
 
@@ -575,11 +581,16 @@ The resulting estimates should be interpreted as the conditional association bet
 \subsection{Citywide Causal Surface Generation and Deployment}
 \label{sec:causal_surface}
 
-To translate case-level DML estimates into a spatially continuous policy instrument, the trained Causal Forest model is applied to all addressable parcels in Austin's municipal boundary (script \texttt{08h\_generate\_citywide\_causal\_surface.py}), producing a citywide causal surface across approximately 300,000 parcels. This surface is the empirical foundation for the live friction visualization deployed at \href{https://www.homecastr.com/friction-viz.html}{\texttt{homecastr.com/friction-viz.html}}.
+To translate case-level DML estimates into a spatially continuous policy instrument, the trained Causal Forest model is applied to all addressable parcels in Austin's municipal boundary, producing a citywide causal surface across approximately 300,000 parcels. This surface is the empirical foundation for the live friction visualization deployed at \href{https://www.homecastr.com/friction-viz.html}{\texttt{homecastr.com/friction-viz.html}}.
 
 For each parcel, the causal surface assigns: (i) the predicted conditional ATE $\hat{\tau}(x_i)$ --- the estimated effect of a unit increase in petition intensity on negotiated height attrition at that parcel's covariate profile; (ii) 95\% confidence interval bounds from the Causal Forest's honest variance estimator; and (iii) the hurdle probability from the complementary Hurdle model, identifying parcels where opposition risk is severe enough that projects are unlikely to reach the outcome stage. Parcel-level covariates are assembled using the pre-treatment vector $X_i$ described in Section~\ref{sec:dml_panel_construction}, with demographic and historical petition features interpolated via KNN from the training panel.
 
-The resulting spatial artifact is exported as a FlatGeobuf binary (\texttt{austin\_causal\_surface.fgb}, 118.8~MB), synchronized to Cloudflare R2 (bucket \texttt{properlytic-raw-data/public/}), and rendered as a WebGL 3D height-extrusion map via MapLibre GL~JS. The API layer (\texttt{live\_friction\_api.py}) serves real-time parcel-level causal estimates from an EC2 \texttt{g4dn.xlarge} instance via a cached hypergrid for fast response. The deployment is automated via \texttt{Scripts/deploy\_friction\_api.sh}, which pulls the latest validated artifacts from R2 and restarts the API process on each release cycle.
+The resulting spatial artifact is exported as a continuous spatial binary, synchronized to a cloud storage environment, and rendered as a WebGL 3D height-extrusion map via MapLibre GL~JS. An application programming interface (API) layer serves real-time parcel-level causal estimates from an EC2 instance via a cached hypergrid for fast response. The deployment is automated via continuous integration pipelines, which pull the latest validated artifacts and restart the API process on each release cycle.
+
+Table~\ref{tab:citywide_simulation} outlines the expected resolution delay and hurdle risk generated by the model across all $300,000+$ addressable Austin parcels under three standardized planning scenarios. By parameterizing the simulation to reflect common physical entitlement requests (a 0-foot use-change, a 25-foot middle-density expansion, and a 55-foot transit corridor rezoning), we quantify the spatial distribution of petition-induced friction while strictly bounding the mathematical extrapolation of the model.
+
+\input{Tables/chapter5_attribution/tbl_ch5_01b_citywide_stats.tex}
+
 
 \subsection{Heterogeneous Treatment Effects}
 \label{sec:hte}
@@ -695,7 +706,7 @@ These constraints establish the overarching narrative of the predictive results:
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{exhibits/fig_pr_curves_updated.pdf}
+    \includegraphics[width=0.8\textwidth]{exhibits/fig_pr_curves_multihorizon.pdf}
     \caption[Filing-Date Precision-Recall Curves by Model Class]{Precision-recall curves for filing-date petition models from the pre-registered benchmark roster.}
     \label{fig:pr_curves}
 \end{figure}
@@ -780,7 +791,7 @@ Meta-attribution is the main transparency audit in this section. Figure~\ref{fig
 \vspace{1em}
 To explicitly quantify the divergence mapped in Figure~\ref{fig:meta_attribution_flagship}, Table~\ref{tab:archetypal_attribution} aggregates the raw clustered reliance weights into archetypal averages by architectural family. Tree ensembles allocate over 80\% of their predictive logic exclusively to socio-demographic contexts (Demographics, Housing Tenure, Income), practically ignoring physical parcel spatiality. Deep architectures heavily re-weight this attention, slashing demographic reliance and focusing intensely on physical and geographic attributes (Parcel Scale, Property Valuation, and Structure Age).
 
-Crucially, to prevent the model from memorizing parcel identity (e.g., exploiting high-cardinality exact physical floats such as an isolated $\$1,219,301$ market valuation as unique identification hashes), the unified 4-architecture benchmark discretizes continuous physical features using entropy-based binning ($min\_samples\_leaf=100$). Rather than relying on arbitrary quantiles (e.g., deciles) or theoretically fragile uniform-width rules (like the Freedman-Diaconis heuristic), this approach ensures that no resulting bin can ever contain fewer than 100 properties. Consequently, the continuous uniqueness of extreme outliers is prevented from being exploited, ensuring that all 4 baseline architectures are evaluated strictly on their ability to learn generalized, reproducible spatial concepts rather than discrete memorization boundaries.
+Crucially, to prevent the model from memorizing parcel identity (e.g., exploiting high-cardinality exact physical floats such as an isolated $\$1,219,301$ market valuation as unique identification hashes), the unified 4-architecture benchmark discretizes continuous physical features using entropy-based binning with a strict minimum-node-size threshold of 100 properties. Rather than relying on arbitrary quantiles (e.g., deciles) or theoretically fragile uniform-width rules (like the Freedman-Diaconis heuristic), this approach ensures that no resulting bin can ever contain fewer than 100 properties. Consequently, the continuous uniqueness of extreme outliers is prevented from being exploited, ensuring that all 4 baseline architectures are evaluated strictly on their ability to learn generalized, reproducible spatial concepts rather than discrete memorization boundaries.
 \input{Tables/chapter5_attribution/tbl_ch5_02_archetypal_attribution.tex}
 \vspace{1em}
 
@@ -1017,7 +1028,7 @@ Figure~\ref{fig:threshold_sensitivity} visualizes the performance trajectory of 
 \subsection{Referee Robustness Pack}
 \label{app:robustness_pack}
 
-\noindent Following the structured sensitivity framework recommended for causal machine learning submissions \citep{chernozhukov2018dml}, we report four orthogonal robustness checks targeting the failure modes most likely to generate referee skepticism: nuisance model dependence, seed sensitivity, treatment definition sensitivity, and covariate group omission. All results are generated by script \texttt{08r\_referee\_robustness\_pack.py} against the hardened DML panel described in Section~\ref{sec:dml_panel_construction}.
+\noindent Following the structured sensitivity framework recommended for causal machine learning submissions \citep{chernozhukov2018dml}, we report four orthogonal robustness checks targeting the failure modes most likely to generate referee skepticism: nuisance model dependence, seed sensitivity, treatment definition sensitivity, and covariate group omission. All results are generated via our evaluation pipeline against the hardened DML panel described in Section~\ref{sec:dml_panel_construction}.
 
 \subsubsection{Nuisance Model Sensitivity}
 

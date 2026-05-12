@@ -2,7 +2,7 @@
 % Sources: reporting/final_metrics_manifest.json (computed)
 % registries/metrics_manifest.json (golden/supplemental)
 % Computed values override golden where both are present.
-% PR-AUC CI: bootstrap on OOD test rows (src/models/evaluate_predictions.py).
+% PR-AUC CI: bootstrap on out-of-distribution test sets (Out-of-Distribution evaluation framework).
 % Layer C1 ECE: 10-bin ECE on calibrated scores; matches evaluation_results.json (horizon=filing).
 
 \newcommand{\metricACE}{0.007}
@@ -10,7 +10,7 @@
 \newcommand{\metricBaseHazardProb}{$\approx 2.5 \times 10^{-5}$}
 \newcommand{\metricBaseRate}{1.1\%}
 \newcommand{\metricBaseRateN}{175}
-\newcommand{\metricBaselineCases}{6783}
+\newcommand{\metricBaselineCases}{3931}
 \newcommand{\metricBaselineParcels}{135000}
 \newcommand{\metricBootstrapFiling}{0.718}
 \newcommand{\metricBootstrapFilingCI}{[0.48, 0.91]}

@@ -93,9 +93,9 @@ for y in years:
     interval_y = cf_joint.const_marginal_ate_interval(X_y)
     
     h_ate = ate_y[0]
-    h_ci  = interval_y[:, 0]
+    h_ci  = (interval_y[0][0], interval_y[1][0])
     d_ate = ate_y[1]
-    d_ci  = interval_y[:, 1]
+    d_ci  = (interval_y[0][1], interval_y[1][1])
     
     print(f"Year {int(y)}: Height ATE = {h_ate:.1f} ft [{h_ci[0]:.1f}, {h_ci[1]:.1f}] | "
           f"Log-Delay ATE = {d_ate:.2f} [{d_ci[0]:.2f}, {d_ci[1]:.2f}]")
