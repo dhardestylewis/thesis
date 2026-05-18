@@ -4,25 +4,25 @@
   "model_family": "CatBoost",
   "score_column": "y_score_calibrated",
   "ranking": {
-    "pr_auc": 0.6862236957889131,
+    "pr_auc": 0.6873100386399619,
     "top_decile_precision": 0.2542372881355932,
     "top_decile_lift": 9.88135593220339,
-    "pr_auc_ci_low": 0.46160470739460363,
-    "pr_auc_ci_high": 0.8894956429281371
+    "pr_auc_ci_low": 0.45037841639672305,
+    "pr_auc_ci_high": 0.9168123122994533
   },
   "calibration": {
-    "brier": 0.014558973601809806,
-    "ece": 0.019992601299390952,
-    "ace": 0.0020490642964548266,
-    "calibration_slope": 0.7940500878212113
+    "brier": 0.012513198410326465,
+    "ece": 0.012722655029417567,
+    "ace": 0.0007684931344966643,
+    "calibration_slope": 0.8324067671982595
   },
   "thresholded": {
-    "precision_at_0_30": 0.5263157894736842,
-    "recall_at_0_30": 0.6666666666666666,
-    "precision_at_0_50": 0.6,
-    "recall_at_0_50": 0.6
+    "precision_at_0_30": 0.5789473684210527,
+    "recall_at_0_30": 0.7333333333333333,
+    "precision_at_0_50": 0.6666666666666666,
+    "recall_at_0_50": 0.6666666666666666
   },
   "sample_size": 583,
   "positive_rate": 0.025728987993138937,
-  "generated_at": "2026-05-10T21:21:59.699179+00:00"
+  "generated_at": "2026-05-18T21:42:53.245669+00:00"
 }
