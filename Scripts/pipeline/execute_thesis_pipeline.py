@@ -80,7 +80,7 @@ def run_step(script_name, description, pbar, expected_duration):
         
     start = time.time()
     
-    process = subprocess.Popen(["python", "-u", str(script_path)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, encoding="utf-8")
+    process = subprocess.Popen(["python", "-u", str(script_path)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, encoding="utf-8", errors="replace")
     
     for line in iter(process.stdout.readline, ''):
         tqdm.write(line.strip('\n'))
