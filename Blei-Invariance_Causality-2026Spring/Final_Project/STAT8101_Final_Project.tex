@@ -361,7 +361,7 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Chapter4/StageA_Figure3_PR_Curves.png}
+    \includegraphics[width=0.8\textwidth]{archive/hires_StageA_Figure3_PR_Curves.png}
     \caption[Development Hazard Classification PR Curves]{Precision--recall curves for the development occurrence hazard model across evaluation horizons. Note: Out-of-fold evaluations represent aggregate discrimination prior to restricting maps to the top decile of predicted risk.}
     \label{fig:stagea_pr}
 \end{figure}
@@ -431,7 +431,7 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{Chapter4/F12_Opposition_PR.png}
+    \includegraphics[width=0.9\textwidth]{archive/hires_F12_Opposition_PR.png}
     \caption[Formal Protest Petition PR Curves by Model]{Precision--recall curves for the filing-date petition model: CatBoost, Random Forest, ElasticNet Logistic, and V-REx.}
     \label{fig:pr_curves}
 \end{figure}
@@ -479,7 +479,7 @@ The four stages combine into a summary measure: \textbf{expected contested units
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{Chapter4/F22_Joint_Policy_Map.png}
+\includegraphics[width=0.85\textwidth]{archive/hires_F22_Joint_Policy_Map.png}
 \caption[Composite Measure of Expected Petitioned Units]{Expected units in projects facing valid protest petitions (Stage A: H=4 Quarter Hazard $\times$ Stage C: filing-date prediction). Cyan dots in Panel A represent observed historical development zoning cases. Panels B and C highlight actual valid petition events mapped over the composite risk and prediction variance.}
 \label{fig:f22_joint_policy}
 \end{figure}
@@ -538,7 +538,7 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{Chapter4/fig_combined_calibration_reliability.pdf}
+    \includegraphics[width=\textwidth]{archive/hires_fig_combined_calibration_reliability.pdf}
     \caption[Calibration of the Stage A and Stage C Models]{\textbf{Calibration of the Stage A and Stage C Models:} Parallel evaluation of calibration reliability and capture curves across the Stage A (Development Occurrence) and Stage C (Formal Protest Petition) models. All probabilities are post-Isotonic out-of-fold predictions.}
     \label{fig:global_calibration}
 \end{figure}
@@ -553,14 +553,14 @@ The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides 
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_temporal_drift_H0.pdf}
+        \includegraphics[width=\textwidth]{exhibits/fig_temporal_drift_H0.pdf}
         \caption[Performance Across Temporal Holdouts]{Temporal performance decay ($T+0$ to $T+3$).}
         \label{fig:temporal_rot}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{Track1_Exhibits/fig_policy_regimes_H0.pdf}
+        \includegraphics[width=\textwidth]{exhibits/fig_policy_regimes_H0.pdf}
         \caption[Policy regime evaluating temporal holdouts]{Policy regime evaluating temporal holdouts.}
         \label{fig:policy_regimes}
     \end{subfigure}
@@ -574,7 +574,7 @@ Standard permutation importance for gradient boosting assesses the drop in predi
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_feature_importance_clustered_H0_Full.pdf}
+    \includegraphics[width=0.85\textwidth]{exhibits/fig_feature_importance_clustered_H0_Full.pdf}
     \caption[Top Predictor Groups After Hierarchical Clustering]{Top 10 predictor groups after hierarchical correlation clustering (Spearman $|r| > 0.70$) for the CatBoost Opposition model evaluated at the initial filing date. Correlated features are merged to correct for collinear dilution.}
     \label{fig:feature_importance_clustered}
 \end{figure}
@@ -583,7 +583,7 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{Track1_Exhibits/fig_shap_beeswarm_H0_Full.pdf}
+    \includegraphics[width=0.85\textwidth]{exhibits/fig_shap_beeswarm_H0_Full.pdf}
     \caption[SHAP Beeswarm Plot for the Opposition Model]{SHAP beeswarm plot for the opposition model at the filing baseline. Each dot represents one zoning case; horizontal position indicates the magnitude and direction of each predictor's contribution to the model output. The clustered importance in Figure~\ref{fig:feature_importance_clustered} provides the most robust correction for collinearity.}
     \label{fig:shap_beeswarm}
 \end{figure}
@@ -662,7 +662,7 @@ This estimate should be interpreted as a reduced-form effect at the threshold. B
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{Chapter5/F16_Petition_RD.png}
+\includegraphics[width=0.85\textwidth]{archive/hires_F16_Petition_RD.png}
 \caption[Threshold-Based Discontinuity at the Measured 20\% Petition Share]{Regression discontinuity at the 20\% valid petition threshold. Estimated discontinuity in council processing time. Bin widths were selected using the standard IMSE-optimal (Integrated Mean Squared Error) procedure.}
 \label{fig:f16_rd}
 \end{figure}
@@ -679,7 +679,7 @@ Interacting a ``Flipped District'' indicator with a ``Post-2022'' temporal indic
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{Chapter5/fig_causal_context_did.png}
+    \includegraphics[width=0.75\textwidth]{archive/hires_fig_causal_context_did.png}
     \caption[Estimated 2022 Electoral-Transition Interaction Effects by District]{\textbf{Estimated 2022 Electoral-Transition Interaction Effects by District.} Geographic choropleth illustrating the primary empirical outcome of the Difference-in-Differences regression framework. Districts 4 and 9 map the estimated treatment effect ($\Delta -0.546$), showing the estimated interaction effect for treated districts following incumbent turnover, relative to districts without comparable turnover.}
     \label{fig:did_geography}
 \end{figure}
@@ -690,7 +690,7 @@ The ITS evaluation of the 10-1 transition yielded a coefficient of \metricTenOne
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Chapter5/Electoral_Placebo_DiD.png}
+    \includegraphics[width=\textwidth]{archive/hires_Electoral_Placebo_DiD.png}
     \caption[Placebo Estimates Across Earlier Election Cycles]{\textbf{Placebo evaluation:} Because a comparable historical measure of council ideology over time is unavailable, this placebo design serves as an indirect check. To assess whether the 2022 effect reflects a genuine ideological shift rather than generalized electoral turnover, placebo Difference-in-Differences estimates were computed across all prior municipal electoral cycles for the affected districts (2014, 2016, 2018, 2020). The placebo estimates show no statistically significant variation in petition filing rates during prior electoral transitions. Only the 2022 cycle shows a detectable effect, which is consistent with interpreting 2022 as the relevant shock.}
     \label{fig:placebo_did_matrix}
 \end{figure}
@@ -727,7 +727,7 @@ HB~24 takes effect September~1, 2025, which falls outside the current observatio
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{Chapter5/F17_DiD_EventStudy.png}
+\includegraphics[width=0.85\textwidth]{archive/hires_F17_DiD_EventStudy.png}
 \caption[HOME Phase 1 Event-Study Coefficients]{HOME Phase 1 event-study coefficients relative to the implementation date. Because HOME Phase 1 preemptively blanketed the entire city across all generic single-family residential base zones, establishing an un-treated spatial cohort within the implementation timeframe is intractable. The absence of spatial control necessitates purely temporal event-tracking, without making causal DiD claims.}
 \label{fig:f17_did}
 \end{figure}

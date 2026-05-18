@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  6 APR 2026 19:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  18 MAY 2026 17:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -753,9 +753,11 @@ Package microtype Info: Loading configuration file microtype.cfg.
 File: microtype.cfg 2025/07/09 v3.2b microtype main configuration file (RS)
 )
 LaTeX Info: Redefining \microtypesetup on input line 3065.
-) (../../Thesis_Draft/Draft_v1/Tables/metrics_config.tex)
-(../../Thesis_Draft/Draft_v1/Tables/lib_ast.tex)
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 25
+) (../../Thesis_Draft/GSAPP_Final_Submission/Tables/metrics_config.tex)
+(blei_metrics.tex)
+(../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter1_descriptive/tbl_ch1_
+03_lib_ast.tex)
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 26
 .
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
@@ -768,24 +770,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (STAT8101_Final_Project.aux)
 \openout1 = `STAT8101_Final_Project.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -810,20 +812,20 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 25.
+Package hyperref Info: Link coloring OFF on input line 26.
  (STAT8101_Final_Project.out) (STAT8101_Final_Project.out)
 \@outlinefile=\write4
 \openout4 = `STAT8101_Final_Project.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 25.
-Package microtype Info: Applying patch `item' on input line 25.
-Package microtype Info: Applying patch `toc' on input line 25.
-Package microtype Info: Applying patch `eqnum' on input line 25.
-Package microtype Info: Applying patch `footnote' on input line 25.
-Package microtype Info: Applying patch `verbatim' on input line 25.
-LaTeX Info: Redefining \microtypesetup on input line 25.
+LaTeX Info: Redefining \microtypecontext on input line 26.
+Package microtype Info: Applying patch `item' on input line 26.
+Package microtype Info: Applying patch `toc' on input line 26.
+Package microtype Info: Applying patch `eqnum' on input line 26.
+Package microtype Info: Applying patch `footnote' on input line 26.
+Package microtype Info: Applying patch `verbatim' on input line 26.
+LaTeX Info: Redefining \microtypesetup on input line 26.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -842,64 +844,17 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/10'.
 (microtype)             Ignoring protrusion settings for this character.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 3
-9.
 
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
-File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 3
-9.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
-File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-39.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
-File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-39.
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
-File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 39.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 39.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 39.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 39.
-
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
-File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 39.
-
-
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg
-File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 5
-2.
+3.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 5
-2.
+3.
 
 (C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -908,28 +863,69 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 52.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 52.
- [1{C:/Users/dhl/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/dhl
-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 5
+3.
 
-{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}{C
-:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/
-Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/Users/
-dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
+File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 5
+3.
+
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
+53.
+
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
+File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
+53.
+
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
+File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 59.
+(Font)              <8> on input line 53.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 53.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 53.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 53.
+
+
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 53.
+
+
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+(C:\Users\dhl\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+)
+[1{C:/Users/dhl/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/dhl/
+AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}
+
+{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 60.
  [2]
-<../../Thesis_Draft/Draft_v1/Figures/Track1_Predictive/Figures/Typology_Tempora
-l_Incidence.png, id=171, 857.604pt x 714.0276pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Track1_Predictive/Figures/Typology_Te
-mporal_Incidence.png Graphic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Track1_Predictive/Figures/Typology_Tem
-poral_Incidence.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Track1_Predictive/
-Figures/Typology_Temporal_Incidence.png  used on input line 79.
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch4/fig_ch4_52_typology_temp
+oral_incidence.png, id=203, 857.604pt x 714.0276pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch4/fig_ch4_52_typology
+_temporal_incidence.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch4/fig_ch4_52_typology_
+temporal_incidence.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch4/
+fig_ch4_52_typology_temporal_incidence.png  used on input line 80.
 (pdftex.def)             Requested size: 433.62pt x 361.02235pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -937,280 +933,707 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4 <../../Thesis_Draft/Draft_v1/Figures/Track1_Predictive/Figures/Typology_Tem
-poral_Incidence.png>] [5]
-<../../Thesis_Draft/Draft_v1/Figures/Archive_Pipelines/fig1_spatial_distributio
-n.png, id=215, 1505.625pt x 1189.44376pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Archive_Pipelines/fig1_spatial_distri
-bution.png Graphic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Archive_Pipelines/fig1_spatial_distrib
-ution.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Archive_Pipelines/
-fig1_spatial_distribution.png  used on input line 124.
-(pdftex.def)             Requested size: 433.62pt x 342.55228pt.
- [6]
+ [4 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch4/fig_ch4_52_typology_
+temporal_incidence.png>] [5{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/en
+c/dvips/lm/lm-rm.enc}{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvip
+s/lm/lm-mathit.enc}]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/fig1_spatial_distrib
+ution.png, id=249, 578.16pt x 457.2282pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/fig1_spatial_di
+stribution.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/fig1_spatial_dis
+tribution.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/fig1_spatial_distribution.png  used on input line 125.
+(pdftex.def)             Requested size: 433.62pt x 342.9203pt.
+ [6{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc
+}]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [7 <../../Thesis_Draft/Draft_v1/Figures/Archive_Pipelines/fig1_spatial_distrib
-ution.png (PNG copy)>]
-<../../Thesis_Draft/Draft_v1/Figures/Exploratory_EDA/waller_buffer_map.png, id=
-234, 491.436pt x 720.291pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Exploratory_EDA/waller_buffer_map.png
- Graphic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Exploratory_EDA/waller_buffer_map.png>
-
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Exploratory_EDA/wa
-ller_buffer_map.png  used on input line 151.
-(pdftex.def)             Requested size: 238.49231pt x 349.56052pt.
+ [7 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/fig1_spatial_dis
+tribution.png>]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch2/fig_ch2_01_waller_buffer
+_map.png, id=270, 394.3533pt x 578.16pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch2/fig_ch2_01_waller_b
+uffer_map.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch2/fig_ch2_01_waller_bu
+ffer_map.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch2/
+fig_ch2_01_waller_buffer_map.png  used on input line 152.
+(pdftex.def)             Requested size: 238.49231pt x 349.65996pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [8 <../../Thesis_Draft/Draft_v1/Figures/Exploratory_EDA/waller_buffer_map.png>
-]
-(../../Thesis_Draft/Draft_v1/Tables/summary_stats_table.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ [8 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch2/fig_ch2_01_waller_bu
+ffer_map.png>]
+(../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter1_descriptive/tbl_ch1_
+01_summary_stats.tex)
+Underfull \vbox (badness 2142) has occurred while \output is active []
 
  [9]
-[10] [11]
-<../../Thesis_Draft/Draft_v1/Figures/Chapter4/StageA_Figure3_PR_Curves.png, id=
-266, 578.16pt x 433.62pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/StageA_Figure3_PR_Curves.png
- Graphic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter4/StageA_Figure3_PR_Curves.png>
-
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/StageA_Fi
-gure3_PR_Curves.png  used on input line 269.
+[10] [11] [12] [13]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_StageA_Figure3
+_PR_Curves.png, id=321, 578.16pt x 433.62pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_StageA_Fi
+gure3_PR_Curves.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_StageA_Fig
+ure3_PR_Curves.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_StageA_Figure3_PR_Curves.png  used on input line 364.
 (pdftex.def)             Requested size: 346.89731pt x 260.17401pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [14]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 286.
+(Font)              <9> on input line 381.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 5652) has occurred while \output is active []
 
- [12 <../../Thesis_Draft/Draft_v1/Figures/Chapter4/StageA_Figure3_PR_Curves.png
->]
-<../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png, id
-=275, 855.6768pt x 874.467pt>
-File: ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.pn
-g Graphic file (type png)
-<use ../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.png
->
-Package pdftex.def Info: ../../Analysis/Output/Track0_Predictive/Figures/StageA
-_Figure4_Hotspot.png  used on input line 294.
-(pdftex.def)             Requested size: 433.62pt x 443.1435pt.
+ [15 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_StageA_Fi
+gure3_PR_Curves.png>]
+! Undefined control sequence.
+l.410 ...-F1 Baseline} & \metricStageBLgbMacroFOne
+                                                  {} & \metricStageBRfMacroF...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+! Undefined control sequence.
+l.410 ...LgbMacroFOne{} & \metricStageBRfMacroFOne
+                                                  {} & \metricStageBMacroFOn...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
- [13]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+! Undefined control sequence.
+l.410 ...geBRfMacroFOne{} & \metricStageBMacroFOne
+                                                  {} & \metricStageBLogMacro...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
- [14 <../../Analysis/Output/Track0_Predictive/Figures/StageA_Figure4_Hotspot.pn
-g>]
-Overfull \hbox (28.23386pt too wide) in paragraph at lines 311--326
+! Undefined control sequence.
+l.410 ...eBMacroFOne{} & \metricStageBLogMacroFOne
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBLgbPUDFOne 
+                                        
+l.413 ...ated & \textbf{\metricStageBLgbPUDFOne{}}
+                                                   & \textbf{\metricStageBRf...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBRfPUDFOne 
+                                       
+l.413 ...ne{}} & \textbf{\metricStageBRfPUDFOne{}}
+                                                   & \textbf{\metricStageBCb...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBCbPUDFOne 
+                                       
+l.413 ...ne{}} & \textbf{\metricStageBCbPUDFOne{}}
+                                                   & \metricStageBLogPUDFOne...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.413 ...geBCbPUDFOne{}} & \metricStageBLogPUDFOne
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.414 ...y Rezoning & \metricStageBLgbRezoningFOne
+                                                  {} & \textbf{\metricStageB...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBRfRezoningFOne 
+                                            
+l.414 ... & \textbf{\metricStageBRfRezoningFOne{}}
+                                                   & \metricStageBCbRezoning...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.414 ...ningFOne{}} & \metricStageBCbRezoningFOne
+                                                  {} & \metricStageBLogRezon...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.414 ...ningFOne{} & \metricStageBLogRezoningFOne
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.415 ...ight Infill & \metricStageBLgbByRightFOne
+                                                  {} & \textbf{\metricStageB...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBRfByRightFOne 
+                                           
+l.415 ...} & \textbf{\metricStageBRfByRightFOne{}}
+                                                   & \metricStageBCbByRightF...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.415 ...RightFOne{}} & \metricStageBCbByRightFOne
+                                                  {} & \metricStageBLogByRig...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.415 ...RightFOne{} & \metricStageBLogByRightFOne
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBLgbMissingMiddleFOne 
+                                                  
+l.416 ...xtbf{\metricStageBLgbMissingMiddleFOne{}}
+                                                   & \metricStageBRfMissingM...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.416 ...One{}} & \metricStageBRfMissingMiddleFOne
+                                                  {} & \metricStageBCbMissin...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.416 ...FOne{} & \metricStageBCbMissingMiddleFOne
+                                                  {} & \metricStageBLogMissi...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.416 ...One{} & \metricStageBLogMissingMiddleFOne
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBLgbMixedUseFOne 
+                                             
+l.417 ...& \textbf{\metricStageBLgbMixedUseFOne{}}
+                                                   & \metricStageBRfMixedUse...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.417 ...dUseFOne{}} & \metricStageBRfMixedUseFOne
+                                                  {} & \metricStageBCbMixedU...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.417 ...edUseFOne{} & \metricStageBCbMixedUseFOne
+                                                  {} & \metricStageBLogMixed...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.417 ...dUseFOne{} & \metricStageBLogMixedUseFOne
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.418 ...ifamily & \metricStageBLgbMultifamilyFOne
+                                                  {} & \textbf{\metricStageB...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageBRfMultifamilyFOne 
+                                               
+l.418 ...\textbf{\metricStageBRfMultifamilyFOne{}}
+                                                   & \metricStageBCbMultifam...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.418 ...yFOne{}} & \metricStageBCbMultifamilyFOne
+                                                  {} & \metricStageBLogMulti...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.418 ...yFOne{} & \metricStageBLogMultifamilyFOne
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (28.23386pt too wide) in paragraph at lines 406--421
  [][] 
  []
 
-[15{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc
+[16{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc
 }]
-<../../Thesis_Draft/Draft_v1/Figures/Chapter4/F12_Opposition_PR.png, id=302, 65
-0.43pt x 505.89pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/F12_Opposition_PR.png Graphi
-c file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter4/F12_Opposition_PR.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/F12_Oppos
-ition_PR.png  used on input line 339.
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F12_Opposition
+_PR.png, id=352, 650.43pt x 505.89pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F12_Oppos
+ition_PR.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F12_Opposi
+tion_PR.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_F12_Opposition_PR.png  used on input line 434.
 (pdftex.def)             Requested size: 390.25534pt x 303.53633pt.
- (../../Thesis_Draft/Draft_v1/Tables/Table7_StageC_PR.tex)
-(../../Thesis_Draft/Draft_v1/Tables/alternative_architectures.tex [16 <../../Th
-esis_Draft/Draft_v1/Figures/Chapter4/F12_Opposition_PR.png>])
-Overfull \hbox (53.98174pt too wide) in paragraph at lines 366--379
+
+(../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_
+01_stagec_pr.tex)
+(../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_
+02_alternative_architectures.tex [17 <../../Thesis_Draft/GSAPP_Final_Submission
+/Figures/archive/hires_F12_Opposition_PR.png>])
+! Undefined control sequence.
+<recently read> \metricStageDLgbLogLoss 
+                                        
+l.465 ...tGBM & \textbf{\metricStageDLgbLogLoss{}}
+                                                   & \textbf{\metricStageDLg...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \metricStageDLgbAccuracy 
+                                         
+l.465 ...{}} & \textbf{\metricStageDLgbAccuracy{}}
+                                                   \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.466 CatBoost & \metricStageDLogLoss
+                                     {} & \metricStageDAccuracy{} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.466 ...icStageDLogLoss{} & \metricStageDAccuracy
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.467 Random Forest & \metricStageDRfLogLoss
+                                            {} & \metricStageDRfAccuracy{} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.467 ...ageDRfLogLoss{} & \metricStageDRfAccuracy
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.468 ...d Logistic (L2) & \metricStageDLogLogLoss
+                                                  {} & \metricStageDLogAccur...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.468 ...eDLogLogLoss{} & \metricStageDLogAccuracy
+                                                  {} \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (53.98174pt too wide) in paragraph at lines 461--474
  [][] 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [17]
-<../../Thesis_Draft/Draft_v1/Figures/Chapter4/F22_Joint_Policy_Map.png, id=332,
- 1505.625pt x 1466.47874pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/F22_Joint_Policy_Map.png Gra
-phic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter4/F22_Joint_Policy_Map.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/F22_Joint
-_Policy_Map.png  used on input line 387.
-(pdftex.def)             Requested size: 368.57964pt x 358.98836pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 3019) has occurred while \output is active []
 
  [18]
-Underfull \vbox (badness 1540) has occurred while \output is active []
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint_Poli
+cy_Map.png, id=383, 1149.093pt x 1119.9441pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint
+_Policy_Map.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint_
+Policy_Map.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_F22_Joint_Policy_Map.png  used on input line 482.
+(pdftex.def)             Requested size: 368.57964pt x 359.22679pt.
 
- [19 <../../Thesis_Draft/Draft_v1/Figures/Chapter4/F22_Joint_Policy_Map.png (PN
-G copy)>]
-[20]
-<../../Thesis_Draft/Draft_v1/Figures/Chapter4/fig_combined_calibration_reliabil
-ity.pdf, id=361, 1289.03212pt x 385.39355pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/fig_combined_calibration_rel
-iability.pdf Graphic file (type pdf)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter4/fig_combined_calibration_reli
-ability.pdf>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter4/fig_combi
-ned_calibration_reliability.pdf  used on input line 446.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [19]
+Underfull \vbox (badness 1400) has occurred while \output is active []
+
+ [20 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint
+_Policy_Map.png>] [21]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combined_c
+alibration_reliability.pdf, id=413, 1289.03212pt x 385.39355pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combi
+ned_calibration_reliability.pdf Graphic file (type pdf)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combin
+ed_calibration_reliability.pdf>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_fig_combined_calibration_reliability.pdf  used on input line 541.
 (pdftex.def)             Requested size: 433.62pt x 129.64424pt.
- (../../Thesis_Draft/Draft_v1/Tables/multi_horizon_results.tex) [21]
-<../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_temporal_drift_H0.pdf,
- id=372, 505.89pt x 361.35pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_temporal_drift_H0
-.pdf Graphic file (type pdf)
-<use ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_temporal_drift_H0.
-pdf>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fi
-g_temporal_drift_H0.pdf  used on input line 461.
-(pdftex.def)             Requested size: 208.13574pt x 148.66724pt.
-<../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_policy_regimes_H0.pdf,
- id=373, 578.16pt x 361.35pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_policy_regimes_H0
-.pdf Graphic file (type pdf)
-<use ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_policy_regimes_H0.
-pdf>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fi
-g_policy_regimes_H0.pdf  used on input line 468.
+
+(../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_
+09_multi_horizon_results.tex
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 32.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 32.
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [22]
+
+LaTeX Warning: Reference `tab:multi_horizon' on page 23 undefined on input line
+ 550.
+
+! Undefined control sequence.
+l.550 ...reaches PR-AUCs of \metricBootstrapNotice
+                                                  {} and \metricBootstrapPre...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.550 ...strapNotice{} and \metricBootstrapPreComm
+                                                  {} respectively. By the pr...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.550 ...ps slightly to \metricBootstrapPreCouncil
+                                                  {}, possibly reflecting th...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.550 ...CE worsens from \metricBootstrapFilingECE
+                                                  {} at filing to \metricBoo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.550 ...t filing to \metricBootstrapPreCouncilECE
+                                                  {} prior to council readin...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [23 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combi
+ned_calibration_reliability.pdf>]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_temporal_drift_
+H0.pdf, id=515, 1090.25458pt x 797.92606pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_temporal_d
+rift_H0.pdf Graphic file (type pdf)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_temporal_dr
+ift_H0.pdf>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
+bits/fig_temporal_drift_H0.pdf  used on input line 556.
+(pdftex.def)             Requested size: 208.13574pt x 152.32587pt.
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_policy_regimes_
+H0.pdf, id=516, 578.16pt x 361.35pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_policy_reg
+imes_H0.pdf Graphic file (type pdf)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_policy_regi
+mes_H0.pdf>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
+bits/fig_policy_regimes_H0.pdf  used on input line 563.
 (pdftex.def)             Requested size: 208.13574pt x 130.08038pt.
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_feature_importa
+nce_clustered_H0_Full.pdf, id=518, 1076.90833pt x 408.22888pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_feature_im
+portance_clustered_H0_Full.pdf Graphic file (type pdf)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_feature_imp
+ortance_clustered_H0_Full.pdf>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
+bits/fig_feature_importance_clustered_H0_Full.pdf  used on input line 577.
+(pdftex.def)             Requested size: 368.57964pt x 139.71788pt.
 
-[22 <../../Thesis_Draft/Draft_v1/Figures/Chapter4/fig_combined_calibration_reli
-ability.pdf> <../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_temporal_
-drift_H0.pdf> <../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_policy_r
-egimes_H0.pdf>]
-<../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_feature_importance_clu
-stered_H0_Full.pdf, id=574, 794.97pt x 578.16pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_feature_importanc
-e_clustered_H0_Full.pdf Graphic file (type pdf)
-<use ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_feature_importance
-_clustered_H0_Full.pdf>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fi
-g_feature_importance_clustered_H0_Full.pdf  used on input line 482.
-(pdftex.def)             Requested size: 368.57964pt x 268.06528pt.
-<../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_shap_beeswarm_H0_Full.
-pdf, id=576, 711.34386pt x 570.22974pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_shap_beeswarm_H0_
-Full.pdf Graphic file (type pdf)
-<use ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_shap_beeswarm_H0_F
-ull.pdf>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fi
-g_shap_beeswarm_H0_Full.pdf  used on input line 491.
-(pdftex.def)             Requested size: 368.57964pt x 295.46834pt.
+Underfull \vbox (badness 1226) has occurred while \output is active []
 
-Overfull \hbox (65.0429pt too wide) in paragraph at lines 548--549
+ [24 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_temporal_d
+rift_H0.pdf> <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_po
+licy_regimes_H0.pdf>]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_shap_beeswarm_H
+0_Full.pdf, id=692, 698.7938pt x 570.22974pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_shap_beesw
+arm_H0_Full.pdf Graphic file (type pdf)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_shap_beeswa
+rm_H0_Full.pdf>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
+bits/fig_shap_beeswarm_H0_Full.pdf  used on input line 586.
+(pdftex.def)             Requested size: 368.57964pt x 300.76724pt.
+
+(../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_
+02_archetypal_attribution.tex)
+(../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_
+03_archetypal_attribution_weighted.tex)
+Overfull \hbox (65.0429pt too wide) in paragraph at lines 648--649
  [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [23 <../../Thesis_Draft/Draft_v1/Figures/Track1_Exhibits/fig_feature_importanc
-e_clustered_H0_Full.pdf>] [24 <../../Thesis_Draft/Draft_v1/Figures/Track1_Exhib
-its/fig_shap_beeswarm_H0_Full.pdf>]
+ [25 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_feature_im
+portance_clustered_H0_Full.pdf>] [26 <../../Thesis_Draft/GSAPP_Final_Submission
+/Figures/exhibits/fig_shap_beeswarm_H0_Full.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [25]
-<../../Thesis_Draft/Draft_v1/Figures/Chapter5/F16_Petition_RD.png, id=717, 566.
-5968pt x 422.0568pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/F16_Petition_RD.png Graphic 
-file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter5/F16_Petition_RD.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/F16_Petit
-ion_RD.png  used on input line 565.
+ [27]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [28]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petition_R
+D.png, id=853, 566.5968pt x 422.0568pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petit
+ion_RD.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petiti
+on_RD.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_F16_Petition_RD.png  used on input line 665.
 (pdftex.def)             Requested size: 368.57964pt x 274.55261pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [26]
+ [29]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 572.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 572.
+(hyperref)                removing `math shift' on input line 672.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 572.
+(hyperref)                removing `superscript' on input line 672.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 572.
+(hyperref)                removing `subscript' on input line 672.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\not' on input line 572.
+(hyperref)                removing `subscript' on input line 672.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 572.
+(hyperref)                removing `\not' on input line 672.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 572.
+(hyperref)                removing `superscript' on input line 672.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 572.
+(hyperref)                removing `subscript' on input line 672.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 572.
+(hyperref)                removing `subscript' on input line 672.
 
-<../../Thesis_Draft/Draft_v1/Figures/Chapter5/fig_causal_context_did.png, id=72
-3, 489.9906pt x 485.8953pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/fig_causal_context_did.png G
-raphic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter5/fig_causal_context_did.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/fig_causa
-l_context_did.png  used on input line 582.
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 672.
+
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causal_con
+text_did.png, id=859, 489.9906pt x 485.8953pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causa
+l_context_did.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causal
+_context_did.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_fig_causal_context_did.png  used on input line 682.
 (pdftex.def)             Requested size: 325.215pt x 322.50835pt.
 
 Underfull \vbox (badness 4048) has occurred while \output is active []
 
- [27 <../../Thesis_Draft/Draft_v1/Figures/Chapter5/F16_Petition_RD.png>]
-<../../Thesis_Draft/Draft_v1/Figures/Chapter5/Electoral_Placebo_DiD.png, id=730
-, 712.1004pt x 424.9476pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/Electoral_Placebo_DiD.png Gr
-aphic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter5/Electoral_Placebo_DiD.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/Electoral
-_Placebo_DiD.png  used on input line 593.
+ [30 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petit
+ion_RD.png>]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_Electoral_Plac
+ebo_DiD.png, id=866, 712.1004pt x 424.9476pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_Electoral
+_Placebo_DiD.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_Electoral_
+Placebo_DiD.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_Electoral_Placebo_DiD.png  used on input line 693.
 (pdftex.def)             Requested size: 433.62pt x 258.76375pt.
 
 Underfull \vbox (badness 3849) has occurred while \output is active []
 
- [28 <../../Thesis_Draft/Draft_v1/Figures/Chapter5/fig_causal_context_did.png>]
- [29 <../../Thesis_Draft/Draft_v1/Figures/Chapter5/Electoral_Placebo_DiD.png>]
-<../../Thesis_Draft/Draft_v1/Figures/Chapter5/F17_DiD_EventStudy.png, id=748, 7
-11.1368pt x 422.0568pt>
-File: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/F17_DiD_EventStudy.png Graph
-ic file (type png)
-<use ../../Thesis_Draft/Draft_v1/Figures/Chapter5/F17_DiD_EventStudy.png>
-Package pdftex.def Info: ../../Thesis_Draft/Draft_v1/Figures/Chapter5/F17_DiD_E
-ventStudy.png  used on input line 630.
+ [31 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causa
+l_context_did.png>] [32 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_Electoral_Placebo_DiD.png>]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_EventS
+tudy.png, id=885, 711.1368pt x 422.0568pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_E
+ventStudy.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_Ev
+entStudy.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
+ive/hires_F17_DiD_EventStudy.png  used on input line 730.
 (pdftex.def)             Requested size: 368.57964pt x 218.7495pt.
- [30 <../../Thesis_Draft/Draft_v1/Figures/Chapter5/F17_DiD_EventStudy.png>]
-(STAT8101_Final_Project.bbl [31] [32]) [33] (STAT8101_Final_Project.aux)
+ [33 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_E
+ventStudy.png>] (STAT8101_Final_Project.bbl [34]
+[35]) [36] (STAT8101_Final_Project.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `STAT8101_Final_Project.out' has not changed.
 
-(rerunfilecheck)             Checksum: 2DEBFFA5D18EBF34B0B0D1422B9A7DD7;6720.
+(rerunfilecheck)             Checksum: 51F62E29CE6544E1EFD3437914438BC6;9243.
  ) 
 Here is how much of TeX's memory you used:
- 26378 strings out of 467871
- 498461 string characters out of 5419344
- 893481 words of memory out of 5000000
- 54365 multiletter control sequences out of 15000+600000
- 752050 words of font info for 261 fonts, out of 8000000 for 9000
+ 26499 strings out of 467871
+ 504704 string characters out of 5419344
+ 901012 words of memory out of 5000000
+ 54453 multiletter control sequences out of 15000+600000
+ 748906 words of font info for 257 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,12n,104p,2026b,886s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,104p,1691b,886s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb>
 <C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C
 :/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbxi10.pfb><C:
@@ -1221,21 +1644,20 @@ s/dhl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Users/d
 hl/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi9.pfb><C:/Users/dhl/
 AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/dhl/App
 Data/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr6.pfb><C:/Users/dhl/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr7.pfb><C:/Users/dhl/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/dhl/AppData/Local/P
-rograms/MiKTeX/fonts/type1/public/lm/lmr9.pfb><C:/Users/dhl/AppData/Local/Progr
-ams/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/dhl/AppData/Local/Program
-s/MiKTeX/fonts/type1/public/lm/lmri9.pfb><C:/Users/dhl/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs/MiK
-TeX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX
-/fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fo
-nts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts
-/type1/public/lm/lmtt10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/public/lm/lmtt8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/type
-1/public/amsfonts/symbols/msbm10.pfb>
-Output written on STAT8101_Final_Project.pdf (33 pages, 13004234 bytes).
+/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/dhl/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/lm/lmr9.pfb><C:/Users/dhl/AppData/Local/P
+rograms/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/dhl/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/lm/lmri9.pfb><C:/Users/dhl/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/dhl/AppData/Local/Programs
+/MiKTeX/fonts/type1/public/lm/lmsy6.pfb><C:/Users/dhl/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/lm/lmtt10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/lm/lmtt8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on STAT8101_Final_Project.pdf (36 pages, 17062655 bytes).
 PDF statistics:
- 918 PDF objects out of 1000 (max. 8388607)
- 130 named destinations out of 1000 (max. 500000)
- 71477 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 1055 PDF objects out of 1200 (max. 8388607)
+ 155 named destinations out of 1000 (max. 500000)
+ 69496 words of extra memory for PDF output out of 74296 (max. 10000000)
 
