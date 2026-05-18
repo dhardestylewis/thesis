@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import json
 import subprocess
 from pathlib import Path
 from tqdm import tqdm
@@ -10,6 +11,23 @@ from tqdm import tqdm
 
 ROOT = Path(r"c:\Users\dhl\data\thesis\thesis")
 SCRIPTS_DIR = ROOT / "Scripts" / "pipeline"
+TIMINGS_FILE = SCRIPTS_DIR / "empirical_timings.json"
+DEFAULT_TIMING = 30.0
+
+def load_timings():
+    if TIMINGS_FILE.exists():
+        try:
+            with open(TIMINGS_FILE, "r") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def save_timing(script_name, duration_seconds):
+    timings = load_timings()
+    timings[script_name] = duration_seconds
+    with open(TIMINGS_FILE, "w") as f:
+        json.dump(timings, f, indent=2)
 
 # Define the sequence
 PIPELINE_STEPS = [
@@ -52,7 +70,7 @@ PIPELINE_STEPS = [
     ("14_audit_prose_recency.py", "Running git-blame prose recency scan to flag stale paragraphs for manual review...")
 ]
 
-def run_step(script_name, description, pbar):
+def run_step(script_name, description, pbar, expected_duration):
     tqdm.write(f"\n>>> [STEP: {script_name}] {description}")
     script_path = SCRIPTS_DIR / script_name
     
@@ -71,12 +89,15 @@ def run_step(script_name, description, pbar):
     return_code = process.wait()
     
     end = time.time()
+    actual_duration = end - start
     
     if return_code != 0:
         tqdm.write(f"    [!] Error in {script_name}. Aborting pipeline.")
         sys.exit(1)
     
-    tqdm.write(f"    [+] {script_name} completed in {end-start:.1f}s")
+    save_timing(script_name, actual_duration)
+    tqdm.write(f"    [+] {script_name} completed in {actual_duration:.1f}s")
+    pbar.update(expected_duration)
 
 def create_script_wrapper(name):
     mappings = {
@@ -120,11 +141,13 @@ def main():
     print("="*60)
     
     total_start = time.time()
+    timings = load_timings()
+    total_expected = sum([timings.get(s[0], DEFAULT_TIMING) for s in PIPELINE_STEPS])
     
-    with tqdm(total=len(PIPELINE_STEPS), desc="Pipeline Progress", unit="step") as pbar:
+    with tqdm(total=total_expected, desc="Pipeline ETA Progress", unit="s", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]") as pbar:
         for script, desc in PIPELINE_STEPS:
-            run_step(script, desc, pbar)
-            pbar.update(1)
+            expected = timings.get(script, DEFAULT_TIMING)
+            run_step(script, desc, pbar, expected)
         
     total_time = (time.time() - total_start) / 60
     print("\n" + "="*60)
