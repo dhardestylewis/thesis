@@ -20,7 +20,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     import torch
 
     # GPU detection — use CUDA if available, fall back to CPU cleanly
-    USE_GPU = torch.cuda.is_available()
+    USE_GPU = torch.cuda.is_available() or os.environ.get("USE_GPU") == "1"
     CB_TASK  = "GPU" if USE_GPU else "CPU"
     XGB_TREE = "gpu_hist" if USE_GPU else "hist"
     print(f"[*] Device: {'GPU (CUDA)' if USE_GPU else 'CPU'}")

@@ -1,7 +1,9 @@
 import os
 import sys
 import time
+import subprocess
 from pathlib import Path
+from tqdm import tqdm
 
 # execute_thesis_pipeline.py
 # Top-level orchestrator for the canonical Stage C pipeline.
@@ -12,7 +14,7 @@ SCRIPTS_DIR = ROOT / "Scripts" / "pipeline"
 # Define the sequence
 PIPELINE_STEPS = [
     ("00a_engineer_model_ready_zoning.py", "Engineering formal model_ready_zoning_data.csv baseline..."),
-    ("00b_extract_ears_data.py", "Extracting raw EARS AJR archives into panel-ready data..."),
+    # ("00b_extract_ears_data.py", "Extracting raw EARS AJR archives into panel-ready data..."),
     ("00_build_case_universe.py", "Building analytic universe spine..."),
     ("01_build_labels.py", "Generating the label-validity registry..."),
     ("01a1_parse_petition_pdf.py", "Extracting OCR text and tables from raw Protest PDFs..."),
@@ -50,8 +52,8 @@ PIPELINE_STEPS = [
     ("14_audit_prose_recency.py", "Running git-blame prose recency scan to flag stale paragraphs for manual review...")
 ]
 
-def run_step(script_name, description):
-    print(f"\n>>> [STEP: {script_name}] {description}")
+def run_step(script_name, description, pbar):
+    tqdm.write(f"\n>>> [STEP: {script_name}] {description}")
     script_path = SCRIPTS_DIR / script_name
     
     # Create the script if it doesn't exist (thin wrapper around src/)
@@ -59,14 +61,22 @@ def run_step(script_name, description):
         create_script_wrapper(script_name)
         
     start = time.time()
-    result = os.system(f"python {script_path}")
+    
+    process = subprocess.Popen(["python", "-u", str(script_path)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    
+    for line in iter(process.stdout.readline, ''):
+        tqdm.write(line.strip('\n'))
+        
+    process.stdout.close()
+    return_code = process.wait()
+    
     end = time.time()
     
-    if result != 0:
-        print(f"    [!] Error in {script_name}. Aborting pipeline.")
+    if return_code != 0:
+        tqdm.write(f"    [!] Error in {script_name}. Aborting pipeline.")
         sys.exit(1)
     
-    print(f"    [+] {script_name} completed in {end-start:.1f}s")
+    tqdm.write(f"    [+] {script_name} completed in {end-start:.1f}s")
 
 def create_script_wrapper(name):
     mappings = {
@@ -103,6 +113,7 @@ def create_script_wrapper(name):
             f.write(mappings[name] + "\n")
 
 def main():
+    os.environ["USE_GPU"] = "1"
     print("="*60)
     print(" REFACTORED THESIS PIPELINE ORCHESTRATOR")
     print(f" Target Root: {ROOT}")
@@ -110,8 +121,10 @@ def main():
     
     total_start = time.time()
     
-    for script, desc in PIPELINE_STEPS:
-        run_step(script, desc)
+    with tqdm(total=len(PIPELINE_STEPS), desc="Pipeline Progress", unit="step") as pbar:
+        for script, desc in PIPELINE_STEPS:
+            run_step(script, desc, pbar)
+            pbar.update(1)
         
     total_time = (time.time() - total_start) / 60
     print("\n" + "="*60)

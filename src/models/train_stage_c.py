@@ -70,6 +70,10 @@ def _select_feature_columns(df: pd.DataFrame) -> list[str]:
 
 
 def _make_model(model_family: str, seed: int) -> Any:
+    import os
+    use_gpu = os.environ.get("USE_GPU") == "1"
+    cb_task = "GPU" if use_gpu else "CPU"
+    
     family = model_family.lower()
     if family == "catboost":
         catboost_module = importlib.import_module("catboost")
@@ -82,6 +86,7 @@ def _make_model(model_family: str, seed: int) -> Any:
             eval_metric="AUC",
             random_seed=seed,
             verbose=0,
+            task_type=cb_task,
         )
     if family == "logreg":
         return Pipeline(

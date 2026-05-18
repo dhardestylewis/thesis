@@ -10,6 +10,9 @@ from src.data_io.schema import REGISTRY_DIR, ROOT_DIR, ensure_dirs, save_registr
 
 def run_ablation_suite() -> pd.DataFrame:
     """Run a compact cluster ablation against the canonical Stage C task."""
+    import os
+    use_gpu = os.environ.get("USE_GPU") == "1"
+    cb_task = "GPU" if use_gpu else "CPU"
 
     ensure_dirs()
     labels = pd.read_parquet(REGISTRY_DIR / "label_registry.parquet")
@@ -32,7 +35,7 @@ def run_ablation_suite() -> pd.DataFrame:
     y_train = train["threshold_crossed"]
     y_test = test["threshold_crossed"]
 
-    cb_base = CatBoostClassifier(iterations=100, depth=4, verbose=0, random_seed=42)
+    cb_base = CatBoostClassifier(iterations=100, depth=4, verbose=0, random_seed=42, task_type=cb_task)
     cb_base.fit(X_train_full, y_train)
     base_score = average_precision_score(y_test, cb_base.predict_proba(X_test_full)[:, 1])
 
@@ -48,7 +51,7 @@ def run_ablation_suite() -> pd.DataFrame:
         X_train_ablated = X_train_full.drop(columns=present_features)
         X_test_ablated = X_test_full.drop(columns=present_features)
 
-        cb_ablated = CatBoostClassifier(iterations=100, depth=4, verbose=0, random_seed=42)
+        cb_ablated = CatBoostClassifier(iterations=100, depth=4, verbose=0, random_seed=42, task_type=cb_task)
         cb_ablated.fit(X_train_ablated, y_train)
         ablated_score = average_precision_score(y_test, cb_ablated.predict_proba(X_test_ablated)[:, 1])
 

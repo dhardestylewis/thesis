@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  18 MAY 2026 17:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  18 MAY 2026 17:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1265,27 +1265,38 @@ Overfull \hbox (28.23386pt too wide) in paragraph at lines 406--421
  [][] 
  []
 
+! Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.422 \end{table}
+                 
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
 [16{C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc
 }]
-<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F12_Opposition
-_PR.png, id=352, 650.43pt x 505.89pt>
-File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F12_Oppos
-ition_PR.png Graphic file (type png)
-<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F12_Opposi
-tion_PR.png>
-Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_F12_Opposition_PR.png  used on input line 434.
-(pdftex.def)             Requested size: 390.25534pt x 303.53633pt.
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_pr_curves_updat
+ed.pdf, id=352, 494.06206pt x 421.63774pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_pr_curves_
+updated.pdf Graphic file (type pdf)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_pr_curves_u
+pdated.pdf>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
+bits/fig_pr_curves_updated.pdf  used on input line 435.
+(pdftex.def)             Requested size: 390.25534pt x 333.06442pt.
 
 (../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_
-01_stagec_pr.tex)
+01_stagec_pr.tex) [17 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibi
+ts/fig_pr_curves_updated.pdf>]
 (../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_
-02_alternative_architectures.tex [17 <../../Thesis_Draft/GSAPP_Final_Submission
-/Figures/archive/hires_F12_Opposition_PR.png>])
+02_alternative_architectures.tex)
 ! Undefined control sequence.
 <recently read> \metricStageDLgbLogLoss 
                                         
-l.465 ...tGBM & \textbf{\metricStageDLgbLogLoss{}}
+l.466 ...tGBM & \textbf{\metricStageDLgbLogLoss{}}
                                                    & \textbf{\metricStageDLg...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1296,7 +1307,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <recently read> \metricStageDLgbAccuracy 
                                          
-l.465 ...{}} & \textbf{\metricStageDLgbAccuracy{}}
+l.466 ...{}} & \textbf{\metricStageDLgbAccuracy{}}
                                                    \\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1305,7 +1316,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.466 CatBoost & \metricStageDLogLoss
+l.467 CatBoost & \metricStageDLogLoss
                                      {} & \metricStageDAccuracy{} \\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1314,7 +1325,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.466 ...icStageDLogLoss{} & \metricStageDAccuracy
+l.467 ...icStageDLogLoss{} & \metricStageDAccuracy
                                                   {} \\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1323,7 +1334,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.467 Random Forest & \metricStageDRfLogLoss
+l.468 Random Forest & \metricStageDRfLogLoss
                                             {} & \metricStageDRfAccuracy{} \\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1332,7 +1343,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.467 ...ageDRfLogLoss{} & \metricStageDRfAccuracy
+l.468 ...ageDRfLogLoss{} & \metricStageDRfAccuracy
                                                   {} \\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1341,7 +1352,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.468 ...d Logistic (L2) & \metricStageDLogLogLoss
+l.469 ...d Logistic (L2) & \metricStageDLogLogLoss
                                                   {} & \metricStageDLogAccur...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1350,7 +1361,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.468 ...eDLogLogLoss{} & \metricStageDLogAccuracy
+l.469 ...eDLogLogLoss{} & \metricStageDLogAccuracy
                                                   {} \\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1359,22 +1370,33 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-Overfull \hbox (53.98174pt too wide) in paragraph at lines 461--474
+Overfull \hbox (53.98174pt too wide) in paragraph at lines 462--475
  [][] 
  []
+
+! Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.476 \end{table}
+                 
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
 
 
 Underfull \vbox (badness 3019) has occurred while \output is active []
 
  [18]
 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint_Poli
-cy_Map.png, id=383, 1149.093pt x 1119.9441pt>
+cy_Map.png, id=465, 1149.093pt x 1119.9441pt>
 File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint
 _Policy_Map.png Graphic file (type png)
 <use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint_
 Policy_Map.png>
 Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_F22_Joint_Policy_Map.png  used on input line 482.
+ive/hires_F22_Joint_Policy_Map.png  used on input line 484.
 (pdftex.def)             Requested size: 368.57964pt x 359.22679pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1385,13 +1407,13 @@ Underfull \vbox (badness 1400) has occurred while \output is active []
  [20 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F22_Joint
 _Policy_Map.png>] [21]
 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combined_c
-alibration_reliability.pdf, id=413, 1289.03212pt x 385.39355pt>
+alibration_reliability.pdf, id=495, 1289.03212pt x 385.39355pt>
 File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combi
 ned_calibration_reliability.pdf Graphic file (type pdf)
 <use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combin
 ed_calibration_reliability.pdf>
 Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_fig_combined_calibration_reliability.pdf  used on input line 541.
+ive/hires_fig_combined_calibration_reliability.pdf  used on input line 543.
 (pdftex.def)             Requested size: 433.62pt x 129.64424pt.
 
 (../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_
@@ -1406,10 +1428,10 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [22]
 
 LaTeX Warning: Reference `tab:multi_horizon' on page 23 undefined on input line
- 550.
+ 552.
 
 ! Undefined control sequence.
-l.550 ...reaches PR-AUCs of \metricBootstrapNotice
+l.552 ...reaches PR-AUCs of \metricBootstrapNotice
                                                   {} and \metricBootstrapPre...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1418,7 +1440,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.550 ...strapNotice{} and \metricBootstrapPreComm
+l.552 ...strapNotice{} and \metricBootstrapPreComm
                                                   {} respectively. By the pr...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1427,7 +1449,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.550 ...ps slightly to \metricBootstrapPreCouncil
+l.552 ...ps slightly to \metricBootstrapPreCouncil
                                                   {}, possibly reflecting th...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1436,7 +1458,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.550 ...CE worsens from \metricBootstrapFilingECE
+l.552 ...CE worsens from \metricBootstrapFilingECE
                                                   {} at filing to \metricBoo...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1445,7 +1467,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.550 ...t filing to \metricBootstrapPreCouncilECE
+l.552 ...t filing to \metricBootstrapPreCouncilECE
                                                   {} prior to council readin...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1459,31 +1481,31 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [23 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_combi
 ned_calibration_reliability.pdf>]
 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_temporal_drift_
-H0.pdf, id=515, 1090.25458pt x 797.92606pt>
+H0.pdf, id=597, 1090.25458pt x 797.92606pt>
 File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_temporal_d
 rift_H0.pdf Graphic file (type pdf)
 <use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_temporal_dr
 ift_H0.pdf>
 Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
-bits/fig_temporal_drift_H0.pdf  used on input line 556.
+bits/fig_temporal_drift_H0.pdf  used on input line 558.
 (pdftex.def)             Requested size: 208.13574pt x 152.32587pt.
 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_policy_regimes_
-H0.pdf, id=516, 578.16pt x 361.35pt>
+H0.pdf, id=598, 578.16pt x 361.35pt>
 File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_policy_reg
 imes_H0.pdf Graphic file (type pdf)
 <use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_policy_regi
 mes_H0.pdf>
 Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
-bits/fig_policy_regimes_H0.pdf  used on input line 563.
+bits/fig_policy_regimes_H0.pdf  used on input line 565.
 (pdftex.def)             Requested size: 208.13574pt x 130.08038pt.
 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_feature_importa
-nce_clustered_H0_Full.pdf, id=518, 1076.90833pt x 408.22888pt>
+nce_clustered_H0_Full.pdf, id=600, 1076.90833pt x 408.22888pt>
 File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_feature_im
 portance_clustered_H0_Full.pdf Graphic file (type pdf)
 <use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_feature_imp
 ortance_clustered_H0_Full.pdf>
 Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
-bits/fig_feature_importance_clustered_H0_Full.pdf  used on input line 577.
+bits/fig_feature_importance_clustered_H0_Full.pdf  used on input line 579.
 (pdftex.def)             Requested size: 368.57964pt x 139.71788pt.
 
 Underfull \vbox (badness 1226) has occurred while \output is active []
@@ -1492,20 +1514,20 @@ Underfull \vbox (badness 1226) has occurred while \output is active []
 rift_H0.pdf> <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_po
 licy_regimes_H0.pdf>]
 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_shap_beeswarm_H
-0_Full.pdf, id=692, 698.7938pt x 570.22974pt>
+0_Full.pdf, id=774, 698.7938pt x 570.22974pt>
 File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_shap_beesw
 arm_H0_Full.pdf Graphic file (type pdf)
 <use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhibits/fig_shap_beeswa
 rm_H0_Full.pdf>
 Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/exhi
-bits/fig_shap_beeswarm_H0_Full.pdf  used on input line 586.
+bits/fig_shap_beeswarm_H0_Full.pdf  used on input line 588.
 (pdftex.def)             Requested size: 368.57964pt x 300.76724pt.
 
 (../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_
 02_archetypal_attribution.tex)
 (../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_
 03_archetypal_attribution_weighted.tex)
-Overfull \hbox (65.0429pt too wide) in paragraph at lines 648--649
+Overfull \hbox (65.0429pt too wide) in paragraph at lines 650--651
  [][] 
  []
 
@@ -1521,14 +1543,14 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [28]
-<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petition_R
-D.png, id=853, 566.5968pt x 422.0568pt>
-File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petit
-ion_RD.png Graphic file (type png)
-<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petiti
-on_RD.png>
-Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_F16_Petition_RD.png  used on input line 665.
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_31_petition_rd.p
+ng, id=935, 566.5968pt x 422.0568pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_31_petition
+_rd.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_31_petition_
+rd.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/
+fig_ch5_31_petition_rd.png  used on input line 667.
 (pdftex.def)             Requested size: 368.57964pt x 274.55261pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1536,81 +1558,81 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [29]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 672.
+(hyperref)                removing `math shift' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 672.
+(hyperref)                removing `superscript' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 672.
+(hyperref)                removing `subscript' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 672.
+(hyperref)                removing `subscript' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\not' on input line 672.
+(hyperref)                removing `\not' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 672.
+(hyperref)                removing `superscript' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 672.
+(hyperref)                removing `subscript' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 672.
+(hyperref)                removing `subscript' on input line 674.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 672.
+(hyperref)                removing `math shift' on input line 674.
 
-<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causal_con
-text_did.png, id=859, 489.9906pt x 485.8953pt>
-File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causa
-l_context_did.png Graphic file (type png)
-<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causal
-_context_did.png>
-Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_fig_causal_context_did.png  used on input line 682.
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_34_causal_contex
+t_did.png, id=941, 489.9906pt x 485.8953pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_34_causal_c
+ontext_did.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_34_causal_co
+ntext_did.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/
+fig_ch5_34_causal_context_did.png  used on input line 684.
 (pdftex.def)             Requested size: 325.215pt x 322.50835pt.
 
 Underfull \vbox (badness 4048) has occurred while \output is active []
 
- [30 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F16_Petit
-ion_RD.png>]
-<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_Electoral_Plac
-ebo_DiD.png, id=866, 712.1004pt x 424.9476pt>
-File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_Electoral
-_Placebo_DiD.png Graphic file (type png)
-<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_Electoral_
-Placebo_DiD.png>
-Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_Electoral_Placebo_DiD.png  used on input line 693.
+ [30 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_31_petition
+_rd.png>]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_30_electoral_pla
+cebo_did.png, id=948, 712.1004pt x 424.9476pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_30_electora
+l_placebo_did.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_30_electoral
+_placebo_did.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/
+fig_ch5_30_electoral_placebo_did.png  used on input line 695.
 (pdftex.def)             Requested size: 433.62pt x 258.76375pt.
 
 Underfull \vbox (badness 3849) has occurred while \output is active []
 
- [31 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_fig_causa
-l_context_did.png>] [32 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_Electoral_Placebo_DiD.png>]
-<../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_EventS
-tudy.png, id=885, 711.1368pt x 422.0568pt>
-File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_E
-ventStudy.png Graphic file (type png)
-<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_Ev
-entStudy.png>
-Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/arch
-ive/hires_F17_DiD_EventStudy.png  used on input line 730.
+ [31 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_34_causal_c
+ontext_did.png>] [32 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig
+_ch5_30_electoral_placebo_did.png>]
+<../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_32_did_event_stu
+dy.png, id=967, 711.1368pt x 422.0568pt>
+File: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_32_did_even
+t_study.png Graphic file (type png)
+<use ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_32_did_event
+_study.png>
+Package pdftex.def Info: ../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/
+fig_ch5_32_did_event_study.png  used on input line 732.
 (pdftex.def)             Requested size: 368.57964pt x 218.7495pt.
- [33 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/archive/hires_F17_DiD_E
-ventStudy.png>] (STAT8101_Final_Project.bbl [34]
-[35]) [36] (STAT8101_Final_Project.aux)
+ [33 <../../Thesis_Draft/GSAPP_Final_Submission/Figures/ch5/fig_ch5_32_did_even
+t_study.png>] (STAT8101_Final_Project.bbl [34] [35])
+[36] (STAT8101_Final_Project.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -1619,17 +1641,14 @@ L3 programming layer <2025-12-24>
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `STAT8101_Final_Project.out' has not changed.
 
 (rerunfilecheck)             Checksum: 51F62E29CE6544E1EFD3437914438BC6;9243.
  ) 
 Here is how much of TeX's memory you used:
  26499 strings out of 467871
- 504704 string characters out of 5419344
- 901012 words of memory out of 5000000
+ 504656 string characters out of 5419344
+ 901020 words of memory out of 5000000
  54453 multiletter control sequences out of 15000+600000
  748906 words of font info for 257 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1655,9 +1674,9 @@ X/fonts/type1/public/lm/lmsy9.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/f
 onts/type1/public/lm/lmtt10.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/lm/lmtt8.pfb><C:/Users/dhl/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on STAT8101_Final_Project.pdf (36 pages, 17062655 bytes).
+Output written on STAT8101_Final_Project.pdf (36 pages, 16781824 bytes).
 PDF statistics:
- 1055 PDF objects out of 1200 (max. 8388607)
+ 1137 PDF objects out of 1200 (max. 8388607)
  155 named destinations out of 1000 (max. 500000)
  69496 words of extra memory for PDF output out of 74296 (max. 10000000)
 
