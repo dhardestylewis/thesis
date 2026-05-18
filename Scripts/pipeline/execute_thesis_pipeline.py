@@ -137,6 +137,7 @@ def create_script_wrapper(name):
 
 def main():
     os.environ["USE_GPU"] = "1"
+    os.environ["PYTHONIOENCODING"] = "utf-8"
     print("="*60)
     print(" REFACTORED THESIS PIPELINE ORCHESTRATOR")
     print(f" Target Root: {ROOT}")
