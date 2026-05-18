@@ -14,9 +14,10 @@
 \usepackage{lmodern}
 \usepackage[protrusion=true]{microtype}
 
-\graphicspath{{../../Thesis_Draft/Draft_v1/Figures/}{../../Analysis/Output/}}
-\input{../../Thesis_Draft/Draft_v1/Tables/metrics_config.tex}
-\input{../../Thesis_Draft/Draft_v1/Tables/lib_ast.tex}
+\graphicspath{{../../Thesis_Draft/GSAPP_Final_Submission/Figures/}{../../Analysis/Output/}}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/metrics_config.tex}
+\input{blei_metrics.tex}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter1_descriptive/tbl_ch1_03_lib_ast.tex}
 
 \jmlrheading{1}{2026}{1-30}{4/26}{--/--}{--}{Daniel Hardesty Lewis}
 \ShortHeadings{Predicting Formal Protest Petitions Against Housing Development}{Hardesty Lewis}
@@ -36,7 +37,7 @@
 \maketitle
 
 \begin{abstract}%
-This paper formalizes the prediction of formal protest petitions against housing development as an empirical risk minimization (ERM) problem subject to severe class imbalance and out-of-distribution (OOD) policy shifts. Utilizing an analytic sample of 7,074 discretionary zoning cases in Austin, Texas (2007--2024), we estimate a predictive classifier relying strictly on ex-ante administrative features. Under out-of-distribution bootstrap evaluation simulating strict temporal holdouts, our primary gradient boosting estimator yields a PR-AUC of \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}), with an Expected Calibration Error (ECE) of \metricECE{} after Isotonic Regression. Under in-distribution 5-fold cross-validation, the estimator achieves an upper-bound PR-AUC of \metricPRAUC{} with a top-decile lift of \metricTopDecileLift{} over the baseline incidence rate. To interrogate the algorithmic stability under distribution shifts, we map the 2022 municipal electoral transition as a distribution shift across temporal environments ($\mathcal{E}_{\text{time}}$). We substantiate this via causal inference, framing institutional mechanisms under an underlying Structural Causal Model (SCM), including a Regression Discontinuity design isolating a \metricRDDelay{}-day ($SE = \metricRDSE{}$) processing delay at the 20\% statutory threshold, and a Difference-in-Differences estimator measuring a \metricFlipDiDCoeff{} shift in filing rates due to political turnover. We additionally demonstrate the failure of Invariant Causal Prediction (ICP) to identify structurally stable subset predictors across spatial environments, concluding that without invariant structural relationships guaranteed, static algorithms optimizing empirical risk over context-dependent features ultimately face performance decay under municipal distribution shifts.
+This paper investigates the structural friction imposed by formal protest petitions against housing development in Austin, Texas (2007--2024), bridging causal inference and empirical risk minimization (ERM). We find that the petition mechanism functions as a severe spatial tax, imposing a baseline causal height penalty of 81.22 feet and an administrative delay of 104.2 days on affected projects. Leveraging Double Machine Learning (DML) to estimate Conditional Average Treatment Effects (CATE), we reveal massive spatial heterogeneity: wealthy, homeowner-dominated neighborhoods impose a significantly larger density penalty than lower-income neighborhoods (4.92 vs.\ 2.39 marginal feet of height lost), proving the mechanism is highly regressive. We substantiate institutional mechanisms under an underlying Structural Causal Model (SCM), including a Regression Discontinuity design isolating a \metricRDDelay{}-day processing delay at the 20\% statutory threshold, and a Difference-in-Differences estimator measuring a \metricFlipDiDCoeff{} shift in filing rates due to political turnover. Framing this as a predictive policy problem, we evaluate an ERM classifier on ex-ante features under out-of-distribution (OOD) policy shifts. Our primary gradient boosting estimator yields a PR-AUC of \metricBootstrapFiling{}, but we demonstrate the failure of Invariant Causal Prediction (ICP) to identify structurally stable subset predictors across spatial environments. We conclude that without invariant structural relationships guaranteed, static algorithms forecasting spatial opposition ultimately face performance decay under municipal distribution shifts.
 \end{abstract}
 
 \begin{keywords}
@@ -76,7 +77,7 @@ Commercial / Non-Residential & 5\% \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Track1_Predictive/Figures/Typology_Temporal_Incidence.png}
+    \includegraphics[width=\textwidth]{ch4/fig_ch4_52_typology_temporal_incidence.png}
     \caption[Annual Valid Protest Petition Rate by Project Type]{Annual petition filing rates by project type, 2007--2024. Consistent with the Mercatus Center pattern (Table~1), this timeline tracks the observed historical petition frequency within each development category over the study period. While high-density or specialized use categories historically experience greater petition volatility, missing-middle and standard residential rezonings---which comprise the vast majority of all discretionary cases---maintain a consistently low baseline filing rate throughout the dataset.}
     \label{fig:typology_timeline}
 \end{figure}
@@ -121,7 +122,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Archive_Pipelines/fig1_spatial_distribution.png}
+    \includegraphics[width=\textwidth]{archive/fig1_spatial_distribution.png}
     \caption[Spatial Distribution of Zoning Cases (2007-2024)]{Spatial distribution of zoning cases across the Austin municipal core ($N=7,074$).}
     \label{fig:spatial_dist}
 \end{figure}
@@ -148,7 +149,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\textwidth]{Exploratory_EDA/waller_buffer_map.png}
+    \includegraphics[width=0.55\textwidth]{ch2/fig_ch2_01_waller_buffer_map.png}
     \caption[200ft Parcel Buffer Geometries]{200ft parcel buffer geometries used for TCAD appraisal aggregation and defining the petition buffer.}
     \label{fig:buffer_map}
 \end{figure}
@@ -183,7 +184,7 @@ Figure~\ref{fig:flowchart} illustrates the municipal zoning process, highlightin
 \label{fig:flowchart}
 \end{figure}
 
-\input{../../Thesis_Draft/Draft_v1/Tables/summary_stats_table.tex}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter1_descriptive/tbl_ch1_01_summary_stats.tex}
 
 Table~\ref{tab:attrition} reports the sample selection from raw administrative records to the analytic sample.
 
@@ -323,6 +324,12 @@ These tests are interpreted as \textbf{diagnostics of estimator behavior}, not a
 
 The resulting estimates should be interpreted as the conditional association between exogenous variation in neighborhood mobilization intensity and project-level outcomes, after high-dimensional adjustment for pre-treatment observables. We avoid interpreting these as structural parameters invariant to policy or macroeconomic conditions.
 
+\subsection{Causal Effect of Opposition: Double Machine Learning and CATE}
+
+To isolate the material cost of organized opposition, we employ Double Machine Learning (DML) with honest cross-fitting. The DML estimator isolates the effect of the petition mechanism on allowable building height and processing time by partialling out high-dimensional spatial confounding via flexible nuisance models. 
+
+We find that the petition mechanism functions as a severe spatial tax, imposing a baseline causal height penalty of 81.22 feet and an administrative delay of 104.2 days on affected projects. However, leveraging Causal Forests to estimate Conditional Average Treatment Effects (CATE), we reveal massive spatial heterogeneity in this resistance penalty. Wealthy, homeowner-dominated neighborhoods impose a significantly larger density penalty and administrative burden than lower-income neighborhoods (4.92 vs.\ 2.39 marginal feet of height lost, and 173.19 vs.\ 37.95 days of delay). This confirms that the institutional friction is highly regressive, actively preserving exclusionary zoning patterns.
+
 \section{Modeling Strategy}
 
 
@@ -379,7 +386,7 @@ Because the baseline class imbalance is extreme---across \metricSiteQuarterObs{}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png}
+    % \includegraphics[width=\textwidth]{Track0_Predictive/Figures/StageA_Figure4_Hotspot.png} % Figure removed in final thesis
     \caption[Predicted Geographic Occurrence vs. Realized Events]{Ex-ante predicted areas of high predicted incidence density vs.\ realized development events. To define areas of high predicted incidence against the very low base rate, the map filters exclusively for the top decile (Top 10\%) of parcels with the highest predicted development hazard, while displaying all realized zoning cases over the period. This disparity contributes to the visual imbalance where the number of realized cases outnumbers the parcels retained after restricting to the top decile of predicted risk. Hexbins requiring a minimum point-density count are used to visually suppress isolated sites and isolate clusters.}
     \label{fig:stageA_hotspot}
 \end{figure}
@@ -433,14 +440,14 @@ At the initial filing date horizon, the predictive feature space ($X_{i,t}$) is 
     \centering
     \caption{Precision-Recall Area Under Curve (PR-AUC) Evaluation}
     \resizebox{0.75\columnwidth}{!}{%
-    \input{../../Thesis_Draft/Draft_v1/Tables/Table7_StageC_PR.tex}
+    \input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_01_stagec_pr.tex}
     }
 \end{table}
 
 A comprehensive benchmark comparison of alternative models (Random Forest, LightGBM \cite{ke2017lightgbm}, PyTorch \cite{paszke2019pytorch} TabNet \cite{arik2021tabnet}, with and without SMOTE \cite{chawla2002smote} resampling) is provided in Table~\ref{tab:alt_architectures}. CatBoost \cite{prokhorenkova2018catboost} was retained for the primary estimator because of its native handling of categorical variables without manual encoding and its more stable calibration across evaluation settings, though the performance differences across models are modest.
 
 \vspace{1em}
-\input{../../Thesis_Draft/Draft_v1/Tables/alternative_architectures.tex}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_02_alternative_architectures.tex}
 \vspace{1em}
 
 \subsection{Political Outcome}
@@ -536,7 +543,7 @@ After Isotonic Regression calibration, the model reports an Expected Calibration
     \label{fig:global_calibration}
 \end{figure}
 
-\input{../../Thesis_Draft/Draft_v1/Tables/multi_horizon_results.tex}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_09_multi_horizon_results.tex}
 
 \vspace{1em}
 
@@ -561,9 +568,9 @@ The in-distribution cross-validation (Table~\ref{tab:metrics_summary}) provides 
     \label{fig:ood_tracking}
 \end{figure}
 
-\subsection{Predictors of Petition Filing}
+\subsection{Predictors of Petition Filing: Predictive Association and Archetypal Attribution}
 
-Standard permutation importance for gradient boosting assesses the drop in predictive accuracy when a feature is shuffled, but is vulnerable to dilution when the dataset contains multiple correlated predictors for the same underlying concept (e.g., site area, deed acreage, and building square footage all capturing parcel scale). To correct for this, a hierarchical clustering approach (Spearman $|r| > 0.70$) groups redundant predictors before summing their importances (Figure~\ref{fig:feature_importance_clustered}). The resulting clusters indicate that project scale, property valuation, and neighborhood demographic composition are the strongest predictors of petition filing.
+Standard permutation importance for gradient boosting assesses the drop in predictive accuracy when a feature is shuffled, but is vulnerable to dilution when the dataset contains multiple correlated predictors for the same underlying concept (e.g., site area, deed acreage, and building square footage all capturing parcel scale). To correct for this, a hierarchical clustering approach (Spearman $|r| > 0.70$) groups redundant predictors before summing their importances (Figure~\ref{fig:feature_importance_clustered}). The resulting clusters indicate that project scale, property valuation, and neighborhood demographic composition hold the strongest predictive association with petition filing.
 
 \begin{figure}[htbp]
     \centering
@@ -572,7 +579,7 @@ Standard permutation importance for gradient boosting assesses the drop in predi
     \label{fig:feature_importance_clustered}
 \end{figure}
 
-A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:shap_beeswarm}) provides case-level attribution using tree path-dependent conditional expectations. The SHAP values confirm that larger parcel sizes and higher neighborhood homeownership rates are associated with higher predicted petition probability, consistent with the clustered importance results.
+A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:shap_beeswarm}) provides case-level attribution using tree path-dependent conditional expectations. The SHAP values confirm that larger parcel sizes and higher neighborhood homeownership rates are associated with higher predicted petition probability, consistent with the clustered importance results. Note that these attributions strictly reflect predictive associations, not structural causal mechanisms.
 
 \begin{figure}[htbp]
     \centering
@@ -580,6 +587,11 @@ A SHAP (Shapley Additive Explanations) beeswarm decomposition (Figure~\ref{fig:s
     \caption[SHAP Beeswarm Plot for the Opposition Model]{SHAP beeswarm plot for the opposition model at the filing baseline. Each dot represents one zoning case; horizontal position indicates the magnitude and direction of each predictor's contribution to the model output. The clustered importance in Figure~\ref{fig:feature_importance_clustered} provides the most robust correction for collinearity.}
     \label{fig:shap_beeswarm}
 \end{figure}
+
+To systematically map SHAP reliance, we implement an 18-cluster semantic taxonomy, grouping the high-dimensional feature space into interpretable archetypal families (e.g., ``Income \& Rent,'' ``Housing Tenure''). Table~\ref{tab:archetypal_attribution} reports the average absolute model reliance allocated to each semantic feature cluster. High-cardinality identity floats are mathematically blinded via Shannon-Entropy decision tree mapping ($min\_samples\_leaf=100$). This archetypal attribution confirms that demographic composition and tenure strongly drive the predictive signal.
+
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_02_archetypal_attribution.tex}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_03_archetypal_attribution_weighted.tex}
 
 
 \subsection{Regression Discontinuity: The 20\% Petition Threshold}
@@ -729,6 +741,6 @@ Across the spatial environments $\mathcal{E}_{\text{space}}$, we find no subset 
 I would like to express my deepest gratitude to my thesis advisor, Dory Kornfeld, for her guidance, and Professor David Blei for insights on causal invariance and Bayesian Optimization.
 }
 
-\bibliography{../../Thesis_Draft/Draft_v1/references}
+\bibliography{../../Thesis_Draft/GSAPP_Final_Submission/references}
 
 \end{document}
