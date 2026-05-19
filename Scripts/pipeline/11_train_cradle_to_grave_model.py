@@ -133,7 +133,7 @@ def train_stage_2_regression_3way(df, features):
     
     # Extract SHAP on the final model to show the drivers of the Inner regime
     explainer = shap.TreeExplainer(reg)
-    shap_values = explainer.shap_values(X_inner)
+    shap_values = explainer.shap_values(X_inner_comp_test)
     shap_abs = np.abs(shap_values).mean(axis=0)
     shap_df = pd.DataFrame({'feature': features, 'importance_roi': shap_abs}).sort_values('importance_roi', ascending=False)
     

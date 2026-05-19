@@ -12,11 +12,10 @@ def main():
     os.environ["USE_GPU"] = "1"
     os.environ["PYTHONIOENCODING"] = "utf-8"
     
-    # Start from index 22 (08e_run_multihorizon_oot.py is at index 22 in PIPELINE_STEPS)
-    # Wait, let's find the exact index.
+    # Start from index 26 (11_train_cradle_to_grave_model.py is at index 26 in PIPELINE_STEPS)
     start_idx = 0
     for i, (s, d) in enumerate(PIPELINE_STEPS):
-        if s == "08e_run_multihorizon_oot.py":
+        if s == "11_train_cradle_to_grave_model.py":
             start_idx = i
             break
             
