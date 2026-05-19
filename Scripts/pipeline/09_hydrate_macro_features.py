@@ -41,14 +41,16 @@ def hydrate_panel(df_macro):
         df_panel = pd.DataFrame({'date': dates, 'dummy_case': range(len(dates))})
     else:
         print(f"Loading existing panel data from {PANEL_PATH}...")
-        df_panel = pd.read_csv(PANEL_PATH, parse_dates=['date'])
+        df_panel = pd.read_csv(PANEL_PATH, parse_dates=['period_start'])
     
     # We will do an asof merge to align the biweekly panel dates with the monthly macro dates
     print("Merging macroeconomic features into the panel...")
-    df_panel = df_panel.sort_values('date')
+    df_panel = df_panel.sort_values('period_start')
     df_macro = df_macro.sort_values('date')
     
-    df_merged = pd.merge_asof(df_panel, df_macro, on='date', direction='backward')
+    df_merged = pd.merge_asof(df_panel, df_macro, left_on='period_start', right_on='date', direction='backward')
+    if 'date' in df_merged.columns:
+        df_merged.drop(columns=['date'], inplace=True)
     
     print(f"Saving hydrated panel to {OUTPUT_PATH}...")
     df_merged.to_csv(OUTPUT_PATH, index=False)
