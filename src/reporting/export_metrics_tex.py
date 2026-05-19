@@ -74,7 +74,7 @@ def export_metrics_tex() -> None:
     root = _repo_root()
     manifest_path = root / "reporting" / "final_metrics_manifest.json"
     golden_path = root / "registries" / "metrics_manifest.json"
-    tex_path = root / "Thesis_Draft" / "Draft_v1" / "Tables" / "metrics_config.tex"
+    tex_path = root / "Thesis_Draft" / "GSAPP_Final_Submission" / "Tables" / "metrics_config.tex"
 
     if not manifest_path.exists():
         raise FileNotFoundError(f"Manifest not found: {manifest_path}")
@@ -122,7 +122,7 @@ def export_metrics_tex() -> None:
     gate_cfg: Dict[str, Any] = {}
     if gate_cfg_path.exists():
         gate_cfg = cast(Dict[str, Any], json.loads(gate_cfg_path.read_text(encoding="utf-8")))
-    manuscript_entry = str(gate_cfg.get("manuscript_entrypoint", "Thesis_Draft/Draft_v1/Austin_NIMBY_Thesis_Draft.tex"))
+    manuscript_entry = str(gate_cfg.get("manuscript_entrypoint", "Thesis_Draft/GSAPP_Final_Submission/Lewis_Daniel_GSAPPUP2026_Thesis.tex"))
     tex_files = _parse_tex_tree(root / manuscript_entry)
     manuscript_text = "\n".join(tex_files.values())
     used_macros = set(re.findall(r"\\(metric[A-Za-z0-9]+)\{\}", manuscript_text))

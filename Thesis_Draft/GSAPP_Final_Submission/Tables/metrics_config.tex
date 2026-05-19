@@ -1,20 +1,30 @@
 % AUTO-GENERATED THESIS METRICS CONFIG
 % Sources: reporting/final_metrics_manifest.json (computed)
-% registries/metrics_manifest.json (golden/supplemental)
+%          registries/metrics_manifest.json (golden/supplemental)
 % Computed values override golden where both are present.
-% PR-AUC CI: bootstrap on out-of-distribution test sets.
+% PR-AUC CI: bootstrap on OOD test rows (src/models/evaluate_predictions.py).
 % Layer C1 ECE: 10-bin ECE on calibrated scores; matches evaluation_results.json (horizon=filing).
 
-\newcommand{\metricACE}{0.002}
+\newcommand{\metricACE}{0.001}
 \newcommand{\metricAttritionRate}{0.12}
 \newcommand{\metricBaseHazardProb}{$\approx 2.5 \times 10^{-5}$}
 \newcommand{\metricBaseRate}{4.6\%}
 \newcommand{\metricBaseRateN}{175}
 \newcommand{\metricBaselineCases}{3828}
 \newcommand{\metricBaselineParcels}{135000}
-\newcommand{\metricBootstrapFiling}{0.663}
-\newcommand{\metricBootstrapFilingCI}{[0.43, 0.87]}
-\newcommand{\metricBrierScore}{0.014}
+\newcommand{\metricBootstrapFiling}{0.687}
+\newcommand{\metricBootstrapFilingCI}{[0.45, 0.92]}
+\newcommand{\metricBrierScore}{0.013}
+\newcommand{\metricCATEHeightMax}{NA}
+\newcommand{\metricCATEHeightMedian}{NA}
+\newcommand{\metricCATEHeightMin}{NA}
+\newcommand{\metricCATEHeightPctPositive}{NA}
+\newcommand{\metricCATEHeightQuartileHigh}{NA}
+\newcommand{\metricCATEHeightQuartileLow}{NA}
+\newcommand{\metricCATEIncomeFourDelayMean}{NA}
+\newcommand{\metricCATEIncomeFourHeightMean}{NA}
+\newcommand{\metricCATEIncomeOneDelayMean}{NA}
+\newcommand{\metricCATEIncomeOneHeightMean}{NA}
 \newcommand{\metricCBFilingBrier}{0.012}
 \newcommand{\metricCBFilingPRAUC}{0.528}
 \newcommand{\metricCBNFilingBrier}{0.012}
@@ -29,28 +39,32 @@
 \newcommand{\metricDiDSE}{0.044}
 \newcommand{\metricDiDSignificanceText}{not statistically significant ($p = 0.48$)}
 \newcommand{\metricDiDVotes}{-0.031}
-\newcommand{\metricECE}{0.016}
+\newcommand{\metricECE}{0.013}
 \newcommand{\metricECEAltCalibrationSensitivity}{0.278}
 \newcommand{\metricECEBootCI}{[0.12, 0.38]}
 \newcommand{\metricECEInDistCVCalibrated}{0.239}
-\newcommand{\metricECEOODBootstrapCalibrated}{0.016}
+\newcommand{\metricECEOODBootstrapCalibrated}{0.013}
 \newcommand{\metricFNRGap}{0.0}
 \newcommand{\metricFPR}{1.85\%}
 \newcommand{\metricFPRGap}{99.79\%}
 \newcommand{\metricFlipDiDCoeff}{-0.04}
 \newcommand{\metricFlipDiDPval}{0.24}
-\newcommand{\metricHDFrictionCoeff}{n/a}
-\newcommand{\metricHDFrictionPval}{n/a}
+\newcommand{\metricHDFrictionCoeff}{---}
+\newcommand{\metricHDFrictionPval}{---}
 \newcommand{\metricHazardLift}{2.4}
-\newcommand{\metricHeadlineECE}{0.016}
-\newcommand{\metricHeadlinePRAUC}{0.663}
-\newcommand{\metricHeadlinePRAUCCI}{[0.43, 0.87]}
+\newcommand{\metricHeadlineECE}{0.013}
+\newcommand{\metricHeadlinePRAUC}{0.687}
+\newcommand{\metricHeadlinePRAUCCI}{[0.45, 0.92]}
+\newcommand{\metricHurdlePRAUC}{NA}
+\newcommand{\metricHurdleROCAUC}{NA}
 \newcommand{\metricLabelAuditN}{200}
 \newcommand{\metricLabelFidelity}{100.0\%}
-\newcommand{\metricLargestClusterDelta}{0.12}
+\newcommand{\metricLargestClusterDelta}{0.039}
 \newcommand{\metricMaxDistrictPositives}{112}
-\newcommand{\metricMeanProbTN}{0.012}
-\newcommand{\metricMeanProbTP}{0.545}
+\newcommand{\metricMeanDelayPenalty}{NA}
+\newcommand{\metricMeanHeightPenalty}{NA}
+\newcommand{\metricMeanProbTN}{0.010}
+\newcommand{\metricMeanProbTP}{0.637}
 \newcommand{\metricMedianDistrictPositives}{58}
 \newcommand{\metricMinDistrictPositives}{34}
 \newcommand{\metricNDistricts}{11}
@@ -61,16 +75,33 @@
 \newcommand{\metricNPAFrictionPval}{0.61}
 \newcommand{\metricNTestPositive}{15}
 \newcommand{\metricNTestTotal}{583}
+\newcommand{\metricNuisanceHeightRTwo}{NA}
+\newcommand{\metricNuisancePetitionRTwo}{NA}
 \newcommand{\metricPRAUC}{0.820}
-\newcommand{\metricPrecisionAtFifty}{52.9\%}
-\newcommand{\metricPrecisionAtThirty}{52.6\%}
+\newcommand{\metricPrecisionAtFifty}{66.7\%}
+\newcommand{\metricPrecisionAtThirty}{57.9\%}
 \newcommand{\metricRDCI}{[26.4, 58.6]}
 \newcommand{\metricRDDelay}{42.5}
 \newcommand{\metricRDDelayWeeks}{6.1}
 \newcommand{\metricRDSE}{8.2}
 \newcommand{\metricRFFilingPRAUC}{0.574}
-\newcommand{\metricRecallAtFifty}{60.0\%}
-\newcommand{\metricRecallAtThirty}{66.7\%}
+\newcommand{\metricRecallAtFifty}{66.7\%}
+\newcommand{\metricRecallAtThirty}{73.3\%}
+\newcommand{\metricRobustAblateBaseline}{NA}
+\newcommand{\metricRobustAblateNoDemographics}{NA}
+\newcommand{\metricRobustAblateNoHistory}{NA}
+\newcommand{\metricRobustAblateNoMacro}{NA}
+\newcommand{\metricRobustAblateNoSpatial}{NA}
+\newcommand{\metricRobustNuisanceGBM}{NA}
+\newcommand{\metricRobustNuisanceLasso}{NA}
+\newcommand{\metricRobustNuisanceRF}{NA}
+\newcommand{\metricRobustSeedMean}{NA}
+\newcommand{\metricRobustSeedPosPct}{NA}
+\newcommand{\metricRobustSeedStd}{NA}
+\newcommand{\metricRobustTreatBinary}{NA}
+\newcommand{\metricRobustTreatContinuous}{NA}
+\newcommand{\metricRobustTreatLog}{NA}
+\newcommand{\metricRobustTreatWinsorized}{NA}
 \newcommand{\metricSiteQuarterObs}{4.2 million}
 \newcommand{\metricSpuriousCatBoost}{0.89}
 \newcommand{\metricSpuriousLGBM}{0.85}
@@ -88,8 +119,10 @@
 \newcommand{\metricStabVREx}{0.961}
 \newcommand{\metricStageBMaeSqft}{4200.0}
 \newcommand{\metricStageBMaeUnits}{2.1}
-\newcommand{\metricTODFrictionCoeff}{n/a}
-\newcommand{\metricTODFrictionPval}{n/a}
+\newcommand{\metricStudyYears}{NA}
+\newcommand{\metricSurvivingN}{NA}
+\newcommand{\metricTODFrictionCoeff}{---}
+\newcommand{\metricTODFrictionPval}{---}
 \newcommand{\metricTenOneITSCoeff}{0.041}
 \newcommand{\metricTenOneITSPval}{0.74}
 \newcommand{\metricTopDecileLift}{9.9x}

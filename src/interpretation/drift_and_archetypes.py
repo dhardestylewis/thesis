@@ -467,7 +467,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     with open(os.path.join(perf_dir, f'tbl_ch4_14_temporal_drift_analysis{suffix}.tex'), 'w') as f: f.write('\n'.join(t4_lines))
     
     # Table 5
-    t5_lines = [r'\begin{table}[htbp]', r'\centering', r'\caption[Temporal Predictive Drift (PR-AUC lift)]{\textbf{Temporal predictive drift: PR-AUC lift by algorithm (Optimal Entropy-Based Discretization).}}', r'\label{tab:temporal_drift_prauc_lift}', r'\resizebox{\textwidth}{!}{%', r'\begin{tabular}{l l' + 'c'*len(eval_years) + '}', r'\toprule', r'\textbf{Model} & \textbf{Anchor Training} & ' + ' & '.join(['\\textbf{'+str(y)+'}' for y in eval_years]) + r' \\', r'\midrule']
+    t5_lines = [r'\begin{table}[htbp]', r'\centering', r'\caption[Temporal Predictive Drift (PR-AUC lift)]{\textbf{Temporal predictive drift: PR-AUC lift by algorithm (Optimal Entropy-Based Discretization).}}', r'\label{tab:temporal_drift_prauc_lift' + suffix + '}', r'\resizebox{\textwidth}{!}{%', r'\begin{tabular}{l l' + 'c'*len(eval_years) + '}', r'\toprule', r'\textbf{Model} & \textbf{Anchor Training} & ' + ' & '.join(['\\textbf{'+str(y)+'}' for y in eval_years]) + r' \\', r'\midrule']
     t5_lines.extend(format_grid(res_df, 'Lift', use_lift=True))
     t5_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     with open(os.path.join(perf_dir, f'tbl_ch4_17_temporal_drift_prauc_lift{suffix}.tex'), 'w') as f: f.write('\n'.join(t5_lines))
@@ -484,7 +484,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     t6_lines = [
         r'\begin{table}[htbp]', r'\centering',
         r'\caption[Temporal Drift (Max-of-Family)]{\textbf{Max-of-Family dominance (Optimal Entropy-Based Discretization).}}',
-        r'\label{tab:temporal_drift_family}', r'\resizebox{\textwidth}{!}{%',
+        r'\label{tab:temporal_drift_family' + suffix + '}', r'\resizebox{\textwidth}{!}{%',
         r'\begin{tabular}{l' + 'c'*len(eval_years) + '}', r'\toprule',
         r'\textbf{Anchor Training} & ' + ' & '.join(['\\textbf{' + str(y) + '}' for y in eval_years]) + r' \\',
         r'\midrule', r'\multicolumn{8}{c}{\textbf{Panel A: Maximum Absolute PR-AUC}} \\', r'\midrule'

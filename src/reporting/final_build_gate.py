@@ -66,7 +66,7 @@ def _parse_tex_tree(entrypoint: Path) -> Tuple[Dict[Path, str], List[str]]:
         text = path.read_text(encoding="utf-8", errors="ignore")
         visited[path] = text
         for rel in re.findall(r"\\input\{([^}]+)\}", text):
-            next_path = (path.parent / rel)
+            next_path = (entrypoint.parent / rel)
             if next_path.suffix == "":
                 next_path = next_path.with_suffix(".tex")
             walk(next_path.resolve())

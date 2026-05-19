@@ -9,5 +9,8 @@
   "12b_build_biweekly_lifecycle.py": 440.7094964981079,
   "12c_merge_permit_features.py": 229.47187995910645,
   "13_export_tax_anomalies.py": 13.516225099563599,
-  "10_export_manuscript_artifacts.py": 1.292365550994873
+  "10_export_manuscript_artifacts.py": 1.292365550994873,
+  "12_generate_extracted_tables.py": 0.11245036125183105,
+  "13_render_prose_figures.py": 0.09713506698608398,
+  "14_audit_prose_recency.py": 0.2574033737182617
 }

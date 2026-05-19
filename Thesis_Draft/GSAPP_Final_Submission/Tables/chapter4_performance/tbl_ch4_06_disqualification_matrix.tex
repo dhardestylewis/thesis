@@ -1,23 +1,19 @@
-
-
-The corresponding metrics are detailed in \autoref{tab:disqualification_matrix}.
-
 \begin{table}[H]
- \centering
- \begin{tabular}{lccc}
- \toprule
- \textbf{Algorithm} & \textbf{Rank Stability ($\rho$)} & \textbf{Overlap (Top-5)} & \textbf{Status} \\
- \midrule
- Deep V-REx & \metricStabVREx{} & 100.0\% & \textbf{PASSED} \\
- CatBoost & 0.927 & 90.0\% & \textbf{PASSED} \\
- XGBoost & 0.923 & 100.0\% & \textbf{PASSED} \\
- TabNet & \metricStabTabNet{} & 80.0\% & \textbf{PASSED} \\
- LightGBM & 0.848 & 90.0\% & \textbf{PASSED} \\
- Deep ERM (MLP) & \metricStabERM{} & 80.0\% & \textbf{PASSED} \\
- Logistic Regression (L2) & 0.831 & 100.0\% & \textbf{PASSED} \\
- Random Forest & 0.921 & 100.0\% & \textbf{EXCLUDED FROM PRIMARY SPECIFICATION} \\
- \bottomrule
- \end{tabular}
- \caption[Model Feature-Rank Stability Summary]{Feature-rank stability and top-5 feature overlap across adjacent temporal windows (2020--2022). CatBoost and XGBoost show the highest combined rank stability and top-feature agreement. Random Forest's high rank stability but lower performance under feature restriction (Appendix~\ref{app:spuriousness}) is noted; this audit does not adjudicate causal validity.}
- \label{tab:disqualification_matrix}
+    \centering
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Algorithm} & \textbf{Rank Stability ($\rho$)} & \textbf{Overlap (Top-5)} & \textbf{Status} \\
+        \midrule
+        Deep V-REx & \metricStabVREx{} & 100.0\% & \textbf{PASSED} \\
+        CatBoost & 0.927 & 90.0\% & \textbf{PASSED} \\
+        XGBoost & 0.923 & 100.0\% & \textbf{PASSED} \\
+        TabNet & \metricStabTabNet{} & 80.0\% & \textbf{PASSED} \\
+        LightGBM & 0.848 & 90.0\% & \textbf{PASSED} \\
+        Deep ERM (MLP) & \metricStabERM{} & 80.0\% & \textbf{PASSED} \\
+        Logistic Regression (L2) & 0.831 & 100.0\% & \textbf{PASSED} \\
+        Random Forest & 0.921 & 100.0\% & \textbf{EXCLUDED FROM PRIMARY SPECIFICATION} \\
+        \bottomrule
+    \end{tabular}
+    \caption[Model Feature-Rank Stability Summary]{Feature-rank stability and top-5 feature overlap across adjacent temporal windows (2020--2022). CatBoost and XGBoost show the highest combined rank stability and top-feature agreement. Random Forest's high rank stability but lower performance under feature restriction (Appendix~\ref{app:spuriousness}) is noted; this audit does not adjudicate causal validity.}
+    \label{tab:disqualification_matrix}
 \end{table}

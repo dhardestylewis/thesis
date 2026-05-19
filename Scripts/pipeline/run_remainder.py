@@ -12,10 +12,10 @@ def main():
     os.environ["USE_GPU"] = "1"
     os.environ["PYTHONIOENCODING"] = "utf-8"
     
-    # Start from index 26 (11_train_cradle_to_grave_model.py is at index 26 in PIPELINE_STEPS)
+    # Start from index
     start_idx = 0
     for i, (s, d) in enumerate(PIPELINE_STEPS):
-        if s == "11_train_cradle_to_grave_model.py":
+        if s == "12_generate_extracted_tables.py":
             start_idx = i
             break
             
