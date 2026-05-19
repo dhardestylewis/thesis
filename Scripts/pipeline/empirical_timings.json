@@ -6,5 +6,8 @@
   "10_link_lifecycle_stages.py": 42.885387659072876,
   "11_train_cradle_to_grave_model.py": 3.8398232460021973,
   "12_build_annual_lifecycle_panel.py": 103.4845221042633,
-  "12b_build_biweekly_lifecycle.py": 440.7094964981079
+  "12b_build_biweekly_lifecycle.py": 440.7094964981079,
+  "12c_merge_permit_features.py": 229.47187995910645,
+  "13_export_tax_anomalies.py": 13.516225099563599,
+  "10_export_manuscript_artifacts.py": 1.292365550994873
 }
