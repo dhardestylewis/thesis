@@ -179,7 +179,7 @@ Supporting tables log meeting events (staff and commission recommendations), spe
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=\textwidth]{archive/fig1_spatial_distribution.png}
+    \includegraphics[width=\textwidth]{archive/maps_and_diagrams/fig1_spatial_distribution.png}
     \caption[Spatial Distribution of Zoning Cases, 2007--2024]{Spatial distribution of zoning cases across the Austin municipal core ($N=\metricBaselineCases{}$).}
     \label{fig:spatial_dist}
 \end{figure}
@@ -535,7 +535,7 @@ These constraints establish the overarching narrative of the predictive results:
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{exhibits/fig_pr_curves_multihorizon.pdf}
+    \includegraphics[width=0.8\textwidth]{exhibits/calibration_and_pr/fig_pr_curves_multihorizon.pdf}
     \caption[Filing-Date Precision-Recall Curves by Model Class]{Precision-recall curves for filing-date petition models from the pre-registered benchmark roster.}
     \label{fig:pr_curves}
 \end{figure}
@@ -566,18 +566,18 @@ While aggregate architectural performance appears statistically indistinguishabl
 \vspace{1em}
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_prauc_testyear.pdf} \\
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/temporal_drift/fig_temporal_drift_prauc_testyear.pdf} \\
     \vspace{0.5em}
-    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_lift_testyear.pdf}
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/temporal_drift/fig_temporal_drift_lift_testyear.pdf}
     \caption[Temporal Drift Evidence (Target Horizon)]{\textbf{Temporal drift evidence across terminal observation years.} Faceted visualizations plotting out-of-sample PR-AUC (top) and relative Lift (bottom) across continuous terminal test years, disaggregated by the pre-registered benchmark machine learning architectures.}
     \label{fig:temporal_drift_testyear}
 \end{figure}
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_prauc_offset.pdf} \\
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/temporal_drift/fig_temporal_drift_prauc_offset.pdf} \\
     \vspace{0.5em}
-    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/fig_temporal_drift_lift_offset.pdf}
+    \includegraphics[width=0.85\textwidth,height=0.38\textheight,keepaspectratio]{exhibits/temporal_drift/fig_temporal_drift_lift_offset.pdf}
     \caption[Temporal Drift Evidence (Elapsed Offset)]{\textbf{Temporal drift evidence relative to out-of-distribution temporal offset.} Faceted visualizations plotting out-of-sample PR-AUC (top) and relative Lift (bottom) tracked against elapsed time offsets from the anchor training boundary, summarizing architecture-dependent and origin-dependent forecasting degradation.}
     \label{fig:temporal_drift_offset}
 \end{figure}
@@ -588,7 +588,7 @@ The primary filing-date model (CatBoost) is interpreted through clustered attrib
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{exhibits/fig_feature_importance_clustered_H0_Full.pdf}
+    \includegraphics[width=0.85\textwidth]{exhibits/feature_importance/fig_feature_importance_clustered_H0_Full.pdf}
     \caption[Comparative Semantic Predictor Reliance between Architectural Families]{Top semantic predictor groups aggregated by average reliance within the three formalized model families (Tree, Deep, and Regularized Linear). Distinct reliance regimes hold uniquely between computational architectures: Linear and Deep proxies track spatial scale (Land Acres), while Tree methods locate heavy variance locally within demographics and zoning density.}
     \label{fig:feature_importance_clustered}
 \end{figure}
@@ -985,14 +985,14 @@ Figure~\ref{fig:threshold_sensitivity} visualizes the performance trajectory of 
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.88\textwidth]{exhibits/fig_ch4_14_forecasting_interaction_shap.pdf}
+    \includegraphics[width=0.88\textwidth]{exhibits/chapter_exhibits/fig_ch4_14_forecasting_interaction_shap.pdf}
     \caption[Feature Contribution Decomposition for the Filing-Date Model]{Feature contribution decomposition for the filing-date opposition model using Interaction TreeSHAP (main effects). Each point is a case-level contribution for one predictor; horizontal position gives the signed effect on the model score and vertical density shows the distribution of contributions across cases. Main effects are extracted from the interaction value diagonal, separating each feature's direct contribution from contingent interaction effects with other predictors. Because correlated predictors can exchange attribution weight, this exhibit is descriptive support for within-model behavior rather than a stand-alone substantive ranking of stable feature importance.}
     \label{fig:shap_beeswarm}
 \end{figure}
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.88\textwidth]{exhibits/fig_ch4_14b_forecasting_interaction_grid.pdf}
+    \includegraphics[width=0.88\textwidth]{exhibits/chapter_exhibits/fig_ch4_14b_forecasting_interaction_grid.pdf}
     \caption[Pairwise Feature Interaction Structure for the Filing-Date Model]{Pairwise feature interaction structure for the filing-date opposition model. Each cell $(i, j)$ plots the case-level Interaction TreeSHAP value distribution for the feature pair. Vertical position shows the interaction effect magnitude and direction on the model score, while color indicates the conditioning value of feature $j$ (red for high, blue for low). This reveals not just the strength, but the precise structural form of contingent effects (e.g., whether high values of feature $j$ amplify or suppress the effect of feature $i$). This exhibit complements Figure~\ref{fig:shap_beeswarm} by revealing the collinearity and interaction structure that the main-effects decomposition controls for.}
     \label{fig:shap_interaction_grid}
 \end{figure}
@@ -1004,14 +1004,14 @@ Figure~\ref{fig:threshold_sensitivity} visualizes the performance trajectory of 
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.88\textwidth]{exhibits/fig_ch5_14_causal_dml_interaction_shap.pdf}
+    \includegraphics[width=0.88\textwidth]{exhibits/chapter_exhibits/fig_ch5_14_causal_dml_interaction_shap.pdf}
     \caption[DML Treatment Effect Heterogeneity (Interaction TreeSHAP)]{Treatment effect heterogeneity for the Causal Forest DML model, decomposed via Interaction TreeSHAP main effects. Each point represents one case; horizontal position shows the feature's contribution to the local treatment effect estimate. Features with wide distributions indicate strong heterogeneity in how the petition dose penalty operates across the sample.}
     \label{fig:dml_shap_beeswarm}
 \end{figure}
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.88\textwidth]{exhibits/fig_ch5_14b_causal_dml_interaction_grid.pdf}
+    \includegraphics[width=0.88\textwidth]{exhibits/chapter_exhibits/fig_ch5_14b_causal_dml_interaction_grid.pdf}
     \caption[Pairwise Feature Interaction Structure (DML)]{Pairwise Interaction TreeSHAP structure for the Causal Forest DML treatment effect surface. Each cell $(i, j)$ plots the case-level interaction value distribution across $N=200$ cases, showing how the treatment effect heterogeneity attributable to feature $i$ is conditioned by the realized value of feature $j$ (colored red for high, blue for low). This structural view reveals which feature pairs jointly modulate the petition dose penalty.}
     \label{fig:dml_shap_grid}
 \end{figure}

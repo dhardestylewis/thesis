@@ -1,10 +1,10 @@
-# Build thesis PDF from Draft_v1 with full 3-pass compile for cross-references.
+# Build thesis PDF from GSAPP_Final_Submission with full 3-pass compile for cross-references.
 # Usage (repo root): powershell -File Scripts/pipeline/compile_thesis.ps1
 $ErrorActionPreference = "Stop"
-$draft = (Resolve-Path (Join-Path $PSScriptRoot "..\..\Thesis_Draft\Draft_v1")).Path
+$draft = (Resolve-Path (Join-Path $PSScriptRoot "..\..\..\Thesis_Draft\GSAPP_Final_Submission")).Path
 Push-Location $draft
 
-$jobName = "Lewis_2026_NIMBYism_Austin_Thesis"
+$jobName = "Lewis_Daniel_GSAPPUP2026_Thesis"
 $texFile = "$jobName.tex"
 $pdfFile = "$jobName.pdf"
 
