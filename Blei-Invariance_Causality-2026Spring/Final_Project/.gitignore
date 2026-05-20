@@ -1,1 +1,11 @@
+# Local section copies (canonical sources live under Thesis_Draft/GSAPP_Final_Submission/Sections/)
 Sections/
+
+# LaTeX build artifacts (also covered by repo-root *.aux etc.)
+STAT8101_Final_Project.*
+hardesty-lewis_final_project.aux
+hardesty-lewis_final_project.bbl
+hardesty-lewis_final_project.blg
+hardesty-lewis_final_project.log
+hardesty-lewis_final_project.out
+hardesty-lewis_final_project.pdf

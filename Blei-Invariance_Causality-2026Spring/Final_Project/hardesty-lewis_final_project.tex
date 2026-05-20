@@ -11,8 +11,11 @@
 \usepackage{enumitem}
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{longtable}
 
-\graphicspath{{../../Thesis_Draft/GSAPP_Final_Submission/Figures/}{../../Analysis/Output/}}
+\graphicspath{{../../Thesis_Draft/GSAPP_Final_Submission/Figures/}{../../Analysis/Output/}{Figures/}}
 \input{../../Thesis_Draft/GSAPP_Final_Submission/Tables/metrics_config.tex}
 
 \jmlrheading{1}{2026}{1-30}{4/26}{--/--}{--}{Daniel Hardesty Lewis}
@@ -55,7 +58,7 @@ Third, while much of the urban planning literature focuses on causal inference, 
 
 Fourth, a critical methodological gap in the prior literature is the absence of heterogeneous treatment effect (HTE) estimation for petition-driven resistance. Existing work quantifies whether petitions delay or block projects in the aggregate; it does not characterize how those effects vary across neighborhood types. Wager and Athey \cite{wager2018estimation} and Athey and Wager \cite{athey2019generalized} develop Causal Forests, an honest non-parametric estimator of the conditional average treatment effect function $\hat{\tau}(x_i) = \mathbb{E}[Y_i(1) - Y_i(0) \mid X_i = x]$, which estimates a separate causal effect for each covariate profile rather than a single pooled average. Chernozhukov et al. \cite{chernozhukov2018dml} formalize Double Machine Learning as a semiparametric framework that allows flexible nuisance estimation while retaining $\sqrt{n}$-consistent causal inference. Applied to the petition setting, these methods permit the thesis to characterize not just whether petitions matter on average, but where and for whom they are most consequential. The income and renter-share gradients documented in Section~\ref{sec:hte} would be invisible to any aggregate-ATE estimator, and directly motivate the deployed spatial impact layer as an instrument for heterogeneity-aware planning triage.
 
-\input{Sections/planning_context}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Sections/planning_context}
 
 \section{Methods}
 \label{sec:methodology}
@@ -552,6 +555,9 @@ We extend this analysis by weighting the standard attribution space relative to 
 
 
 Operationally, the attribution sidecar supports a narrower, more qualified conclusion: there is a recurring set of high-weight clusters, especially demographics, neighborhood income, and housing tenure, but their relative shares shift enough between architectures and years that they should be treated as a descriptive pattern rather than a fixed portable explanatory profile. The practical use of the attribution sidecar is therefore audit and monitoring, not a claim that any named feature cluster travels unchanged across model classes. Full feature contribution exhibits are reported in Appendix~\ref{app:exploratory_attribution}.
+
+\section{Causal Methodology Extensions}
+\input{../../Thesis_Draft/GSAPP_Final_Submission/Sections/blei_methodology.tex}
 
 \acknowledgements{
 I would like to express my deepest gratitude to my thesis advisor, Dory Kornfeld, for her guidance, and Professor David Blei for insights on causal invariance and Bayesian Optimization.
