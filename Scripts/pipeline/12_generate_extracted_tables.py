@@ -7,7 +7,7 @@ def main():
     
     # 1. Update Stage A Limits table with the genuinely dynamic output from Track 0
     track0_table = root / "Analysis/Output/Track0_Predictive/Metrics/Table6_multi_horizon.tex"
-    dest_stagea = root / "Thesis_Draft/Draft_v1/Tables/chapter4_performance/tbl_ch4_13_stagea_limits.tex"
+    dest_stagea = root / "Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_13_stagea_limits.tex"
     if track0_table.exists():
         content = track0_table.read_text(encoding="utf-8")
         # Ensure it is wrapped in table environment if it isn't completely
@@ -22,7 +22,7 @@ def main():
     # that map perfectly to the pipeline's future dataframe exports.
     
     # Geographic Causal Table Template
-    geo_causal_path = root / "Thesis_Draft/Draft_v1/Tables/chapter6_causal/tbl_ch6_01_geographic_causal.tex"
+    geo_causal_path = root / "Thesis_Draft/GSAPP_Final_Submission/Tables/chapter6_causal/tbl_ch6_01_geographic_causal.tex"
     geo_causal_path.write_text(r"""\begin{table}[H]
 \centering
 \caption{Summary of Supplementary Quasi-Experimental Estimates}
@@ -45,7 +45,7 @@ def main():
 \end{table}""", encoding="utf-8")
 
     # Stage B
-    stage_b_path = root / "Thesis_Draft/Draft_v1/Tables/chapter4_performance/tbl_ch4_12_stage_b.tex"
+    stage_b_path = root / "Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_12_stage_b.tex"
     stage_b_path.write_text(r"""\begin{table}[H]
 \centering
 \caption[Project Type and Scale]{Project Type Classification Performance. Macro-F1 scores calculate the unweighted simple average of F1 scores computed individually for each of the six project types ($C$). Defined as $Macro\textnormal{-}F_1 = \frac{1}{|C|} \sum_{c \in C} F_{1,c}$.}
@@ -68,7 +68,7 @@ $\hookrightarrow$ Multifamily & 0.743 & 0.743 & \textbf{0.727} & 0.678 & 0.695 &
 \end{table}""", encoding="utf-8")
 
     # Seed summary 
-    seed_path = root / "Thesis_Draft/Draft_v1/Tables/chapter4_performance/tbl_ch4_11_seed_summary.tex"
+    seed_path = root / "Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_11_seed_summary.tex"
     seed_path.write_text(r"""\begin{table}[H]
 \centering
 \caption{Multi-Seed Performance Summary (mean $\pm$ std across 20 seeds)}
@@ -90,7 +90,7 @@ Logistic Base & $0.041 \pm 0.000$ & $0.987 \pm 0.000$ \\
 \end{table}""", encoding="utf-8")
 
     # Disqualification Matrix
-    disq_path = root / "Thesis_Draft/Draft_v1/Tables/chapter4_performance/tbl_ch4_06_disqualification_matrix.tex"
+    disq_path = root / "Thesis_Draft/GSAPP_Final_Submission/Tables/chapter4_performance/tbl_ch4_06_disqualification_matrix.tex"
     disq_path.write_text(r"""\begin{table}[H]
     \centering
     \begin{tabular}{lccc}
@@ -112,7 +112,7 @@ Logistic Base & $0.041 \pm 0.000$ & $0.987 \pm 0.000$ \\
 \end{table}""", encoding="utf-8")
 
     # Spuriousness Index
-    spur_path = root / "Thesis_Draft/Draft_v1/Tables/chapter5_attribution/tbl_ch5_05_spuriousness_index.tex"
+    spur_path = root / "Thesis_Draft/GSAPP_Final_Submission/Tables/chapter5_attribution/tbl_ch5_05_spuriousness_index.tex"
     spur_path.write_text(r"""\begin{table}[H]
 \centering
 \begin{tabular}{lc}
@@ -129,7 +129,7 @@ Random Forest & \textbf{-18.0\%} \\
 \end{tabular}
 \end{table}""", encoding="utf-8")
 
-    print("[+] Successfully generated all remaining 6 latex table blocks into Draft_v1/Tables/")
+    print("[+] Successfully generated all remaining 6 latex table blocks into GSAPP_Final_Submission/Tables/")
 
 if __name__ == "__main__":
     main()

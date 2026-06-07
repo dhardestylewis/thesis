@@ -6,11 +6,8 @@
     "metricHeadlinePRAUC",
     "metricHeadlineECE"
   ],
-  "required_glossary_terms": [
-    "measured threshold-crossing petition",
-    "out-of-distribution",
-    "expected calibration error"
-  ],
+  "required_glossary_terms": [],
+  "manuscript_entrypoint": "Thesis_Draft/GSAPP_Final_Submission/Lewis_Daniel_GSAPPUP2026_Thesis.tex",
   "banned_phrases": [
     "TODO",
     "TBD",

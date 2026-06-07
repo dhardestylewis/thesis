@@ -80,7 +80,7 @@
 
  \column{0.45\textwidth}
  \centering
- \includegraphics[width=\linewidth, height=0.62\textheight, keepaspectratio]{exhibits/mercatus_map.png}
+ \includegraphics[width=\linewidth, height=0.62\textheight, keepaspectratio]{exhibits/misc/mercatus_map.png}
  \end{columns}
 \end{frame}
 \note{\textbf{[2 min]} Set the stakes. Austin's rapid growth created real housing scarcity, and the political process for approving new housing was structurally vulnerable to organized local opposition. Preview: HB 24 (2025) reformed this regime; we are mapping a specific historical era.}
@@ -319,7 +319,7 @@
  \textbf{Tree Ensembles Dominate at the Top of the Risk Ranking}
  \vspace{0.8em}
 
- \includegraphics[height=0.68\textheight, width=\textwidth, keepaspectratio]{exhibits/fig_pr_curves_updated.pdf}
+ \includegraphics[height=0.68\textheight, width=\textwidth, keepaspectratio]{exhibits/calibration_and_pr/fig_pr_curves_updated.pdf}
 \end{frame}
 \note{\textbf{[2 min]} Point to the upper-left corner: high-precision zone at moderate recall. CatBoost is the benchmark tree model emphasized in the manuscript, but this talk is about comparative ranking performance rather than a single calibrated winner. OOD bootstrap PR-AUC = \metricBootstrapFiling{} (95\% CI: \metricBootstrapFilingCI{}). Wide CI reflects 15 test-set positives, not model instability.}
 
@@ -417,7 +417,7 @@
 
  \column{0.6\textwidth}
  \centering
- \includegraphics[height=0.68\textheight, width=\linewidth, keepaspectratio]{exhibits/fig_feature_importance_clustered_H0_Full.pdf}
+ \includegraphics[height=0.68\textheight, width=\linewidth, keepaspectratio]{exhibits/feature_importance/fig_feature_importance_clustered_H0_Full.pdf}
  \end{columns}
 \end{frame}
 \note{\textbf{[2 min]} Lead with the figure. Tree ensembles: parcel scale (44\%) + zoning density request (36\%) = 80\%+ of attribution. The model is detecting how big the project is and how much density change is being asked for. Deep models keep parcel scale dominant but add demographics (18\%) and housing tenure (12\%) -- they weight who lives nearby alongside the physical ask. This sets up the next slide: these may be two different mechanisms of NIMBYism captured by different model architectures.}
@@ -465,7 +465,7 @@
 
  \column{0.55\textwidth}
  \centering
- \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{exhibits/fig_temporal_drift_prauc_testyear.pdf}
+ \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{exhibits/temporal_drift/fig_temporal_drift_prauc_testyear.pdf}
  \end{columns}
 \end{frame}
 \note{\textbf{[2.5 min]} Two points in one slide: trees vs. linear at long horizons, and the 2022 dip as evidence of contingent social mobilization. "Consistent with" is not a causal claim. The threshold sensitivity appendix further supports this: signal does not stabilize around the 20\% statutory cutoff. Let the figure tell the story; avoid narrating individual data points.}
@@ -484,7 +484,7 @@
 
  \column{0.55\textwidth}
  \centering
- \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{exhibits/fig_temporal_drift_lift_testyear.pdf}
+ \includegraphics[width=\linewidth, height=0.65\textheight, keepaspectratio]{exhibits/temporal_drift/fig_temporal_drift_lift_testyear.pdf}
  \end{columns}
 \end{frame}
 \note{\textbf{[2 min]} Every anchor model, regardless of training period, shows sharply rising lift in 2022--2024. This is consistent with a declining base rate: as fewer cases attract petitions overall, the ones that do are the most extreme outliers, which are the easiest for the model to rank highly. Note the contrast with the PR-AUC figure on the previous slide: PR-AUC dips in 2022 while lift spikes, which can occur when the base rate falls faster than discrimination improves.}
@@ -637,7 +637,7 @@
 % ===== APPENDIX A: Hyperparameter Robustness =====
 \begin{frame}[plain]{Appendix: Hyperparameter Robustness}
  \centering
- \includegraphics[height=0.82\textheight, width=\textwidth, keepaspectratio]{exhibits/fig_hyperparameter_sweeps_benchmark.pdf}
+ \includegraphics[height=0.82\textheight, width=\textwidth, keepaspectratio]{exhibits/misc/fig_hyperparameter_sweeps_benchmark.pdf}
 \end{frame}
 \note{\textbf{[Backup]} Sweep surfaces for all four families. Deep architectures overfit catastrophically without L2 constraint. Tree ensembles plateau gracefully. All tuned to maximize OOD PR-AUC under strict temporal separation.}
 

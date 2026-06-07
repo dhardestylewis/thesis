@@ -21,13 +21,14 @@ import os
 
 import sys
 _scripts_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
-if _scripts_dir not in sys.path:
-    sys.path.insert(0, _scripts_dir)
+_pipeline_dir = os.path.join(_scripts_dir, 'pipeline')
+if _pipeline_dir not in sys.path:
+    sys.path.insert(0, _pipeline_dir)
 from artifact_registry import ROOT_DIR, TRACK1_DIR, TraceabilityRegistry as AR
 
 ROOT = str(ROOT_DIR)
 STAGE_C_OUT = str(TRACK1_DIR)
-FIG_DIR = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "Track1_Exhibits")
+FIG_DIR = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "exhibits")
 os.makedirs(FIG_DIR, exist_ok=True)
 
 # ─── Plain-English Feature Name Dictionary ──────────────────────────
@@ -151,7 +152,7 @@ def _warehouse_master_file(hz: str) -> str:
 
 
 def plot_all_track1_exhibits():
-    with open(os.path.join(ROOT, "Scripts", "exhibit_titles.json"), "r") as f:
+    with open(os.path.join(ROOT, "Scripts", "manuscript", "styling", "exhibit_titles.json"), "r") as f:
         titles = json.load(f)
         
     for hz in ['H0', 'H3']:
@@ -441,7 +442,7 @@ def _plot_clustered_importance(hz, hz_name, titles, period="Full"):
 def _plot_shap_beeswarm(hz, hz_name, titles, period="Full"):
     """
     Load the saved CalibratedClassifierCV model, extract the base
-    CatBoost estimator, and compute TreeSHAP values on a subsample.
+    CatBoost estimator, and compute Interaction TreeSHAP values.
     Feature columns are renamed to plain English before plotting.
     """
     import joblib
@@ -492,20 +493,24 @@ def _plot_shap_beeswarm(hz, hz_name, titles, period="Full"):
             df_clean = df_clean.drop(columns=leak_cols)
         X = df_clean.select_dtypes(include=[np.number])
 
-        # Subsample for speed
-        n_sample = min(1000, len(X))
+        # Subsample for speed (Interaction SHAP is O(N * M^2))
+        n_sample = min(600, len(X))
         X_sample = X.sample(n=n_sample, random_state=42)
 
         explainer = shap.TreeExplainer(base_cb)
-        shap_values = explainer.shap_values(X_sample)
         
-        # Handle CatBoost base value offset
-        if isinstance(shap_values, list):
-            shap_values = shap_values[1] if len(shap_values) > 1 else shap_values[0]
-        if hasattr(shap_values, 'values'):
-            shap_values = shap_values.values
-        if len(shap_values.shape) > 1 and shap_values.shape[1] == X_sample.shape[1] + 1:
-            shap_values = shap_values[:, :-1]
+        # INTERACTION SHAP UPGRADE
+        print(f"  [*] Computing Interaction TreeSHAP for {hz} {period} (N={n_sample})...")
+        interaction_values = explainer.shap_interaction_values(X_sample)
+        
+        # If CatBoost returns a list (e.g. multi-class), take the positive class
+        if isinstance(interaction_values, list):
+            interaction_values = interaction_values[1] if len(interaction_values) > 1 else interaction_values[0]
+
+        # Handle CatBoost interaction matrix shape if it includes base value
+        # Note: Interaction values are usually (N, M, M)
+        if interaction_values.shape[1] == X_sample.shape[1] + 1:
+            interaction_values = interaction_values[:, :-1, :-1]
 
         # Repaired collinearity: hierarchical cluster SHAP
         from scipy.cluster.hierarchy import linkage, fcluster
@@ -557,10 +562,13 @@ def _plot_shap_beeswarm(hz, hz_name, titles, period="Full"):
         new_cols_dict = defaultdict(list)
         new_shap_dict = defaultdict(list)
         
+        # We aggregate main effects (diagonal of interaction matrix)
+        main_effects = np.diagonal(interaction_values, axis1=1, axis2=2)
+        
         for cid in np.unique(labels):
             idx = np.where(labels == cid)[0]
             cluster_feats = [features[i] for i in idx]
-            cluster_shap_sums = np.abs(shap_values[:, idx]).max(axis=0)
+            cluster_shap_sums = np.abs(main_effects[:, idx]).max(axis=0)
             top_feature = cluster_feats[np.argmax(cluster_shap_sums)]
             n = len(cluster_feats)
             
@@ -572,35 +580,30 @@ def _plot_shap_beeswarm(hz, hz_name, titles, period="Full"):
                 label = f"{_rename_feature(top_feature)} Cluster"
                 
             new_cols_dict[label].append(X_sample[cluster_feats].mean(axis=1))
-            new_shap_dict[label].append(shap_values[:, idx].sum(axis=1))
+            new_shap_dict[label].append(main_effects[:, idx].sum(axis=1))
             
         new_cols = {}
         new_shap = []
-        # Merge dictionaries
         for label in new_cols_dict:
-            new_cols[label] = pd.concat(new_cols_dict[label], axis=1).mean(axis=1) # average of averages for coloring
-            new_shap.append(np.sum(new_shap_dict[label], axis=0)) # sum of attributions
-
+            new_cols[label] = pd.concat(new_cols_dict[label], axis=1).mean(axis=1)
+            new_shap.append(np.sum(new_shap_dict[label], axis=0))
 
         X_display = pd.DataFrame(new_cols, index=X_sample.index)
         shap_matrix = np.column_stack(new_shap)
-        print(f"X_display.shape: {X_display.shape}")
-        print(f"shap_matrix.shape: {shap_matrix.shape}")
-        print(f"shap_values.shape: {shap_values.shape}, X_sample.shape: {X_sample.shape}")
 
         plt.figure(figsize=(10, 8))
         shap.summary_plot(shap_matrix, X_display, max_display=15, show=False, plot_size=None)
         plt.title(titles.get("stage_c_shap_beeswarm",
-                  "SHAP Feature Attribution ({hz})").format(hz=hz_name),
+                  "Interaction TreeSHAP: Main Effects ({hz})").format(hz=hz_name),
                   fontsize=14)
         plt.tight_layout()
         out = os.path.join(FIG_DIR, f"fig_shap_beeswarm_{hz}_{period}.pdf")
         plt.savefig(out, bbox_inches='tight')
         plt.close()
-        print(f"  [+] Saved fig_shap_beeswarm_{hz}.pdf")
+        print(f"  [+] Saved Interaction-Aware fig_shap_beeswarm_{hz}_{period}.pdf")
 
     except Exception as e:
-        print(f"  [!] SHAP beeswarm failed: {e}")
+        print(f"  [!] Interaction SHAP beeswarm failed: {e}")
         import traceback; traceback.print_exc()
 
 

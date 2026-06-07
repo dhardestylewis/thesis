@@ -20,7 +20,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     import torch
 
     # GPU detection — use CUDA if available, fall back to CPU cleanly
-    USE_GPU = torch.cuda.is_available()
+    USE_GPU = torch.cuda.is_available() or os.environ.get("USE_GPU") == "1"
     CB_TASK  = "GPU" if USE_GPU else "CPU"
     XGB_TREE = "gpu_hist" if USE_GPU else "hist"
     print(f"[*] Device: {'GPU (CUDA)' if USE_GPU else 'CPU'}")
@@ -126,30 +126,73 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     districts = df['council_district'].values
     
     SEMANTIC_CLUSTERS = {
-        'acs_owner_occupied_units': 'Housing Tenure',
-        'acs_renter_occupied_units': 'Housing Tenure',
-        'acs_total_housing_units': 'Housing Tenure',
-        'acs_race_white': 'Demographics',
-        'acs_race_hispanic': 'Demographics',
-        'acs_race_black': 'Demographics',
-        'acs_race_asian': 'Demographics',
-        'acs_median_household_income': 'Neighborhood Income',
-        'acs_poverty_count': 'Neighborhood Income',
-        'acs_median_home_value': 'Neighborhood Valuation',
-        'ldb_appraised_val': 'Property Valuation',
-        'land_market_value': 'Property Valuation',
-        'total_market_value': 'Property Valuation',
-        'improvement_sq_ft': 'Improvement Scale',
-        'ldb_imprv_sqft': 'Improvement Scale',
-        'ldb_yr_built': 'Structure Age',
-        'year_built': 'Structure Age',
-        'property_age': 'Structure Age',
-        'gross_site_area_acres': 'Parcel Scale',
-        'deed_acreage': 'Parcel Scale',
-        'ldb_land_acres': 'Parcel Scale',
-        'ldb_lotsize': 'Parcel Scale',
-        'ldb_far': 'Zoning Density',
-        'ldb_units': 'Zoning Density'
+        # Property Value
+        "market_value": "Property Value", "land_market_value": "Property Value", 
+        "improvement_market_value": "Property Value", "appraised_value": "Property Value",
+        "total_market_value": "Property Value", "ldb_appraised_val": "Property Value",
+        
+        # Parcel Size
+        "land_acres": "Parcel Size", "shape_area": "Parcel Size", "improvement_sq_ft": "Parcel Size", 
+        "land_to_building_ratio": "Parcel Size", "improvement_ratio": "Parcel Size",
+        "ldb_land_acres": "Parcel Size", "ldb_lotsize": "Parcel Size", "deed_acreage": "Parcel Size",
+        "gross_site_area_acres": "Parcel Size",
+        
+        # Building Age
+        "yr_built": "Building Age", "building_age": "Building Age",
+        "ldb_yr_built": "Building Age", "year_built": "Building Age",
+        
+        # Land Use Type
+        "land_use_code": "Land Use Type", "exemption_flag_hs": "Land Use Type", "homesite_flag": "Land Use Type",
+        
+        # Time in Review
+        "bw_sin": "Time in Review", "bw_cos": "Time in Review", "period_seq": "Time in Review",
+        
+        # Racial Composition
+        "race_white": "Racial Composition", "race_black": "Racial Composition", 
+        "race_hispanic": "Racial Composition", "total_population": "Racial Composition", 
+        "acs_race_white": "Racial Composition", "acs_race_hispanic": "Racial Composition",
+        "acs_race_black": "Racial Composition", "acs_race_asian": "Racial Composition",
+        
+        # Housing Tenure
+        "owner_share": "Housing Tenure", "renter_share": "Housing Tenure",
+        "acs_owner_occupied_units": "Housing Tenure", "acs_renter_occupied_units": "Housing Tenure",
+        
+        # Income & Rent
+        "median_household_income": "Income & Rent", "median_gross_rent": "Income & Rent", 
+        "rent_burden": "Income & Rent", "affordability_proxy": "Income & Rent",
+        "acs_median_household_income": "Income & Rent", "acs_poverty_count": "Income & Rent",
+        
+        # Prior Petition Activity
+        "knn_petition_rate_1km": "Prior Petition Activity", "dist_petition_rate_lag1": "Prior Petition Activity",
+        
+        # Signer Proximity
+        "cumulative_min_signer_dist": "Signer Proximity", "cumulative_max_signer_dist": "Signer Proximity", 
+        "cumulative_median_signer_dist": "Signer Proximity", "cumulative_signers_within_200ft": "Signer Proximity", 
+        "cumulative_signers_outside_200ft": "Signer Proximity",
+        
+        # Protest Intensity
+        "cumulative_unofficial_protest_intensity": "Protest Intensity", 
+        "cumulative_delta_protesting_friction": "Protest Intensity", "cumulative_delta_silent_friction": "Protest Intensity",
+        
+        # Opposition by Land Use
+        "cumulative_protesting_pct_single_family": "Opposition by Land Use", "cumulative_silent_pct_single_family": "Opposition by Land Use",
+        "cumulative_protesting_pct_commercial": "Opposition by Land Use", "cumulative_silent_pct_commercial": "Opposition by Land Use",
+        "cumulative_protesting_pct_multifamily": "Opposition by Land Use", "cumulative_silent_pct_multifamily": "Opposition by Land Use",
+        
+        # Zoning Density
+        "ldb_far": "Zoning Density", "ldb_units": "Zoning Density", "pdf_requested_max_far": "Zoning Density",
+        
+        # Improvement Scale
+        "ldb_imprv_sqft": "Improvement Scale", "pdf_proposed_height_ft": "Improvement Scale",
+        
+        # Mortgage Rate
+        "mortgage_rate_30yr": "Mortgage Rate", "mortgage_rate_30yr_momentum": "Mortgage Rate",
+        
+        # Capital Markets
+        "treasury_10yr_yield": "Capital Markets", "fed_funds_rate": "Capital Markets",
+        
+        # Local Labor Market
+        "local_unemployment_rate": "Local Labor Market"
     }
     
     anchors = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
@@ -232,6 +275,81 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
                 else: raw_imp = m.feature_importances_
                 
             fitted_models[name] = m
+            
+            # Persist CatBoost 2023 Anchor for Track 1 Exhibit Re-Rendering
+            if name == 'CatBoost' and anchor == 2023:
+                import joblib
+                model_save_dir = os.path.join(ROOT, "Analysis", "Output", "Track1_Predictive", "Models")
+                os.makedirs(model_save_dir, exist_ok=True)
+                joblib.dump(m, os.path.join(model_save_dir, "stage_c_model_H0.joblib"))
+                print(f"  [+] Persisted CatBoost 2023 Anchor -> stage_c_model_H0.joblib")
+                
+                # --- INTERACTION SHAP GENERATION (FIGURE 14) ---
+                print("  [*] Computing Interaction TreeSHAP for Figure 14 (N=600)...")
+                import shap
+                X_sample_raw = X_raw_df.iloc[np.where(train_mask)].sample(n=min(600, train_mask.sum()), random_state=42)
+                explainer = shap.TreeExplainer(m)
+                interaction_values = explainer.shap_interaction_values(X_sample_raw)
+                
+                # Extract Main Effects (diagonal) — RAW features, no cluster aggregation
+                # Interaction decomposition purpose: see each feature's direct contribution
+                # unclouded by collinear interaction effects. Do NOT re-aggregate to clusters.
+                main_effects = np.diagonal(interaction_values, axis1=1, axis2=2)
+                
+                # Clean feature names for readability
+                def clean_feat_name(f):
+                    return (f.replace('acs2_', '').replace('acs_', '').replace('ldb_', '')
+                             .replace('_lag_6yr', '').replace('_', ' ').title())
+                
+                X_display = X_sample_raw.copy()
+                X_display.columns = [clean_feat_name(c) for c in X_display.columns]
+                
+                plt.figure(figsize=(10, 8))
+                shap.summary_plot(main_effects, X_display, max_display=15, show=False, plot_size=None)
+                plt.title("Interaction TreeSHAP: Forecasting Main Effects (Filing Date)", fontsize=14)
+                plt.tight_layout()
+                
+                fig_out = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "exhibits", "fig_ch4_14_forecasting_interaction_shap.pdf")
+                os.makedirs(os.path.dirname(fig_out), exist_ok=True)
+                plt.savefig(fig_out, bbox_inches='tight', dpi=300)
+                plt.close()
+                print(f"  [+] Saved Interaction Beeswarm -> {fig_out}")
+                
+                # --- PAIRWISE INTERACTION GRID (BEESWARM) ---
+                print("  [*] Generating pairwise interaction beeswarm grid...")
+                n_grid = 8
+                mean_abs_int = np.abs(interaction_values).mean(axis=0)
+                off_diag = mean_abs_int.copy(); np.fill_diagonal(off_diag, 0)
+                
+                # Pick top n features by total off-diagonal interaction strength
+                top_idx = np.argsort(off_diag.sum(axis=0))[-n_grid:]
+                top_names = [clean_feat_name(X_sample_raw.columns[i]) for i in top_idx]
+                
+                fig, axes = plt.subplots(n_grid, n_grid, figsize=(n_grid * 2.2, n_grid * 2.0))
+                fig.suptitle("Interaction TreeSHAP: Pairwise Feature Interactions (Filing Date)", fontsize=13, y=1.01)
+                cmap = plt.cm.coolwarm
+                
+                for row, i in enumerate(top_idx):
+                    for col, j in enumerate(top_idx):
+                        ax = axes[row, col]
+                        y_vals = interaction_values[:, i, j]
+                        x_jitter = np.random.default_rng(42).uniform(-0.3, 0.3, size=len(y_vals))
+                        color_vals = X_sample_raw.iloc[:, j]
+                        norm_c = (color_vals - color_vals.min()) / (color_vals.max() - color_vals.min() + 1e-9)
+                        ax.scatter(x_jitter, y_vals, c=norm_c, cmap=cmap, alpha=0.4, s=4, linewidths=0)
+                        ax.axhline(0, color='gray', linewidth=0.4, linestyle='--')
+                        ax.set_xticks([]); ax.set_yticks([])
+                        if row == n_grid - 1:
+                            ax.set_xlabel(top_names[col], fontsize=7, rotation=30, ha='right')
+                        if col == 0:
+                            ax.set_ylabel(top_names[row], fontsize=7, rotation=0, ha='right', labelpad=40)
+                
+                plt.tight_layout()
+                fig_out_grid = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "exhibits", "fig_ch4_14b_forecasting_interaction_grid.pdf")
+                plt.savefig(fig_out_grid, bbox_inches='tight', dpi=200)
+                plt.close()
+                print(f"  [+] Saved Interaction Grid -> {fig_out_grid}")
+
             
             total = np.sum(raw_imp)
             if total > 0: raw_imp = (raw_imp / total) * 100
@@ -349,7 +467,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     with open(os.path.join(perf_dir, f'tbl_ch4_14_temporal_drift_analysis{suffix}.tex'), 'w') as f: f.write('\n'.join(t4_lines))
     
     # Table 5
-    t5_lines = [r'\begin{table}[htbp]', r'\centering', r'\caption[Temporal Predictive Drift (PR-AUC lift)]{\textbf{Temporal predictive drift: PR-AUC lift by algorithm (Optimal Entropy-Based Discretization).}}', r'\label{tab:temporal_drift_prauc_lift}', r'\resizebox{\textwidth}{!}{%', r'\begin{tabular}{l l' + 'c'*len(eval_years) + '}', r'\toprule', r'\textbf{Model} & \textbf{Anchor Training} & ' + ' & '.join(['\\textbf{'+str(y)+'}' for y in eval_years]) + r' \\', r'\midrule']
+    t5_lines = [r'\begin{table}[htbp]', r'\centering', r'\caption[Temporal Predictive Drift (PR-AUC lift)]{\textbf{Temporal predictive drift: PR-AUC lift by algorithm (Optimal Entropy-Based Discretization).}}', r'\label{tab:temporal_drift_prauc_lift' + suffix + '}', r'\resizebox{\textwidth}{!}{%', r'\begin{tabular}{l l' + 'c'*len(eval_years) + '}', r'\toprule', r'\textbf{Model} & \textbf{Anchor Training} & ' + ' & '.join(['\\textbf{'+str(y)+'}' for y in eval_years]) + r' \\', r'\midrule']
     t5_lines.extend(format_grid(res_df, 'Lift', use_lift=True))
     t5_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     with open(os.path.join(perf_dir, f'tbl_ch4_17_temporal_drift_prauc_lift{suffix}.tex'), 'w') as f: f.write('\n'.join(t5_lines))
@@ -366,7 +484,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     t6_lines = [
         r'\begin{table}[htbp]', r'\centering',
         r'\caption[Temporal Drift (Max-of-Family)]{\textbf{Max-of-Family dominance (Optimal Entropy-Based Discretization).}}',
-        r'\label{tab:temporal_drift_family}', r'\resizebox{\textwidth}{!}{%',
+        r'\label{tab:temporal_drift_family' + suffix + '}', r'\resizebox{\textwidth}{!}{%',
         r'\begin{tabular}{l' + 'c'*len(eval_years) + '}', r'\toprule',
         r'\textbf{Anchor Training} & ' + ' & '.join(['\\textbf{' + str(y) + '}' for y in eval_years]) + r' \\',
         r'\midrule', r'\multicolumn{8}{c}{\textbf{Panel A: Maximum Absolute PR-AUC}} \\', r'\midrule'
@@ -417,7 +535,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
     
 
     if is_appendix: return  # Skip figures for appendices loop
-    out_dir_fig = os.path.join(ROOT, "Thesis_Draft", "Draft_v1", "Figures", "ch5")
+    out_dir_fig = os.path.join(ROOT, "Thesis_Draft", "GSAPP_Final_Submission", "Figures", "ch5")
     os.makedirs(out_dir_fig, exist_ok=True)
     out_path_fig = os.path.join(out_dir_fig, "fig_ch5_35_meta_attribution_clustermap.pdf")
     g.savefig(out_path_fig, bbox_inches='tight')
@@ -469,7 +587,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
             elif ca == max_val: ca_str = f"\\textbf{{{ca_str}}}"
             else: l_str = f"\\textbf{{{l_str}}}"
             
-        t7_lines.append(f"{c} & {t_str} & {d_str} & {l_str} \\\\")
+        t7_lines.append(f"{c.replace('&', '\\&')} & {t_str} & {d_str} & {l_str} \\\\")
     
     t7_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     
@@ -522,7 +640,7 @@ def run_drift_and_archetypes(threshold=0.20, is_appendix=False):
             elif ca == max_val: ca_str = f"\\textbf{{{ca_str}}}"
             else: l_str = f"\\textbf{{{l_str}}}"
             
-        t8_lines.append(f"{c} & {t_str} & {d_str} & {l_str} \\\\")
+        t8_lines.append(f"{c.replace('&', '\\&')} & {t_str} & {d_str} & {l_str} \\\\")
     
     t8_lines.extend([r'\bottomrule', r'\end{tabular}%', r'}', r'\end{table}'])
     

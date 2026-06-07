@@ -11,7 +11,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/case_universe.parquet",
-    "generated_at": "2026-05-08T21:13:27.433448+00:00"
+    "generated_at": "2026-05-19T00:48:35.565390+00:00"
   },
   {
     "metric_id": "metricNDistricts",
@@ -25,7 +25,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/case_universe.parquet",
-    "generated_at": "2026-05-08T21:13:27.435130+00:00"
+    "generated_at": "2026-05-19T00:48:35.565390+00:00"
   },
   {
     "metric_id": "metricBaseRate",
@@ -39,7 +39,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.436189+00:00"
+    "generated_at": "2026-05-19T00:48:35.570900+00:00"
   },
   {
     "metric_id": "metricBaseRateN",
@@ -53,7 +53,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.436189+00:00"
+    "generated_at": "2026-05-19T00:48:35.570900+00:00"
   },
   {
     "metric_id": "metricNTestTotal",
@@ -67,7 +67,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.441001+00:00"
+    "generated_at": "2026-05-19T00:48:35.573214+00:00"
   },
   {
     "metric_id": "metricNTestPositive",
@@ -81,11 +81,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.441001+00:00"
+    "generated_at": "2026-05-19T00:48:35.573214+00:00"
   },
   {
     "metric_id": "metricMeanProbTP",
-    "value": 0.5452254972312008,
+    "value": 0.6374546712107442,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -95,11 +95,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.441539+00:00"
+    "generated_at": "2026-05-19T00:48:35.574353+00:00"
   },
   {
     "metric_id": "metricMeanProbTN",
-    "value": 0.011718818003235874,
+    "value": 0.010365460344976098,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -109,7 +109,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.441539+00:00"
+    "generated_at": "2026-05-19T00:48:35.574353+00:00"
   },
   {
     "metric_id": "metricTopDecileTP",
@@ -123,7 +123,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricTopDecileN",
@@ -137,11 +137,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/prediction_registry.parquet",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricHeadlinePRAUC",
-    "value": 0.6627982323634497,
+    "value": 0.6873100386399619,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -151,13 +151,13 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricBootstrapFiling",
-    "value": 0.6627982323634497,
-    "ci_low": 0.4332610524510301,
-    "ci_high": 0.8737239520956626,
+    "value": 0.6873100386399619,
+    "ci_low": 0.45037841639672305,
+    "ci_high": 0.9168123122994533,
     "task_id": "STAGE_C_FILING_MAIN",
     "split_id": "TEMP_OOD_2023_MAIN",
     "model_family": "CatBoost",
@@ -165,7 +165,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricTopDecilePrecision",
@@ -179,7 +179,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricTopDecileLift",
@@ -193,11 +193,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricHeadlineECE",
-    "value": 0.01567460439074118,
+    "value": 0.012722655029417567,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -207,11 +207,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricECE",
-    "value": 0.01567460439074118,
+    "value": 0.012722655029417567,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -221,11 +221,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricECEOODBootstrapCalibrated",
-    "value": 0.01567460439074118,
+    "value": 0.012722655029417567,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -235,11 +235,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricACE",
-    "value": 0.0022416482363568488,
+    "value": 0.0007684931344966643,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -249,11 +249,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricBrierScore",
-    "value": 0.014304957644380573,
+    "value": 0.012513198410326465,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -263,11 +263,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricPrecisionAtThirty",
-    "value": 0.5263157894736842,
+    "value": 0.5789473684210527,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -277,10 +277,24 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricRecallAtThirty",
+    "value": 0.7333333333333333,
+    "ci_low": null,
+    "ci_high": null,
+    "task_id": "STAGE_C_FILING_MAIN",
+    "split_id": "TEMP_OOD_2023_MAIN",
+    "model_family": "CatBoost",
+    "horizon": "filing",
+    "calibration_state": "identity_noop",
+    "seed_policy": "single_seed",
+    "source_artifact": "registries/evaluation_results.json",
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
+  },
+  {
+    "metric_id": "metricPrecisionAtFifty",
     "value": 0.6666666666666666,
     "ci_low": null,
     "ci_high": null,
@@ -291,25 +305,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
-  },
-  {
-    "metric_id": "metricPrecisionAtFifty",
-    "value": 0.5294117647058824,
-    "ci_low": null,
-    "ci_high": null,
-    "task_id": "STAGE_C_FILING_MAIN",
-    "split_id": "TEMP_OOD_2023_MAIN",
-    "model_family": "CatBoost",
-    "horizon": "filing",
-    "calibration_state": "identity_noop",
-    "seed_policy": "single_seed",
-    "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricRecallAtFifty",
-    "value": 0.6,
+    "value": 0.6666666666666666,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_FILING_MAIN",
@@ -319,7 +319,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/evaluation_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricLabelFidelity",
@@ -333,7 +333,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_audit_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricLabelAuditN",
@@ -347,11 +347,11 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/label_audit_results.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricLargestClusterDelta",
-    "value": 0.11952884484584592,
+    "value": 0.03948846612125656,
     "ci_low": null,
     "ci_high": null,
     "task_id": "STAGE_C_INTERPRETATION_MAIN",
@@ -361,7 +361,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/ablation_results.parquet",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricConsensusClusterCount",
@@ -375,7 +375,7 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/meta_attribution_object.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   },
   {
     "metric_id": "metricUnstableClusterCount",
@@ -389,6 +389,6 @@
     "calibration_state": "identity_noop",
     "seed_policy": "single_seed",
     "source_artifact": "registries/meta_attribution_object.json",
-    "generated_at": "2026-05-08T21:13:27.444785+00:00"
+    "generated_at": "2026-05-19T00:48:35.576208+00:00"
   }
 ]
