@@ -2,8 +2,10 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Live Causal Friction Surface</title>
+  <title>What neighborhood opposition costs a rezoning: Austin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Unlisted page: reachable by direct link only, kept out of search results -->
+  <meta name="robots" content="noindex, nofollow" />
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,21 +17,36 @@
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px; padding: 20px; z-index: 1000;
       backdrop-filter: blur(12px);
+      max-height: calc(100vh - 40px); overflow-y: auto;
     }
-    #panel h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.04em; color: #f0f0f0; margin-bottom: 2px; }
-    #panel .subtitle { font-size: 11px; color: #888; margin-bottom: 18px; }
+    #panel h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: #f0f0f0; margin-bottom: 6px; line-height: 1.35; }
+    #panel .subtitle { font-size: 11px; color: #888; margin-bottom: 18px; line-height: 1.5; }
     
     .slider-row { margin-bottom: 14px; }
     .slider-label { font-size: 12px; font-weight: 600; color: #ccc; display: flex; justify-content: space-between; margin-bottom: 6px; }
     .slider-label span { color: #f97316; font-weight: 700; }
     input[type=range] { width: 100%; cursor: pointer; accent-color: #f97316; }
     
+    .group-title { font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+                   color: #777; margin-bottom: 10px; }
+    .helper { font-size: 10px; color: #666; margin-top: 4px; line-height: 1.45; }
+
+    .stats { font-size: 11px; color: #aaa; }
+    .stats-row { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+    .stats-row span:last-child { color: #f0f0f0; font-weight: 600; white-space: nowrap; }
+    .scale-toggle { font-size: 10px; color: #888; margin-top: 10px; display: flex;
+                    align-items: center; gap: 6px; cursor: pointer; }
+
+    .about { margin-top: 18px; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 12px; }
+    .about summary { font-size: 11px; font-weight: 600; color: #aaa; cursor: pointer; }
+    .about p { font-size: 10px; color: #777; line-height: 1.5; margin-top: 8px; }
+
     .legend { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 16px; font-size: 11px; color: #888; }
     .legend-title { color: #aaa; font-weight: 600; margin-bottom: 8px; }
     .legend-bar { height: 10px; border-radius: 5px; margin: 6px 0 2px 0;
       background: linear-gradient(to right, #14097899, #bc3768ff, #fd8d21ff, #fcff37ff); }
     .legend-bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: #666; }
-    .graveyard-swatch { display: inline-block; width: 12px; height: 12px;
+    .at-risk-swatch { display: inline-block; width: 12px; height: 12px;
       background: rgba(80,80,80,0.9); border-radius: 2px; margin-right: 6px; vertical-align: middle; }
     
     #tooltip {
@@ -39,7 +56,7 @@
       line-height: 1.6; max-width: 240px; z-index: 2000;
     }
     #tooltip .case { font-weight: 700; color: #f0f0f0; margin-bottom: 6px; font-size: 13px; }
-    #tooltip .killed { color: #ef4444; font-weight: 700; }
+    #tooltip .at-risk { color: #ef4444; font-weight: 700; }
     .credits { position: fixed; bottom: 8px; right: 10px; font-size: 9px; color: #666; z-index: 999; }
     
     #loading {
@@ -54,56 +71,65 @@
   </style>
 </head>
 <body>
-<div id="loading">Downloading static city geometry...</div>
+<div id="loading">Loading Austin parcels&hellip;</div>
 <div id="map"></div>
 <div id="panel">
-  <h1>Austin Friction Map</h1>
-  <div class="subtitle">Live API Predictive Surface</div>
-  
+  <h1>What neighborhood opposition costs a rezoning</h1>
+  <div class="subtitle">Austin, parcel by parcel. Set a scenario below and the map re-estimates every parcel in the city.</div>
+
+  <div class="group-title">Scenario</div>
+
   <div class="slider-row">
-    <div class="slider-label">Additional Height Requested <span>+<span id="height-val">29</span> ft above zoning</span></div>
-    <input id="height-slider" type="range" min="5" max="120" value="29" step="1">
-    <div style="font-size:10px;color:#555;margin-top:3px;">&#916; ft above current zoning limit (not absolute height).</div>
+    <div class="slider-label">Extra height requested <span>+<span id="height-val">45</span> ft</span></div>
+    <input id="height-slider" autocomplete="off" type="range" min="5" max="120" value="45" step="1">
+    <div class="helper">How much taller than today's zoning limit the application asks for, not the building's total height.</div>
   </div>
 
   <div class="slider-row" style="margin-bottom:0;">
-    <div class="slider-label">Petition Dose Threshold <span><span id="dose-val">20</span>%</span></div>
-    <input id="dose-slider" type="range" min="0" max="100" value="20" step="1">
-    <div style="font-size:10px;color:#555;margin-top:3px;">Simulates continuous petition intensity.</div>
+    <div class="slider-label">Neighborhood opposition <span><span id="dose-val">21</span> of 100</span></div>
+    <input id="dose-slider" autocomplete="off" type="range" min="0" max="100" value="21" step="1">
+    <div class="helper">Strength of organized protest near the site, indexed 0 to 100. Distance weighted, so nearby signatures count for more.</div>
   </div>
 
-  <div class="legend">
-    <div class="legend-title">Map Legend</div>
-    <div>Extrusion Height: Net &#916; Approved (ft above zoning)</div>
-    <div style="margin-top:8px;">Color: Expected Bureaucratic Delay</div>
-    <div class="legend-bar"></div>
-    <!-- Tick marks at 0, 6mo (180d), 1yr (365d), 2yr (730d), 5yr (1800d) -->
-    <div style="position:relative; height:18px; margin-top:2px;">
-      <div style="position:absolute;left:0%;    transform:translateX(-50%); text-align:center;">
-        <div style="width:1px;height:5px;background:#555;margin:0 auto;"></div>
-        <span style="font-size:9px;color:#666;">0d</span>
-      </div>
-      <div style="position:absolute;left:10%;   transform:translateX(-50%); text-align:center;">
-        <div style="width:1px;height:5px;background:#555;margin:0 auto;"></div>
-        <span style="font-size:9px;color:#666;">6mo</span>
-      </div>
-      <div style="position:absolute;left:20%;   transform:translateX(-50%); text-align:center;">
-        <div style="width:1px;height:5px;background:#555;margin:0 auto;"></div>
-        <span style="font-size:9px;color:#666;">1yr</span>
-      </div>
-      <div style="position:absolute;left:40.6%; transform:translateX(-50%); text-align:center;">
-        <div style="width:1px;height:5px;background:#555;margin:0 auto;"></div>
-        <span style="font-size:9px;color:#666;">2yr</span>
-      </div>
-      <div style="position:absolute;left:100%;  transform:translateX(-50%); text-align:center;">
-        <div style="width:1px;height:5px;background:#555;margin:0 auto;"></div>
-        <span style="font-size:9px;color:#666;">5yr</span>
-      </div>
-    </div>
-    <div style="margin-top:8px;"><span class="graveyard-swatch"></span> Killed (Withdrawn)</div>
+  <div class="group-title" style="margin-top:18px;">What the scenario implies</div>
+  <div class="stats">
+    <div class="stats-row"><span>Parcels estimated</span><span id="stat-parcels">&ndash;</span></div>
+    <div class="stats-row"><span>Added time to a decision, average</span><span id="stat-delay">&ndash;</span></div>
+    <div class="stats-row"><span>Added time, hardest hit 5%</span><span id="stat-delay95">&ndash;</span></div>
+    <div class="stats-row"><span>Height given up, average</span><span id="stat-attr">&ndash;</span></div>
+    <div class="stats-row"><span>Flagged at risk of withdrawal</span><span id="stat-killed">&ndash;</span></div>
+    <div class="helper" id="attr-note" style="margin-top:6px;"></div>
   </div>
-  
-  <div id="api-status">Connecting to Inference API...</div>
+
+  <div class="group-title" style="margin-top:18px;">Display</div>
+  <div class="slider-row" style="margin-bottom:0;">
+    <div class="slider-label">Flag withdrawal risk above <span>+<span id="kill-val">51</span> pts</span></div>
+    <input id="kill-slider" autocomplete="off" type="range" min="1" max="60" value="51" step="1">
+    <div class="helper">Parcels whose withdrawal risk rises by more than this many percentage points are drawn flat and grey. This changes the picture only, not the estimates.</div>
+  </div>
+  <label class="scale-toggle">
+    <input type="checkbox" id="autoscale-check" autocomplete="off"> Fit the colour range to this scenario
+  </label>
+
+  <div class="legend">
+    <div class="legend-title">Reading the map</div>
+    <div>Tower height: added height the model expects to survive approval, above today's zoning limit.</div>
+    <div style="margin-top:8px;">Colour: added time to a decision.</div>
+    <div class="legend-bar"></div>
+    <!-- Ticks are drawn from the active colour scale (fixed 1800d, or fitted) -->
+    <div id="legend-ticks" style="position:relative; height:18px; margin-top:2px;"></div>
+    <div style="margin-top:8px;"><span class="at-risk-swatch"></span> Flagged at risk of withdrawal</div>
+  </div>
+
+  <details class="about">
+    <summary>About these estimates</summary>
+    <p>Estimates come from a causal forest fitted to 6,637 Austin rezoning cases, most of them filed between 2000 and 2024, then applied to 271,567 parcels citywide. The citywide surface was computed on 11 May 2026.</p>
+    <p>These are average effects for parcels resembling each one, not forecasts for any particular application. Individual parcels carry wide uncertainty, and a single case can depart sharply from the average.</p>
+    <p>Roughly 3 percent of historical cases recorded organized petitioning, and the strongest opposition on record sits near 90 on this index. Settings above that read as extrapolation rather than evidence.</p>
+    <p>Texas Local Government Code chapter 211 lets owners of 20 percent of the land within 200 feet of a site force a three-quarters council vote. The opposition index here measures signature strength near the site, which is related to that rule but is not the statutory share itself.</p>
+  </details>
+
+  <div id="api-status">Connecting to the estimator&hellip;</div>
 </div>
 
 <div id="tooltip"></div>
@@ -115,18 +141,87 @@
 
 <script>
 // Global State
-let currentHeight = 29;
-let currentDose = 0.20;
+let currentHeight = 45;
+let currentDose = 0.21;
+let killThreshold = 0.51;    // added withdrawal risk at which a parcel reads as at-risk
+let autoScale = false;       // fit the colour ramp to this surface's 95th percentile
+let delayScaleMax = 1800;    // days at the top of the colour ramp
 
-// URL Configuration
-// 1. Point this to your EC2 instance (e.g. 'http://54.x.x.x:8001')
-let API_URL = 'http://localhost:8001'; 
+const params = new URLSearchParams(location.search);
 
-// 2. Production geometry from R2 (Highly recommended for speed)
-let GEOMETRY_URL = 'https://pub-7f58e07bff423d2120acf10aa6bf7a32.r2.dev/public/austin_base_geometries.fgb';
+// The published surface. The estimator can also serve the current retrained
+// forests as 'live', but that is deliberately not offered in the UI: the two
+// disagree by orders of magnitude and only this one is validated for
+// presentation. Append ?surface=live locally for internal comparison.
+const SURFACE = params.get('surface') === 'live' ? 'live' : 'cached';
+
+// Two ways to get numbers, chosen by where the page is served from.
+//
+//   api    a Python estimator on port 8001. Used for local work, and the only
+//          mode that can serve the 'live' surface.
+//   static plain files on object storage. The published surface is precomputed
+//          per 1 ft height tier, and dose scales it linearly, so the browser
+//          fetches one 3.3 MB slice per height and does the dose arithmetic
+//          itself. No server to keep running.
+//
+// The API default derives from the page's own origin rather than hardcoding
+// "localhost", which breaks when the browser resolves it to ::1.
+const API_DEFAULT = location.hostname
+  ? `${location.protocol}//${location.hostname}:8001`
+  : 'http://127.0.0.1:8001';
+const API_URL = params.get('api') || API_DEFAULT;
+
+// Public object storage holding austin_base_geometries.fgb and the height grid.
+const DATA_BASE = params.get('data') || 'https://REPLACE_WITH_PUBLIC_DATA_HOST';
+
+const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]', ''];
+const BACKEND = params.get('backend')
+  || (LOCAL_HOSTS.includes(location.hostname) ? 'api' : 'static');
+
+// Grid geometry, fixed when austin_friction_grid.f32 was packed
+const GRID = { minHeight: 5, tiers: 116, parcels: 271567, metrics: 3 };
+const SLICE_BYTES = GRID.parcels * GRID.metrics * 4;
+
+// Same clamps the estimator applies, so both backends agree exactly
+const CLAMP = [[-365, 3650], [-500, 1500], [-1, 1]];
+
+const geometryUrl = surface => BACKEND === 'static'
+  ? `${DATA_BASE}/austin_base_geometries.fgb`
+  : `${API_URL}/geometries?mode=${surface}`;
+
+// One height tier of marginal effects, memoised: dose never needs a new fetch
+const tierCache = new Map();
+
+async function fetchTier(height) {
+  const tier = Math.min(GRID.tiers - 1, Math.max(0, Math.round(height) - GRID.minHeight));
+  if (tierCache.has(tier)) return tierCache.get(tier);
+  const start = tier * SLICE_BYTES;
+  const res = await fetch(`${DATA_BASE}/austin_friction_grid.f32`, {
+    headers: { Range: `bytes=${start}-${start + SLICE_BYTES - 1}` }
+  });
+  if (!(res.status === 206 || res.status === 200)) throw new Error(`Data host returned ${res.status}`);
+  const buf = await res.arrayBuffer();
+  if (buf.byteLength !== SLICE_BYTES) {
+    // A 200 here means the host ignored the Range header and sent the whole file
+    throw new Error('Data host does not support range requests');
+  }
+  const slice = new Float32Array(buf);
+  tierCache.set(tier, slice);
+  return slice;
+}
+
+// Marginal effects scale linearly with dose, exactly as the estimator does it
+function scaleByDose(marginals, dose) {
+  const out = new Float32Array(marginals.length);
+  for (let i = 0; i < marginals.length; i++) {
+    const [lo, hi] = CLAMP[i % 3];
+    out[i] = Math.min(hi, Math.max(lo, marginals[i] * dose));
+  }
+  return out;
+}
 
 let cateData = new Float32Array(0); // [delay0, height0, withd0, delay1, ...]
-let geojsonFeatures = []; // Static geometries
+let geojsonFeatures = []; // Static parcel geometries
 let deckLayer = null;
 let fetchTimeout = null;
 
@@ -134,11 +229,11 @@ let fetchTimeout = null;
 function getColor(index) {
   if (cateData.length === 0) return [40, 40, 40, 100];
   const withd = cateData[index * 3 + 2];
-  if (withd > 0.10) return [80, 80, 80, 180]; // Graveyard
-  
+  if (withd > killThreshold) return [80, 80, 80, 180]; // Graveyard
+
   const delay = cateData[index * 3 + 0];
-  const norm_d = Math.max(0, Math.min(1, delay / 1800));
-  
+  const norm_d = Math.max(0, Math.min(1, delay / delayScaleMax));
+
   let r, g, b;
   if (norm_d < 0.25) {
       const t = norm_d * 4;
@@ -159,11 +254,11 @@ function getColor(index) {
 function getElevation(feature, index) {
   if (cateData.length === 0) return 5;
   const withd = cateData[index * 3 + 2];
-  if (withd > 0.10) return 5;
+  if (withd > killThreshold) return 5;
 
   const height_attrition = cateData[index * 3 + 1];
   const net_delta_ft = Math.max(0, currentHeight - height_attrition);
-  // Add parcel's current zoning baseline — makes downtown tower over suburbs
+  // Add parcel's current zoning baseline, which makes downtown tower over suburbs
   const baseline_ft = (feature.properties && feature.properties.basezone_h) || 30;
   return Math.max(5, (baseline_ft + net_delta_ft) * 0.3048); // metres for Deck.gl
 }
@@ -189,7 +284,7 @@ const overlay = new deck.MapboxOverlay({
       const h_attr = cateData[idx * 3 + 1];
       const withd = cateData[idx * 3 + 2];
       
-      const isKilled = withd > 0.10;
+      const isAtRisk = withd > killThreshold;
       const netDelta = Math.max(0, currentHeight - h_attr);
       const baseline = info.object.properties.basezone_h || 30;
       const totalH = baseline + netDelta;
@@ -198,16 +293,17 @@ const overlay = new deck.MapboxOverlay({
       tooltip.style.left = (info.x + 14) + 'px';
       tooltip.style.top  = (info.y - 10) + 'px';
       tooltip.innerHTML = `
-        <div class="case">Parcel: ${info.object.properties.prop_id || 'Unknown'}</div>
-        <div style="color:#888;font-size:10px;">${info.object.properties.basezone || 'Unknown Zone'}</div>
-        ${isKilled
-          ? '<div class="killed">&#x26B0; Killed (Withdrawn)</div>'
-          : `<div style="margin-top:6px;">Zoning Baseline: ${baseline} ft</div>
-             <div>+ Net Approved Δ: +${netDelta.toFixed(1)} ft</div>
-             <div style="font-weight:700;color:#f97316;">= Total Post-Upzone: ${totalH.toFixed(1)} ft</div>
-             <div style="margin-top:4px;">Height Attrition: -${h_attr.toFixed(1)} ft</div>
-             <div>Expected Delay: ${delay.toFixed(0)} days</div>
-             <div>Withd Risk: ${(withd * 100).toFixed(1)}%</div>`
+        <div class="case">Parcel ${info.object.properties.prop_id || 'unknown'}</div>
+        <div style="color:#888;font-size:10px;">Zoned ${info.object.properties.basezone || 'unknown'}</div>
+        ${isAtRisk
+          ? `<div class="at-risk">At risk of withdrawal</div>
+             <div style="margin-top:4px;">Opposition raises withdrawal risk by ${(withd * 100).toFixed(1)} points here.</div>`
+          : `<div style="margin-top:6px;">Today's height limit: ${baseline} ft</div>
+             <div>Added height expected to survive: +${netDelta.toFixed(1)} ft</div>
+             <div style="font-weight:700;color:#f97316;">Height after rezoning: ${totalH.toFixed(1)} ft</div>
+             <div style="margin-top:4px;">Height given up along the way: ${formatFeet(h_attr)}</div>
+             <div>Added time to a decision: ${formatDays(delay)}</div>
+             <div>Added withdrawal risk: ${(withd * 100).toFixed(1)} points</div>`
         }
       `;
     } else {
@@ -217,56 +313,128 @@ const overlay = new deck.MapboxOverlay({
 });
 map.addControl(overlay);
 
-// 1. Fetch Geometry ONCE
+// 1. Fetch the parcel geometry for this surface (once per page load)
 async function loadGeometry() {
   const loading = document.getElementById('loading');
-  try {
-    const response = await fetch(GEOMETRY_URL);
-    if (!response.ok) throw new Error('Geometry failed to load');
-    const iter = flatgeobuf.deserialize(response.body);
-    let count = 0;
-    for await (const feature of iter) {
-      geojsonFeatures.push(feature);
-      count++;
-      if (count % 20000 === 0) loading.textContent = `Downloaded geometry for ${count} parcels...`;
+  const response = await fetch(geometryUrl(SURFACE));
+  if (!response.ok) throw new Error('Austin parcels could not be loaded');
+  const iter = flatgeobuf.deserialize(response.body);
+  const features = [];
+  for await (const feature of iter) {
+    features.push(feature);
+    if (features.length % 20000 === 0) {
+      loading.textContent = `Loading Austin parcels… ${features.length.toLocaleString()} so far`;
     }
-    loading.textContent = `Connecting to Inference API...`;
-    
-    // Initial Render
+  }
+  geojsonFeatures = features;
+}
+
+// 2. Draw the opening scenario
+async function start() {
+  const loading = document.getElementById('loading');
+  try {
+    await loadGeometry();
+    loading.textContent = 'Estimating the first scenario…';
     renderDeck();
-    
-    // Fetch initial predictions
     await fetchPredictions();
-    
     loading.style.opacity = '0';
     setTimeout(() => loading.style.display = 'none', 500);
   } catch (err) {
-    loading.textContent = "Ensure Python API is running on Port 8000.";
-    loading.style.background = "rgba(100,0,0,0.8)";
+    loading.textContent = `${err.message}. Source: ${BACKEND === 'static' ? DATA_BASE : API_URL}`;
+    loading.style.background = 'rgba(100,0,0,0.8)';
+    console.error('Startup failed', err);
   }
 }
 
-// 2. Fetch Live Inference Binary
+// 3. Get the numbers for this scenario from whichever backend is active
 async function fetchPredictions() {
   const status = document.getElementById('api-status');
-  status.textContent = "Running Inference...";
+  status.textContent = "Estimating…";
   status.style.color = "#f97316";
   const t0 = performance.now();
-  
+
   try {
-    const res = await fetch(`${API_URL}/predict?dose=${currentDose}&height=${currentHeight}`);
-    if (!res.ok) throw new Error('API Error');
-    const arrayBuffer = await res.arrayBuffer();
-    cateData = new Float32Array(arrayBuffer); // Instant parse!
-    
-    status.textContent = `Inferred 270k parcels in ${Math.round(performance.now() - t0)}ms`;
+    if (BACKEND === 'static') {
+      cateData = scaleByDose(await fetchTier(currentHeight), currentDose);
+    } else {
+      const res = await fetch(
+        `${API_URL}/predict?mode=${SURFACE}&dose=${currentDose}&height=${currentHeight}`);
+      if (!res.ok) throw new Error(`Estimator returned ${res.status}`);
+      cateData = new Float32Array(await res.arrayBuffer()); // Instant parse!
+    }
+
+    const secs = (performance.now() - t0) / 1000;
+    status.textContent = `Scenario updated in ${secs < 1 ? '<1' : secs.toFixed(1)} s`;
     status.style.color = "#10b981";
-    
+
+    updateStats();
     renderDeck(); // Update WebGL shaders via updateTriggers
   } catch (err) {
-    status.textContent = "API Disconnected";
+    // Name the source that failed, so a bad data host and a stopped estimator
+    // are distinguishable at a glance.
+    status.textContent = BACKEND === 'static'
+      ? `Scenario data unavailable at ${DATA_BASE}`
+      : `Estimator unavailable at ${API_URL}`;
     status.style.color = "#ef4444";
+    console.error('Scenario request failed', err);
   }
+}
+
+// Plain-language number formatting shared by the panel, tooltip and legend
+function formatDays(d) {
+  const a = Math.abs(d);
+  if (a >= 365) return `${(d / 365).toFixed(1)} years`;
+  if (a >= 60) return `${(d / 30.44).toFixed(0)} months`;
+  return `${d.toFixed(a < 10 ? 1 : 0)} days`;
+}
+
+function formatFeet(ft) {
+  if (ft >= 0.05) return `${ft.toFixed(1)} ft`;
+  if (ft <= -0.05) return `none, ${Math.abs(ft).toFixed(1)} ft above the request`;
+  return 'none';
+}
+
+// 4. Summarise the surface so the panel says what the map shows
+function updateStats() {
+  const n = cateData.length / 3;
+  if (n === 0) return;
+  let delaySum = 0, attrSum = 0, atRisk = 0;
+  const delays = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const d = cateData[i * 3];
+    delays[i] = d;
+    delaySum += d;
+    attrSum += cateData[i * 3 + 1];
+    if (cateData[i * 3 + 2] > killThreshold) atRisk++;
+  }
+  const sorted = delays.slice().sort();
+  const p95 = sorted[Math.min(n - 1, Math.floor(n * 0.95))];
+  const meanAttr = attrSum / n;
+
+  delayScaleMax = autoScale ? Math.max(1, p95) : 1800;
+
+  document.getElementById('stat-parcels').textContent = n.toLocaleString();
+  document.getElementById('stat-delay').textContent = formatDays(delaySum / n);
+  document.getElementById('stat-delay95').textContent = formatDays(p95);
+  document.getElementById('stat-attr').textContent = formatFeet(meanAttr);
+  document.getElementById('stat-killed').textContent = `${(100 * atRisk / n).toFixed(1)}% of parcels`;
+  document.getElementById('attr-note').textContent = meanAttr < 0
+    ? 'At this setting the model expects approvals to land above the height requested, on average.'
+    : 'Height given up is the share of the requested increase the model expects to be negotiated away.';
+  drawLegendTicks();
+}
+
+// Legend ticks follow whatever colour scale is active, so the ramp never lies
+function drawLegendTicks() {
+  const fmt = d => d >= 365 ? `${(d / 365).toFixed(d >= 1095 ? 0 : 1)} yr`
+              : d >= 30 ? `${Math.round(d / 30.44)} mo`
+              : `${d.toFixed(d < 10 ? 1 : 0)} d`;
+  const el = document.getElementById('legend-ticks');
+  el.innerHTML = [0, 0.25, 0.5, 0.75, 1].map(f => `
+    <div style="position:absolute;left:${f * 100}%;transform:translateX(-50%);text-align:center;">
+      <div style="width:1px;height:5px;background:#555;margin:0 auto;"></div>
+      <span style="font-size:9px;color:#666;">${f === 0 ? 'none' : fmt(delayScaleMax * f)}</span>
+    </div>`).join('');
 }
 
 function renderDeck() {
@@ -279,8 +447,8 @@ function renderDeck() {
     getElevation: (f, {index}) => getElevation(f, index),
     getFillColor: (f, {index}) => getColor(index),
     updateTriggers: {
-      getElevation: [cateData, currentHeight],
-      getFillColor: [cateData]
+      getElevation: [cateData, currentHeight, killThreshold],
+      getFillColor: [cateData, killThreshold, delayScaleMax]
     },
     transitions: {
       getElevation: 300,
@@ -310,7 +478,24 @@ document.getElementById('height-slider').addEventListener('input', e => {
   handleSliderChange();
 });
 
-map.on('load', loadGeometry);
+// Kill threshold and auto-scale are pure re-renders, so no new estimate is needed
+document.getElementById('kill-slider').addEventListener('input', e => {
+  killThreshold = parseInt(e.target.value) / 100;
+  document.getElementById('kill-val').textContent = e.target.value;
+  updateStats();
+  renderDeck();
+});
+
+document.getElementById('autoscale-check').addEventListener('change', e => {
+  autoScale = e.target.checked;
+  updateStats();
+  renderDeck();
+});
+
+map.on('load', () => {
+  drawLegendTicks();
+  start();
+});
 </script>
 </body>
 </html>
