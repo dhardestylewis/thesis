@@ -1,0 +1,20 @@
+{
+  "rules": [
+    {
+      "allowed": {
+        "origins": [
+          "https://worldcastr.com",
+          "https://www.worldcastr.com",
+          "https://preview.worldcastr.com",
+          "https://homecastr-pr-feat-rezoning-map-page-f9cf1f20-1d754678.daniel-465.workers.dev",
+          "http://localhost:8000",
+          "http://127.0.0.1:8000"
+        ],
+        "methods": ["GET", "HEAD"],
+        "headers": ["Range", "Content-Type"]
+      },
+      "exposeHeaders": ["Content-Range", "Content-Length", "Accept-Ranges"],
+      "maxAgeSeconds": 86400
+    }
+  ]
+}
